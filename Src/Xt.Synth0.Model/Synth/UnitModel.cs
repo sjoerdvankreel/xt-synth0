@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.Model
 {
-	public class UnitModel : IGroupModel
+	public class UnitModel : GroupModel<UnitModel>
 	{
 		static readonly ParamInfo<int> AmpInfo = new(ParamType.Float, nameof(Amp), 0, 255, 255);
 		static readonly ParamInfo<int> NoteInfo = new(ParamType.Note, nameof(Note), 0, 11, 0);
@@ -16,14 +16,5 @@
 
 		public override Param<bool>[] BoolParams() => new[] { On };
 		public override Param<int>[] IntParams() => new[] { Amp, Octave, Note, Cent };
-
-		internal void CopyTo(UnitModel model)
-		{
-			model.On.Value = On.Value;
-			model.Amp.Value = Amp.Value;
-			model.Note.Value = Note.Value;
-			model.Cent.Value = Cent.Value;
-			model.Octave.Value = Octave.Value;
-		}
 	}
 }

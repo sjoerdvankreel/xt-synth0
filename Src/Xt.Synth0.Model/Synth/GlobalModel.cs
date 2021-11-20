@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.Model
 {
-	public class GlobalModel : IGroupModel
+	public class GlobalModel : GroupModel<GlobalModel>
 	{
 		static readonly ParamInfo<int> BpmInfo = new(ParamType.Int, nameof(Bpm), 1, 1000, 120);
 		static readonly ParamInfo<int> AmpInfo = new(ParamType.Float, nameof(Amp), 0, 255, 128);
@@ -10,11 +10,5 @@
 
 		public override Param<int>[] IntParams() => new[] { Bpm, Amp };
 		public override Param<bool>[] BoolParams() => new Param<bool>[0];
-
-		internal void CopyTo(GlobalModel model)
-		{
-			model.Bpm.Value = Bpm.Value;
-			model.Amp.Value = Amp.Value;
-		}
 	}
 }
