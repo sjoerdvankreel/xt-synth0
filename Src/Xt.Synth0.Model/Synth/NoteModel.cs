@@ -6,7 +6,7 @@
 		public const int NoteOff = 12;
 
 		static readonly ParamInfo<int> AmpInfo = new(ParamType.Int, nameof(Amp), 0, 255, 255);
-		static readonly ParamInfo<int> OctaveInfo = new(ParamType.Int, nameof(Octave), 0, 12, 4);
+		static readonly ParamInfo<int> OctaveInfo = new(ParamType.Int, nameof(Octave), 0, 9, 4);
 		static readonly ParamInfo<int> NoteInfo = new(ParamType.Note, nameof(Note), 0, NoNote, NoNote);
 
 		public Param<int> Amp { get; } = Param.Of(AmpInfo);

@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public class TrackModel : GroupModel<TrackModel>
 	{
-		const int Length = 64;
+		public const int Length = 32;
 
 		public ReadOnlyCollection<NoteModel> Notes { get; }
 			= new ReadOnlyCollection<NoteModel>(Enumerable

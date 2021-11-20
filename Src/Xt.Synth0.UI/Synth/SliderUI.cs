@@ -11,11 +11,6 @@ namespace Xt.Synth0.UI
 		internal const int ValueWidth = 32;
 		internal const int SliderSize = 128;
 
-		static readonly string[] Notes = new[] {
-			"C", "C#", "D", "D#", "E", "F",
-			"F#", "G", "G#", "A", "A#", "B"
-		};
-
 		static void ShowEditDialog(Param<int> param)
 		{
 			var window = new Window();
@@ -54,7 +49,7 @@ namespace Xt.Synth0.UI
 		static string Format(ParamInfo<int> info, int value)
 		=> info.Type switch
 		{
-			ParamType.Note => Notes[value],
+			ParamType.Note => UI.Notes[value],
 			ParamType.Int => value.ToString(),
 			ParamType.Float => FormatFloat(info, value),
 			_ => throw new ArgumentException()
