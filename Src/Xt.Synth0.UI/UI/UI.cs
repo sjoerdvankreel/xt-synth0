@@ -40,12 +40,15 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static T MakeElement<T>(int row, int column)
+		internal static T MakeElement<T>(
+			int row, int column, int rowSpan = 1, int columnSpan = 1)
 			where T : UIElement, new()
 		{
 			var result = new T();
 			result.SetValue(Grid.RowProperty, row);
 			result.SetValue(Grid.ColumnProperty, column);
+			result.SetValue(Grid.RowSpanProperty, rowSpan);
+			result.SetValue(Grid.ColumnSpanProperty, columnSpan);
 			return result;
 		}
 

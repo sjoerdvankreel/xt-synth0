@@ -6,14 +6,6 @@ namespace Xt.Synth0.UI
 {
 	internal static class GroupUI
 	{
-		internal static UIElement Make(IGroupModel model, string name, int row, int column)
-		{
-			var result = UI.MakeElement<GroupBox>(row, column);
-			result.Header = name;
-			result.Content = MakeContent(model);
-			return result;
-		}
-
 		static UIElement MakeContent(IGroupModel model)
 		{
 			var ints = model.IntParams();
@@ -23,6 +15,15 @@ namespace Xt.Synth0.UI
 				ToggleUI.Add(result, bools[r], r);
 			for (int r = 0; r < ints.Length; r++)
 				SliderUI.Add(result, ints[r], bools.Length + r);
+			return result;
+		}
+
+		internal static UIElement Make(IGroupModel model, string name, 
+			int row, int column, int rowSpan = 1, int columnSpan = 1)
+		{
+			var result = UI.MakeElement<GroupBox>(row, column, rowSpan, columnSpan);
+			result.Header = name;
+			result.Content = MakeContent(model);
 			return result;
 		}
 	}
