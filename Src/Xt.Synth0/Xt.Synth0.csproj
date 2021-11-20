@@ -10,4 +10,7 @@
     <ProjectReference Include="../Xt.Synth0.DSP/Xt.Synth0.DSP.csproj" />
     <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" PrivateAssets="all" />
+  </ItemGroup>
 </Project>

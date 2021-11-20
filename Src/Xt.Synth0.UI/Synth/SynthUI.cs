@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 			result.Children.Add(GroupUI.Make(model.Unit1, nameof(model.Unit1), 0, 0));
 			result.Children.Add(GroupUI.Make(model.Unit2, nameof(model.Unit2), 0, 1));
 			result.Children.Add(GroupUI.Make(model.Unit3, nameof(model.Unit3), 0, 2));
-			result.Children.Add(GroupUI.Make(model.Main, nameof(model.Main), 1, 0));
+			result.Children.Add(GroupUI.Make(model.Global, nameof(model.Global), 1, 0));
 			return result;
 		}
 	}

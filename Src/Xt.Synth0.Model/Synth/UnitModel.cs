@@ -16,5 +16,14 @@
 
 		public Param<bool>[] BoolParams() => new[] { On };
 		public Param<int>[] IntParams() => new[] { Amp, Octave, Note, Cent };
+
+		internal void CopyTo(UnitModel model)
+		{
+			model.On.Value = On.Value;
+			model.Amp.Value = Amp.Value;
+			model.Note.Value = Note.Value;
+			model.Cent.Value = Cent.Value;
+			model.Octave.Value = Octave.Value;
+		}
 	}
 }

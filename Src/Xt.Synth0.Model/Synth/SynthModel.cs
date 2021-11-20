@@ -2,9 +2,17 @@
 {
 	public class SynthModel
 	{
-		public MainModel Main { get; } = new();
 		public UnitModel Unit1 { get; } = new();
 		public UnitModel Unit2 { get; } = new();
 		public UnitModel Unit3 { get; } = new();
+		public GlobalModel Global { get; } = new();
+
+		public void CopyTo(SynthModel model)
+		{
+			Unit1.CopyTo(model.Unit1);
+			Unit2.CopyTo(model.Unit2);
+			Unit3.CopyTo(model.Unit3);
+			Global.CopyTo(model.Global);
+		}
 	}
 }

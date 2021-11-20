@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Xt.Synth0.UI
 {
@@ -18,6 +20,13 @@ namespace Xt.Synth0.UI
 		{
 			var result = new ColumnDefinition();
 			result.Width = GridLength.Auto;
+			return result;
+		}
+
+		internal static MenuItem MakeItem(string header)
+		{
+			var result = new MenuItem();
+			result.Header = header;
 			return result;
 		}
 
@@ -45,6 +54,17 @@ namespace Xt.Synth0.UI
 			var result = MakeElement<Label>(row, column);
 			result.Content = content;
 			result.VerticalContentAlignment = VerticalAlignment.Top;
+			return result;
+		}
+
+		internal static MenuItem MakeItem(ICommand command, string header, Action execute)
+		{
+			var result = MakeItem(header);
+			result.Command = command;
+			var binding = new CommandBinding();
+			binding.Command = command;
+			binding.Executed += (s, e) => execute();
+			result.CommandBindings.Add(binding);
 			return result;
 		}
 	}
