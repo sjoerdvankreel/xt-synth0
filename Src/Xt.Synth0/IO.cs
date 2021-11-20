@@ -29,9 +29,9 @@ namespace Xt.Synth0
 			File.WriteAllText(path, json);
 		}
 
-		internal static void LogError(DateTime startTime, string error)
+		internal static void LogError(string error)
 		{
-			var file = startTime.ToString("yyyy-MM-dd HH.mm.ss");
+			var file = Synth0.StartTime.ToString("yyyy-MM-dd HH.mm.ss");
 			var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 			var path = Path.Combine(folder, nameof(Synth0));
 			Directory.CreateDirectory(path);
