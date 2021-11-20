@@ -1,4 +1,2 @@
 set exact value
-custom json
-propertychanged + star
 model pool/onchange

@@ -7,17 +7,25 @@ namespace Xt.Synth0
 {
 	internal static class IO
 	{
+		static JsonSerializerSettings MakeSettings()
+		{
+			var result = new JsonSerializerSettings();
+			result.Formatting = Formatting.Indented;
+			result.Converters.Add(new ParamConverter<int>());
+			result.Converters.Add(new ParamConverter<bool>());
+			result.MissingMemberHandling = MissingMemberHandling.Error;
+			return result;
+		}
+
 		internal static void Load(string path, SynthModel model)
 		{
 			var json = File.ReadAllText(path);
-			var settings = new JsonSerializerSettings();
-			settings.MissingMemberHandling = MissingMemberHandling.Error;
-			JsonConvert.PopulateObject(json, model, settings);
+			JsonConvert.PopulateObject(json, model, MakeSettings());
 		}
 
 		internal static void Save(SynthModel model, string path)
 		{
-			var json = JsonConvert.SerializeObject(model, Formatting.Indented);
+			var json = JsonConvert.SerializeObject(model, MakeSettings());
 			File.WriteAllText(path, json);
 		}
 

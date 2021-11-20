@@ -1,8 +1,14 @@
-﻿namespace Xt.Synth0.Model
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+
+namespace Xt.Synth0.Model
 {
-	public interface IGroupModel
+	public abstract class IGroupModel
 	{
-		Param<int>[] IntParams();
-		Param<bool>[] BoolParams();
+		public abstract Param<int>[] IntParams();
+		public abstract Param<bool>[] BoolParams();
+		public IEnumerable<INotifyPropertyChanged> Params() 
+		=> BoolParams().Cast<INotifyPropertyChanged>().Concat(IntParams());
 	}
 }

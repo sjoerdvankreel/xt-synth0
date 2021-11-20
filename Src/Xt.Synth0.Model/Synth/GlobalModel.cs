@@ -8,8 +8,8 @@
 		public Param<int> Bpm { get; } = Param.Of(BpmInfo);
 		public Param<int> Amp { get; } = Param.Of(AmpInfo);
 
-		public Param<int>[] IntParams() => new[] { Bpm, Amp };
-		public Param<bool>[] BoolParams() => new Param<bool>[0];
+		public override Param<int>[] IntParams() => new[] { Bpm, Amp };
+		public override Param<bool>[] BoolParams() => new Param<bool>[0];
 
 		internal void CopyTo(GlobalModel model)
 		{

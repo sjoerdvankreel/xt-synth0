@@ -7,6 +7,9 @@
 		public UnitModel Unit3 { get; } = new();
 		public GlobalModel Global { get; } = new();
 
+		public IGroupModel[] Groups()
+		=> new IGroupModel[] { Global, Unit1, Unit2, Unit3 };
+
 		public void CopyTo(SynthModel model)
 		{
 			Unit1.CopyTo(model.Unit1);

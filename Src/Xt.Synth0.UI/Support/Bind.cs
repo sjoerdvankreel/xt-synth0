@@ -16,17 +16,26 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Binding To<T>(Param<T> param, Func<T, string> display)
+		internal static Binding To<T, U>(Param<T> param, Func<T, U> convert)
 		{
 			var result = To(param);
-			result.Converter = new Converter<T>(display);
+			result.Converter = new Converter<T, U>(convert);
 			return result;
 		}
 
-		public static Binding To<T>(object source, string path, Func<T, string> display)
+		public static Binding To<T, U>(object source, string path, Func<T, U> convert)
 		{
 			var result = To(source, path);
-			result.Converter = new Converter<T>(display);
+			result.Converter = new Converter<T, U>(convert);
+			return result;
+		}
+
+		public static MultiBinding Of<T>(Func<object[], T> convert, params Binding[] bindings)
+		{
+			var result = new MultiBinding();
+			foreach (var binding in bindings)
+				result.Bindings.Add(binding);
+			result.Converter = new MultiConverter<T>(convert);
 			return result;
 		}
 	}

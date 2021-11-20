@@ -14,8 +14,8 @@
 		public Param<int> Cent { get; } = Param.Of(CentInfo);
 		public Param<int> Octave { get; } = Param.Of(OctaveInfo);
 
-		public Param<bool>[] BoolParams() => new[] { On };
-		public Param<int>[] IntParams() => new[] { Amp, Octave, Note, Cent };
+		public override Param<bool>[] BoolParams() => new[] { On };
+		public override Param<int>[] IntParams() => new[] { Amp, Octave, Note, Cent };
 
 		internal void CopyTo(UnitModel model)
 		{

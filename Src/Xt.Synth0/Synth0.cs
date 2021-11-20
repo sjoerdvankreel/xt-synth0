@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,8 +18,18 @@ namespace Xt.Synth0
 		static readonly DependencyProperty PathProperty
 		= DependencyProperty.Register("Path", typeof(string), typeof(Synth0));
 
-		static string FormatTitle(string path)
-		=> path == null ? nameof(Synth0) : $"{nameof(Synth0)} ({path})";
+		public static object GetIsDirty(DependencyObject obj)
+		=> obj.GetValue(IsDirtyProperty);
+		public static void SetIsDirty(DependencyObject obj, object value)
+		=> obj.SetValue(IsDirtyProperty, value);
+		static readonly DependencyProperty IsDirtyProperty
+		= DependencyProperty.Register("IsDirty", typeof(bool), typeof(Synth0));
+
+		static string FormatTitle(object[] args)
+		{
+			var result = args[0] == null ? nameof(Synth0) : $"{nameof(Synth0)} ({args[0]})";
+			return (bool)args[1] ? $"{result} *" : result;
+		}
 
 		[STAThread]
 		static void Main()
@@ -39,6 +50,12 @@ namespace Xt.Synth0
 			set => SetValue(PathProperty, value);
 		}
 
+		public bool IsDirty
+		{
+			get => (bool)GetValue(IsDirtyProperty);
+			set => SetValue(IsDirtyProperty, value);
+		}
+
 		readonly DateTime _startTime;
 		readonly SynthModel _model = new SynthModel();
 
@@ -48,10 +65,11 @@ namespace Xt.Synth0
 			Content = MakeContent();
 			ResizeMode = ResizeMode.NoResize;
 			SizeToContent = SizeToContent.WidthAndHeight;
+			BindDirty();
+			BindTitle();
 			BindCommand(ApplicationCommands.Open, OnLoad);
 			BindCommand(ApplicationCommands.Save, OnSave);
 			BindCommand(ApplicationCommands.SaveAs, OnSaveAs);
-			SetBinding(TitleProperty, Bind.To<string>(this, nameof(Path), FormatTitle));
 		}
 
 		void OnSaveAs(object sender, EventArgs e)
@@ -77,6 +95,7 @@ namespace Xt.Synth0
 			if (path == null) return;
 			IO.Save(_model, path);
 			Path = path;
+			IsDirty = false;
 		}
 
 		void OnLoad(object sender, EventArgs e)
@@ -85,6 +104,7 @@ namespace Xt.Synth0
 			if (path == null) return;
 			IO.Load(path, _model);
 			Path = path;
+			IsDirty = false;
 		}
 
 		void OnError(string message)
@@ -99,6 +119,21 @@ namespace Xt.Synth0
 		{
 			OnError(e.Exception.Message);
 			e.Handled = true;
+		}
+
+		void BindTitle()
+		{
+			var path = Bind.To(this, nameof(Path));
+			var dirty = Bind.To(this, nameof(IsDirty));
+			SetBinding(TitleProperty, Bind.Of(FormatTitle, path, dirty));
+		}
+
+		void BindDirty()
+		{
+			PropertyChangedEventHandler handler = (s, e) => IsDirty = true;
+			foreach (var group in _model.Groups())
+				foreach (var param in group.Params())
+					param.PropertyChanged += handler;
 		}
 
 		void BindCommand(RoutedUICommand command, EventHandler handler)
