@@ -2,19 +2,54 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
 	internal static class SliderUI
 	{
+		internal const int ValueWidth = 32;
 		internal const int SliderSize = 128;
 
 		static readonly string[] Notes = new[] {
 			"C", "C#", "D", "D#", "E", "F",
 			"F#", "G", "G#", "A", "A#", "B"
 		};
+
+		static void ShowEditDialog(Param<int> param)
+		{
+			var window = new Window();
+			window.Title = $"Edit {param.Info.Name}";
+			var wrap = new WrapPanel();
+			wrap.Margin = new Thickness(UI.Margin);
+			window.Content = wrap;
+			var block = new TextBlock();
+			block.Text = $"Value (min {param.Info.Min}, max {param.Info.Max}): ";
+			wrap.Children.Add(block);
+			var value = new TextBox();
+			value.Width = ValueWidth;
+			value.Text = param.Value.ToString();
+			value.TextAlignment = TextAlignment.Right;
+			wrap.Children.Add(value);
+			var ok = new Button();
+			ok.Content = "OK";
+			ok.Click += (s, e) => Edit(window, param, value.Text);
+			wrap.Children.Add(ok);
+			window.Content = wrap;
+			window.ResizeMode = ResizeMode.NoResize;
+			window.Owner = Application.Current.MainWindow;
+			window.SizeToContent = SizeToContent.WidthAndHeight;
+			window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+			window.ShowDialog();
+		}
+
+		static void Edit(Window window, Param<int> param, string value)
+		{
+			if (!int.TryParse(value, out int newValue)) return;
+			if (newValue < param.Info.Min || newValue > param.Info.Max) return;
+			param.Value = newValue;
+			window.Close();
+		}
 
 		static string Format(ParamInfo<int> info, int value)
 		=> info.Type switch
@@ -32,13 +67,13 @@ namespace Xt.Synth0.UI
 			return ((value - min) / (max - min)).ToString("P1").PadLeft(6, '0');
 		}
 
-		internal static void Add(Grid grid, Param<int> param, int row)
+		static UIElement MakeLabel(Param<int> param, int row)
 		{
-			grid.Children.Add(MakeSlider(param, row));
-			grid.Children.Add(MakeLabel(param, row));
-			grid.Children.Add(UI.MakeLabel(param.Info.Name, row, 0));
-			grid.Children.Add(UI.MakeLabel(Format(param.Info, param.Info.Min), row, 2));
-			grid.Children.Add(UI.MakeLabel(Format(param.Info, param.Info.Max), row, 4));
+			var result = UI.MakeElement<Label>(row, 1);
+			var binding = Bind.To(param, v => $"({Format(param.Info, v)})");
+			result.SetBinding(ContentControl.ContentProperty, binding);
+			result.VerticalContentAlignment = VerticalAlignment.Top;
+			return result;
 		}
 
 		static UIElement MakeSlider(Param<int> param, int row)
@@ -47,25 +82,20 @@ namespace Xt.Synth0.UI
 			result.Width = SliderSize;
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
-			result.MouseRightButtonUp += OnSetExactValue;
-			result.ToolTip = "Right-click to set exact value.";
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
+			result.SetBinding(FrameworkElement.ToolTipProperty, Bind.To(param));
+			result.MouseRightButtonUp += (s, e) => ShowEditDialog(param);
 			return result;
 		}
 
-		static void OnSetExactValue(object sender, MouseButtonEventArgs e)
+		internal static void Add(Grid grid, Param<int> param, int row)
 		{
-			
-		}
-
-		static UIElement MakeLabel(Param<int> param, int row)
-		{
-			var result = UI.MakeElement<Label>(row, 1);
-			var binding = Bind.To(param, v => $"({Format(param.Info, v)})");
-			result.SetBinding(ContentControl.ContentProperty, binding);
-			result.VerticalContentAlignment = VerticalAlignment.Top;
-			return result;
+			grid.Children.Add(MakeSlider(param, row));
+			grid.Children.Add(MakeLabel(param, row));
+			grid.Children.Add(UI.MakeLabel(param.Info.Name, row, 0));
+			grid.Children.Add(UI.MakeLabel(Format(param.Info, param.Info.Min), row, 2));
+			grid.Children.Add(UI.MakeLabel(Format(param.Info, param.Info.Max), row, 4));
 		}
 	}
 }

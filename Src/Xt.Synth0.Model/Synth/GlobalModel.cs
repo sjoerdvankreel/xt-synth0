@@ -3,7 +3,7 @@
 	public class GlobalModel : IGroupModel
 	{
 		static readonly ParamInfo<int> BpmInfo = new(ParamType.Int, nameof(Bpm), 1, 1000, 120);
-		static readonly ParamInfo<int> AmpInfo = new(ParamType.Float, nameof(Amp), 0, 256, 128);
+		static readonly ParamInfo<int> AmpInfo = new(ParamType.Float, nameof(Amp), 0, 255, 128);
 
 		public Param<int> Bpm { get; } = Param.Of(BpmInfo);
 		public Param<int> Amp { get; } = Param.Of(AmpInfo);

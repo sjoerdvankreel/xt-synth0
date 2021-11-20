@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,11 +41,11 @@ namespace Xt.Synth0
 
 		internal MainWindow()
 		{
-			BindDirty();
 			BindTitle();
 			Content = MakeContent();
 			ResizeMode = ResizeMode.NoResize;
 			SizeToContent = SizeToContent.WidthAndHeight;
+			Model.ParamChanged += (s, e) => IsDirty = true;
 			BindCommand(ApplicationCommands.Open, (s, e) => Load());
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
 			BindCommand(ApplicationCommands.SaveAs, (s, e) => SaveAs());
@@ -91,14 +90,6 @@ namespace Xt.Synth0
 			var path = Bind.To(this, nameof(Path));
 			var dirty = Bind.To(this, nameof(IsDirty));
 			SetBinding(TitleProperty, Bind.Of(FormatTitle, path, dirty));
-		}
-
-		void BindDirty()
-		{
-			PropertyChangedEventHandler handler = (s, e) => IsDirty = true;
-			foreach (var group in Model.Groups())
-				foreach (var param in group.Params())
-					param.PropertyChanged += handler;
 		}
 
 		void BindCommand(RoutedUICommand command, EventHandler handler)
