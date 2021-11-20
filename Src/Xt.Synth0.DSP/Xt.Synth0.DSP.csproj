@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputPath>$(SolutionDir)/../Bin/$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" />
+  </ItemGroup>
+</Project>

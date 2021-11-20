@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <UseWPF>true</UseWPF>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <OutputPath>$(SolutionDir)/../Bin/$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" />
+  </ItemGroup>
+</Project>
