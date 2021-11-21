@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,20 +38,14 @@ namespace Xt.Synth0.UI
 		};
 
 		static string FormatOctave(object[] args)
-		{
-			int note = (int)args[0];
-			if (note < NoteModel.NoteCount)
-				return ((int)args[1]).ToString();
-			return note == RowModel.NoteOff ? "=" : ".";
-		}
-
-		static string FormatAmp(object[] args)
-		{
-			int note = (int)args[0];
-			if (note < NoteModel.NoteCount)
-				return ((int)args[1]).ToString("X2");
-			return note == RowModel.NoteOff ? "==" : "..";
-		}
+		=> Format(args, o => o.ToString());
+		static string FormatAmp1(object[] args)
+		=> Format(args, a => (a & 0X0000000F).ToString("X"));
+		static string FormatAmp0(object[] args)
+		=> Format(args, a => ((a & 0X000000F0) >> 4).ToString("X"));
+		static int ParseAmp(string text)
+		=> int.TryParse(text.FirstOrDefault().ToString(), NumberStyles.HexNumber,
+			CultureInfo.CurrentCulture, out int val) ? val : -1;
 
 		static string FormatNote(int note) => note switch
 		{
@@ -58,6 +53,20 @@ namespace Xt.Synth0.UI
 			RowModel.NoteOff => "==",
 			_ => UI.NoteNames[note]
 		};
+
+		static string Format(object[] args, Func<int, string> display)
+		{
+			int note = (int)args[0];
+			if (note < NoteModel.NoteCount)
+				return display((int)args[1]);
+			return note == RowModel.NoteOff ? "=" : ".";
+		}
+
+		static void FocusNext(FocusNavigationDirection direction)
+		{
+			if (Keyboard.FocusedElement is UIElement e)
+				e.MoveFocus(new TraversalRequest(direction));
+		}
 
 		internal static UIElement Make(PatternModel model, string name,
 			int row, int column, int rowSpan = 1, int columnSpan = 1)
@@ -70,7 +79,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeContent(PatternModel model)
 		{
-			var result = UI.MakeGrid(PatternModel.Length, 3);
+			var result = UI.MakeGrid(PatternModel.Length, 4);
 			for (int n = 0; n < PatternModel.Length; n++)
 				AddRow(result, model.Rows[n], n);
 			return result;
@@ -80,23 +89,13 @@ namespace Xt.Synth0.UI
 		{
 			grid.Children.Add(MakeNote(model.Note, row));
 			grid.Children.Add(MakeOctave(model.Note, model.Octave, row));
-			grid.Children.Add(MakeAmp(model.Note, model.Amp, row));
-		}
-
-		static FrameworkElement MakeCell(int chars, int row, int column)
-		{
-			var result = UI.MakeElement<TextBlock>(row, column);
-			result.Margin = new Thickness(CellMargin);
-			result.Focusable = true;
-			result.FontFamily = Font;
-			result.Width = CellWidth * chars;
-			result.MouseLeftButtonDown += (s, e) => result.Focus();
-			return result;
+			grid.Children.Add(MakeAmp0(model.Note, model.Amp, row));
+			grid.Children.Add(MakeAmp1(model.Note, model.Amp, row));
 		}
 
 		static UIElement MakeNote(Param<int> note, int row)
 		{
-			var result = MakeCell(2, row, 0);
+			var result = MakeCell(row, 0, 2, CellMargin, CellMargin);
 			var binding = Bind.To(note, FormatNote);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(note, e);
@@ -106,13 +105,14 @@ namespace Xt.Synth0.UI
 		static void OnNoteKeyDown(Param<int> param, KeyEventArgs e)
 		{
 			int note = KeyToNote(e.Key);
-			if (note != -1)
-				param.Value = note;
+			if (note == -1) return;
+			param.Value = note;
+			FocusNext(note < NoteModel.NoteCount ? FocusNavigationDirection.Next : FocusNavigationDirection.Down);
 		}
 
 		static UIElement MakeOctave(Param<int> note, Param<int> octave, int row)
 		{
-			var result = MakeCell(1, row, 1);
+			var result = MakeCell(row, 1, 1, CellMargin, CellMargin);
 			var noteBinding = Bind.To(note);
 			var octaveBinding = Bind.To(octave);
 			var binding = Bind.Of(FormatOctave, noteBinding, octaveBinding);
@@ -124,17 +124,57 @@ namespace Xt.Synth0.UI
 		static void OnOctaveTextInput(Param<int> param, TextCompositionEventArgs e)
 		{
 			var octave = e.Text.FirstOrDefault();
-			if (octave >= '0' && octave <= '9')
-				param.Value = octave - '0';
+			if (octave < '0' || octave > '9') return;
+			param.Value = octave - '0';
+			FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static UIElement MakeAmp(Param<int> note, Param<int> amp, int row)
+		static UIElement MakeAmp0(Param<int> note, Param<int> amp, int row)
 		{
-			var result = MakeCell(2, row, 2);
+			var result = MakeCell(row, 2, 1, CellMargin, 0);
 			var ampBinding = Bind.To(amp);
 			var noteBinding = Bind.To(note);
-			var binding = Bind.Of(FormatAmp, noteBinding, ampBinding);
+			var binding = Bind.Of(FormatAmp0, noteBinding, ampBinding);
 			result.SetBinding(TextBlock.TextProperty, binding);
+			result.TextInput += (s, e) => OnAmp0TextInput(amp, e);
+			return result;
+		}
+
+		static void OnAmp0TextInput(Param<int> param, TextCompositionEventArgs e)
+		{
+			var val = ParseAmp(e.Text);
+			if (val == -1) return;
+			param.Value = (val << 4) | (param.Value & 0x0000000F);
+			FocusNext(FocusNavigationDirection.Next);
+		}
+
+		static UIElement MakeAmp1(Param<int> note, Param<int> amp, int row)
+		{
+			var result = MakeCell(row, 3, 1, 0, CellMargin);
+			var ampBinding = Bind.To(amp);
+			var noteBinding = Bind.To(note);
+			var binding = Bind.Of(FormatAmp1, noteBinding, ampBinding);
+			result.SetBinding(TextBlock.TextProperty, binding);
+			result.TextInput += (s, e) => OnAmp1TextInput(amp, e);
+			return result;
+		}
+
+		static void OnAmp1TextInput(Param<int> param, TextCompositionEventArgs e)
+		{
+			var val = ParseAmp(e.Text);
+			if (val == -1) return;
+			param.Value = (param.Value & 0x000000F0) | val;
+			FocusNext(FocusNavigationDirection.Next);
+		}
+
+		static FrameworkElement MakeCell(int row, int column, int chars, int leftMargin, int rightMargin)
+		{
+			var result = UI.MakeElement<TextBlock>(row, column);
+			result.Margin = new Thickness(leftMargin, CellMargin, rightMargin, CellMargin);
+			result.Focusable = true;
+			result.FontFamily = Font;
+			result.Width = CellWidth * chars;
+			result.MouseLeftButtonDown += (s, e) => result.Focus();
 			return result;
 		}
 	}
