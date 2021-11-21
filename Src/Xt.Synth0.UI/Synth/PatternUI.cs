@@ -68,20 +68,20 @@ namespace Xt.Synth0.UI
 				e.MoveFocus(new TraversalRequest(direction));
 		}
 
-		internal static UIElement Make(PatternModel model, string name,
-			int row, int column, int rowSpan = 1, int columnSpan = 1)
+		internal static UIElement Make(PatternModel model, string name, int offset,
+			int count, int row, int column, int rowSpan = 1, int columnSpan = 1)
 		{
 			var result = UI.MakeElement<GroupBox>(row, column, rowSpan, columnSpan);
 			result.Header = name;
-			result.Content = MakeContent(model);
+			result.Content = MakeContent(model, offset, count);
 			return result;
 		}
 
-		static UIElement MakeContent(PatternModel model)
+		static UIElement MakeContent(PatternModel model, int offset, int count)
 		{
 			var result = UI.MakeGrid(PatternModel.Length, 4);
-			for (int n = 0; n < PatternModel.Length; n++)
-				AddRow(result, model.Rows[n], n);
+			for (int n = 0; n < count; n++)
+				AddRow(result, model.Rows[offset + n], n);
 			return result;
 		}
 
@@ -107,6 +107,7 @@ namespace Xt.Synth0.UI
 			int note = KeyToNote(e.Key);
 			if (note == -1) return;
 			param.Value = note;
+			e.Handled = true;
 			FocusNext(note < NoteModel.NoteCount ? FocusNavigationDirection.Next : FocusNavigationDirection.Down);
 		}
 
@@ -126,6 +127,7 @@ namespace Xt.Synth0.UI
 			var octave = e.Text.FirstOrDefault();
 			if (octave < '0' || octave > '9') return;
 			param.Value = octave - '0';
+			e.Handled = true;
 			FocusNext(FocusNavigationDirection.Next);
 		}
 
@@ -145,6 +147,7 @@ namespace Xt.Synth0.UI
 			var val = ParseAmp(e.Text);
 			if (val == -1) return;
 			param.Value = (val << 4) | (param.Value & 0x0000000F);
+			e.Handled = true;
 			FocusNext(FocusNavigationDirection.Next);
 		}
 
@@ -164,6 +167,7 @@ namespace Xt.Synth0.UI
 			var val = ParseAmp(e.Text);
 			if (val == -1) return;
 			param.Value = (param.Value & 0x000000F0) | val;
+			e.Handled = true;
 			FocusNext(FocusNavigationDirection.Next);
 		}
 

@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public class PatternModel : GroupModel<PatternModel>
 	{
-		public const int Length = 32;
+		public const int Length = 64;
 
 		public IList<RowModel> Rows { get; } = new List<RowModel>(
 			Enumerable.Range(0, Length).Select(_ => new RowModel()));
