@@ -15,6 +15,7 @@ namespace Xt.Synth0
 			StartTime = DateTime.Now;
 			var app = new Application();
 			var window = new MainWindow();
+			MenuUI.New += (s, e) => window.New();
 			MenuUI.Load += (s, e) => window.Load();
 			MenuUI.Save += (s, e) => window.Save();
 			MenuUI.SaveAs += (s, e) => window.SaveAs();

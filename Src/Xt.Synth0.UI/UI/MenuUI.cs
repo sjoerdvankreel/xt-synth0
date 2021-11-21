@@ -7,6 +7,7 @@ namespace Xt.Synth0.UI
 {
 	public static class MenuUI
 	{
+		public static event EventHandler New;
 		public static event EventHandler Load;
 		public static event EventHandler Save;
 		public static event EventHandler SaveAs;
@@ -21,6 +22,8 @@ namespace Xt.Synth0.UI
 		static UIElement MakeFile()
 		{
 			var result = UI.MakeItem("_File");
+			var doNew = () => New(null, EventArgs.Empty);
+			result.Items.Add(UI.MakeItem(ApplicationCommands.New, "_New", doNew));
 			var doOpen = () => Load(null, EventArgs.Empty);
 			result.Items.Add(UI.MakeItem(ApplicationCommands.Open, "_Open", doOpen));
 			var doSave = () => Save(null, EventArgs.Empty);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -46,6 +47,7 @@ namespace Xt.Synth0
 			ResizeMode = ResizeMode.NoResize;
 			SizeToContent = SizeToContent.WidthAndHeight;
 			Model.ParamChanged += (s, e) => IsDirty = true;
+			BindCommand(ApplicationCommands.New, (s, e) => New());
 			BindCommand(ApplicationCommands.Open, (s, e) => Load());
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
 			BindCommand(ApplicationCommands.SaveAs, (s, e) => SaveAs());
@@ -66,11 +68,26 @@ namespace Xt.Synth0
 
 		internal void Load()
 		{
+			if (!SaveUnsavedChanges()) return;
 			var path = LoadSaveUI.Load();
 			if (path == null) return;
 			IO.Load(path, Model);
 			Path = path;
 			IsDirty = false;
+		}
+
+		internal void New()
+		{
+			if (!SaveUnsavedChanges()) return;
+			new SynthModel().CopyTo(Model);
+			Path = null;
+			IsDirty = false;
+		}
+
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			e.Cancel = !SaveUnsavedChanges();
+			base.OnClosing(e);
 		}
 
 		UIElement MakeContent()
@@ -83,6 +100,16 @@ namespace Xt.Synth0
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			return result;
+		}
+
+		bool SaveUnsavedChanges()
+		{
+			if (!IsDirty) return true;
+			var result = MessageBox.Show(this, "Save changes?",
+				"Warning", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+			if (result == MessageBoxResult.Cancel) return false;
+			if (result == MessageBoxResult.Yes) Save();
+			return true;
 		}
 
 		void BindTitle()
