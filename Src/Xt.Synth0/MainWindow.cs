@@ -49,16 +49,6 @@ namespace Xt.Synth0
 			BindCommand(ApplicationCommands.Open, (s, e) => Load());
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
 			BindCommand(ApplicationCommands.SaveAs, (s, e) => SaveAs());
-
-			Model.Pattern.Rows[0].Amp.Value = 255;
-			Model.Pattern.Rows[0].Note.Value = 0;
-			Model.Pattern.Rows[0].Octave.Value = 3;
-
-			Model.Pattern.Rows[2].Note.Value = 12;
-
-			Model.Pattern.Rows[4].Amp.Value = 128;
-			Model.Pattern.Rows[4].Note.Value = 1;
-			Model.Pattern.Rows[4].Octave.Value = 4;
 		}
 
 		internal void SaveAs()

@@ -2,8 +2,8 @@
 {
 	public class RowModel
 	{
-		public const int NoNote = 13;
-		public const int NoteOff = 12;
+		public const int NoteOff = NoteModel.NoteCount;
+		public const int NoNote = NoteModel.NoteCount + 1;
 
 		static readonly ParamInfo<int> AmpInfo = new(ParamType.Int, nameof(Amp), 0, 255, 255);
 		static readonly ParamInfo<int> OctaveInfo = new(ParamType.Int, nameof(Octave), 0, 9, 4);

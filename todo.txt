@@ -3,3 +3,5 @@ make sequencer
 help menu
 make amp hex
 fixed width font
+file new
+fix note save

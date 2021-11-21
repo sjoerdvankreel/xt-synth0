@@ -11,6 +11,12 @@ namespace Xt.Synth0.Model
 			= new ReadOnlyCollection<RowModel>(Enumerable
 				.Range(0, Length).Select(_ => new RowModel()).ToList());
 
+		public PatternModel()
+		{
+			for (int i = 0; i < Length; i += 4)
+				Rows[i].Note.Value = NoteModel.C;
+		}
+
 		public override Param<bool>[] BoolParams() => new Param<bool>[0];
 		public override Param<int>[] IntParams() => Rows.SelectMany(n => n.IntParams()).ToArray();
 	}
