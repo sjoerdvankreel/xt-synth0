@@ -8,6 +8,7 @@ namespace Xt.Synth0.UI
 	static class UI
 	{
 		internal const int Margin = 5;
+		internal const int ButtonMargin = 2;
 
 		internal static readonly string[] NoteNames = new[] {
 			"C", "C#", "D", "D#", "E", "F",
@@ -54,6 +55,15 @@ namespace Xt.Synth0.UI
 			result.SetValue(Grid.ColumnProperty, column);
 			result.SetValue(Grid.RowSpanProperty, rowSpan);
 			result.SetValue(Grid.ColumnSpanProperty, columnSpan);
+			return result;
+		}
+
+		internal static Button MakeButton(string content, Action execute)
+		{
+			var result = new Button();
+			result.Content = content;
+			result.Click += (s, e) => execute();
+			result.Margin = new Thickness(ButtonMargin);
 			return result;
 		}
 

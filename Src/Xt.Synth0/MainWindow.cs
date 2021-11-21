@@ -9,10 +9,7 @@ using Xt.Synth0.UI;
 namespace Xt.Synth0
 {
 	class MainWindow : Window
-	{
-		static readonly DependencyPropertyKey ModelPropertyKey
-		= DependencyProperty.RegisterReadOnly("Model", typeof(SynthModel),
-			typeof(MainWindow), new PropertyMetadata(new SynthModel()));
+	{ 
 		static readonly DependencyProperty PathProperty
 		= DependencyProperty.Register("Path", typeof(string), typeof(MainWindow));
 		static readonly DependencyProperty IsDirtyProperty
@@ -37,8 +34,7 @@ namespace Xt.Synth0
 			set => SetValue(IsDirtyProperty, value);
 		}
 
-		public SynthModel Model
-		=> (SynthModel)GetValue(ModelPropertyKey.DependencyProperty);
+		readonly SynthModel _model = new SynthModel();
 
 		internal MainWindow()
 		{
@@ -46,7 +42,7 @@ namespace Xt.Synth0
 			Content = MakeContent();
 			ResizeMode = ResizeMode.NoResize;
 			SizeToContent = SizeToContent.WidthAndHeight;
-			Model.ParamChanged += (s, e) => IsDirty = true;
+			_model.ParamChanged += (s, e) => IsDirty = true;
 			BindCommand(ApplicationCommands.New, (s, e) => New());
 			BindCommand(ApplicationCommands.Open, (s, e) => Load());
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
@@ -61,7 +57,7 @@ namespace Xt.Synth0
 		void Save(string path)
 		{
 			if (path == null) return;
-			IO.Save(Model, path);
+			IO.Save(_model, path);
 			Path = path;
 			IsDirty = false;
 		}
@@ -71,7 +67,7 @@ namespace Xt.Synth0
 			if (!SaveUnsavedChanges()) return;
 			var path = LoadSaveUI.Load();
 			if (path == null) return;
-			IO.Load(path, Model);
+			IO.Load(path, _model);
 			Path = path;
 			IsDirty = false;
 		}
@@ -79,7 +75,7 @@ namespace Xt.Synth0
 		internal void New()
 		{
 			if (!SaveUnsavedChanges()) return;
-			new SynthModel().CopyTo(Model);
+			new SynthModel().CopyTo(_model);
 			Path = null;
 			IsDirty = false;
 		}
@@ -96,7 +92,10 @@ namespace Xt.Synth0
 			var menu = MenuUI.Make();
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
 			result.Children.Add(menu);
-			var synth = SynthUI.Make(Model);
+			var control = ControlUI.Make();
+			control.SetValue(DockPanel.DockProperty, Dock.Bottom);
+			result.Children.Add(control);
+			var synth = SynthUI.Make(_model);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			return result;
