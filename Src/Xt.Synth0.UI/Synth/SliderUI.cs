@@ -49,7 +49,7 @@ namespace Xt.Synth0.UI
 		static string Format(ParamInfo<int> info, int value)
 		=> info.Type switch
 		{
-			ParamType.Note => UI.Notes[value],
+			ParamType.Note => UI.NoteNames[value],
 			ParamType.Int => value.ToString(),
 			ParamType.Float => FormatFloat(info, value),
 			_ => throw new ArgumentException()

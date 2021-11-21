@@ -50,15 +50,15 @@ namespace Xt.Synth0
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
 			BindCommand(ApplicationCommands.SaveAs, (s, e) => SaveAs());
 
-			Model.Track.Notes[0].Amp.Value = 255;
-			Model.Track.Notes[0].Note.Value = 0;
-			Model.Track.Notes[0].Octave.Value = 3;
+			Model.Pattern.Rows[0].Amp.Value = 255;
+			Model.Pattern.Rows[0].Note.Value = 0;
+			Model.Pattern.Rows[0].Octave.Value = 3;
 
-			Model.Track.Notes[2].Note.Value = 12;
+			Model.Pattern.Rows[2].Note.Value = 12;
 
-			Model.Track.Notes[4].Amp.Value = 128;
-			Model.Track.Notes[4].Note.Value = 1;
-			Model.Track.Notes[4].Octave.Value = 4;
+			Model.Pattern.Rows[4].Amp.Value = 128;
+			Model.Pattern.Rows[4].Note.Value = 1;
+			Model.Pattern.Rows[4].Octave.Value = 4;
 		}
 
 		internal void SaveAs()

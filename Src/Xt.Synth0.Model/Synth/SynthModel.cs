@@ -10,11 +10,11 @@ namespace Xt.Synth0.Model
 		public UnitModel Unit1 { get; } = new();
 		public UnitModel Unit2 { get; } = new();
 		public UnitModel Unit3 { get; } = new();
-		public TrackModel Track { get; } = new();
+		public PatternModel Pattern { get; } = new();
 		public GlobalModel Global { get; } = new();
 
 		IGroupModel[] Groups() => new IGroupModel[] {
-			Global, Track, Unit1, Unit2, Unit3 };
+			Global, Pattern, Unit1, Unit2, Unit3 };
 
 		public SynthModel()
 		{

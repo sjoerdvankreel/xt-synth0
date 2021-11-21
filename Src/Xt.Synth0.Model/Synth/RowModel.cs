@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.Model
 {
-	public class NoteModel
+	public class RowModel
 	{
 		public const int NoNote = 13;
 		public const int NoteOff = 12;
@@ -15,7 +15,7 @@
 
 		internal Param<int>[] IntParams() => new[] { Amp, Note, Octave };
 
-		internal void CopyTo(NoteModel model)
+		internal void CopyTo(RowModel model)
 		{
 			model.Amp.Value = Amp.Value;
 			model.Note.Value = Note.Value;
