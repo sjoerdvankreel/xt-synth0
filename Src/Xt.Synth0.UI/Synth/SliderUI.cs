@@ -49,9 +49,19 @@ namespace Xt.Synth0.UI
 		static string Format(ParamInfo<int> info, int value)
 		=> info.Type switch
 		{
+			ParamType.Type => FormatType(value),
 			ParamType.Note => UI.NoteNames[value],
 			ParamType.Int => value.ToString(),
 			ParamType.Float => FormatFloat(info, value),
+			_ => throw new ArgumentException()
+		};
+
+		static string FormatType(int value) => value switch
+		{
+			TypeModel.Tri => nameof(TypeModel.Tri),
+			TypeModel.Saw => nameof(TypeModel.Saw),
+			TypeModel.Sine => nameof(TypeModel.Sine),
+			TypeModel.Pulse => nameof(TypeModel.Pulse),
 			_ => throw new ArgumentException()
 		};
 

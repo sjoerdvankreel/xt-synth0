@@ -5,6 +5,7 @@
 		Int,
 		Note,
 		Bool,
-		Float
+		Type,
+		Float,
 	}
 }

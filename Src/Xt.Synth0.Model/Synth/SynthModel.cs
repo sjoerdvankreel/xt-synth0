@@ -6,12 +6,14 @@ namespace Xt.Synth0.Model
 	public class SynthModel : Model<SynthModel>
 	{
 		public event EventHandler ParamChanged;
+		public const int CurrentVersion = 1;
 
 		public UnitModel Unit1 { get; } = new();
 		public UnitModel Unit2 { get; } = new();
 		public UnitModel Unit3 { get; } = new();
-		public PatternModel Pattern { get; } = new();
 		public GlobalModel Global { get; } = new();
+		public PatternModel Pattern { get; } = new();
+		public int Version { get; set; } = CurrentVersion;
 
 		IGroupModel[] Groups() => new IGroupModel[] {
 			Global, Pattern, Unit1, Unit2, Unit3 };
