@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Xt.Synth0.Model
@@ -7,9 +7,8 @@ namespace Xt.Synth0.Model
 	{
 		public const int Length = 32;
 
-		public ReadOnlyCollection<RowModel> Rows { get; }
-			= new ReadOnlyCollection<RowModel>(Enumerable
-				.Range(0, Length).Select(_ => new RowModel()).ToList());
+		public IList<RowModel> Rows { get; } = new List<RowModel>(
+			Enumerable.Range(0, Length).Select(_ => new RowModel()));
 
 		public PatternModel()
 		{

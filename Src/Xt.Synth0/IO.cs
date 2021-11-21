@@ -17,16 +17,19 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		internal static void Load(string path, SynthModel model)
-		{
-			var json = File.ReadAllText(path);
-			JsonConvert.PopulateObject(json, model, MakeSettings());
-		}
-
 		internal static void Save(SynthModel model, string path)
 		{
 			var json = JsonConvert.SerializeObject(model, MakeSettings());
 			File.WriteAllText(path, json);
+		}
+
+		internal static void Load(string path, SynthModel model)
+		{
+			var json = File.ReadAllText(path);
+			var newModel = new SynthModel();
+			newModel.Pattern.Rows.Clear();
+			JsonConvert.PopulateObject(json, newModel, MakeSettings());
+			newModel.CopyTo(model);
 		}
 
 		internal static void LogError(string error)
