@@ -69,7 +69,7 @@ namespace Xt.Synth0.UI
 		{
 			double min = info.Min;
 			double max = info.Max;
-			return ((value - min) / (max - min)).ToString("P1").PadLeft(6, '0');
+			return ((value - min) / (max - min)).ToString("P0").PadLeft(4, '0');
 		}
 
 		static UIElement MakeLabel(Param<int> param, int row)
