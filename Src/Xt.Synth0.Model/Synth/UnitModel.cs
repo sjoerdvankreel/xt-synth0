@@ -2,10 +2,10 @@
 {
 	public class UnitModel : GroupModel<UnitModel>
 	{
-		static readonly ParamInfo AttInfo = new(ParamType.Time, nameof(Att), 0, 255, 0);
-		static readonly ParamInfo SusInfo = new(ParamType.Time, nameof(Dec), 0, 255, 0);
-		static readonly ParamInfo RelInfo = new(ParamType.Time, nameof(Rel), 0, 255, 0);
-		static readonly ParamInfo DecInfo = new(ParamType.Percent, nameof(Sus), 0, 255, 255);
+		static readonly ParamInfo AInfo = new(ParamType.Time, nameof(A), 0, 255, 0);
+		static readonly ParamInfo DInfo = new(ParamType.Time, nameof(D), 0, 255, 0);
+		static readonly ParamInfo RInfo = new(ParamType.Time, nameof(R), 0, 255, 0);
+		static readonly ParamInfo SInfo = new(ParamType.Percent, nameof(S), 0, 255, 255);
 
 		static readonly ParamInfo OctInfo = new(ParamType.Int, nameof(Oct), 0, 12, 4);
 		static readonly ParamInfo CentInfo = new(ParamType.Int, nameof(Cent), -50, 49, 0);
@@ -15,23 +15,24 @@
 		static readonly ParamInfo OnInfo = new(nameof(On));
 		static readonly ParamInfo TypeInfo = new(ParamType.Type, nameof(Type), (int)UnitType.Sine, (int)UnitType.Tri, (int)UnitType.Sine);
 
+		public Param A { get; } = new(AInfo);
+		public Param D { get; } = new(DInfo);
+		public Param S { get; } = new(SInfo);
+		public Param R { get; } = new(RInfo);
 		public Param On { get; } = new(OnInfo);
 		public Param Amp { get; } = new(AmpInfo);
 		public Param Oct { get; } = new(OctInfo);
-		public Param Att { get; } = new(AttInfo);
-		public Param Dec { get; } = new(DecInfo);
-		public Param Rel { get; } = new(RelInfo);
-		public Param Sus { get; } = new(SusInfo);
 		public Param Note { get; } = new(NoteInfo);
 		public Param Cent { get; } = new(CentInfo);
 		public Param Type { get; } = new(TypeInfo);
 
 		public override Param[][] Params() => new[] {
-			new[] { On, Type },
-			new[] { Amp, Att },
-			new[] { Oct, Dec },
-			new[] { Note, Sus },
-			new[] { Cent, Rel },
+			new[] { On },
+			new[] { Type },
+			new[] { Amp, A },
+			new[] { Oct, D },
+			new[] { Note, S },
+			new[] { Cent, R },
 		};
 	}
 }

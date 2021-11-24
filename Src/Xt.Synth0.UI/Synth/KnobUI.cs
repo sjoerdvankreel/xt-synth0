@@ -9,42 +9,6 @@ namespace Xt.Synth0.UI
 	internal static class KnobUI
 	{
 		internal const int KnobSize = 16;
-		internal const int ValueWidth = 32;
-
-		static void ShowEditDialog(Param param)
-		{
-			var window = new Window();
-			window.Title = $"Edit {param.Info.Name}";
-			var wrap = new WrapPanel();
-			wrap.Margin = new(UI.Margin);
-			window.Content = wrap;
-			var block = new TextBlock();
-			block.Text = $"Value (min {param.Info.Min}, max {param.Info.Max}): ";
-			wrap.Children.Add(block);
-			var value = new TextBox();
-			value.Width = ValueWidth;
-			value.Text = param.Value.ToString();
-			value.TextAlignment = TextAlignment.Right;
-			wrap.Children.Add(value);
-			var ok = new Button();
-			ok.Content = "OK";
-			ok.Click += (s, e) => Edit(window, param, value.Text);
-			wrap.Children.Add(ok);
-			window.Content = wrap;
-			window.ResizeMode = ResizeMode.NoResize;
-			window.Owner = Application.Current.MainWindow;
-			window.SizeToContent = SizeToContent.WidthAndHeight;
-			window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-			window.ShowDialog();
-		}
-
-		static void Edit(Window window, Param param, string value)
-		{
-			if (!int.TryParse(value, out int newValue)) return;
-			if (newValue < param.Info.Min || newValue > param.Info.Max) return;
-			param.Value = newValue;
-			window.Close();
-		}
 
 		static UIElement MakeLabel(Param param, GridSettings settings)
 		{
@@ -70,7 +34,7 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.SetBinding(FrameworkElement.ToolTipProperty, Bind.To(param));
-			result.MouseRightButtonUp += (s, e) => ShowEditDialog(param);
+			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
 			return result;
 		}
 
