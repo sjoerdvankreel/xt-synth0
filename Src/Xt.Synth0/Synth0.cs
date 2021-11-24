@@ -15,15 +15,15 @@ namespace Xt.Synth0
 			StartTime = DateTime.Now;
 			var app = new Application();
 			var window = new MainWindow();
-			MenuUI.New += (s, e) => window.New();
-			MenuUI.Load += (s, e) => window.Load();
-			MenuUI.Save += (s, e) => window.Save();
-			MenuUI.SaveAs += (s, e) => window.SaveAs();
+			MenuUI.New = window.New;
+			MenuUI.Load = window.Load;
+			MenuUI.Save = window.Save;
+			MenuUI.SaveAs = window.SaveAs;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			app.Run(window);
 		}
 
-		static void OnDispatcherUnhandledException(object sender, 
+		static void OnDispatcherUnhandledException(object sender,
 			DispatcherUnhandledExceptionEventArgs e)
 		{
 			OnError(e.Exception.Message);
@@ -34,7 +34,7 @@ namespace Xt.Synth0
 		{
 			IO.LogError(message);
 			var window = Application.Current.MainWindow;
-			var showError = new Action(() => MessageBox.Show(window, message, 
+			var showError = new Action(() => MessageBox.Show(window, message,
 				"Error", MessageBoxButton.OK, MessageBoxImage.Error));
 			window.Dispatcher.BeginInvoke(showError);
 		}

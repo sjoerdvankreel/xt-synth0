@@ -7,10 +7,10 @@ namespace Xt.Synth0.UI
 {
 	public static class MenuUI
 	{
-		public static event EventHandler New;
-		public static event EventHandler Load;
-		public static event EventHandler Save;
-		public static event EventHandler SaveAs;
+		public static Action New;
+		public static Action Load;
+		public static Action Save;
+		public static Action SaveAs;
 
 		public static UIElement Make()
 		{
@@ -19,17 +19,31 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static MenuItem MakeItem(string header)
+		{
+			var result = new MenuItem();
+			result.Header = header;
+			return result;
+		}
+
+		static MenuItem MakeItem(ICommand command, string header, Action execute)
+		{
+			var result = MakeItem(header);
+			result.Command = command;
+			var binding = new CommandBinding();
+			binding.Command = command;
+			binding.Executed += (s, e) => execute();
+			result.CommandBindings.Add(binding);
+			return result;
+		}
+
 		static UIElement MakeFile()
 		{
-			var result = UI.MakeItem("_File");
-			var doNew = () => New(null, EventArgs.Empty);
-			result.Items.Add(UI.MakeItem(ApplicationCommands.New, "_New", doNew));
-			var doOpen = () => Load(null, EventArgs.Empty);
-			result.Items.Add(UI.MakeItem(ApplicationCommands.Open, "_Open", doOpen));
-			var doSave = () => Save(null, EventArgs.Empty);
-			result.Items.Add(UI.MakeItem(ApplicationCommands.Save, "_Save", doSave));
-			var doSaveAs = () => SaveAs(null, EventArgs.Empty);
-			result.Items.Add(UI.MakeItem(ApplicationCommands.SaveAs, "Save _As", doSaveAs));
+			var result = MakeItem("_File");
+			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", New));
+			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", Load));
+			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", Save));
+			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", SaveAs));
 			return result;
 		}
 	}

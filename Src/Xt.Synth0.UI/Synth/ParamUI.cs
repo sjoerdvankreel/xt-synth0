@@ -10,16 +10,22 @@ namespace Xt.Synth0.UI
 		internal static void Add(
 			Grid grid, Param param, Cell cell)
 		{
-			var editor = param.Info.Type != ParamType.Toggle
-				? MakeKnob(param, cell)
-				: MakeCheckbox(param, cell);
-			editor.MouseRightButtonUp += (s, e) => EditUI.Show(param);
-			grid.Children.Add(editor);
-			grid.Children.Add(MakeLabel(param, cell.Right(2)));
-			grid.Children.Add(UI.MakeLabel(param.Info.Name, cell.Right(1)));
+			grid.Children.Add(MakeName(param, cell.Right(1)));
+			grid.Children.Add(MakeValue(param, cell.Right(2)));
+			if (param.Info.Type != ParamType.Toggle)
+				grid.Children.Add(MakeKnob(param, cell));
+			else
+				grid.Children.Add(MakeCheckbox(param, cell));
 		}
 
-		static UIElement MakeLabel(Param param, Cell cell)
+		static UIElement MakeName(Param param, Cell cell)
+		{
+			var result = UI.MakeElement<Label>(cell);
+			result.Content = param.Info.Name;
+			return result;
+		}
+
+		static UIElement MakeValue(Param param, Cell cell)
 		{
 			var result = UI.MakeElement<Label>(cell);
 			var binding = Bind.To(param, v => $"{param.Info.Format(v)}");
@@ -30,6 +36,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeCheckbox(Param param, Cell cell)
 		{
 			var result = UI.MakeElement<CheckBox>(cell);
+			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
 			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			return result;
 		}
@@ -39,6 +46,7 @@ namespace Xt.Synth0.UI
 			var result = UI.MakeElement<Knob>(cell);
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
+			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.SetBinding(FrameworkElement.ToolTipProperty, Bind.To(param));
 			return result;
