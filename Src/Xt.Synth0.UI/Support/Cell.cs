@@ -9,5 +9,7 @@
 
 		internal Cell(int row, int col, int rowSpan = 1, int colSpan = 1)
 		=> (Row, Col, RowSpan, ColSpan) = (row, col, rowSpan, colSpan);
+		internal Cell Down(int n) => new(Row + n, Col, RowSpan, ColSpan);
+		internal Cell Right(int n) => new(Row, Col + n, RowSpan, ColSpan);
 	}
 }

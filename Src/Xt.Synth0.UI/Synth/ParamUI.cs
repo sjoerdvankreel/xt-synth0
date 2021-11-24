@@ -17,8 +17,8 @@ namespace Xt.Synth0.UI
 				: MakeCheckbox(param, cell);
 			editor.MouseRightButtonUp += (s, e) => EditUI.Show(param);
 			grid.Children.Add(editor);
-			grid.Children.Add(MakeLabel(param, new(cell.Row, cell.Col + 2)));
-			grid.Children.Add(UI.MakeLabel(param.Info.Name, new(cell.Row, cell.Col + 1)));
+			grid.Children.Add(MakeLabel(param, cell.Right(2)));
+			grid.Children.Add(UI.MakeLabel(param.Info.Name, cell.Right(1)));
 		}
 
 		static UIElement MakeLabel(Param param, Cell cell)
