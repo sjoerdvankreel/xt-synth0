@@ -27,7 +27,7 @@ namespace Xt.Synth0.Model
 			ParamType.Note => NoteNames[value],
 			ParamType.Toggle => value == 0 ? "Off" : "On",
 			ParamType.Type => ((UnitType)value).ToString(),
-			ParamType.Percent => (((double)value - Min) / (Max - Min)).ToString("P0"),
+			ParamType.Percent => ((int)(100.0 * (value - Min) / (Max - Min))).ToString(),
 			_ => throw new InvalidOperationException()
 		};
 	}
