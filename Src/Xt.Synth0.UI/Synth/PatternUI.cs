@@ -66,9 +66,9 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static UIElement Make(PatternModel model, string name, int offset,
-			int count, GridSettings settings)
+			int count, Cell cell)
 		{
-			var result = UI.MakeElement<GroupBox>(settings);
+			var result = UI.MakeElement<GroupBox>(cell);
 			result.Header = name;
 			result.Content = MakeContent(model, offset, count);
 			return result;
@@ -168,9 +168,9 @@ namespace Xt.Synth0.UI
 			FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static FrameworkElement MakeCell(GridSettings settings, int chars, int leftMargin, int rightMargin)
+		static FrameworkElement MakeCell(Cell cell, int chars, int leftMargin, int rightMargin)
 		{
-			var result = UI.MakeElement<TextBlock>(settings);
+			var result = UI.MakeElement<TextBlock>(cell);
 			result.Margin = new(leftMargin, CellMargin, rightMargin, CellMargin);
 			result.Focusable = true;
 			result.FontFamily = Font;

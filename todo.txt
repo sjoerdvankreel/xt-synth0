@@ -7,3 +7,4 @@ save device selection
 replace all font/size, width, height, margin, padding by style
 merge group/toiggleui
 check textalign
+onoff control

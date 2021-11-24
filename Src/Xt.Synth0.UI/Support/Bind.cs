@@ -23,7 +23,8 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		public static MultiBinding Of(Func<object[], string> format, params Binding[] bindings)
+		public static MultiBinding Of(
+			Func<object[], string> format, params Binding[] bindings)
 		{
 			var result = new MultiBinding();
 			foreach (var binding in bindings)

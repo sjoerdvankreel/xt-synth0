@@ -10,10 +10,12 @@
 		static readonly ParamInfo OctInfo = new(ParamType.Int, nameof(Oct), 0, 12, 4);
 		static readonly ParamInfo CentInfo = new(ParamType.Int, nameof(Cent), -50, 49, 0);
 		static readonly ParamInfo AmpInfo = new(ParamType.Percent, nameof(Amp), 0, 255, 255);
-		static readonly ParamInfo NoteInfo = new(ParamType.Note, nameof(Note), (int)NoteType.C, (int)NoteType.B, (int)NoteType.C);
+		static readonly ParamInfo NoteInfo = new(ParamType.Note, nameof(Note), 
+			(int)NoteType.C, (int)NoteType.B, (int)NoteType.C);
 
 		static readonly ParamInfo OnInfo = new(nameof(On));
-		static readonly ParamInfo TypeInfo = new(ParamType.Type, nameof(Type), (int)UnitType.Sine, (int)UnitType.Tri, (int)UnitType.Sine);
+		static readonly ParamInfo TypeInfo = new(ParamType.Type, nameof(Type), 
+			(int)UnitType.Sine, (int)UnitType.Tri, (int)UnitType.Sine);
 
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);

@@ -8,9 +8,9 @@ namespace Xt.Synth0.UI
 	internal static class GroupUI
 	{
 		internal static UIElement Make(
-			IGroupModel model, string name, GridSettings settings)
+			IGroupModel model, string name, Cell cell)
 		{
-			var result = UI.MakeElement<GroupBox>(settings);
+			var result = UI.MakeElement<GroupBox>(cell);
 			result.Header = name;
 			result.Content = MakeContent(model);
 			return result;
@@ -23,10 +23,7 @@ namespace Xt.Synth0.UI
 			var result = UI.MakeGrid(rows.Length, cols * 3);
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)
-					if (model.Params()[r][c].Info.Type != ParamType.Toggle)
-						KnobUI.Add(result, rows[r][c], new(r, c * 3));
-					else
-						ToggleUI.Add(result, rows[r][c], new(r, c * 3));
+					ParamUI.Add(result, rows[r][c], new(r, c * 3));
 			return result;
 		}
 	}

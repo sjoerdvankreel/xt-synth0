@@ -43,14 +43,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static T MakeElement<T>(GridSettings settings)
+		internal static T MakeElement<T>(Cell cell)
 			where T : UIElement, new()
 		{
 			var result = new T();
-			result.SetValue(Grid.RowProperty, settings.Row);
-			result.SetValue(Grid.ColumnProperty, settings.Col);
-			result.SetValue(Grid.RowSpanProperty, settings.RowSpan);
-			result.SetValue(Grid.ColumnSpanProperty, settings.ColSpan);
+			result.SetValue(Grid.RowProperty, cell.Row);
+			result.SetValue(Grid.ColumnProperty, cell.Col);
+			result.SetValue(Grid.RowSpanProperty, cell.RowSpan);
+			result.SetValue(Grid.ColumnSpanProperty, cell.ColSpan);
 			return result;
 		}
 
@@ -63,9 +63,9 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static UIElement MakeLabel(string content, GridSettings settings)
+		internal static UIElement MakeLabel(string content, Cell cell)
 		{
-			var result = MakeElement<Label>(settings);
+			var result = MakeElement<Label>(cell);
 			result.Content = content;
 			result.VerticalContentAlignment = VerticalAlignment.Top;
 			return result;
