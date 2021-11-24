@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Xt.Synth0.UI
 {
 	public class Knob : RangeBase
 	{
+		const int Sensitivity = 100;
 		const double MinAngle = 0.05;
 		const double MaxAngle = 0.95;
 		const double DefaultMarkerSize = 6.0;
@@ -61,6 +63,30 @@ namespace Xt.Synth0.UI
 			knob.EffectiveSize = Math.Min(knob.ActualWidth, knob.ActualHeight);
 		}
 
+		static void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+		{
+			var knob = (Knob)sender;
+			knob._previous = null;
+		}
+
+		static void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			var knob = (Knob)sender;
+			var window = Application.Current.MainWindow;
+			knob._previous = window.PointToScreen(e.GetPosition(window));
+		}
+
+		static void OnPreviewMouseMove(object sender, MouseEventArgs e)
+		{
+			var knob = (Knob)sender;
+			if (knob._previous == null) return;
+			var window = Application.Current.MainWindow;
+			var point = window.PointToScreen(e.GetPosition(window));
+			var offset = knob._previous.Value.Y - point.Y;
+			if (Math.Abs(offset) > 10) ;
+
+		}
+
 		static void OnMarkerPositionChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
 		{
 			var knob = (Knob)obj;
@@ -83,7 +109,12 @@ namespace Xt.Synth0.UI
 			MinimumProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(OnMarkerPositionChanged));
 			MaximumProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(OnMarkerPositionChanged));
 			EventManager.RegisterClassHandler(typeof(Knob), SizeChangedEvent, new RoutedEventHandler(OnSizeChanged), true);
+			EventManager.RegisterClassHandler(typeof(Knob), PreviewMouseMoveEvent, new MouseEventHandler(OnPreviewMouseMove), true);
+			EventManager.RegisterClassHandler(typeof(Knob), PreviewMouseUpEvent, new MouseButtonEventHandler(OnPreviewMouseUp), true);
+			EventManager.RegisterClassHandler(typeof(Knob), PreviewMouseDownEvent, new MouseButtonEventHandler(OnPreviewMouseDown), true);
 		}
+
+		Point? _previous;
 
 		public double MarkerSize
 		{
