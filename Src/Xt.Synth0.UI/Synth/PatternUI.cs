@@ -66,9 +66,9 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static UIElement Make(PatternModel model, string name, int offset,
-			int count, int row, int column, int rowSpan = 1, int columnSpan = 1)
+			int count, GridSettings settings)
 		{
-			var result = UI.MakeElement<GroupBox>(row, column, rowSpan, columnSpan);
+			var result = UI.MakeElement<GroupBox>(settings);
 			result.Header = name;
 			result.Content = MakeContent(model, offset, count);
 			return result;
@@ -92,7 +92,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeNote(Param note, int row)
 		{
-			var result = MakeCell(row, 0, 2, CellMargin, CellMargin);
+			var result = MakeCell(new(row, 0), 2, CellMargin, CellMargin);
 			var binding = Bind.To(note, FormatNote);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(note, e);
@@ -110,7 +110,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeOct(Param note, Param oct, int row)
 		{
-			var result = MakeCell(row, 1, 1, CellMargin, CellMargin);
+			var result = MakeCell(new(row, 1), 1, CellMargin, CellMargin);
 			var noteBinding = Bind.To(note);
 			var octBinding = Bind.To(oct);
 			var binding = Bind.Of(FormatOct, noteBinding, octBinding);
@@ -130,7 +130,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp0(Param note, Param amp, int row)
 		{
-			var result = MakeCell(row, 2, 1, CellMargin, 0);
+			var result = MakeCell(new(row, 2), 1, CellMargin, 0);
 			var ampBinding = Bind.To(amp);
 			var noteBinding = Bind.To(note);
 			var binding = Bind.Of(FormatAmp0, noteBinding, ampBinding);
@@ -150,7 +150,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp1(Param note, Param amp, int row)
 		{
-			var result = MakeCell(row, 3, 1, 0, CellMargin);
+			var result = MakeCell(new(row, 3), 1, 0, CellMargin);
 			var ampBinding = Bind.To(amp);
 			var noteBinding = Bind.To(note);
 			var binding = Bind.Of(FormatAmp1, noteBinding, ampBinding);
@@ -168,9 +168,9 @@ namespace Xt.Synth0.UI
 			FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static FrameworkElement MakeCell(int row, int column, int chars, int leftMargin, int rightMargin)
+		static FrameworkElement MakeCell(GridSettings settings, int chars, int leftMargin, int rightMargin)
 		{
-			var result = UI.MakeElement<TextBlock>(row, column);
+			var result = UI.MakeElement<TextBlock>(settings);
 			result.Margin = new Thickness(leftMargin, CellMargin, rightMargin, CellMargin);
 			result.Focusable = true;
 			result.FontFamily = Font;

@@ -13,3 +13,5 @@ formatting in model
 column=>col
 replace all font/size, width, height, margin, padding by style
 row/col/span/span=>gridpos
+merge group/toiggleui
+check target-typed new

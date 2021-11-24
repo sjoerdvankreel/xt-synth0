@@ -10,12 +10,12 @@ namespace Xt.Synth0.UI
 			var result = UI.MakeGrid(4, 3);
 			int halfLength = PatternModel.Length / 2;
 			result.Margin = new Thickness(UI.Margin);
-			result.Children.Add(GroupUI.Make(model.Unit1, nameof(model.Unit1), 0, 0));
-			result.Children.Add(GroupUI.Make(model.Unit2, nameof(model.Unit2), 1, 0));
-			result.Children.Add(GroupUI.Make(model.Unit3, nameof(model.Unit3), 2, 0));
-			result.Children.Add(GroupUI.Make(model.Global, nameof(model.Global), 3, 0));
-			result.Children.Add(PatternUI.Make(model.Pattern, "Pattern1", 0, halfLength, 0, 1, 4));
-			result.Children.Add(PatternUI.Make(model.Pattern, "Pattern2", halfLength, halfLength, 0, 2, 4));
+			result.Children.Add(GroupUI.Make(model.Unit1, "Unit1", new(0, 0)));
+			result.Children.Add(GroupUI.Make(model.Unit2, "Unit2", new(1, 0)));
+			result.Children.Add(GroupUI.Make(model.Unit3, "Unit3", new(2, 0)));
+			result.Children.Add(GroupUI.Make(model.Global, "Global", new(3, 0)));
+			result.Children.Add(PatternUI.Make(model.Pattern, "Pattern1", 0, halfLength, new(0, 1, 4)));
+			result.Children.Add(PatternUI.Make(model.Pattern, "Pattern2", halfLength, halfLength, new(0, 2, 4)));
 			return result;
 		}
 	}

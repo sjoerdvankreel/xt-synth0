@@ -46,18 +46,18 @@ namespace Xt.Synth0.UI
 			window.Close();
 		}
 
-		static UIElement MakeLabel(Param param, int row, int column)
+		static UIElement MakeLabel(Param param, GridSettings settings)
 		{
-			var result = UI.MakeElement<Label>(row, column);
+			var result = UI.MakeElement<Label>(settings);
 			var binding = Bind.To(param, v => $"{param.Info.Format(v)}");
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			result.VerticalContentAlignment = VerticalAlignment.Top;
 			return result;
 		}
 
-		static UIElement MakeKnob(Param param, int row, int column)
+		static UIElement MakeKnob(Param param, GridSettings settings)
 		{
-			var result = UI.MakeElement<Knob>(row, column);
+			var result = UI.MakeElement<Knob>(settings);
 			result.Width = KnobSize;
 			result.Height = KnobSize;
 			result.Minimum = param.Info.Min;
@@ -74,11 +74,11 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static void Add(Grid grid, Param param, int row, int column)
+		internal static void Add(Grid grid, Param param, GridSettings settings)
 		{
-			grid.Children.Add(MakeKnob(param, row, column + 2));
-			grid.Children.Add(MakeLabel(param, row, column + 1));
-			grid.Children.Add(UI.MakeLabel(param.Info.Name, row, column));
+			grid.Children.Add(UI.MakeLabel(param.Info.Name, settings));
+			grid.Children.Add(MakeKnob(param, new(settings.Row, settings.Col + 2)));
+			grid.Children.Add(MakeLabel(param, new(settings.Row, settings.Col + 1)));
 		}
 	}
 }

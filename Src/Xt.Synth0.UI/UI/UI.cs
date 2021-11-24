@@ -10,7 +10,7 @@ namespace Xt.Synth0.UI
 		internal const int Margin = 5;
 		internal const int ButtonMargin = 2;
 
-		
+
 
 		static RowDefinition MakeRow()
 		{
@@ -43,15 +43,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static T MakeElement<T>(
-			int row, int column, int rowSpan = 1, int columnSpan = 1)
+		internal static T MakeElement<T>(GridSettings settings)
 			where T : UIElement, new()
 		{
 			var result = new T();
-			result.SetValue(Grid.RowProperty, row);
-			result.SetValue(Grid.ColumnProperty, column);
-			result.SetValue(Grid.RowSpanProperty, rowSpan);
-			result.SetValue(Grid.ColumnSpanProperty, columnSpan);
+			result.SetValue(Grid.RowProperty, settings.Row);
+			result.SetValue(Grid.ColumnProperty, settings.Col);
+			result.SetValue(Grid.RowSpanProperty, settings.RowSpan);
+			result.SetValue(Grid.ColumnSpanProperty, settings.ColSpan);
 			return result;
 		}
 
@@ -64,9 +63,9 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static UIElement MakeLabel(string content, int row, int column)
+		internal static UIElement MakeLabel(string content, GridSettings settings)
 		{
-			var result = MakeElement<Label>(row, column);
+			var result = MakeElement<Label>(settings);
 			result.Content = content;
 			result.VerticalContentAlignment = VerticalAlignment.Top;
 			return result;
