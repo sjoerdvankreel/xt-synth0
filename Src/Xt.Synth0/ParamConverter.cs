@@ -11,7 +11,7 @@ namespace Xt.Synth0
 
 		public override Param ReadJson(JsonReader r, Type t, Param v, bool h, JsonSerializer s)
 		{
-			v.Value = (int)r.Value;
+			v.Value = (int)Convert.ChangeType(r.Value, typeof(int));
 			return v;
 		}
 	}
