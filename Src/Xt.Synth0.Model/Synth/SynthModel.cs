@@ -19,6 +19,12 @@ namespace Xt.Synth0.Model
 		IGroupModel[] Groups() => new IGroupModel[] {
 			Global, Pattern, Unit1, Unit2, Unit3 };
 
+		public override void CopyTo(SynthModel model)
+		{
+			for (int i = 0; i < Groups().Length; i++)
+				Groups()[i].CopyTo(model.Groups()[i]);
+		}
+
 		public SynthModel()
 		{
 			PropertyChangedEventHandler handler;
@@ -26,12 +32,6 @@ namespace Xt.Synth0.Model
 			foreach (var group in Groups())
 				foreach (var param in group.Params().SelectMany(p => p))
 					param.PropertyChanged += handler;
-		}
-
-		public override void CopyTo(SynthModel model)
-		{
-			for (int i = 0; i < Groups().Length; i++)
-				Groups()[i].CopyTo(model.Groups()[i]);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -11,31 +12,18 @@ namespace Xt.Synth0.UI
 {
 	internal static class PatternUI
 	{
+		static readonly List<Key> NoteKeys = new()
+		{
+			Key.Q, Key.D2, Key.W, Key.D3, Key.E, Key.R,
+			Key.D5, Key.T, Key.D6, Key.Y, Key.D7, Key.U
+		};
+
 		const int CellMargin = 2;
 		static readonly FontFamily Font = new FontFamily("Consolas");
 		static readonly double CellWidth = new FormattedText("C",
 			CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
 			Font.GetTypefaces().First(), new TextBlock().FontSize,
 			Brushes.Black, VisualTreeHelper.GetDpi(new TextBlock()).PixelsPerDip).Width;
-
-		static int KeyToNote(Key key) => key switch
-		{
-			Key.Q => NoteModel.C,
-			Key.D2 => NoteModel.CSharp,
-			Key.W => NoteModel.D,
-			Key.D3 => NoteModel.DSharp,
-			Key.E => NoteModel.E,
-			Key.R => NoteModel.F,
-			Key.D5 => NoteModel.FSharp,
-			Key.T => NoteModel.G,
-			Key.D6 => NoteModel.GSharp,
-			Key.Y => NoteModel.A,
-			Key.D7 => NoteModel.ASharp,
-			Key.U => NoteModel.B,
-			Key.Space => RowModel.NoteOff,
-			Key.OemPeriod => RowModel.NoNote,
-			_ => -1
-		};
 
 		static string FormatOct(object[] args)
 		=> Format(args, o => o.ToString());
@@ -47,17 +35,26 @@ namespace Xt.Synth0.UI
 		=> int.TryParse(text.FirstOrDefault().ToString(), NumberStyles.HexNumber,
 			CultureInfo.CurrentCulture, out int val) ? val : -1;
 
+		static int KeyToNote(Key key)
+		{
+			var index = NoteKeys.IndexOf(key);
+			if (index >= 0) return index;
+			if (key == Key.Space) return RowModel.NoteOff;
+			if (key == Key.OemPeriod) return RowModel.NoNote;
+			return -1;
+		}
+
 		static string FormatNote(int note) => note switch
 		{
 			RowModel.NoNote => ".",
 			RowModel.NoteOff => "==",
-			_ => UI.NoteNames[note]
+			_ => ParamInfo.NoteNames[note]
 		};
 
 		static string Format(object[] args, Func<int, string> display)
 		{
 			int note = (int)args[0];
-			if (note < NoteModel.NoteCount)
+			if (note < (int)NoteType.Count)
 				return display((int)args[1]);
 			return note == RowModel.NoteOff ? "=" : ".";
 		}
@@ -108,7 +105,7 @@ namespace Xt.Synth0.UI
 			if (note == -1) return;
 			param.Value = note;
 			e.Handled = true;
-			FocusNext(note < NoteModel.NoteCount ? FocusNavigationDirection.Next : FocusNavigationDirection.Down);
+			FocusNext(note < (int)NoteType.Count ? FocusNavigationDirection.Next : FocusNavigationDirection.Down);
 		}
 
 		static UIElement MakeOct(Param note, Param oct, int row)

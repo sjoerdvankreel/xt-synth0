@@ -10,10 +10,7 @@ namespace Xt.Synth0.UI
 		internal const int Margin = 5;
 		internal const int ButtonMargin = 2;
 
-		internal static readonly string[] NoteNames = new[] {
-			"C", "C#", "D", "D#", "E", "F",
-			"F#", "G", "G#", "A", "A#", "B"
-		};
+		
 
 		static RowDefinition MakeRow()
 		{

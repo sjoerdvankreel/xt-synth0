@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -47,37 +46,10 @@ namespace Xt.Synth0.UI
 			window.Close();
 		}
 
-		static string Format(ParamInfo info, int value)
-		=> info.Type switch
-		{
-			ParamType.Int => value.ToString(),
-			ParamType.Type => FormatType(value),
-			ParamType.Note => UI.NoteNames[value],
-			ParamType.Float => FormatFloat(info, value),
-			ParamType.Time => value.ToString(),
-			_ => throw new ArgumentException()
-		};
-
-		static string FormatType(int value) => value switch
-		{
-			TypeModel.Tri => nameof(TypeModel.Tri),
-			TypeModel.Saw => nameof(TypeModel.Saw),
-			TypeModel.Sine => nameof(TypeModel.Sine),
-			TypeModel.Pulse => nameof(TypeModel.Pulse),
-			_ => throw new ArgumentException()
-		};
-
-		static string FormatFloat(ParamInfo info, int value)
-		{
-			double min = info.Min;
-			double max = info.Max;
-			return ((value - min) / (max - min)).ToString("P0").PadLeft(4, '0');
-		}
-
 		static UIElement MakeLabel(Param param, int row, int column)
 		{
 			var result = UI.MakeElement<Label>(row, column);
-			var binding = Bind.To(param, v => $"{Format(param.Info, v)}");
+			var binding = Bind.To(param, v => $"{param.Info.Format(v)}");
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			result.VerticalContentAlignment = VerticalAlignment.Top;
 			return result;

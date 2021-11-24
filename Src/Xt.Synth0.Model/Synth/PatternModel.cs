@@ -10,7 +10,7 @@ namespace Xt.Synth0.Model
 		public PatternModel()
 		{
 			for (int i = 0; i < Length; i += 4)
-				Rows[i].Note.Value = NoteModel.C;
+				Rows[i].Note.Value = (int)NoteType.C;
 		}
 
 		public IList<RowModel> Rows { get; } = new List<RowModel>(
