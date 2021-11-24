@@ -19,7 +19,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static ColumnDefinition MakeColumn()
+		static ColumnDefinition MakeCol()
 		{
 			var result = new ColumnDefinition();
 			result.Width = GridLength.Auto;
@@ -33,13 +33,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Grid MakeGrid(int rows, int columns)
+		internal static Grid MakeGrid(int rows, int cols)
 		{
 			var result = new Grid();
 			for (int r = 0; r < rows; r++)
 				result.RowDefinitions.Add(MakeRow());
-			for (int c = 0; c < columns; c++)
-				result.ColumnDefinitions.Add(MakeColumn());
+			for (int c = 0; c < cols; c++)
+				result.ColumnDefinitions.Add(MakeCol());
 			return result;
 		}
 
