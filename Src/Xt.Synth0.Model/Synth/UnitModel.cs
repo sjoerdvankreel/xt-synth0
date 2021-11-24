@@ -15,7 +15,7 @@
 
 		static readonly ParamInfo OnInfo = new(nameof(On));
 		static readonly ParamInfo TypeInfo = new(ParamType.Type, nameof(Type), 
-			(int)UnitType.Sine, (int)UnitType.Tri, (int)UnitType.Sine);
+			(int)UnitType.Sin, (int)UnitType.Tri, (int)UnitType.Sin);
 
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);
