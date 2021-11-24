@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 		internal const int KnobSize = 16;
 		internal const int ValueWidth = 32;
 
-		static void ShowEditDialog(Param<int> param)
+		static void ShowEditDialog(Param param)
 		{
 			var window = new Window();
 			window.Title = $"Edit {param.Info.Name}";
@@ -39,7 +39,7 @@ namespace Xt.Synth0.UI
 			window.ShowDialog();
 		}
 
-		static void Edit(Window window, Param<int> param, string value)
+		static void Edit(Window window, Param param, string value)
 		{
 			if (!int.TryParse(value, out int newValue)) return;
 			if (newValue < param.Info.Min || newValue > param.Info.Max) return;
@@ -47,12 +47,12 @@ namespace Xt.Synth0.UI
 			window.Close();
 		}
 
-		static string Format(ParamInfo<int> info, int value)
+		static string Format(ParamInfo info, int value)
 		=> info.Type switch
 		{
+			ParamType.Int => value.ToString(),
 			ParamType.Type => FormatType(value),
 			ParamType.Note => UI.NoteNames[value],
-			ParamType.Int => value.ToString(),
 			ParamType.Float => FormatFloat(info, value),
 			_ => throw new ArgumentException()
 		};
@@ -66,14 +66,14 @@ namespace Xt.Synth0.UI
 			_ => throw new ArgumentException()
 		};
 
-		static string FormatFloat(ParamInfo<int> info, int value)
+		static string FormatFloat(ParamInfo info, int value)
 		{
 			double min = info.Min;
 			double max = info.Max;
 			return ((value - min) / (max - min)).ToString("P0").PadLeft(4, '0');
 		}
 
-		static UIElement MakeLabel(Param<int> param, int row)
+		static UIElement MakeLabel(Param param, int row)
 		{
 			var result = UI.MakeElement<Label>(row, 1);
 			var binding = Bind.To(param, v => $"{Format(param.Info, v)}");
@@ -82,7 +82,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeKnob(Param<int> param, int row)
+		static UIElement MakeKnob(Param param, int row)
 		{
 			var result = UI.MakeElement<Knob>(row, 2);
 			result.Width = KnobSize;
@@ -101,7 +101,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static void Add(Grid grid, Param<int> param, int row)
+		internal static void Add(Grid grid, Param param, int row)
 		{
 			grid.Children.Add(MakeKnob(param, row));
 			grid.Children.Add(MakeLabel(param, row));

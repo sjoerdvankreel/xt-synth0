@@ -4,8 +4,8 @@
 	{
 		Int,
 		Note,
-		Bool,
 		Type,
 		Float,
+		Toggle
 	}
 }

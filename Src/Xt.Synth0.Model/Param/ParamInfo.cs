@@ -1,20 +1,16 @@
 ﻿namespace Xt.Synth0.Model
 {
-	internal static class ParamInfo
+	public class ParamInfo
 	{
-		internal static ParamInfo<bool> Of(string name, bool default_)
-		=> new(ParamType.Bool, name, false, true, default_);
-	}
-
-	public class ParamInfo<T>
-	{
-		public T Min { get; }
-		public T Max { get; }
-		public T Default { get; }
+		public int Min { get; }
+		public int Max { get; }
+		public int Default { get; }
 		public string Name { get; }
 		public ParamType Type { get; }
 
-		internal ParamInfo(ParamType type, string name, T min, T max, T default_)
-		=> (Type, Name, Min, Max, Default) = (type, name, min, max, default_);
+		internal ParamInfo(string name)
+		=> (Type, Name, Min, Max, Default) = (ParamType.Toggle, name, 0, 1, 0);
+		internal ParamInfo(ParamType type, string name, int min, int max, int @default)
+		=> (Type, Name, Min, Max, Default) = (type, name, min, max, @default);
 	}
 }

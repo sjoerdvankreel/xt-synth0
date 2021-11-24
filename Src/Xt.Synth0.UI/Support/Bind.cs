@@ -6,7 +6,7 @@ namespace Xt.Synth0.UI
 {
 	public static class Bind
 	{
-		internal static Binding To<T>(Param<T> param)
+		internal static Binding To(Param param)
 		=> To(param, nameof(param.Value));
 
 		public static Binding To(object source, string path)
@@ -16,10 +16,10 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Binding To<T, U>(Param<T> param, Func<T, U> convert)
+		internal static Binding To<T>(Param param, Func<int, T> convert)
 		{
 			var result = To(param);
-			result.Converter = new Converter<T, U>(convert);
+			result.Converter = new Converter<int, T>(convert);
 			return result;
 		}
 

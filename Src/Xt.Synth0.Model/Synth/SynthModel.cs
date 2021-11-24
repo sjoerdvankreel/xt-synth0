@@ -5,8 +5,8 @@ namespace Xt.Synth0.Model
 {
 	public class SynthModel : Model<SynthModel>
 	{
-		public event EventHandler ParamChanged;
 		public const int CurrentVersion = 1;
+		public event EventHandler ParamChanged;
 
 		public UnitModel Unit1 { get; } = new();
 		public UnitModel Unit2 { get; } = new();

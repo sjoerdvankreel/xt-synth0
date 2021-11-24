@@ -93,7 +93,7 @@ namespace Xt.Synth0.UI
 			grid.Children.Add(MakeAmp1(model.Note, model.Amp, row));
 		}
 
-		static UIElement MakeNote(Param<int> note, int row)
+		static UIElement MakeNote(Param note, int row)
 		{
 			var result = MakeCell(row, 0, 2, CellMargin, CellMargin);
 			var binding = Bind.To(note, FormatNote);
@@ -102,7 +102,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void OnNoteKeyDown(Param<int> param, KeyEventArgs e)
+		static void OnNoteKeyDown(Param param, KeyEventArgs e)
 		{
 			int note = KeyToNote(e.Key);
 			if (note == -1) return;
@@ -111,7 +111,7 @@ namespace Xt.Synth0.UI
 			FocusNext(note < NoteModel.NoteCount ? FocusNavigationDirection.Next : FocusNavigationDirection.Down);
 		}
 
-		static UIElement MakeOct(Param<int> note, Param<int> oct, int row)
+		static UIElement MakeOct(Param note, Param oct, int row)
 		{
 			var result = MakeCell(row, 1, 1, CellMargin, CellMargin);
 			var noteBinding = Bind.To(note);
@@ -122,7 +122,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void OnOctTextInput(Param<int> param, TextCompositionEventArgs e)
+		static void OnOctTextInput(Param param, TextCompositionEventArgs e)
 		{
 			var oct = e.Text.FirstOrDefault();
 			if (oct < '0' || oct > '9') return;
@@ -131,7 +131,7 @@ namespace Xt.Synth0.UI
 			FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static UIElement MakeAmp0(Param<int> note, Param<int> amp, int row)
+		static UIElement MakeAmp0(Param note, Param amp, int row)
 		{
 			var result = MakeCell(row, 2, 1, CellMargin, 0);
 			var ampBinding = Bind.To(amp);
@@ -142,7 +142,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void OnAmp0TextInput(Param<int> param, TextCompositionEventArgs e)
+		static void OnAmp0TextInput(Param param, TextCompositionEventArgs e)
 		{
 			var val = ParseAmp(e.Text);
 			if (val == -1) return;
@@ -151,7 +151,7 @@ namespace Xt.Synth0.UI
 			FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static UIElement MakeAmp1(Param<int> note, Param<int> amp, int row)
+		static UIElement MakeAmp1(Param note, Param amp, int row)
 		{
 			var result = MakeCell(row, 3, 1, 0, CellMargin);
 			var ampBinding = Bind.To(amp);
@@ -162,7 +162,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void OnAmp1TextInput(Param<int> param, TextCompositionEventArgs e)
+		static void OnAmp1TextInput(Param param, TextCompositionEventArgs e)
 		{
 			var val = ParseAmp(e.Text);
 			if (val == -1) return;

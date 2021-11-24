@@ -7,3 +7,5 @@ track automation params
 device selection
 adsr
 remove minmax in knobui
+use enums
+save device selection

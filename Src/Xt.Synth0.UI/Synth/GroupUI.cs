@@ -8,17 +8,17 @@ namespace Xt.Synth0.UI
 	{
 		static UIElement MakeContent(IGroupModel model)
 		{
-			var ints = model.IntParams();
-			var bools = model.BoolParams();
-			var result = UI.MakeGrid(ints.Length + bools.Length, 3);
-			for (int r = 0; r < bools.Length; r++)
-				ToggleUI.Add(result, bools[r], r);
-			for (int r = 0; r < ints.Length; r++)
-				KnobUI.Add(result, ints[r], bools.Length + r);
+			var @params = model.Params();
+			var result = UI.MakeGrid(model.Params().Length, 3);
+			for (int r = 0; r < @params.Length; r++)
+				if (@params[r].Info.Type == ParamType.Toggle)
+					ToggleUI.Add(result, @params[r], r);
+				else
+					KnobUI.Add(result, @params[r], r);
 			return result;
 		}
 
-		internal static UIElement Make(IGroupModel model, string name, 
+		internal static UIElement Make(IGroupModel model, string name,
 			int row, int column, int rowSpan = 1, int columnSpan = 1)
 		{
 			var result = UI.MakeElement<GroupBox>(row, column, rowSpan, columnSpan);
