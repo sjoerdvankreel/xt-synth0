@@ -4,4 +4,3 @@ chords
 theme
 track automation params
 save device selection
-onoff control
