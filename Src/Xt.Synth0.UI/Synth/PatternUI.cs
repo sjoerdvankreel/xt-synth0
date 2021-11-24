@@ -19,7 +19,7 @@ namespace Xt.Synth0.UI
 		};
 
 		const int CellMargin = 2;
-		static readonly FontFamily Font = new FontFamily("Consolas");
+		static readonly FontFamily Font = new("Consolas");
 		static readonly double CellWidth = new FormattedText("C",
 			CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
 			Font.GetTypefaces().First(), new TextBlock().FontSize,
@@ -62,7 +62,7 @@ namespace Xt.Synth0.UI
 		static void FocusNext(FocusNavigationDirection direction)
 		{
 			if (Keyboard.FocusedElement is UIElement e)
-				e.MoveFocus(new TraversalRequest(direction));
+				e.MoveFocus(new(direction));
 		}
 
 		internal static UIElement Make(PatternModel model, string name, int offset,
@@ -171,7 +171,7 @@ namespace Xt.Synth0.UI
 		static FrameworkElement MakeCell(GridSettings settings, int chars, int leftMargin, int rightMargin)
 		{
 			var result = UI.MakeElement<TextBlock>(settings);
-			result.Margin = new Thickness(leftMargin, CellMargin, rightMargin, CellMargin);
+			result.Margin = new(leftMargin, CellMargin, rightMargin, CellMargin);
 			result.Focusable = true;
 			result.FontFamily = Font;
 			result.Width = CellWidth * chars;

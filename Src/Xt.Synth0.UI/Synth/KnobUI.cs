@@ -16,7 +16,7 @@ namespace Xt.Synth0.UI
 			var window = new Window();
 			window.Title = $"Edit {param.Info.Name}";
 			var wrap = new WrapPanel();
-			wrap.Margin = new Thickness(UI.Margin);
+			wrap.Margin = new(UI.Margin);
 			window.Content = wrap;
 			var block = new TextBlock();
 			block.Text = $"Value (min {param.Info.Min}, max {param.Info.Max}): ";

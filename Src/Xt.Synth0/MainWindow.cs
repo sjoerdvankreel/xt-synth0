@@ -34,7 +34,7 @@ namespace Xt.Synth0
 			set => SetValue(IsDirtyProperty, value);
 		}
 
-		readonly SynthModel _model = new SynthModel();
+		readonly SynthModel _model = new();
 
 		internal MainWindow()
 		{

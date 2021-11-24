@@ -9,7 +9,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = UI.MakeGrid(4, 3);
 			int halfLength = PatternModel.Length / 2;
-			result.Margin = new Thickness(UI.Margin);
+			result.Margin = new(UI.Margin);
 			result.Children.Add(GroupUI.Make(model.Unit1, "Unit1", new(0, 0)));
 			result.Children.Add(GroupUI.Make(model.Unit2, "Unit2", new(1, 0)));
 			result.Children.Add(GroupUI.Make(model.Unit3, "Unit3", new(2, 0)));
