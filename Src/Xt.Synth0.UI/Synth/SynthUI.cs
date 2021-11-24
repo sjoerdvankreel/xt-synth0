@@ -8,7 +8,6 @@ namespace Xt.Synth0.UI
 		public static UIElement Make(SynthModel model)
 		{
 			var result = UI.MakeGrid(4, 3);
-			result.Margin = new(UI.Margin);
 			int rows = PatternModel.Length / 2;
 			result.Children.Add(GroupUI.Make(model.Unit1, "Unit1", new(0, 0)));
 			result.Children.Add(GroupUI.Make(model.Unit2, "Unit2", new(1, 0)));

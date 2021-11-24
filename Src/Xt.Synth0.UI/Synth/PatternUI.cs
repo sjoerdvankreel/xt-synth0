@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -17,13 +16,6 @@ namespace Xt.Synth0.UI
 			Key.Q, Key.D2, Key.W, Key.D3, Key.E, Key.R,
 			Key.D5, Key.T, Key.D6, Key.Y, Key.D7, Key.U
 		};
-
-		const int CellMargin = 2;
-		static readonly FontFamily Font = new("Consolas");
-		static readonly double CellWidth = new FormattedText("C",
-			CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-			Font.GetTypefaces().First(), new TextBlock().FontSize,
-			Brushes.Black, VisualTreeHelper.GetDpi(new TextBlock()).PixelsPerDip).Width;
 
 		static string FormatOct(object[] args)
 		=> Format(args, o => o.ToString());
@@ -46,9 +38,9 @@ namespace Xt.Synth0.UI
 
 		static string FormatNote(int note) => note switch
 		{
-			RowModel.NoNote => ".",
+			RowModel.NoNote => "..",
 			RowModel.NoteOff => "==",
-			_ => ParamInfo.NoteNames[note]
+			_ => RowModel.NoteNames[note]
 		};
 
 		static string Format(object[] args, Func<int, string> display)
@@ -92,7 +84,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeNote(Param note, int row)
 		{
-			var result = MakeCell(new(row, 0), 2, CellMargin, CellMargin);
+			var result = MakeCell(new(row, 0));
 			var binding = Bind.To(note, FormatNote);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(note, e);
@@ -110,7 +102,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeOct(Param note, Param oct, int row)
 		{
-			var result = MakeCell(new(row, 1), 1, CellMargin, CellMargin);
+			var result = MakeCell(new(row, 1));
 			var noteBinding = Bind.To(note);
 			var octBinding = Bind.To(oct);
 			var binding = Bind.Of(FormatOct, noteBinding, octBinding);
@@ -130,7 +122,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp0(Param note, Param amp, int row)
 		{
-			var result = MakeCell(new(row, 2), 1, CellMargin, 0);
+			var result = MakeCell(new(row, 2));
 			var ampBinding = Bind.To(amp);
 			var noteBinding = Bind.To(note);
 			var binding = Bind.Of(FormatAmp0, noteBinding, ampBinding);
@@ -150,7 +142,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp1(Param note, Param amp, int row)
 		{
-			var result = MakeCell(new(row, 3), 1, 0, CellMargin);
+			var result = MakeCell(new(row, 3));
 			var ampBinding = Bind.To(amp);
 			var noteBinding = Bind.To(note);
 			var binding = Bind.Of(FormatAmp1, noteBinding, ampBinding);
@@ -168,13 +160,10 @@ namespace Xt.Synth0.UI
 			FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static FrameworkElement MakeCell(Cell cell, int chars, int leftMargin, int rightMargin)
+		static FrameworkElement MakeCell(Cell cell)
 		{
 			var result = UI.MakeElement<TextBlock>(cell);
-			result.Margin = new(leftMargin, CellMargin, rightMargin, CellMargin);
 			result.Focusable = true;
-			result.FontFamily = Font;
-			result.Width = CellWidth * chars;
 			result.MouseLeftButtonDown += (s, e) => result.Focus();
 			return result;
 		}

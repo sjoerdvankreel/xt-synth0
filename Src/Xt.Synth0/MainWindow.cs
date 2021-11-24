@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 using Xt.Synth0.UI;
 
@@ -98,6 +99,7 @@ namespace Xt.Synth0
 			var synth = SynthUI.Make(_model);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
+			result.SetValue(TextBlock.FontFamilyProperty, new FontFamily("Consolas"));
 			return result;
 		}
 

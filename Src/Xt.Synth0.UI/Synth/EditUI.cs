@@ -21,7 +21,6 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(Window window, Param param)
 		{
 			var result = new DockPanel();
-			result.Margin = new(UI.Margin);
 			var box = MakeTextBox(param);
 			result.Children.Add(MakeOK(window, box, param));
 			result.Children.Add(box);

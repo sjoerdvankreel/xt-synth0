@@ -17,7 +17,6 @@ namespace Xt.Synth0.UI
 		public static UIElement Make()
 		{
 			var result = new GroupBox();
-			result.Margin = new(UI.Margin);
 			result.Header = "Control";
 			result.Content = MakeContent();
 			return result;

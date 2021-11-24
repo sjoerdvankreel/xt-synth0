@@ -2,6 +2,11 @@
 {
 	public class RowModel
 	{
+		public static readonly string[] NoteNames = new[] {
+			"C-", "C#", "D-", "D#", "E-", "F-",
+			"F#", "G-", "G#", "A-", "A#", "B-"
+		};
+
 		public const int NoteOff = (int)NoteType.Count;
 		public const int NoNote = (int)NoteType.Count + 1;
 

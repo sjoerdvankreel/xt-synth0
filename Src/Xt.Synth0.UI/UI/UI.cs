@@ -7,11 +7,6 @@ namespace Xt.Synth0.UI
 {
 	static class UI
 	{
-		internal const int Margin = 5;
-		internal const int ButtonMargin = 2;
-
-
-
 		static RowDefinition MakeRow()
 		{
 			var result = new RowDefinition();
@@ -59,7 +54,6 @@ namespace Xt.Synth0.UI
 			var result = new Button();
 			result.Content = content;
 			result.Click += (s, e) => execute();
-			result.Margin = new(ButtonMargin);
 			return result;
 		}
 
