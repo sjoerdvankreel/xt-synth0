@@ -29,27 +29,27 @@ namespace Xt.Synth0.UI
 		static void SetEffectiveSize(DependencyObject obj, double value) => obj.SetValue(EffectiveSizePropertyKey, value);
 
 		public static readonly DependencyProperty MarkerSizeProperty = DependencyProperty.Register(
-			nameof(MarkerSize), typeof(double), typeof(Knob), new(OnMarkerPositionChanged));
+			nameof(MarkerSize), typeof(double), typeof(Knob), new(5.0, OnMarkerPositionChanged));
 		public static double GetMarkerSize(DependencyObject obj) => (double)obj.GetValue(MarkerSizeProperty);
 		public static void SetMarkerSize(DependencyObject obj, double value) => obj.SetValue(MarkerSizeProperty, value);
 
 		public static readonly DependencyProperty MarkerFillProperty = DependencyProperty.Register(
-			nameof(MarkerFill), typeof(Brush), typeof(Knob));
+			nameof(MarkerFill), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Black));
 		public static Brush GetMarkerFill(DependencyObject obj) => (Brush)obj.GetValue(MarkerFillProperty);
 		public static void SetMarkerFill(DependencyObject obj, Brush value) => obj.SetValue(MarkerFillProperty, value);
 
 		public static readonly DependencyProperty MarkerStrokeProperty = DependencyProperty.Register(
-			nameof(MarkerStroke), typeof(Brush), typeof(Knob));
+			nameof(MarkerStroke), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Black));
 		public static Brush GetMarkerStroke(DependencyObject obj) => (Brush)obj.GetValue(MarkerStrokeProperty);
 		public static void SetMarkerStroke(DependencyObject obj, Brush value) => obj.SetValue(MarkerStrokeProperty, value);
 
 		public static readonly DependencyProperty RotaryFillProperty = DependencyProperty.Register(
-			nameof(RotaryFill), typeof(Brush), typeof(Knob));
+			nameof(RotaryFill), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Gray));
 		public static Brush GetRotaryFill(DependencyObject obj) => (Brush)obj.GetValue(RotaryFillProperty);
 		public static void SetRotaryFill(DependencyObject obj, Brush value) => obj.SetValue(RotaryFillProperty, value);
 
 		public static readonly DependencyProperty RotaryStrokeProperty = DependencyProperty.Register(
-			nameof(RotaryStroke), typeof(Brush), typeof(Knob));
+			nameof(RotaryStroke), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Black));
 		public static Brush GetRotaryStroke(DependencyObject obj) => (Brush)obj.GetValue(RotaryStrokeProperty);
 		public static void SetRotaryStroke(DependencyObject obj, Brush value) => obj.SetValue(RotaryStrokeProperty, value);
 

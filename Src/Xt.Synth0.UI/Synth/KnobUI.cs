@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -13,9 +12,10 @@ namespace Xt.Synth0.UI
 		static UIElement MakeLabel(Param param, GridSettings settings)
 		{
 			var result = UI.MakeElement<Label>(settings);
+			result.VerticalContentAlignment = VerticalAlignment.Top;
 			var binding = Bind.To(param, v => $"{param.Info.Format(v)}");
 			result.SetBinding(ContentControl.ContentProperty, binding);
-			result.VerticalContentAlignment = VerticalAlignment.Top;
+			result.HorizontalContentAlignment = HorizontalAlignment.Right;
 			return result;
 		}
 
@@ -26,12 +26,8 @@ namespace Xt.Synth0.UI
 			result.Height = KnobSize;
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
-			result.RotaryFill = Brushes.Gray;
-			result.MarkerFill = Brushes.Black;
-			result.RotaryStroke = Brushes.Black;
-			result.MarkerStroke = Brushes.Black;
-			result.MarkerSize = KnobSize / 3.0;
 			result.VerticalAlignment = VerticalAlignment.Center;
+			result.HorizontalAlignment = HorizontalAlignment.Center;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.SetBinding(FrameworkElement.ToolTipProperty, Bind.To(param));
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
