@@ -4,7 +4,12 @@ namespace Xt.Synth0.Model
 {
 	public class ParamInfo
 	{
-		public static readonly string[] NoteNames = new[] {
+		public static readonly string[] RowNotes = new[] {
+			"..", "==", "C-", "C#", "D-", "D#", "E-",
+			"F-", "F#", "G-", "G#", "A-", "A#", "B-"
+		};
+
+		public static readonly string[] UnitNotes = new[] {
 			"C", "C#", "D", "D#", "E", "F",
 			"F#", "G", "G#", "A", "A#", "B"
 		};
@@ -24,7 +29,9 @@ namespace Xt.Synth0.Model
 		{
 			ParamType.Int => value.ToString(),
 			ParamType.Time => value.ToString(),
-			ParamType.Note => NoteNames[value],
+			ParamType.RowNote => RowNotes[value],
+			ParamType.UnitNote => UnitNotes[value],
+			ParamType.RowAmp => value.ToString("X2"),
 			ParamType.Toggle => value == 0 ? "Off" : "On",
 			ParamType.Type => ((UnitType)value).ToString(),
 			ParamType.Percent => ((int)(100.0 * (value - Min) / (Max - Min))).ToString(),

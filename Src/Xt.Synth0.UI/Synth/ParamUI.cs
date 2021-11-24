@@ -28,7 +28,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeValue(Param param, Cell cell)
 		{
 			var result = UI.MakeElement<Label>(cell);
-			var binding = Bind.To(param, v => $"{param.Info.Format(v)}");
+			var binding = Bind.Format(param);
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
@@ -37,7 +37,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = UI.MakeElement<Toggle>(cell);
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
-			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
+			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.Param(param));
 			return result;
 		}
 
@@ -47,8 +47,8 @@ namespace Xt.Synth0.UI
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
-			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.SetBinding(FrameworkElement.ToolTipProperty, Bind.To(param));
+			result.SetBinding(RangeBase.ValueProperty, Bind.Param(param));
+			result.SetBinding(FrameworkElement.ToolTipProperty, Bind.Param(param));
 			return result;
 		}
 	}

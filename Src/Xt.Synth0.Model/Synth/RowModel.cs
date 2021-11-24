@@ -2,17 +2,10 @@
 {
 	public class RowModel
 	{
-		public static readonly string[] NoteNames = new[] {
-			"C-", "C#", "D-", "D#", "E-", "F-",
-			"F#", "G-", "G#", "A-", "A#", "B-"
-		};
-
-		public const int NoteOff = (int)NoteType.Count;
-		public const int NoNote = (int)NoteType.Count + 1;
-
 		static readonly ParamInfo OctInfo = new(ParamType.Int, nameof(Oct), 0, 9, 4);
-		static readonly ParamInfo AmpInfo = new(ParamType.Int, nameof(Amp), 0, 255, 255);
-		static readonly ParamInfo NoteInfo = new(ParamType.Note, nameof(Note), 0, NoNote, NoNote);
+		static readonly ParamInfo AmpInfo = new(ParamType.RowAmp, nameof(Amp), 0, 255, 255);
+		static readonly ParamInfo NoteInfo = new(ParamType.RowNote, nameof(Note), 
+			(int)RowNote.None, (int)RowNote.B, (int)RowNote.None);
 
 		public Param Amp { get; } = new(AmpInfo);
 		public Param Oct { get; } = new(OctInfo);

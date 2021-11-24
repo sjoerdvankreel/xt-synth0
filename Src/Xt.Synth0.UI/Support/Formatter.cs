@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
 	internal class Formatter : IValueConverter
 	{
-		readonly Func<int, string> _format;
-		internal Formatter(Func<int, string> format) 
-		=> _format = format;
+		readonly ParamInfo _info;
+		internal Formatter(ParamInfo info)
+		=> _info = info;
 		public object Convert(object v, Type t, object p, CultureInfo c)
-		=> _format((int)v);
-		public object ConvertBack(object v, Type t, object p, CultureInfo c) 
+		=> _info.Format((int)v);
+		public object ConvertBack(object v, Type t, object p, CultureInfo c)
 		=> throw new NotSupportedException();
 	}
 }

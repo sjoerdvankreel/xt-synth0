@@ -6,9 +6,10 @@ namespace Xt.Synth0.UI
 {
 	public static class Bind
 	{
-		internal static Binding To(Param param)
+		internal static Binding Param(Param param)
 		=> To(param, nameof(param.Value));
 
+		// TODO
 		public static Binding To(object source, string path)
 		{
 			var result = new Binding(path);
@@ -16,13 +17,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Binding To(Param param, Func<int, string> format)
+		internal static Binding Format(Param param)
 		{
-			var result = To(param);
-			result.Converter = new Formatter(format);
+			var result = Param(param);
+			result.Converter = new Formatter(param.Info);
 			return result;
 		}
 
+		// TODO
 		public static MultiBinding Of(
 			Func<object[], string> format, params Binding[] bindings)
 		{
