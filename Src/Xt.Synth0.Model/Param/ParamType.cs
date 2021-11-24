@@ -5,6 +5,7 @@
 		Int,
 		Note,
 		Type,
+		Time,
 		Float,
 		Toggle
 	}

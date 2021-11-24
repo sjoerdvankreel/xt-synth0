@@ -9,3 +9,5 @@ adsr
 remove minmax in knobui
 use enums
 save device selection
+formatting in model
+column=>col

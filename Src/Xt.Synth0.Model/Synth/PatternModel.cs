@@ -15,6 +15,6 @@ namespace Xt.Synth0.Model
 
 		public IList<RowModel> Rows { get; } = new List<RowModel>(
 			Enumerable.Range(0, Length).Select(_ => new RowModel()));
-		public override Param[] Params() => Rows.SelectMany(n => n.Params()).ToArray();
+		public override Param[][] Params() => new[] { Rows.SelectMany(n => n.Params()).ToArray() };
 	}
 }

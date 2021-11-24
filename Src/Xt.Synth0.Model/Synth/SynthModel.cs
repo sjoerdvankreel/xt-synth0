@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Xt.Synth0.Model
 {
@@ -23,7 +24,7 @@ namespace Xt.Synth0.Model
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 			foreach (var group in Groups())
-				foreach (var param in group.Params())
+				foreach (var param in group.Params().SelectMany(p => p))
 					param.PropertyChanged += handler;
 		}
 

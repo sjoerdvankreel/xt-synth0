@@ -54,6 +54,7 @@ namespace Xt.Synth0.UI
 			ParamType.Type => FormatType(value),
 			ParamType.Note => UI.NoteNames[value],
 			ParamType.Float => FormatFloat(info, value),
+			ParamType.Time => value.ToString(),
 			_ => throw new ArgumentException()
 		};
 
@@ -73,18 +74,18 @@ namespace Xt.Synth0.UI
 			return ((value - min) / (max - min)).ToString("P0").PadLeft(4, '0');
 		}
 
-		static UIElement MakeLabel(Param param, int row)
+		static UIElement MakeLabel(Param param, int row, int column)
 		{
-			var result = UI.MakeElement<Label>(row, 1);
+			var result = UI.MakeElement<Label>(row, column);
 			var binding = Bind.To(param, v => $"{Format(param.Info, v)}");
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			result.VerticalContentAlignment = VerticalAlignment.Top;
 			return result;
 		}
 
-		static UIElement MakeKnob(Param param, int row)
+		static UIElement MakeKnob(Param param, int row, int column)
 		{
-			var result = UI.MakeElement<Knob>(row, 2);
+			var result = UI.MakeElement<Knob>(row, column);
 			result.Width = KnobSize;
 			result.Height = KnobSize;
 			result.Minimum = param.Info.Min;
@@ -101,11 +102,11 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static void Add(Grid grid, Param param, int row)
+		internal static void Add(Grid grid, Param param, int row, int column)
 		{
-			grid.Children.Add(MakeKnob(param, row));
-			grid.Children.Add(MakeLabel(param, row));
-			grid.Children.Add(UI.MakeLabel(param.Info.Name, row, 0));
+			grid.Children.Add(MakeKnob(param, row, column + 2));
+			grid.Children.Add(MakeLabel(param, row, column + 1));
+			grid.Children.Add(UI.MakeLabel(param.Info.Name, row, column));
 		}
 	}
 }

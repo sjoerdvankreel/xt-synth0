@@ -7,6 +7,6 @@
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Amp { get; } = new(AmpInfo);
-		public override Param[] Params() => new[] { Bpm, Amp };
+		public override Param[][] Params() => new[] { new[] { Amp, Bpm } };
 	}
 }
