@@ -37,7 +37,7 @@ namespace Xt.Synth0.UI
 			_ => -1
 		};
 
-		static string FormatOctave(object[] args)
+		static string FormatOct(object[] args)
 		=> Format(args, o => o.ToString());
 		static string FormatAmp1(object[] args)
 		=> Format(args, a => (a & 0X0000000F).ToString("X"));
@@ -88,7 +88,7 @@ namespace Xt.Synth0.UI
 		static void AddRow(Grid grid, RowModel model, int row)
 		{
 			grid.Children.Add(MakeNote(model.Note, row));
-			grid.Children.Add(MakeOctave(model.Note, model.Octave, row));
+			grid.Children.Add(MakeOct(model.Note, model.Oct, row));
 			grid.Children.Add(MakeAmp0(model.Note, model.Amp, row));
 			grid.Children.Add(MakeAmp1(model.Note, model.Amp, row));
 		}
@@ -111,22 +111,22 @@ namespace Xt.Synth0.UI
 			FocusNext(note < NoteModel.NoteCount ? FocusNavigationDirection.Next : FocusNavigationDirection.Down);
 		}
 
-		static UIElement MakeOctave(Param<int> note, Param<int> octave, int row)
+		static UIElement MakeOct(Param<int> note, Param<int> oct, int row)
 		{
 			var result = MakeCell(row, 1, 1, CellMargin, CellMargin);
 			var noteBinding = Bind.To(note);
-			var octaveBinding = Bind.To(octave);
-			var binding = Bind.Of(FormatOctave, noteBinding, octaveBinding);
+			var octBinding = Bind.To(oct);
+			var binding = Bind.Of(FormatOct, noteBinding, octBinding);
 			result.SetBinding(TextBlock.TextProperty, binding);
-			result.TextInput += (s, e) => OnOctaveTextInput(octave, e);
+			result.TextInput += (s, e) => OnOctTextInput(oct, e);
 			return result;
 		}
 
-		static void OnOctaveTextInput(Param<int> param, TextCompositionEventArgs e)
+		static void OnOctTextInput(Param<int> param, TextCompositionEventArgs e)
 		{
-			var octave = e.Text.FirstOrDefault();
-			if (octave < '0' || octave > '9') return;
-			param.Value = octave - '0';
+			var oct = e.Text.FirstOrDefault();
+			if (oct < '0' || oct > '9') return;
+			param.Value = oct - '0';
 			e.Handled = true;
 			FocusNext(FocusNavigationDirection.Next);
 		}
