@@ -61,7 +61,6 @@ namespace Xt.Synth0.UI
 		{
 			var result = MakeElement<Label>(cell);
 			result.Content = content;
-			result.VerticalContentAlignment = VerticalAlignment.Top;
 			return result;
 		}
 

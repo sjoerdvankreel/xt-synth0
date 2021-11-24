@@ -9,6 +9,8 @@ namespace Xt.Synth0.UI
 	{
 		const double MinAngle = 0.05;
 		const double MaxAngle = 0.95;
+		const double DefaultMarkerSize = 6.0;
+		const double DefaultRotarySize = 16.0;
 
 		static readonly DependencyPropertyKey MarkerXPropertyKey = DependencyProperty.RegisterReadOnly(
 			nameof(MarkerX), typeof(double), typeof(Knob), new(0.0));
@@ -29,7 +31,7 @@ namespace Xt.Synth0.UI
 		static void SetEffectiveSize(DependencyObject obj, double value) => obj.SetValue(EffectiveSizePropertyKey, value);
 
 		public static readonly DependencyProperty MarkerSizeProperty = DependencyProperty.Register(
-			nameof(MarkerSize), typeof(double), typeof(Knob), new(5.0, OnMarkerPositionChanged));
+			nameof(MarkerSize), typeof(double), typeof(Knob), new(DefaultMarkerSize, OnMarkerPositionChanged));
 		public static double GetMarkerSize(DependencyObject obj) => (double)obj.GetValue(MarkerSizeProperty);
 		public static void SetMarkerSize(DependencyObject obj, double value) => obj.SetValue(MarkerSizeProperty, value);
 
@@ -75,6 +77,8 @@ namespace Xt.Synth0.UI
 
 		static Knob()
 		{
+			WidthProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(DefaultRotarySize));
+			HeightProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(DefaultRotarySize));
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(typeof(Knob)));
 			ValueProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(OnMarkerPositionChanged));
 			MinimumProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(OnMarkerPositionChanged));

@@ -25,7 +25,6 @@ namespace Xt.Synth0.UI
 		public static UIElement MakeContent()
 		{
 			var result = new WrapPanel();
-			result.HorizontalAlignment = HorizontalAlignment.Right;
 			var doStart = () => Start?.Invoke(null, EventArgs.Empty);
 			var start = UI.MakeButton("Start", doStart);
 			result.Children.Add(start);

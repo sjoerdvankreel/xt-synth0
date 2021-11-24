@@ -31,7 +31,6 @@ namespace Xt.Synth0.UI
 		{
 			var result = new TextBox();
 			result.Text = param.Value.ToString();
-			result.TextAlignment = TextAlignment.Right;
 			return result;
 		}
 
