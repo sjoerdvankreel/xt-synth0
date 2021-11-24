@@ -15,7 +15,7 @@ namespace Xt.Synth0.UI
 			if (param.Info.Type != ParamType.Toggle)
 				grid.Children.Add(MakeKnob(param, cell));
 			else
-				grid.Children.Add(MakeCheckbox(param, cell));
+				grid.Children.Add(MakeToggle(param, cell));
 		}
 
 		static UIElement MakeName(Param param, Cell cell)
@@ -33,9 +33,9 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeCheckbox(Param param, Cell cell)
+		static UIElement MakeToggle(Param param, Cell cell)
 		{
-			var result = UI.MakeElement<CheckBox>(cell);
+			var result = UI.MakeElement<Toggle>(cell);
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
 			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			return result;

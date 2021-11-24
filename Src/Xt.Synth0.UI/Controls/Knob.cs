@@ -36,30 +36,29 @@ namespace Xt.Synth0.UI
 		public static void SetMarkerSize(DependencyObject obj, double value) => obj.SetValue(MarkerSizeProperty, value);
 
 		public static readonly DependencyProperty MarkerFillProperty = DependencyProperty.Register(
-			nameof(MarkerFill), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Black));
+			nameof(MarkerFill), typeof(Brush), typeof(Knob), new(Brushes.Black));
 		public static Brush GetMarkerFill(DependencyObject obj) => (Brush)obj.GetValue(MarkerFillProperty);
 		public static void SetMarkerFill(DependencyObject obj, Brush value) => obj.SetValue(MarkerFillProperty, value);
 
 		public static readonly DependencyProperty MarkerStrokeProperty = DependencyProperty.Register(
-			nameof(MarkerStroke), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Black));
+			nameof(MarkerStroke), typeof(Brush), typeof(Knob), new(Brushes.Black));
 		public static Brush GetMarkerStroke(DependencyObject obj) => (Brush)obj.GetValue(MarkerStrokeProperty);
 		public static void SetMarkerStroke(DependencyObject obj, Brush value) => obj.SetValue(MarkerStrokeProperty, value);
 
 		public static readonly DependencyProperty RotaryFillProperty = DependencyProperty.Register(
-			nameof(RotaryFill), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Gray));
+			nameof(RotaryFill), typeof(Brush), typeof(Knob), new(Brushes.Gray));
 		public static Brush GetRotaryFill(DependencyObject obj) => (Brush)obj.GetValue(RotaryFillProperty);
 		public static void SetRotaryFill(DependencyObject obj, Brush value) => obj.SetValue(RotaryFillProperty, value);
 
 		public static readonly DependencyProperty RotaryStrokeProperty = DependencyProperty.Register(
-			nameof(RotaryStroke), typeof(Brush), typeof(Knob), new PropertyMetadata(Brushes.Black));
+			nameof(RotaryStroke), typeof(Brush), typeof(Knob), new(Brushes.Black));
 		public static Brush GetRotaryStroke(DependencyObject obj) => (Brush)obj.GetValue(RotaryStrokeProperty);
 		public static void SetRotaryStroke(DependencyObject obj, Brush value) => obj.SetValue(RotaryStrokeProperty, value);
 
 		static void OnSizeChanged(object obj, RoutedEventArgs e)
 		{
 			var knob = (Knob)obj;
-			var effectiveSize = Math.Min(knob.ActualWidth, knob.ActualHeight);
-			knob.SetValue(EffectiveSizePropertyKey, effectiveSize);
+			knob.EffectiveSize = Math.Min(knob.ActualWidth, knob.ActualHeight);
 		}
 
 		static void OnMarkerPositionChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
