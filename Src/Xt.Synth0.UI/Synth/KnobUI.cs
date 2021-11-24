@@ -76,7 +76,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeLabel(Param<int> param, int row)
 		{
 			var result = UI.MakeElement<Label>(row, 1);
-			var binding = Bind.To(param, v => $"({Format(param.Info, v)})");
+			var binding = Bind.To(param, v => $"{Format(param.Info, v)}");
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			result.VerticalContentAlignment = VerticalAlignment.Top;
 			return result;
@@ -84,7 +84,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeKnob(Param<int> param, int row)
 		{
-			var result = UI.MakeElement<Knob>(row, 3);
+			var result = UI.MakeElement<Knob>(row, 2);
 			result.Width = KnobSize;
 			result.Height = KnobSize;
 			result.Minimum = param.Info.Min;
@@ -106,8 +106,6 @@ namespace Xt.Synth0.UI
 			grid.Children.Add(MakeKnob(param, row));
 			grid.Children.Add(MakeLabel(param, row));
 			grid.Children.Add(UI.MakeLabel(param.Info.Name, row, 0));
-			grid.Children.Add(UI.MakeLabel(Format(param.Info, param.Info.Min), row, 2));
-			grid.Children.Add(UI.MakeLabel(Format(param.Info, param.Info.Max), row, 4));
 		}
 	}
 }

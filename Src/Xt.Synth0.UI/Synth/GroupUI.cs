@@ -10,7 +10,7 @@ namespace Xt.Synth0.UI
 		{
 			var ints = model.IntParams();
 			var bools = model.BoolParams();
-			var result = UI.MakeGrid(ints.Length + bools.Length, 5);
+			var result = UI.MakeGrid(ints.Length + bools.Length, 3);
 			for (int r = 0; r < bools.Length; r++)
 				ToggleUI.Add(result, bools[r], r);
 			for (int r = 0; r < ints.Length; r++)
