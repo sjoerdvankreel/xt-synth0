@@ -7,8 +7,8 @@ namespace Xt.Synth0.UI
 {
 	public class Knob : RangeBase
 	{
-		const double MinAngle = 0.1;
-		const double MaxAngle = 0.9;
+		const double MinAngle = 0.05;
+		const double MaxAngle = 0.95;
 
 		static readonly DependencyPropertyKey MarkerXPropertyKey = DependencyProperty.RegisterReadOnly(
 			nameof(MarkerX), typeof(double), typeof(Knob), new PropertyMetadata(0.0));
@@ -63,13 +63,14 @@ namespace Xt.Synth0.UI
 		static void OnMarkerPositionChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
 		{
 			var knob = (Knob)obj;
-			var radius = knob.EffectiveSize / 2.0;
-			if (radius == 0.0)
+			var markerRadius = knob.MarkerSize / 2.0;
+			var rotaryRadius = knob.EffectiveSize / 2.0;
+			if (rotaryRadius == 0.0 || markerRadius == 0.0)
 				return;
 			var angle = (knob.Value - knob.Minimum) / (knob.Maximum - knob.Minimum);
 			var theta = Math.PI * 2.0 * -(MinAngle + angle * (MaxAngle - MinAngle));
-			knob.MarkerX = radius * Math.Sin(theta) + radius;
-			knob.MarkerY = radius * Math.Cos(theta) + radius;
+			knob.MarkerX = rotaryRadius * Math.Sin(theta) + rotaryRadius - markerRadius;
+			knob.MarkerY = rotaryRadius * Math.Cos(theta) + rotaryRadius - markerRadius;
 		}
 
 		static Knob()
