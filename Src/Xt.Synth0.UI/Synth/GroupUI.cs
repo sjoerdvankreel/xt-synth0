@@ -14,7 +14,7 @@ namespace Xt.Synth0.UI
 			for (int r = 0; r < bools.Length; r++)
 				ToggleUI.Add(result, bools[r], r);
 			for (int r = 0; r < ints.Length; r++)
-				SliderUI.Add(result, ints[r], bools.Length + r);
+				KnobUI.Add(result, ints[r], bools.Length + r);
 			return result;
 		}
 

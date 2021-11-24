@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Xt.Synth0.UI">
+    <Style TargetType="{x:Type local:Knob}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Knob}">
+                    <Canvas Background="{TemplateBinding Background}">
+                        <Ellipse Width="{TemplateBinding EffectiveSize}" Height="{TemplateBinding EffectiveSize}" 
+                            Fill="{TemplateBinding RotaryFill}" Stroke="{TemplateBinding RotaryStroke}" />
+                        <Ellipse Width="{TemplateBinding MarkerSize}" Height="{TemplateBinding MarkerSize}"
+                            Fill="{TemplateBinding MarkerFill}" Stroke="{TemplateBinding MarkerStroke}"
+                            Canvas.Top="{Binding Path=(local:Knob.MarkerY), RelativeSource={RelativeSource TemplatedParent}}"
+                            Canvas.Left="{Binding Path=(local:Knob.MarkerX), RelativeSource={RelativeSource TemplatedParent}}"/>
+                    </Canvas>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

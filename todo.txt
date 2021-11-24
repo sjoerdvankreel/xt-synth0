@@ -1,3 +1,9 @@
 knob
 model pool/onchange
 help menu
+chords
+theme
+track automation params
+device selection
+adsr
+remove minmax in knobui

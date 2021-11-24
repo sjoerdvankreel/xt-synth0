@@ -2,14 +2,15 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	internal static class SliderUI
+	internal static class KnobUI
 	{
+		internal const int KnobSize = 16;
 		internal const int ValueWidth = 32;
-		internal const int SliderSize = 128;
 
 		static void ShowEditDialog(Param<int> param)
 		{
@@ -81,10 +82,17 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeSlider(Param<int> param, int row)
+		static UIElement MakeKnob(Param<int> param, int row)
 		{
-			var result = UI.MakeElement<Slider>(row, 3);
-			result.Width = SliderSize;
+			var result = UI.MakeElement<Knob>(row, 3);
+			result.Width = KnobSize;
+			result.Height = KnobSize;
+			result.Background = Brushes.Green;
+			result.MarkerSize = KnobSize / 3.0;
+			result.RotaryFill = Brushes.Gray;
+			result.RotaryStroke = Brushes.Black;
+			result.MarkerStroke = Brushes.Red;
+			result.MarkerFill = Brushes.Red;
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.VerticalAlignment = VerticalAlignment.Center;
@@ -96,7 +104,7 @@ namespace Xt.Synth0.UI
 
 		internal static void Add(Grid grid, Param<int> param, int row)
 		{
-			grid.Children.Add(MakeSlider(param, row));
+			grid.Children.Add(MakeKnob(param, row));
 			grid.Children.Add(MakeLabel(param, row));
 			grid.Children.Add(UI.MakeLabel(param.Info.Name, row, 0));
 			grid.Children.Add(UI.MakeLabel(Format(param.Info, param.Info.Min), row, 2));
