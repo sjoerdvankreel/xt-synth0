@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Xt.Synth0.Model;
 
@@ -16,29 +17,10 @@ namespace Xt.Synth0.UI
 			Key.D5, Key.T, Key.D6, Key.Y, Key.D7, Key.U
 		};
 
-		/*
-		static string FormatAmp1(object[] args)
-		=> Format(args, a => (a & 0X0000000F).ToString("X"));
-		static string FormatAmp0(object[] args)
-		=> Format(args, a => ((a & 0X000000F0) >> 4).ToString("X"));
-		static int ParseAmp(string text)
-		=> int.TryParse(text.FirstOrDefault().ToString(), NumberStyles.HexNumber,
-			CultureInfo.CurrentCulture, out int val) ? val : -1;
-		*/
-
-		/*
-
-		static string Format(object[] args, Func<int, string> display)
+		static T MakeCell<T>(Cell cell)
+			where T: FrameworkElement, new()
 		{
-			int note = (int)args[0];
-			if (note < (int)NoteType.Count)
-				return display((int)args[1]);
-			return note == RowModel.NoteOff ? "=" : ".";
-		}*/
-
-		static FrameworkElement MakeCell(Cell cell)
-		{
-			var result = UI.MakeElement<TextBlock>(cell);
+			var result = UI.MakeElement<T>(cell);
 			result.Focusable = true;
 			result.MouseLeftButtonDown += (s, e) => result.Focus();
 			return result;
@@ -76,7 +58,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeNote(Param param, int row)
 		{
-			var result = MakeCell(new(row, 0));
+			var result = MakeCell<TextBlock>(new(row, 0));
 			var binding = UI.Format(param);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
@@ -97,7 +79,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeOct(Param param, int row)
 		{
-			var result = MakeCell(new(row, 1));
+			var result = MakeCell<TextBlock>(new(row, 1));
 			result.TextInput += (s, e) => OnOctTextInput(param, e);
 			result.SetBinding(TextBlock.TextProperty, UI.Bind(param));
 			return result;
@@ -114,21 +96,12 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp(Param amp, int row)
 		{
-			var result = MakeCell(new(row, 2));
-			result.SetBinding(TextBlock.TextProperty, UI.Format(amp));
-			result.TextInput += (s, e) => OnAmpTextInput(amp, e);
+			var result = MakeCell<AmpBox>(new(row, 2));
+			result.Minimum = amp.Info.Min;
+			result.Maximum = amp.Info.Max;
+			result.SetBinding(RangeBase.ValueProperty, UI.Bind(amp));
+			result.OnParsed += (s, e) => FocusNext(FocusNavigationDirection.Next);
 			return result;
-		}
-
-		static void OnAmpTextInput(Param param, TextCompositionEventArgs e)
-		{
-			var val = e.Text;
-			if (e.Text.Length > 1 || e.TextComposition.Text.Length > 1)
-				"".GetHashCode();
-			//if (val == -1) return;
-			//param.Value = (val << 4) | (param.Value & 0x0000000F);
-			//e.Handled = true;
-			//FocusNext(FocusNavigationDirection.Next);
 		}
 	}
 }
