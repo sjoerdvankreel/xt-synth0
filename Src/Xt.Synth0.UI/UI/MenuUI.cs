@@ -26,13 +26,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static MenuItem MakeItem(ICommand command, string header, Action execute)
+		static MenuItem MakeItem(ICommand command, string header, Func<Action> execute)
 		{
 			var result = MakeItem(header);
 			result.Command = command;
 			var binding = new CommandBinding();
 			binding.Command = command;
-			binding.Executed += (s, e) => execute();
+			binding.Executed += (s, e) => execute()();
 			result.CommandBindings.Add(binding);
 			return result;
 		}
@@ -40,10 +40,10 @@ namespace Xt.Synth0.UI
 		static UIElement MakeFile()
 		{
 			var result = MakeItem("_File");
-			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", New));
-			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", Load));
-			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", Save));
-			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", SaveAs));
+			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", () => New));
+			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", () => Load));
+			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", () => Save));
+			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", () => SaveAs));
 			return result;
 		}
 	}
