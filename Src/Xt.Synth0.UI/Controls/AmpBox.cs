@@ -70,26 +70,21 @@ namespace Xt.Synth0.UI
 		protected override void OnTextInput(TextCompositionEventArgs e)
 		{
 			base.OnTextInput(e);
+			DoOnTextInput(e);
+		}
+
+		char? DoOnTextInput(TextCompositionEventArgs e)
+		{
 			char next = e.Text.FirstOrDefault();
-			if (_previous == null)
-			{
-				_previous = next;
-				return;
-			}
+			var style = NumberStyles.HexNumber;
+			var format = CultureInfo.CurrentCulture;
+			if (_previous == null) return _previous = next;
 			string text = new string(new[] { _previous.Value, next });
-			if (!int.TryParse(text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out var value))
-			{
-				_previous = next;
-				return;
-			}
-			if (value < Minimum || value > Maximum)
-			{
-				_previous = next;
-				return;
-			}
+			if (!int.TryParse(text, style, format, out var value)) return _previous = next;
+			if (value < Minimum || value > Maximum) return _previous = next;
 			Value = value;
-			_previous = null;
 			RaiseEvent(new RoutedEventArgs(OnParsedEvent));
+			return _previous = null;
 		}
 	}
 }
