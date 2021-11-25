@@ -4,7 +4,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	internal static class EditUI
+	static class EditUI
 	{
 		internal static void Show(Param param)
 		{

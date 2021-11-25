@@ -5,7 +5,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	internal class Formatter : IValueConverter
+	class Formatter : IValueConverter
 	{
 		readonly ParamInfo _info;
 		internal Formatter(ParamInfo info)

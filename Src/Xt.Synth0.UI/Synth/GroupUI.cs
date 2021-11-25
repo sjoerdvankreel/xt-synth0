@@ -5,7 +5,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	internal static class GroupUI
+	static class GroupUI
 	{
 		internal static UIElement Make(
 			IGroupModel model, string name, Cell cell)

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Xt.Synth0.Model;
@@ -115,9 +116,9 @@ namespace Xt.Synth0
 
 		void BindTitle()
 		{
-			var path = Bind.To(this, nameof(Path));
-			var dirty = Bind.To(this, nameof(IsDirty));
-			SetBinding(TitleProperty, Bind.Of(FormatTitle, path, dirty));
+			var path = Bind(this, nameof(Path));
+			var dirty = Bind(this, nameof(IsDirty));
+			SetBinding(TitleProperty, Bind(FormatTitle, path, dirty));
 		}
 
 		void BindCommand(RoutedUICommand command, EventHandler handler)
@@ -125,6 +126,23 @@ namespace Xt.Synth0
 			if (command.InputGestures.Count > 0)
 				InputBindings.Add(new InputBinding(command, command.InputGestures[0]));
 			CommandBindings.Add(new CommandBinding(command, (s, e) => handler(this, EventArgs.Empty)));
+		}
+
+		Binding Bind(object source, string path)
+		{
+			var result = new Binding(path);
+			result.Source = source;
+			return result;
+		}
+
+		MultiBinding Bind(
+			Func<object[], string> format, params Binding[] bindings)
+		{
+			var result = new MultiBinding();
+			foreach (var binding in bindings)
+				result.Bindings.Add(binding);
+			result.Converter = new MultiFormatter(format);
+			return result;
 		}
 	}
 }

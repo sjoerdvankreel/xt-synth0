@@ -4,7 +4,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0
 {
-	internal class ParamConverter : JsonConverter<Param>
+	class ParamConverter : JsonConverter<Param>
 	{
 		public override void WriteJson(JsonWriter w, Param v, JsonSerializer s)
 		=> w.WriteValue(v.Value);

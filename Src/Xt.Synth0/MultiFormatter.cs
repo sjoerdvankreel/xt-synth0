@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Xt.Synth0.UI
+namespace Xt.Synth0
 {
-	internal class MultiFormatter : IMultiValueConverter
+	class MultiFormatter : IMultiValueConverter
 	{
 		readonly Func<object[], string> _format;
 		internal MultiFormatter(Func<object[], string> format)

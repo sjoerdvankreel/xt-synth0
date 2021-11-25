@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
@@ -16,6 +18,20 @@ namespace Xt.Synth0.UI
 		{
 			var result = new ColumnDefinition();
 			result.Width = GridLength.Auto;
+			return result;
+		}
+
+		internal static Binding Bind(Param param)
+		{
+			var result = new Binding(nameof(Param.Value));
+			result.Source = param;
+			return result;
+		}
+
+		internal static Binding Format(Param param)
+		{
+			var result = Bind(param);
+			result.Converter = new Formatter(param.Info);
 			return result;
 		}
 

@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.UI
 {
-	internal class Cell
+	class Cell
 	{
 		internal int Row { get; }
 		internal int Col { get; }

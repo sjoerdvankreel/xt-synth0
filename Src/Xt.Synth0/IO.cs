@@ -5,7 +5,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0
 {
-	internal static class IO
+	static class IO
 	{
 		static JsonSerializerSettings MakeSettings()
 		{

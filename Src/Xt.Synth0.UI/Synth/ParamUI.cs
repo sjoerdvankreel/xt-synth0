@@ -5,7 +5,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	internal static class ParamUI
+	static class ParamUI
 	{
 		internal static void Add(
 			Grid grid, Param param, Cell cell)
@@ -28,7 +28,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeValue(Param param, Cell cell)
 		{
 			var result = UI.MakeElement<Label>(cell);
-			var binding = Bind.Format(param);
+			var binding = UI.Format(param);
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
@@ -37,7 +37,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = UI.MakeElement<Toggle>(cell);
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
-			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.Param(param));
+			result.SetBinding(ToggleButton.IsCheckedProperty, UI.Bind(param));
 			return result;
 		}
 
@@ -47,8 +47,8 @@ namespace Xt.Synth0.UI
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
-			result.SetBinding(RangeBase.ValueProperty, Bind.Param(param));
-			result.SetBinding(FrameworkElement.ToolTipProperty, Bind.Param(param));
+			result.SetBinding(RangeBase.ValueProperty, UI.Bind(param));
+			result.SetBinding(FrameworkElement.ToolTipProperty, UI.Bind(param));
 			return result;
 		}
 	}

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +7,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	internal static class PatternUI
+	static class PatternUI
 	{
 		static readonly Key[] NoteKeys = new[]
 		{
@@ -79,7 +77,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeNote(Param param, int row)
 		{
 			var result = MakeCell(new(row, 0));
-			var binding = Bind.Format(param);
+			var binding = UI.Format(param);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
 			return result;
@@ -101,7 +99,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = MakeCell(new(row, 1));
 			result.TextInput += (s, e) => OnOctTextInput(param, e);
-			result.SetBinding(TextBlock.TextProperty, Bind.Param(param));
+			result.SetBinding(TextBlock.TextProperty, UI.Bind(param));
 			return result;
 		}
 
@@ -117,7 +115,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeAmp(Param amp, int row)
 		{
 			var result = MakeCell(new(row, 2));
-			result.SetBinding(TextBlock.TextProperty, Bind.Format(amp));
+			result.SetBinding(TextBlock.TextProperty, UI.Format(amp));
 			result.TextInput += (s, e) => OnAmpTextInput(amp, e);
 			return result;
 		}
