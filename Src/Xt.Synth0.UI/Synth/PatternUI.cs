@@ -32,20 +32,19 @@ namespace Xt.Synth0.UI
 				e.MoveFocus(new(direction));
 		}
 
-		internal static UIElement Make(PatternModel model, string name, int offset,
-			int count, Cell cell)
+		internal static UIElement Make(RowModel[] rows, string name, Cell cell)
 		{
 			var result = UI.MakeElement<GroupBox>(cell);
 			result.Header = name;
-			result.Content = MakeContent(model, offset, count);
+			result.Content = MakeContent(rows);
 			return result;
 		}
 
-		static UIElement MakeContent(PatternModel model, int offset, int count)
+		static UIElement MakeContent(RowModel[] rows)
 		{
 			var result = UI.MakeGrid(PatternModel.Length, 4);
-			for (int n = 0; n < count; n++)
-				AddRow(result, model.Rows[offset + n], n);
+			for (int r = 0; r < rows.Length; r++)
+				AddRow(result, rows[r], r);
 			return result;
 		}
 
