@@ -2,11 +2,9 @@
 {
 	public class UnitModel : GroupModel<UnitModel>
 	{
-		public const int ADRMax = 10000;
-
-		static readonly ParamInfo AInfo = new(nameof(A), 0, 255, 0, ADRMax, 0);
-		static readonly ParamInfo DInfo = new(nameof(D), 0, 255, 0, ADRMax, 0);
-		static readonly ParamInfo RInfo = new(nameof(R), 0, 255, 0, ADRMax, 0);
+		static readonly ParamInfo AInfo = new(ParamType.Time, nameof(A), 0, 255, 0);
+		static readonly ParamInfo DInfo = new(ParamType.Time, nameof(D), 0, 255, 0);
+		static readonly ParamInfo RInfo = new(ParamType.Time, nameof(R), 0, 255, 0);
 		static readonly ParamInfo SInfo = new(ParamType.Percent, nameof(S), 0, 255, 255);
 
 		static readonly ParamInfo OctInfo = new(ParamType.Int, nameof(Oct), 0, 12, 4);
