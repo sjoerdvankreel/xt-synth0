@@ -2,9 +2,9 @@
 {
 	public class UnitModel : GroupModel<UnitModel>
 	{
-		static readonly ParamInfo AInfo = ParamInfo.Time(nameof(A), 0, 255, 0);
-		static readonly ParamInfo DInfo = ParamInfo.Time(nameof(D), 0, 255, 0);
-		static readonly ParamInfo RInfo = ParamInfo.Time(nameof(R), 0, 255, 0);
+		static readonly ParamInfo AInfo = new(ParamType.Time, nameof(A), 0, 255, 0);
+		static readonly ParamInfo DInfo = new(ParamType.Time, nameof(D), 0, 255, 0);
+		static readonly ParamInfo RInfo = new(ParamType.Time, nameof(R), 0, 255, 0);
 		static readonly ParamInfo SInfo = new(ParamType.Percent, nameof(S), 0, 255, 255);
 
 		static readonly ParamInfo OctInfo = new(ParamType.Int, nameof(Oct), 0, 12, 4);
@@ -13,7 +13,7 @@
 		static readonly ParamInfo NoteInfo = new(ParamType.UnitNote,
 			nameof(Note), (int)UnitNote.C, (int)UnitNote.B, (int)UnitNote.C);
 
-		static readonly ParamInfo OnInfo = ParamInfo.Toggle(nameof(On));
+		static readonly ParamInfo OnInfo = new(nameof(On));
 		static readonly ParamInfo TypeInfo = new(ParamType.Type, nameof(Type),
 			(int)UnitType.Sin, (int)UnitType.Tri, (int)UnitType.Sin);
 
