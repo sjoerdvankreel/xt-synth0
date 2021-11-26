@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 
 namespace Xt.Synth0.UI
 {
@@ -11,6 +13,11 @@ namespace Xt.Synth0.UI
 		const double MaxAngle = 0.95;
 		const double DefaultMarkerSize = 6.0;
 		const double DefaultRotarySize = 16.0;
+		const double DefaultSensitivity = 100.0;
+
+		static Knob ActiveKnob;
+		static Point? ActivePosition;
+		static double? ActiveBaseValue;
 
 		static readonly DependencyPropertyKey MarkerXPropertyKey = DependencyProperty.RegisterReadOnly(
 			nameof(MarkerX), typeof(double), typeof(Knob), new(0.0));
@@ -55,10 +62,53 @@ namespace Xt.Synth0.UI
 		public static Brush GetRotaryStroke(DependencyObject obj) => (Brush)obj.GetValue(RotaryStrokeProperty);
 		public static void SetRotaryStroke(DependencyObject obj, Brush value) => obj.SetValue(RotaryStrokeProperty, value);
 
+		public static readonly DependencyProperty SensitivityProperty = DependencyProperty.Register(
+			nameof(Sensitivity), typeof(double), typeof(Knob), new(DefaultSensitivity));
+		public static double GetSensitivity(DependencyObject obj) => (double)obj.GetValue(SensitivityProperty);
+		public static void SetSensitivity(DependencyObject obj, double value) => obj.SetValue(SensitivityProperty, value);
+
+		static Knob FindAncestorKnob(DependencyObject obj)
+		{
+			var result = obj;
+			if (obj == null) return null;
+			while (result is Visual && !(result is Knob))
+				result = VisualTreeHelper.GetParent(result);
+			return result as Knob;
+		}
+
 		static void OnSizeChanged(object obj, RoutedEventArgs e)
 		{
 			var knob = (Knob)obj;
 			knob.EffectiveSize = Math.Min(knob.ActualWidth, knob.ActualHeight);
+		}
+
+		static void OnWindowMouseMove(object sender, MouseEventArgs e)
+		{
+			if (ActiveKnob == null) return;
+			if (e.LeftButton != MouseButtonState.Pressed) return;
+			var min = ActiveKnob.Minimum;
+			var max = ActiveKnob.Maximum;
+			var range = max - min;
+			var pos = e.GetPosition(Application.Current.MainWindow);
+			var diff = (ActivePosition.Value.Y - pos.Y) / ActiveKnob.Sensitivity;
+			var newValue = ActiveBaseValue.Value + diff * range;
+			ActiveKnob.Value = Math.Clamp(newValue, min, max);
+		}
+
+		static void OnWindowMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+		{
+			ActiveKnob = null;
+			ActivePosition = null;
+			ActiveBaseValue = null;
+		}
+
+		static void OnWindowMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			var knob = FindAncestorKnob(e.OriginalSource as DependencyObject);
+			if (knob == null) return;
+			ActiveKnob = knob;
+			ActiveBaseValue = knob.Value;
+			ActivePosition = e.GetPosition(Application.Current.MainWindow);
 		}
 
 		static void OnMarkerPositionChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
@@ -83,6 +133,15 @@ namespace Xt.Synth0.UI
 			MinimumProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(OnMarkerPositionChanged));
 			MaximumProperty.OverrideMetadata(typeof(Knob), new FrameworkPropertyMetadata(OnMarkerPositionChanged));
 			EventManager.RegisterClassHandler(typeof(Knob), SizeChangedEvent, new RoutedEventHandler(OnSizeChanged), true);
+			EventManager.RegisterClassHandler(typeof(Window), MouseMoveEvent, new MouseEventHandler(OnWindowMouseMove), true);
+			EventManager.RegisterClassHandler(typeof(Window), MouseLeftButtonUpEvent, new MouseButtonEventHandler(OnWindowMouseLeftButtonUp), true);
+			EventManager.RegisterClassHandler(typeof(Window), MouseLeftButtonDownEvent, new MouseButtonEventHandler(OnWindowMouseLeftButtonDown), true);
+		}
+
+		public double Sensitivity
+		{
+			get => GetSensitivity(this);
+			set => SetSensitivity(this, value);
 		}
 
 		public double MarkerSize
