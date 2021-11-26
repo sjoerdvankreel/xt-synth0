@@ -25,7 +25,9 @@ namespace Xt.Synth0.Model
 		internal ParamInfo(ParamType type, string name, int min, int max, int @default)
 		=> (Type, Name, Min, Max, Default) = (type, name, min, max, @default);
 
-		public string Format(int value) => Type switch
+		public string Format(int value) => DoFormat(value).PadRight(3, ' ');
+
+		string DoFormat(int value) => Type switch
 		{
 			ParamType.Int => value.ToString(),
 			ParamType.Time => value.ToString(),
