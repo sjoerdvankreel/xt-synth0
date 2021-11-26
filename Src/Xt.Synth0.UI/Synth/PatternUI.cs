@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using Xt.Synth0.Model;
 
@@ -7,7 +8,7 @@ namespace Xt.Synth0.UI
 	static class PatternUI
 	{
 		internal static UIElement Make(
-			RowModel[] rows, string name, Cell cell)
+			IList<RowModel> rows, string name, Cell cell)
 		{
 			var result = UI.MakeElement<GroupBox>(cell);
 			result.Header = name;
@@ -15,10 +16,10 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeContent(RowModel[] rows)
+		static UIElement MakeContent(IList<RowModel> rows)
 		{
-			var result = UI.MakeGrid(PatternModel.Length, 4);
-			for (int r = 0; r < rows.Length; r++)
+			var result = UI.MakeGrid(rows.Count, 3);
+			for (int r = 0; r < rows.Count; r++)
 				RowUI.Add(result, rows[r], r);
 			return result;
 		}

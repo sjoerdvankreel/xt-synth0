@@ -25,15 +25,18 @@ namespace Xt.Synth0.Model
 		internal ParamInfo(ParamType type, string name, int min, int max, int @default)
 		=> (Type, Name, Min, Max, Default) = (type, name, min, max, @default);
 
-		public string Format(int value) => DoFormat(value).PadRight(3, ' ');
+		public string Format(int value) => Type switch
+		{
+			ParamType.RowNote => RowNotes[value],
+			ParamType.RowAmp => value.ToString("X2"),
+			_ => DoFormat(value).PadRight(3, ' ')
+		};
 
 		string DoFormat(int value) => Type switch
 		{
 			ParamType.Int => value.ToString(),
 			ParamType.Time => value.ToString(),
-			ParamType.RowNote => RowNotes[value],
 			ParamType.UnitNote => UnitNotes[value],
-			ParamType.RowAmp => value.ToString("X2"),
 			ParamType.Toggle => value == 0 ? "Off" : "On",
 			ParamType.Type => ((UnitType)value).ToString(),
 			ParamType.Percent => ((int)(100.0 * (value - Min) / (Max - Min))).ToString(),

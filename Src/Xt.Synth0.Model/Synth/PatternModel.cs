@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public class PatternModel : GroupModel<PatternModel>
 	{
-		public const int Length = 64;
+		public const int Length = 32;
 
 		public PatternModel()
 		{
