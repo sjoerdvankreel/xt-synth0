@@ -36,6 +36,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static UIElement MakeDivider(Cell cell)
+		{
+			var result = UI.MakeElement<TextBlock>(cell);
+			result.Text = " ";
+			return result;
+		}
+
 		internal static Grid MakeGrid(int rows, int cols)
 		{
 			var result = new Grid();

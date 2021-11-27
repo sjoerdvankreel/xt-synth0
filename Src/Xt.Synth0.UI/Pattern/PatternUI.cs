@@ -18,14 +18,18 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(PatternModel model)
 		{
 			var rowCount = PatternModel.RowCount;
-			var result = UI.MakeGrid(rowCount, 13);
+			var result = UI.MakeGrid(rowCount, 20);
 			for (int r = 0; r < rowCount; r++)
 			{
 				PatternKeyUI.Add(result, model.Rows[r].Key1, r, 0);
-				PatternKeyUI.Add(result, model.Rows[r].Key2, r, 3);
-				PatternKeyUI.Add(result, model.Rows[r].Key3, r, 6);
-				PatternFxUI.Add(result, model.Rows[r].Fx1, r, 9);
-				PatternFxUI.Add(result, model.Rows[r].Fx2, r, 11);
+				result.Children.Add(UI.MakeDivider(new(r, 4)));
+				PatternKeyUI.Add(result, model.Rows[r].Key2, r, 5);
+				result.Children.Add(UI.MakeDivider(new(r, 9)));
+				PatternKeyUI.Add(result, model.Rows[r].Key3, r, 10);
+				result.Children.Add(UI.MakeDivider(new(r, 14)));
+				PatternFxUI.Add(result, model.Rows[r].Fx1, r, 15);
+				result.Children.Add(UI.MakeDivider(new(r, 17)));
+				PatternFxUI.Add(result, model.Rows[r].Fx2, r, 18);
 			}
 			return result;
 		}

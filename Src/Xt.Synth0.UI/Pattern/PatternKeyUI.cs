@@ -22,7 +22,8 @@ namespace Xt.Synth0.UI
 		{
 			grid.Children.Add(MakeNote(model.Note, row, col));
 			grid.Children.Add(MakeOct(model.Oct, row, col + 1));
-			grid.Children.Add(MakeAmp(model.Amp, row, col + 2));
+			grid.Children.Add(UI.MakeDivider(new(row, col + 2)));
+			grid.Children.Add(MakeAmp(model.Amp, row, col + 3));
 		}
 
 		static UIElement MakeNote(Param param, int row, int col)
