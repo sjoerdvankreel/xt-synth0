@@ -7,9 +7,6 @@
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Amp { get; } = new(AmpInfo);
-		internal override Param[][] ListParamGroups() => new[] {
-			new[] { Amp },
-			new[] { Bpm }
-		};
+		internal override Param[][] ListParamGroups() => new[] { new[] { Amp, Bpm } };
 	}
 }
