@@ -12,6 +12,7 @@ namespace Xt.Synth0.Model
 
 		readonly string[] _names;
 		public override string Format(int value) => _names[value];
-		internal EnumInfo(string name, string[] names) : base(name) => _names = names;
+		internal EnumInfo(string name, string detail, string[] names) :
+		base(name, detail) => _names = names;
 	}
 }

@@ -7,7 +7,8 @@
 		public override int Default => 0;
 		public override bool IsToggle => true;
 
-		internal ToggleInfo(string name) : base(name) { }
+		internal ToggleInfo(string name, string detail) : 
+		base(name, detail) { }
 		public override string Format(int value)
 		=> value == 0 ? "Off" : "On";
 	}

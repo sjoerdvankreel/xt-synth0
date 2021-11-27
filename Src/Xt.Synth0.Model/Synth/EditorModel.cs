@@ -2,10 +2,19 @@
 {
 	public sealed class EditorModel : GroupModel
 	{
-		static readonly ParamInfo FxInfo = new DiscreteInfo(nameof(Fx), 0, 2, 1);
-		static readonly ParamInfo KeysInfo = new DiscreteInfo(nameof(Keys), 1, 3, 1);
-		static readonly ParamInfo EditInfo = new DiscreteInfo(nameof(Edit), 1, PatternModel.PatternCount, 1);
-		static readonly ParamInfo PatsInfo = new DiscreteInfo(nameof(Pats), 1, PatternModel.PatternCount, 1);
+		const string FxDetail = "Effect count";
+		const string KeysDetail = "Note count";
+		const string PatsDetail = "Pattern count";
+		const string EditDetail = "Active pattern";
+
+		static readonly ParamInfo FxInfo = new DiscreteInfo(
+			nameof(Fx), FxDetail, 0, 2, 1);
+		static readonly ParamInfo KeysInfo = new DiscreteInfo(
+			nameof(Keys), KeysDetail, 1, 3, 1);
+		static readonly ParamInfo EditInfo = new DiscreteInfo(
+			nameof(Edit), EditDetail, 1, PatternModel.PatternCount, 1);
+		static readonly ParamInfo PatsInfo = new DiscreteInfo(
+			nameof(Pats), PatsDetail, 1, PatternModel.PatternCount, 1);
 
 		public Param Fx { get; } = new(FxInfo);
 		public Param Keys { get; } = new(KeysInfo);

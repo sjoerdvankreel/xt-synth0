@@ -8,8 +8,8 @@
 		public override bool IsToggle => false;
 		public override int Default => _default;
 
-		internal ContinuousInfo(string name, int @default)
-		: base(name) => _default = @default;
+		internal ContinuousInfo(string name, string detail, int @default)
+		: base(name, detail) => _default = @default;
 		public override string Format(int value)
 		=> (((double)value - Min) / (Max - Min)).ToString("P1");
 	}

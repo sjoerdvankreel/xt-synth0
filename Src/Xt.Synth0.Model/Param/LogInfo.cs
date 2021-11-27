@@ -8,8 +8,10 @@ namespace Xt.Synth0.Model
 		readonly string _postfix1;
 		readonly string _postfix1k;
 
-		internal LogInfo(string name, int @default, int range, string postfix1, string postfix1k)
-		: base(name, @default) => (_range, _postfix1, _postfix1k) = (range, postfix1, postfix1k);
+		internal LogInfo(string name, string detail, int @default, 
+			int range, string postfix1, string postfix1k)
+		: base(name, detail, @default) 
+		=> (_range, _postfix1, _postfix1k) = (range, postfix1, postfix1k);
 
 		public override string Format(int value)
 		{

@@ -11,8 +11,8 @@
 		public override bool IsToggle => false;
 		public override int Default => _default;
 
-		internal DiscreteInfo(string name, int min, int max, int @default)
-		: base(name) => (_min, _max, _default) = (min, max, @default);
+		internal DiscreteInfo(string name, string detail, int min, int max, int @default)
+		: base(name, detail) => (_min, _max, _default) = (min, max, @default);
 		public override string Format(int value) => value.ToString();
 	}
 }

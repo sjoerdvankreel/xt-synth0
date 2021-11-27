@@ -2,8 +2,13 @@
 {
 	public sealed class PatternFx : SubModel
 	{
-		static readonly ParamInfo ValueInfo = new ContinuousInfo(nameof(Value), 0);
-		static readonly ParamInfo TargetInfo = new ContinuousInfo(nameof(Target), 0);
+		const string ValueDetail = "Automation value";
+		const string TargetDetail = "Automation parameter";
+
+		static readonly ParamInfo ValueInfo = new ContinuousInfo(
+			nameof(Value), ValueDetail, 0);
+		static readonly ParamInfo TargetInfo = new ContinuousInfo(
+			nameof(Target), TargetDetail, 0);
 
 		public Param Value { get; } = new(ValueInfo);
 		public Param Target { get; } = new(TargetInfo);
