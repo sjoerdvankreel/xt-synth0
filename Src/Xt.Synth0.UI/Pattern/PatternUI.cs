@@ -29,7 +29,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(
 			PatternModel pattern, EditorModel editor)
 		{
-			var rowCount = PatternModel.RowCount;
+			var rowCount = PatternModel.PatternRows;
 			var result = UI.MakeGrid(rowCount, 20);
 			for (int r = 0; r < rowCount; r++)
 			{

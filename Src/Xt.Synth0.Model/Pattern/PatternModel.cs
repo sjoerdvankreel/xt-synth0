@@ -4,7 +4,9 @@ namespace Xt.Synth0.Model
 {
 	public sealed class PatternModel : SubModel
 	{
-		public const int RowCount = 32;
+		public const int PatternRows = 32;
+		public const int PatternCount = 8;
+		public const int RowCount = PatternCount * PatternRows;
 
 		static PatternRow[] MakeRows()
 		{

@@ -4,8 +4,8 @@
 	{
 		static readonly ParamInfo FxInfo = new DiscreteInfo(nameof(Fx), 0, 2, 1);
 		static readonly ParamInfo KeysInfo = new DiscreteInfo(nameof(Keys), 1, 3, 1);
-		static readonly ParamInfo EditInfo = new DiscreteInfo(nameof(Edit), 1, 8, 1);
-		static readonly ParamInfo PatsInfo = new DiscreteInfo(nameof(Pats), 1, 8, 1);
+		static readonly ParamInfo EditInfo = new DiscreteInfo(nameof(Edit), 1, PatternModel.PatternCount, 1);
+		static readonly ParamInfo PatsInfo = new DiscreteInfo(nameof(Pats), 1, PatternModel.PatternCount, 1);
 
 		public Param Fx { get; } = new(FxInfo);
 		public Param Keys { get; } = new(KeysInfo);
