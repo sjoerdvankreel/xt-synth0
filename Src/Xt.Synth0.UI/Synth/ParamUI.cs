@@ -7,6 +7,8 @@ namespace Xt.Synth0.UI
 {
 	static class ParamUI
 	{
+		const string ExactHint = "(right-click to set exact value)";
+
 		internal static void Add(
 			Grid grid, Param param, Cell cell)
 		{
@@ -46,9 +48,9 @@ namespace Xt.Synth0.UI
 			var result = UI.MakeElement<Knob>(cell);
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
+			result.ToolTip = $"{param.Info.Detail} {ExactHint}";
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(param));
-			result.ToolTip = param.Info.Detail + " (right-click to set exact value)";
 			return result;
 		}
 	}
