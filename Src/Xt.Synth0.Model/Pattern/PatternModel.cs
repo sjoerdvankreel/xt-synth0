@@ -10,7 +10,7 @@ namespace Xt.Synth0.Model
 		{
 			var result = new PatternRow[RowCount];
 			for (int r = 0; r < RowCount; r++)
-					result[r] = new PatternRow();
+				result[r] = new PatternRow();
 			return result;
 		}
 
@@ -18,7 +18,7 @@ namespace Xt.Synth0.Model
 
 		public PatternModel()
 		{
-			for (int r = 0; r < RowCount; r++)
+			for (int r = 0; r < RowCount; r += 4)
 				Rows[r].Key1.Note.Value = (int)PatternNote.C;
 		}
 
