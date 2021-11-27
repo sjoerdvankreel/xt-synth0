@@ -7,24 +7,26 @@ namespace Xt.Synth0.UI
 {
 	static class GroupUI
 	{
-		internal static UIElement Make(GroupModel model)
+		internal static UIElement Make(
+			SynthModel synth, GroupModel group)
 		{
 			var result = new GroupBox();
-			result.Header = model.Name();
-			result.Content = MakeContent(model);
+			result.Header = group.Name();
 			result.Margin = new Thickness(UI.Margin);
+			result.Content = MakeContent(synth, group);
 			return result;
 		}
 
-		static UIElement MakeContent(GroupModel model)
+		static UIElement MakeContent(
+			SynthModel synth, GroupModel group)
 		{
-			var rows = model.ParamGroups();
+			var rows = group.ParamGroups();
 			var cols = rows.Max(r => r.Length);
 			var result = UI.MakeGrid(rows.Length, cols * 3);
 			result.VerticalAlignment = VerticalAlignment.Bottom;
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)
-					ParamUI.Add(result, rows[r][c], new(r, c * 3));
+					ParamUI.Add(result, synth, rows[r][c], new(r, c * 3));
 			return result;
 		}
 	}

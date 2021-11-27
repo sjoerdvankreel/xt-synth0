@@ -24,10 +24,10 @@ namespace Xt.Synth0.UI
 		static UIElement MakeLeft(SynthModel model)
 		{
 			var result = new DockPanel();
-			AddDocked(result, GroupUI.Make(model.Unit1));
-			AddDocked(result, GroupUI.Make(model.Unit2));
-			AddDocked(result, GroupUI.Make(model.Unit3));
-			AddDocked(result, GroupUI.Make(model.Editor));
+			AddDocked(result, GroupUI.Make(model, model.Unit1));
+			AddDocked(result, GroupUI.Make(model, model.Unit2));
+			AddDocked(result, GroupUI.Make(model, model.Unit3));
+			AddDocked(result, GroupUI.Make(model, model.Editor));
 			return result;
 		}
 
@@ -35,7 +35,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new DockPanel();
 			AddDocked(result, PatternUI.Make(model));
-			AddDocked(result, GroupUI.Make(model.Global));
+			AddDocked(result, GroupUI.Make(model, model.Global));
 			return result;
 		}
 	}

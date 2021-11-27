@@ -20,8 +20,8 @@ namespace Xt.Synth0.Model
 		public EditorModel Editor { get; } = new(nameof(Editor));
 
 		readonly SubModel[] _subModels;
-		readonly Param[] _autoParams;
-		public Param[] AutoParams() => _autoParams;
+		readonly List<Param> _autoParams = new();
+		public IList<Param> AutoParams() => _autoParams;
 
 		public override void CopyTo(Model model)
 		{
@@ -32,7 +32,6 @@ namespace Xt.Synth0.Model
 
 		public SynthModel()
 		{
-			List<Param> autoParams = new();
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 			_subModels = new SubModel[] { Unit1, Unit2, Unit3, Global, Editor, Pattern };
@@ -40,8 +39,7 @@ namespace Xt.Synth0.Model
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;
 			foreach (var group in _subModels.OfType<GroupModel>().Where(m => m.Automation))
-				autoParams.AddRange(group.Params());
-			_autoParams = autoParams.ToArray();
+				_autoParams.AddRange(group.Params());
 		}
 	}
 }
