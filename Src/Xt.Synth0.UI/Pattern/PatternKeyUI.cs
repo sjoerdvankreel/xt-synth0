@@ -11,6 +11,8 @@ namespace Xt.Synth0.UI
 {
 	static class PatternKeyUI
 	{
+		const string NoteEditHint = $"(Click + ./space/Q-U to edit)";
+
 		static readonly Key[] NoteKeys = new[]
 		{
 			Key.OemPeriod, Key.Space,
@@ -40,7 +42,7 @@ namespace Xt.Synth0.UI
 			Param keys, int minKeys, int row, int col)
 		{
 			var result = UI.MakePatternCell<TextBlock>(new(row, col));
-			result.ToolTip = param.Info.Detail + " " + PatternUI.EditHint;
+			result.ToolTip = param.Info.Detail + " " + NoteEditHint;
 			result.SetBinding(TextBlock.TextProperty, UI.Format(param));
 			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
