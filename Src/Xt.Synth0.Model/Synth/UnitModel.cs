@@ -62,8 +62,7 @@ namespace Xt.Synth0.Model
 
 		internal UnitModel(string name) : base(name) { }
 		internal override Param[][] ListParamGroups() => new[] {
-			new[] { On },
-			new[] { Type },
+			new[] { Type, On },
 			new[] { Amp, A },
 			new[] { Oct, D },
 			new[] { Note, S },
