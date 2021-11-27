@@ -10,6 +10,7 @@ namespace Xt.Synth0.UI
 			PatternModel pattern, EditorModel editor, string name)
 		{
 			var result = new GroupBox();
+			result.Margin = new Thickness(UI.Margin);
 			result.Header = MakeHeader(name, editor);
 			result.Content = MakeContent(pattern, editor);
 			return result;

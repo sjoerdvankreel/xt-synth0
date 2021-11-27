@@ -13,6 +13,7 @@ namespace Xt.Synth0.UI
 			var result = new GroupBox();
 			result.Header = name;
 			result.Content = MakeContent(model);
+			result.Margin = new Thickness(UI.Margin);
 			return result;
 		}
 
