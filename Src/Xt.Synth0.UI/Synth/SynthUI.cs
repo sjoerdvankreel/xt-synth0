@@ -27,9 +27,13 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeRight(SynthModel model)
 		{
-			var result = new StackPanel();
-			result.Children.Add(PatternUI.Make(model.Pattern, nameof(model.Pattern)));
-			result.Children.Add(GroupUI.Make(model.Global, nameof(model.Global)));
+			var result = new DockPanel();
+			var pattern = PatternUI.Make(model.Pattern, nameof(model.Pattern));
+			pattern.SetValue(DockPanel.DockProperty, Dock.Top);
+			result.Children.Add(pattern);
+			var global = GroupUI.Make(model.Global, nameof(model.Global));
+			global.SetValue(DockPanel.DockProperty, Dock.Bottom);
+			result.Children.Add(global);
 			return result;
 		}
 	}
