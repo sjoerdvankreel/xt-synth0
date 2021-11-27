@@ -7,11 +7,10 @@ namespace Xt.Synth0.UI
 {
 	static class GroupUI
 	{
-		internal static UIElement Make(
-			GroupModel model, string name)
+		internal static UIElement Make(GroupModel model)
 		{
 			var result = new GroupBox();
-			result.Header = name;
+			result.Header = model.Name();
 			result.Content = MakeContent(model);
 			result.Margin = new Thickness(UI.Margin);
 			return result;

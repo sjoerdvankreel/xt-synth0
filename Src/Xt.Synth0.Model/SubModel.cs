@@ -4,6 +4,7 @@
 	{
 		readonly Param[] _params;
 		public Param[] Params() => _params;
+
 		internal abstract Param[] ListParams();
 		internal SubModel() => _params = ListParams();
 

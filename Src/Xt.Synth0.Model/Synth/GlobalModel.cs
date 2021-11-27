@@ -12,6 +12,9 @@
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Amp { get; } = new(AmpInfo);
-		internal override Param[][] ListParamGroups() => new[] { new[] { Amp, Bpm } };
+
+		internal GlobalModel(string name) : base(name) { }
+		internal override Param[][] ListParamGroups()
+		=> new[] { new[] { Amp, Bpm } };
 	}
 }

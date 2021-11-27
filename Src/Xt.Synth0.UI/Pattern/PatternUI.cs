@@ -9,19 +9,19 @@ namespace Xt.Synth0.UI
 		internal const string EditHint = "(Click + keyboard to edit)";
 
 		internal static UIElement Make(
-			PatternModel pattern, EditorModel editor, string name)
+			PatternModel pattern, EditorModel editor)
 		{
 			var result = new GroupBox();
 			result.Margin = new Thickness(UI.Margin);
-			result.Header = MakeHeader(name, editor);
+			result.Header = MakeHeader(editor);
 			result.Content = MakeContent(pattern, editor);
 			return result;
 		}
 
-		static UIElement MakeHeader(string name, EditorModel model)
+		static UIElement MakeHeader(EditorModel model)
 		{
 			var result = new WrapPanel();
-			result.Children.Add(UI.MakeText(name + " "));
+			result.Children.Add(UI.MakeText(nameof(SynthModel.Pattern) + " "));
 			result.Children.Add(UI.MakeText(UI.Bind(model.Edit)));
 			result.Children.Add(UI.MakeText("/"));
 			result.Children.Add(UI.MakeText(UI.Bind(model.Pats)));

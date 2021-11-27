@@ -24,18 +24,18 @@ namespace Xt.Synth0.UI
 		static UIElement MakeLeft(SynthModel model)
 		{
 			var result = new DockPanel();
-			AddDocked(result, GroupUI.Make(model.Unit1, nameof(model.Unit1)));
-			AddDocked(result, GroupUI.Make(model.Unit2, nameof(model.Unit2)));
-			AddDocked(result, GroupUI.Make(model.Unit3, nameof(model.Unit3)));
-			AddDocked(result, GroupUI.Make(model.Editor, nameof(model.Editor)));
+			AddDocked(result, GroupUI.Make(model.Unit1));
+			AddDocked(result, GroupUI.Make(model.Unit2));
+			AddDocked(result, GroupUI.Make(model.Unit3));
+			AddDocked(result, GroupUI.Make(model.Editor));
 			return result;
 		}
 
 		static UIElement MakeRight(SynthModel model)
 		{
 			var result = new DockPanel();
-			AddDocked(result, PatternUI.Make(model.Pattern, model.Editor, nameof(model.Pattern)));
-			AddDocked(result, GroupUI.Make(model.Global, nameof(model.Global)));
+			AddDocked(result, PatternUI.Make(model.Pattern, model.Editor));
+			AddDocked(result, GroupUI.Make(model.Global));
 			return result;
 		}
 	}

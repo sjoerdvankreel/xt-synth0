@@ -21,6 +21,8 @@
 		public Param Edit { get; } = new(EditInfo);
 		public Param Pats { get; } = new(PatsInfo);
 
+		internal override bool Automation => false;
+		internal EditorModel(string name) : base(name) { }
 		internal override Param[][] ListParamGroups() => new[] {
 			new [] { Keys, Fx },
 			new [] { Pats, Edit }

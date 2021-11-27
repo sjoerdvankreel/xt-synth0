@@ -18,7 +18,7 @@ namespace Xt.Synth0.Model
 
 		public PatternRow[] Rows { get; } = MakeRows();
 
-		public PatternModel()
+		internal PatternModel()
 		{
 			for (int r = 0; r < RowCount; r += 4)
 				Rows[r].Key1.Note.Value = (int)PatternNote.C;

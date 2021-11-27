@@ -4,12 +4,18 @@ namespace Xt.Synth0.Model
 {
 	public abstract class GroupModel : SubModel
 	{
+		readonly string _name;
+		public string Name() => _name;
+
 		readonly Param[][] _paramGroups;
 		public Param[][] ParamGroups() => _paramGroups;
+
+		internal virtual bool Automation => true;
 		internal abstract Param[][] ListParamGroups();
-		internal GroupModel() => _paramGroups = ListParamGroups();
-		
-		internal override sealed Param[] ListParams() 
+
+		internal override sealed Param[] ListParams()
 		=> ListParamGroups().SelectMany(g => g).ToArray();
+		internal GroupModel(string name)
+		=> (_name, _paramGroups) = (name, ListParamGroups());
 	}
 }

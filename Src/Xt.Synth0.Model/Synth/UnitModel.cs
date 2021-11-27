@@ -5,6 +5,14 @@ namespace Xt.Synth0.Model
 {
 	public sealed class UnitModel : GroupModel
 	{
+		public static readonly string[] Notes = new[] {
+			"C", "C#", "D", "D#", "E", "F",
+			"F#", "G", "G#", "A", "A#", "B"
+		};
+
+		public static readonly string[] Types = Enum.
+			GetValues<UnitType>().Select(v => v.ToString()).ToArray();
+
 		const string NoteDetail = "Note";
 		const string CentDetail = "Cent";
 		const string OctDetail = "Octave";
@@ -17,14 +25,6 @@ namespace Xt.Synth0.Model
 		const string ADetail = "Attack time";
 		const string RDetail = "Release time";
 		const string SDetail = "Sustain level";
-
-		public static readonly string[] Notes = new[] {
-			"C", "C#", "D", "D#", "E", "F",
-			"F#", "G", "G#", "A", "A#", "B"
-		};
-
-		public static readonly string[] Types = Enum.
-			GetValues<UnitType>().Select(v => v.ToString()).ToArray();
 
 		static readonly ParamInfo SInfo = new ContinuousInfo(
 			nameof(S), SDetail, 255);
@@ -60,6 +60,7 @@ namespace Xt.Synth0.Model
 		public Param Cent { get; } = new(CentInfo);
 		public Param Type { get; } = new(TypeInfo);
 
+		internal UnitModel(string name) : base(name) { }
 		internal override Param[][] ListParamGroups() => new[] {
 			new[] { On },
 			new[] { Type },
