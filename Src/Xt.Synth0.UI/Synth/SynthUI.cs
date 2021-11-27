@@ -34,7 +34,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeRight(SynthModel model)
 		{
 			var result = new DockPanel();
-			AddDocked(result, PatternUI.Make(model.Pattern, model.Editor));
+			AddDocked(result, PatternUI.Make(model));
 			AddDocked(result, GroupUI.Make(model.Global));
 			return result;
 		}
