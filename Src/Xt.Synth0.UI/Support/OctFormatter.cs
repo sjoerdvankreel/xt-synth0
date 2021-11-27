@@ -8,9 +8,7 @@ namespace Xt.Synth0.UI
 	class OctFormatter : IMultiValueConverter
 	{
 		readonly PatternKey _model;
-
-		internal OctFormatter(PatternKey model)
-		=> _model = model;
+		internal OctFormatter(PatternKey model) => _model = model;
 
 		public object[] ConvertBack(object value, Type[] targetTypes,
 			object parameter, CultureInfo culture)

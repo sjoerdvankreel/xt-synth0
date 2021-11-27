@@ -3,4 +3,4 @@ tooltips
 theme
 save device selection
 long text
-patselect
+automation params

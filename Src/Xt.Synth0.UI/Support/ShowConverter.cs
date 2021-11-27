@@ -1,22 +1,12 @@
-﻿using System;
-using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
+﻿using System.Windows;
 
 namespace Xt.Synth0.UI
 {
-	class ShowConverter : IValueConverter
+	class ShowConverter : ValueConverter<int, Visibility>
 	{
 		readonly int _min;
-		internal ShowConverter(int min)
-		=> _min = min;
-
-		public object ConvertBack(object value, Type targetType,
-			object parameter, CultureInfo culture)
-			=> throw new NotSupportedException();
-
-		public object Convert(object value, Type targetType,
-			object parameter, CultureInfo culture)
-		=> (int)value >= _min ? Visibility.Visible : Visibility.Collapsed;
+		internal ShowConverter(int min) => _min = min;
+		internal override Visibility Convert(int value)
+		=> value >= _min ? Visibility.Visible : Visibility.Collapsed;
 	}
 }
