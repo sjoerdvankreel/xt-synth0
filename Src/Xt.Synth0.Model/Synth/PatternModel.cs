@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class PatternModel : GroupModel<PatternModel>
+	public sealed class PatternModel : SubModel
 	{
 		public const int Length = 32;
 
@@ -15,6 +15,6 @@ namespace Xt.Synth0.Model
 
 		public IList<RowModel> Rows { get; } = new List<RowModel>(
 			Enumerable.Range(0, Length).Select(_ => new RowModel()));
-		public override Param[][] Params() => new[] { Rows.SelectMany(n => n.Params()).ToArray() };
+		internal override Param[] ListParams() => Rows.SelectMany(n => n.Params()).ToArray();
 	}
 }

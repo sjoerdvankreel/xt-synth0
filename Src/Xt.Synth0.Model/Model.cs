@@ -1,14 +1,7 @@
 ﻿namespace Xt.Synth0.Model
 {
-	public interface IModel
+	public abstract class Model
 	{
-		void CopyTo(IModel model);
-	}
-
-	public abstract class Model<TModel> : IModel
-		where TModel : Model<TModel>
-	{
-		public abstract void CopyTo(TModel model);
-		public void CopyTo(IModel model) => CopyTo((TModel)model);
+		public abstract void CopyTo(Model model);
 	}
 }

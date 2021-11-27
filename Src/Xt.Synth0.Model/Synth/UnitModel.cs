@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class UnitModel : GroupModel<UnitModel>
+	public sealed class UnitModel : GroupModel
 	{
 		public static readonly string[] Notes = new[] {
 			"C", "C#", "D", "D#", "E", "F",
@@ -37,7 +37,7 @@ namespace Xt.Synth0.Model
 		public Param Cent { get; } = new(CentInfo);
 		public Param Type { get; } = new(TypeInfo);
 
-		public override Param[][] Params() => new[] {
+		internal override Param[][] ListParamGroups() => new[] {
 			new[] { On },
 			new[] { Type },
 			new[] { Amp, A },

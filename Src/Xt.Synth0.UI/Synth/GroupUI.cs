@@ -8,7 +8,7 @@ namespace Xt.Synth0.UI
 	static class GroupUI
 	{
 		internal static UIElement Make(
-			IGroupModel model, string name, Cell cell)
+			GroupModel model, string name, Cell cell)
 		{
 			var result = UI.MakeElement<GroupBox>(cell);
 			result.Header = name;
@@ -16,9 +16,9 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeContent(IGroupModel model)
+		static UIElement MakeContent(GroupModel model)
 		{
-			var rows = model.Params();
+			var rows = model.ParamGroups();
 			var cols = rows.Max(r => r.Length);
 			var result = UI.MakeGrid(rows.Length, cols * 3);
 			for (int r = 0; r < rows.Length; r++)

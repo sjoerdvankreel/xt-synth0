@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class SynthModel : Model<SynthModel>
+	public sealed class SynthModel : Model
 	{
 		public const int CurrentVersion = 1;
 		public event EventHandler ParamChanged;
@@ -16,21 +15,22 @@ namespace Xt.Synth0.Model
 		public PatternModel Pattern { get; } = new();
 		public int Version { get; set; } = CurrentVersion;
 
-		IGroupModel[] Groups() => new IGroupModel[] {
-			Global, Pattern, Unit1, Unit2, Unit3 };
+		readonly SubModel[] _subModels;
 
-		public override void CopyTo(SynthModel model)
+		public override void CopyTo(Model model)
 		{
-			for (int i = 0; i < Groups().Length; i++)
-				Groups()[i].CopyTo(model.Groups()[i]);
+			var synth = (SynthModel)model;
+			for (int s = 0; s < _subModels.Length; s++)
+				_subModels[s].CopyTo(synth._subModels[s]);
 		}
 
 		public SynthModel()
 		{
 			PropertyChangedEventHandler handler;
+			_subModels = new SubModel[] { Unit1, Unit2, Unit3, Global, Pattern };
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
-			foreach (var group in Groups())
-				foreach (var param in group.Params().SelectMany(p => p))
+			foreach (var sub in _subModels)
+				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;
 		}
 	}
