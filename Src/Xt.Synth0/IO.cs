@@ -12,6 +12,7 @@ namespace Xt.Synth0
 			var result = new JsonSerializerSettings();
 			result.Formatting = Formatting.Indented;
 			result.Converters.Add(new ParamConverter());
+			result.Converters.Add(new PatternConverter());
 			result.MissingMemberHandling = MissingMemberHandling.Error;
 			return result;
 		}
