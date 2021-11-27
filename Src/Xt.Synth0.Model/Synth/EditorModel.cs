@@ -3,7 +3,7 @@
 	public sealed class EditorModel : GroupModel
 	{
 		static readonly ParamInfo AmpInfo = new ToggleInfo(nameof(Amp));
-		static readonly ParamInfo FxInfo = new DiscreteInfo(nameof(Fx), 0, 2, 0);
+		static readonly ParamInfo FxInfo = new DiscreteInfo(nameof(Fx), 0, 2, 1);
 		static readonly ParamInfo KeysInfo = new DiscreteInfo(nameof(Keys), 1, 3, 1);
 		static readonly ParamInfo EditInfo = new DiscreteInfo(nameof(Edit), 1, 8, 1);
 		static readonly ParamInfo PatsInfo = new DiscreteInfo(nameof(Pats), 1, 8, 1);

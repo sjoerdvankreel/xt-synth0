@@ -32,14 +32,14 @@ namespace Xt.Synth0.UI
 			var result = UI.MakeGrid(rowCount, 20);
 			for (int r = 0; r < rowCount; r++)
 			{
-				PatternKeyUI.Add(result, pattern.Rows[r].Key1, r, 0);
-				result.Children.Add(UI.MakeDivider(new(r, 4)));
-				PatternKeyUI.Add(result, pattern.Rows[r].Key2, r, 5);
-				result.Children.Add(UI.MakeDivider(new(r, 9)));
-				PatternKeyUI.Add(result, pattern.Rows[r].Key3, r, 10);
-				result.Children.Add(UI.MakeDivider(new(r, 14)));
+				PatternKeyUI.Add(result, pattern.Rows[r].Key1, editor, 1, r, 0);
+				result.Children.Add(UI.MakeDivider(new(r, 4), editor.Keys, 1));
+				PatternKeyUI.Add(result, pattern.Rows[r].Key2, editor, 2, r, 5);
+				result.Children.Add(UI.MakeDivider(new(r, 9), editor.Keys, 2));
+				PatternKeyUI.Add(result, pattern.Rows[r].Key3, editor, 3, r, 10);
+				result.Children.Add(UI.MakeDivider(new(r, 14), editor.Keys, 3));
 				PatternFxUI.Add(result, pattern.Rows[r].Fx1, editor.Fx, 1, r, 15);
-				result.Children.Add(UI.MakeDivider(new(r, 17)));
+				result.Children.Add(UI.MakeDivider(new(r, 17), editor.Fx, 1));
 				PatternFxUI.Add(result, pattern.Rows[r].Fx2, editor.Fx, 2, r, 18);
 			}
 			return result;

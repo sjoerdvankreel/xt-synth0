@@ -27,20 +27,21 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static void Add(
-			Grid grid, PatternKey model, int row, int col)
+		internal static void Add(Grid grid, PatternKey model,
+			EditorModel editor, int minKeys, int row, int col)
 		{
-			grid.Children.Add(MakeNote(model.Note, row, col));
-			grid.Children.Add(MakeOct(model, row, col + 1));
-			grid.Children.Add(UI.MakeDivider(new(row, col + 2)));
-			grid.Children.Add(MakeAmp(model, row, col + 3));
+			grid.Children.Add(MakeNote(model.Note, editor.Keys, minKeys, row, col));
+			grid.Children.Add(MakeOct(model, editor.Keys, minKeys, row, col + 1));
+			grid.Children.Add(UI.MakeDivider(new(row, col + 2), editor.Keys, minKeys));
+			grid.Children.Add(MakeAmp(model, editor.Keys, minKeys, row, col + 3));
 		}
 
-		static UIElement MakeNote(Param param, int row, int col)
+		static UIElement MakeNote(Param param,
+			Param keys, int minKeys, int row, int col)
 		{
 			var result = UI.MakePatternCell<TextBlock>(new(row, col));
-			var binding = UI.Format(param);
-			result.SetBinding(TextBlock.TextProperty, binding);
+			result.SetBinding(TextBlock.TextProperty, UI.Format(param));
+			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
 			return result;
 		}
@@ -57,11 +58,13 @@ namespace Xt.Synth0.UI
 			UI.FocusNext(direction);
 		}
 
-		static UIElement MakeOct(PatternKey model, int row, int col)
+		static UIElement MakeOct(PatternKey model,
+			Param keys, int minKeys, int row, int col)
 		{
 			var result = UI.MakePatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
 			result.SetBinding(TextBlock.TextProperty, FormatOct(model));
+			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
 			return result;
 		}
 
@@ -74,13 +77,15 @@ namespace Xt.Synth0.UI
 			UI.FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static UIElement MakeAmp(PatternKey model, int row, int col)
+		static UIElement MakeAmp(PatternKey model,
+			Param keys, int minKeys, int row, int col)
 		{
 			var result = UI.MakePatternCell<AmpBox>(new(row, col));
 			result.Minimum = model.Amp.Info.Min;
 			result.Maximum = model.Amp.Info.Max;
 			result.SetBinding(AmpBox.NoteProperty, UI.Bind(model.Note));
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(model.Amp));
+			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
 			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);
 			return result;
 		}

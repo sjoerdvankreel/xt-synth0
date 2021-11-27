@@ -45,13 +45,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static UIElement MakeDivider(Cell cell)
-		{
-			var result = MakeElement<TextBlock>(cell);
-			result.Text = " ";
-			return result;
-		}
-
 		internal static UIElement MakeText(string text)
 		{
 			var result = new TextBlock();
@@ -94,6 +87,15 @@ namespace Xt.Synth0.UI
 			result.SetValue(Grid.ColumnProperty, cell.Col);
 			result.SetValue(Grid.RowSpanProperty, cell.RowSpan);
 			result.SetValue(Grid.ColumnSpanProperty, cell.ColSpan);
+			return result;
+		}
+
+		internal static UIElement MakeDivider(
+			Cell cell, Param param, int min)
+		{
+			var result = MakeElement<TextBlock>(cell);
+			result.Text = " ";
+			result.SetBinding(UIElement.VisibilityProperty, Show(param, min));
 			return result;
 		}
 
