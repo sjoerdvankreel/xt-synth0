@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -13,7 +12,8 @@ namespace Xt.Synth0.UI
 			result.Children.Add(GroupUI.Make(model.Unit2, "Unit2", new(1, 0)));
 			result.Children.Add(GroupUI.Make(model.Unit3, "Unit3", new(2, 0)));
 			result.Children.Add(GroupUI.Make(model.Global, "Global", new(3, 0)));
-			result.Children.Add(PatternUI.Make(model.Pattern, "Pattern", new(0, 1, 4)));
+			result.Children.Add(GroupUI.Make(model.Editor, "Editor", new(0, 1)));
+			result.Children.Add(PatternUI.Make(model.Pattern, "Pattern", new(1, 1, 3)));
 			return result;
 		}
 	}

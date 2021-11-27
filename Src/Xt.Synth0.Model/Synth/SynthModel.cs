@@ -12,6 +12,7 @@ namespace Xt.Synth0.Model
 		public UnitModel Unit2 { get; } = new();
 		public UnitModel Unit3 { get; } = new();
 		public GlobalModel Global { get; } = new();
+		public EditorModel Editor { get; } = new();
 		public PatternModel Pattern { get; } = new();
 		public int Version { get; set; } = CurrentVersion;
 
@@ -27,7 +28,7 @@ namespace Xt.Synth0.Model
 		public SynthModel()
 		{
 			PropertyChangedEventHandler handler;
-			_subModels = new SubModel[] { Unit1, Unit2, Unit3, Global, Pattern };
+			_subModels = new SubModel[] { Unit1, Unit2, Unit3, Editor, Global, Pattern };
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 			foreach (var sub in _subModels)
 				foreach (var param in sub.Params())
