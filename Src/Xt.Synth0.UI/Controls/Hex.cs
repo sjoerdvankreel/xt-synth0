@@ -6,27 +6,27 @@ using System.Windows.Input;
 
 namespace Xt.Synth0.UI
 {
-	public class AmpBox : RangeBase
+	public class Hex : RangeBase
 	{
 		public static readonly RoutedEvent OnParsedEvent = EventManager.RegisterRoutedEvent(
-			nameof(OnParsed), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(AmpBox));
+			nameof(OnParsed), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Hex));
 
 		static readonly DependencyPropertyKey HexValuePropertyKey = DependencyProperty.RegisterReadOnly(
-			nameof(HexValue), typeof(string), typeof(AmpBox), new PropertyMetadata(0.ToString("X2")));
+			nameof(HexValue), typeof(string), typeof(Hex), new PropertyMetadata(0.ToString("X2")));
 		public static readonly DependencyProperty HexValueProperty = HexValuePropertyKey.DependencyProperty;
 		public static string GetHexValue(DependencyObject obj) => (string)obj.GetValue(HexValueProperty);
 		static void SetHexValue(DependencyObject obj, string value) => obj.SetValue(HexValuePropertyKey, value);
 
 		static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
 		{
-			var box = (AmpBox)obj;
+			var box = (Hex)obj;
 			box.HexValue = ((int)box.Value).ToString("X2");
 		}
 
-		static AmpBox()
+		static Hex()
 		{
-			ValueProperty.OverrideMetadata(typeof(AmpBox), new FrameworkPropertyMetadata(OnValueChanged));
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(AmpBox), new FrameworkPropertyMetadata(typeof(AmpBox)));
+			ValueProperty.OverrideMetadata(typeof(Hex), new FrameworkPropertyMetadata(OnValueChanged));
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(Hex), new FrameworkPropertyMetadata(typeof(Hex)));
 		}
 
 		char? _previous;

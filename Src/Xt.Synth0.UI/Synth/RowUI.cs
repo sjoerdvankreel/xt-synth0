@@ -79,7 +79,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp(Param amp, int row)
 		{
-			var result = MakeCell<AmpBox>(new(row, 2));
+			var result = MakeCell<Hex>(new(row, 2));
 			result.Minimum = amp.Info.Min;
 			result.Maximum = amp.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(amp));
