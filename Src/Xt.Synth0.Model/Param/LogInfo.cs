@@ -13,10 +13,10 @@ namespace Xt.Synth0.Model
 
 		public override string Format(int value)
 		{
-			var max1 = Max + 1.0;
-			var exp = (1.0 - Math.Log(max1 - value, max1)) * _range;
-			if (exp < 1000) return $"{(int)exp}{_postfix1}";
-			return $"{(exp / 1000).ToString("0.##")}{_postfix1k}";
+			var pos = (double)value / Max * 9.0;
+			var log = (1.0 - Math.Log10(10.0 - pos)) * _range;
+			if (log < 1000) return $"{(int)log}{_postfix1}";
+			return $"{(log / 1000).ToString("0.##")}{_postfix1k}";
 		}
 	}
 }
