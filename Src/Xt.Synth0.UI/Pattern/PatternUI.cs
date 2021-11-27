@@ -10,20 +10,18 @@ namespace Xt.Synth0.UI
 			PatternModel pattern, EditorModel editor, string name)
 		{
 			var result = new GroupBox();
-			result.Header = MakeHeader(name, editor.Edit);
+			result.Header = MakeHeader(name, editor);
 			result.Content = MakeContent(pattern, editor);
 			return result;
 		}
 
-		static UIElement MakeHeader(string name, Param edit)
+		static UIElement MakeHeader(string name, EditorModel model)
 		{
 			var result = new WrapPanel();
-			var nameText = new TextBlock();
-			nameText.Text = name + " ";
-			result.Children.Add(nameText);
-			var editText = new TextBlock();
-			editText.SetBinding(TextBlock.TextProperty, UI.Bind(edit));
-			result.Children.Add(editText);
+			result.Children.Add(UI.MakeText(name + " "));
+			result.Children.Add(UI.MakeText(UI.Bind(model.Edit)));
+			result.Children.Add(UI.MakeText("/"));
+			result.Children.Add(UI.MakeText(UI.Bind(model.Pats)));
 			return result;
 		}
 

@@ -2,4 +2,4 @@ model pool/onchange
 tooltips
 theme
 save device selection
-hide amp/oct
+long text

@@ -52,6 +52,20 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static UIElement MakeText(string text)
+		{
+			var result = new TextBlock();
+			result.Text = text;
+			return result;
+		}
+
+		internal static UIElement MakeText(Binding binding)
+		{
+			var result = new TextBlock();
+			result.SetBinding(TextBlock.TextProperty, binding);
+			return result;
+		}
+
 		internal static Grid MakeGrid(int rows, int cols)
 		{
 			var result = new Grid();
