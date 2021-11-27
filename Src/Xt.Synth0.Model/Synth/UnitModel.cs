@@ -1,21 +1,30 @@
-﻿namespace Xt.Synth0.Model
+﻿using System;
+using System.Linq;
+
+namespace Xt.Synth0.Model
 {
-	public class UnitModel : GroupModel<UnitModel>
+	public sealed class UnitModel : GroupModel<UnitModel>
 	{
-		static readonly ParamInfo AInfo = new(ParamType.Time, nameof(A), 0, 255, 0);
-		static readonly ParamInfo DInfo = new(ParamType.Time, nameof(D), 0, 255, 0);
-		static readonly ParamInfo RInfo = new(ParamType.Time, nameof(R), 0, 255, 0);
-		static readonly ParamInfo SInfo = new(ParamType.Percent, nameof(S), 0, 255, 255);
+		public static readonly string[] Notes = new[] {
+			"C", "C#", "D", "D#", "E", "F",
+			"F#", "G", "G#", "A", "A#", "B"
+		};
 
-		static readonly ParamInfo OctInfo = new(ParamType.Int, nameof(Oct), 0, 12, 4);
-		static readonly ParamInfo CentInfo = new(ParamType.Int, nameof(Cent), -50, 49, 0);
-		static readonly ParamInfo AmpInfo = new(ParamType.Percent, nameof(Amp), 0, 255, 255);
-		static readonly ParamInfo NoteInfo = new(ParamType.UnitNote,
-			nameof(Note), (int)UnitNote.C, (int)UnitNote.B, (int)UnitNote.C);
+		public static readonly string[] Types = Enum.
+			GetValues<UnitType>().Select(v => v.ToString()).ToArray();
 
-		static readonly ParamInfo OnInfo = new(nameof(On));
-		static readonly ParamInfo TypeInfo = new(ParamType.Type, nameof(Type),
-			(int)UnitType.Sin, (int)UnitType.Tri, (int)UnitType.Sin);
+		static readonly ParamInfo AInfo = new ContinuousInfo(nameof(A), 0);
+		static readonly ParamInfo DInfo = new ContinuousInfo(nameof(D), 0);
+		static readonly ParamInfo RInfo = new ContinuousInfo(nameof(R), 0);
+		static readonly ParamInfo SInfo = new ContinuousInfo(nameof(S), 255);
+
+		static readonly ParamInfo AmpInfo = new ContinuousInfo(nameof(Amp), 255);
+		static readonly ParamInfo OctInfo = new DiscreteInfo(nameof(Oct), 0, 12, 4);
+		static readonly ParamInfo CentInfo = new DiscreteInfo(nameof(Cent), -50, 49, 0);
+		static readonly ParamInfo NoteInfo = new EnumInfo<UnitNote>(nameof(Note), Notes);
+
+		static readonly ParamInfo OnInfo = new ToggleInfo(nameof(On));
+		static readonly ParamInfo TypeInfo = new EnumInfo<UnitType>(nameof(Type), Types);
 
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);

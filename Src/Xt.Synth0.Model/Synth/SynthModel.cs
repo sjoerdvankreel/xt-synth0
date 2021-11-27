@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public class SynthModel : Model<SynthModel>
+	public sealed class SynthModel : Model<SynthModel>
 	{
 		public const int CurrentVersion = 1;
 		public event EventHandler ParamChanged;

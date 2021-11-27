@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 		{
 			grid.Children.Add(MakeName(param, cell.Right(1)));
 			grid.Children.Add(MakeValue(param, cell.Right(2)));
-			if (param.Info.Type != ParamType.Toggle)
+			if (!param.Info.IsToggle)
 				grid.Children.Add(MakeKnob(param, cell));
 			else
 				grid.Children.Add(MakeToggle(param, cell));

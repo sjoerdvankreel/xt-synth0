@@ -1,11 +1,15 @@
 ﻿namespace Xt.Synth0.Model
 {
-	public class RowModel
+	public sealed class RowModel
 	{
-		static readonly ParamInfo OctInfo = new(ParamType.Int, nameof(Oct), 0, 9, 4);
-		static readonly ParamInfo AmpInfo = new(ParamType.RowAmp, nameof(Amp), 0, 255, 255);
-		static readonly ParamInfo NoteInfo = new(ParamType.RowNote, nameof(Note), 
-			(int)RowNote.None, (int)RowNote.B, (int)RowNote.None);
+		public static readonly string[] Notes = new[] {
+			"..", "==", "C-", "C#", "D-", "D#", "E-",
+			"F-", "F#", "G-", "G#", "A-", "A#", "B-"
+		};
+
+		static readonly ParamInfo AmpInfo = new ContinuousInfo(nameof(Amp), 255);
+		static readonly ParamInfo OctInfo = new DiscreteInfo(nameof(Oct), 0, 9, 4);
+		static readonly ParamInfo NoteInfo = new EnumInfo<RowNote>(nameof(Note), Notes);
 
 		public Param Amp { get; } = new(AmpInfo);
 		public Param Oct { get; } = new(OctInfo);

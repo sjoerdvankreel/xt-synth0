@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace Xt.Synth0.Model
 {
-	public class Param : INotifyPropertyChanged
+	public sealed class Param : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		static readonly PropertyChangedEventArgs EventArgs = new(nameof(Value));

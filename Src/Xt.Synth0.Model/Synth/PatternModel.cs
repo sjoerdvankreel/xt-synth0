@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public class PatternModel : GroupModel<PatternModel>
+	public sealed class PatternModel : GroupModel<PatternModel>
 	{
 		public const int Length = 32;
 
