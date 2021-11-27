@@ -8,9 +8,9 @@ namespace Xt.Synth0.UI
 	static class GroupUI
 	{
 		internal static UIElement Make(
-			GroupModel model, string name, Cell cell)
+			GroupModel model, string name)
 		{
-			var result = UI.MakeElement<GroupBox>(cell);
+			var result = new GroupBox();
 			result.Header = name;
 			result.Content = MakeContent(model);
 			return result;

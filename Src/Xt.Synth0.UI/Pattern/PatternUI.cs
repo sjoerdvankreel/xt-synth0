@@ -7,9 +7,9 @@ namespace Xt.Synth0.UI
 	static class PatternUI
 	{
 		internal static UIElement Make(
-			PatternModel model, string name, Cell cell)
+			PatternModel model, string name)
 		{
-			var result = UI.MakeElement<GroupBox>(cell);
+			var result = new GroupBox();
 			result.Header = name;
 			result.Content = MakeContent(model);
 			return result;

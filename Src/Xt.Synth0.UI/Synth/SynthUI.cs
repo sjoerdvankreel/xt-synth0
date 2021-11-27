@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -7,13 +8,28 @@ namespace Xt.Synth0.UI
 	{
 		public static UIElement Make(SynthModel model)
 		{
-			var result = UI.MakeGrid(4, 3);
-			result.Children.Add(GroupUI.Make(model.Unit1, "Unit1", new(0, 0)));
-			result.Children.Add(GroupUI.Make(model.Unit2, "Unit2", new(1, 0)));
-			result.Children.Add(GroupUI.Make(model.Unit3, "Unit3", new(2, 0)));
-			result.Children.Add(GroupUI.Make(model.Global, "Global", new(3, 0)));
-			result.Children.Add(GroupUI.Make(model.Editor, "Editor", new(0, 1)));
-			result.Children.Add(PatternUI.Make(model.Pattern, "Pattern", new(1, 1, 3)));
+			var result = new StackPanel();
+			result.Orientation = Orientation.Horizontal;
+			result.Children.Add(MakeLeft(model));
+			result.Children.Add(MakeRight(model));
+			return result;
+		}
+
+		static UIElement MakeLeft(SynthModel model)
+		{
+			var result = new StackPanel();
+			result.Children.Add(GroupUI.Make(model.Unit1, nameof(model.Unit1)));
+			result.Children.Add(GroupUI.Make(model.Unit2, nameof(model.Unit2)));
+			result.Children.Add(GroupUI.Make(model.Unit3, nameof(model.Unit3)));
+			result.Children.Add(GroupUI.Make(model.Editor, nameof(model.Editor)));
+			return result;
+		}
+
+		static UIElement MakeRight(SynthModel model)
+		{
+			var result = new StackPanel();
+			result.Children.Add(PatternUI.Make(model.Pattern, nameof(model.Pattern)));
+			result.Children.Add(GroupUI.Make(model.Global, nameof(model.Global)));
 			return result;
 		}
 	}
