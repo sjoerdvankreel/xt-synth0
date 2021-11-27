@@ -3,7 +3,7 @@
 	public sealed class PatternFx : SubModel
 	{
 		const string ValueDetail = "Automation value";
-		const string TargetDetail = "Automation parameter";
+		const string TargetDetail = "Automation target";
 
 		static readonly ParamInfo ValueInfo = new ContinuousInfo(
 			nameof(Value), ValueDetail, 0);

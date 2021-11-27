@@ -21,6 +21,7 @@ namespace Xt.Synth0.UI
 			var result = UI.MakePatternCell<HexBox>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
+			result.ToolTip = param.Info.Detail + " " + PatternUI.EditHint;
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(param));
 			result.SetBinding(UIElement.VisibilityProperty, UI.Show(fxCount, minFx));
 			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);

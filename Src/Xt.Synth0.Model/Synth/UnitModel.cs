@@ -5,18 +5,18 @@ namespace Xt.Synth0.Model
 {
 	public sealed class UnitModel : GroupModel
 	{
+		const string NoteDetail = "Note";
+		const string CentDetail = "Cent";
+		const string OctDetail = "Octave";
+		const string AmpDetail = "Volume";
+
+		const string OnDetail = "Enabled";
+		const string TypeDetail = "Waveform";
+
 		const string DDetail = "Decay time";
 		const string ADetail = "Attack time";
 		const string RDetail = "Release time";
 		const string SDetail = "Sustain level";
-
-		const string NoteDetail = "Unit note";
-		const string CentDetail = "Unit cent";
-		const string OctDetail = "Unit octave";
-		const string AmpDetail = "Unit volume";
-
-		const string OnDetail = "Unit enabled";
-		const string TypeDetail = "Waveform type";
 
 		public static readonly string[] Notes = new[] {
 			"C", "C#", "D", "D#", "E", "F",

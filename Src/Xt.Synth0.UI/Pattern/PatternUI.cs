@@ -6,6 +6,8 @@ namespace Xt.Synth0.UI
 {
 	static class PatternUI
 	{
+		internal const string EditHint = "(Click + keyboard to edit)";
+
 		internal static UIElement Make(
 			PatternModel pattern, EditorModel editor, string name)
 		{

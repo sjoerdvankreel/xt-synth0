@@ -2,8 +2,8 @@
 {
 	public sealed class GlobalModel : GroupModel
 	{
-		const string BpmDetail = "Track tempo";
-		const string AmpDetail = "Global volume";
+		const string BpmDetail = "Tempo";
+		const string AmpDetail = "Volume";
 
 		static readonly ParamInfo BpmInfo = new DiscreteInfo(
 			nameof(Bpm), BpmDetail, 1, 999, 120);

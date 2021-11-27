@@ -3,4 +3,5 @@ tooltips
 theme
 save device selection
 long text
-automation params
+automation params select ids
+disable propch for playback in automation

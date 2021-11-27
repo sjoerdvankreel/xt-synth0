@@ -2,9 +2,9 @@
 {
 	public sealed class PatternKey : SubModel
 	{
-		const string NoteDetail = "Key note";
-		const string OctDetail = "Key octave";
-		const string AmpDetail = "Key velocity";
+		const string NoteDetail = "Note";
+		const string OctDetail = "Octave";
+		const string AmpDetail = "Velocity";
 
 		public static readonly string[] Notes = new[] {
 			"..", "==", "C-", "C#", "D-", "D#", "E-",
