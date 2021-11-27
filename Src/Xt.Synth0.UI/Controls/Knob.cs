@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 
 namespace Xt.Synth0.UI
 {
@@ -13,7 +12,7 @@ namespace Xt.Synth0.UI
 		const double MaxAngle = 0.95;
 		const double DefaultMarkerSize = 6.0;
 		const double DefaultRotarySize = 16.0;
-		const double DefaultSensitivity = 100.0;
+		const double DefaultSensitivity = 50.0;
 
 		static Knob ActiveKnob;
 		static Point? ActivePosition;
