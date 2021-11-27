@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 		static string AutomationHint(SynthModel model, Param param)
 		{
 			var index = model.AutoParams().IndexOf(param);
-			if (index < 0) return "Not automatable";
+			if (index < 0) return "Automation index: none";
 			return $"Automation index: {(index + 1).ToString("X2")}";
 		}
 
