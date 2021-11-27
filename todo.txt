@@ -1,9 +1,5 @@
 model pool/onchange
-help menu/tooltips
-chords
+tooltips
 theme
-track automation params
 save device selection
-1 pattern in tabs  with chords + control automation (3 notes 3 automation?)
-maxdispklaylen
 hide amp/oct

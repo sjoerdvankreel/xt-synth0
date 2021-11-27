@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 		internal Formatter(ParamInfo info)
 		=> _info = info;
 		public object Convert(object v, Type t, object p, CultureInfo c)
-		=> _info.Format((int)v);
+		=> _info.Format((int)v).PadRight(_info.MaxDisplayLength, ' ');
 		public object ConvertBack(object v, Type t, object p, CultureInfo c)
 		=> throw new NotSupportedException();
 	}

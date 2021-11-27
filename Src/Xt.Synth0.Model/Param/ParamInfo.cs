@@ -1,4 +1,6 @@
-﻿namespace Xt.Synth0.Model
+﻿using System.Linq;
+
+namespace Xt.Synth0.Model
 {
 	public abstract class ParamInfo
 	{
@@ -9,6 +11,10 @@
 		public abstract bool IsToggle { get; }
 
 		public abstract string Format(int value);
+
+		int? _maxDisplayLength;
 		internal ParamInfo(string name) => Name = name;
+		public int MaxDisplayLength => _maxDisplayLength ??=
+			Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 	}
 }
