@@ -40,9 +40,9 @@ namespace Xt.Synth0.UI
 				result.Children.Add(UI.MakeDivider(new(r, 9)));
 				PatternKeyUI.Add(result, pattern.Rows[r].Key3, r, 10);
 				result.Children.Add(UI.MakeDivider(new(r, 14)));
-				PatternFxUI.Add(result, pattern.Rows[r].Fx1, r, 15);
+				PatternFxUI.Add(result, pattern.Rows[r].Fx1, editor.Fx, 1, r, 15);
 				result.Children.Add(UI.MakeDivider(new(r, 17)));
-				PatternFxUI.Add(result, pattern.Rows[r].Fx2, r, 18);
+				PatternFxUI.Add(result, pattern.Rows[r].Fx2, editor.Fx, 2, r, 18);
 			}
 			return result;
 		}

@@ -38,6 +38,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static Binding Show(Param param, int min)
+		{
+			var result = Bind(param);
+			result.Converter = new ShowConverter(min);
+			return result;
+		}
+
 		internal static UIElement MakeDivider(Cell cell)
 		{
 			var result = MakeElement<TextBlock>(cell);

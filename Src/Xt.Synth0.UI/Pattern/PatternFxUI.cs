@@ -9,18 +9,19 @@ namespace Xt.Synth0.UI
 	static class PatternFxUI
 	{
 		internal static void Add(
-			Grid grid, PatternFx model, int row, int col)
+			Grid grid, PatternFx fx, Param fxCount, int minCount, int row, int col)
 		{
-			grid.Children.Add(MakeHex(model.Target, row, col));
-			grid.Children.Add(MakeHex(model.Value, row, col + 1));
+			grid.Children.Add(MakeHex(fx.Target, fxCount, minCount, row, col));
+			grid.Children.Add(MakeHex(fx.Value, fxCount, minCount, row, col + 1));
 		}
 
-		static UIElement MakeHex(Param param, int row, int col)
+		static UIElement MakeHex(Param param, Param fxCount, int minCount, int row, int col)
 		{
 			var result = UI.MakePatternCell<HexBox>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(param));
+			result.SetBinding(UIElement.VisibilityProperty, UI.Show(fxCount, minCount));
 			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);
 			return result;
 		}
