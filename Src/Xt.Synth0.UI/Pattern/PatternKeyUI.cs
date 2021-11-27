@@ -28,7 +28,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeNote(Param param, int row, int col)
 		{
-			var result = UI.MakeFocusable<TextBlock>(new(row, col));
+			var result = UI.MakePatternCell<TextBlock>(new(row, col));
 			var binding = UI.Format(param);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
@@ -49,7 +49,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeOct(Param param, int row, int col)
 		{
-			var result = UI.MakeFocusable<TextBlock>(new(row, col));
+			var result = UI.MakePatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(param, e);
 			result.SetBinding(TextBlock.TextProperty, UI.Bind(param));
 			return result;
@@ -66,7 +66,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp(Param amp, int row, int col)
 		{
-			var result = UI.MakeFocusable<Hex>(new(row, col));
+			var result = UI.MakePatternCell<Hex>(new(row, col));
 			result.Minimum = amp.Info.Min;
 			result.Maximum = amp.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(amp));

@@ -17,7 +17,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeHex(Param param, int row, int col)
 		{
-			var result = UI.MakeFocusable<Hex>(new(row, col));
+			var result = UI.MakePatternCell<Hex>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(param));

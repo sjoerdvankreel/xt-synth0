@@ -53,11 +53,12 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static T MakeFocusable<T>(Cell cell)
+		internal static T MakePatternCell<T>(Cell cell)
 			where T : FrameworkElement, new()
 		{
 			var result = MakeElement<T>(cell);
 			result.Focusable = true;
+			result.Margin = new Thickness(0, 0, 0, 2);
 			result.MouseLeftButtonDown += (s, e) => result.Focus();
 			return result;
 		}
