@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
 			result.Children.Add(MakeLeft(model));
-			result.Children.Add(MakeRight(model));
+			result.Children.Add(PatternUI.Make(model));
 			return result;
 		}
 
@@ -28,13 +28,6 @@ namespace Xt.Synth0.UI
 			AddDocked(result, GroupUI.Make(model, model.Unit2));
 			AddDocked(result, GroupUI.Make(model, model.Unit3));
 			AddDocked(result, GroupUI.Make(model, model.Editor));
-			return result;
-		}
-
-		static UIElement MakeRight(SynthModel model)
-		{
-			var result = new DockPanel();
-			AddDocked(result, PatternUI.Make(model));
 			AddDocked(result, GroupUI.Make(model, model.Global));
 			return result;
 		}

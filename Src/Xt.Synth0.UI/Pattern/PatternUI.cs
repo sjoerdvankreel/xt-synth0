@@ -20,7 +20,6 @@ namespace Xt.Synth0.UI
 		static UIElement MakeHeader(EditorModel model)
 		{
 			var result = new WrapPanel();
-			result.Children.Add(UI.MakeText(nameof(SynthModel.Pattern) + " "));
 			result.Children.Add(UI.MakeText(UI.Bind(model.Edit)));
 			result.Children.Add(UI.MakeText("/"));
 			result.Children.Add(UI.MakeText(UI.Bind(model.Pats)));
