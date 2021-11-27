@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.Model
 {
-	internal class LogInfo : ContinuousInfo
+	class LogInfo : ContinuousInfo
 	{
 		readonly int _range;
 		readonly string _postfix1;

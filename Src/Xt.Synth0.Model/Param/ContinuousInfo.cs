@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.Model
 {
-	internal class ContinuousInfo : ParamInfo
+	class ContinuousInfo : ParamInfo
 	{
 		readonly int _default;
 		public override int Min => 0;
