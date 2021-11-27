@@ -33,7 +33,7 @@ namespace Xt.Synth0.UI
 			grid.Children.Add(MakeNote(model.Note, row, col));
 			grid.Children.Add(MakeOct(model, row, col + 1));
 			grid.Children.Add(UI.MakeDivider(new(row, col + 2)));
-			grid.Children.Add(MakeAmp(model.Amp, row, col + 3));
+			grid.Children.Add(MakeAmp(model, row, col + 3));
 		}
 
 		static UIElement MakeNote(Param param, int row, int col)
@@ -74,12 +74,13 @@ namespace Xt.Synth0.UI
 			UI.FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static UIElement MakeAmp(Param amp, int row, int col)
+		static UIElement MakeAmp(PatternKey model, int row, int col)
 		{
-			var result = UI.MakePatternCell<Hex>(new(row, col));
-			result.Minimum = amp.Info.Min;
-			result.Maximum = amp.Info.Max;
-			result.SetBinding(RangeBase.ValueProperty, UI.Bind(amp));
+			var result = UI.MakePatternCell<AmpBox>(new(row, col));
+			result.Minimum = model.Amp.Info.Min;
+			result.Maximum = model.Amp.Info.Max;
+			result.SetBinding(AmpBox.NoteProperty, UI.Bind(model.Note));
+			result.SetBinding(RangeBase.ValueProperty, UI.Bind(model.Amp));
 			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);
 			return result;
 		}

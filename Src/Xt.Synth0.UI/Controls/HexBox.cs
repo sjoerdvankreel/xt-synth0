@@ -6,30 +6,30 @@ using System.Windows.Input;
 
 namespace Xt.Synth0.UI
 {
-	public class Hex : RangeBase
+	public class HexBox : RangeBase
 	{
 		public static readonly RoutedEvent OnParsedEvent = EventManager.RegisterRoutedEvent(
-			nameof(OnParsed), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(Hex));
+			nameof(OnParsed), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(HexBox));
 
 		static readonly DependencyPropertyKey HexValuePropertyKey = DependencyProperty.RegisterReadOnly(
-			nameof(HexValue), typeof(string), typeof(Hex), new PropertyMetadata(0.ToString("X2")));
+			nameof(HexValue), typeof(string), typeof(HexBox), new PropertyMetadata(0.ToString("X2")));
 		public static readonly DependencyProperty HexValueProperty = HexValuePropertyKey.DependencyProperty;
 		public static string GetHexValue(DependencyObject obj) => (string)obj.GetValue(HexValueProperty);
 		static void SetHexValue(DependencyObject obj, string value) => obj.SetValue(HexValuePropertyKey, value);
 
 		static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-		{
-			var box = (Hex)obj;
-			box.HexValue = ((int)box.Value).ToString("X2");
-		}
+		=> ((HexBox)obj).Reformat();
 
-		static Hex()
+		static HexBox()
 		{
-			ValueProperty.OverrideMetadata(typeof(Hex), new FrameworkPropertyMetadata(OnValueChanged));
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(Hex), new FrameworkPropertyMetadata(typeof(Hex)));
+			ValueProperty.OverrideMetadata(typeof(HexBox), new FrameworkPropertyMetadata(OnValueChanged));
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(HexBox), new FrameworkPropertyMetadata(typeof(HexBox)));
 		}
 
 		char? _previous;
+
+		protected virtual void Reformat()
+		=> HexValue = ((int)Value).ToString("X2");
 
 		public string HexValue
 		{
