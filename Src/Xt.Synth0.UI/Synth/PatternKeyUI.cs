@@ -8,7 +8,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	static class RowUI
+	static class PatternKeyUI
 	{
 		static readonly Key[] NoteKeys = new[]
 		{
@@ -17,31 +17,17 @@ namespace Xt.Synth0.UI
 			Key.D5, Key.T, Key.D6, Key.Y, Key.D7, Key.U
 		};
 
-		static T MakeCell<T>(Cell cell)
-			where T : FrameworkElement, new()
+		internal static void Add(
+			Grid grid, PatternKey model, int row, int col)
 		{
-			var result = UI.MakeElement<T>(cell);
-			result.Focusable = true;
-			result.MouseLeftButtonDown += (s, e) => result.Focus();
-			return result;
+			grid.Children.Add(MakeNote(model.Note, row, col));
+			grid.Children.Add(MakeOct(model.Oct, row, col + 1));
+			grid.Children.Add(MakeAmp(model.Amp, row, col + 2));
 		}
 
-		static void FocusNext(FocusNavigationDirection direction)
+		static UIElement MakeNote(Param param, int row, int col)
 		{
-			if (Keyboard.FocusedElement is UIElement e)
-				e.MoveFocus(new(direction));
-		}
-
-		internal static void Add(Grid grid, RowModel model, int row)
-		{
-			grid.Children.Add(MakeNote(model.Note, row));
-			grid.Children.Add(MakeOct(model.Oct, row));
-			grid.Children.Add(MakeAmp(model.Amp, row));
-		}
-
-		static UIElement MakeNote(Param param, int row)
-		{
-			var result = MakeCell<TextBlock>(new(row, 0));
+			var result = UI.MakeFocusable<TextBlock>(new(row, col));
 			var binding = UI.Format(param);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
@@ -54,15 +40,15 @@ namespace Xt.Synth0.UI
 			if (note < 0) return;
 			e.Handled = true;
 			param.Value = note;
-			var direction = note >= (int)RowNote.C
+			var direction = note >= (int)PatternNote.C
 				? FocusNavigationDirection.Next
 				: FocusNavigationDirection.Down;
-			FocusNext(direction);
+			UI.FocusNext(direction);
 		}
 
-		static UIElement MakeOct(Param param, int row)
+		static UIElement MakeOct(Param param, int row, int col)
 		{
-			var result = MakeCell<TextBlock>(new(row, 1));
+			var result = UI.MakeFocusable<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(param, e);
 			result.SetBinding(TextBlock.TextProperty, UI.Bind(param));
 			return result;
@@ -74,16 +60,16 @@ namespace Xt.Synth0.UI
 			if (value < param.Info.Min || value > param.Info.Max) return;
 			param.Value = value;
 			e.Handled = true;
-			FocusNext(FocusNavigationDirection.Next);
+			UI.FocusNext(FocusNavigationDirection.Next);
 		}
 
-		static UIElement MakeAmp(Param amp, int row)
+		static UIElement MakeAmp(Param amp, int row, int col)
 		{
-			var result = MakeCell<Hex>(new(row, 2));
+			var result = UI.MakeFocusable<Hex>(new(row, col));
 			result.Minimum = amp.Info.Min;
 			result.Maximum = amp.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(amp));
-			result.OnParsed += (s, e) => FocusNext(FocusNavigationDirection.Next);
+			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);
 			return result;
 		}
 	}

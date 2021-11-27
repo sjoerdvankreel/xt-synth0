@@ -1,20 +1,33 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace Xt.Synth0.Model
 {
 	public sealed class PatternModel : SubModel
 	{
-		public const int Length = 32;
+		public const int RowCount = 32;
+
+		static PatternRow[] MakeRows()
+		{
+			var result = new PatternRow[RowCount];
+			for (int r = 0; r < RowCount; r++)
+					result[r] = new PatternRow();
+			return result;
+		}
+
+		public PatternRow[] Rows { get; } = MakeRows();
 
 		public PatternModel()
 		{
-			for (int i = 0; i < Length; i += 4)
-				Rows[i].Note.Value = (int)RowNote.C;
+			for (int r = 0; r < RowCount; r++)
+				Rows[r].Key1.Note.Value = (int)PatternNote.C;
 		}
 
-		public IList<RowModel> Rows { get; } = new List<RowModel>(
-			Enumerable.Range(0, Length).Select(_ => new RowModel()));
-		internal override Param[] ListParams() => Rows.SelectMany(n => n.Params()).ToArray();
+		internal override Param[] ListParams()
+		{
+			var result = new List<Param>();
+			foreach (var row in Rows)
+				result.AddRange(row.Params());
+			return result.ToArray();
+		}
 	}
 }

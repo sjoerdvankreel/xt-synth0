@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -45,6 +46,15 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static T MakeFocusable<T>(Cell cell)
+			where T : FrameworkElement, new()
+		{
+			var result = MakeElement<T>(cell);
+			result.Focusable = true;
+			result.MouseLeftButtonDown += (s, e) => result.Focus();
+			return result;
+		}
+
 		internal static T MakeElement<T>(Cell cell)
 			where T : UIElement, new()
 		{
@@ -54,6 +64,12 @@ namespace Xt.Synth0.UI
 			result.SetValue(Grid.RowSpanProperty, cell.RowSpan);
 			result.SetValue(Grid.ColumnSpanProperty, cell.ColSpan);
 			return result;
+		}
+
+		internal static void FocusNext(FocusNavigationDirection direction)
+		{
+			if (Keyboard.FocusedElement is UIElement e)
+				e.MoveFocus(new(direction));
 		}
 	}
 }

@@ -26,7 +26,6 @@ namespace Xt.Synth0
 		{
 			var json = File.ReadAllText(path);
 			var newModel = new SynthModel();
-			newModel.Pattern.Rows.Clear();
 			JsonConvert.PopulateObject(json, newModel, MakeSettings());
 			if (newModel.Version != SynthModel.CurrentVersion)
 				throw new InvalidOperationException("Wrong file format version.");
