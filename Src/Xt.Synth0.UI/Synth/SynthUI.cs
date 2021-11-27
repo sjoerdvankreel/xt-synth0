@@ -15,25 +15,27 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static void AddDocked(Panel panel, UIElement element)
+		{
+			panel.Children.Add(element);
+			element.SetValue(DockPanel.DockProperty, Dock.Top);
+		}
+
 		static UIElement MakeLeft(SynthModel model)
 		{
-			var result = new StackPanel();
-			result.Children.Add(GroupUI.Make(model.Unit1, nameof(model.Unit1)));
-			result.Children.Add(GroupUI.Make(model.Unit2, nameof(model.Unit2)));
-			result.Children.Add(GroupUI.Make(model.Unit3, nameof(model.Unit3)));
-			result.Children.Add(GroupUI.Make(model.Editor, nameof(model.Editor)));
+			var result = new DockPanel();
+			AddDocked(result, GroupUI.Make(model.Unit1, nameof(model.Unit1)));
+			AddDocked(result, GroupUI.Make(model.Unit2, nameof(model.Unit2)));
+			AddDocked(result, GroupUI.Make(model.Unit3, nameof(model.Unit3)));
+			AddDocked(result, GroupUI.Make(model.Editor, nameof(model.Editor)));
 			return result;
 		}
 
 		static UIElement MakeRight(SynthModel model)
 		{
 			var result = new DockPanel();
-			var pattern = PatternUI.Make(model.Pattern, model.Editor, nameof(model.Pattern));
-			pattern.SetValue(DockPanel.DockProperty, Dock.Top);
-			result.Children.Add(pattern);
-			var global = GroupUI.Make(model.Global, nameof(model.Global));
-			global.SetValue(DockPanel.DockProperty, Dock.Bottom);
-			result.Children.Add(global);
+			AddDocked(result, PatternUI.Make(model.Pattern, model.Editor, nameof(model.Pattern)));
+			AddDocked(result, GroupUI.Make(model.Global, nameof(model.Global)));
 			return result;
 		}
 	}
