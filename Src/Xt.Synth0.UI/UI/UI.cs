@@ -38,7 +38,7 @@ namespace Xt.Synth0.UI
 
 		internal static UIElement MakeDivider(Cell cell)
 		{
-			var result = UI.MakeElement<TextBlock>(cell);
+			var result = MakeElement<TextBlock>(cell);
 			result.Text = " ";
 			return result;
 		}
