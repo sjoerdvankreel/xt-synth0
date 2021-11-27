@@ -1,26 +1,16 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-using Xt.Synth0.Model;
+﻿using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	class OctFormatter : IMultiValueConverter
+	class OctFormatter : MultiConverter<int, int, string>
 	{
 		readonly PatternKey _model;
 		internal OctFormatter(PatternKey model) => _model = model;
 
-		public object[] ConvertBack(object value, Type[] targetTypes,
-			object parameter, CultureInfo culture)
-		=> throw new NotSupportedException();
-
-		public object Convert(object[] values, Type targetType,
-			object parameter, CultureInfo culture)
+		protected override string Convert(int t, int u)
 		{
-			var note = (int)values[0];
-			var oct = (int)values[1];
-			if (note >= (int)PatternNote.C) return _model.Oct.Info.Format(oct);
-			return new string(_model.Note.Info.Format(note)[0], 1);
+			if (t >= (int)PatternNote.C) return _model.Oct.Info.Format(u);
+			return new string(_model.Note.Info.Format(t)[0], 1);
 		}
 	}
 }
