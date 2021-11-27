@@ -13,10 +13,10 @@ namespace Xt.Synth0.Model
 		public static readonly string[] Types = Enum.
 			GetValues<UnitType>().Select(v => v.ToString()).ToArray();
 
-		static readonly ParamInfo AInfo = new ContinuousInfo(nameof(A), 0);
-		static readonly ParamInfo DInfo = new ContinuousInfo(nameof(D), 0);
-		static readonly ParamInfo RInfo = new ContinuousInfo(nameof(R), 0);
 		static readonly ParamInfo SInfo = new ContinuousInfo(nameof(S), 255);
+		static readonly ParamInfo AInfo = new LogInfo(nameof(A), 0, 1000, "ms", "s");
+		static readonly ParamInfo DInfo = new LogInfo(nameof(D), 0, 3000, "ms", "s");
+		static readonly ParamInfo RInfo = new LogInfo(nameof(R), 0, 10000, "ms", "s");
 
 		static readonly ParamInfo AmpInfo = new ContinuousInfo(nameof(Amp), 255);
 		static readonly ParamInfo OctInfo = new DiscreteInfo(nameof(Oct), 0, 12, 4);
