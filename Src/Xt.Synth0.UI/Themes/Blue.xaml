@@ -6,6 +6,7 @@
     </Style>
     <Style TargetType="{x:Type ToolTip}">
         <Setter Property="Background" Value="#303030"/>
+        <Setter Property="Foreground" Value="#78bcff"/>
         <Setter Property="BorderBrush" Value="DodgerBlue"/>
     </Style>
     <Style TargetType="{x:Type Label}">
