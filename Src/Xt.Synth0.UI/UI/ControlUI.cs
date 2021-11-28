@@ -1,24 +1,31 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
 	public static class ControlUI
 	{
-		public static UIElement Make()
+		public static UIElement Make(UIModel model)
 		{
 			var result = new GroupBox();
 			result.Header = "Control";
-			result.Content = MakeContent();
+			result.Content = MakeContent(model);
 			return result;
 		}
 
-		public static UIElement MakeContent()
+		public static UIElement MakeContent(UIModel model)
 		{
 			var result = new WrapPanel();
-			result.Children.Add(MakeButton("Start", null));
-			result.Children.Add(MakeButton("Stop", null));
+			var start = MakeButton("Start", model.RequestStart);
+			var binding = UI.Bind(model, nameof(UIModel.IsRunning), new NegateConverter());
+			start.SetBinding(UIElement.IsEnabledProperty, binding);
+			result.Children.Add(start);
+			var stop = MakeButton("Stop", model.RequestStop);
+			binding = UI.Bind(model, nameof(UIModel.IsRunning));
+			stop.SetBinding(UIElement.IsEnabledProperty, binding);
+			result.Children.Add(stop);
 			return result;
 		}
 

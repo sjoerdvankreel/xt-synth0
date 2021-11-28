@@ -8,25 +8,29 @@ namespace Xt.Synth0.UI
 	{
 		internal const string EditHint = "Click + keyboard to edit";
 
-		internal static UIElement Make(SynthModel model)
+		internal static UIElement Make(
+			SynthModel synth, UIModel ui)
 		{
-			var track = model.Track;
+			var track = synth.Track;
 			var result = new GroupBox();
-			result.Content = MakeContent(model);
+			result.Content = MakeContent(synth, ui);
 			var binding = UI.Format(track.Edit, track.Pats, new PatternFormatter());
 			result.SetBinding(HeaderedContentControl.HeaderProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeContent(SynthModel model)
+		static UIElement MakeContent(
+			SynthModel synth, UIModel ui)
 		{
 			var result = new ContentControl();
 			var patterns = new UIElement[PatternModel.PatternCount];
 			for (int p = 0; p < patterns.Length; p++)
-				patterns[p] = MakePattern(model, p);
-			var binding = UI.Bind(model.Track.Edit);
+				patterns[p] = MakePattern(synth, p);
+			var binding = UI.Bind(synth.Track.Edit);
 			binding.Converter = new PatternSelector(patterns);
 			result.SetBinding(ContentControl.ContentProperty, binding);
+			binding = UI.Bind(ui, nameof(ui.IsRunning), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 

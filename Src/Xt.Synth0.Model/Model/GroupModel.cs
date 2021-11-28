@@ -10,7 +10,7 @@ namespace Xt.Synth0.Model
 		readonly Param[][] _paramGroups;
 		public Param[][] ParamGroups() => _paramGroups;
 
-		internal virtual bool Automation => true;
+		public virtual bool Automation => true;
 		internal abstract Param[][] ListParamGroups();
 
 		internal override sealed Param[] ListParams()

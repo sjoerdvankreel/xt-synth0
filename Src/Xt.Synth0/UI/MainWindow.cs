@@ -36,15 +36,19 @@ namespace Xt.Synth0
 			set => SetValue(IsDirtyProperty, value);
 		}
 
-		readonly SynthModel _model = new();
+		readonly UIModel _ui = new();
+		readonly SynthModel _synth = new();
 
 		internal MainWindow()
 		{
+			_ui.Theme = ThemeType.None;
+			_ui.StopRequest += (s, e) => _ui.IsRunning = false;
+			_ui.StartRequest += (s, e) => _ui.IsRunning = true;
 			BindTitle();
 			Content = MakeContent();
 			ResizeMode = ResizeMode.NoResize;
 			SizeToContent = SizeToContent.WidthAndHeight;
-			_model.ParamChanged += (s, e) => IsDirty = true;
+			_synth.ParamChanged += (s, e) => IsDirty = true;
 			BindCommand(ApplicationCommands.New, (s, e) => New());
 			BindCommand(ApplicationCommands.Open, (s, e) => Load());
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
@@ -59,7 +63,7 @@ namespace Xt.Synth0
 		void Save(string path)
 		{
 			if (path == null) return;
-			IO.Save(_model, path);
+			IO.Save(_synth, path);
 			Path = path;
 			IsDirty = false;
 		}
@@ -69,7 +73,7 @@ namespace Xt.Synth0
 			if (!SaveUnsavedChanges()) return;
 			var path = LoadSaveUI.Load();
 			if (path == null) return;
-			IO.Load(path, _model);
+			IO.Load(path, _synth);
 			Path = path;
 			IsDirty = false;
 		}
@@ -77,7 +81,7 @@ namespace Xt.Synth0
 		internal void New()
 		{
 			if (!SaveUnsavedChanges()) return;
-			new SynthModel().CopyTo(_model);
+			new SynthModel().CopyTo(_synth);
 			Path = null;
 			IsDirty = false;
 		}
@@ -94,16 +98,16 @@ namespace Xt.Synth0
 			var menu = MenuUI.Make();
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
 			result.Children.Add(menu);
-			var control = ControlUI.Make();
+			var control = ControlUI.Make(_ui);
 			control.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(control);
-			var synth = SynthUI.Make(_model);
+			var synth = SynthUI.Make(_synth, _ui);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			result.SetValue(TextBlock.FontFamilyProperty, new FontFamily("Consolas"));
 
 
-			result.Resources = ConvertTheme(ThemeType.None);
+			result.Resources = ConvertTheme(_ui.Theme);
 
 			return result;
 		}

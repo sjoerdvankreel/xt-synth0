@@ -25,7 +25,7 @@
 		public Param Edit { get; } = new(EditInfo);
 		public Param Pats { get; } = new(PatsInfo);
 
-		internal override bool Automation => false;
+		public override bool Automation => false;
 		internal TrackModel(string name) : base(name) { }
 		internal override Param[][] ListParamGroups() => new[] {
 			new [] { Bpm },
