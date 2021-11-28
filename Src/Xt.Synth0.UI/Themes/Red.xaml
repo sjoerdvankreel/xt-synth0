@@ -1,16 +1,16 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
+
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Theme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
+
+    <Brush x:Key="ForegroundKey">#FF5733</Brush>
+    <Brush x:Key="ForegroundDarkKey">#B72000</Brush>
+    <Brush x:Key="ForegroundLightKey">#FF8970</Brush>
     
-    <Brush x:Key="ForegroundKey">#1E90FF</Brush>
-    <Brush x:Key="ForegroundDarkKey">#0056AB</Brush>
-    <Brush x:Key="ForegroundLightKey">#78BCFF</Brush>
-    
-    <Brush x:Key="BackgroundKey">#181818</Brush>
+    <Brush x:Key="BackgroundKey">#101010</Brush>
     <Brush x:Key="BackgroundDarkKey">#000000</Brush>
-    <Brush x:Key="BackgroundLightKey">#303030</Brush>
-    
+    <Brush x:Key="BackgroundLightKey">#202020</Brush>
+
 </ResourceDictionary>
