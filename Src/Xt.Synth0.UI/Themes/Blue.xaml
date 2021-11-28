@@ -10,21 +10,21 @@
     <Brush x:Key="BackgroundDark">#000000</Brush>
     <Brush x:Key="BackgroundLight">#303030</Brush>
 
+    <Style TargetType="{x:Type local:Toggle}">
+        <Setter Property="OnStroke" Value="{StaticResource Foreground}"/>
+        <Setter Property="OffStroke" Value="{StaticResource Foreground}"/>
+        <Setter Property="OnFill" Value="{StaticResource ForegroundLight}"/>
+        <Setter Property="OffFill" Value="{StaticResource BackgroundLight}"/>
+    </Style>
+
     <Style TargetType="{x:Type DockPanel}">
         <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
     </Style>
 
     <Style TargetType="{x:Type ToolTip}">
-        <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Foreground}"/>
         <Setter Property="Foreground" Value="{StaticResource ForegroundLight}"/>
-    </Style>
-
-    <Style TargetType="{x:Type local:Toggle}">
-        <Setter Property="OnFill" Value="{StaticResource ForegroundLight}"/>
-        <Setter Property="OffFill" Value="{StaticResource BackgroundLight}"/>
-        <Setter Property="OnStroke" Value="{StaticResource Foreground}"/>
-        <Setter Property="OffStroke" Value="{StaticResource Foreground}"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
     </Style>
 
     <Style TargetType="{x:Type TextBlock}">
@@ -35,7 +35,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <Style x:Key="TextControl" TargetType="{x:Type Control}">
         <Setter Property="Foreground" Value="{StaticResource ForegroundLight}"/>
         <Style.Triggers>
@@ -46,15 +46,15 @@
     </Style>
 
     <Style TargetType="{x:Type local:Knob}">
-        <Setter Property="MarkerFill" Value="{StaticResource ForegroundLight}"/>
-        <Setter Property="RotaryFill" Value="{StaticResource BackgroundLight}"/>
-        <Setter Property="MarkerStroke" Value="{StaticResource ForegroundLight}"/>
         <Setter Property="RotaryStroke" Value="{StaticResource Foreground}"/>
+        <Setter Property="RotaryFill" Value="{StaticResource BackgroundLight}"/>
+        <Setter Property="MarkerFill" Value="{StaticResource ForegroundLight}"/>
+        <Setter Property="MarkerStroke" Value="{StaticResource ForegroundLight}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="RotaryStroke" Value="{StaticResource ForegroundDark}"/>
                 <Setter Property="MarkerFill" Value="{StaticResource Foreground}"/>
                 <Setter Property="MarkerStroke" Value="{StaticResource Foreground}"/>
+                <Setter Property="RotaryStroke" Value="{StaticResource ForegroundDark}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -70,11 +70,13 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Border Grid.Row="0" BorderThickness="1" CornerRadius="3,3,0,0"
-                            Background="{StaticResource BackgroundLight}" BorderBrush="{StaticResource Foreground}">
+                            BorderBrush="{StaticResource Foreground}"
+                            Background="{StaticResource BackgroundLight}">
                             <ContentPresenter Margin="3" ContentSource="Header"/>
                         </Border>
                         <Border Grid.Row="1" BorderThickness="1,0,1,1" CornerRadius="0,0,3,3" 
-                            Background="{StaticResource Background}" BorderBrush="{StaticResource Foreground}">
+                            Background="{StaticResource Background}" 
+                            BorderBrush="{StaticResource Foreground}">
                             <ContentPresenter Margin="3" />
                         </Border>
                     </Grid>
@@ -91,16 +93,20 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Name="border" BorderThickness="1" Padding="4,2" CornerRadius="3" 
-                        BorderBrush="{StaticResource ForegroundDark}" Background="{TemplateBinding Background}">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource ForegroundDark}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="{StaticResource BackgroundLight}" />
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource ForegroundDark}" />
-                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource Foreground}" />
+                            <Setter TargetName="border" Property="BorderBrush" 
+                                Value="{StaticResource Foreground}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" 
+                                Value="{StaticResource BackgroundLight}" />
+                            <Setter TargetName="border" Property="BorderBrush" 
+                                Value="{StaticResource ForegroundDark}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
