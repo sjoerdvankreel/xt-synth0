@@ -32,7 +32,7 @@ namespace Xt.Synth0.UI
 		internal static Binding Format(Param param)
 		{
 			var result = Bind(param);
-			result.Converter = new Formatter(param.Info);
+			result.Converter = new ParamFormatter(param.Info);
 			return result;
 		}
 
@@ -40,6 +40,16 @@ namespace Xt.Synth0.UI
 		{
 			var result = Bind(param);
 			result.Converter = new ShowConverter(min);
+			return result;
+		}
+
+		internal static BindingBase Format(Param first, 
+			Param second, MultiConverter<int, int, string> formatter)
+		{
+			var result = new MultiBinding();
+			result.Converter = formatter;
+			result.Bindings.Add(Bind(first));
+			result.Bindings.Add(Bind(second));
 			return result;
 		}
 

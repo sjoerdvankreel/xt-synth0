@@ -101,6 +101,12 @@ namespace Xt.Synth0
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			result.SetValue(TextBlock.FontFamilyProperty, new FontFamily("Consolas"));
+
+
+			var resources = new ResourceDictionary();
+			resources.Source = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Blue.xaml");
+			result.Resources = resources;
+
 			return result;
 		}
 

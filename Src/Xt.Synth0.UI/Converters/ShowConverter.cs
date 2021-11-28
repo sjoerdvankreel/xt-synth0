@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.UI
 {
-	class ShowConverter : ValueConverter<int, Visibility>
+	class ShowConverter : Converter<int, Visibility>
 	{
 		readonly int _min;
 		internal ShowConverter(int min) => _min = min;

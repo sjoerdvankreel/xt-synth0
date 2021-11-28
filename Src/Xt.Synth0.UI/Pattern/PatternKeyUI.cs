@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using Xt.Synth0.Model;
 
@@ -19,15 +18,6 @@ namespace Xt.Synth0.UI
 			Key.Q, Key.D2, Key.W, Key.D3, Key.E, Key.R,
 			Key.D5, Key.T, Key.D6, Key.Y, Key.D7, Key.U
 		};
-
-		internal static BindingBase FormatOct(PatternKey model)
-		{
-			var result = new MultiBinding();
-			result.Bindings.Add(UI.Bind(model.Note));
-			result.Bindings.Add(UI.Bind(model.Oct));
-			result.Converter = new OctFormatter(model);
-			return result;
-		}
 
 		internal static void Add(Grid grid, PatternKey model,
 			TrackModel track, int minKeys, int row, int col)
@@ -66,7 +56,8 @@ namespace Xt.Synth0.UI
 		{
 			var result = UI.MakePatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
-			result.SetBinding(TextBlock.TextProperty, FormatOct(model));
+			var binding = UI.Format(model.Note, model.Oct, new OctFormatter(model));
+			result.SetBinding(TextBlock.TextProperty, binding);
 			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
 			result.ToolTip = string.Join("\n", model.Oct.Info.Detail, PatternUI.EditHint);
 			return result;

@@ -13,7 +13,16 @@
         <Setter Property="Background" Value="#303030"/>
         <Setter Property="BorderBrush" Value="DodgerBlue"/>
     </Style>
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="#78bcff"/>
+    </Style>
     <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="#78bcff"/>
+    </Style>
+    <Style TargetType="{x:Type local:HexBox}">
+        <Setter Property="Foreground" Value="#78bcff"/>
+    </Style>
+    <Style TargetType="{x:Type local:AmpBox}">
         <Setter Property="Foreground" Value="#78bcff"/>
     </Style>
     <Style TargetType="{x:Type local:Toggle}">
@@ -30,6 +39,7 @@
     </Style>
 
     <Style TargetType="{x:Type GroupBox}">
+        <Setter Property="Foreground" Value="DodgerBlue"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GroupBox}">

@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.UI
 {
-	class PatternSelector : ValueConverter<int, UIElement>
+	class PatternSelector : Converter<int, UIElement>
 	{
 		readonly UIElement[] _elements;
 		internal PatternSelector(UIElement[] elements) => _elements = elements;

@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Xt.Synth0.UI
 {
-	abstract class ValueConverter<T, U> : IValueConverter
+	abstract class Converter<T, U> : IValueConverter
 	{
 		internal abstract U Convert(T value);
 

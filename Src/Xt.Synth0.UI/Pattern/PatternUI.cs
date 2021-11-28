@@ -10,18 +10,11 @@ namespace Xt.Synth0.UI
 
 		internal static UIElement Make(SynthModel model)
 		{
+			var track = model.Track;
 			var result = new GroupBox();
 			result.Content = MakeContent(model);
-			result.Header = MakeHeader(model.Track);
-			return result;
-		}
-
-		static UIElement MakeHeader(TrackModel model)
-		{
-			var result = new WrapPanel();
-			result.Children.Add(UI.MakeText(UI.Bind(model.Edit)));
-			result.Children.Add(UI.MakeText("/"));
-			result.Children.Add(UI.MakeText(UI.Bind(model.Pats)));
+			var binding = UI.Format(track.Edit, track.Pats, new PatternFormatter());
+			result.SetBinding(HeaderedContentControl.HeaderProperty, binding);
 			return result;
 		}
 
