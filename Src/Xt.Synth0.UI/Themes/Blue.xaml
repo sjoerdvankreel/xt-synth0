@@ -2,57 +2,65 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Xt.Synth0.UI">
 
+    <Brush x:Key="Foreground">#1E90FF</Brush>
+    <Brush x:Key="ForegroundDark">#0056AB</Brush>
+    <Brush x:Key="ForegroundLight">#78BCFF</Brush>
+
+    <Brush x:Key="Background">#181818</Brush>
+    <Brush x:Key="BackgroundDark">#000000</Brush>
+    <Brush x:Key="BackgroundLight">#303030</Brush>
+
     <Style TargetType="{x:Type DockPanel}">
-        <Setter Property="Background" Value="Black"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
     </Style>
 
     <Style TargetType="{x:Type ToolTip}">
-        <Setter Property="Background" Value="#303030"/>
-        <Setter Property="Foreground" Value="#78bcff"/>
-        <Setter Property="BorderBrush" Value="DodgerBlue"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundLight}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Foreground}"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLight}"/>
     </Style>
 
     <Style TargetType="{x:Type local:Toggle}">
-        <Setter Property="OnFill" Value="#78bcff"/>
-        <Setter Property="OffFill" Value="#303030"/>
-        <Setter Property="OnStroke" Value="DodgerBlue"/>
-        <Setter Property="OffStroke" Value="DodgerBlue"/>
+        <Setter Property="OnFill" Value="{StaticResource ForegroundLight}"/>
+        <Setter Property="OffFill" Value="{StaticResource BackgroundLight}"/>
+        <Setter Property="OnStroke" Value="{StaticResource Foreground}"/>
+        <Setter Property="OffStroke" Value="{StaticResource Foreground}"/>
     </Style>
 
     <Style TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="#78bcff"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLight}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="#0056ab"/>
+                <Setter Property="Foreground" Value="{StaticResource ForegroundDark}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
     
     <Style x:Key="TextControl" TargetType="{x:Type Control}">
-        <Setter Property="Foreground" Value="#78bcff"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundLight}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="#0056ab"/>
+                <Setter Property="Foreground" Value="{StaticResource ForegroundDark}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type local:Knob}">
-        <Setter Property="MarkerFill" Value="#78bcff"/>
-        <Setter Property="RotaryFill" Value="#303030"/>
-        <Setter Property="MarkerStroke" Value="#78bcff"/>
-        <Setter Property="RotaryStroke" Value="DodgerBlue"/>
+        <Setter Property="MarkerFill" Value="{StaticResource ForegroundLight}"/>
+        <Setter Property="RotaryFill" Value="{StaticResource BackgroundLight}"/>
+        <Setter Property="MarkerStroke" Value="{StaticResource ForegroundLight}"/>
+        <Setter Property="RotaryStroke" Value="{StaticResource Foreground}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="RotaryStroke" Value="#0056ab"/>
-                <Setter Property="MarkerFill" Value="DodgerBlue"/>
-                <Setter Property="MarkerStroke" Value="DodgerBlue"/>
+                <Setter Property="RotaryStroke" Value="{StaticResource ForegroundDark}"/>
+                <Setter Property="MarkerFill" Value="{StaticResource Foreground}"/>
+                <Setter Property="MarkerStroke" Value="{StaticResource Foreground}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type GroupBox}">
-        <Setter Property="Foreground" Value="DodgerBlue"/>
+        <Setter Property="Foreground" Value="{StaticResource Foreground}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type GroupBox}">
@@ -62,11 +70,11 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Border Grid.Row="0" BorderThickness="1" CornerRadius="3,3,0,0"
-                            Background="#303030" BorderBrush="DodgerBlue">
+                            Background="{StaticResource BackgroundLight}" BorderBrush="{StaticResource Foreground}">
                             <ContentPresenter Margin="3" ContentSource="Header"/>
                         </Border>
                         <Border Grid.Row="1" BorderThickness="1,0,1,1" CornerRadius="0,0,3,3" 
-                            Background="#181818" BorderBrush="DodgerBlue">
+                            Background="{StaticResource Background}" BorderBrush="{StaticResource Foreground}">
                             <ContentPresenter Margin="3" />
                         </Border>
                     </Grid>
@@ -77,22 +85,22 @@
 
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="3"/>
-        <Setter Property="Foreground" Value="#0056ab"/>
-        <Setter Property="Background" Value="#78bcff"/>
+        <Setter Property="Foreground" Value="{StaticResource ForegroundDark}"/>
+        <Setter Property="Background" Value="{StaticResource ForegroundLight}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Name="border" BorderThickness="1" Padding="4,2" CornerRadius="3" 
-                        BorderBrush="#0056ab" Background="{TemplateBinding Background}">
+                        BorderBrush="{StaticResource ForegroundDark}" Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="#303030" />
-                            <Setter TargetName="border" Property="BorderBrush" Value="#0056ab" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundLight}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource ForegroundDark}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="DodgerBlue" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource Foreground}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
