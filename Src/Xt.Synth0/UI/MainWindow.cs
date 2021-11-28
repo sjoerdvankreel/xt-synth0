@@ -103,12 +103,26 @@ namespace Xt.Synth0
 			result.SetValue(TextBlock.FontFamilyProperty, new FontFamily("Consolas"));
 
 
-			var resources = new ResourceDictionary();
-			resources.Source = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Green.xaml");
-			result.Resources = resources;
+			result.Resources = ConvertTheme(ThemeType.None);
 
 			return result;
 		}
+
+		internal ResourceDictionary ConvertTheme(ThemeType value)
+		{
+			ResourceDictionary result = new();
+			result.Source = new Uri(ResourceUri(value));
+			return result;
+		}
+
+		string ResourceUri(ThemeType type) => type switch
+		{
+			ThemeType.Red => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Red.xaml",
+			ThemeType.Blue => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Blue.xaml",
+			ThemeType.Green => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Green.xaml",
+			ThemeType.None => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Generic.xaml",
+			_ => throw new InvalidOperationException()
+		};
 
 		bool SaveUnsavedChanges()
 		{
