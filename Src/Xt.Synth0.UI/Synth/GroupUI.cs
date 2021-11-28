@@ -23,7 +23,7 @@ namespace Xt.Synth0.UI
 			var rows = group.ParamGroups();
 			var cols = rows.Max(r => r.Length);
 			var result = UI.MakeGrid(rows.Length, cols * 3);
-			result.VerticalAlignment = VerticalAlignment.Bottom;
+			result.VerticalAlignment = VerticalAlignment.Top;
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)
 					ParamUI.Add(result, synth, rows[r][c], new(r, c * 3));

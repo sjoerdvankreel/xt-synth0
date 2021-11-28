@@ -27,8 +27,8 @@ namespace Xt.Synth0.UI
 			AddDocked(result, GroupUI.Make(model, model.Unit1));
 			AddDocked(result, GroupUI.Make(model, model.Unit2));
 			AddDocked(result, GroupUI.Make(model, model.Unit3));
-			AddDocked(result, GroupUI.Make(model, model.Editor));
-			AddDocked(result, GroupUI.Make(model, model.Global));
+			AddDocked(result, GroupUI.Make(model, model.Amp));
+			AddDocked(result, GroupUI.Make(model, model.Track));
 			return result;
 		}
 	}

@@ -13,11 +13,11 @@ namespace Xt.Synth0.Model
 		public int Version { get; set; } = CurrentVersion;
 
 		public PatternModel Pattern { get; } = new();
+		public AmpModel Amp { get; } = new(nameof(Amp));
 		public UnitModel Unit1 { get; } = new(nameof(Unit1));
 		public UnitModel Unit2 { get; } = new(nameof(Unit2));
 		public UnitModel Unit3 { get; } = new(nameof(Unit3));
-		public GlobalModel Global { get; } = new(nameof(Global));
-		public EditorModel Editor { get; } = new(nameof(Editor));
+		public TrackModel Track { get; } = new(nameof(Track));
 
 		readonly SubModel[] _subModels;
 		readonly List<Param> _autoParams = new();
@@ -34,7 +34,7 @@ namespace Xt.Synth0.Model
 		{
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
-			_subModels = new SubModel[] { Unit1, Unit2, Unit3, Global, Editor, Pattern };
+			_subModels = new SubModel[] { Unit1, Unit2, Unit3, Amp, Track, Pattern };
 			foreach (var sub in _subModels)
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;

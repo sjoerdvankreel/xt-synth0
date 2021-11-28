@@ -30,12 +30,12 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static void Add(Grid grid, PatternKey model,
-			EditorModel editor, int minKeys, int row, int col)
+			TrackModel track, int minKeys, int row, int col)
 		{
-			grid.Children.Add(MakeNote(model.Note, editor.Keys, minKeys, row, col));
-			grid.Children.Add(MakeOct(model, editor.Keys, minKeys, row, col + 1));
-			grid.Children.Add(UI.MakeDivider(new(row, col + 2), editor.Keys, minKeys));
-			grid.Children.Add(MakeAmp(model, editor.Keys, minKeys, row, col + 3));
+			grid.Children.Add(MakeNote(model.Note, track.Keys, minKeys, row, col));
+			grid.Children.Add(MakeOct(model, track.Keys, minKeys, row, col + 1));
+			grid.Children.Add(UI.MakeDivider(new(row, col + 2), track.Keys, minKeys));
+			grid.Children.Add(MakeAmp(model, track.Keys, minKeys, row, col + 3));
 		}
 
 		static UIElement MakeNote(Param param,
