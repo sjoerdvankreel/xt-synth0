@@ -11,6 +11,7 @@
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="3"/>
         <Setter Property="Background" Value="#303030"/>
+        <Setter Property="Foreground" Value="#78bcff"/>
         <Setter Property="BorderBrush" Value="DodgerBlue"/>
     </Style>
     <Style TargetType="{x:Type Label}">

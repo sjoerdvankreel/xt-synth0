@@ -18,7 +18,9 @@ namespace Xt.Synth0.UI
 		{
 			var result = new WrapPanel();
 			result.Children.Add(MakeButton("Start", null));
-			result.Children.Add(MakeButton("Stop", null));
+			var stop = MakeButton("Stop", null);
+			stop.IsEnabled = false;
+			result.Children.Add(stop);
 			return result;
 		}
 
