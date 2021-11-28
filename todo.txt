@@ -6,4 +6,5 @@ make+bind uimodel (action, isrunning, theme)
 remove isenabled=false
 theme exact edit window
 fix the green theme (foreground1/2/3)
-set font int style
+set font in style
+fix plain theme (enabled/disabled)
