@@ -11,9 +11,7 @@ namespace Xt.Synth0.UI
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
 			result.Children.Add(MakeLeft(model));
-			var pattern = PatternUI.Make(model);
-			pattern.IsEnabled = false;
-			result.Children.Add(pattern);
+			result.Children.Add(PatternUI.Make(model));
 			return result;
 		}
 
@@ -30,9 +28,7 @@ namespace Xt.Synth0.UI
 			AddDocked(result, GroupUI.Make(model, model.Unit2));
 			AddDocked(result, GroupUI.Make(model, model.Unit3));
 			AddDocked(result, GroupUI.Make(model, model.Amp));
-			var track = GroupUI.Make(model, model.Track);
-			track.IsEnabled = false;
-			AddDocked(result, track);
+			AddDocked(result, GroupUI.Make(model, model.Track));
 			return result;
 		}
 	}

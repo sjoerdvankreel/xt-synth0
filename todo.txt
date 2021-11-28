@@ -2,9 +2,8 @@ model pool/onchange
 theme
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
-cleanup xaml
-make 3 themes
 make+bind uimodel (action, isrunning, theme)
 remove isenabled=false
 theme exact edit window
 fix the green theme (foreground1/2/3)
+set font int style

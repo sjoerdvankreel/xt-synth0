@@ -22,6 +22,22 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static Binding Bind(
+			object source, string path)
+		{
+			var result = new Binding(path);
+			result.Source = source;
+			return result;
+		}
+
+		internal static Binding Bind(object source, 
+			string path, IValueConverter converter)
+		{
+			var result = Bind(source, path);
+			result.Converter = converter;
+			return result;
+		}
+
 		internal static Binding Bind(Param param)
 		{
 			var result = new Binding(nameof(Param.Value));
