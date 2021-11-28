@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Xt.Synth0.UI">
+    <Style TargetType="{x:Type DockPanel}">
+        <Setter Property="Background" Value="Black"/>
+    </Style>
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="#303030"/>
+    </Style>
+    <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="DodgerBlue"/>
+    </Style>
+    <Style TargetType="{x:Type local:Toggle}">
+        <Setter Property="OnFill" Value="DodgerBlue"/>
+        <Setter Property="OnStroke" Value="DodgerBlue"/>
+        <Setter Property="OffFill" Value="#303030"/>
+        <Setter Property="OffStroke" Value="DodgerBlue"/>
+    </Style>
+    <Style TargetType="{x:Type local:Knob}">
+        <Setter Property="RotaryFill" Value="#303030"/>
+        <Setter Property="MarkerFill" Value="DodgerBlue"/>
+        <Setter Property="RotaryStroke" Value="DodgerBlue"/>
+        <Setter Property="MarkerStroke" Value="DodgerBlue"/>
+    </Style>
+</ResourceDictionary>

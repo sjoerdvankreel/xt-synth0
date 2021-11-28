@@ -14,6 +14,9 @@ namespace Xt.Synth0
 		{
 			StartTime = DateTime.Now;
 			var app = new Application();
+			var resources = new ResourceDictionary();
+			resources.Source = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Blue.xaml");
+			app.Resources = resources;
 			var window = new MainWindow();
 			MenuUI.New = window.New;
 			MenuUI.Load = window.Load;
