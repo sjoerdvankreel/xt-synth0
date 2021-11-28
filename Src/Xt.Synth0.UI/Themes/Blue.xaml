@@ -8,12 +8,6 @@
         <Setter Property="Background" Value="#303030"/>
         <Setter Property="BorderBrush" Value="DodgerBlue"/>
     </Style>
-    <Style TargetType="{x:Type Button}">
-        <Setter Property="Margin" Value="3"/>
-        <Setter Property="Background" Value="#303030"/>
-        <Setter Property="Foreground" Value="#78bcff"/>
-        <Setter Property="BorderBrush" Value="DodgerBlue"/>
-    </Style>
     <Style TargetType="{x:Type Label}">
         <Setter Property="Foreground" Value="#78bcff"/>
     </Style>
@@ -56,6 +50,36 @@
                             <ContentPresenter Margin="3" />
                         </Border>
                     </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Foreground" Value="#303030"/>
+        <Setter Property="Background" Value="#78bcff"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="border" 
+                        BorderThickness="1"
+                        Padding="4,2" 
+                        BorderBrush="DodgerBlue" 
+                        CornerRadius="3" 
+                        Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="#303030" />
+                            <Setter Property="Foreground" Value="#78bcff"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="#303030" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
