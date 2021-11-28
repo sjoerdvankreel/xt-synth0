@@ -4,22 +4,50 @@
     <Style TargetType="{x:Type DockPanel}">
         <Setter Property="Background" Value="Black"/>
     </Style>
-    <Style TargetType="{x:Type Button}">
+    <Style TargetType="{x:Type ToolTip}">
         <Setter Property="Background" Value="#303030"/>
+        <Setter Property="BorderBrush" Value="DodgerBlue"/>
+    </Style>
+    <Style TargetType="{x:Type Button}">
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Background" Value="#303030"/>
+        <Setter Property="BorderBrush" Value="DodgerBlue"/>
     </Style>
     <Style TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="DodgerBlue"/>
+        <Setter Property="Foreground" Value="#78bcff"/>
     </Style>
     <Style TargetType="{x:Type local:Toggle}">
-        <Setter Property="OnFill" Value="DodgerBlue"/>
+        <Setter Property="OnFill" Value="#78bcff"/>
         <Setter Property="OnStroke" Value="DodgerBlue"/>
         <Setter Property="OffFill" Value="#303030"/>
         <Setter Property="OffStroke" Value="DodgerBlue"/>
     </Style>
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="RotaryFill" Value="#303030"/>
-        <Setter Property="MarkerFill" Value="DodgerBlue"/>
+        <Setter Property="MarkerFill" Value="#78bcff"/>
         <Setter Property="RotaryStroke" Value="DodgerBlue"/>
-        <Setter Property="MarkerStroke" Value="DodgerBlue"/>
+        <Setter Property="MarkerStroke" Value="#78bcff"/>
     </Style>
+
+    <Style TargetType="{x:Type GroupBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupBox}">
+                    <Grid Margin="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Background="#303030" BorderBrush="DodgerBlue" BorderThickness="1" CornerRadius="3,3,0,0">
+                            <ContentPresenter Margin="3" ContentSource="Header"/>
+                        </Border>
+                        <Border Grid.Row="1" Background="#181818" BorderBrush="DodgerBlue" BorderThickness="1,0,1,1" CornerRadius="0,0,3,3" >
+                            <ContentPresenter Margin="3" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

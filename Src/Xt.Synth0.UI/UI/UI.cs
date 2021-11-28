@@ -8,8 +8,6 @@ namespace Xt.Synth0.UI
 {
 	static class UI
 	{
-		internal const int Margin = 2;
-
 		static RowDefinition MakeRow()
 		{
 			var result = new RowDefinition();
@@ -74,7 +72,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = MakeElement<T>(cell);
 			result.Focusable = true;
-			result.Margin = new Thickness(0, 0, 0,  Margin);
+			result.Margin = new Thickness(0, 0, 0, 2);
 			result.MouseLeftButtonDown += (s, e) => result.Focus();
 			return result;
 		}

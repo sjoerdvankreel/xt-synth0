@@ -11,7 +11,6 @@ namespace Xt.Synth0.UI
 			var result = new GroupBox();
 			result.Header = "Control";
 			result.Content = MakeContent();
-			result.Margin = new Thickness(UI.Margin);
 			return result;
 		}
 
@@ -28,7 +27,6 @@ namespace Xt.Synth0.UI
 			var result = new Button();
 			result.Content = content;
 			result.Click += (s, e) => execute();
-			result.Margin = new Thickness(UI.Margin);
 			return result;
 		}
 	}

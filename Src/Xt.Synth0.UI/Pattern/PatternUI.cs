@@ -12,7 +12,6 @@ namespace Xt.Synth0.UI
 		{
 			var result = new GroupBox();
 			result.Content = MakeContent(model);
-			result.Margin = new Thickness(UI.Margin);
 			result.Header = MakeHeader(model.Track);
 			return result;
 		}
