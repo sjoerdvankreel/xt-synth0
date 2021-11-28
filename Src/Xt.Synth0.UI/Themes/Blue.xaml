@@ -19,12 +19,27 @@
     </Style>
     <Style TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="#78bcff"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#0056ab"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type local:HexBox}">
         <Setter Property="Foreground" Value="#78bcff"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#0056ab"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type local:AmpBox}">
         <Setter Property="Foreground" Value="#78bcff"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#0056ab"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type local:Toggle}">
         <Setter Property="OnFill" Value="#78bcff"/>

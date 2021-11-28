@@ -11,7 +11,9 @@ namespace Xt.Synth0.UI
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
 			result.Children.Add(MakeLeft(model));
-			result.Children.Add(PatternUI.Make(model));
+			var pattern = PatternUI.Make(model);
+			pattern.IsEnabled = false;
+			result.Children.Add(pattern);
 			return result;
 		}
 
