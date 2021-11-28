@@ -28,7 +28,9 @@ namespace Xt.Synth0.UI
 			AddDocked(result, GroupUI.Make(model, model.Unit2));
 			AddDocked(result, GroupUI.Make(model, model.Unit3));
 			AddDocked(result, GroupUI.Make(model, model.Amp));
-			AddDocked(result, GroupUI.Make(model, model.Track));
+			var track = GroupUI.Make(model, model.Track);
+			track.IsEnabled = false;
+			AddDocked(result, track);
 			return result;
 		}
 	}

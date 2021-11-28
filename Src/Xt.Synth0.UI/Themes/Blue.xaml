@@ -11,6 +11,11 @@
     </Style>
     <Style TargetType="{x:Type Label}">
         <Setter Property="Foreground" Value="#78bcff"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="#0056ab"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
     <Style TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="#78bcff"/>
@@ -32,6 +37,13 @@
         <Setter Property="MarkerFill" Value="#78bcff"/>
         <Setter Property="RotaryStroke" Value="DodgerBlue"/>
         <Setter Property="MarkerStroke" Value="#78bcff"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="MarkerFill" Value="DodgerBlue"/>
+                <Setter Property="RotaryStroke" Value="#0056ab"/>
+                <Setter Property="MarkerStroke" Value="DodgerBlue"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type GroupBox}">
@@ -59,7 +71,7 @@
     <Style TargetType="{x:Type Button}">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Margin" Value="3"/>
-        <Setter Property="Foreground" Value="#303030"/>
+        <Setter Property="Foreground" Value="#0056ab"/>
         <Setter Property="Background" Value="#78bcff"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -67,7 +79,7 @@
                     <Border Name="border" 
                         BorderThickness="1"
                         Padding="4,2" 
-                        BorderBrush="DodgerBlue" 
+                        BorderBrush="#0056ab" 
                         CornerRadius="3" 
                         Background="{TemplateBinding Background}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -75,10 +87,10 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Background" Value="#303030" />
-                            <Setter Property="Foreground" Value="#78bcff"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#0056ab" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="#303030" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="DodgerBlue" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
