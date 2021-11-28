@@ -104,7 +104,7 @@ namespace Xt.Synth0
 
 
 			var resources = new ResourceDictionary();
-			resources.Source = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Red.xaml");
+			resources.Source = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Green.xaml");
 			result.Resources = resources;
 
 			return result;
