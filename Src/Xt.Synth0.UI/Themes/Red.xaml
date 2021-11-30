@@ -5,6 +5,7 @@
         <ResourceDictionary Source="Theme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <Brush x:Key="ButtonKey">#FF5733</Brush>
     <Brush x:Key="ForegroundKey">#FF5733</Brush>
     <Brush x:Key="ForegroundDarkKey">#B72000</Brush>
     <Brush x:Key="ForegroundLightKey">#FF8970</Brush>
@@ -12,5 +13,6 @@
     <Brush x:Key="BackgroundKey">#101010</Brush>
     <Brush x:Key="BackgroundDarkKey">#000000</Brush>
     <Brush x:Key="BackgroundLightKey">#202020</Brush>
+    <Brush x:Key="BackgroundButtonKey">#FF8970</Brush>
 
 </ResourceDictionary>
