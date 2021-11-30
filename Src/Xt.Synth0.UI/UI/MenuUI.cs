@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
@@ -26,6 +27,18 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static MenuItem MakeTheme()
+		{
+			var result = MakeItem("Theme");
+			foreach (var theme in Enum.GetValues<ThemeType>())
+			{
+				var item = MakeItem(theme.ToString());
+				item.IsCheckable = true;
+				result.Items.Add(item);
+			}
+			return result;
+		}
+
 		static MenuItem MakeItem(ICommand command, string header, Func<Action> execute)
 		{
 			var result = MakeItem(header);
@@ -45,6 +58,8 @@ namespace Xt.Synth0.UI
 			result.Items.Add(new Separator());
 			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", () => Save));
 			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", () => SaveAs));
+			result.Items.Add(new Separator());
+			result.Items.Add(MakeTheme());
 			return result;
 		}
 	}
