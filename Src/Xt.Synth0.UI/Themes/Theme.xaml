@@ -23,7 +23,8 @@
         <Setter Property="Foreground" Value="{DynamicResource ForegroundLightKey}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ForegroundDarkKey}"/>
+                <Setter Property="Opacity" Value="0.75" />
+                <Setter Property="Foreground" Value="{DynamicResource ForegroundLightKey}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -32,7 +33,8 @@
         <Setter Property="Foreground" Value="{DynamicResource ForegroundLightKey}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{DynamicResource ForegroundDarkKey}"/>
+                <Setter Property="Opacity" Value="0.75" />
+                <Setter Property="Foreground" Value="{DynamicResource ForegroundLightKey}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -42,13 +44,6 @@
         <Setter Property="RotaryFill" Value="{DynamicResource BackgroundLightKey}"/>
         <Setter Property="MarkerFill" Value="{DynamicResource ForegroundLightKey}"/>
         <Setter Property="MarkerStroke" Value="{DynamicResource ForegroundLightKey}"/>
-        <Style.Triggers>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="MarkerFill" Value="{DynamicResource ForegroundKey}"/>
-                <Setter Property="MarkerStroke" Value="{DynamicResource ForegroundKey}"/>
-                <Setter Property="RotaryStroke" Value="{DynamicResource ForegroundDarkKey}"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type GroupBox}">
@@ -90,15 +85,12 @@
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.75" />
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="BorderBrush" 
                                 Value="{DynamicResource ForegroundKey}" />
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" 
-                                Value="{DynamicResource BackgroundLightKey}" />
-                            <Setter TargetName="border" Property="BorderBrush" 
-                                Value="{DynamicResource ForegroundDarkKey}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
