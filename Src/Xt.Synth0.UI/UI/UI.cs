@@ -2,12 +2,15 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	static class UI
+	public static class UI
 	{
+		public static readonly FontFamily FontFamily = new FontFamily("Consolas");
+
 		static RowDefinition MakeRow()
 		{
 			var result = new RowDefinition();
