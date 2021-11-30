@@ -42,6 +42,7 @@ namespace Xt.Synth0.UI
 			var result = MakeItem("_File");
 			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", () => New));
 			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", () => Load));
+			result.Items.Add(new Separator());
 			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", () => Save));
 			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", () => SaveAs));
 			return result;
