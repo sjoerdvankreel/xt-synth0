@@ -7,11 +7,24 @@
         <Setter Property="Margin" Value="3"/>
     </Style>
 
+    <Style TargetType="{x:Type TextBlock}">
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" Value="0.75"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="{x:Type local:HexBox}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:HexBox}">
                     <TextBlock Text="{TemplateBinding HexValue}"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.75"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -25,11 +38,16 @@
                         <Ellipse Width="{TemplateBinding EffectiveSize}" Height="{TemplateBinding EffectiveSize}" 
                             Fill="{TemplateBinding EffectiveFill}" Stroke="{TemplateBinding EffectiveStroke}" />
                     </Canvas>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.75"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="Template">
             <Setter.Value>
@@ -42,9 +60,14 @@
                             Canvas.Top="{Binding Path=(local:Knob.MarkerY), RelativeSource={RelativeSource TemplatedParent}}"
                             Canvas.Left="{Binding Path=(local:Knob.MarkerX), RelativeSource={RelativeSource TemplatedParent}}"/>
                     </Canvas>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.75"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 </ResourceDictionary>
