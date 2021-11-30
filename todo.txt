@@ -1,5 +1,4 @@
 model pool/onchange
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
-make+bind uimodel (action, isrunning, theme)
 theme exact edit window

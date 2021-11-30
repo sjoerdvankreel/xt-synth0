@@ -10,7 +10,7 @@ using Xt.Synth0.UI;
 namespace Xt.Synth0
 {
 	class MainWindow : Window
-	{ 
+	{
 		static readonly DependencyProperty PathProperty
 		= DependencyProperty.Register("Path", typeof(string), typeof(MainWindow));
 		static readonly DependencyProperty IsDirtyProperty
@@ -108,25 +108,14 @@ namespace Xt.Synth0
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			result.SetValue(TextBlock.FontFamilyProperty, UI.UI.FontFamily);
-			result.Resources = ConvertTheme(_ui.Theme);
+			result.Resources = UI.UI.GetThemeResources(_ui.Theme);
+			_ui.PropertyChanged += (s, e) =>
+			{
+				if (e.PropertyName == nameof(UIModel.Theme))
+					result.Resources = UI.UI.GetThemeResources(_ui.Theme);
+			};
 			return result;
 		}
-
-		internal ResourceDictionary ConvertTheme(ThemeType value)
-		{
-			ResourceDictionary result = new();
-			result.Source = new Uri(ResourceUri(value));
-			return result;
-		}
-
-		string ResourceUri(ThemeType type) => type switch
-		{
-			ThemeType.Red => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Red.xaml",
-			ThemeType.Blue => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Blue.xaml",
-			ThemeType.Green => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Green.xaml",
-			ThemeType.None => "pack://application:,,,/Xt.Synth0.UI;component/Themes/Generic.xaml",
-			_ => throw new InvalidOperationException()
-		};
 
 		bool SaveUnsavedChanges()
 		{

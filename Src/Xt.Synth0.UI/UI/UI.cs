@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -33,7 +34,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Binding Bind(object source, 
+		internal static Binding Bind(object source,
 			string path, IValueConverter converter)
 		{
 			var result = Bind(source, path);
@@ -62,7 +63,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static BindingBase Format(Param first, 
+		internal static BindingBase Format(Param first,
 			Param second, MultiConverter<int, int, string> formatter)
 		{
 			var result = new MultiBinding();
@@ -130,6 +131,14 @@ namespace Xt.Synth0.UI
 		{
 			if (Keyboard.FocusedElement is UIElement e)
 				e.MoveFocus(new(direction));
+		}
+
+		public static ResourceDictionary GetThemeResources(ThemeType type)
+		{
+			ResourceDictionary result = new();
+			var uri = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{type}.xaml";
+			result.Source = new Uri(uri);
+			return result;
 		}
 	}
 }

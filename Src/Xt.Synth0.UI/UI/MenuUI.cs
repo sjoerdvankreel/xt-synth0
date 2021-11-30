@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -42,13 +43,20 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static void OnUIModelPropertyChanged(UIModel model, MenuItem item,
+			ThemeType theme, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(UIModel.Theme))
+				item.IsChecked = model.Theme == theme;
+		}
+
 		static MenuItem MakeTheme(UIModel model, ThemeType theme)
 		{
 			var result = MakeItem(theme.ToString());
 			result.IsCheckable = true;
 			result.IsChecked = model.Theme == theme;
 			result.Checked += (s, e) => model.Theme = theme;
-			model.PropertyChanged += (s, e) => result.IsChecked = model.Theme == theme;
+			model.PropertyChanged += (s, e) => OnUIModelPropertyChanged(model, result, theme, e);
 			return result;
 		}
 
