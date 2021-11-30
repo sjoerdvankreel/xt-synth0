@@ -1,9 +1,6 @@
 model pool/onchange
-theme
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
 make+bind uimodel (action, isrunning, theme)
-remove isenabled=false
 theme exact edit window
 set font in style
-

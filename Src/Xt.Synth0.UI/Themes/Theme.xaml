@@ -14,9 +14,9 @@
     </Style>
 
     <Style TargetType="{x:Type ToolTip}">
+        <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
-        <Setter Property="Background" Value="{DynamicResource BackgroundLightKey}"/>
     </Style>
 
     <Style TargetType="{x:Type local:Knob}">
