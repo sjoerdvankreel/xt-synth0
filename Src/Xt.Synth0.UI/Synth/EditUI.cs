@@ -10,28 +10,31 @@ namespace Xt.Synth0.UI
 		{
 			var window = new Window();
 			window.ResizeMode = ResizeMode.NoResize;
-			window.Content = MakeContent(window, param);
+			window.Content = MakeGroup(window, param);
+			window.Title = $"Edit {param.Info.Detail}";
 			window.Owner = Application.Current.MainWindow;
 			window.SizeToContent = SizeToContent.WidthAndHeight;
 			window.Resources = UI.GetThemeResources(model.Theme);
-			window.Title = $"{param.Info.Min} .. {param.Info.Max}";
 			window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			window.ShowDialog();
 		}
 
-		static void AddDocked(DockPanel panel, UIElement element)
+		static UIElement MakeGroup(Window window, Param param)
 		{
-			element.SetValue(DockPanel.DockProperty, Dock.Right);
-			panel.Children.Add(element);
+			var result = new GroupBox();
+			result.Content = MakeContent(window, param);
+			result.Header = $"{param.Info.Min} to {param.Info.Max}";
+			return result;
 		}
 
 		static UIElement MakeContent(Window window, Param param)
 		{
-			var result = new DockPanel();
+			var result = new StackPanel();
+			result.Orientation = Orientation.Horizontal;
 			var box = MakeTextBox(param);
-			AddDocked(result, MakeCancel(window, param));
-			AddDocked(result, MakeOK(window, box, param));
-			AddDocked(result, box);
+			result.Children.Add(box);
+			result.Children.Add(MakeOK(window, box, param));
+			result.Children.Add(MakeCancel(window, param));
 			return result;
 		}
 

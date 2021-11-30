@@ -1,5 +1,4 @@
 model pool/onchange
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
-theme exact edit window
 split into appmodel/uimodel

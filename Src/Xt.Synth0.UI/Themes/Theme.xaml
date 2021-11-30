@@ -9,6 +9,10 @@
         <Setter Property="OffFill" Value="{DynamicResource BackgroundLightKey}"/>
     </Style>
 
+    <Style TargetType="{x:Type Window}">
+        <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
+    </Style>
+
     <Style TargetType="{x:Type DockPanel}">
         <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
     </Style>
@@ -21,9 +25,12 @@
 
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="Margin" Value="3"/>
+        <Setter Property="Width" Value="50"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Right"/>
         <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Foreground2Key}"/>
     </Style>
 
     <Style TargetType="{x:Type local:Knob}">
