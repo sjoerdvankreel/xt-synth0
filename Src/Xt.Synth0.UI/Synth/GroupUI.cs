@@ -25,7 +25,7 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Top;
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)
-					ParamUI.Add(result, synth, rows[r][c], new(r, c * 3));
+					ParamUI.Add(result, synth, ui, rows[r][c], new(r, c * 3));
 			if (group.Automation) return result;
 			var binding = UI.Bind(ui, nameof(UIModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);

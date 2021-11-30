@@ -8,7 +8,7 @@ namespace Xt.Synth0.UI
 	static class ParamUI
 	{
 		const string ExactHint = "Right-click to set exact value";
-		
+
 		static string AutomationHint(SynthModel model, Param param)
 		{
 			var index = model.AutoParams().IndexOf(param);
@@ -17,14 +17,14 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static void Add(
-			Grid grid, SynthModel synth, Param param, Cell cell)
+			Grid grid, SynthModel synth, UIModel ui, Param param, Cell cell)
 		{
 			grid.Children.Add(MakeName(param, cell.Right(1)));
 			grid.Children.Add(MakeValue(param, cell.Right(2)));
-			if (!param.Info.IsToggle)
-				grid.Children.Add(MakeKnob(synth, param, cell));
-			else
+			if (param.Info.IsToggle)
 				grid.Children.Add(MakeToggle(synth, param, cell));
+			else
+				grid.Children.Add(MakeKnob(synth, ui, param, cell));
 		}
 
 		static UIElement MakeName(Param param, Cell cell)
@@ -50,13 +50,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeKnob(SynthModel synth, Param param, Cell cell)
+		static UIElement MakeKnob(SynthModel synth, UIModel ui, Param param, Cell cell)
 		{
 			var result = UI.MakeElement<Knob>(cell);
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
-			result.MouseRightButtonUp += (s, e) => EditUI.Show(param);
 			result.SetBinding(RangeBase.ValueProperty, UI.Bind(param));
+			result.MouseRightButtonUp += (s, e) => EditUI.Show(ui, param);
 			result.ToolTip = string.Join("\n", param.Info.Detail, AutomationHint(synth, param), ExactHint);
 			return result;
 		}

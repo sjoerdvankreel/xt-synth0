@@ -6,13 +6,14 @@ namespace Xt.Synth0.UI
 {
 	static class EditUI
 	{
-		internal static void Show(Param param)
+		internal static void Show(UIModel model, Param param)
 		{
 			var window = new Window();
 			window.ResizeMode = ResizeMode.NoResize;
 			window.Content = MakeContent(window, param);
 			window.Owner = Application.Current.MainWindow;
 			window.SizeToContent = SizeToContent.WidthAndHeight;
+			window.Resources = UI.GetThemeResources(model.Theme);
 			window.Title = $"{param.Info.Min} .. {param.Info.Max}";
 			window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			window.ShowDialog();
