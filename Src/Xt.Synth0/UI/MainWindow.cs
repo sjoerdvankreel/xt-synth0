@@ -40,7 +40,7 @@ namespace Xt.Synth0
 
 		internal MainWindow()
 		{
-			_ui.Theme = ThemeType.Green;
+			_ui.Theme = ThemeType.Blue;
 			_ui.NewRequest += (s, e) => New();
 			_ui.OpenRequest += (s, e) => Load();
 			_ui.SaveRequest += (s, e) => Save();
