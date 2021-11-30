@@ -10,6 +10,11 @@
         <Setter Property="Margin" Value="3"/>
     </Style>
 
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
     <Style TargetType="{x:Type TextBlock}">
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">

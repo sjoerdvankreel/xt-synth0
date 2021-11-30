@@ -19,6 +19,13 @@
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
     </Style>
 
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
+    </Style>
+
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="RotaryStroke" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="RotaryFill" Value="{DynamicResource BackgroundLightKey}"/>

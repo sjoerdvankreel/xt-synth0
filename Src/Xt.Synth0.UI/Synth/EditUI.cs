@@ -19,12 +19,19 @@ namespace Xt.Synth0.UI
 			window.ShowDialog();
 		}
 
+		static void AddDocked(DockPanel panel, UIElement element)
+		{
+			element.SetValue(DockPanel.DockProperty, Dock.Right);
+			panel.Children.Add(element);
+		}
+
 		static UIElement MakeContent(Window window, Param param)
 		{
 			var result = new DockPanel();
 			var box = MakeTextBox(param);
-			result.Children.Add(MakeOK(window, box, param));
-			result.Children.Add(box);
+			AddDocked(result, MakeCancel(window, param));
+			AddDocked(result, MakeOK(window, box, param));
+			AddDocked(result, box);
 			return result;
 		}
 
@@ -32,6 +39,14 @@ namespace Xt.Synth0.UI
 		{
 			var result = new TextBox();
 			result.Text = param.Value.ToString();
+			return result;
+		}
+
+		static UIElement MakeCancel(Window window, Param param)
+		{
+			var result = new Button();
+			result.Content = "Cancel";
+			result.Click += (s, e) => window.Close();
 			return result;
 		}
 
