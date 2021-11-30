@@ -41,7 +41,7 @@ namespace Xt.Synth0
 
 		internal MainWindow()
 		{
-			_ui.Theme = ThemeType.Green;
+			_ui.Theme = ThemeType.None;
 			_ui.StopRequest += (s, e) => _ui.IsRunning = false;
 			_ui.StartRequest += (s, e) => _ui.IsRunning = true;
 			BindTitle();
