@@ -8,6 +8,12 @@ namespace Xt.Synth0.Model
 	{
 		public event EventHandler StopRequest;
 		public event EventHandler StartRequest;
+
+		public event EventHandler NewRequest;
+		public event EventHandler OpenRequest;
+		public event EventHandler SaveRequest;
+		public event EventHandler SaveAsRequest;
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		ThemeType _theme;
@@ -26,6 +32,11 @@ namespace Xt.Synth0.Model
 
 		public void RequestStop() => StopRequest?.Invoke(this, EventArgs.Empty);
 		public void RequestStart() => StartRequest?.Invoke(this, EventArgs.Empty);
+
+		public void RequestNew() => NewRequest?.Invoke(this, EventArgs.Empty);
+		public void RequestOpen() => OpenRequest?.Invoke(this, EventArgs.Empty);
+		public void RequestSave() => SaveRequest?.Invoke(this, EventArgs.Empty);
+		public void RequestSaveAs() => SaveAsRequest?.Invoke(this, EventArgs.Empty);
 
 		void Set<T>(ref T field, T value, [CallerMemberName] string property = null)
 		{

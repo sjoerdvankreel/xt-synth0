@@ -15,10 +15,6 @@ namespace Xt.Synth0
 			StartTime = DateTime.Now;
 			var app = new Application();
 			var window = new MainWindow();
-			MenuUI.New = window.New;
-			MenuUI.Load = window.Load;
-			MenuUI.Save = window.Save;
-			MenuUI.SaveAs = window.SaveAs;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			app.Run(window);
 		}

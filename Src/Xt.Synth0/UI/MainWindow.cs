@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using Xt.Synth0.Model;
 using Xt.Synth0.UI;
 
@@ -42,6 +41,10 @@ namespace Xt.Synth0
 		internal MainWindow()
 		{
 			_ui.Theme = ThemeType.Green;
+			_ui.NewRequest += (s, e) => New();
+			_ui.OpenRequest += (s, e) => Load();
+			_ui.SaveRequest += (s, e) => Save();
+			_ui.SaveAsRequest += (s, e) => SaveAs();
 			_ui.StopRequest += (s, e) => _ui.IsRunning = false;
 			_ui.StartRequest += (s, e) => _ui.IsRunning = true;
 			BindTitle();
@@ -95,7 +98,7 @@ namespace Xt.Synth0
 		UIElement MakeContent()
 		{
 			var result = new DockPanel();
-			var menu = MenuUI.Make();
+			var menu = MenuUI.Make(_ui);
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
 			result.Children.Add(menu);
 			var control = ControlUI.Make(_ui);

@@ -8,15 +8,10 @@ namespace Xt.Synth0.UI
 {
 	public static class MenuUI
 	{
-		public static Action New;
-		public static Action Load;
-		public static Action Save;
-		public static Action SaveAs;
-
-		public static UIElement Make()
+		public static UIElement Make(UIModel model)
 		{
 			var result = new Menu();
-			result.Items.Add(MakeFile());
+			result.Items.Add(MakeFile(model));
 			return result;
 		}
 
@@ -39,25 +34,25 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static MenuItem MakeItem(ICommand command, string header, Func<Action> execute)
+		static MenuItem MakeItem(ICommand command, string header, Action execute)
 		{
 			var result = MakeItem(header);
 			result.Command = command;
 			var binding = new CommandBinding();
 			binding.Command = command;
-			binding.Executed += (s, e) => execute()();
+			binding.Executed += (s, e) => execute();
 			result.CommandBindings.Add(binding);
 			return result;
 		}
 
-		static UIElement MakeFile()
+		static UIElement MakeFile(UIModel model)
 		{
 			var result = MakeItem("_File");
-			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", () => New));
-			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", () => Load));
+			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", model.RequestNew));
+			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", model.RequestOpen));
 			result.Items.Add(new Separator());
-			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", () => Save));
-			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", () => SaveAs));
+			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", model.RequestSave));
+			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", model.RequestSaveAs));
 			result.Items.Add(new Separator());
 			result.Items.Add(MakeTheme());
 			return result;
