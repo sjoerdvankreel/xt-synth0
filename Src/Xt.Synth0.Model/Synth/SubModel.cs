@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.Model
 {
-	public abstract class SubModel : Model
+	public abstract class SubModel : PartModel
 	{
 		readonly Param[] _params;
 		public Param[] Params() => _params;
@@ -8,7 +8,7 @@
 		internal abstract Param[] ListParams();
 		internal SubModel() => _params = ListParams();
 
-		public override sealed void CopyTo(Model model)
+		public override sealed void CopyTo(PartModel model)
 		{
 			var sub = (SubModel)model;
 			for (int p = 0; p < _params.Length; p++)

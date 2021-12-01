@@ -1,4 +1,4 @@
 model pool/onchange
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
-split into appmodel/uimodel
+split into appmodel/uimodel/audiomodel/synthmodel?->synthpart/groups/pattern
