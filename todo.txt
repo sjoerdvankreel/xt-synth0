@@ -1,4 +1,4 @@
 model pool/onchange
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
-change options to groupmodel, remove check/combo, drop viewmodel
+fix opts devicename
