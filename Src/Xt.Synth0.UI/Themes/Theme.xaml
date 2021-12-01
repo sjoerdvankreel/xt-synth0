@@ -7,6 +7,8 @@
     </Style>
 
     <Style TargetType="{x:Type Window}">
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Foreground1Key}"/>
         <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
     </Style>
 
@@ -87,7 +89,7 @@
     </Style>
 
     <Style TargetType="{x:Type Button}">
-        <Setter Property="Margin" Value="3, 3, 0, 3"/>
+        <Setter Property="Margin" Value="3"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground2Key}"/>
         <Setter Property="Background" Value="{DynamicResource BackgroundButtonKey}"/>
         <Setter Property="Template">
