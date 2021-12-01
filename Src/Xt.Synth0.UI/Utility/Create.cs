@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -21,20 +20,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static UIElement Text(string text)
-		{
-			var result = new TextBlock();
-			result.Text = text;
-			return result;
-		}
-
-		internal static UIElement Text(Binding binding)
-		{
-			var result = new TextBlock();
-			result.SetBinding(TextBlock.TextProperty, binding);
-			return result;
-		}
-
 		internal static Grid Grid(int rows, int cols)
 		{
 			var result = new Grid();
@@ -42,6 +27,13 @@ namespace Xt.Synth0.UI
 				result.RowDefinitions.Add(Row());
 			for (int c = 0; c < cols; c++)
 				result.ColumnDefinitions.Add(Col());
+			return result;
+		}
+
+		internal static Label Label(string text, Cell cell)
+		{
+			var result = Element<Label>(cell);
+			result.Content = text;
 			return result;
 		}
 
@@ -72,6 +64,18 @@ namespace Xt.Synth0.UI
 			result.SetValue(System.Windows.Controls.Grid.ColumnProperty, cell.Col);
 			result.SetValue(System.Windows.Controls.Grid.RowSpanProperty, cell.RowSpan);
 			result.SetValue(System.Windows.Controls.Grid.ColumnSpanProperty, cell.ColSpan);
+			return result;
+		}
+
+		internal static Window Window(OptionsModel model)
+		{
+			var result = new Window();
+			result.ResizeMode = ResizeMode.NoResize;
+			result.Owner = Application.Current.MainWindow;
+			result.SizeToContent = SizeToContent.WidthAndHeight;
+			result.Resources = Utility.GetThemeResources(model.Theme);
+			result.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+			model.ThemeChanged += (s, e) => result.Resources = Utility.GetThemeResources(model.Theme);
 			return result;
 		}
 	}

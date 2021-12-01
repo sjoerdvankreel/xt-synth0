@@ -38,6 +38,7 @@ namespace Xt.Synth0
 			MenuUI.Open += (s, e) => Load();
 			MenuUI.Save += (s, e) => Save();
 			MenuUI.SaveAs += (s, e) => SaveAs();
+			MenuUI.Options += (s, e) => OptionsUI.Show(_options);
 			ControlUI.Stop += (s, e) => _audio.IsRunning = false;
 			ControlUI.Start += (s, e) => _audio.IsRunning = true;
 			BindTitle();

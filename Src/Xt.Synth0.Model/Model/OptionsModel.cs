@@ -1,13 +1,12 @@
-﻿namespace Xt.Synth0.Model
+﻿using System;
+
+namespace Xt.Synth0.Model
 {
 	public sealed class OptionsModel : ViewModel
 	{
-		ThemeType _theme;
-		public ThemeType Theme
-		{
-			get => _theme;
-			set => Set(ref _theme, value);
-		}
+		public static readonly int[] SampleRates = new[] { 44100, 48000, 96000 };
+
+		public event EventHandler ThemeChanged;
 
 		bool _useAsio;
 		public bool UseAsio
@@ -23,11 +22,22 @@
 			set => Set(ref _deviceId, value);
 		}
 
-		int _sampleRate;
+		int _sampleRate = SampleRates[0];
 		public int SampleRate
 		{
 			get => _sampleRate;
 			set => Set(ref _sampleRate, value);
+		}
+
+		ThemeType _theme;
+		public ThemeType Theme
+		{
+			get => _theme;
+			set
+			{
+				Set(ref _theme, value);
+				ThemeChanged?.Invoke(this, EventArgs.Empty);
+			}
 		}
 	}
 }

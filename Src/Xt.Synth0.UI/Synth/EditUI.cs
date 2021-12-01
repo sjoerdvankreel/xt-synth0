@@ -8,14 +8,9 @@ namespace Xt.Synth0.UI
 	{
 		internal static void Show(OptionsModel model, Param param)
 		{
-			var window = new Window();
-			window.ResizeMode = ResizeMode.NoResize;
+			var window = Create.Window(model);
 			window.Content = MakeGroup(window, param);
 			window.Title = $"Edit {param.Info.Detail}";
-			window.Owner = Application.Current.MainWindow;
-			window.SizeToContent = SizeToContent.WidthAndHeight;
-			window.Resources = Utility.GetThemeResources(model.Theme);
-			window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			window.ShowDialog();
 		}
 

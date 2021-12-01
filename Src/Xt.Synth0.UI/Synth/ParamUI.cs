@@ -19,19 +19,12 @@ namespace Xt.Synth0.UI
 		internal static void Add(Grid grid, SynthModel synth,
 			OptionsModel options, Param param, Cell cell)
 		{
-			grid.Children.Add(MakeName(param, cell.Right(1)));
+			grid.Children.Add(Create.Label(param.Info.Name, cell.Right(1)));
 			grid.Children.Add(MakeValue(param, cell.Right(2)));
 			if (param.Info.IsToggle)
 				grid.Children.Add(MakeToggle(synth, param, cell));
 			else
 				grid.Children.Add(MakeKnob(synth, options, param, cell));
-		}
-
-		static UIElement MakeName(Param param, Cell cell)
-		{
-			var result = Create.Element<Label>(cell);
-			result.Content = param.Info.Name;
-			return result;
 		}
 
 		static UIElement MakeValue(Param param, Cell cell)
