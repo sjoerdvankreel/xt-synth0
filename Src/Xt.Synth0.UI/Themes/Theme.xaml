@@ -27,16 +27,6 @@
         <Setter Property="OffFill" Value="{DynamicResource BackgroundLightKey}"/>
     </Style>
 
-    <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Width" Value="50"/>
-        <Setter Property="Margin" Value="{StaticResource Margin}"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="HorizontalContentAlignment" Value="Right"/>
-        <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
-        <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
-        <Setter Property="BorderBrush" Value="{DynamicResource Foreground2Key}"/>
-    </Style>
-
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="RotaryStroke" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="RotaryFill" Value="{DynamicResource BackgroundLightKey}"/>
@@ -135,6 +125,37 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="BorderBrush" 
                                 Value="{DynamicResource ButtonKey}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Margin" Value="{StaticResource Margin}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border" SnapsToDevicePixels="True" 
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="false" 
+                                      HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ForegroundKey}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource ForegroundKey}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
