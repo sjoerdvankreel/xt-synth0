@@ -14,7 +14,7 @@ namespace Xt.Synth0.UI
 			var track = synth.Track;
 			var result = new GroupBox();
 			result.Content = MakeContent(synth, audio);
-			var binding = UI.Bind(track.Edit, track.Pats, new PatternFormatter());
+			var binding = Bind.To(track.Edit, track.Pats, new PatternFormatter());
 			result.SetBinding(HeaderedContentControl.HeaderProperty, binding);
 			return result;
 		}
@@ -26,10 +26,10 @@ namespace Xt.Synth0.UI
 			var patterns = new UIElement[PatternModel.PatternCount];
 			for (int p = 0; p < patterns.Length; p++)
 				patterns[p] = MakePattern(synth, p);
-			var binding = UI.Bind(synth.Track.Edit);
+			var binding = Bind.To(synth.Track.Edit);
 			binding.Converter = new PatternSelector(patterns);
 			result.SetBinding(ContentControl.ContentProperty, binding);
-			binding = UI.Bind(audio, nameof(audio.IsRunning), new NegateConverter());
+			binding = Bind.To(audio, nameof(audio.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}

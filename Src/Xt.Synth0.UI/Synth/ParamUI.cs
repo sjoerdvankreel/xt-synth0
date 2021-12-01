@@ -36,8 +36,8 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeValue(Param param, Cell cell)
 		{
+			var binding = Bind.Format(param);
 			var result = UI.MakeElement<Label>(cell);
-			var binding = UI.Format(param);
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
@@ -45,7 +45,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeToggle(SynthModel synth, Param param, Cell cell)
 		{
 			var result = UI.MakeElement<Toggle>(cell);
-			result.SetBinding(ToggleButton.IsCheckedProperty, UI.Bind(param));
+			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			result.ToolTip = string.Join("\n", param.Info.Detail, AutomationHint(synth, param));
 			return result;
 		}
@@ -55,7 +55,7 @@ namespace Xt.Synth0.UI
 			var result = UI.MakeElement<Knob>(cell);
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
-			result.SetBinding(RangeBase.ValueProperty, UI.Bind(param));
+			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.MouseRightButtonUp += (s, e) => EditUI.Show(options, param);
 			result.ToolTip = string.Join("\n", param.Info.Detail, AutomationHint(synth, param), ExactHint);
 			return result;

@@ -26,62 +26,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Binding Bind(
-			object source, string path)
-		{
-			var result = new Binding(path);
-			result.Source = source;
-			return result;
-		}
-
-		internal static Binding Bind(object source,
-			string path, IValueConverter converter)
-		{
-			var result = Bind(source, path);
-			result.Converter = converter;
-			return result;
-		}
-
-		internal static Binding Bind(Param param)
-		{
-			var result = new Binding(nameof(Param.Value));
-			result.Source = param;
-			return result;
-		}
-
-		internal static Binding Format(Param param)
-		{
-			var result = Bind(param);
-			result.Converter = new ParamFormatter(param.Info);
-			return result;
-		}
-
-		internal static Binding Show(Param param, int min)
-		{
-			var result = Bind(param);
-			result.Converter = new ShowConverter(min);
-			return result;
-		}
-
-		internal static BindingBase Bind(Param first,
-			Param second, MultiConverter<int, int, string> formatter)
-		{
-			var result = new MultiBinding();
-			result.Converter = formatter;
-			result.Bindings.Add(Bind(first));
-			result.Bindings.Add(Bind(second));
-			return result;
-		}
-
-		public static BindingBase Bind(object source1, string path1,
-			object source2, string path2, IMultiValueConverter formatter)
-		{
-			var result = new MultiBinding();
-			result.Converter = formatter;
-			result.Bindings.Add(Bind(source1, path1));
-			result.Bindings.Add(Bind(source2, path2));
-			return result;
-		}
+	
 
 		internal static UIElement MakeText(string text)
 		{
@@ -133,7 +78,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = MakeElement<TextBlock>(cell);
 			result.Text = " ";
-			result.SetBinding(UIElement.VisibilityProperty, Show(param, min));
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(param, min));
 			return result;
 		}
 

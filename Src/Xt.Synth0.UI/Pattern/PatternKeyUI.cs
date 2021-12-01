@@ -33,8 +33,8 @@ namespace Xt.Synth0.UI
 		{
 			var result = UI.MakePatternCell<TextBlock>(new(row, col));
 			result.ToolTip = string.Join("\n", param.Info.Detail, NoteEditHint);
-			result.SetBinding(TextBlock.TextProperty, UI.Format(param));
-			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
+			result.SetBinding(TextBlock.TextProperty, Bind.Format(param));
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
 			return result;
 		}
@@ -56,9 +56,9 @@ namespace Xt.Synth0.UI
 		{
 			var result = UI.MakePatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
-			var binding = UI.Bind(model.Note, model.Oct, new OctFormatter(model));
+			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
-			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
 			result.ToolTip = string.Join("\n", model.Oct.Info.Detail, PatternUI.EditHint);
 			return result;
 		}
@@ -78,9 +78,9 @@ namespace Xt.Synth0.UI
 			var result = UI.MakePatternCell<AmpBox>(new(row, col));
 			result.Minimum = model.Amp.Info.Min;
 			result.Maximum = model.Amp.Info.Max;
-			result.SetBinding(AmpBox.NoteProperty, UI.Bind(model.Note));
-			result.SetBinding(RangeBase.ValueProperty, UI.Bind(model.Amp));
-			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
+			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
+			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
 			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);
 			result.ToolTip = string.Join("\n", model.Amp.Info.Detail, PatternUI.EditHint);
 			return result;

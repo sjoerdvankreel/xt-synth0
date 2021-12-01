@@ -30,11 +30,11 @@ namespace Xt.Synth0.UI
 		{
 			var result = new WrapPanel();
 			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
-			var binding = UI.Bind(model, nameof(AudioModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(model, nameof(AudioModel.IsRunning), new NegateConverter());
 			start.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Children.Add(start);
 			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
-			binding = UI.Bind(model, nameof(AudioModel.IsRunning));
+			binding = Bind.To(model, nameof(AudioModel.IsRunning));
 			stop.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Children.Add(stop);
 			return result;

@@ -122,7 +122,7 @@ namespace Xt.Synth0
 
 		void BindTitle()
 		{
-			var binding = UI.UI.Bind(this, nameof(Path), this, nameof(IsDirty), new TitleFormatter());
+			var binding = Bind.To(this, nameof(Path), this, nameof(IsDirty), new TitleFormatter());
 			SetBinding(TitleProperty, binding);
 		}
 
