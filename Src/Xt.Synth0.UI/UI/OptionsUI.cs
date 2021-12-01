@@ -12,15 +12,23 @@ namespace Xt.Synth0.UI
 			OptionsModel options, AudioModel audio)
 		{
 			var window = Create.Window(options);
-			window.Title = "Options";
-			window.Content = MakeContent(options, audio);
+			window.Content = MakeGroup(window, options, audio);
 			window.ShowDialog();
 		}
 
-		static UIElement MakeContent(
-			OptionsModel options, AudioModel audio)
+		static UIElement MakeGroup(
+			Window window, OptionsModel options, AudioModel audio)
 		{
-			var result = Create.Grid(4, 2);
+			var result = new GroupBox();
+			result.Header = $"Options";
+			result.Content = MakeContent(window, options, audio);
+			return result;
+		}
+
+		static UIElement MakeContent(
+			Window window, OptionsModel options, AudioModel audio)
+		{
+			var result = Create.Grid(5, 2);
 			result.Children.Add(Create.Label("Theme", new(0, 0)));
 			result.Children.Add(MakeTheme(options, new(0, 1)));
 			result.Children.Add(Create.Label("Use ASIO", new(1, 0)));
@@ -30,6 +38,15 @@ namespace Xt.Synth0.UI
 			result.Children.Add(MakeWasapiDevice(options, audio, new(2, 1)));
 			result.Children.Add(Create.Label("Sample rate", new(3, 0)));
 			result.Children.Add(MakeSampleRate(options, new(3, 1)));
+			result.Children.Add(MakeOK(window, new(4, 1)));
+			return result;
+		}
+
+		static UIElement MakeOK(Window window, Cell cell)
+		{
+			var result = Create.Element<Button>(cell);
+			result.Content = "OK";
+			result.Click += (s, e) => window.Close();
 			return result;
 		}
 

@@ -70,7 +70,10 @@ namespace Xt.Synth0.UI
 		internal static Window Window(OptionsModel model)
 		{
 			var result = new Window();
+			result.SnapsToDevicePixels = true;
+			result.WindowStyle = WindowStyle.None;
 			result.ResizeMode = ResizeMode.NoResize;
+			result.BorderThickness = new Thickness(1);
 			result.Owner = Application.Current.MainWindow;
 			result.SizeToContent = SizeToContent.WidthAndHeight;
 			result.Resources = Utility.GetThemeResources(model.Theme);

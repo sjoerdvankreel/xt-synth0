@@ -10,7 +10,6 @@ namespace Xt.Synth0.UI
 		{
 			var window = Create.Window(model);
 			window.Content = MakeGroup(window, param);
-			window.Title = $"Edit {param.Info.Detail}";
 			window.ShowDialog();
 		}
 
