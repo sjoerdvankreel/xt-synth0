@@ -26,7 +26,7 @@ namespace Xt.Synth0.UI
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)
 					ParamUI.Add(result, synth, options, rows[r][c], new(r, c * 3));
-			if (group.Automation) return result;
+			if (group.Automation()) return result;
 			var binding = Bind.To(audio, nameof(AudioModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;

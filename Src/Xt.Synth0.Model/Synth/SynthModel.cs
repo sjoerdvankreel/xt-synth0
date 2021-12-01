@@ -38,7 +38,7 @@ namespace Xt.Synth0.Model
 			foreach (var sub in _subModels)
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;
-			foreach (var group in _subModels.OfType<GroupModel>().Where(m => m.Automation))
+			foreach (var group in _subModels.OfType<GroupModel>().Where(m => m.Automation()))
 				_autoParams.AddRange(group.Params());
 		}
 	}

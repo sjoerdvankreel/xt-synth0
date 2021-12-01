@@ -7,11 +7,11 @@ namespace Xt.Synth0.Model
 		readonly string _name;
 		public string Name() => _name;
 
+		public virtual bool Automation() => true;
+		internal abstract Param[][] ListParamGroups();
+
 		readonly Param[][] _paramGroups;
 		public Param[][] ParamGroups() => _paramGroups;
-
-		public virtual bool Automation => true;
-		internal abstract Param[][] ListParamGroups();
 
 		internal override sealed Param[] ListParams()
 		=> ListParamGroups().SelectMany(g => g).ToArray();
