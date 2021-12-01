@@ -148,42 +148,30 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
-                        <ToggleButton Name="ToggleButton" Grid.Column="2"
-                ClickMode="Press" Focusable="False"
-                IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                >
+                        <ToggleButton Grid.Column="2" ClickMode="Press" Focusable="False"
+                            IsChecked="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}">
                             <ToggleButton.Template>
-
                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
                                             <ColumnDefinition Width="20" />
                                         </Grid.ColumnDefinitions>
-                                        <Border Grid.ColumnSpan="2" Name="Border"
-              BorderBrush="{DynamicResource ForegroundKey}" 
-              BorderThickness="1" 
-              Background="{DynamicResource BackgroundKey}" />
-                                        <Border Grid.Column="1" Margin="1" BorderBrush="Yellow"
-              
-              Background="{DynamicResource BackgroundKey}" />
-
-                                        <Path Grid.Column="1" 
-            Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
-            HorizontalAlignment="Center" Fill="{DynamicResource ForegroundKey}"
-            VerticalAlignment="Center" />
+                                        <Border Grid.ColumnSpan="2" BorderThickness="1"
+                                            BorderBrush="{DynamicResource ForegroundKey}" 
+                                            Background="{DynamicResource BackgroundKey}" />
+                                        <Path Grid.Column="1" VerticalAlignment="Center"
+                                            Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                                            HorizontalAlignment="Center" Fill="{DynamicResource ForegroundKey}" />
                                     </Grid>
                                 </ControlTemplate>
-
                             </ToggleButton.Template>
                         </ToggleButton>
-
-                        <ContentPresenter Name="ContentSite" Margin="5, 3, 23, 3" IsHitTestVisible="False"
+                        <ContentPresenter Margin="5, 3, 23, 3" IsHitTestVisible="False"
                               HorizontalAlignment="Left" VerticalAlignment="Center"                              
                               Content="{TemplateBinding ComboBox.SelectionBoxItem}" 
                               ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
-                        <!-- Popup showing items -->
                         <Popup Placement="Bottom"
                    Focusable="False" AllowsTransparency="True"
                    IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}"
@@ -191,7 +179,7 @@
                             <Grid SnapsToDevicePixels="True"
                     MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
                     MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}">
-                                <Border Name="DropDownBorder" Background="{DynamicResource BackgroundDarkKey}" Margin="0, 1, 0, 0"
+                                <Border Background="{DynamicResource BackgroundDarkKey}" Margin="0, 1, 0, 0"
                         BorderThickness="1" 
                         BorderBrush="{DynamicResource ForegroundKey}"/>
                                 <ScrollViewer Margin="4" SnapsToDevicePixels="True">
