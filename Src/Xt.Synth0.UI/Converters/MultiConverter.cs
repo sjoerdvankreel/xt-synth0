@@ -4,7 +4,7 @@ using System.Windows.Data;
 
 namespace Xt.Synth0.UI
 {
-	public abstract class MultiConverter<T, U, V> : IMultiValueConverter
+	abstract class MultiConverter<T, U, V> : IMultiValueConverter
 	{
 		protected abstract V Convert(T t, U u);
 

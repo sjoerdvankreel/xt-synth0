@@ -21,6 +21,7 @@ namespace Xt.Synth0.Model
 			get => _value;
 			set
 			{
+				if (_value == value) return;
 				var comparer = Comparer<int>.Default;
 				if (comparer.Compare(value, Info.Min) < 0)
 					throw new ArgumentException();

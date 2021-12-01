@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
-using Xt.Synth0.UI;
 
 namespace Xt.Synth0
 {

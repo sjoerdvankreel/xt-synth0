@@ -7,12 +7,12 @@ namespace Xt.Synth0.UI
 	public static class SynthUI
 	{
 		public static UIElement Make(
-			SynthModel synth, UIModel ui)
+			SynthModel synth, OptionsModel options, AudioModel audio)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
-			result.Children.Add(MakeLeft(synth, ui));
-			result.Children.Add(PatternUI.Make(synth, ui));
+			result.Children.Add(MakeLeft(synth, options, audio));
+			result.Children.Add(PatternUI.Make(synth, audio));
 			return result;
 		}
 
@@ -24,14 +24,14 @@ namespace Xt.Synth0.UI
 		}
 
 		static UIElement MakeLeft(
-			SynthModel synth, UIModel ui)
+			SynthModel synth, OptionsModel options, AudioModel audio)
 		{
 			var result = new DockPanel();
-			AddDocked(result, GroupUI.Make(synth, synth.Unit1, ui));
-			AddDocked(result, GroupUI.Make(synth, synth.Unit2, ui));
-			AddDocked(result, GroupUI.Make(synth, synth.Unit3, ui));
-			AddDocked(result, GroupUI.Make(synth, synth.Amp, ui));
-			AddDocked(result, GroupUI.Make(synth, synth.Track, ui));
+			AddDocked(result, GroupUI.Make(synth, synth.Unit1, options, audio));
+			AddDocked(result, GroupUI.Make(synth, synth.Unit2, options, audio));
+			AddDocked(result, GroupUI.Make(synth, synth.Unit3, options, audio));
+			AddDocked(result, GroupUI.Make(synth, synth.Amp, options, audio));
+			AddDocked(result, GroupUI.Make(synth, synth.Track, options, audio));
 			return result;
 		}
 	}

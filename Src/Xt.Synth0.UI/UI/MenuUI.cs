@@ -1,18 +1,22 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
 	public static class MenuUI
 	{
-		public static UIElement Make(UIModel model)
+		public static event EventHandler New;
+		public static event EventHandler Open;
+		public static event EventHandler Save;
+		public static event EventHandler SaveAs;
+		public static event EventHandler Options;
+
+		public static UIElement Make()
 		{
 			var result = new Menu();
-			result.Items.Add(MakeFile(model));
+			result.Items.Add(MakeFile());
 			return result;
 		}
 
@@ -35,41 +39,21 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static MenuItem MakeTheme(UIModel model)
-		{
-			var result = MakeItem("Theme");
-			foreach (var theme in Enum.GetValues<ThemeType>())
-				result.Items.Add(MakeTheme(model, theme));
-			return result;
-		}
-
-		static void OnUIModelPropertyChanged(UIModel model, MenuItem item,
-			ThemeType theme, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(UIModel.Theme))
-				item.IsChecked = model.Theme == theme;
-		}
-
-		static MenuItem MakeTheme(UIModel model, ThemeType theme)
-		{
-			var result = MakeItem(theme.ToString());
-			result.IsCheckable = true;
-			result.IsChecked = model.Theme == theme;
-			result.Checked += (s, e) => model.Theme = theme;
-			model.PropertyChanged += (s, e) => OnUIModelPropertyChanged(model, result, theme, e);
-			return result;
-		}
-
-		static UIElement MakeFile(UIModel model)
+		static UIElement MakeFile()
 		{
 			var result = MakeItem("_File");
-			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", model.RequestNew));
-			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", model.RequestOpen));
+			var doNew = () => New(null, EventArgs.Empty);
+			result.Items.Add(MakeItem(ApplicationCommands.New, "_New", doNew));
+			var doOpen = () => Open(null, EventArgs.Empty);
+			result.Items.Add(MakeItem(ApplicationCommands.Open, "_Open", doOpen));
 			result.Items.Add(new Separator());
-			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", model.RequestSave));
-			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", model.RequestSaveAs));
+			var doSave = () => Save(null, EventArgs.Empty);
+			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", doSave));
+			var doSaveAs = () => SaveAs(null, EventArgs.Empty);
+			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", doSaveAs));
 			result.Items.Add(new Separator());
-			result.Items.Add(MakeTheme(model));
+			var doOptions = () => Options(null, EventArgs.Empty);
+			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Options", doOptions));
 			return result;
 		}
 	}

@@ -12,9 +12,9 @@ namespace Xt.Synth0
 	class MainWindow : Window
 	{
 		static readonly DependencyProperty PathProperty
-		= DependencyProperty.Register("Path", typeof(string), typeof(MainWindow));
-		static readonly DependencyProperty IsDirtyProperty
-		= DependencyProperty.Register("IsDirty", typeof(bool), typeof(MainWindow));
+		= DependencyProperty.Register(nameof(Path), typeof(string), typeof(MainWindow));
+		static readonly DependencyProperty IsDirtyProperty 
+		= DependencyProperty.Register(nameof(IsDirty), typeof(bool), typeof(MainWindow));
 
 		static string FormatTitle(object[] args)
 		{
@@ -35,18 +35,18 @@ namespace Xt.Synth0
 			set => SetValue(IsDirtyProperty, value);
 		}
 
-		readonly UIModel _ui = new();
 		readonly SynthModel _synth = new();
+		readonly AudioModel _audio = new();
+		readonly OptionsModel _options = new();
 
 		internal MainWindow()
 		{
-			_ui.Theme = ThemeType.Blue;
-			_ui.NewRequest += (s, e) => New();
-			_ui.OpenRequest += (s, e) => Load();
-			_ui.SaveRequest += (s, e) => Save();
-			_ui.SaveAsRequest += (s, e) => SaveAs();
-			_ui.StopRequest += (s, e) => _ui.IsRunning = false;
-			_ui.StartRequest += (s, e) => _ui.IsRunning = true;
+			MenuUI.New += (s, e) => New();
+			MenuUI.Open += (s, e) => Load();
+			MenuUI.Save += (s, e) => Save();
+			MenuUI.SaveAs += (s, e) => SaveAs();
+			ControlUI.Stop += (s, e) => _audio.IsRunning = false;
+			ControlUI.Start += (s, e) => _audio.IsRunning = true;
 			BindTitle();
 			Content = MakeContent();
 			ResizeMode = ResizeMode.NoResize;
@@ -98,21 +98,21 @@ namespace Xt.Synth0
 		UIElement MakeContent()
 		{
 			var result = new DockPanel();
-			var menu = MenuUI.Make(_ui);
+			var menu = MenuUI.Make();
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
 			result.Children.Add(menu);
-			var control = ControlUI.Make(_ui);
+			var control = ControlUI.Make(_audio);
 			control.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(control);
-			var synth = SynthUI.Make(_synth, _ui);
+			var synth = SynthUI.Make(_synth, _options, _audio);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			result.SetValue(TextBlock.FontFamilyProperty, UI.UI.FontFamily);
-			result.Resources = UI.UI.GetThemeResources(_ui.Theme);
-			_ui.PropertyChanged += (s, e) =>
+			result.Resources = UI.UI.GetThemeResources(_options.Theme);
+			_options.PropertyChanged += (s, e) =>
 			{
-				if (e.PropertyName == nameof(UIModel.Theme))
-					result.Resources = UI.UI.GetThemeResources(_ui.Theme);
+				if (e.PropertyName == nameof(OptionsModel.Theme))
+					result.Resources = UI.UI.GetThemeResources(_options.Theme);
 			};
 			return result;
 		}

@@ -6,7 +6,7 @@ namespace Xt.Synth0.UI
 {
 	static class EditUI
 	{
-		internal static void Show(UIModel model, Param param)
+		internal static void Show(OptionsModel model, Param param)
 		{
 			var window = new Window();
 			window.ResizeMode = ResizeMode.NoResize;
@@ -34,7 +34,7 @@ namespace Xt.Synth0.UI
 			var box = MakeTextBox(param);
 			result.Children.Add(box);
 			result.Children.Add(MakeOK(window, box, param));
-			result.Children.Add(MakeCancel(window, param));
+			result.Children.Add(MakeCancel(window));
 			return result;
 		}
 
@@ -45,7 +45,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeCancel(Window window, Param param)
+		static UIElement MakeCancel(Window window)
 		{
 			var result = new Button();
 			result.Content = "Cancel";

@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.Model
 {
-	internal sealed class EnumInfo<T> : ParamInfo
+	sealed class EnumInfo<T> : ParamInfo
 		where T : struct, Enum
 	{
 		public override int Min => 0;
