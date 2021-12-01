@@ -8,16 +8,16 @@
     <sys:Double x:Key="Opacity">0.75</sys:Double>
 
     <Style TargetType="{x:Type Button}">
-        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Margin" Value="{StaticResource Margin}"/>
     </Style>
 
     <Style TargetType="{x:Type ComboBox}">
-        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Margin" Value="{StaticResource Margin}"/>
     </Style>
 
     <Style TargetType="{x:Type CheckBox}">
-        <Setter Property="Margin" Value="3"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="{StaticResource Margin}"/>
     </Style>
 
     <Style TargetType="{x:Type Window}">
@@ -26,8 +26,8 @@
     </Style>
 
     <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Margin" Value="3"/>
         <Setter Property="Width" Value="50"/>
+        <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Right"/>
     </Style>
