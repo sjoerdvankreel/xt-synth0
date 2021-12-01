@@ -34,11 +34,15 @@ namespace Xt.Synth0
 
 		internal MainWindow()
 		{
+			_audio.AsioDevices.Add(new() { Id = "id1", Name = "AsiName1" });
+			_audio.AsioDevices.Add(new() { Id = "id2", Name = "AsiName2" });
+			_audio.WasapiDevices.Add(new() { Id = "id1", Name = "WasName1" });
+			_audio.WasapiDevices.Add(new() { Id = "id2", Name = "WasName2" });
 			MenuUI.New += (s, e) => New();
 			MenuUI.Open += (s, e) => Load();
 			MenuUI.Save += (s, e) => Save();
 			MenuUI.SaveAs += (s, e) => SaveAs();
-			MenuUI.Options += (s, e) => OptionsUI.Show(_options);
+			MenuUI.Options += (s, e) => OptionsUI.Show(_options,_audio);
 			ControlUI.Stop += (s, e) => _audio.IsRunning = false;
 			ControlUI.Start += (s, e) => _audio.IsRunning = true;
 			BindTitle();

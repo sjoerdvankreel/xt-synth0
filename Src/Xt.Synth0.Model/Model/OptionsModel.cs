@@ -15,18 +15,25 @@ namespace Xt.Synth0.Model
 			set => Set(ref _useAsio, value);
 		}
 
-		string _deviceId;
-		public string DeviceId
-		{
-			get => _deviceId;
-			set => Set(ref _deviceId, value);
-		}
-
 		int _sampleRate = SampleRates[0];
 		public int SampleRate
 		{
 			get => _sampleRate;
 			set => Set(ref _sampleRate, value);
+		}
+
+		string _asioDeviceId;
+		public string AsioDeviceId
+		{
+			get => _asioDeviceId;
+			set => Set(ref _asioDeviceId, value);
+		}
+
+		string _wasapiDeviceId;
+		public string WasapiDeviceId
+		{
+			get => _wasapiDeviceId;
+			set => Set(ref _wasapiDeviceId, value);
 		}
 
 		ThemeType _theme;
