@@ -63,13 +63,23 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static BindingBase Format(Param first,
+		internal static BindingBase Bind(Param first,
 			Param second, MultiConverter<int, int, string> formatter)
 		{
 			var result = new MultiBinding();
 			result.Converter = formatter;
 			result.Bindings.Add(Bind(first));
 			result.Bindings.Add(Bind(second));
+			return result;
+		}
+
+		public static BindingBase Bind(object source1, string path1,
+			object source2, string path2, IMultiValueConverter formatter)
+		{
+			var result = new MultiBinding();
+			result.Converter = formatter;
+			result.Bindings.Add(Bind(source1, path1));
+			result.Bindings.Add(Bind(source2, path2));
 			return result;
 		}
 

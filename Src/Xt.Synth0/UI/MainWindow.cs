@@ -16,13 +16,6 @@ namespace Xt.Synth0
 		static readonly DependencyProperty IsDirtyProperty 
 		= DependencyProperty.Register(nameof(IsDirty), typeof(bool), typeof(MainWindow));
 
-		static string FormatTitle(object[] args)
-		{
-			var result = args[0] == null ? nameof(Synth0)
-				: $"{nameof(Synth0)} ({args[0]})";
-			return (bool)args[1] ? $"{result} *" : result;
-		}
-
 		public string Path
 		{
 			get => (string)GetValue(PathProperty);
@@ -129,9 +122,8 @@ namespace Xt.Synth0
 
 		void BindTitle()
 		{
-			var path = Bind(this, nameof(Path));
-			var dirty = Bind(this, nameof(IsDirty));
-			SetBinding(TitleProperty, Bind(FormatTitle, path, dirty));
+			var binding = UI.UI.Bind(this, nameof(Path), this, nameof(IsDirty), new TitleFormatter());
+			SetBinding(TitleProperty, binding);
 		}
 
 		void BindCommand(RoutedUICommand command, EventHandler handler)
@@ -139,23 +131,6 @@ namespace Xt.Synth0
 			if (command.InputGestures.Count > 0)
 				InputBindings.Add(new InputBinding(command, command.InputGestures[0]));
 			CommandBindings.Add(new CommandBinding(command, (s, e) => handler(this, EventArgs.Empty)));
-		}
-
-		Binding Bind(object source, string path)
-		{
-			var result = new Binding(path);
-			result.Source = source;
-			return result;
-		}
-
-		MultiBinding Bind(
-			Func<object[], string> format, params Binding[] bindings)
-		{
-			var result = new MultiBinding();
-			foreach (var binding in bindings)
-				result.Bindings.Add(binding);
-			result.Converter = new MultiFormatter(format);
-			return result;
 		}
 	}
 }

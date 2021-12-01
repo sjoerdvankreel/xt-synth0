@@ -7,10 +7,10 @@ namespace Xt.Synth0.UI
 		readonly PatternKey _model;
 		internal OctFormatter(PatternKey model) => _model = model;
 
-		protected override string Convert(int t, int u)
+		protected override string Convert(int note, int oct)
 		{
-			if (t >= (int)PatternNote.C) return _model.Oct.Info.Format(u);
-			return new string(_model.Note.Info.Format(t)[0], 1);
+			if (note >= (int)PatternNote.C) return _model.Oct.Info.Format(oct);
+			return new string(_model.Note.Info.Format(note)[0], 1);
 		}
 	}
 }

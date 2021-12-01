@@ -56,7 +56,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = UI.MakePatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
-			var binding = UI.Format(model.Note, model.Oct, new OctFormatter(model));
+			var binding = UI.Bind(model.Note, model.Oct, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.SetBinding(UIElement.VisibilityProperty, UI.Show(keys, minKeys));
 			result.ToolTip = string.Join("\n", model.Oct.Info.Detail, PatternUI.EditHint);

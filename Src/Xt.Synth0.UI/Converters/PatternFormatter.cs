@@ -2,6 +2,7 @@
 {
 	class PatternFormatter : MultiConverter<int, int, string>
 	{
-		protected override string Convert(int t, int u) => $"{t}/{u}";
+		protected override string Convert(int edit, int pats) 
+		=> $"{edit}/{pats}";
 	}
 }

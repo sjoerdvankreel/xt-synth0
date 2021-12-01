@@ -14,7 +14,7 @@ namespace Xt.Synth0.UI
 			var track = synth.Track;
 			var result = new GroupBox();
 			result.Content = MakeContent(synth, audio);
-			var binding = UI.Format(track.Edit, track.Pats, new PatternFormatter());
+			var binding = UI.Bind(track.Edit, track.Pats, new PatternFormatter());
 			result.SetBinding(HeaderedContentControl.HeaderProperty, binding);
 			return result;
 		}
