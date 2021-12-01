@@ -146,20 +146,27 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                    <Border Padding="{StaticResource Margin}" BorderThickness="1">
+                    <Border x:Name="border" Padding="{StaticResource Margin}" BorderThickness="1">
                         <ContentPresenter />
                         <Border.Style>
                             <Style TargetType="{x:Type Border}">
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Trigger.Setters>
-                                            <Setter Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource Foreground2Key}"/>
                                         </Trigger.Setters>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Border.Style>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Trigger.Setters>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>                               
+                            </Trigger.Setters>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
