@@ -2,18 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Xt.Synth0.UI">
 
-    <Style TargetType="{x:Type local:Toggle}">
-        <Setter Property="OnFill" Value="{DynamicResource Foreground1Key}"/>
-        <Setter Property="OnStroke" Value="{DynamicResource ForegroundKey}"/>
-        <Setter Property="OffStroke" Value="{DynamicResource ForegroundKey}"/>
-        <Setter Property="OffFill" Value="{DynamicResource BackgroundLightKey}"/>
-    </Style>
-
-    <Style TargetType="{x:Type Window}">
+    <Style TargetType="{x:Type DockPanel}">
         <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
     </Style>
 
-    <Style TargetType="{x:Type DockPanel}">
+    <Style TargetType="{x:Type Window}">
         <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
     </Style>
 
@@ -21,6 +14,13 @@
         <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
+    </Style>
+
+    <Style TargetType="{x:Type local:Toggle}">
+        <Setter Property="OnFill" Value="{DynamicResource Foreground1Key}"/>
+        <Setter Property="OnStroke" Value="{DynamicResource ForegroundKey}"/>
+        <Setter Property="OffStroke" Value="{DynamicResource ForegroundKey}"/>
+        <Setter Property="OffFill" Value="{DynamicResource BackgroundLightKey}"/>
     </Style>
 
     <Style TargetType="{x:Type TextBox}">
@@ -87,7 +87,7 @@
     </Style>
 
     <Style TargetType="{x:Type Button}">
-        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Margin" Value="3, 3, 0, 3"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground2Key}"/>
         <Setter Property="Background" Value="{DynamicResource BackgroundButtonKey}"/>
         <Setter Property="Template">

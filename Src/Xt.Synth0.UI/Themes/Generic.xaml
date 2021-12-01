@@ -7,7 +7,7 @@
     <sys:Double x:Key="Opacity">0.75</sys:Double>
 
     <Style TargetType="{x:Type Button}">
-        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Margin" Value="3, 3, 0, 3"/>
     </Style>
 
     <Style TargetType="{x:Type TextBox}">

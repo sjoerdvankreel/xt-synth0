@@ -105,7 +105,7 @@ namespace Xt.Synth0
 			var synth = SynthUI.Make(_synth, _options, _audio);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
-			result.SetValue(TextBlock.FontFamilyProperty, new FontFamily("Consolas"));
+			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
 			result.Resources = Utility.GetThemeResources(_options.Theme);
 
 			_options.PropertyChanged += (s, e) =>

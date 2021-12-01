@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
 	public static class Utility
 	{
+		public static readonly FontFamily FontFamily = new("Consolas");
+
 		public static ResourceDictionary GetThemeResources(ThemeType theme)
 		{
 			var location = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{theme}.xaml";

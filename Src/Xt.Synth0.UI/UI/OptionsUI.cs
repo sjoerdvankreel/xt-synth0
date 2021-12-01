@@ -42,14 +42,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeOK(Window window, Cell cell)
-		{
-			var result = Create.Element<Button>(cell);
-			result.Content = "OK";
-			result.Click += (s, e) => window.Close();
-			return result;
-		}
-
 		static UIElement MakeAsioDevice(
 			OptionsModel options, AudioModel audio, Cell cell)
 		{
@@ -65,6 +57,15 @@ namespace Xt.Synth0.UI
 			var result = MakeDeviceDevice(options, false,
 				nameof(OptionsModel.WasapiDeviceId), cell);
 			result.ItemsSource = audio.WasapiDevices;
+			return result;
+		}
+
+		static UIElement MakeOK(Window window, Cell cell)
+		{
+			var result = Create.Element<Button>(cell);
+			result.Content = "OK";
+			result.Click += (s, e) => window.Close();
+			result.HorizontalAlignment = HorizontalAlignment.Right;
 			return result;
 		}
 

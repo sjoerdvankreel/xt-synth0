@@ -73,11 +73,11 @@ namespace Xt.Synth0.UI
 			result.SnapsToDevicePixels = true;
 			result.WindowStyle = WindowStyle.None;
 			result.ResizeMode = ResizeMode.NoResize;
-			result.BorderThickness = new Thickness(1);
 			result.Owner = Application.Current.MainWindow;
 			result.SizeToContent = SizeToContent.WidthAndHeight;
 			result.Resources = Utility.GetThemeResources(model.Theme);
 			result.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
 			model.ThemeChanged += (s, e) => result.Resources = Utility.GetThemeResources(model.Theme);
 			return result;
 		}
