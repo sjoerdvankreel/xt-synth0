@@ -38,15 +38,15 @@ namespace Xt.Synth0.UI
 			Window window, OptionsModel options, AudioModel audio)
 		{
 			var result = Create.Grid(4, 2);
-			result.Children.Add(Create.Label("Theme", new(0, 0)));
-			result.Children.Add(MakeTheme(options, new(0, 1)));
-			result.Children.Add(Create.Label("Use ASIO", new(1, 0)));
-			result.Children.Add(MakeUseAasio(options, new(1, 1)));
-			result.Children.Add(Create.Label("Device", new(2, 0)));
-			result.Children.Add(MakeAsioDevice(options, audio, new(2, 1)));
-			result.Children.Add(MakeWasapiDevice(options, audio, new(2, 1)));
-			result.Children.Add(Create.Label("Sample rate", new(3, 0)));
-			result.Children.Add(MakeSampleRate(options, new(3, 1)));
+			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
+			result.Children.Add(MakeUseAsio(options, new(0, 1)));
+			result.Children.Add(Create.Label("Device", new(1, 0)));
+			result.Children.Add(MakeAsioDevice(options, audio, new(1, 1)));
+			result.Children.Add(MakeWasapiDevice(options, audio, new(1, 1)));
+			result.Children.Add(Create.Label("Sample rate", new(2, 0)));
+			result.Children.Add(MakeSampleRate(options, new(2, 1)));
+			result.Children.Add(Create.Label("Theme", new(3, 0)));
+			result.Children.Add(MakeTheme(options, new(3, 1)));
 			return result;
 		}
 
@@ -86,7 +86,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeUseAasio(OptionsModel model, Cell cell)
+		static UIElement MakeUseAsio(OptionsModel model, Cell cell)
 		{
 			var result = Create.Element<CheckBox>(cell);
 			var binding = Bind.To(model, nameof(model.UseAsio));
