@@ -141,7 +141,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="{x:Type ComboBox}">
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="Control.Template">
@@ -169,19 +169,15 @@
                         </ToggleButton>
                         <ContentPresenter Margin="5, 3, 23, 3" IsHitTestVisible="False"
                               HorizontalAlignment="Left" VerticalAlignment="Center"                              
-                              Content="{TemplateBinding ComboBox.SelectionBoxItem}" 
-                              ContentTemplate="{TemplateBinding ComboBox.SelectionBoxItemTemplate}"
-                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"/>
-                        <Popup Placement="Bottom"
-                   Focusable="False" AllowsTransparency="True"
-                   IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}"
-                   PopupAnimation="Slide">
+                              Content="{TemplateBinding ComboBox.SelectionBoxItem}"/>
+                        <Popup Placement="Bottom" Focusable="False" PopupAnimation="Slide"
+                               IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}">
                             <Grid SnapsToDevicePixels="True"
-                    MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
-                    MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}">
-                                <Border Background="{DynamicResource BackgroundDarkKey}" Margin="0, 1, 0, 0"
-                        BorderThickness="1" 
-                        BorderBrush="{DynamicResource ForegroundKey}"/>
+                                MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
+                                MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}">
+                                <Border Margin="0, 1, 0, 0" BorderThickness="1" 
+                                    Background="{DynamicResource BackgroundDarkKey}"
+                                    BorderBrush="{DynamicResource ForegroundKey}"/>
                                 <ScrollViewer Margin="4" SnapsToDevicePixels="True">
                                     <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
