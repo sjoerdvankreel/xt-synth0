@@ -70,6 +70,7 @@ namespace Xt.Synth0.UI
 		internal static Window Window(OptionsModel model)
 		{
 			var result = new Window();
+			result.ShowInTaskbar = false;
 			result.SnapsToDevicePixels = true;
 			result.WindowStyle = WindowStyle.None;
 			result.ResizeMode = ResizeMode.NoResize;
