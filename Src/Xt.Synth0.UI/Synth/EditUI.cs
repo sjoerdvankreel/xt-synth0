@@ -14,7 +14,7 @@ namespace Xt.Synth0.UI
 			window.Title = $"Edit {param.Info.Detail}";
 			window.Owner = Application.Current.MainWindow;
 			window.SizeToContent = SizeToContent.WidthAndHeight;
-			window.Resources = UI.GetThemeResources(model.Theme);
+			window.Resources = Utility.GetThemeResources(model.Theme);
 			window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			window.ShowDialog();
 		}

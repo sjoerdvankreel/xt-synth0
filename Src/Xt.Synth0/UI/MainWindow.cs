@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 using Xt.Synth0.UI;
 
@@ -100,12 +100,13 @@ namespace Xt.Synth0
 			var synth = SynthUI.Make(_synth, _options, _audio);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
-			result.SetValue(TextBlock.FontFamilyProperty, UI.UI.FontFamily);
-			result.Resources = UI.UI.GetThemeResources(_options.Theme);
+			result.SetValue(TextBlock.FontFamilyProperty, new FontFamily("Consolas"));
+			result.Resources = Utility.GetThemeResources(_options.Theme);
+
 			_options.PropertyChanged += (s, e) =>
 			{
 				if (e.PropertyName == nameof(OptionsModel.Theme))
-					result.Resources = UI.UI.GetThemeResources(_options.Theme);
+					result.Resources = Utility.GetThemeResources(_options.Theme);
 			};
 			return result;
 		}

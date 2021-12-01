@@ -29,7 +29,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeName(Param param, Cell cell)
 		{
-			var result = UI.MakeElement<Label>(cell);
+			var result = Create.Element<Label>(cell);
 			result.Content = param.Info.Name;
 			return result;
 		}
@@ -37,14 +37,14 @@ namespace Xt.Synth0.UI
 		static UIElement MakeValue(Param param, Cell cell)
 		{
 			var binding = Bind.Format(param);
-			var result = UI.MakeElement<Label>(cell);
+			var result = Create.Element<Label>(cell);
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
 
 		static UIElement MakeToggle(SynthModel synth, Param param, Cell cell)
 		{
-			var result = UI.MakeElement<Toggle>(cell);
+			var result = Create.Element<Toggle>(cell);
 			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			result.ToolTip = string.Join("\n", param.Info.Detail, AutomationHint(synth, param));
 			return result;
@@ -52,7 +52,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeKnob(SynthModel synth, OptionsModel options, Param param, Cell cell)
 		{
-			var result = UI.MakeElement<Knob>(cell);
+			var result = Create.Element<Knob>(cell);
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));

@@ -24,14 +24,14 @@ namespace Xt.Synth0.UI
 		{
 			grid.Children.Add(MakeNote(model.Note, track.Keys, minKeys, row, col));
 			grid.Children.Add(MakeOct(model, track.Keys, minKeys, row, col + 1));
-			grid.Children.Add(UI.MakeDivider(new(row, col + 2), track.Keys, minKeys));
+			grid.Children.Add(Create.Divider(new(row, col + 2), track.Keys, minKeys));
 			grid.Children.Add(MakeAmp(model, track.Keys, minKeys, row, col + 3));
 		}
 
 		static UIElement MakeNote(Param param,
 			Param keys, int minKeys, int row, int col)
 		{
-			var result = UI.MakePatternCell<TextBlock>(new(row, col));
+			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.ToolTip = string.Join("\n", param.Info.Detail, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(param));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
@@ -45,16 +45,14 @@ namespace Xt.Synth0.UI
 			if (note < 0) return;
 			e.Handled = true;
 			param.Value = note;
-			var direction = note >= (int)PatternNote.C
-				? FocusNavigationDirection.Next
-				: FocusNavigationDirection.Down;
-			UI.FocusNext(direction);
+			if (note >= (int)PatternNote.C) Utility.FocusNext();
+			else Utility.FocusNext(FocusNavigationDirection.Down);
 		}
 
 		static UIElement MakeOct(PatternKey model,
 			Param keys, int minKeys, int row, int col)
 		{
-			var result = UI.MakePatternCell<TextBlock>(new(row, col));
+			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
 			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
@@ -68,20 +66,20 @@ namespace Xt.Synth0.UI
 			int value = e.Text.FirstOrDefault() - '0';
 			if (value < param.Info.Min || value > param.Info.Max) return;
 			param.Value = value;
+			Utility.FocusNext();
 			e.Handled = true;
-			UI.FocusNext(FocusNavigationDirection.Next);
 		}
 
 		static UIElement MakeAmp(PatternKey model,
 			Param keys, int minKeys, int row, int col)
 		{
-			var result = UI.MakePatternCell<AmpBox>(new(row, col));
+			var result = Create.PatternCell<AmpBox>(new(row, col));
 			result.Minimum = model.Amp.Info.Min;
 			result.Maximum = model.Amp.Info.Max;
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
-			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);
+			result.OnParsed += (s, e) => Utility.FocusNext();
 			result.ToolTip = string.Join("\n", model.Amp.Info.Detail, PatternUI.EditHint);
 			return result;
 		}

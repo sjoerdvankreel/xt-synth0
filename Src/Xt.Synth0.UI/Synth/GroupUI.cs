@@ -21,7 +21,7 @@ namespace Xt.Synth0.UI
 		{
 			var rows = group.ParamGroups();
 			var cols = rows.Max(r => r.Length);
-			var result = UI.MakeGrid(rows.Length, cols * 3);
+			var result = Create.Grid(rows.Length, cols * 3);
 			result.VerticalAlignment = VerticalAlignment.Top;
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)

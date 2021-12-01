@@ -18,12 +18,12 @@ namespace Xt.Synth0.UI
 		static UIElement MakeHex(Param param,
 			Param fxCount, int minFx, int row, int col)
 		{
-			var result = UI.MakePatternCell<HexBox>(new(row, col));
+			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(fxCount, minFx));
-			result.OnParsed += (s, e) => UI.FocusNext(FocusNavigationDirection.Next);
+			result.OnParsed += (s, e) => Utility.FocusNext(FocusNavigationDirection.Next);
 			result.ToolTip = string.Join("\n", param.Info.Detail, PatternUI.EditHint);
 			return result;
 		}
