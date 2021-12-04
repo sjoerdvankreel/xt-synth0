@@ -30,7 +30,7 @@ namespace Xt.Synth0
 
 		readonly SynthModel _synth = new();
 		readonly AudioModel _audio = new();
-		readonly OptionsModel _options = new();
+		readonly SettingsModel _settings = new();
 
 		internal MainWindow()
 		{
@@ -42,7 +42,7 @@ namespace Xt.Synth0
 			MenuUI.Open += (s, e) => Load();
 			MenuUI.Save += (s, e) => Save();
 			MenuUI.SaveAs += (s, e) => SaveAs();
-			MenuUI.Options += (s, e) => OptionsUI.Show(_options,_audio);
+			MenuUI.Settings += (s, e) => SettingsUI.Show(_settings,_audio);
 			ControlUI.Stop += (s, e) => _audio.IsRunning = false;
 			ControlUI.Start += (s, e) => _audio.IsRunning = true;
 			BindTitle();
@@ -102,16 +102,16 @@ namespace Xt.Synth0
 			var control = ControlUI.Make(_audio);
 			control.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(control);
-			var synth = SynthUI.Make(_synth, _options, _audio);
+			var synth = SynthUI.Make(_synth, _settings, _audio);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
-			result.Resources = Utility.GetThemeResources(_options.Theme);
+			result.Resources = Utility.GetThemeResources(_settings.Theme);
 
-			_options.PropertyChanged += (s, e) =>
+			_settings.PropertyChanged += (s, e) =>
 			{
-				if (e.PropertyName == nameof(OptionsModel.Theme))
-					result.Resources = Utility.GetThemeResources(_options.Theme);
+				if (e.PropertyName == nameof(SettingsModel.Theme))
+					result.Resources = Utility.GetThemeResources(_settings.Theme);
 			};
 			return result;
 		}

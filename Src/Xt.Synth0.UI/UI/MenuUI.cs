@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 		public static event EventHandler Open;
 		public static event EventHandler Save;
 		public static event EventHandler SaveAs;
-		public static event EventHandler Options;
+		public static event EventHandler Settings;
 
 		public static UIElement Make()
 		{
@@ -52,8 +52,8 @@ namespace Xt.Synth0.UI
 			var doSaveAs = () => SaveAs(null, EventArgs.Empty);
 			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", doSaveAs));
 			result.Items.Add(new Separator());
-			var doOptions = () => Options(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Options", doOptions));
+			var doSettings = () => Settings(null, EventArgs.Empty);
+			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Settings", doSettings));
 			return result;
 		}
 	}

@@ -67,7 +67,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Window Window(OptionsModel model)
+		internal static Window Window(SettingsModel model)
 		{
 			var result = new Window();
 			result.ShowInTaskbar = false;

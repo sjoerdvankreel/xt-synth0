@@ -6,47 +6,47 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	public static class OptionsUI
+	public static class SettingsUI
 	{
 		public static void Show(
-			OptionsModel options, AudioModel audio)
+			SettingsModel settings, AudioModel audio)
 		{
-			var window = Create.Window(options);
-			window.Content = MakeContent(window, options, audio);
+			var window = Create.Window(settings);
+			window.Content = MakeContent(window, settings, audio);
 			window.ShowDialog();
 		}
 
 		static UIElement MakeContent(
-			Window window, OptionsModel options, AudioModel audio)
+			Window window, SettingsModel settings, AudioModel audio)
 		{
 			var result = new StackPanel();
-			result.Children.Add(MakeGroup(window, options, audio));
+			result.Children.Add(MakeGroup(settings, audio));
 			result.Children.Add(MakeOK(window));
 			return result;
 		}
 
 		static UIElement MakeGroup(
-			Window window, OptionsModel options, AudioModel audio)
+			SettingsModel settings, AudioModel audio)
 		{
 			var result = new GroupBox();
-			result.Header = $"Options";
-			result.Content = MakeGrid(window, options, audio);
+			result.Header = $"Settings";
+			result.Content = MakeGrid(settings, audio);
 			return result;
 		}
 
 		static UIElement MakeGrid(
-			Window window, OptionsModel options, AudioModel audio)
+			SettingsModel settings, AudioModel audio)
 		{
 			var result = Create.Grid(4, 2);
 			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
-			result.Children.Add(MakeUseAsio(options, new(0, 1)));
+			result.Children.Add(MakeUseAsio(settings, new(0, 1)));
 			result.Children.Add(Create.Label("Device", new(1, 0)));
-			result.Children.Add(MakeAsioDevice(options, audio, new(1, 1)));
-			result.Children.Add(MakeWasapiDevice(options, audio, new(1, 1)));
+			result.Children.Add(MakeAsioDevice(settings, audio, new(1, 1)));
+			result.Children.Add(MakeWasapiDevice(settings, audio, new(1, 1)));
 			result.Children.Add(Create.Label("Sample rate", new(2, 0)));
-			result.Children.Add(MakeSampleRate(options, new(2, 1)));
+			result.Children.Add(MakeSampleRate(settings, new(2, 1)));
 			result.Children.Add(Create.Label("Theme", new(3, 0)));
-			result.Children.Add(MakeTheme(options, new(3, 1)));
+			result.Children.Add(MakeTheme(settings, new(3, 1)));
 			return result;
 		}
 
@@ -60,57 +60,57 @@ namespace Xt.Synth0.UI
 		}
 
 		static UIElement MakeAsioDevice(
-			OptionsModel options, AudioModel audio, Cell cell)
+			SettingsModel settings, AudioModel audio, Cell cell)
 		{
-			var result = MakeDevice(options, true,
-				nameof(OptionsModel.AsioDeviceId), cell);
+			var result = MakeDevice(settings, true,
+				nameof(SettingsModel.AsioDeviceId), cell);
 			result.ItemsSource = audio.AsioDevices;
 			return result;
 		}
 
 		static UIElement MakeWasapiDevice(
-			OptionsModel options, AudioModel audio, Cell cell)
+			SettingsModel settings, AudioModel audio, Cell cell)
 		{
-			var result = MakeDevice(options, false,
-				nameof(OptionsModel.WasapiDeviceId), cell);
+			var result = MakeDevice(settings, false,
+				nameof(SettingsModel.WasapiDeviceId), cell);
 			result.ItemsSource = audio.WasapiDevices;
 			return result;
 		}
 
-		static UIElement MakeTheme(OptionsModel model, Cell cell)
+		static UIElement MakeTheme(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<ComboBox>(cell);
 			result.ItemsSource = Enum.GetValues<ThemeType>();
-			var binding = Bind.To(model, nameof(model.Theme));
+			var binding = Bind.To(settings, nameof(settings.Theme));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeUseAsio(OptionsModel model, Cell cell)
+		static UIElement MakeUseAsio(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<CheckBox>(cell);
-			var binding = Bind.To(model, nameof(model.UseAsio));
+			var binding = Bind.To(settings, nameof(settings.UseAsio));
 			result.SetBinding(ToggleButton.IsCheckedProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeSampleRate(OptionsModel model, Cell cell)
+		static UIElement MakeSampleRate(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<ComboBox>(cell);
-			result.ItemsSource = OptionsModel.SampleRates;
-			var binding = Bind.To(model, nameof(model.SampleRate));
+			result.ItemsSource = SettingsModel.SampleRates;
+			var binding = Bind.To(settings, nameof(settings.SampleRate));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			return result;
 		}
 
 		static ComboBox MakeDevice(
-			OptionsModel options, bool asio, string path, Cell cell)
+			SettingsModel settings, bool asio, string path, Cell cell)
 		{
 			var result = Create.Element<ComboBox>(cell);
 			result.SelectedValuePath = nameof(DeviceModel.Id);
-			var binding = Bind.To(options, path);
+			var binding = Bind.To(settings, path);
 			result.SetBinding(Selector.SelectedValueProperty, binding);
-			binding = Bind.To(options, nameof(OptionsModel.UseAsio), new VisibilityConverter(asio));
+			binding = Bind.To(settings, nameof(SettingsModel.UseAsio), new VisibilityConverter(asio));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}

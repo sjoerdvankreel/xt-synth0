@@ -17,14 +17,14 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static void Add(Grid grid, SynthModel synth,
-			OptionsModel options, Param param, Cell cell)
+			SettingsModel settings, Param param, Cell cell)
 		{
 			grid.Children.Add(Create.Label(param.Info.Name, cell.Right(1)));
 			grid.Children.Add(MakeValue(param, cell.Right(2)));
 			if (param.Info.IsToggle)
 				grid.Children.Add(MakeToggle(synth, param, cell));
 			else
-				grid.Children.Add(MakeKnob(synth, options, param, cell));
+				grid.Children.Add(MakeKnob(synth, settings, param, cell));
 		}
 
 		static UIElement MakeValue(Param param, Cell cell)
@@ -43,13 +43,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeKnob(SynthModel synth, OptionsModel options, Param param, Cell cell)
+		static UIElement MakeKnob(SynthModel synth, SettingsModel settings, Param param, Cell cell)
 		{
 			var result = Create.Element<Knob>(cell);
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.MouseRightButtonUp += (s, e) => EditUI.Show(options, param);
+			result.MouseRightButtonUp += (s, e) => EditUI.Show(settings, param);
 			result.ToolTip = string.Join("\n", param.Info.Detail, AutomationHint(synth, param), ExactHint);
 			return result;
 		}

@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.Model
 {
-	public sealed class OptionsModel : ViewModel
+	public sealed class SettingsModel : ViewModel
 	{
 		public static readonly int[] SampleRates = new[] { 44100, 48000, 96000 };
 

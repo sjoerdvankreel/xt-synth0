@@ -6,7 +6,7 @@ namespace Xt.Synth0.UI
 {
 	static class EditUI
 	{
-		internal static void Show(OptionsModel model, Param param)
+		internal static void Show(SettingsModel model, Param param)
 		{
 			var window = Create.Window(model);
 			window.Content = MakeGroup(window, param);
