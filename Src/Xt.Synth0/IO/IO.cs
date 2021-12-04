@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
 using Xt.Synth0.Model;
@@ -15,6 +16,9 @@ namespace Xt.Synth0
 			var result = new JsonSerializerSettings();
 			result.Formatting = Formatting.Indented;
 			result.MissingMemberHandling = MissingMemberHandling.Error;
+			var enumConverter = new StringEnumConverter();
+			enumConverter.AllowIntegerValues = false;
+			result.Converters.Add(enumConverter);
 			return result;
 		}
 
