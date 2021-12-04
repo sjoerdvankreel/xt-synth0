@@ -7,13 +7,22 @@ namespace Xt.Synth0
 {
 	static class IO
 	{
+		static string GetSettingsPath()
+		=> Path.Combine(GetAppDataFolder(), "settings.json");
+
 		static JsonSerializerSettings MakeSettings()
 		{
 			var result = new JsonSerializerSettings();
 			result.Formatting = Formatting.Indented;
+			result.MissingMemberHandling = MissingMemberHandling.Error;
+			return result;
+		}
+
+		static JsonSerializerSettings MakeFileSettings()
+		{
+			var result = MakeSettings();
 			result.Converters.Add(new ParamConverter());
 			result.Converters.Add(new PatternConverter());
-			result.MissingMemberHandling = MissingMemberHandling.Error;
 			return result;
 		}
 
@@ -35,17 +44,31 @@ namespace Xt.Synth0
 			writer.WriteLine($"{DateTime.Now}: {error}");
 		}
 
-		internal static void Save(SynthModel model, string path)
+		internal static void LoadSetting(SettingsModel model)
+		{
+			var path = GetSettingsPath();
+			if (!File.Exists(path)) return;
+			var json = File.ReadAllText(path);
+			JsonConvert.PopulateObject(json, model, MakeFileSettings());
+		}
+
+		internal static void SaveSettings(SettingsModel model)
 		{
 			var json = JsonConvert.SerializeObject(model, MakeSettings());
+			File.WriteAllText(GetSettingsPath(), json);
+		}
+
+		internal static void SaveFile(SynthModel model, string path)
+		{
+			var json = JsonConvert.SerializeObject(model, MakeFileSettings());
 			File.WriteAllText(path, json);
 		}
 
-		internal static void Load(string path, SynthModel model)
+		internal static void LoadFile(string path, SynthModel model)
 		{
 			var json = File.ReadAllText(path);
 			var newModel = new SynthModel();
-			JsonConvert.PopulateObject(json, newModel, MakeSettings());
+			JsonConvert.PopulateObject(json, newModel, MakeFileSettings());
 			if (newModel.Version != SynthModel.CurrentVersion)
 				throw new InvalidOperationException("Wrong file format version.");
 			newModel.CopyTo(model);

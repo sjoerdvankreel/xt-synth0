@@ -13,7 +13,7 @@ namespace Xt.Synth0
 	{
 		static readonly DependencyProperty PathProperty
 		= DependencyProperty.Register(nameof(Path), typeof(string), typeof(MainWindow));
-		static readonly DependencyProperty IsDirtyProperty 
+		static readonly DependencyProperty IsDirtyProperty
 		= DependencyProperty.Register(nameof(IsDirty), typeof(bool), typeof(MainWindow));
 
 		public string Path
@@ -42,7 +42,7 @@ namespace Xt.Synth0
 			MenuUI.Open += (s, e) => Load();
 			MenuUI.Save += (s, e) => Save();
 			MenuUI.SaveAs += (s, e) => SaveAs();
-			MenuUI.Settings += (s, e) => SettingsUI.Show(_settings,_audio);
+			MenuUI.Settings += (s, e) => Settings();
 			ControlUI.Stop += (s, e) => _audio.IsRunning = false;
 			ControlUI.Start += (s, e) => _audio.IsRunning = true;
 			BindTitle();
@@ -54,6 +54,26 @@ namespace Xt.Synth0
 			BindCommand(ApplicationCommands.Open, (s, e) => Load());
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
 			BindCommand(ApplicationCommands.SaveAs, (s, e) => SaveAs());
+			Loaded += OnLoaded;
+		}
+
+		void OnLoaded(object sender, RoutedEventArgs _)
+		{
+			try
+			{
+				IO.LoadSetting(_settings);
+			}
+			catch (Exception e)
+			{
+				Synth0.OnError(e);
+			}
+			Loaded -= OnLoaded;
+		}
+
+		void Settings()
+		{
+			SettingsUI.Show(_settings, _audio);
+			IO.SaveSettings(_settings);
 		}
 
 		internal void SaveAs()
@@ -64,7 +84,7 @@ namespace Xt.Synth0
 		void Save(string path)
 		{
 			if (path == null) return;
-			IO.Save(_synth, path);
+			IO.SaveFile(_synth, path);
 			Path = path;
 			IsDirty = false;
 		}
@@ -74,7 +94,7 @@ namespace Xt.Synth0
 			if (!SaveUnsavedChanges()) return;
 			var path = LoadSaveUI.Load();
 			if (path == null) return;
-			IO.Load(path, _synth);
+			IO.LoadFile(path, _synth);
 			Path = path;
 			IsDirty = false;
 		}

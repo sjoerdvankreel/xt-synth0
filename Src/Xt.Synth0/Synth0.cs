@@ -25,7 +25,7 @@ namespace Xt.Synth0
 			e.Handled = true;
 		}
 
-		static void OnError(Exception error)
+		internal static void OnError(Exception error)
 		{
 			IO.LogError(error);
 			var window = Application.Current.MainWindow;

@@ -1,3 +1,5 @@
 model pool/onchange
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
+json enum name
+settings load only if valid
