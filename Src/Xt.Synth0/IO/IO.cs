@@ -17,6 +17,24 @@ namespace Xt.Synth0
 			return result;
 		}
 
+		static string GetAppDataFolder()
+		{
+			var appData = Environment.SpecialFolder.LocalApplicationData;
+			var folder = Environment.GetFolderPath(appData);
+			var version = typeof(Synth0).Assembly.GetName().Version.ToString();
+			var result = Path.Combine(folder, nameof(Synth0), version);
+			Directory.CreateDirectory(result);
+			return result;
+		}
+
+		internal static void LogError(Exception error)
+		{
+			var file = Synth0.StartTime.ToString("yyyy-MM-dd HH.mm.ss");
+			var path = Path.Combine(GetAppDataFolder(), $"{file}.log");
+			using var writer = new StreamWriter(path, true);
+			writer.WriteLine($"{DateTime.Now}: {error}");
+		}
+
 		internal static void Save(SynthModel model, string path)
 		{
 			var json = JsonConvert.SerializeObject(model, MakeSettings());
@@ -31,17 +49,6 @@ namespace Xt.Synth0
 			if (newModel.Version != SynthModel.CurrentVersion)
 				throw new InvalidOperationException("Wrong file format version.");
 			newModel.CopyTo(model);
-		}
-
-		internal static void LogError(string error)
-		{
-			var file = Synth0.StartTime.ToString("yyyy-MM-dd HH.mm.ss");
-			var folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-			var path = Path.Combine(folder, nameof(Synth0));
-			Directory.CreateDirectory(path);
-			path = Path.Combine(path, $"{file}.log");
-			using var writer = new StreamWriter(path, true);
-			writer.WriteLine($"{DateTime.Now}: {error}");
 		}
 	}
 }

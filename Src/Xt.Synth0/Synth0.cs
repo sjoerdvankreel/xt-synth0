@@ -21,15 +21,15 @@ namespace Xt.Synth0
 		static void OnDispatcherUnhandledException(object sender,
 			DispatcherUnhandledExceptionEventArgs e)
 		{
-			OnError(e.Exception.Message);
+			OnError(e.Exception);
 			e.Handled = true;
 		}
 
-		static void OnError(string message)
+		static void OnError(Exception error)
 		{
-			IO.LogError(message);
+			IO.LogError(error);
 			var window = Application.Current.MainWindow;
-			var showError = new Action(() => MessageBox.Show(window, message,
+			var showError = new Action(() => MessageBox.Show(window, error.Message,
 				"Error", MessageBoxButton.OK, MessageBoxImage.Error));
 			window.Dispatcher.BeginInvoke(showError);
 		}
