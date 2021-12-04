@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <OutputPath>$(SolutionDir)/../Bin/$(Configuration)</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" />
+    <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />
   </ItemGroup>
 </Project>

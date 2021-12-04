@@ -3,14 +3,13 @@
     <UseWPF>true</UseWPF>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <OutputPath>$(SolutionDir)/../Bin/$(Configuration)</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../Xt.Synth0.UI/Xt.Synth0.UI.csproj" />
-    <ProjectReference Include="../Xt.Synth0.DSP/Xt.Synth0.DSP.csproj" />
-    <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" />
+    <PackageReference Include="Newtonsoft.Json" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" PrivateAssets="all" />
+    <ProjectReference Include="../Xt.Synth0.UI/Xt.Synth0.UI.csproj" PrivateAssets="all" />
+    <ProjectReference Include="../Xt.Synth0.DSP/Xt.Synth0.DSP.csproj" PrivateAssets="all" />
+    <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />
   </ItemGroup>
 </Project>
