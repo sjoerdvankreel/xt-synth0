@@ -108,7 +108,6 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Element<ComboBox>(cell);
 			result.SelectedValuePath = nameof(DeviceModel.Id);
-			result.DisplayMemberPath = nameof(DeviceModel.Name);
 			var binding = Bind.To(options, path);
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			binding = Bind.To(options, nameof(OptionsModel.UseAsio), new VisibilityConverter(asio));
