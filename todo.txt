@@ -1,6 +1,5 @@
 model pool/onchange
 save device selection global appsettings
 save theme selection global appsettings (file->theme->rgb)
-settings load only if valid
 cleanup mainwindow set events on startup
 make samprate enum

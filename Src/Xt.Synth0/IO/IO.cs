@@ -53,7 +53,9 @@ namespace Xt.Synth0
 			var path = GetSettingsPath();
 			if (!File.Exists(path)) return;
 			var json = File.ReadAllText(path);
-			JsonConvert.PopulateObject(json, model, MakeFileSettings());
+			var newModel = new SettingsModel();
+			JsonConvert.PopulateObject(json, newModel, MakeFileSettings());
+			newModel.CopyTo(model);
 		}
 
 		internal static void SaveSettings(SettingsModel model)

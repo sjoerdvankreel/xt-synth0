@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.Model
 {
-	public sealed class SettingsModel : ViewModel
+	public sealed class SettingsModel : ViewModel, ICopyModel
 	{
 		public static readonly int[] SampleRates = new[] { 44100, 48000, 96000 };
 
@@ -45,6 +45,16 @@ namespace Xt.Synth0.Model
 				Set(ref _theme, value);
 				ThemeChanged?.Invoke(this, EventArgs.Empty);
 			}
+		}
+
+		public void CopyTo(ICopyModel model)
+		{
+			var settings = (SettingsModel)model;
+			settings.Theme = Theme;
+			settings.UseAsio = UseAsio;
+			settings.SampleRate = SampleRate;
+			settings.AsioDeviceId = AsioDeviceId;
+			settings.WasapiDeviceId = WasapiDeviceId;
 		}
 	}
 }

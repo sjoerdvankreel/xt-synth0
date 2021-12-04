@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class SynthModel : PartModel
+	public sealed class SynthModel : ICopyModel
 	{
 		public const int CurrentVersion = 1;
 		public event EventHandler ParamChanged;
@@ -23,7 +23,7 @@ namespace Xt.Synth0.Model
 		readonly List<Param> _autoParams = new();
 		public IList<Param> AutoParams() => _autoParams;
 
-		public override void CopyTo(PartModel model)
+		public void CopyTo(ICopyModel model)
 		{
 			var synth = (SynthModel)model;
 			for (int s = 0; s < _subModels.Length; s++)
