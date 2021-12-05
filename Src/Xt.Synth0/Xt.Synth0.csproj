@@ -8,6 +8,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Xt.Audio" PrivateAssets="all" />
     <PackageReference Include="Newtonsoft.Json" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
