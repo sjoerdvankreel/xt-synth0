@@ -29,6 +29,7 @@ namespace Xt.Synth0
 			_startTime = DateTime.Now;
 			var app = new Application();
 			var window = new MainWindow();
+			app.Startup += OnAppStartup;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			app.Run(window);
 		}
