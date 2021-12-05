@@ -130,11 +130,9 @@ namespace Xt.Synth0
 			var helper = new WindowInteropHelper(mainWindow);
 			var logger = (string msg) => IO.LogError(StartTime, msg, null);
 			Action<Action> dispatch = a => Application.Current?.Dispatcher.BeginInvoke(a);
-			var result = AudioEngine.Create(helper.Handle, logger, dispatch);
+			var result = AudioEngine.Create(Model, helper.Handle, logger, dispatch);
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
-			result.Started += (s, e) => Model.Audio.IsRunning = true;
-			result.Stopped += (s, e) => Model.Audio.IsRunning = false;
 			return result;
 		}
 

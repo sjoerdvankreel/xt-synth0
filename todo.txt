@@ -1,3 +1,4 @@
+object pool for automation
 asio->int32
 wasapi->int16
 faster audio startup

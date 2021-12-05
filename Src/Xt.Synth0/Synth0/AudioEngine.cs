@@ -8,14 +8,14 @@ namespace Xt.Synth0
 {
 	class AudioEngine : IDisposable
 	{
-		internal static AudioEngine Create(IntPtr mainWindow,
-			Action<string> log, Action<Action> dispatch)
+		internal static AudioEngine Create(AppModel app,
+			IntPtr mainWindow, Action<string> log, Action<Action> dispatch)
 		{
 			XtAudio.SetOnError(msg => log(msg));
 			var platform = XtAudio.Init(nameof(Synth0), mainWindow);
 			try
 			{
-				return Create(platform, dispatch);
+				return Create(app, platform, dispatch);
 			}
 			catch
 			{
@@ -24,12 +24,12 @@ namespace Xt.Synth0
 			}
 		}
 
-		static AudioEngine Create(
+		static AudioEngine Create(AppModel app,
 			XtPlatform platform, Action<Action> dispatch)
 		{
 			var asio = platform.GetService(XtSystem.ASIO);
 			var wasapi = platform.GetService(XtSystem.WASAPI);
-			return new AudioEngine(platform, dispatch,
+			return new AudioEngine(app, platform, dispatch,
 				asio.GetDefaultDeviceId(true),
 				wasapi.GetDefaultDeviceId(true),
 				GetDevices(asio), GetDevices(wasapi));
@@ -52,9 +52,7 @@ namespace Xt.Synth0
 		XtStream _stream;
 		XtSafeBuffer _safe;
 
-		public event EventHandler Started;
-		public event EventHandler Stopped;
-
+		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
 		readonly SynthModel _synth = new();
 
@@ -68,13 +66,16 @@ namespace Xt.Synth0
 		public IReadOnlyList<DeviceModel> AsioDevices { get; }
 		public IReadOnlyList<DeviceModel> WasapiDevices { get; }
 
-		AudioEngine(XtPlatform platform,
+		AudioEngine(
+			AppModel app,
+			XtPlatform platform,
 			Action<Action> dispatch,
 			string asioDefaultDeviceId,
 			string wasapiDefaultDeviceId,
 			IReadOnlyList<DeviceModel> asioDevices,
 			IReadOnlyList<DeviceModel> wasapiDevices)
 		{
+			_app = app;
 			_platform = platform;
 			_dispatch = dispatch;
 			AsioDevices = asioDevices;
@@ -82,7 +83,7 @@ namespace Xt.Synth0
 			AsioDefaultDeviceId = asioDefaultDeviceId;
 			WasapiDefaultDeviceId = wasapiDefaultDeviceId;
 			_stopNotification = StopNotification;
-			_startNotification = () => Started?.Invoke(this, null);
+			_startNotification = () => _app.Audio.IsRunning = true;
 		}
 
 		internal void Start(SettingsModel model)
@@ -120,11 +121,12 @@ namespace Xt.Synth0
 		void StopNotification()
 		{
 			Stop();
-			Stopped?.Invoke(this, null);
+			_app.Audio.IsRunning = false;
 		}
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
+			_app.Synth.CopyTo(_synth);
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
 			_dsp.Next(_synth, _rate, (float[])safe.GetOutput(), buffer.frames);
