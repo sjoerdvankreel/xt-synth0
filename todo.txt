@@ -3,3 +3,4 @@ asio->int32
 wasapi->int16
 faster audio startup (single/double stop)
 audio memory (delay etc)+hard reset
+better fixed-object-graph serialization
