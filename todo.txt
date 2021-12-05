@@ -1,3 +1,4 @@
-model pool/onchange
 asio->int32
 wasapi->int16
+faster audio startup
+audio memory (delay etc)+hard reset

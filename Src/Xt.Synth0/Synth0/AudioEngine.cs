@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Xt.Synth0.DSP;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0
@@ -46,15 +47,21 @@ namespace Xt.Synth0
 			return new ReadOnlyCollection<DeviceModel>(result);
 		}
 
+		int _rate;
 		XtDevice _device;
 		XtStream _stream;
+		XtSafeBuffer _safe;
+
+		public event EventHandler Started;
+		public event EventHandler Stopped;
+
+		readonly SynthDSP _dsp = new();
+		readonly SynthModel _synth = new();
+
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatch;
 		readonly Action _stopNotification;
 		readonly Action _startNotification;
-
-		public event EventHandler Started;
-		public event EventHandler Stopped;
 
 		public string AsioDefaultDeviceId { get; }
 		public string WasapiDefaultDeviceId { get; }
@@ -97,6 +104,9 @@ namespace Xt.Synth0
 			_stream?.Stop();
 			_stream?.Dispose();
 			_stream = null;
+			_safe?.Dispose();
+			_safe = null;
+			_rate = 0;
 			_device?.Dispose();
 			_device = null;
 		}
@@ -115,6 +125,10 @@ namespace Xt.Synth0
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
+			var safe = XtSafeBuffer.Get(stream);
+			safe.Lock(buffer);
+			_dsp.Next(_synth, _rate, (float[])safe.GetOutput(), buffer.frames);
+			safe.Unlock(buffer);
 			return 0;
 		}
 
@@ -143,14 +157,15 @@ namespace Xt.Synth0
 			var selectedId = model.UseAsio ? model.AsioDeviceId : model.WasapiDeviceId;
 			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
 			_device = OpenDevice(system, selectedId, defaultId);
-			var rate = AudioModel.RateToInt(model.SampleRate);
-			var mix = new XtMix(rate, XtSample.Int16);
+			_rate = AudioModel.RateToInt(model.SampleRate);
+			var mix = new XtMix(_rate, XtSample.Float32);
 			var channels = new XtChannels(0, 0, 2, 0);
 			var format = new XtFormat(in mix, in channels);
 			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
 			var bufferSize = AudioModel.SizeToInt(model.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 			_stream = _device.OpenStream(in deviceParams, null);
+			_safe = XtSafeBuffer.Register(_stream, true);
 			_stream.Start();
 		}
 	}
