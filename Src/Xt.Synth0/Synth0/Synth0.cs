@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Xt.Synth0.Model;
@@ -26,43 +27,17 @@ namespace Xt.Synth0
 			}
 		}
 
+		static void SaveAs(MainWindow window)
+		=> Save(window, LoadSaveUI.Save());
+		static void Save(MainWindow window)
+		=> Save(window, window.Path ?? LoadSaveUI.Save());
+
 		static void Run()
 		{
 			var app = new Application();
-			var window = new MainWindow(Model);
 			app.Startup += OnAppStartup;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
-			app.Run(window);
-		}
-
-		static void OnDispatcherUnhandledException(
-			object sender, DispatcherUnhandledExceptionEventArgs e)
-		{
-			OnError(e.Exception);
-			e.Handled = true;
-		}
-
-		static void OnAppStartup(object sender, StartupEventArgs e)
-		{
-			var window = (MainWindow)Application.Current.MainWindow;
-			_engine = SetupEngine(window);
-			LoadSettings(_engine).CopyTo(Model.Settings);
-			MenuUI.ShowSettings += OnShowSettings;
-		}
-
-		static void OnShowSettings(object sender, EventArgs e)
-		{
-			SettingsUI.Show(Model.Settings);
-			IO.SaveSettings(Model.Settings);
-		}
-
-		static AudioEngine SetupEngine(Window mainWindow)
-		{
-			var helper = new WindowInteropHelper(mainWindow);
-			var result = AudioEngine.Create(helper.Handle);
-			AudioModel.AddAsioDevices(result.AsioDevices);
-			AudioModel.AddWasapiDevices(result.WasapiDevices);
-			return result;
+			app.Run(CreateWindow());
 		}
 
 		static SettingsModel LoadSettings(AudioEngine engine)
@@ -81,6 +56,65 @@ namespace Xt.Synth0
 			return result;
 		}
 
+		static void ShowSettings()
+		{
+			SettingsUI.Show(Model.Settings);
+			IO.SaveSettings(Model.Settings);
+		}
+
+		static void Load(MainWindow window)
+		{
+			if (!SaveUnsavedChanges(window)) return;
+			var path = LoadSaveUI.Load();
+			if (path == null) return;
+			IO.LoadFile(path, Model.Synth);
+			window.SetClean(path);
+		}
+
+		static void New(MainWindow window)
+		{
+			if (!SaveUnsavedChanges(window)) return;
+			new SynthModel().CopyTo(Model.Synth);
+			window.SetClean(null);
+		}
+
+		static void Save(MainWindow window, string path)
+		{
+			if (path == null) return;
+			IO.SaveFile(Model.Synth, path);
+			window.SetClean(path);
+		}
+
+		static AudioEngine SetupEngine(Window mainWindow)
+		{
+			var helper = new WindowInteropHelper(mainWindow);
+			var result = AudioEngine.Create(helper.Handle);
+			AudioModel.AddAsioDevices(result.AsioDevices);
+			AudioModel.AddWasapiDevices(result.WasapiDevices);
+			return result;
+		}
+
+		static void OnDispatcherUnhandledException(
+			object sender, DispatcherUnhandledExceptionEventArgs e)
+		{
+			OnError(e.Exception);
+			e.Handled = true;
+		}
+
+		static void OnAppStartup(object sender, StartupEventArgs e)
+		{
+			var window = (MainWindow)Application.Current.MainWindow;
+			_engine = SetupEngine(window);
+			LoadSettings(_engine).CopyTo(Model.Settings);
+			MenuUI.New += (s, e) => New(window);
+			MenuUI.Open += (s, e) => Load(window);
+			MenuUI.Save += (s, e) => Save(window);
+			MenuUI.SaveAs += (s, e) => SaveAs(window);
+			MenuUI.ShowSettings += (s, e) => ShowSettings();
+			ControlUI.Stop += (s, e) => Model.Audio.IsRunning = false;
+			ControlUI.Start += (s, e) => Model.Audio.IsRunning = true;
+		}
+
 		static void OnError(Exception error)
 		{
 			IO.LogError(StartTime, error);
@@ -88,6 +122,34 @@ namespace Xt.Synth0
 			var showError = new Action(() => MessageBox.Show(window, error.Message,
 				"Error", MessageBoxButton.OK, MessageBoxImage.Error));
 			window.Dispatcher.BeginInvoke(showError);
+		}
+
+		static bool SaveUnsavedChanges(MainWindow window)
+		{
+			if (!window.IsDirty) return true;
+			var result = MessageBox.Show(window, "Save changes?",
+				"Warning", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+			if (result == MessageBoxResult.Cancel) return false;
+			if (result == MessageBoxResult.Yes) Save(window);
+			return true;
+		}
+
+		static MainWindow CreateWindow()
+		{
+			var result = new MainWindow(Model);
+			BindCommand(result, ApplicationCommands.New, () => New(result));
+			BindCommand(result, ApplicationCommands.Open, () => Load(result));
+			BindCommand(result, ApplicationCommands.Save, () => Save(result));
+			BindCommand(result, ApplicationCommands.SaveAs, () => SaveAs(result));
+			result.Closing += (s, e) => e.Cancel = !SaveUnsavedChanges(result);
+			return result;
+		}
+
+		static void BindCommand(Window window, RoutedUICommand command, Action handler)
+		{
+			if (command.InputGestures.Count > 0)
+				window.InputBindings.Add(new InputBinding(command, command.InputGestures[0]));
+			window.CommandBindings.Add(new CommandBinding(command, (s, e) => handler()));
 		}
 	}
 }

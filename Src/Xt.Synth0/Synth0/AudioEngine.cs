@@ -5,7 +5,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0
 {
-	internal class AudioEngine : IDisposable
+	class AudioEngine : IDisposable
 	{
 		static AudioEngine Create(XtPlatform platform)
 		{

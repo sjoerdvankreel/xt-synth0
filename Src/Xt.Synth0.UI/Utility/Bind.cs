@@ -5,7 +5,7 @@ namespace Xt.Synth0.UI
 {
 	public static class Bind
 	{
-		internal static Binding To(
+		public static Binding To(
 			object source, string path)
 		{
 			var result = new Binding(path);
@@ -52,13 +52,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		public static MultiBinding To(object source1, string path1,
-			object source2, string path2, IMultiValueConverter formatter)
+		public static MultiBinding To(
+			Binding first, Binding second, IMultiValueConverter formatter)
 		{
 			var result = new MultiBinding();
+			result.Bindings.Add(first);
+			result.Bindings.Add(second);
 			result.Converter = formatter;
-			result.Bindings.Add(To(source1, path1));
-			result.Bindings.Add(To(source2, path2));
 			return result;
 		}
 	}
