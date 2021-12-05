@@ -1,4 +1,4 @@
-object pool for automation
+object pool for automation (apply all track fx at once)
 asio->int32
 wasapi->int16
 faster audio startup (single/double stop)
