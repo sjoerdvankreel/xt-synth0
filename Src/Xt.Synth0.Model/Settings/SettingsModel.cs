@@ -4,8 +4,6 @@ namespace Xt.Synth0.Model
 {
 	public sealed class SettingsModel : ViewModel, ICopyModel
 	{
-		public static readonly int[] SampleRates = new[] { 44100, 48000, 96000 };
-
 		public event EventHandler ThemeChanged;
 
 		bool _useAsio;
@@ -13,13 +11,6 @@ namespace Xt.Synth0.Model
 		{
 			get => _useAsio;
 			set => Set(ref _useAsio, value);
-		}
-
-		int _sampleRate = SampleRates[0];
-		public int SampleRate
-		{
-			get => _sampleRate;
-			set => Set(ref _sampleRate, value);
 		}
 
 		string _asioDeviceId;
@@ -34,6 +25,13 @@ namespace Xt.Synth0.Model
 		{
 			get => _wasapiDeviceId;
 			set => Set(ref _wasapiDeviceId, value);
+		}
+
+		SampleRate _sampleRate;
+		public SampleRate SampleRate
+		{
+			get => _sampleRate;
+			set => Set(ref _sampleRate, value);
 		}
 
 		ThemeType _theme;

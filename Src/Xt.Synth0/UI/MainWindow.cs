@@ -34,10 +34,10 @@ namespace Xt.Synth0
 
 		internal MainWindow()
 		{
-			_audio.AsioDevices.Add(new() { Id = "id1", Name = "AsiName1" });
-			_audio.AsioDevices.Add(new() { Id = "id2", Name = "AsiName2" });
-			_audio.WasapiDevices.Add(new() { Id = "id1", Name = "WasName1" });
-			_audio.WasapiDevices.Add(new() { Id = "id2", Name = "WasName2" });
+			AudioModel.AddAsioDevice("id1", "AsiName1");
+			AudioModel.AddAsioDevice("id2", "AsiName2");
+			AudioModel.AddWasapiDevice("id1", "WasName1");
+			AudioModel.AddWasapiDevice("id2", "WasName2");
 			MenuUI.New += (s, e) => New();
 			MenuUI.Open += (s, e) => Load();
 			MenuUI.Save += (s, e) => Save();
@@ -72,7 +72,7 @@ namespace Xt.Synth0
 
 		void Settings()
 		{
-			SettingsUI.Show(_settings, _audio);
+			SettingsUI.Show(_settings);
 			IO.SaveSettings(_settings);
 		}
 
