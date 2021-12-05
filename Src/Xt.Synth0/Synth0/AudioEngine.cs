@@ -144,7 +144,7 @@ namespace Xt.Synth0
 			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
 			_device = OpenDevice(system, selectedId, defaultId);
 			var rate = AudioModel.RateToInt(model.SampleRate);
-			var mix = new XtMix(rate, XtSample.Int32);
+			var mix = new XtMix(rate, XtSample.Int16);
 			var channels = new XtChannels(0, 0, 2, 0);
 			var format = new XtFormat(in mix, in channels);
 			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
