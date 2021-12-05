@@ -2,8 +2,8 @@
 {
 	public sealed class AppModel
 	{
-		public SynthModel Synth { get; }
-		public AudioModel Audio { get; }
-		public SettingsModel Settings { get; }
+		public SynthModel Synth { get; } = new();
+		public AudioModel Audio { get; } = new();
+		public SettingsModel Settings { get; } = new();
 	}
 }
