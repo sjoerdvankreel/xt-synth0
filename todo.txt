@@ -1,5 +1,5 @@
 object pool for automation
 asio->int32
 wasapi->int16
-faster audio startup
+faster audio startup (single/double stop)
 audio memory (delay etc)+hard reset
