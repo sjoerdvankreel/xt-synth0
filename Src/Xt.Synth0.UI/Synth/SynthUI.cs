@@ -6,13 +6,12 @@ namespace Xt.Synth0.UI
 {
 	public static class SynthUI
 	{
-		public static UIElement Make(
-			SynthModel synth, SettingsModel settings, AudioModel audio)
+		public static UIElement Make(AppModel model)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
-			result.Children.Add(MakeLeft(synth, settings, audio));
-			result.Children.Add(PatternUI.Make(synth, audio));
+			result.Children.Add(MakeLeft(model));
+			result.Children.Add(PatternUI.Make(model));
 			return result;
 		}
 
@@ -23,15 +22,14 @@ namespace Xt.Synth0.UI
 			element.SetValue(DockPanel.DockProperty, Dock.Top);
 		}
 
-		static UIElement MakeLeft(
-			SynthModel synth, SettingsModel settings, AudioModel audio)
+		static UIElement MakeLeft(AppModel model)
 		{
 			var result = new DockPanel();
-			AddDocked(result, GroupUI.Make(synth, synth.Unit1, settings, audio));
-			AddDocked(result, GroupUI.Make(synth, synth.Unit2, settings, audio));
-			AddDocked(result, GroupUI.Make(synth, synth.Unit3, settings, audio));
-			AddDocked(result, GroupUI.Make(synth, synth.Amp, settings, audio));
-			AddDocked(result, GroupUI.Make(synth, synth.Track, settings, audio));
+			AddDocked(result, GroupUI.Make(model, model.Synth.Unit1));
+			AddDocked(result, GroupUI.Make(model, model.Synth.Unit2));
+			AddDocked(result, GroupUI.Make(model, model.Synth.Unit3));
+			AddDocked(result, GroupUI.Make(model, model.Synth.Amp));
+			AddDocked(result, GroupUI.Make(model, model.Synth.Track));
 			return result;
 		}
 	}

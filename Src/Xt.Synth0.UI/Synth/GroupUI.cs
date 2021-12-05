@@ -7,17 +7,15 @@ namespace Xt.Synth0.UI
 {
 	static class GroupUI
 	{
-		internal static UIElement Make(SynthModel synth,
-			GroupModel group, SettingsModel settings, AudioModel audio)
+		internal static UIElement Make(AppModel model, GroupModel group)
 		{
 			var result = new GroupBox();
 			result.Header = group.Name();
-			result.Content = MakeContent(synth, group, settings, audio);
+			result.Content = MakeContent(model, group);
 			return result;
 		}
 
-		static UIElement MakeContent(SynthModel synth,
-			GroupModel group, SettingsModel settings, AudioModel audio)
+		static UIElement MakeContent(AppModel model, GroupModel group)
 		{
 			var rows = group.ParamGroups();
 			var cols = rows.Max(r => r.Length);
@@ -25,9 +23,9 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Top;
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)
-					ParamUI.Add(result, synth, settings, rows[r][c], new(r, c * 3));
+					ParamUI.Add(result, model, rows[r][c], new(r, c * 3));
 			if (group.Automation()) return result;
-			var binding = Bind.To(audio, nameof(AudioModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}

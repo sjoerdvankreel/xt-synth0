@@ -3,13 +3,15 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using Xt.Synth0.Model;
+using Xt.Synth0.UI;
 
 namespace Xt.Synth0
 {
 	static class Synth0
 	{
-		static DateTime _startTime;
 		static AudioEngine _engine;
+		static readonly AppModel Model = new AppModel();
+		static readonly DateTime StartTime = DateTime.Now;
 
 		[STAThread]
 		static void Main()
@@ -26,9 +28,8 @@ namespace Xt.Synth0
 
 		static void Run()
 		{
-			_startTime = DateTime.Now;
 			var app = new Application();
-			var window = new MainWindow();
+			var window = new MainWindow(Model);
 			app.Startup += OnAppStartup;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			app.Run(window);
@@ -45,7 +46,14 @@ namespace Xt.Synth0
 		{
 			var window = (MainWindow)Application.Current.MainWindow;
 			_engine = SetupEngine(window);
-			LoadSettings(_engine).CopyTo(window.Settings);
+			LoadSettings(_engine).CopyTo(Model.Settings);
+			MenuUI.ShowSettings += OnShowSettings;
+		}
+
+		static void OnShowSettings(object sender, EventArgs e)
+		{
+			SettingsUI.Show(Model.Settings);
+			IO.SaveSettings(Model.Settings);
 		}
 
 		static AudioEngine SetupEngine(Window mainWindow)
@@ -75,7 +83,7 @@ namespace Xt.Synth0
 
 		static void OnError(Exception error)
 		{
-			IO.LogError(_startTime, error);
+			IO.LogError(StartTime, error);
 			var window = Application.Current.MainWindow;
 			var showError = new Action(() => MessageBox.Show(window, error.Message,
 				"Error", MessageBoxButton.OK, MessageBoxImage.Error));

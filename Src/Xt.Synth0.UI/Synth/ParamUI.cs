@@ -16,15 +16,15 @@ namespace Xt.Synth0.UI
 			return $"Automation target: {(index + 1).ToString("X2")}";
 		}
 
-		internal static void Add(Grid grid, SynthModel synth,
-			SettingsModel settings, Param param, Cell cell)
+		internal static void Add(
+			Grid grid, AppModel model, Param param, Cell cell)
 		{
 			grid.Children.Add(Create.Label(param.Info.Name, cell.Right(1)));
 			grid.Children.Add(MakeValue(param, cell.Right(2)));
 			if (param.Info.IsToggle)
-				grid.Children.Add(MakeToggle(synth, param, cell));
+				grid.Children.Add(MakeToggle(model.Synth, param, cell));
 			else
-				grid.Children.Add(MakeKnob(synth, settings, param, cell));
+				grid.Children.Add(MakeKnob(model, param, cell));
 		}
 
 		static UIElement MakeValue(Param param, Cell cell)
@@ -43,14 +43,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeKnob(SynthModel synth, SettingsModel settings, Param param, Cell cell)
+		static UIElement MakeKnob(AppModel model, Param param, Cell cell)
 		{
 			var result = Create.Element<Knob>(cell);
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.MouseRightButtonUp += (s, e) => EditUI.Show(settings, param);
-			result.ToolTip = string.Join("\n", param.Info.Detail, AutomationHint(synth, param), ExactHint);
+			result.MouseRightButtonUp += (s, e) => EditUI.Show(model.Settings, param);
+			result.ToolTip = string.Join("\n", param.Info.Detail, AutomationHint(model.Synth, param), ExactHint);
 			return result;
 		}
 	}

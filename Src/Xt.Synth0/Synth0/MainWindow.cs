@@ -27,34 +27,26 @@ namespace Xt.Synth0
 			set => SetValue(IsDirtyProperty, value);
 		}
 
-		internal SynthModel Synth { get; } = new();
-		internal AudioModel Audio { get; } = new();
-		internal SettingsModel Settings { get; } = new();
+		AppModel Model { get; }
 
-		internal MainWindow()
+		internal MainWindow(AppModel model)
 		{
+			Model = model;
 			MenuUI.New += (s, e) => New();
 			MenuUI.Open += (s, e) => Load();
 			MenuUI.Save += (s, e) => Save();
 			MenuUI.SaveAs += (s, e) => SaveAs();
-			MenuUI.Settings += (s, e) => ShowSettings();
-			ControlUI.Stop += (s, e) => Audio.IsRunning = false;
-			ControlUI.Start += (s, e) => Audio.IsRunning = true;
+			ControlUI.Stop += (s, e) => Model.Audio.IsRunning = false;
+			ControlUI.Start += (s, e) => Model.Audio.IsRunning = true;
 			BindTitle();
 			Content = MakeContent();
 			ResizeMode = ResizeMode.NoResize;
 			SizeToContent = SizeToContent.WidthAndHeight;
-			Synth.ParamChanged += (s, e) => IsDirty = true;
+			Model.Synth.ParamChanged += (s, e) => IsDirty = true;
 			BindCommand(ApplicationCommands.New, (s, e) => New());
 			BindCommand(ApplicationCommands.Open, (s, e) => Load());
 			BindCommand(ApplicationCommands.Save, (s, e) => Save());
 			BindCommand(ApplicationCommands.SaveAs, (s, e) => SaveAs());
-		}
-
-		void ShowSettings()
-		{
-			SettingsUI.Show(Settings);
-			IO.SaveSettings(Settings);
 		}
 
 		internal void SaveAs()
@@ -65,7 +57,7 @@ namespace Xt.Synth0
 		void Save(string path)
 		{
 			if (path == null) return;
-			IO.SaveFile(Synth, path);
+			IO.SaveFile(Model.Synth, path);
 			Path = path;
 			IsDirty = false;
 		}
@@ -75,7 +67,7 @@ namespace Xt.Synth0
 			if (!SaveUnsavedChanges()) return;
 			var path = LoadSaveUI.Load();
 			if (path == null) return;
-			IO.LoadFile(path, Synth);
+			IO.LoadFile(path, Model.Synth);
 			Path = path;
 			IsDirty = false;
 		}
@@ -83,7 +75,7 @@ namespace Xt.Synth0
 		internal void New()
 		{
 			if (!SaveUnsavedChanges()) return;
-			new SynthModel().CopyTo(Synth);
+			new SynthModel().CopyTo(Model.Synth);
 			Path = null;
 			IsDirty = false;
 		}
@@ -100,19 +92,19 @@ namespace Xt.Synth0
 			var menu = MenuUI.Make();
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
 			result.Children.Add(menu);
-			var control = ControlUI.Make(Audio);
+			var control = ControlUI.Make(Model.Audio);
 			control.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(control);
-			var synth = SynthUI.Make(Synth, Settings, Audio);
+			var synth = SynthUI.Make(Model);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
-			result.Resources = Utility.GetThemeResources(Settings.Theme);
+			result.Resources = Utility.GetThemeResources(Model.Settings.Theme);
 
-			Settings.PropertyChanged += (s, e) =>
+			Model.Settings.PropertyChanged += (s, e) =>
 			{
 				if (e.PropertyName == nameof(SettingsModel.Theme))
-					result.Resources = Utility.GetThemeResources(Settings.Theme);
+					result.Resources = Utility.GetThemeResources(Model.Settings.Theme);
 			};
 			return result;
 		}
