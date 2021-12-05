@@ -50,7 +50,7 @@ namespace Xt.Synth0
 		UIElement MakeContent()
 		{
 			var result = new DockPanel();
-			var menu = MenuUI.Make();
+			var menu = MenuUI.Make(Model.Audio);
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
 			result.Children.Add(menu);
 			var control = ControlUI.Make(Model.Audio);

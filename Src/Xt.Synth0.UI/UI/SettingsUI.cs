@@ -8,6 +8,8 @@ namespace Xt.Synth0.UI
 {
 	public static class SettingsUI
 	{
+		public static event EventHandler ShowASIOControlPanel;
+
 		public static void Show(SettingsModel model)
 		{
 			var window = Create.Window(model);
@@ -35,7 +37,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Grid(5, 2);
 			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
-			result.Children.Add(MakeUseAsio(model, new(0, 1)));
+			result.Children.Add(MakeAsio(model, new(0, 1)));
 			result.Children.Add(Create.Label("Device", new(1, 0)));
 			result.Children.Add(MakeAsioDevice(model, new(1, 1)));
 			result.Children.Add(MakeWasapiDevice(model, new(1, 1)));
@@ -57,6 +59,32 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static UIElement MakeTheme(SettingsModel model, Cell cell)
+		{
+			var result = Create.Element<ComboBox>(cell);
+			result.ItemsSource = Enum.GetValues<ThemeType>();
+			var binding = Bind.To(model, nameof(model.Theme));
+			result.SetBinding(Selector.SelectedValueProperty, binding);
+			return result;
+		}
+
+		static UIElement MakeAsio(SettingsModel model, Cell cell)
+		{
+			var result = Create.Element<StackPanel>(cell);
+			result.Orientation = Orientation.Horizontal;
+			result.Children.Add(MakeUseAsio(model));
+			result.Children.Add(MakeAsioControlPanel(model));
+			return result;
+		}
+
+		static UIElement MakeUseAsio(SettingsModel model)
+		{
+			var result = new CheckBox();
+			var binding = Bind.To(model, nameof(model.UseAsio));
+			result.SetBinding(ToggleButton.IsCheckedProperty, binding);
+			return result;
+		}
+
 		static UIElement MakeAsioDevice(SettingsModel model, Cell cell)
 		{
 			var result = MakeDevice(model, true,
@@ -70,23 +98,6 @@ namespace Xt.Synth0.UI
 			var result = MakeDevice(model, false,
 				nameof(SettingsModel.WasapiDeviceId), cell);
 			result.ItemsSource = AudioModel.WasapiDevices;
-			return result;
-		}
-
-		static UIElement MakeTheme(SettingsModel model, Cell cell)
-		{
-			var result = Create.Element<ComboBox>(cell);
-			result.ItemsSource = Enum.GetValues<ThemeType>();
-			var binding = Bind.To(model, nameof(model.Theme));
-			result.SetBinding(Selector.SelectedValueProperty, binding);
-			return result;
-		}
-
-		static UIElement MakeUseAsio(SettingsModel model, Cell cell)
-		{
-			var result = Create.Element<CheckBox>(cell);
-			var binding = Bind.To(model, nameof(model.UseAsio));
-			result.SetBinding(ToggleButton.IsCheckedProperty, binding);
 			return result;
 		}
 
@@ -118,6 +129,16 @@ namespace Xt.Synth0.UI
 			var binding = Bind.To(model, path);
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			binding = Bind.To(model, nameof(SettingsModel.UseAsio), new VisibilityConverter(asio));
+			result.SetBinding(UIElement.VisibilityProperty, binding);
+			return result;
+		}
+
+		static UIElement MakeAsioControlPanel(SettingsModel model)
+		{
+			var result = new Button();
+			result.Content = "Control panel";
+			result.Click += (s, e) => ShowASIOControlPanel?.Invoke(null, EventArgs.Empty);
+			var binding = Bind.To(model, nameof(SettingsModel.UseAsio), new VisibilityConverter(true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}

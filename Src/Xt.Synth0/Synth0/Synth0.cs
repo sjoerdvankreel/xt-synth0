@@ -85,15 +85,6 @@ namespace Xt.Synth0
 			window.SetClean(path);
 		}
 
-		static AudioEngine SetupEngine(Window mainWindow)
-		{
-			var helper = new WindowInteropHelper(mainWindow);
-			var result = AudioEngine.Create(helper.Handle);
-			AudioModel.AddAsioDevices(result.AsioDevices);
-			AudioModel.AddWasapiDevices(result.WasapiDevices);
-			return result;
-		}
-
 		static void OnDispatcherUnhandledException(
 			object sender, DispatcherUnhandledExceptionEventArgs e)
 		{
@@ -101,25 +92,14 @@ namespace Xt.Synth0
 			e.Handled = true;
 		}
 
-		static void OnAppStartup(object sender, StartupEventArgs e)
-		{
-			var window = (MainWindow)Application.Current.MainWindow;
-			_engine = SetupEngine(window);
-			LoadSettings(_engine).CopyTo(Model.Settings);
-			MenuUI.New += (s, e) => New(window);
-			MenuUI.Open += (s, e) => Load(window);
-			MenuUI.Save += (s, e) => Save(window);
-			MenuUI.SaveAs += (s, e) => SaveAs(window);
-			MenuUI.ShowSettings += (s, e) => ShowSettings();
-			ControlUI.Stop += (s, e) => Model.Audio.IsRunning = false;
-			ControlUI.Start += (s, e) => Model.Audio.IsRunning = true;
-		}
-
 		static void OnError(Exception error)
 		{
-			IO.LogError(StartTime, error);
+			string message = error.Message;
+			if (error is XtException xte)
+				message = XtAudio.GetErrorInfo(xte.GetError()).ToString();
+			IO.LogError(StartTime, message, error.StackTrace);
 			var window = Application.Current.MainWindow;
-			var showError = new Action(() => MessageBox.Show(window, error.Message,
+			var showError = new Action(() => MessageBox.Show(window, message,
 				"Error", MessageBoxButton.OK, MessageBoxImage.Error));
 			window.Dispatcher.BeginInvoke(showError);
 		}
@@ -145,11 +125,40 @@ namespace Xt.Synth0
 			return result;
 		}
 
+		static AudioEngine SetupEngine(Window mainWindow)
+		{
+			var helper = new WindowInteropHelper(mainWindow);
+			var logger = (string msg) => IO.LogError(StartTime, msg, null);
+			Action<Action> dispatch = a => Application.Current.Dispatcher.BeginInvoke(a);
+			var result = AudioEngine.Create(helper.Handle, logger, dispatch);
+			AudioModel.AddAsioDevices(result.AsioDevices);
+			AudioModel.AddWasapiDevices(result.WasapiDevices);
+			result.Started += (s, e) => Model.Audio.IsRunning = true;
+			result.Stopped += (s, e) => Model.Audio.IsRunning = false;
+			return result;
+		}
+
 		static void BindCommand(Window window, RoutedUICommand command, Action handler)
 		{
 			if (command.InputGestures.Count > 0)
 				window.InputBindings.Add(new InputBinding(command, command.InputGestures[0]));
 			window.CommandBindings.Add(new CommandBinding(command, (s, e) => handler()));
+		}
+
+		static void OnAppStartup(object sender, StartupEventArgs e)
+		{
+			var window = (MainWindow)Application.Current.MainWindow;
+			_engine = SetupEngine(window);
+			LoadSettings(_engine).CopyTo(Model.Settings);
+			MenuUI.New += (s, e) => New(window);
+			MenuUI.Open += (s, e) => Load(window);
+			MenuUI.Save += (s, e) => Save(window);
+			MenuUI.SaveAs += (s, e) => SaveAs(window);
+			MenuUI.ShowSettings += (s, e) => ShowSettings();
+			ControlUI.Stop += (s, e) => _engine.Stop();
+			ControlUI.Start += (s, e) => _engine.Start(Model.Settings);
+			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
+			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
 		}
 	}
 }

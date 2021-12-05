@@ -40,14 +40,6 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		internal static void LogError(DateTime startTime, Exception error)
-		{
-			var file = startTime.ToString("yyyy-MM-dd HH.mm.ss");
-			var path = Path.Combine(GetAppDataFolder(), $"{file}.log");
-			using var writer = new StreamWriter(path, true);
-			writer.WriteLine($"{DateTime.Now}: {error}");
-		}
-
 		internal static void LoadSetting(SettingsModel model)
 		{
 			var path = GetSettingsPath();
@@ -78,6 +70,14 @@ namespace Xt.Synth0
 			if (newModel.Version != SynthModel.CurrentVersion)
 				throw new InvalidOperationException("Wrong file format version.");
 			newModel.CopyTo(model);
+		}
+
+		internal static void LogError(DateTime startTime, string message, string trace)
+		{
+			var file = startTime.ToString("yyyy-MM-dd HH.mm.ss");
+			var path = Path.Combine(GetAppDataFolder(), $"{file}.log");
+			using var writer = new StreamWriter(path, true);
+			writer.WriteLine($"{DateTime.Now}: {message}: {trace}");
 		}
 	}
 }
