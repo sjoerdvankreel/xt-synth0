@@ -1,4 +1,3 @@
 model pool/onchange
 save device selection global appsettings
-save theme selection global appsettings (file->theme->rgb)
 cleanup mainwindow set events on startup
