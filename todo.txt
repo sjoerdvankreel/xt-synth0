@@ -1,1 +1,3 @@
 model pool/onchange
+audio errors
+32->16bit

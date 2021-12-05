@@ -33,7 +33,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeGrid(SettingsModel model)
 		{
-			var result = Create.Grid(4, 2);
+			var result = Create.Grid(5, 2);
 			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
 			result.Children.Add(MakeUseAsio(model, new(0, 1)));
 			result.Children.Add(Create.Label("Device", new(1, 0)));
@@ -41,8 +41,10 @@ namespace Xt.Synth0.UI
 			result.Children.Add(MakeWasapiDevice(model, new(1, 1)));
 			result.Children.Add(Create.Label("Sample rate", new(2, 0)));
 			result.Children.Add(MakeSampleRate(model, new(2, 1)));
-			result.Children.Add(Create.Label("Theme", new(3, 0)));
-			result.Children.Add(MakeTheme(model, new(3, 1)));
+			result.Children.Add(Create.Label("Buffer size (ms)", new(3, 0)));
+			result.Children.Add(MakeBufferSize(model, new(3, 1)));
+			result.Children.Add(Create.Label("Theme", new(4, 0)));
+			result.Children.Add(MakeTheme(model, new(4, 1)));
 			return result;
 		}
 
@@ -88,11 +90,21 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static UIElement MakeBufferSize(SettingsModel model, Cell cell)
+		{
+			var result = Create.Element<ComboBox>(cell);
+			result.ItemsSource = AudioModel.BufferSizes;
+			result.SelectedValuePath = nameof(BufferModel.Size);
+			var binding = Bind.To(model, nameof(model.BufferSize));
+			result.SetBinding(Selector.SelectedValueProperty, binding);
+			return result;
+		}
+
 		static UIElement MakeSampleRate(SettingsModel model, Cell cell)
 		{
 			var result = Create.Element<ComboBox>(cell);
 			result.ItemsSource = AudioModel.SampleRates;
-			result.SelectedValuePath = nameof(RateModel.Value);
+			result.SelectedValuePath = nameof(RateModel.Rate);
 			var binding = Bind.To(model, nameof(model.SampleRate));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			return result;

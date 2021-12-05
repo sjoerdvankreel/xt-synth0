@@ -2,11 +2,11 @@
 {
 	public sealed class RateModel
 	{
-		public string Text { get; }
-		public SampleRate Value { get; }
+		public int Value { get; }
+		public SampleRate Rate { get; }
 
-		public override string ToString() => Text;
-		internal RateModel(SampleRate value, string text) 
-		=> (Value, Text) = (value, text);
+		public override string ToString() => Value.ToString();
+		internal RateModel(SampleRate rate, int value)
+		=> (Rate, Value) = (rate, value);
 	}
 }
