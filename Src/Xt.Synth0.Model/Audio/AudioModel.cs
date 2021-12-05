@@ -5,13 +5,12 @@ namespace Xt.Synth0.Model
 {
 	public sealed class AudioModel : ViewModel
 	{
-		static readonly IList<DeviceModel> _asioDevices = new List<DeviceModel>();
-		static readonly IList<DeviceModel> _wasapiDevices = new List<DeviceModel>();
-
-		public static void AddAsioDevice(string id, string name)
-		=> _asioDevices.Add(new DeviceModel(id, name));
-		public static void AddWasapiDevice(string id, string name)
-		=> _wasapiDevices.Add(new DeviceModel(id, name));
+		static readonly List<DeviceModel> _asioDevices = new();
+		static readonly List<DeviceModel> _wasapiDevices = new();
+		public static void AddAsioDevices(IEnumerable<DeviceModel> models) 
+		=> _asioDevices.AddRange(models);
+		public static void AddWasapiDevices(IEnumerable<DeviceModel> models) 
+		=> _wasapiDevices.AddRange(models);
 
 		public static IReadOnlyList<DeviceModel> AsioDevices { get; }
 			= new ReadOnlyCollection<DeviceModel>(_asioDevices);

@@ -40,9 +40,9 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		internal static void LogError(Exception error)
+		internal static void LogError(DateTime startTime, Exception error)
 		{
-			var file = Synth0.StartTime.ToString("yyyy-MM-dd HH.mm.ss");
+			var file = startTime.ToString("yyyy-MM-dd HH.mm.ss");
 			var path = Path.Combine(GetAppDataFolder(), $"{file}.log");
 			using var writer = new StreamWriter(path, true);
 			writer.WriteLine($"{DateTime.Now}: {error}");
