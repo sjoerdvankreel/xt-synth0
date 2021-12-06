@@ -16,7 +16,7 @@ namespace Xt.Synth0.Model
 			return result;
 		}
 
-		public PatternRow[] Rows { get; } = MakeRows();
+		public IReadOnlyList<PatternRow> Rows { get; } = MakeRows();
 
 		internal PatternModel()
 		{
