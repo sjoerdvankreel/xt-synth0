@@ -26,6 +26,8 @@ namespace Xt.Synth0.Model
 		public void CopyTo(ICopyModel model)
 		{
 			var synth = (SynthModel)model;
+			if (_subModels.Length != synth._subModels.Length)
+				throw new InvalidOperationException();
 			for (int s = 0; s < _subModels.Length; s++)
 				_subModels[s].CopyTo(synth._subModels[s]);
 		}
