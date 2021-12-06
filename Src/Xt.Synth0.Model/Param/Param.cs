@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -10,7 +9,6 @@ namespace Xt.Synth0.Model
 		public event PropertyChangedEventHandler PropertyChanged;
 		static readonly PropertyChangedEventArgs EventArgs = new(nameof(Value));
 
-		[JsonIgnore]
 		public ParamInfo Info { get; }
 		internal Param(ParamInfo info)
 		=> (Info, Value) = (info, info.Default);
