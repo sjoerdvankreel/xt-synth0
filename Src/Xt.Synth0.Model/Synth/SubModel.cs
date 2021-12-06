@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Xt.Synth0.Model
 {
@@ -13,6 +15,7 @@ namespace Xt.Synth0.Model
 		public void CopyTo(ICopyModel model)
 		{
 			var sub = (SubModel)model;
+			Debug.Assert(ListParams().SequenceEqual(_params));
 			if (_params.Length != sub._params.Length)
 				throw new InvalidOperationException();
 			for (int p = 0; p < _params.Length; p++)
