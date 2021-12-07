@@ -6,8 +6,8 @@ namespace Xt.Synth0.Model
 {
 	public sealed class PatternRow : SubModel
 	{
-		public const int MaxFxCount = 3;
-		public const int MaxKeyCount = 5;
+		public const int MaxFxCount = 2;
+		public const int MaxKeyCount = 3;
 
 		static IEnumerable<PatternFx> MakeFx()
 		=> Enumerable.Repeat(0, MaxFxCount).Select(_ => new PatternFx());
