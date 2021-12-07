@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -9,8 +10,8 @@ namespace Xt.Synth0.Model
 		readonly Param[] _params;
 		public Param[] Params() => _params;
 
-		internal abstract Param[] ListParams();
-		internal SubModel() => _params = ListParams();
+		internal abstract IEnumerable<Param> ListParams();
+		internal SubModel() => _params = ListParams().ToArray();
 
 		public void CopyTo(ICopyModel model)
 		{

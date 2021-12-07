@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Xt.Synth0.Model
 {
@@ -7,6 +8,6 @@ namespace Xt.Synth0.Model
 	{
 		readonly IReadOnlyList<T> _items;
 		public IReadOnlyList<T> Items => _items;
-		internal ModelList(IReadOnlyList<T> items) => _items = items;
+		internal ModelList(IEnumerable<T> items) => _items = items.ToArray();
 	}
 }

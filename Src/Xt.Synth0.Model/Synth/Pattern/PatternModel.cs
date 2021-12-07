@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Xt.Synth0.Model
 {
@@ -9,13 +10,8 @@ namespace Xt.Synth0.Model
 		public const int PatternCount = 8;
 		public const int RowCount = PatternCount * PatternRows;
 
-		static PatternRow[] MakeRows()
-		{
-			var result = new PatternRow[RowCount];
-			for (int r = 0; r < RowCount; r++)
-				result[r] = new PatternRow();
-			return result;
-		}
+		static IEnumerable<PatternRow> MakeRows() 
+		=> Enumerable.Repeat(0, RowCount).Select(_ => new PatternRow());
 
 		[JsonIgnore]
 		public IReadOnlyList<PatternRow> Rows => _rows.Items;
@@ -25,15 +21,10 @@ namespace Xt.Synth0.Model
 		internal PatternModel()
 		{
 			for (int r = 0; r < RowCount; r += 4)
-				Rows[r].Key1.Note.Value = (int)PatternNote.C;
+				Rows[r].Keys[0].Note.Value = (int)PatternNote.C;
 		}
 
-		internal override Param[] ListParams()
-		{
-			var result = new List<Param>();
-			foreach (var row in Rows)
-				result.AddRange(row.Params());
-			return result.ToArray();
-		}
+		internal override IEnumerable<Param> ListParams()
+		=> Rows.SelectMany(r => r.Params());
 	}
 }

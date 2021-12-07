@@ -8,12 +8,12 @@
 		const string PatsDetail = "Pattern count";
 		const string EditDetail = "Active pattern";
 
-		static readonly ParamInfo FxInfo = new DiscreteInfo(
-			nameof(Fx), FxDetail, 0, 2, 1);
 		static readonly ParamInfo BpmInfo = new DiscreteInfo(
 			nameof(Bpm), BpmDetail, 1, 999, 120);
+		static readonly ParamInfo FxInfo = new DiscreteInfo(
+			nameof(Fx), FxDetail, 0, PatternRow.MaxFxCount, 1);
 		static readonly ParamInfo KeysInfo = new DiscreteInfo(
-			nameof(Keys), KeysDetail, 1, 3, 1);
+			nameof(Keys), KeysDetail, 1, PatternRow.MaxKeyCount, 1);
 		static readonly ParamInfo EditInfo = new DiscreteInfo(
 			nameof(Edit), EditDetail, 1, PatternModel.PatternCount, 1);
 		static readonly ParamInfo PatsInfo = new DiscreteInfo(

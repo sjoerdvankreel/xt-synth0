@@ -1,4 +1,6 @@
-﻿namespace Xt.Synth0.Model
+﻿using System.Collections.Generic;
+
+namespace Xt.Synth0.Model
 {
 	public sealed class PatternFx : SubModel
 	{
@@ -12,6 +14,8 @@
 
 		public Param Value { get; } = new(ValueInfo);
 		public Param Target { get; } = new(TargetInfo);
-		internal override Param[] ListParams() => new[] { Target, Value };
+
+		internal override IEnumerable<Param> ListParams() 
+		=> new[] { Target, Value };
 	}
 }

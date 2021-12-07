@@ -5,3 +5,5 @@ faster audio startup (single/double stop)
 audio memory (delay etc)+hard reset
 better fixed-object-graph serialization
 make unitcount, notecount, fxcount compile-time configurable
+make modellist non-generic, single converter
+fix patternui

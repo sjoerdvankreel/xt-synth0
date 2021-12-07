@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Xt.Synth0.Model
 {
@@ -13,9 +14,9 @@ namespace Xt.Synth0.Model
 		readonly Param[][] _paramGroups;
 		public Param[][] ParamGroups() => _paramGroups;
 
-		internal override sealed Param[] ListParams()
-		=> ListParamGroups().SelectMany(g => g).ToArray();
 		internal GroupModel(string name)
 		=> (_name, _paramGroups) = (name, ListParamGroups());
+		internal override sealed IEnumerable<Param> ListParams()
+		=> ListParamGroups().SelectMany(g => g);
 	}
 }

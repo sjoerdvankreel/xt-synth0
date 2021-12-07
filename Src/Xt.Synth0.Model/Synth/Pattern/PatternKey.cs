@@ -1,4 +1,6 @@
-﻿namespace Xt.Synth0.Model
+﻿using System.Collections.Generic;
+
+namespace Xt.Synth0.Model
 {
 	public sealed class PatternKey : SubModel
 	{
@@ -22,6 +24,7 @@
 		public Param Oct { get; } = new(OctInfo);
 		public Param Note { get; } = new(NoteInfo);
 
-		internal override Param[] ListParams() => new[] { Amp, Oct, Note };
+		internal override IEnumerable<Param> ListParams() 
+		=> new[] { Amp, Oct, Note };
 	}
 }
