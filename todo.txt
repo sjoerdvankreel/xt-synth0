@@ -3,7 +3,7 @@ asio->int32
 wasapi->int16
 faster audio startup (single/double stop)
 audio memory (delay etc)+hard reset
-better fixed-object-graph serialization
-make unitcount, notecount, fxcount compile-time configurable
+make unitcount compile-time configurable
 make modellist non-generic, single converter
-fix patternui
+fix focus dashed box in themed
+make recent files
