@@ -40,7 +40,7 @@ namespace Xt.Synth0.UI
 			var keys = PatternRow.MaxKeyCount;
 			var rows = PatternModel.PatternRows;
 			var offset = index * PatternModel.PatternRows;
-			var result = Create.Grid(rows, keys * 5 + fx * 3);
+			var result = Create.Grid(rows, keys * 5 + 1 + fx * 3);
 			for (int r = 0; r < rows; r++)
 				AddRow(result, track, pattern.Rows[offset + r], r);
 			return result;
@@ -48,7 +48,9 @@ namespace Xt.Synth0.UI
 
 		static void AddRow(Grid grid, TrackModel track, PatternRow row, int r)
 		{
+			int divCol = PatternRow.MaxKeyCount * 5;
 			AddKeys(grid, track, row, r);
+			grid.Children.Add(Create.Divider(new(r, divCol), track.Fx, 1));
 			AddFx(grid, track, row, r);
 		}
 
@@ -63,7 +65,7 @@ namespace Xt.Synth0.UI
 
 		static void AddFx(Grid grid, TrackModel track, PatternRow row, int r)
 		{
-			int startCol = PatternRow.MaxKeyCount * 5;
+			int startCol = PatternRow.MaxKeyCount * 5 + 1;
 			for (int f = 0; f < PatternRow.MaxFxCount; f++)
 			{
 				PatternFxUI.Add(grid, row.Fx[f], track.Fx, f + 1, r, startCol + f * 3);
