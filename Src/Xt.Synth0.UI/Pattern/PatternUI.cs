@@ -40,18 +40,31 @@ namespace Xt.Synth0.UI
 			var offset = index * PatternModel.PatternRows;
 			var result = Create.Grid(rows, 20);
 			for (int r = 0; r < rows; r++)
-			{
-				PatternKeyUI.Add(result, pattern.Rows[offset + r].Keys[0], track, 1, r, 0);
-				result.Children.Add(Create.Divider(new(r, 4), track.Keys, 2));
-				PatternKeyUI.Add(result, pattern.Rows[offset + r].Keys[1], track, 2, r, 5);
-				result.Children.Add(Create.Divider(new(r, 9), track.Keys, 3));
-				PatternKeyUI.Add(result, pattern.Rows[offset + r].Keys[2], track, 3, r, 10);
-				result.Children.Add(Create.Divider(new(r, 14), track.Fx, 1));
-				PatternFxUI.Add(result, pattern.Rows[offset + r].Fx[0], track.Fx, 1, r, 15);
-				result.Children.Add(Create.Divider(new(r, 17), track.Fx, 2));
-				PatternFxUI.Add(result, pattern.Rows[offset + r].Fx[1], track.Fx, 2, r, 18);
-			}
+				AddRow(result, track, pattern.Rows[offset + r], r);
 			return result;
+		}
+
+		static void AddRow(Grid grid, TrackModel track, PatternRow row, int r)
+		{
+			AddKeys(grid, track, row, r);
+			AddFx(grid, track, row, r);	
+		}
+
+		static void AddKeys(Grid grid, TrackModel track, PatternRow row, int r)
+		{
+			PatternKeyUI.Add(grid, row.Keys[0], track, 1, r, 0);
+			grid.Children.Add(Create.Divider(new(r, 4), track.Keys, 2));
+			PatternKeyUI.Add(grid, row.Keys[1], track, 2, r, 5);
+			grid.Children.Add(Create.Divider(new(r, 9), track.Keys, 3));
+			PatternKeyUI.Add(grid, row.Keys[2], track, 3, r, 10);
+		}
+
+		static void AddFx(Grid grid, TrackModel track, PatternRow row, int r)
+		{
+			grid.Children.Add(Create.Divider(new(r, 14), track.Fx, 1));
+			PatternFxUI.Add(grid, row.Fx[0], track.Fx, 1, r, 15);
+			grid.Children.Add(Create.Divider(new(r, 17), track.Fx, 2));
+			PatternFxUI.Add(grid, row.Fx[1], track.Fx, 2, r, 18);
 		}
 	}
 }
