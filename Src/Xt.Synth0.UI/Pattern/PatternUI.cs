@@ -52,22 +52,22 @@ namespace Xt.Synth0.UI
 			AddFx(grid, track, row, r);
 		}
 
-		static void AddFx(Grid grid, TrackModel track, PatternRow row, int r)
-		{
-			int startCol = PatternRow.MaxKeyCount * 5;
-			for (int f = 0; f < PatternRow.MaxFxCount; f++)
-			{
-				grid.Children.Add(Create.Divider(new(r, startCol + f * 3), track.Fx, f + 1));
-				PatternFxUI.Add(grid, row.Fx[f], track.Fx, f + 1, r, startCol + 1 + f * 3);
-			}
-		}
-
 		static void AddKeys(Grid grid, TrackModel track, PatternRow row, int r)
 		{
 			for (int k = 0; k < PatternRow.MaxKeyCount; k++)
 			{
 				PatternKeyUI.Add(grid, row.Keys[k], track, k + 1, r, k * 5);
-				grid.Children.Add(Create.Divider(new(r, (k + 1) * 5 - 1), track.Keys, k + 1));
+				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), track.Keys, k + 1));
+			}
+		}
+
+		static void AddFx(Grid grid, TrackModel track, PatternRow row, int r)
+		{
+			int startCol = PatternRow.MaxKeyCount * 5;
+			for (int f = 0; f < PatternRow.MaxFxCount; f++)
+			{
+				PatternFxUI.Add(grid, row.Fx[f], track.Fx, f + 1, r, startCol + f * 3);
+				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), track.Fx, f + 1));
 			}
 		}
 	}
