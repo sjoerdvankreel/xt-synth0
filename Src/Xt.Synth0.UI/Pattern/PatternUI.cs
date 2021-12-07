@@ -57,7 +57,7 @@ namespace Xt.Synth0.UI
 			for (int k = 0; k < PatternRow.MaxKeyCount; k++)
 			{
 				PatternKeyUI.Add(grid, row.Keys[k], track, k + 1, r, k * 5);
-				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), track.Keys, k + 1));
+				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), track.Keys, k + 2));
 			}
 		}
 
