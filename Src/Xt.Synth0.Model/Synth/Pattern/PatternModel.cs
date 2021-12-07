@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Xt.Synth0.Model
 {
@@ -16,7 +17,10 @@ namespace Xt.Synth0.Model
 			return result;
 		}
 
-		public IReadOnlyList<PatternRow> Rows { get; } = MakeRows();
+		[JsonIgnore]
+		public IReadOnlyList<PatternRow> Rows => _rows.Items;
+		[JsonProperty(nameof(Rows))]
+		readonly ModelList<PatternRow> _rows = new(MakeRows());
 
 		internal PatternModel()
 		{

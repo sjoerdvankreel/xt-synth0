@@ -26,7 +26,7 @@ namespace Xt.Synth0
 		{
 			var result = MakeSettings();
 			result.Converters.Add(new ParamConverter());
-			result.Converters.Add(new PatternConverter());
+			result.Converters.Add(new ModelListConverter<PatternRow>());
 			return result;
 		}
 
