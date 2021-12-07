@@ -67,7 +67,7 @@ namespace Xt.Synth0.UI
 			for (int f = 0; f < PatternRow.MaxFxCount; f++)
 			{
 				PatternFxUI.Add(grid, row.Fx[f], track.Fx, f + 1, r, startCol + f * 3);
-				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), track.Fx, f + 1));
+				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), track.Fx, f + 2));
 			}
 		}
 	}
