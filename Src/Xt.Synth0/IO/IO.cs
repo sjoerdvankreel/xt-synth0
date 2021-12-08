@@ -72,7 +72,7 @@ namespace Xt.Synth0
 			JsonConvert.PopulateObject(json, newModel, MakeFileSettings());
 			if (newModel.Version != SynthModel.CurrentVersion)
 				throw new InvalidOperationException("Wrong file format version.");
-			newModel.CopyTo(model);
+			newModel.CopyTo(model, false);
 		}
 
 		internal static void LogError(DateTime startTime, string message, string trace)

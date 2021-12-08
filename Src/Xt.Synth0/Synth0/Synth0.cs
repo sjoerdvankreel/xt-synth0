@@ -35,7 +35,7 @@ namespace Xt.Synth0
 		static void CopyToUIThread(SynthModel model)
 		{
 			if (Model.Audio.IsRunning)
-				model.CopyTo(Model.Synth);
+				model.CopyTo(Model.Synth, true);
 			ModelPool.Return(model);
 		}
 
@@ -72,7 +72,7 @@ namespace Xt.Synth0
 		static void New(MainWindow window)
 		{
 			if (!SaveUnsavedChanges(window)) return;
-			new SynthModel().CopyTo(Model.Synth);
+			new SynthModel().CopyTo(Model.Synth, false);
 			window.SetClean(null);
 		}
 

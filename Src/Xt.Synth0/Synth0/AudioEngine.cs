@@ -133,7 +133,7 @@ namespace Xt.Synth0
 			finally
 			{
 				_dsp.Reset(_app.Audio);
-				_original.CopyTo(_app.Synth);
+				_original.CopyTo(_app.Synth, true);
 			}
 		}
 
@@ -142,7 +142,7 @@ namespace Xt.Synth0
 			try
 			{
 				_dsp.Reset(_app.Audio);
-				_app.Synth.CopyTo(_original);
+				_app.Synth.CopyTo(_original, true);
 				_app.Audio.State = AudioState.Running;
 				DoStartStream();
 			}
@@ -182,7 +182,7 @@ namespace Xt.Synth0
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
 			var synth = ModelPool.Get();
-			_app.Synth.CopyTo(synth);
+			_app.Synth.CopyTo(synth, true);
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
 			var output = (float[])safe.GetOutput();

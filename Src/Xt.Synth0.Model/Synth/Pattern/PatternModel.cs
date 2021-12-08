@@ -25,6 +25,7 @@ namespace Xt.Synth0.Model
 				Rows[r].Keys[0].Note.Value = (int)PatternNote.C;
 		}
 
+		public override bool Automation() => false;
 		internal override IEnumerable<Param> ListParams()
 		=> Rows.SelectMany(r => r.Params());
 	}

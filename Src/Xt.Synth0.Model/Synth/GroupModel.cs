@@ -6,12 +6,10 @@ namespace Xt.Synth0.Model
 	public abstract class GroupModel : SubModel
 	{
 		readonly string _name;
-		public string Name() => _name;
-
-		public virtual bool Automation() => true;
-		internal abstract Param[][] ListParamGroups();
-
 		readonly Param[][] _paramGroups;
+
+		public string Name() => _name;
+		internal abstract Param[][] ListParamGroups();
 		public Param[][] ParamGroups() => _paramGroups;
 
 		internal GroupModel(string name)

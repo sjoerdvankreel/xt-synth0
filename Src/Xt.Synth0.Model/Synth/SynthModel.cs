@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class SynthModel : ICopyModel
+	public sealed class SynthModel
 	{
 		public const int UnitCount = 3;
 		public const int CurrentVersion = 1;
@@ -31,13 +31,13 @@ namespace Xt.Synth0.Model
 		readonly List<Param> _autoParams = new();
 		public IList<Param> AutoParams() => _autoParams;
 
-		public void CopyTo(ICopyModel model)
+		public void CopyTo(SynthModel model, bool automationOnly)
 		{
-			var synth = (SynthModel)model;
-			if (_subModels.Length != synth._subModels.Length)
+			if (_subModels.Length != model._subModels.Length)
 				throw new InvalidOperationException();
 			for (int s = 0; s < _subModels.Length; s++)
-				_subModels[s].CopyTo(synth._subModels[s]);
+				if (!automationOnly || _subModels[s].Automation())
+					_subModels[s].CopyTo(model._subModels[s]);
 		}
 
 		public SynthModel()
