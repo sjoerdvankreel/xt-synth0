@@ -8,10 +8,12 @@
     <sys:Double x:Key="Opacity">0.75</sys:Double>
 
     <Style TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
     </Style>
 
     <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
     </Style>
 
@@ -21,6 +23,7 @@
 
     <Style TargetType="{x:Type CheckBox}">
         <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
     </Style>
 
@@ -31,6 +34,7 @@
 
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="Width" Value="50"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Right"/>
@@ -60,6 +64,7 @@
     </Style>
 
     <Style TargetType="{x:Type local:Toggle}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Toggle}">
@@ -78,6 +83,7 @@
     </Style>
 
     <Style TargetType="{x:Type local:Knob}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Knob}">
