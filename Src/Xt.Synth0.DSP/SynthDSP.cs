@@ -10,9 +10,9 @@ namespace Xt.Synth0.DSP
 
 		public void Next(SynthModel model, float rate, float[] buffer, int frames)
 		{
-			_units[0] = model.Unit1;
-			_units[1] = model.Unit2;
-			_units[2] = model.Unit3;
+			_units[0] = model.Units[0];
+			_units[1] = model.Units[1];
+			_units[2] = model.Units[2];
 			for (int i = 0; i < frames * 2; i++)
 			{
 				buffer[i] = 0;

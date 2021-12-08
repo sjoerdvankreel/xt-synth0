@@ -25,9 +25,8 @@ namespace Xt.Synth0.UI
 		static UIElement MakeLeft(AppModel model)
 		{
 			var result = new DockPanel();
-			AddDocked(result, GroupUI.Make(model, model.Synth.Unit1));
-			AddDocked(result, GroupUI.Make(model, model.Synth.Unit2));
-			AddDocked(result, GroupUI.Make(model, model.Synth.Unit3));
+			foreach (var unit in model.Synth.Units)
+				AddDocked(result, GroupUI.Make(model, unit));
 			AddDocked(result, GroupUI.Make(model, model.Synth.Amp));
 			AddDocked(result, GroupUI.Make(model, model.Synth.Track));
 			return result;

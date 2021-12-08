@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -7,17 +8,23 @@ namespace Xt.Synth0.Model
 {
 	public sealed class SynthModel : ICopyModel
 	{
+		public const int UnitCount = 3;
 		public const int CurrentVersion = 1;
+
+		static IEnumerable<UnitModel> MakeUnits()
+		=> Enumerable.Range(0, UnitCount).Select(i => new UnitModel($"Unit {i + 1}"));
+
 		public event EventHandler ParamChanged;
 
 		public int Version { get; set; } = CurrentVersion;
-
 		public PatternModel Pattern { get; } = new();
 		public AmpModel Amp { get; } = new(nameof(Amp));
-		public UnitModel Unit1 { get; } = new(nameof(Unit1));
-		public UnitModel Unit2 { get; } = new(nameof(Unit2));
-		public UnitModel Unit3 { get; } = new(nameof(Unit3));
 		public TrackModel Track { get; } = new(nameof(Track));
+
+		[JsonIgnore]
+		public IReadOnlyList<UnitModel> Units => _units.Items;
+		[JsonProperty(nameof(Units))]
+		readonly ModelList<UnitModel> _units = new(MakeUnits());
 
 		readonly SubModel[] _subModels;
 		readonly List<Param> _autoParams = new();
@@ -36,7 +43,7 @@ namespace Xt.Synth0.Model
 		{
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
-			_subModels = new SubModel[] { Unit1, Unit2, Unit3, Amp, Track, Pattern };
+			_subModels = Units.Concat(new SubModel[] { Amp, Track, Pattern }).ToArray();
 			foreach (var sub in _subModels)
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;
