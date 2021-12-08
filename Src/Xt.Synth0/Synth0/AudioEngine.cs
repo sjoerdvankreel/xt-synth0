@@ -56,10 +56,9 @@ namespace Xt.Synth0
 
 		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
+		readonly SynthModel _original = new();
 
 		readonly XtPlatform _platform;
-		readonly Action _stopNotification;
-		readonly Action _startNotification;
 		readonly Action<Action> _dispatchToUI;
 		readonly Action<SynthModel> _bufferFinished;
 
@@ -78,37 +77,99 @@ namespace Xt.Synth0
 			IReadOnlyList<DeviceModel> asioDevices,
 			IReadOnlyList<DeviceModel> wasapiDevices)
 		{
+			_app = app;
+			_platform = platform;
+			_dispatchToUI = dispatchToUI;
+			_bufferFinished = bufferFinished;
 			AsioDevices = asioDevices;
 			WasapiDevices = wasapiDevices;
 			AsioDefaultDeviceId = asioDefaultDeviceId;
 			WasapiDefaultDeviceId = wasapiDefaultDeviceId;
-
-			_app = app;
-			_platform = platform;
-			_stopNotification = Stop;
-			_dispatchToUI = dispatchToUI;
-			_bufferFinished = bufferFinished;
-			_startNotification = () => _app.Audio.IsRunning = true;
 		}
 
-		internal void Start(SettingsModel model)
+		public void Dispose()
 		{
-			Stop();
-			try
-			{
-				Run(model);
-			}
-			catch
-			{
-				Stop();
-				throw;
-			}
+			ResetStream();
+			_platform.Dispose();
 		}
 
 		internal void Stop()
 		{
+			if (_app.Audio.IsRunning)
+				PauseStream();
+			else
+				ResetStream();
+		}
+
+		internal void Start()
+		{
+			if (_app.Audio.IsPaused)
+				ResumeStream();
+			else
+				StartStream();
+		}
+
+		void PauseStream()
+		{
+			try
+			{
+				_app.Audio.State = AudioState.Paused;
+				_stream.Stop();
+			}
+			catch
+			{
+				ResetStream();
+				throw;
+			}
+		}
+
+		void ResetStream()
+		{
+			try
+			{
+				_app.Audio.State = AudioState.Stopped;
+				DoResetStream();
+			}
+			finally
+			{
+				_dsp.Reset(_app.Audio);
+				_original.CopyTo(_app.Synth);
+			}
+		}
+
+		void StartStream()
+		{
+			try
+			{
+				_dsp.Reset(_app.Audio);
+				_app.Synth.CopyTo(_original);
+				_app.Audio.State = AudioState.Running;
+				DoStartStream();
+			}
+			catch
+			{
+				ResetStream();
+				throw;
+			}
+		}
+
+		void ResumeStream()
+		{
+			try
+			{
+				_app.Audio.State = AudioState.Running;
+				_stream.Start();
+			}
+			catch
+			{
+				ResetStream();
+				throw;
+			}
+		}
+
+		void DoResetStream()
+		{
 			_stream?.Stop();
-			_app.Audio.IsRunning = false;
 			_stream?.Dispose();
 			_stream = null;
 			_safe?.Dispose();
@@ -116,12 +177,6 @@ namespace Xt.Synth0
 			_rate = 0;
 			_device?.Dispose();
 			_device = null;
-		}
-
-		public void Dispose()
-		{
-			Stop();
-			_platform.Dispose();
 		}
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
@@ -137,12 +192,6 @@ namespace Xt.Synth0
 			return 0;
 		}
 
-		void OnRunning(XtStream stream, bool running, ulong error, object user)
-		{
-			if (running) _dispatchToUI(_startNotification);
-			else _dispatchToUI(_stopNotification);
-		}
-
 		XtDevice OpenDevice(XtSystem system, string deviceId, string defaultId)
 		{
 			var service = _platform.GetService(system);
@@ -156,8 +205,9 @@ namespace Xt.Synth0
 			device.ShowControlPanel();
 		}
 
-		void Run(SettingsModel model)
+		void DoStartStream()
 		{
+			var model = _app.Settings;
 			var system = model.UseAsio ? XtSystem.ASIO : XtSystem.WASAPI;
 			var selectedId = model.UseAsio ? model.AsioDeviceId : model.WasapiDeviceId;
 			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
@@ -166,7 +216,7 @@ namespace Xt.Synth0
 			var mix = new XtMix(_rate, XtSample.Float32);
 			var channels = new XtChannels(0, 0, 2, 0);
 			var format = new XtFormat(in mix, in channels);
-			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
+			var streamParams = new XtStreamParams(true, OnBuffer, null, null);
 			var bufferSize = AudioModel.SizeToInt(model.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 			_stream = _device.OpenStream(in deviceParams, null);

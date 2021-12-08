@@ -10,6 +10,13 @@ namespace Xt.Synth0.DSP
 		//readonly float[] _phases = new float[3];
 		//readonly UnitModel[] _units = new UnitModel[3];
 
+		public void Reset(AudioModel audio)
+		{
+			_previousRow = -1;
+			_rowFactor = 0.0f;
+			audio.CurrentRow = 0;
+		}
+
 		bool RowUpdated(AudioModel audio)
 		{
 			bool result = _previousRow != audio.CurrentRow;

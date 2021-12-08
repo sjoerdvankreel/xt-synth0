@@ -8,6 +8,12 @@ namespace Xt.Synth0.Model
 {
 	public sealed class AudioModel : INotifyPropertyChanged
 	{
+		static readonly PropertyChangedEventArgs StateChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(State));
+		static readonly PropertyChangedEventArgs IsPausedChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(IsPaused));
+		static readonly PropertyChangedEventArgs IsStoppedChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(IsStopped));
 		static readonly PropertyChangedEventArgs IsRunningChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(IsRunning));
 		static readonly PropertyChangedEventArgs CurrentRowChangedEventArgs
@@ -54,17 +60,9 @@ namespace Xt.Synth0.Model
 		public static IReadOnlyList<DeviceModel> WasapiDevices { get; }
 			= new ReadOnlyCollection<DeviceModel>(_wasapiDevices);
 
-		bool _isRunning;
-		public bool IsRunning
-		{
-			get => _isRunning;
-			set
-			{
-				if (_isRunning == value) return;
-				_isRunning = value;
-				PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
-			}
-		}
+		public bool IsPaused => State == AudioState.Paused;
+		public bool IsRunning => State == AudioState.Running;
+		public bool IsStopped => State == AudioState.Stopped;
 
 		int _currentRow;
 		public int CurrentRow
@@ -75,6 +73,27 @@ namespace Xt.Synth0.Model
 				if (_currentRow == value) return;
 				_currentRow = value;
 				PropertyChanged?.Invoke(this, CurrentRowChangedEventArgs);
+			}
+		}
+
+		AudioState _state;
+		public AudioState State
+		{
+			get => _state;
+			set
+			{
+				if (_state == value) return;
+				bool wasPaused = _state == AudioState.Paused;
+				bool wasStopped = _state == AudioState.Stopped;
+				bool wasRunning = _state == AudioState.Running;
+				_state = value;
+				PropertyChanged?.Invoke(this, StateChangedEventArgs);
+				if (IsPaused != wasPaused)
+					PropertyChanged?.Invoke(this, IsPausedChangedEventArgs);
+				if (IsStopped != wasStopped)
+					PropertyChanged?.Invoke(this, IsStoppedChangedEventArgs);
+				if (IsRunning != wasRunning)
+					PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
 			}
 		}
 	}

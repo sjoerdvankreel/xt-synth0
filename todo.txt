@@ -1,5 +1,3 @@
 asio->int32
 wasapi->int16
-faster audio startup (single/double stop)
-audio memory (delay etc)+hard reset
-reset synthmodel to start state after automation
+handle audio interrupt

@@ -27,16 +27,17 @@ namespace Xt.Synth0
 			}
 		}
 
-		static void CopyToUIThread(SynthModel model)
-		{
-			model.CopyTo(Model.Synth);
-			ModelPool.Return(model);
-		}
-
 		static void SaveAs(MainWindow window)
 		=> Save(window, LoadSaveUI.Save());
 		static void Save(MainWindow window)
 		=> Save(window, window.Path ?? LoadSaveUI.Save());
+
+		static void CopyToUIThread(SynthModel model)
+		{
+			if (Model.Audio.IsRunning)
+				model.CopyTo(Model.Synth);
+			ModelPool.Return(model);
+		}
 
 		static void Run()
 		{
@@ -164,7 +165,7 @@ namespace Xt.Synth0
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
 			ControlUI.Stop += (s, e) => _engine.Stop();
-			ControlUI.Start += (s, e) => _engine.Start(Model.Settings);
+			ControlUI.Start += (s, e) => _engine.Start();
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
 		}

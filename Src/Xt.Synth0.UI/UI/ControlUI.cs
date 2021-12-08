@@ -34,7 +34,7 @@ namespace Xt.Synth0.UI
 			start.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Children.Add(start);
 			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
-			binding = Bind.To(model, nameof(AudioModel.IsRunning));
+			binding = Bind.To(model, nameof(AudioModel.IsStopped), new NegateConverter());
 			stop.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Children.Add(stop);
 			return result;
