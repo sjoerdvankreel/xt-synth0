@@ -46,11 +46,26 @@ namespace Xt.Synth0.Model
 		public static IReadOnlyList<DeviceModel> WasapiDevices { get; }
 			= new ReadOnlyCollection<DeviceModel>(_wasapiDevices);
 
+		public event EventHandler RowChanged;
+
 		bool _isRunning;
 		public bool IsRunning
 		{
 			get => _isRunning;
 			set => Set(ref _isRunning, value);
+		}
+
+		int _currentRow = -1;
+		public int CurrentRow
+		{
+			get => _currentRow;
+			set
+			{
+				int oldRow = _currentRow;
+				_currentRow = value;
+				if (oldRow != value)
+					RowChanged(this, EventArgs.Empty);
+			}
 		}
 	}
 }

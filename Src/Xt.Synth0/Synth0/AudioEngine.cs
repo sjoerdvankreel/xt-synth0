@@ -129,7 +129,8 @@ namespace Xt.Synth0
 			_app.Synth.CopyTo(_synth);
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
-			_dsp.Next(_synth, _rate, (float[])safe.GetOutput(), buffer.frames);
+			var output = (float[])safe.GetOutput();
+			_dsp.Next(_synth, _app.Audio, _rate, output, buffer.frames);
 			safe.Unlock(buffer);
 			return 0;
 		}

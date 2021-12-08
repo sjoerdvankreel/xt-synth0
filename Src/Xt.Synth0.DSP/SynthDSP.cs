@@ -1,15 +1,29 @@
-﻿using System;
-using Xt.Synth0.Model;
+﻿using Xt.Synth0.Model;
 
 namespace Xt.Synth0.DSP
 {
 	public class SynthDSP
 	{
-		readonly float[] _phases = new float[3];
-		readonly UnitModel[] _units = new UnitModel[3];
+		int _currentFrame = 0;
 
-		public void Next(SynthModel model, float rate, float[] buffer, int frames)
+		//readonly float[] _phases = new float[3];
+		//readonly UnitModel[] _units = new UnitModel[3];
+
+		public void Next(SynthModel synth, AudioModel audio, float rate, float[] buffer, int frames)
 		{
+			int patterns = synth.Track.Pats.Value;
+			int rowsPerPattern = PatternModel.PatternRows;
+			int totalRows = patterns * rowsPerPattern;
+			int bpm = synth.Track.Bpm.Value;
+			int totalBeats = totalRows / PatternModel.BeatRows;
+			float totalFrames = totalBeats * 60.0f / bpm * rate;
+			for (int f = 0; f < frames; f++)
+			{
+				audio.CurrentRow = (int)(_currentFrame / totalFrames * totalRows);
+				_currentFrame++;
+			}
+
+			/*
 			_units[0] = model.Units[0];
 			_units[1] = model.Units[1];
 			_units[2] = model.Units[2];
@@ -50,6 +64,7 @@ namespace Xt.Synth0.DSP
 					if (_phases[u] >= 1.0f) _phases[u] = -1.0f;
 				}
 			}
+			*/
 		}
 	}
 }
