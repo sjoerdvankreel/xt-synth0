@@ -10,6 +10,11 @@ namespace Xt.Synth0.UI
 	{
 		internal const string EditHint = "Click + keyboard to edit";
 
+		static int GetHightlighterRow(AudioModel model, int pattern)
+		=> IsHighlighted(model, pattern, out var row) ? row : 0;
+		static Visibility GetHightlighterVisibility(AudioModel model, int pattern)
+		=> IsHighlighted(model, pattern, out var _) ? Visibility.Visible : Visibility.Collapsed;
+
 		internal static UIElement Make(AppModel model)
 		{
 			var track = model.Synth.Track;
@@ -88,22 +93,15 @@ namespace Xt.Synth0.UI
 			model.RowChanged += (s, e) => Application.Current.Dispatcher.BeginInvoke(handler);
 		}
 
-		static int GetHightlighterRow(AudioModel model, int pattern)
+		static bool IsHighlighted(AudioModel model, int pattern, out int row)
 		{
-			int startRow = pattern * PatternModel.PatternRows;
-			int endRow = startRow + PatternModel.PatternRows;
-			if (model.CurrentRow < startRow || model.CurrentRow >= endRow) 
-				return 0;
-			return model.CurrentRow - startRow;
-		}
-
-		static Visibility GetHightlighterVisibility(AudioModel model, int pattern)
-		{
+			row = -1;
 			int startRow = pattern * PatternModel.PatternRows;
 			int endRow = startRow + PatternModel.PatternRows;
 			if (model.CurrentRow < startRow || model.CurrentRow >= endRow)
-				return Visibility.Collapsed;
-			return Visibility.Visible;
+				return false;
+			row = model.CurrentRow - startRow;
+			return true;
 		}
 
 		static void OnAudioRowChanged(Border highlighter, AudioModel model, int pattern)
