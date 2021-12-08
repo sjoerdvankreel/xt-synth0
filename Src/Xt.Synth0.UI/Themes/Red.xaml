@@ -14,5 +14,6 @@
     <Brush x:Key="BackgroundDarkKey">#000000</Brush>
     <Brush x:Key="BackgroundLightKey">#202020</Brush>
     <Brush x:Key="BackgroundButtonKey">#FF8970</Brush>
+    <Brush x:Key="FocusBackgroundKey">#7A1500</Brush>
 
 </ResourceDictionary>

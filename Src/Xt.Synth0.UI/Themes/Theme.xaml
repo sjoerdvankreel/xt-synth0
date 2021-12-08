@@ -35,11 +35,16 @@
     </Style>
 
     <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.75" />
                 <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" 
+                        Value="{DynamicResource FocusBackgroundKey}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

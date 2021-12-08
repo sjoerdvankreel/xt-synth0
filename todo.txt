@@ -5,5 +5,4 @@ faster audio startup (single/double stop)
 audio memory (delay etc)+hard reset
 make unitcount compile-time configurable
 make modellist non-generic, single converter
-fix focus dashed box in themed (focusvisualstyle)
 make recent files
