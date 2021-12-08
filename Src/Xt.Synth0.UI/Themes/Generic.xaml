@@ -49,13 +49,19 @@
     </Style>
 
     <Style TargetType="{x:Type local:HexBox}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:HexBox}">
-                    <TextBlock Text="{TemplateBinding HexValue}"/>
+                    <Border x:Name="border" Background="{TemplateBinding Background}">
+                        <TextBlock Text="{TemplateBinding HexValue}" Opacity="1"/>
+                    </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="LightGray"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
