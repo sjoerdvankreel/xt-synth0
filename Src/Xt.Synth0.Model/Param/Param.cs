@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Xt.Synth0.Model
@@ -20,10 +19,7 @@ namespace Xt.Synth0.Model
 			set
 			{
 				if (_value == value) return;
-				var comparer = Comparer<int>.Default;
-				if (comparer.Compare(value, Info.Min) < 0)
-					throw new ArgumentException();
-				if (comparer.Compare(value, Info.Max) > 0)
+				if (value < Info.Min || value > Info.Max)
 					throw new ArgumentException();
 				_value = value;
 				PropertyChanged?.Invoke(this, EventArgs);
