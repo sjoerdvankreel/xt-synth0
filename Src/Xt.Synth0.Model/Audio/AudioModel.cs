@@ -62,7 +62,7 @@ namespace Xt.Synth0.Model
 			set
 			{
 				int oldRow = _currentRow;
-				_currentRow = value;
+				Set(ref _currentRow, value);
 				if (oldRow != value)
 					RowChanged(this, EventArgs.Empty);
 			}

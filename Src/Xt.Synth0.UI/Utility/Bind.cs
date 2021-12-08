@@ -69,5 +69,13 @@ namespace Xt.Synth0.UI
 			result.Converter = formatter;
 			return result;
 		}
+
+		public static MultiBinding To(Binding first,
+			Binding second, Binding third, IMultiValueConverter formatter)
+		{
+			var result = To(first, second, formatter);
+			result.Bindings.Add(third);
+			return result;
+		}
 	}
 }

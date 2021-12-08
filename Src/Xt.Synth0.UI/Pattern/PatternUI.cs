@@ -31,11 +31,13 @@ namespace Xt.Synth0.UI
 			var patterns = new UIElement[PatternModel.PatternCount];
 			for (int p = 0; p < patterns.Length; p++)
 				patterns[p] = MakePattern(model, p);
-			var binding = Bind.To(model.Synth.Track.Edit);
-			binding.Converter = new PatternSelector(patterns);
-			result.SetBinding(ContentControl.ContentProperty, binding);
-			binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
+			var editBinding = Bind.To(model.Synth.Track.Edit);
+			var rowBinding = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
+			var runningBinding = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
+			var selectBinding = Bind.To(runningBinding, editBinding, rowBinding, new PatternSelector(patterns));
+			result.SetBinding(ContentControl.ContentProperty, selectBinding);
 			return result;
 		}
 
