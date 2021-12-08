@@ -28,6 +28,7 @@ namespace Xt.Synth0.UI
 			foreach (var unit in model.Synth.Units)
 				AddDocked(result, GroupUI.Make(model, unit));
 			AddDocked(result, GroupUI.Make(model, model.Synth.Amp));
+			AddDocked(result, GroupUI.Make(model, model.Synth.Global));
 			AddDocked(result, GroupUI.Make(model, model.Synth.Track));
 			return result;
 		}

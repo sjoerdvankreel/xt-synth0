@@ -20,6 +20,7 @@ namespace Xt.Synth0.Model
 		public PatternModel Pattern { get; } = new();
 		public AmpModel Amp { get; } = new(nameof(Amp));
 		public TrackModel Track { get; } = new(nameof(Track));
+		public GlobalModel Global { get; } = new(nameof(Global));
 
 		[JsonIgnore]
 		public IReadOnlyList<UnitModel> Units => _units.Items;
@@ -43,7 +44,7 @@ namespace Xt.Synth0.Model
 		{
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
-			_subModels = Units.Concat(new SubModel[] { Amp, Track, Pattern }).ToArray();
+			_subModels = Units.Concat(new SubModel[] { Amp, Global, Track, Pattern }).ToArray();
 			foreach (var sub in _subModels)
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;

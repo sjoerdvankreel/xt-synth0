@@ -14,11 +14,11 @@ namespace Xt.Synth0.DSP
 			int patterns = synth.Track.Pats.Value;
 			int rowsPerPattern = PatternModel.PatternRows;
 			int totalRows = patterns * rowsPerPattern;
-			int bpm = synth.Track.Bpm.Value;
 			int totalBeats = totalRows / PatternModel.BeatRows;
-			float totalFrames = totalBeats * 60.0f / bpm * rate;
 			for (int f = 0; f < frames; f++)
 			{
+				int bpm = synth.Global.Bpm.Value;
+				float totalFrames = totalBeats * 60.0f / bpm * rate;
 				audio.CurrentRow = (int)(_currentFrame / totalFrames * totalRows);
 				_currentFrame++;
 				if (_currentFrame >= (int)totalFrames)

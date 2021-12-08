@@ -121,7 +121,7 @@ namespace Xt.Synth0.UI
 			result.Visibility = GetHightlighterVisibility(model, pattern);
 			result.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
 			Action handler = () => OnAudioPropertyChanged(result, model, pattern);
-			model.PropertyChanged += (s, e) => Application.Current.Dispatcher.BeginInvoke(handler);
+			model.PropertyChanged += (s, e) => Application.Current?.Dispatcher.BeginInvoke(handler);
 		}
 	}
 }
