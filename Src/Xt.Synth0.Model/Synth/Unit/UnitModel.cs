@@ -40,7 +40,9 @@ namespace Xt.Synth0.Model
 		public Param Cent { get; } = new(CentInfo);
 		public Param Type { get; } = new(TypeInfo);
 
+		public UnitModel() : base(null) { }
 		internal UnitModel(string name) : base(name) { }
+
 		internal override Param[][] ListParamGroups() => new[] {
 			new[] { On, Type },
 			new[] { Amp, Oct },
