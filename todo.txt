@@ -1,4 +1,3 @@
-do tick
 asio->int32
 wasapi->int16
 faster audio startup (single/double stop)
