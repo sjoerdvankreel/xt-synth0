@@ -27,6 +27,12 @@ namespace Xt.Synth0
 			}
 		}
 
+		static void CopyToUIThread(SynthModel model)
+		{
+			model.CopyTo(Model.Synth);
+			ModelPool.Return(model);
+		}
+
 		static void SaveAs(MainWindow window)
 		=> Save(window, LoadSaveUI.Save());
 		static void Save(MainWindow window)
@@ -139,17 +145,6 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		static AudioEngine SetupEngine(Window mainWindow)
-		{
-			var helper = new WindowInteropHelper(mainWindow);
-			var logger = (string msg) => IO.LogError(StartTime, msg, null);
-			Action<Action> dispatch = a => Application.Current?.Dispatcher.BeginInvoke(a);
-			var result = AudioEngine.Create(Model, helper.Handle, logger, dispatch);
-			AudioModel.AddAsioDevices(result.AsioDevices);
-			AudioModel.AddWasapiDevices(result.WasapiDevices);
-			return result;
-		}
-
 		static void BindCommand(Window window, RoutedUICommand command, Action handler)
 		{
 			if (command.InputGestures.Count > 0)
@@ -172,6 +167,29 @@ namespace Xt.Synth0
 			ControlUI.Start += (s, e) => _engine.Start(Model.Settings);
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
+		}
+
+		static void OnBufferFinished(SynthModel model, Action<SynthModel> copyToUIThread)
+		{
+			var dispatcher = Application.Current?.Dispatcher;
+			if (dispatcher == null) return;
+			if (ModelPool.CurrentCopyOperation?.Abort() == true)
+				ModelPool.Return(ModelPool.CurrentModel);
+			ModelPool.CurrentModel = model;
+			ModelPool.CurrentCopyOperation = dispatcher.BeginInvoke(copyToUIThread, model);
+		}
+
+		static AudioEngine SetupEngine(Window mainWindow)
+		{
+			var helper = new WindowInteropHelper(mainWindow);
+			Action<SynthModel> copyToUIThread = CopyToUIThread;
+			var logger = (string msg) => IO.LogError(StartTime, msg, null);
+			Action<SynthModel> bufferFinished = m => OnBufferFinished(m, copyToUIThread);
+			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
+			var result = AudioEngine.Create(Model, helper.Handle, logger, dispatchToUI, bufferFinished);
+			AudioModel.AddAsioDevices(result.AsioDevices);
+			AudioModel.AddWasapiDevices(result.WasapiDevices);
+			return result;
 		}
 	}
 }

@@ -8,14 +8,15 @@ namespace Xt.Synth0
 {
 	class AudioEngine : IDisposable
 	{
-		internal static AudioEngine Create(AppModel app,
-			IntPtr mainWindow, Action<string> log, Action<Action> dispatch)
+		internal static AudioEngine Create(
+			AppModel app, IntPtr mainWindow, Action<string> log,
+			Action<Action> dispatchToUI, Action<SynthModel> bufferFinished)
 		{
 			XtAudio.SetOnError(msg => log(msg));
 			var platform = XtAudio.Init(nameof(Synth0), mainWindow);
 			try
 			{
-				return Create(app, platform, dispatch);
+				return Create(app, platform, dispatchToUI, bufferFinished);
 			}
 			catch
 			{
@@ -24,12 +25,13 @@ namespace Xt.Synth0
 			}
 		}
 
-		static AudioEngine Create(AppModel app,
-			XtPlatform platform, Action<Action> dispatch)
+		static AudioEngine Create(AppModel app, XtPlatform platform,
+			Action<Action> dispatchToUI, Action<SynthModel> bufferFinished)
 		{
 			var asio = platform.GetService(XtSystem.ASIO);
 			var wasapi = platform.GetService(XtSystem.WASAPI);
-			return new AudioEngine(app, platform, dispatch,
+			return new AudioEngine(app, platform,
+				dispatchToUI, bufferFinished,
 				asio.GetDefaultDeviceId(true),
 				wasapi.GetDefaultDeviceId(true),
 				GetDevices(asio), GetDevices(wasapi));
@@ -54,12 +56,12 @@ namespace Xt.Synth0
 
 		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
-		readonly SynthModel _synth = new();
 
 		readonly XtPlatform _platform;
-		readonly Action<Action> _dispatch;
 		readonly Action _stopNotification;
 		readonly Action _startNotification;
+		readonly Action<Action> _dispatchToUI;
+		readonly Action<SynthModel> _bufferFinished;
 
 		public string AsioDefaultDeviceId { get; }
 		public string WasapiDefaultDeviceId { get; }
@@ -69,20 +71,23 @@ namespace Xt.Synth0
 		AudioEngine(
 			AppModel app,
 			XtPlatform platform,
-			Action<Action> dispatch,
+			Action<Action> dispatchToUI,
+			Action<SynthModel> bufferFinished,
 			string asioDefaultDeviceId,
 			string wasapiDefaultDeviceId,
 			IReadOnlyList<DeviceModel> asioDevices,
 			IReadOnlyList<DeviceModel> wasapiDevices)
 		{
-			_app = app;
-			_platform = platform;
-			_dispatch = dispatch;
 			AsioDevices = asioDevices;
 			WasapiDevices = wasapiDevices;
 			AsioDefaultDeviceId = asioDefaultDeviceId;
 			WasapiDefaultDeviceId = wasapiDefaultDeviceId;
+
+			_app = app;
+			_platform = platform;
 			_stopNotification = Stop;
+			_dispatchToUI = dispatchToUI;
+			_bufferFinished = bufferFinished;
 			_startNotification = () => _app.Audio.IsRunning = true;
 		}
 
@@ -121,19 +126,21 @@ namespace Xt.Synth0
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
-			_app.Synth.CopyTo(_synth);
+			var synth = ModelPool.Get();
+			_app.Synth.CopyTo(synth);
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
 			var output = (float[])safe.GetOutput();
-			_dsp.Next(_synth, _app.Audio, _rate, output, buffer.frames);
+			_dsp.Next(synth, _app.Audio, _rate, output, buffer.frames);
 			safe.Unlock(buffer);
+			_bufferFinished(synth);
 			return 0;
 		}
 
 		void OnRunning(XtStream stream, bool running, ulong error, object user)
 		{
-			if (running) _dispatch(_startNotification);
-			else _dispatch(_stopNotification);
+			if (running) _dispatchToUI(_startNotification);
+			else _dispatchToUI(_stopNotification);
 		}
 
 		XtDevice OpenDevice(XtSystem system, string deviceId, string defaultId)

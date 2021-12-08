@@ -1,5 +1,6 @@
-object pool for automation (apply all track fx at once)
+do tick
 asio->int32
 wasapi->int16
 faster audio startup (single/double stop)
 audio memory (delay etc)+hard reset
+reset synthmodel to start state after automation
