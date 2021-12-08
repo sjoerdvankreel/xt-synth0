@@ -21,6 +21,8 @@ namespace Xt.Synth0.DSP
 			{
 				audio.CurrentRow = (int)(_currentFrame / totalFrames * totalRows);
 				_currentFrame++;
+				if (_currentFrame >= (int)totalFrames)
+					_currentFrame = 0;
 			}
 
 			/*
