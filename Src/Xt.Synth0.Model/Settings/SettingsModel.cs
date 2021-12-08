@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class SettingsModel : ViewModel, ICopyModel
+	public sealed class SettingsModel : ICopyModel, INotifyPropertyChanged
 	{
 		public const int MaxRecentFiles = 10;
+
 		public event EventHandler ThemeChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		bool _useAsio;
 		public bool UseAsio
@@ -81,6 +85,13 @@ namespace Xt.Synth0.Model
 			RecentFiles.Insert(0, path);
 			if (RecentFiles.Count > MaxRecentFiles)
 				RecentFiles.RemoveAt(RecentFiles.Count - 1);
+		}
+
+		void Set<T>(ref T field, T value, [CallerMemberName] string property = null)
+		{
+			if (Equals(field, value)) return;
+			field = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 		}
 	}
 }

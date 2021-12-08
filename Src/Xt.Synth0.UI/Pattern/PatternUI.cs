@@ -83,6 +83,23 @@ namespace Xt.Synth0.UI
 			}
 		}
 
+		static bool IsHighlighted(AudioModel model, int pattern, out int row)
+		{
+			row = -1;
+			if (!model.IsRunning) return false;
+			int startRow = pattern * PatternModel.PatternRows;
+			int endRow = startRow + PatternModel.PatternRows;
+			if (model.CurrentRow < startRow || model.CurrentRow >= endRow) return false;
+			row = model.CurrentRow - startRow;
+			return true;
+		}
+
+		static void OnAudioPropertyChanged(Border highlighter, AudioModel model, int pattern)
+		{
+			highlighter.Visibility = GetHightlighterVisibility(model, pattern);
+			highlighter.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
+		}
+
 		static void AddHightlighter(Grid grid, AudioModel model, int pattern, int cols)
 		{
 			var result = Create.Element<Border>(new Cell(0, 0, 1, cols));
@@ -91,25 +108,8 @@ namespace Xt.Synth0.UI
 			result.Background = Brushes.Gray;
 			result.Visibility = GetHightlighterVisibility(model, pattern);
 			result.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
-			Action handler = () => OnAudioRowChanged(result, model, pattern);
-			model.RowChanged += (s, e) => Application.Current.Dispatcher.BeginInvoke(handler);
-		}
-
-		static bool IsHighlighted(AudioModel model, int pattern, out int row)
-		{
-			row = -1;
-			int startRow = pattern * PatternModel.PatternRows;
-			int endRow = startRow + PatternModel.PatternRows;
-			if (model.CurrentRow < startRow || model.CurrentRow >= endRow)
-				return false;
-			row = model.CurrentRow - startRow;
-			return true;
-		}
-
-		static void OnAudioRowChanged(Border highlighter, AudioModel model, int pattern)
-		{
-			highlighter.Visibility = GetHightlighterVisibility(model, pattern);
-			highlighter.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
+			Action handler = () => OnAudioPropertyChanged(result, model, pattern);
+			model.PropertyChanged += (s, e) => Application.Current.Dispatcher.BeginInvoke(handler);
 		}
 	}
 }

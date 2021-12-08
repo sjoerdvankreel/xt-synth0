@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class AudioModel : ViewModel
+	public sealed class AudioModel : INotifyPropertyChanged
 	{
+		static readonly PropertyChangedEventArgs IsRunningChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(IsRunning));
+		static readonly PropertyChangedEventArgs CurrentRowChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(CurrentRow));
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
 		public static int RateToInt(SampleRate rate) => rate switch
 		{
 			SampleRate.Rate44100 => 44100,
@@ -46,25 +54,27 @@ namespace Xt.Synth0.Model
 		public static IReadOnlyList<DeviceModel> WasapiDevices { get; }
 			= new ReadOnlyCollection<DeviceModel>(_wasapiDevices);
 
-		public event EventHandler RowChanged;
-
 		bool _isRunning;
 		public bool IsRunning
 		{
 			get => _isRunning;
-			set => Set(ref _isRunning, value);
+			set
+			{
+				if (_isRunning == value) return;
+				_isRunning = value;
+				PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
+			}
 		}
 
-		int _currentRow = -1;
+		int _currentRow;
 		public int CurrentRow
 		{
 			get => _currentRow;
 			set
 			{
-				int oldRow = _currentRow;
-				Set(ref _currentRow, value);
-				if (oldRow != value)
-					RowChanged(this, EventArgs.Empty);
+				if (_currentRow == value) return;
+				_currentRow = value;
+				PropertyChanged?.Invoke(this, CurrentRowChangedEventArgs);
 			}
 		}
 	}
