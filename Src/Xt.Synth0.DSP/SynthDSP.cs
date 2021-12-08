@@ -5,9 +5,20 @@ namespace Xt.Synth0.DSP
 	public class SynthDSP
 	{
 		int _currentFrame = 0;
+		double _rowFactor = 0.0f;
 
 		//readonly float[] _phases = new float[3];
 		//readonly UnitModel[] _units = new UnitModel[3];
+
+		int UpdateRow(AudioModel audio, float rate, int rows, int bpm)
+		{
+			_rowFactor += bpm * PatternModel.BeatRows / (60.0 * rate);
+			if (_rowFactor < 1.0) return audio.CurrentRow;
+			_rowFactor = 0.0f;
+			if (audio.CurrentRow == rows - 1) return 0;
+			return audio.CurrentRow + 1;
+		}
+
 
 		public void Next(SynthModel synth, AudioModel audio, float rate, float[] buffer, int frames)
 		{
@@ -18,9 +29,17 @@ namespace Xt.Synth0.DSP
 			for (int f = 0; f < frames; f++)
 			{
 				int bpm = synth.Global.Bpm.Value;
-				float totalFrames = totalBeats * 60.0f / bpm * rate;
-				audio.CurrentRow = (int)(_currentFrame / totalFrames * totalRows);
+				_rowFactor += bpm * PatternModel.BeatRows / (60.0 * rate);
+				if (_rowFactor >= 1.0f)
+				{
+					_rowFactor = 0.0f;
+					if (audio.CurrentRow == totalRows - 1)
+						audio.CurrentRow = 0;
+					else
+						audio.CurrentRow++;
+				}
 				_currentFrame++;
+				double totalFrames = totalBeats * 60.0 * rate / bpm;
 				if (_currentFrame >= (int)totalFrames)
 					_currentFrame = 0;
 			}
