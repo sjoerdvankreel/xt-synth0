@@ -192,6 +192,12 @@ namespace Xt.Synth0
 			return 0;
 		}
 
+		void OnRunning(XtStream stream, bool running, ulong error, object user)
+		{
+			if (!running && error != 0)
+				_dispatchToUI(ResetStream);
+		}
+
 		XtDevice OpenDevice(XtSystem system, string deviceId, string defaultId)
 		{
 			var service = _platform.GetService(system);
@@ -216,7 +222,7 @@ namespace Xt.Synth0
 			var mix = new XtMix(_rate, XtSample.Float32);
 			var channels = new XtChannels(0, 0, 2, 0);
 			var format = new XtFormat(in mix, in channels);
-			var streamParams = new XtStreamParams(true, OnBuffer, null, null);
+			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
 			var bufferSize = AudioModel.SizeToInt(model.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 			_stream = _device.OpenStream(in deviceParams, null);

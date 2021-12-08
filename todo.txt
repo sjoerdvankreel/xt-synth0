@@ -1,3 +1,2 @@
 asio->int32
 wasapi->int16
-handle audio interrupt
