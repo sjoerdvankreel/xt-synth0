@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using Xt.Synth0.Model;
 
@@ -17,12 +18,19 @@ namespace Xt.Synth0.UI
 
 		internal static UIElement Make(AppModel model)
 		{
-			var track = model.Synth.Track;
 			var result = new GroupBox();
 			result.Content = MakeContent(model);
-			var binding = Bind.To(track.Edit, track.Pats, new PatternFormatter());
-			result.SetBinding(HeaderedContentControl.HeaderProperty, binding);
+			result.SetBinding(HeaderedContentControl.HeaderProperty, BindHeader(model));
 			return result;
+		}
+
+		static BindingBase BindHeader(AppModel model)
+		{
+			var edit = Bind.To(model.Synth.Track.Edit);
+			var pats = Bind.To(model.Synth.Track.Edit);
+			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
+			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
+			return Bind.To(new PatternFormatter(), running, edit, pats, row);
 		}
 
 		static UIElement MakeContent(AppModel model)
@@ -33,12 +41,16 @@ namespace Xt.Synth0.UI
 				patterns[p] = MakePattern(model, p);
 			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
-			var editBinding = Bind.To(model.Synth.Track.Edit);
-			var rowBinding = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
-			var runningBinding = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
-			var selectBinding = Bind.To(runningBinding, editBinding, rowBinding, new PatternSelector(patterns));
-			result.SetBinding(ContentControl.ContentProperty, selectBinding);
+			result.SetBinding(ContentControl.ContentProperty, BindSelector(model, patterns));
 			return result;
+		}
+
+		static BindingBase BindSelector(AppModel model, UIElement[] patterns)
+		{
+			var edit = Bind.To(model.Synth.Track.Edit);
+			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
+			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
+			return Bind.To(new PatternSelector(patterns), running, edit, row);
 		}
 
 		static UIElement MakePattern(AppModel model, int pattern)

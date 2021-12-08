@@ -42,9 +42,9 @@ namespace Xt.Synth0
 
 		BindingBase BindTitle()
 		{
-			var pathBinding = Bind.To(this, nameof(Path));
-			var dirtyBinding = Bind.To(this, nameof(IsDirty));
-			return Bind.To(pathBinding, dirtyBinding, new TitleFormatter());
+			var path = Bind.To(this, nameof(Path));
+			var dirty = Bind.To(this, nameof(IsDirty));
+			return Bind.To(new TitleFormatter(), path, dirty);
 		}
 
 		UIElement MakeContent()
@@ -61,7 +61,7 @@ namespace Xt.Synth0
 			result.Children.Add(synth);
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
 			result.Resources = Utility.GetThemeResources(Model.Settings.Theme);
-			Model.Settings.ThemeChanged += (s, e) => result.Resources 
+			Model.Settings.ThemeChanged += (s, e) => result.Resources
 				= Utility.GetThemeResources(Model.Settings.Theme);
 			return result;
 		}

@@ -61,20 +61,12 @@ namespace Xt.Synth0.UI
 		}
 
 		public static MultiBinding To(
-			Binding first, Binding second, IMultiValueConverter formatter)
+			IMultiValueConverter formatter, params Binding[] bindings)
 		{
 			var result = new MultiBinding();
-			result.Bindings.Add(first);
-			result.Bindings.Add(second);
+			foreach (var b in bindings)
+				result.Bindings.Add(b);
 			result.Converter = formatter;
-			return result;
-		}
-
-		public static MultiBinding To(Binding first,
-			Binding second, Binding third, IMultiValueConverter formatter)
-		{
-			var result = To(first, second, formatter);
-			result.Bindings.Add(third);
 			return result;
 		}
 	}
