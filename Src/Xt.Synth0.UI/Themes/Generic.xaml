@@ -6,6 +6,7 @@
 
     <Thickness x:Key="Margin">3</Thickness>
     <sys:Double x:Key="Opacity">0.75</sys:Double>
+    <Brush x:Key="FocusBackgroundKey">LightGray</Brush>
 
     <Style TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -41,9 +42,14 @@
     </Style>
 
     <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" 
+                        Value="{DynamicResource FocusBackgroundKey}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -61,7 +67,8 @@
                             <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                            <Setter TargetName="border" Property="Background" 
+                                    Value="{DynamicResource FocusBackgroundKey}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
