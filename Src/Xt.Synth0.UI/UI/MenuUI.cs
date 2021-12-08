@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,8 +14,9 @@ namespace Xt.Synth0.UI
 		public static event EventHandler Save;
 		public static event EventHandler SaveAs;
 		public static event EventHandler ShowSettings;
+		public static event EventHandler<OpenRecentEventArgs> OpenRecent;
 
-		public static UIElement Make(AudioModel model)
+		public static UIElement Make(AppModel model)
 		{
 			var result = new Menu();
 			result.Items.Add(MakeFile(model));
@@ -49,13 +51,33 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeFile(AudioModel model)
+		static MenuItem MakeRecent(AppModel model)
 		{
+			var result = MakeItem("Recent Files");
+			result.Click += OnRecentFileClick;
+			result.ItemsSource = model.Settings.RecentFiles; 
+			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
+			binding = Bind.Show(model.Settings.RecentFiles, nameof(ICollection.Count), 1);
+			result.SetBinding(UIElement.VisibilityProperty, binding);
+			return result;
+		}
+
+		static void OnRecentFileClick(object sender, RoutedEventArgs e)
+		{
+			var source = e.OriginalSource as MenuItem;
+			if (source == null || source == sender) return;
+			OpenRecent?.Invoke(null, new OpenRecentEventArgs(source.Header.ToString()));
+		}
+
+		static UIElement MakeFile(AppModel model)
+		{
+			var audio = model.Audio;
 			var result = MakeItem("_File");
 			var doNew = () => New(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(ApplicationCommands.New, model, "_New", doNew));
+			result.Items.Add(MakeItem(ApplicationCommands.New, audio, "_New", doNew));
 			var doOpen = () => Open(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(ApplicationCommands.Open, model, "_Open", doOpen));
+			result.Items.Add(MakeItem(ApplicationCommands.Open, audio, "_Open", doOpen));
 			result.Items.Add(new Separator());
 			var doSave = () => Save(null, EventArgs.Empty);
 			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", doSave));
@@ -63,7 +85,8 @@ namespace Xt.Synth0.UI
 			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", doSaveAs));
 			result.Items.Add(new Separator());
 			var doShowSettings = () => ShowSettings(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, model, "Settings", doShowSettings));
+			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, audio, "Settings", doShowSettings));
+			result.Items.Add(MakeRecent(model));
 			return result;
 		}
 	}

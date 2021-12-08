@@ -28,6 +28,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		public static Binding Show(
+			object source, string path, int min)
+		{
+			var result = To(source, path);
+			result.Converter = new ShowConverter(min);
+			return result;
+		}
+
 		internal static Binding Show(Param param, int min)
 		{
 			var result = To(param);

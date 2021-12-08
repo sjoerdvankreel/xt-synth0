@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 
 namespace Xt.Synth0.Model
 {
 	public sealed class SettingsModel : ViewModel, ICopyModel
 	{
+		public const int MaxRecentFiles = 10;
 		public event EventHandler ThemeChanged;
 
 		bool _useAsio;
@@ -41,6 +43,13 @@ namespace Xt.Synth0.Model
 			set => Set(ref _wasapiDeviceId, value);
 		}
 
+		ObservableCollection<string> _recentFiles = new();
+		public ObservableCollection<string> RecentFiles
+		{
+			get => _recentFiles;
+			set => Set(ref _recentFiles, value);
+		}
+
 		ThemeType _theme;
 		public ThemeType Theme
 		{
@@ -61,6 +70,17 @@ namespace Xt.Synth0.Model
 			settings.BufferSize = BufferSize;
 			settings.AsioDeviceId = AsioDeviceId;
 			settings.WasapiDeviceId = WasapiDeviceId;
+			settings.RecentFiles.Clear();
+			foreach (var f in RecentFiles)
+				settings.RecentFiles.Add(f);
+		}
+
+		public void AddRecentFile(string path)
+		{
+			RecentFiles.Remove(path);
+			RecentFiles.Insert(0, path);
+			if (RecentFiles.Count > MaxRecentFiles)
+				RecentFiles.RemoveAt(RecentFiles.Count - 1);
 		}
 	}
 }

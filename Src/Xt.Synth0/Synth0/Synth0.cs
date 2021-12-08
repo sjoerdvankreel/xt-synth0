@@ -62,15 +62,6 @@ namespace Xt.Synth0
 			IO.SaveSettings(Model.Settings);
 		}
 
-		static void Load(MainWindow window)
-		{
-			if (!SaveUnsavedChanges(window)) return;
-			var path = LoadSaveUI.Load();
-			if (path == null) return;
-			IO.LoadFile(path, Model.Synth);
-			window.SetClean(path);
-		}
-
 		static void New(MainWindow window)
 		{
 			if (!SaveUnsavedChanges(window)) return;
@@ -78,11 +69,34 @@ namespace Xt.Synth0
 			window.SetClean(null);
 		}
 
+		static void Load(MainWindow window)
+		{
+			if (!SaveUnsavedChanges(window)) return;
+			Load(window, LoadSaveUI.Load());
+		}
+
+		static void LoadRecent(MainWindow window, string path)
+		{
+			if (!SaveUnsavedChanges(window)) return;
+			Load(window, path);
+		}
+
+		static void Load(MainWindow window, string path)
+		{
+			if (path == null) return;
+			IO.LoadFile(path, Model.Synth);
+			window.SetClean(path);
+			Model.Settings.AddRecentFile(path);
+			IO.SaveSettings(Model.Settings);
+		}
+
 		static void Save(MainWindow window, string path)
 		{
 			if (path == null) return;
 			IO.SaveFile(Model.Synth, path);
 			window.SetClean(path);
+			Model.Settings.AddRecentFile(path);
+			IO.SaveSettings(Model.Settings);
 		}
 
 		static void OnDispatcherUnhandledException(
@@ -153,6 +167,7 @@ namespace Xt.Synth0
 			MenuUI.Save += (s, e) => Save(window);
 			MenuUI.SaveAs += (s, e) => SaveAs(window);
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
+			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
 			ControlUI.Stop += (s, e) => _engine.Stop();
 			ControlUI.Start += (s, e) => _engine.Start(Model.Settings);
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
