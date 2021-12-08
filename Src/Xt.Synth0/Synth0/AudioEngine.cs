@@ -82,7 +82,7 @@ namespace Xt.Synth0
 			WasapiDevices = wasapiDevices;
 			AsioDefaultDeviceId = asioDefaultDeviceId;
 			WasapiDefaultDeviceId = wasapiDefaultDeviceId;
-			_stopNotification = StopNotification;
+			_stopNotification = Stop;
 			_startNotification = () => _app.Audio.IsRunning = true;
 		}
 
@@ -103,6 +103,7 @@ namespace Xt.Synth0
 		internal void Stop()
 		{
 			_stream?.Stop();
+			_app.Audio.IsRunning = false;
 			_stream?.Dispose();
 			_stream = null;
 			_safe?.Dispose();
@@ -116,12 +117,6 @@ namespace Xt.Synth0
 		{
 			Stop();
 			_platform.Dispose();
-		}
-
-		void StopNotification()
-		{
-			Stop();
-			_app.Audio.IsRunning = false;
 		}
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
