@@ -4,7 +4,7 @@
 	{
 		const string BpmDetail = "Tempo";
 		static readonly ParamInfo BpmInfo = new DiscreteInfo(
-			nameof(Bpm), BpmDetail, 1, 999, 120);
+			nameof(Bpm), BpmDetail, 1, 255, 120);
 		public Param Bpm { get; } = new(BpmInfo);
 
 		internal GlobalModel(string name) : base(name) { }
