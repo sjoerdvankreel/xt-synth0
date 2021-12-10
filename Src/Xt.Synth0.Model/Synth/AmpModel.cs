@@ -2,22 +2,16 @@
 {
 	public sealed class AmpModel : GroupModel
 	{
-		const string LvlDetail = "Volume";
-		const string DDetail = "Decay time";
-		const string ADetail = "Attack time";
-		const string RDetail = "Release time";
-		const string SDetail = "Sustain level";
-
-		static readonly ParamInfo AInfo = new LogInfo(
-			nameof(A), ADetail, 0, 1000, "ms", "s");
 		static readonly ParamInfo DInfo = new LogInfo(
-			nameof(D), DDetail, 0, 3000, "ms", "s");
+			nameof(D), "Decay time", 0, 3000, "ms", "s");
+		static readonly ParamInfo AInfo = new LogInfo(
+			nameof(A), "Attack time", 0, 1000, "ms", "s");
 		static readonly ParamInfo RInfo = new LogInfo(
-			nameof(R), RDetail, 0, 10000, "ms", "s");
+			nameof(R), "Release time", 0, 10000, "ms", "s");
 		static readonly ParamInfo SInfo = new ContinuousInfo(
-			nameof(S), SDetail, 255);
+			nameof(S), "Sustain level", 255);
 		static readonly ParamInfo LvlInfo = new ContinuousInfo(
-			nameof(Lvl), LvlDetail, 128);
+			nameof(Lvl), "Volume", 128);
 
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);

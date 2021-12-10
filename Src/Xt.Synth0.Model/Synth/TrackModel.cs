@@ -2,19 +2,14 @@
 {
 	public sealed class TrackModel : GroupModel
 	{
-		const string FxDetail = "Effect count";
-		const string KeysDetail = "Note count";
-		const string PatsDetail = "Pattern count";
-		const string EditDetail = "Active pattern";
-
 		static readonly ParamInfo FxInfo = new DiscreteInfo(
-			nameof(Fx), FxDetail, 0, PatternRow.MaxFxCount, 1);
+			nameof(Fx), "Effect count", 0, PatternRow.MaxFxCount, 1);
 		static readonly ParamInfo KeysInfo = new DiscreteInfo(
-			nameof(Keys), KeysDetail, 1, PatternRow.MaxKeyCount, 1);
-		static readonly ParamInfo EditInfo = new DiscreteInfo(
-			nameof(Edit), EditDetail, 1, PatternModel.PatternCount, 1);
+			nameof(Keys), "Note count", 1, PatternRow.MaxKeyCount, 1);
 		static readonly ParamInfo PatsInfo = new DiscreteInfo(
-			nameof(Pats), PatsDetail, 1, PatternModel.PatternCount, 1);
+			nameof(Pats), "Pattern count", 1, PatternModel.PatternCount, 1);
+		static readonly ParamInfo EditInfo = new DiscreteInfo(
+			nameof(Edit), "Active pattern", 1, PatternModel.PatternCount, 1);
 
 		public Param Fx { get; } = new(FxInfo);
 		public Param Keys { get; } = new(KeysInfo);
