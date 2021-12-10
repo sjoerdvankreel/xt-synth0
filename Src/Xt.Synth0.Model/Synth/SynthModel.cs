@@ -45,11 +45,11 @@ namespace Xt.Synth0.Model
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 			_subModels = Units.Concat(new SubModel[] { Amp, Global, Track, Pattern }).ToArray();
+			foreach (var group in _subModels.Where(m => m.Automation()))
+				_autoParams.AddRange(group.Params());
 			foreach (var sub in _subModels)
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;
-			foreach (var group in _subModels.OfType<GroupModel>().Where(m => m.Automation()))
-				_autoParams.AddRange(group.Params());
 		}
 	}
 }
