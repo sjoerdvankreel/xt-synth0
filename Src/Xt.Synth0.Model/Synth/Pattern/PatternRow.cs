@@ -25,7 +25,7 @@ namespace Xt.Synth0.Model
 		readonly ModelList<PatternKey> _keys = new(MakeKeys());
 
 		internal override IEnumerable<Param> ListParams() =>
-			Fx.SelectMany(f => f.ListParams()).Concat(
-			Keys.SelectMany(k => k.ListParams()));
+			Fx.SelectMany(f => f.Params()).Concat(
+			Keys.SelectMany(k => k.Params()));
 	}
 }
