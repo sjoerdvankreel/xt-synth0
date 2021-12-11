@@ -58,6 +58,10 @@ namespace Xt.Synth0
 		readonly SynthDSP _dsp = new();
 		readonly SynthModel _original = new();
 
+		readonly int[] _autoValues;
+		readonly bool[] _automated;
+		readonly SynthModel _beforeAutomation = new();
+
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
 		readonly Action<SynthModel> _bufferFinished;
@@ -77,14 +81,18 @@ namespace Xt.Synth0
 			IReadOnlyList<DeviceModel> asioDevices,
 			IReadOnlyList<DeviceModel> wasapiDevices)
 		{
-			_app = app;
-			_platform = platform;
-			_dispatchToUI = dispatchToUI;
-			_bufferFinished = bufferFinished;
 			AsioDevices = asioDevices;
 			WasapiDevices = wasapiDevices;
 			AsioDefaultDeviceId = asioDefaultDeviceId;
 			WasapiDefaultDeviceId = wasapiDefaultDeviceId;
+			var autos = app.Synth.AutoParams().Count;
+
+			_app = app;
+			_platform = platform;
+			_autoValues = new int[autos];
+			_automated = new bool[autos];
+			_dispatchToUI = dispatchToUI;
+			_bufferFinished = bufferFinished;
 		}
 
 		public void Dispose()
@@ -129,6 +137,8 @@ namespace Xt.Synth0
 			{
 				_app.Audio.State = AudioState.Stopped;
 				DoResetStream();
+				Array.Clear(_automated);
+				Array.Clear(_autoValues);
 			}
 			finally
 			{
@@ -179,15 +189,36 @@ namespace Xt.Synth0
 			_device = null;
 		}
 
+		void ApplyAutomation(SynthModel synth)
+		{
+			for (int a = 0; a < _automated.Length; a++)
+				if (_automated[a])
+					synth.AutoParams()[a].Param.Value = _autoValues[a];
+		}
+
+		void UpdateAutomation(SynthModel synth)
+		{
+			var newAutos = synth.AutoParams();
+			var oldAutos = _beforeAutomation.AutoParams();
+			for (int a = 0; a < _automated.Length; a++)
+			{
+				_autoValues[a] = newAutos[a].Param.Value;
+				_automated[a] = _autoValues[a] != oldAutos[a].Param.Value;
+			}
+		}
+
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
 			var synth = ModelPool.Get();
 			_app.Synth.CopyTo(synth, false);
+			ApplyAutomation(synth);
+			synth.CopyTo(_beforeAutomation, true);
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
 			var output = (float[])safe.GetOutput();
 			_dsp.Next(synth, _app.Audio, _rate, output, buffer.frames);
 			safe.Unlock(buffer);
+			UpdateAutomation(synth);
 			_bufferFinished(synth);
 			return 0;
 		}
