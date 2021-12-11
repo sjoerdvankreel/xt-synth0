@@ -28,8 +28,10 @@ namespace Xt.Synth0.Model
 		readonly ModelList<UnitModel> _units = new(MakeUnits());
 
 		readonly SubModel[] _subModels;
-		readonly List<Param> _autoParams = new();
-		public IList<Param> AutoParams() => _autoParams;
+		readonly List<AutoParam> _autoParams = new();
+		public IList<AutoParam> AutoParams() => _autoParams;
+		public AutoParam AutoParam(Param param) 
+		=> AutoParams().SingleOrDefault(a => a.Param == param);
 
 		public void CopyTo(SynthModel model, bool automationOnly)
 		{
@@ -42,6 +44,7 @@ namespace Xt.Synth0.Model
 
 		public SynthModel()
 		{
+			int index = 1;
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 			_subModels = Units.Concat(new SubModel[] { Amp, Global, Track, Pattern }).ToArray();
@@ -49,7 +52,7 @@ namespace Xt.Synth0.Model
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;
 			foreach (var group in _subModels.OfType<GroupModel>().Where(m => m.Automation()))
-				_autoParams.AddRange(group.Params());
+				_autoParams.AddRange(group.Params().Select(p => new AutoParam(group, p, index++)));
 		}
 	}
 }

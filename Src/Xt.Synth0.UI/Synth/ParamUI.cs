@@ -11,9 +11,9 @@ namespace Xt.Synth0.UI
 
 		static string AutomationHint(SynthModel model, Param param)
 		{
-			var index = model.AutoParams().IndexOf(param);
-			if (index < 0) return "Automation target: none";
-			return $"Automation target: {(index + 1).ToString("X2")}";
+			var auto = model.AutoParam(param);
+			if (auto == null) return "Automation target: none";
+			return $"Automation target: {auto.Index.ToString("X2")}";
 		}
 
 		internal static void Add(
