@@ -9,14 +9,9 @@ namespace Xt.Synth0.Model
 	{
 		readonly Param[] _params;
 		public Param[] Params() => _params;
-		internal abstract IEnumerable<Param> ListParams();
 
-		internal SubModel()
-		{
-			_params = ListParams().ToArray();
-			foreach (var param in _params)
-				param._owner = this;
-		}
+		internal abstract IEnumerable<Param> ListParams();
+		internal SubModel() => _params = ListParams().ToArray();
 
 		public void CopyTo(ICopyModel model)
 		{
