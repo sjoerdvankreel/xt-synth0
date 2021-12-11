@@ -36,7 +36,7 @@ namespace Xt.Synth0.Model
 			if (_subModels.Length != model._subModels.Length)
 				throw new InvalidOperationException();
 			for (int s = 0; s < _subModels.Length; s++)
-				if (!automationOnly || _subModels[s].Automation())
+				if (!automationOnly || (_subModels[s] as GroupModel)?.Automation() == true)
 					_subModels[s].CopyTo(model._subModels[s]);
 		}
 
@@ -45,11 +45,11 @@ namespace Xt.Synth0.Model
 			PropertyChangedEventHandler handler;
 			handler = (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 			_subModels = Units.Concat(new SubModel[] { Amp, Global, Track, Pattern }).ToArray();
-			foreach (var group in _subModels.Where(m => m.Automation()))
-				_autoParams.AddRange(group.Params());
 			foreach (var sub in _subModels)
 				foreach (var param in sub.Params())
 					param.PropertyChanged += handler;
+			foreach (var group in _subModels.OfType<GroupModel>().Where(m => m.Automation()))
+				_autoParams.AddRange(group.Params());
 		}
 	}
 }

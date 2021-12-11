@@ -10,7 +10,6 @@ namespace Xt.Synth0.Model
 		readonly Param[] _params;
 		public Param[] Params() => _params;
 
-		public virtual bool Automation() => true;
 		internal abstract IEnumerable<Param> ListParams();
 		internal SubModel() => _params = ListParams().ToArray();
 

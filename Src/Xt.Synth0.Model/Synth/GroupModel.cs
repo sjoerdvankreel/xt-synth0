@@ -9,6 +9,7 @@ namespace Xt.Synth0.Model
 		readonly Param[][] _paramGroups;
 
 		public string Name() => _name;
+		public virtual bool Automation() => true;
 		internal abstract Param[][] ListParamGroups();
 		public Param[][] ParamGroups() => _paramGroups;
 
