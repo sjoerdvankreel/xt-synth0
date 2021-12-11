@@ -16,13 +16,17 @@ namespace Xt.Synth0.UI
 			var result = new StringBuilder();
 			var auto = _synth.AutoParams().SingleOrDefault(p => p.Index == value);
 			result.AppendLine(_param.Info.Detail);
+			result.AppendLine("Ctrl + F to fill");
+			result.AppendLine(PatternUI.EditHint);
 			var current = "none";
 			if (auto != null)
 				current = $"{auto.Owner.Name()} {auto.Param.Info.Detail}";
-			result.AppendLine($"Current: {current}");
+			result.Append($"Current: {current}");
 			if (auto != null)
-				result.AppendLine($"Value range: {auto.Param.Info.Min} .. {auto.Param.Info.Max}");
-			result.Append(PatternUI.EditHint);
+			{
+				result.AppendLine();
+				result.Append($"Value range: {auto.Param.Info.Min} .. {auto.Param.Info.Max}");
+			}
 			return result.ToString();
 		}
 	}

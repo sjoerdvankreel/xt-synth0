@@ -95,13 +95,25 @@ namespace Xt.Synth0.UI
 			for (int f = 0; f < PatternRow.MaxFxCount; f++)
 			{
 				int fLocal = f;
+				Action fill = () => Fill(synth, pattern, fLocal);
 				Action interpolate = () => Interpolate(synth, pattern, r => r.Fx[fLocal].Value);
-				PatternFxUI.Add(grid, synth, row.Fx[f], synth.Track.Fx, f + 1, r, startCol + f * 3, interpolate);
+				PatternFxUI.Add(grid, synth, row.Fx[f], synth.Track.Fx, f + 1, r, startCol + f * 3, fill, interpolate);
 				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
 		}
 
-		static void Interpolate(SynthModel synth, int pattern, Func<PatternRow, Param> selector)
+		static void Fill(SynthModel synth, int pattern, int fx)
+		{
+			var rows = synth.Pattern.Rows;
+			int rowCount = PatternModel.PatternRows;
+			int start = pattern * rowCount;
+			int end = start + rowCount - 1;
+			for (int i = start; i <= end; i++)
+				rows[i].Fx[fx].Target.Value = rows[start].Fx[fx].Target.Value;
+		}
+
+		static void Interpolate(SynthModel synth,
+			int pattern, Func<PatternRow, Param> selector)
 		{
 			var rows = synth.Pattern.Rows;
 			int rowCount = PatternModel.PatternRows;

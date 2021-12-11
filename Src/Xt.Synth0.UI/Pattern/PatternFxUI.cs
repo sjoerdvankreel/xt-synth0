@@ -9,10 +9,11 @@ namespace Xt.Synth0.UI
 {
 	static class PatternFxUI
 	{
-		internal static void Add(Grid grid, SynthModel synth, PatternFx fx,
-			Param fxCount, int minFx, int row, int col, Action interpolate)
+		internal static void Add(
+			Grid grid, SynthModel synth, PatternFx fx, Param fxCount,
+			int minFx, int row, int col, Action fill, Action interpolate)
 		{
-			grid.Children.Add(MakeTarget(synth, fx.Target, fxCount, minFx, row, col));
+			grid.Children.Add(MakeTarget(synth, fx.Target, fxCount, minFx, row, col, fill));
 			grid.Children.Add(MakeValue(fx.Value, fxCount, minFx, row, col + 1, interpolate));
 		}
 
@@ -20,7 +21,7 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, Action interpolate)
 		{
 			var result = MakeHex(param, fxCount, minFx, row, col);
-			result.ToolTip = string.Join("\n", param.Info.Detail,
+			result.ToolTip = string.Join("\n", param.Info.Detail, 
 				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
 			return result;
@@ -32,13 +33,20 @@ namespace Xt.Synth0.UI
 				interpolate();
 		}
 
-		static UIElement MakeTarget(SynthModel synth,
-			Param param, Param fxCount, int minFx, int row, int col)
+		static UIElement MakeTarget(SynthModel synth, Param param,
+			Param fxCount, int minFx, int row, int col, Action fill)
 		{
 			var result = MakeHex(param, fxCount, minFx, row, col);
 			var binding = Bind.To(param, nameof(Param.Value), new TargetFormatter(synth, param));
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
+			result.KeyDown += (s, e) => OnTargetKeyDown(fill, e);
 			return result;
+		}
+
+		static void OnTargetKeyDown(Action fill, KeyEventArgs e)
+		{
+			if (e.Key == Key.F && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+				fill();
 		}
 
 		static FrameworkElement MakeHex(Param param,
