@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,13 +20,13 @@ namespace Xt.Synth0.UI
 			Key.D5, Key.T, Key.D6, Key.Y, Key.D7, Key.U
 		};
 
-		internal static void Add(Grid grid, PatternKey model,
-			TrackModel track, int minKeys, int row, int col)
+		internal static void Add(Grid grid, PatternKey model, TrackModel track,
+			int minKeys, int row, int col, Action interpolate)
 		{
 			grid.Children.Add(MakeNote(model.Note, track.Keys, minKeys, row, col));
 			grid.Children.Add(MakeOct(model, track.Keys, minKeys, row, col + 1));
 			grid.Children.Add(Create.Divider(new(row, col + 2), track.Keys, minKeys));
-			grid.Children.Add(MakeAmp(model, track.Keys, minKeys, row, col + 3));
+			grid.Children.Add(MakeAmp(model, track.Keys, minKeys, row, col + 3, interpolate));
 		}
 
 		static UIElement MakeNote(Param param,
@@ -70,17 +71,25 @@ namespace Xt.Synth0.UI
 		}
 
 		static UIElement MakeAmp(PatternKey model,
-			Param keys, int minKeys, int row, int col)
+			Param keys, int minKeys, int row, int col, Action interpolate)
 		{
 			var result = Create.PatternCell<AmpBox>(new(row, col));
 			result.Minimum = model.Amp.Info.Min;
 			result.Maximum = model.Amp.Info.Max;
 			result.OnParsed += (s, e) => Utility.FocusDown();
+			result.ToolTip = string.Join("\n", model.Amp.Info.Detail,
+				PatternUI.InterpolateHint, PatternUI.EditHint);
+			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
-			result.ToolTip = string.Join("\n", model.Amp.Info.Detail, PatternUI.EditHint);
 			return result;
+		}
+
+		static void OnAmpKeyDown(Action interpolate, KeyEventArgs e)
+		{
+			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+				interpolate();
 		}
 	}
 }

@@ -20,8 +20,9 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, Action interpolate)
 		{
 			var result = MakeHex(param, fxCount, minFx, row, col);
+			result.ToolTip = string.Join("\n", param.Info.Detail,
+				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
-			result.ToolTip = string.Join("\n", param.Info.Detail, PatternUI.InterpolateHint, PatternUI.EditHint);
 			return result;
 		}
 

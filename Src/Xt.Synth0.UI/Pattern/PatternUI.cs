@@ -72,17 +72,19 @@ namespace Xt.Synth0.UI
 		static void AddRow(Grid grid, SynthModel synth, int pattern, PatternRow row, int r)
 		{
 			int divCol = PatternRow.MaxKeyCount * 5;
-			AddKeys(grid, synth.Track, row, r);
+			AddKeys(grid, synth, pattern, row, r);
 			grid.Children.Add(Create.Divider(new(r, divCol), synth.Track.Fx, 1));
 			AddFx(grid, synth, pattern, row, r);
 		}
 
-		static void AddKeys(Grid grid, TrackModel track, PatternRow row, int r)
+		static void AddKeys(Grid grid, SynthModel synth, int pattern, PatternRow row, int r)
 		{
 			for (int k = 0; k < PatternRow.MaxKeyCount; k++)
 			{
-				PatternKeyUI.Add(grid, row.Keys[k], track, k + 1, r, k * 5);
-				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), track.Keys, k + 2));
+				int kLocal = k;
+				Action interpolate = () => Interpolate(synth, pattern, r => r.Keys[kLocal].Amp);
+				PatternKeyUI.Add(grid, row.Keys[k], synth.Track, k + 1, r, k * 5, interpolate);
+				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), synth.Track.Keys, k + 2));
 			}
 		}
 
@@ -93,10 +95,24 @@ namespace Xt.Synth0.UI
 			for (int f = 0; f < PatternRow.MaxFxCount; f++)
 			{
 				int fLocal = f;
-				Action interpolate = () => InterpolateValue(synth, pattern, fLocal);
+				Action interpolate = () => Interpolate(synth, pattern, r => r.Fx[fLocal].Value);
 				PatternFxUI.Add(grid, synth, row.Fx[f], synth.Track.Fx, f + 1, r, startCol + f * 3, interpolate);
 				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
+		}
+
+		static void Interpolate(SynthModel synth, int pattern, Func<PatternRow, Param> selector)
+		{
+			var rows = synth.Pattern.Rows;
+			int rowCount = PatternModel.PatternRows;
+			int start = pattern * rowCount;
+			int end = start + rowCount - 1;
+			int endValue = selector(rows[end]).Value;
+			int startValue = selector(rows[start]).Value;
+			float range = end - start;
+			float rangeValue = endValue - startValue;
+			for (int i = start; i <= end; i++)
+				selector(rows[i]).Value = (int)(startValue + (i - start) / range * rangeValue);
 		}
 
 		static bool IsHighlighted(AudioModel model, int pattern, out int row)
@@ -126,20 +142,6 @@ namespace Xt.Synth0.UI
 			result.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
 			Action handler = () => OnAudioPropertyChanged(result, model, pattern);
 			model.PropertyChanged += (s, e) => Application.Current?.Dispatcher.BeginInvoke(handler);
-		}
-
-		static void InterpolateValue(SynthModel synth, int pattern, int fx)
-		{
-			var rows = synth.Pattern.Rows;
-			int rowCount = PatternModel.PatternRows;
-			int start = pattern * rowCount;
-			int end = start + rowCount - 1;
-			int endValue = rows[end].Fx[fx].Value.Value;
-			int startValue = rows[start].Fx[fx].Value.Value;
-			float range = end - start;
-			float rangeValue = endValue - startValue;
-			for (int i = start; i <= end; i++)
-				rows[i].Fx[fx].Value.Value = (int)(startValue + (i - start) / range * rangeValue);
 		}
 	}
 }
