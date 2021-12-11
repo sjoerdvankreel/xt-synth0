@@ -58,13 +58,12 @@ namespace Xt.Synth0
 		readonly SynthDSP _dsp = new();
 		readonly SynthModel _original = new();
 
-		readonly int[] _autoValues;
-		readonly bool[] _automated;
-		readonly SynthModel _beforeAutomation = new();
-
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
 		readonly Action<SynthModel> _bufferFinished;
+
+		readonly ParamAction[] _autoActions;
+		readonly SynthModel _beforeAutomation = new();
 
 		public string AsioDefaultDeviceId { get; }
 		public string WasapiDefaultDeviceId { get; }
@@ -85,14 +84,12 @@ namespace Xt.Synth0
 			WasapiDevices = wasapiDevices;
 			AsioDefaultDeviceId = asioDefaultDeviceId;
 			WasapiDefaultDeviceId = wasapiDefaultDeviceId;
-			var autos = app.Synth.AutoParams().Count;
 
 			_app = app;
 			_platform = platform;
-			_autoValues = new int[autos];
-			_automated = new bool[autos];
 			_dispatchToUI = dispatchToUI;
 			_bufferFinished = bufferFinished;
+			_autoActions = new ParamAction[app.Synth.AutoParams().Count];
 		}
 
 		public void Dispose()
@@ -137,8 +134,7 @@ namespace Xt.Synth0
 			{
 				_app.Audio.State = AudioState.Stopped;
 				DoResetStream();
-				Array.Clear(_automated);
-				Array.Clear(_autoValues);
+				Array.Clear(_autoActions);
 			}
 			finally
 			{
@@ -189,22 +185,23 @@ namespace Xt.Synth0
 			_device = null;
 		}
 
-		void ApplyAutomation(SynthModel synth)
-		{
-			for (int a = 0; a < _automated.Length; a++)
-				if (_automated[a])
-					synth.AutoParams()[a].Param.Value = _autoValues[a];
-		}
-
 		void UpdateAutomation(SynthModel synth)
 		{
 			var newAutos = synth.AutoParams();
 			var oldAutos = _beforeAutomation.AutoParams();
-			for (int a = 0; a < _automated.Length; a++)
+			for (int a = 0; a < _autoActions.Length; a++)
 			{
-				_autoValues[a] = newAutos[a].Param.Value;
-				_automated[a] = _autoValues[a] != oldAutos[a].Param.Value;
+				int value = newAutos[a].Param.Value;
+				_autoActions[a].Value = value;
+				_autoActions[a].Changed = value != oldAutos[a].Param.Value;
 			}
+		}
+
+		void ApplyAutomation(SynthModel synth)
+		{
+			for (int a = 0; a < _autoActions.Length; a++)
+				if (_autoActions[a].Changed)
+					synth.AutoParams()[a].Param.Value = _autoActions[a].Value;
 		}
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)

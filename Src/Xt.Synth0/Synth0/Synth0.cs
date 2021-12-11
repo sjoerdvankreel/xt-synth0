@@ -13,6 +13,9 @@ namespace Xt.Synth0
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
+		
+		static readonly ParamAction[] _uiThreadActions 
+		= new ParamAction[Model.Synth.Params().Count];
 
 		[STAThread]
 		static void Main()
@@ -31,13 +34,6 @@ namespace Xt.Synth0
 		=> Save(window, LoadSaveUI.Save());
 		static void Save(MainWindow window)
 		=> Save(window, window.Path ?? LoadSaveUI.Save());
-
-		static void CopyToUIThread(SynthModel model)
-		{
-			if (Model.Audio.IsRunning)
-				model.CopyTo(Model.Synth, true);
-			ModelPool.Return(model);
-		}
 
 		static void Run()
 		{
@@ -158,16 +154,49 @@ namespace Xt.Synth0
 			var window = (MainWindow)Application.Current.MainWindow;
 			_engine = SetupEngine(window);
 			LoadSettings(_engine).CopyTo(Model.Settings);
+			ControlUI.Stop += OnStop;
+			ControlUI.Start += OnStart;
 			MenuUI.New += (s, e) => New(window);
 			MenuUI.Open += (s, e) => Load(window);
 			MenuUI.Save += (s, e) => Save(window);
 			MenuUI.SaveAs += (s, e) => SaveAs(window);
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
-			ControlUI.Stop += (s, e) => _engine.Stop();
-			ControlUI.Start += (s, e) => _engine.Start();
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
+			Model.Synth.ParamChanged += OnSynthParamChanged;
+		}
+
+		static void OnStop(object sender, EventArgs e)
+		{
+			_engine.Stop();
+			Array.Clear(_uiThreadActions);
+		}
+
+		static void OnStart(object sender, EventArgs e)
+		{
+			Array.Clear(_uiThreadActions);
+			_engine.Start();
+		}
+
+		static void CopyToUIThread(SynthModel model)
+		{
+			if (Model.Audio.IsRunning)
+			{
+				for (int u = 0; u < _uiThreadActions.Length; u++)
+					if (_uiThreadActions[u].Changed)
+						model.Params()[u].Value = _uiThreadActions[u].Value;
+				model.CopyTo(Model.Synth, true);
+			}
+			ModelPool.Return(model);
+			Array.Clear(_uiThreadActions);
+		}
+
+		static void OnSynthParamChanged(object sender, ParamChangedEventArgs e)
+		{
+			if (!Model.Audio.IsRunning) return;
+			_uiThreadActions[e.Index].Changed = true;
+			_uiThreadActions[e.Index].Value = e.Value;
 		}
 
 		static void OnBufferFinished(SynthModel model, Action<SynthModel> copyToUIThread)
