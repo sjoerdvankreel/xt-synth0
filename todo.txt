@@ -1,2 +1,6 @@
 asio->int32
 wasapi->int16
+undo
+del to clear
+fix bug
+interpolate pat
