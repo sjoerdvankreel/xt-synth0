@@ -10,6 +10,12 @@ namespace Xt.Synth0.UI
 	{
 		public static readonly FontFamily FontFamily = new("Consolas");
 
+		internal static void FocusDown()
+		{
+			var request = new TraversalRequest(FocusNavigationDirection.Down);
+			(Keyboard.FocusedElement as UIElement)?.MoveFocus(request);
+		}
+
 		public static ResourceDictionary GetThemeResources(ThemeType theme)
 		{
 			var location = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{theme}.xaml";
@@ -17,8 +23,5 @@ namespace Xt.Synth0.UI
 			result.Source = new Uri(location);
 			return result;
 		}
-
-		internal static void FocusNext(FocusNavigationDirection direction = FocusNavigationDirection.Next)
-		=> (Keyboard.FocusedElement as UIElement)?.MoveFocus(new(direction));
 	}
 }

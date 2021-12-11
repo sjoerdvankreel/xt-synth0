@@ -45,8 +45,7 @@ namespace Xt.Synth0.UI
 			if (note < 0) return;
 			e.Handled = true;
 			param.Value = note;
-			if (note >= (int)PatternNote.C) Utility.FocusNext();
-			else Utility.FocusNext(FocusNavigationDirection.Down);
+			Utility.FocusDown();
 		}
 
 		static UIElement MakeOct(PatternKey model,
@@ -66,7 +65,7 @@ namespace Xt.Synth0.UI
 			int value = e.Text.FirstOrDefault() - '0';
 			if (value < param.Info.Min || value > param.Info.Max) return;
 			param.Value = value;
-			Utility.FocusNext();
+			Utility.FocusDown();
 			e.Handled = true;
 		}
 
@@ -76,10 +75,10 @@ namespace Xt.Synth0.UI
 			var result = Create.PatternCell<AmpBox>(new(row, col));
 			result.Minimum = model.Amp.Info.Min;
 			result.Maximum = model.Amp.Info.Max;
+			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
-			result.OnParsed += (s, e) => Utility.FocusNext();
 			result.ToolTip = string.Join("\n", model.Amp.Info.Detail, PatternUI.EditHint);
 			return result;
 		}

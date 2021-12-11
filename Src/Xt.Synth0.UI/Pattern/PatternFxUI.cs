@@ -38,9 +38,9 @@ namespace Xt.Synth0.UI
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
+			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(fxCount, minFx));
-			result.OnParsed += (s, e) => Utility.FocusNext(FocusNavigationDirection.Next);
 			return result;
 		}
 	}
