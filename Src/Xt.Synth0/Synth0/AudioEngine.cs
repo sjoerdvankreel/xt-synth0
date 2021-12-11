@@ -182,7 +182,7 @@ namespace Xt.Synth0
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
 			var synth = ModelPool.Get();
-			_app.Synth.CopyTo(synth, true);
+			_app.Synth.CopyTo(synth, false);
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
 			var output = (float[])safe.GetOutput();

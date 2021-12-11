@@ -6,6 +6,7 @@ namespace Xt.Synth0.DSP
 	{
 		int _previousRow = -1;
 		double _rowFactor = 0.0f;
+		readonly PatternDSP _pattern = new PatternDSP();
 
 		//readonly float[] _phases = new float[3];
 		//readonly UnitModel[] _units = new UnitModel[3];
@@ -43,7 +44,7 @@ namespace Xt.Synth0.DSP
 			for (int f = 0; f < frames; f++)
 			{
 				if (UpdateRow(synth, audio, rate))
-					synth.Units[0].Note.Value = (synth.Units[0].Note.Value + 1) % synth.Units[0].Note.Info.Max;
+					_pattern.Automate(synth, audio);
 			}
 
 			/*
