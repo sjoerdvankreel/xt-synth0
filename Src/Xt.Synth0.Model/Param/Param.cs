@@ -8,7 +8,10 @@ namespace Xt.Synth0.Model
 		public event PropertyChangedEventHandler PropertyChanged;
 		static readonly PropertyChangedEventArgs EventArgs = new(nameof(Value));
 
+		internal SubModel _owner;
 		public ParamInfo Info { get; }
+		public SubModel Owner => _owner;
+
 		internal Param(ParamInfo info)
 		=> (Info, Value) = (info, info.Default);
 
