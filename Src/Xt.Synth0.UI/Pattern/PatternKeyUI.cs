@@ -20,8 +20,32 @@ namespace Xt.Synth0.UI
 			Key.D5, Key.T, Key.D6, Key.Y, Key.D7, Key.U
 		};
 
-		internal static void Add(Grid grid, PatternKey model, TrackModel track,
-			int minKeys, int row, int col, Action interpolate)
+		static void OnNoteKeyDown(Param param, KeyEventArgs e)
+		{
+			int note = new List<Key>(NoteKeys).IndexOf(e.Key);
+			if (note < 0) return;
+			e.Handled = true;
+			param.Value = note;
+			Utility.FocusDown();
+		}
+
+		static void OnOctTextInput(Param param, TextCompositionEventArgs e)
+		{
+			int value = e.Text.FirstOrDefault() - '0';
+			if (value < param.Info.Min || value > param.Info.Max) return;
+			param.Value = value;
+			Utility.FocusDown();
+			e.Handled = true;
+		}
+
+		static void OnAmpKeyDown(Action interpolate, KeyEventArgs e)
+		{
+			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+				interpolate();
+		}
+
+		internal static void Add(Grid grid, PatternKey model,
+			TrackModel track, int minKeys, int row, int col, Action interpolate)
 		{
 			grid.Children.Add(MakeNote(model.Note, track.Keys, minKeys, row, col));
 			grid.Children.Add(MakeOct(model, track.Keys, minKeys, row, col + 1));
@@ -40,15 +64,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void OnNoteKeyDown(Param param, KeyEventArgs e)
-		{
-			int note = new List<Key>(NoteKeys).IndexOf(e.Key);
-			if (note < 0) return;
-			e.Handled = true;
-			param.Value = note;
-			Utility.FocusDown();
-		}
-
 		static UIElement MakeOct(PatternKey model,
 			Param keys, int minKeys, int row, int col)
 		{
@@ -59,15 +74,6 @@ namespace Xt.Synth0.UI
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
 			result.ToolTip = string.Join("\n", model.Oct.Info.Detail, PatternUI.EditHint);
 			return result;
-		}
-
-		static void OnOctTextInput(Param param, TextCompositionEventArgs e)
-		{
-			int value = e.Text.FirstOrDefault() - '0';
-			if (value < param.Info.Min || value > param.Info.Max) return;
-			param.Value = value;
-			Utility.FocusDown();
-			e.Handled = true;
 		}
 
 		static UIElement MakeAmp(PatternKey model,
@@ -84,12 +90,6 @@ namespace Xt.Synth0.UI
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
 			return result;
-		}
-
-		static void OnAmpKeyDown(Action interpolate, KeyEventArgs e)
-		{
-			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-				interpolate();
 		}
 	}
 }

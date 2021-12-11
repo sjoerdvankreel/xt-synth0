@@ -9,6 +9,18 @@ namespace Xt.Synth0.UI
 {
 	static class PatternFxUI
 	{
+		static void OnTargetKeyDown(Action fill, KeyEventArgs e)
+		{
+			if (e.Key == Key.F && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+				fill();
+		}
+
+		static void OnValueKeyDown(Action interpolate, KeyEventArgs e)
+		{
+			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+				interpolate();
+		}
+
 		internal static void Add(
 			Grid grid, SynthModel synth, PatternFx fx, Param fxCount,
 			int minFx, int row, int col, Action fill, Action interpolate)
@@ -27,12 +39,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void OnValueKeyDown(Action interpolate, KeyEventArgs e)
-		{
-			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-				interpolate();
-		}
-
 		static UIElement MakeTarget(SynthModel synth, Param param,
 			Param fxCount, int minFx, int row, int col, Action fill)
 		{
@@ -41,12 +47,6 @@ namespace Xt.Synth0.UI
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
 			result.KeyDown += (s, e) => OnTargetKeyDown(fill, e);
 			return result;
-		}
-
-		static void OnTargetKeyDown(Action fill, KeyEventArgs e)
-		{
-			if (e.Key == Key.F && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-				fill();
 		}
 
 		static FrameworkElement MakeHex(Param param,
