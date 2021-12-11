@@ -55,7 +55,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakePattern(AppModel model, int pattern)
 		{
-			var track = model.Synth.Track;
+			var synth = model.Synth;
 			var fx = PatternRow.MaxFxCount;
 			var keys = PatternRow.MaxKeyCount;
 			var rows = PatternModel.PatternRows;
@@ -63,17 +63,17 @@ namespace Xt.Synth0.UI
 			var offset = pattern * PatternModel.PatternRows;
 			var result = Create.Grid(rows, cols);
 			for (int r = 0; r < rows; r++)
-				AddRow(result, track, model.Synth.Pattern.Rows[offset + r], r);
+				AddRow(result, synth, synth.Pattern.Rows[offset + r], r);
 			AddHightlighter(result, model.Audio, pattern, cols);
 			return result;
 		}
 
-		static void AddRow(Grid grid, TrackModel track, PatternRow row, int r)
+		static void AddRow(Grid grid, SynthModel synth, PatternRow row, int r)
 		{
 			int divCol = PatternRow.MaxKeyCount * 5;
-			AddKeys(grid, track, row, r);
-			grid.Children.Add(Create.Divider(new(r, divCol), track.Fx, 1));
-			AddFx(grid, track, row, r);
+			AddKeys(grid, synth.Track, row, r);
+			grid.Children.Add(Create.Divider(new(r, divCol), synth.Track.Fx, 1));
+			AddFx(grid, synth, row, r);
 		}
 
 		static void AddKeys(Grid grid, TrackModel track, PatternRow row, int r)
@@ -85,13 +85,14 @@ namespace Xt.Synth0.UI
 			}
 		}
 
-		static void AddFx(Grid grid, TrackModel track, PatternRow row, int r)
+		static void AddFx(Grid grid, SynthModel synth, PatternRow row, int r)
 		{
+			var fx = synth.Track.Fx;
 			int startCol = PatternRow.MaxKeyCount * 5 + 1;
 			for (int f = 0; f < PatternRow.MaxFxCount; f++)
 			{
-				PatternFxUI.Add(grid, row.Fx[f], track.Fx, f + 1, r, startCol + f * 3);
-				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), track.Fx, f + 2));
+				PatternFxUI.Add(grid, synth, row.Fx[f], synth.Track.Fx, f + 1, r, startCol + f * 3);
+				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
 		}
 
