@@ -10,6 +10,7 @@ namespace Xt.Synth0.UI
 	static class PatternUI
 	{
 		internal const string EditHint = "Click + keyboard to edit";
+		internal const string InterpolateHint = "Ctrl + I to interpolate";
 
 		static int GetHightlighterRow(AudioModel model, int pattern)
 		=> IsHighlighted(model, pattern, out var row) ? row : 0;
@@ -63,17 +64,17 @@ namespace Xt.Synth0.UI
 			var offset = pattern * PatternModel.PatternRows;
 			var result = Create.Grid(rows, cols);
 			for (int r = 0; r < rows; r++)
-				AddRow(result, synth, synth.Pattern.Rows[offset + r], r);
+				AddRow(result, synth, pattern, synth.Pattern.Rows[offset + r], r);
 			AddHightlighter(result, model.Audio, pattern, cols);
 			return result;
 		}
 
-		static void AddRow(Grid grid, SynthModel synth, PatternRow row, int r)
+		static void AddRow(Grid grid, SynthModel synth, int pattern, PatternRow row, int r)
 		{
 			int divCol = PatternRow.MaxKeyCount * 5;
 			AddKeys(grid, synth.Track, row, r);
 			grid.Children.Add(Create.Divider(new(r, divCol), synth.Track.Fx, 1));
-			AddFx(grid, synth, row, r);
+			AddFx(grid, synth, pattern, row, r);
 		}
 
 		static void AddKeys(Grid grid, TrackModel track, PatternRow row, int r)
@@ -85,13 +86,15 @@ namespace Xt.Synth0.UI
 			}
 		}
 
-		static void AddFx(Grid grid, SynthModel synth, PatternRow row, int r)
+		static void AddFx(Grid grid, SynthModel synth, int pattern, PatternRow row, int r)
 		{
 			var fx = synth.Track.Fx;
 			int startCol = PatternRow.MaxKeyCount * 5 + 1;
 			for (int f = 0; f < PatternRow.MaxFxCount; f++)
 			{
-				PatternFxUI.Add(grid, synth, row.Fx[f], synth.Track.Fx, f + 1, r, startCol + f * 3);
+				int fLocal = f;
+				Action interpolate = () => InterpolateValue(synth, pattern, fLocal);
+				PatternFxUI.Add(grid, synth, row.Fx[f], synth.Track.Fx, f + 1, r, startCol + f * 3, interpolate);
 				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
 		}
@@ -123,6 +126,20 @@ namespace Xt.Synth0.UI
 			result.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
 			Action handler = () => OnAudioPropertyChanged(result, model, pattern);
 			model.PropertyChanged += (s, e) => Application.Current?.Dispatcher.BeginInvoke(handler);
+		}
+
+		static void InterpolateValue(SynthModel synth, int pattern, int fx)
+		{
+			var rows = synth.Pattern.Rows;
+			int rowCount = PatternModel.PatternRows;
+			int start = pattern * rowCount;
+			int end = start + rowCount - 1;
+			int endValue = rows[end].Fx[fx].Value.Value;
+			int startValue = rows[start].Fx[fx].Value.Value;
+			float range = end - start;
+			float rangeValue = endValue - startValue;
+			for (int i = start; i <= end; i++)
+				rows[i].Fx[fx].Value.Value = (int)(startValue + (i - start) / range * rangeValue);
 		}
 	}
 }
