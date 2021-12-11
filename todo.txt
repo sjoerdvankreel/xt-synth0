@@ -1,5 +1,4 @@
 asio->int32
 wasapi->int16
 undo
-del to clear
 interpolate pat
