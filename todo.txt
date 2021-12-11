@@ -1,4 +1,4 @@
 asio->int32
 wasapi->int16
 undo
-interpolate pat
+pat repeat upper cell
