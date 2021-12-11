@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.DSP
 {
-	internal class PatternDSP
+	class PatternDSP
 	{
 		internal void Automate(SynthModel model, AudioModel audio)
 		{

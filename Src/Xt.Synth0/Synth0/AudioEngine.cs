@@ -204,6 +204,13 @@ namespace Xt.Synth0
 					synth.AutoParams()[a].Param.Value = _autoActions[a].Value;
 		}
 
+		void ProcessFrame(SynthModel synth, float[] buffer, int frame)
+		{
+			var sample = _dsp.Next(synth, _app.Audio, _rate);
+			buffer[frame * 2] = sample;
+			buffer[frame * 2 + 1] = sample;
+		}
+
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
 			var synth = ModelPool.Get();
@@ -213,7 +220,8 @@ namespace Xt.Synth0
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
 			var output = (float[])safe.GetOutput();
-			_dsp.Next(synth, _app.Audio, _rate, output, buffer.frames);
+			for (int f = 0; f < buffer.frames; f++)
+				ProcessFrame(synth, output, f);
 			safe.Unlock(buffer);
 			UpdateAutomation(synth);
 			_bufferFinished(synth);
