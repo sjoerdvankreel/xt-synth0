@@ -10,7 +10,7 @@ namespace Xt.Synth0.UI
 		public static event EventHandler Stop;
 		public static event EventHandler Start;
 
-		internal static UIElement Make(AudioModel model)
+		public static UIElement Make(AudioModel model)
 		{
 			var result = new GroupBox();
 			result.Header = "Control";
