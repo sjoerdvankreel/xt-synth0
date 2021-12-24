@@ -53,9 +53,6 @@ namespace Xt.Synth0
 			var menu = MenuUI.Make(Model);
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
 			result.Children.Add(menu);
-			var control = ControlUI.Make(Model.Audio);
-			control.SetValue(DockPanel.DockProperty, Dock.Bottom);
-			result.Children.Add(control);
 			var synth = SynthUI.Make(Model);
 			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
 			result.Children.Add(synth);
