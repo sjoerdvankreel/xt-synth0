@@ -14,8 +14,8 @@ namespace Xt.Synth0
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
-		
-		static readonly ParamAction[] _uiThreadActions 
+
+		static readonly ParamAction[] _uiThreadActions
 		= new ParamAction[Model.Synth.Params().Count];
 
 		[STAThread]
@@ -117,7 +117,7 @@ namespace Xt.Synth0
 			var unit = Model.Synth.Units[0];
 			var freq = dsp.Frequency(unit);
 			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
-			var samples = (int)(rate / freq);
+			var samples = (int)(2.0 * rate / freq);
 			var method = (SynthMethod)Model.Synth.Global.Method.Value;
 			var result = new float[samples];
 			for (int s = 0; s < samples; s++)

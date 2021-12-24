@@ -24,7 +24,7 @@ namespace Xt.Synth0.DSP
 			float freq = Frequency(unit);
 			float phase = _phase;
 			_phase += freq / rate;
-			if (_phase >= 1.0f) _phase = -1.0f;
+			if (_phase >= 1.0f) _phase = 0.0f;
 			var type = (UnitType)unit.Type.Value;
 			return Generate(method, type, phase) * amp;
 		}
