@@ -8,31 +8,44 @@ namespace Xt.Synth0.DSP
 		float _phase = 0.0f;
 		internal void Reset() => _phase = 0.0f;
 
-		internal float Next(UnitModel model, float rate)
+		internal float Next(SynthModel synth, UnitModel unit, float rate)
 		{
-			if (model.On.Value == 0) return 0.0f;
+			if (unit.On.Value == 0) return 0.0f;
 
-			int oct = model.Oct.Value;
-			int note = model.Note.Value;
-			int cent = model.Cent.Value;
+			int oct = unit.Oct.Value;
+			int note = unit.Note.Value;
+			int cent = unit.Cent.Value;
 
-			float amp = model.Amp.Value / 255.0f;
+			float amp = unit.Amp.Value / 255.0f;
 			float midi = (oct + 1) * 12 + note + cent / 100.0f;
 			float freq = 440.0f * MathF.Pow(2.0f, (midi - 69.0f) / 12.0f);
 
 			float phase = _phase;
 			_phase += freq / rate;
 			if (_phase >= 1.0f) _phase = -1.0f;
-			return Generator((UnitType)model.Type.Value, phase) * amp;
+			var type = (UnitType)unit.Type.Value;
+			var method = (SynthMethod)synth.Global.Method.Value;
+			return Generate(method, type, phase) * amp;
 		}
 
-		float Generator(UnitType type, float phase) => type switch
+		float Generate(SynthMethod method, UnitType type, float phase) => method switch
 		{
-			UnitType.Saw => phase * 2.0f - 1.0f,
-			UnitType.Tri => phase * 2.0f - 1.0f,
-			UnitType.Sqr => phase > 0.5f ? 1.0f : -1.0f,
-			UnitType.Sin => MathF.Sin(phase * MathF.PI * 2.0f),
+			SynthMethod.Naive => GenerateNaive(type, phase),
+			SynthMethod.Additive => GenerateAdditive(type, phase),
+			SynthMethod.PolyBlep => GeneratePolyBlep(type, phase),
 			_ => throw new InvalidOperationException()
 		};
+
+		float GenerateNaive(UnitType type, float phase) => type switch
+		{
+			UnitType.Saw => phase * 2.0f - 1.0f,
+			UnitType.Sqr => phase > 0.5f ? 1.0f : -1.0f,
+			UnitType.Sin => MathF.Sin(phase * MathF.PI * 2.0f),
+			UnitType.Tri => (phase <= 0.5f ? phase : 0.5f - phase) * 4.0f - 1.0f,
+			_ => throw new InvalidOperationException()
+		};
+
+		float GenerateAdditive(UnitType type, float phase) => 0.0f;
+		float GeneratePolyBlep(UnitType type, float phase) => 0.0f;
 	}
 }

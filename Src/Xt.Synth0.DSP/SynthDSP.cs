@@ -38,7 +38,7 @@ namespace Xt.Synth0.DSP
 			if (UpdateRow(synth, audio, rate))
 				_pattern.Automate(synth, audio);
 			for (int u = 0; u < _units.Length; u++)
-				result += _units[u].Next(synth.Units[u], rate) * amp;
+				result += _units[u].Next(synth, synth.Units[u], rate) * amp;
 			return result;
 		}
 
