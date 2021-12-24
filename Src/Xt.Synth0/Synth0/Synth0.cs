@@ -114,11 +114,14 @@ namespace Xt.Synth0
 		static float[] PlotData()
 		{
 			var dsp = new UnitDSP();
-			var unit = Model.Synth.Units[0];
+			var synth = Model.Synth;
+			var global = synth.Global;
+			var index = global.Plot.Value;
+			var unit = synth.Units[index - 1];
 			var freq = dsp.Frequency(unit);
 			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
 			var samples = (int)(2.0 * rate / freq);
-			var method = (SynthMethod)Model.Synth.Global.Method.Value;
+			var method = (SynthMethod)global.Method.Value;
 			var result = new float[samples];
 			for (int s = 0; s < samples; s++)
 				result[s] = dsp.Next(unit, method, rate);
