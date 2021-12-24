@@ -46,6 +46,7 @@ namespace Xt.Synth0.Model
 
 		public SynthModel()
 		{
+			Units[0].On.Value = 1;
 			_subModels = Units.Concat(new SubModel[] { Amp, Global, Track, Pattern }).ToArray();
 			_params.AddRange(_subModels.SelectMany(m => m.Params()));
 			for (int i = 0; i < _params.Count; i++)
