@@ -10,13 +10,17 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo BpmInfo = new DiscreteInfo(
 			nameof(Bpm), "Tempo", 1, 255, 120);
+		static readonly ParamInfo PlotInfo = new DiscreteInfo(
+			nameof(Plot), "Plot unit", 1, SynthModel.UnitCount, 1);
 		static readonly ParamInfo MethodInfo = new EnumInfo<SynthMethod>(
 			nameof(Method), "Synthesis method", Methods);
+
 		public Param Bpm { get; } = new(BpmInfo);
+		public Param Plot { get; } = new(PlotInfo);
 		public Param Method { get; } = new(MethodInfo);
 
 		internal GlobalModel(string name) : base(name) { }
 		internal override Param[][] ListParamGroups()
-		=> new[] { new[] { Bpm }, new[] { Method } };
+		=> new[] { new[] { Bpm, Plot }, new[] { Method } };
 	}
 }

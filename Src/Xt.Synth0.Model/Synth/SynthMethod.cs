@@ -2,8 +2,8 @@
 {
 	public enum SynthMethod
 	{
-		PolyBlep,
-		Additive,
-		Naive
+		PBP,
+		Add,
+		Nve
 	}
 }
