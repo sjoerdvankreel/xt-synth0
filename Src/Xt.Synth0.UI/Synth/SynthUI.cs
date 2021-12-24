@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
 			result.Children.Add(MakeLeft(model));
-			result.Children.Add(PatternUI.Make(model));
+			result.Children.Add(MakeRight(model));
 			return result;
 		}
 
@@ -20,6 +20,14 @@ namespace Xt.Synth0.UI
 		{
 			panel.Children.Add(element);
 			element.SetValue(DockPanel.DockProperty, Dock.Top);
+		}
+
+		static UIElement MakeRight(AppModel model)
+		{
+			var result = new DockPanel();
+			AddDocked(result, PatternUI.Make(model));
+			AddDocked(result, ControlUI.Make(model.Audio));
+			return result;
 		}
 
 		static UIElement MakeLeft(AppModel model)
