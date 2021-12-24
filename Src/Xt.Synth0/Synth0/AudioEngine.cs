@@ -262,7 +262,7 @@ namespace Xt.Synth0
 			var bufferSize = AudioModel.SizeToInt(model.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 			_stream = _device.OpenStream(in deviceParams, null);
-			_safe = XtSafeBuffer.Register(_stream, true);
+			_safe = XtSafeBuffer.Register(_stream);
 			_stream.Start();
 		}
 	}
