@@ -42,7 +42,7 @@ namespace Xt.Synth0.DSP
 			UnitType.Saw => phase * 2.0f - 1.0f,
 			UnitType.Sqr => phase > 0.5f ? 1.0f : -1.0f,
 			UnitType.Sin => MathF.Sin(phase * MathF.PI * 2.0f),
-			UnitType.Tri => (phase <= 0.5f ? phase : 0.5f - phase) * 4.0f - 1.0f,
+			UnitType.Tri => (phase <= 0.5f ? phase : 1.0f - phase) * 4.0f - 1.0f,
 			_ => throw new InvalidOperationException()
 		};
 
