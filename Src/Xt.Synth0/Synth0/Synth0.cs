@@ -39,6 +39,7 @@ namespace Xt.Synth0
 		{
 			var app = new Application();
 			app.Startup += OnAppStartup;
+			PlotUI.RequestPlotData += (s, e) => e.Data = PlotData();
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			app.Run(CreateWindow());
 		}
@@ -165,6 +166,11 @@ namespace Xt.Synth0
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
 			Model.Synth.ParamChanged += OnSynthParamChanged;
+		}
+
+		static float[] PlotData()
+		{
+			return new[] { -1f, 0, 1f, 0, -1f, 0.1f, 0.2f, 0.8f, -0.4f, 1.0f, -1.0f };
 		}
 
 		static void OnStop(object sender, EventArgs e)
