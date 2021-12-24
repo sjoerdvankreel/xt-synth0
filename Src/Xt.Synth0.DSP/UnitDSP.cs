@@ -30,9 +30,9 @@ namespace Xt.Synth0.DSP
 
 		float Generate(SynthMethod method, UnitType type, float phase) => method switch
 		{
-			SynthMethod.Nve => GenerateNaive(type, phase),
-			SynthMethod.Add => GenerateAdditive(type, phase),
-			SynthMethod.PBP => GeneratePolyBlep(type, phase),
+			SynthMethod.Naive => GenerateNaive(type, phase),
+			SynthMethod.Additive => GenerateAdditive(type, phase),
+			SynthMethod.PolyBlep => GeneratePolyBlep(type, phase),
 			_ => throw new InvalidOperationException()
 		};
 

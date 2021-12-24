@@ -17,6 +17,6 @@ namespace Xt.Synth0.Model
 
 		internal GlobalModel(string name) : base(name) { }
 		internal override Param[][] ListParamGroups()
-		=> new[] { new[] { Bpm, Method } };
+		=> new[] { new[] { Bpm }, new[] { Method } };
 	}
 }
