@@ -70,7 +70,7 @@ namespace Xt.Synth0.UI
 		static BindingBase BindHeader(AppModel model)
 		{
 			var edit = Bind.To(model.Synth.Track.Edit);
-			var pats = Bind.To(model.Synth.Track.Edit);
+			var pats = Bind.To(model.Synth.Track.Pats);
 			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
 			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
 			return Bind.To(new PatternFormatter(), running, edit, pats, row);
