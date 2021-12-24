@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using Xt.Synth0.DSP;
 using Xt.Synth0.Model;
 using Xt.Synth0.UI;
 
@@ -110,6 +111,20 @@ namespace Xt.Synth0
 			e.Handled = true;
 		}
 
+		static float[] PlotData()
+		{
+			var dsp = new UnitDSP();
+			var unit = Model.Synth.Units[0];
+			var freq = dsp.Frequency(unit);
+			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
+			var samples = (int)(rate / freq);
+			var method = (SynthMethod)Model.Synth.Global.Method.Value;
+			var result = new float[samples];
+			for (int s = 0; s < samples; s++)
+				result[s] = dsp.Next(unit, method, rate);
+			return result;
+		}
+
 		static void OnError(Exception error)
 		{
 			string message = error.Message;
@@ -166,11 +181,6 @@ namespace Xt.Synth0
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
 			Model.Synth.ParamChanged += OnSynthParamChanged;
-		}
-
-		static float[] PlotData()
-		{
-			return new[] { -1f, 0, 1f, 0, -1f, 0.1f, 0.2f, 0.8f, -0.4f, 1.0f, -1.0f };
 		}
 
 		static void OnStop(object sender, EventArgs e)

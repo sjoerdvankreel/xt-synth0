@@ -51,12 +51,12 @@ namespace Xt.Synth0.UI
 		static PointCollection MapPlotData(float[] data)
 		{
 			var result = new PointCollection();
-			for(int i = 0; i < data.Length; i++)
+			for (int i = 0; i < data.Length; i++)
 			{
 				var x = (double)i / data.Length * Width;
 				var y = (-data[i] * 0.5 + 0.5) * Height;
 				result.Add(new Point(x, y));
-			}				
+			}
 			return result;
 		}
 	}

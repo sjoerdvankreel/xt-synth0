@@ -3,28 +3,29 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.DSP
 {
-	class UnitDSP
+	public class UnitDSP
 	{
 		float _phase = 0.0f;
 		internal void Reset() => _phase = 0.0f;
 
-		internal float Next(SynthModel synth, UnitModel unit, float rate)
+		public float Frequency(UnitModel unit)
 		{
-			if (unit.On.Value == 0) return 0.0f;
-
 			int oct = unit.Oct.Value;
 			int note = unit.Note.Value;
 			int cent = unit.Cent.Value;
-
-			float amp = unit.Amp.Value / 255.0f;
 			float midi = (oct + 1) * 12 + note + cent / 100.0f;
-			float freq = 440.0f * MathF.Pow(2.0f, (midi - 69.0f) / 12.0f);
+			return 440.0f * MathF.Pow(2.0f, (midi - 69.0f) / 12.0f);
+		}
 
+		public float Next(UnitModel unit, SynthMethod method, float rate)
+		{
+			if (unit.On.Value == 0) return 0.0f;
+			float amp = unit.Amp.Value / 255.0f;
+			float freq = Frequency(unit);
 			float phase = _phase;
 			_phase += freq / rate;
 			if (_phase >= 1.0f) _phase = -1.0f;
 			var type = (UnitType)unit.Type.Value;
-			var method = (SynthMethod)synth.Global.Method.Value;
 			return Generate(method, type, phase) * amp;
 		}
 
