@@ -13,6 +13,14 @@ namespace Xt.Synth0
 		const float OverloadLimit = 0.9f;
 		const float WarningSeconds = 0.5f;
 
+		static XtSample SizeToSample(int size) => size switch
+		{
+			16 => XtSample.Int16,
+			24 => XtSample.Int24,
+			32 => XtSample.Int32,
+			_ => throw new InvalidOperationException()
+		};
+
 		internal static AudioEngine Create(
 			AppModel app, IntPtr mainWindow, Action<string> log,
 			Action<Action> dispatchToUI, Action<SynthModel> bufferFinished)
@@ -276,6 +284,7 @@ namespace Xt.Synth0
 			switch (format.mix.sample)
 			{
 				case XtSample.Int16: CopyBuffer16(buffer); break;
+				case XtSample.Int24: CopyBuffer24(buffer); break;
 				case XtSample.Int32: CopyBuffer32(buffer); break;
 				default: throw new InvalidOperationException();
 			}
@@ -298,6 +307,22 @@ namespace Xt.Synth0
 			{
 				samples[f * 2] = (short)(_buffer[f * 2] * short.MaxValue);
 				samples[f * 2 + 1] = (short)(_buffer[f * 2 + 1] * short.MaxValue);
+			}
+		}
+
+		unsafe void CopyBuffer24(in XtBuffer buffer)
+		{
+			byte* bytes = (byte*)buffer.output;
+			for (int f = 0; f < buffer.frames; f++)
+			{
+				int left = (int)(_buffer[f * 2] * int.MaxValue);
+				int right = (int)(_buffer[f * 2 + 1] * int.MaxValue);
+				bytes[f * 6 + 0] = (byte)((left & 0x0000FF00) >> 8);
+				bytes[f * 6 + 1] = (byte)((left & 0x00FF0000) >> 16);
+				bytes[f * 6 + 2] = (byte)((left & 0xFF000000) >> 24);
+				bytes[f * 6 + 3] = (byte)((right & 0x0000FF00) >> 8);
+				bytes[f * 6 + 4] = (byte)((right & 0x00FF0000) >> 16);
+				bytes[f * 6 + 5] = (byte)((right & 0xFF000000) >> 24);
 			}
 		}
 
@@ -342,11 +367,12 @@ namespace Xt.Synth0
 			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
 			_device = OpenDevice(system, selectedId, defaultId);
 			_rate = AudioModel.RateToInt(model.SampleRate);
+			var sample = SizeToSample(AudioModel.SampleSizeToInt(model.SampleSize));
+			var mix = new XtMix(_rate, sample);
 			var channels = new XtChannels(0, 0, 2, 0);
-			var mix = new XtMix(_rate, model.UseAsio ? XtSample.Int32 : XtSample.Int16);
 			var format = new XtFormat(in mix, in channels);
 			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
-			var bufferSize = AudioModel.SizeToInt(model.BufferSize);
+			var bufferSize = AudioModel.BufferSizeToInt(model.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 			_stream = _device.OpenStream(in deviceParams, null);
 			_stream.Start();

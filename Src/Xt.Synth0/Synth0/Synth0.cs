@@ -12,7 +12,7 @@ namespace Xt.Synth0
 	static class Synth0
 	{
 		const int PlotCycles = 2;
-		const int PlotBufferSize = 8192;
+		const int PlotBufferSize = 192000;
 		static readonly float[] PlotBuffer = new float[PlotBufferSize];
 
 		static AudioEngine _engine;

@@ -30,10 +30,19 @@ namespace Xt.Synth0.Model
 			SampleRate.Rate44100 => 44100,
 			SampleRate.Rate48000 => 48000,
 			SampleRate.Rate96000 => 96000,
+			SampleRate.Rate192000 => 192000,
 			_ => throw new InvalidOperationException()
 		};
 
-		public static int SizeToInt(BufferSize size) => size switch
+		public static int SampleSizeToInt(SampleSize size) => size switch
+		{
+			SampleSize.Size16 => 16,
+			SampleSize.Size24 => 24,
+			SampleSize.Size32 => 32,
+			_ => throw new InvalidOperationException()
+		};
+
+		public static int BufferSizeToInt(BufferSize size) => size switch
 		{
 			BufferSize.Size1 => 1,
 			BufferSize.Size2 => 2,
@@ -51,9 +60,13 @@ namespace Xt.Synth0.Model
 			= new ReadOnlyCollection<RateModel>(Enum.GetValues<SampleRate>()
 				.Select(r => new RateModel(r, RateToInt(r))).ToList());
 
+		public static IReadOnlyList<SizeModel> SampleSizes { get; }
+			= new ReadOnlyCollection<SizeModel>(Enum.GetValues<SampleSize>()
+				.Select(s => new SizeModel(s, SampleSizeToInt(s))).ToList());
+
 		public static IReadOnlyList<BufferModel> BufferSizes { get; }
 			= new ReadOnlyCollection<BufferModel>(Enum.GetValues<BufferSize>()
-				.Select(s => new BufferModel(s, SizeToInt(s))).ToList());
+				.Select(s => new BufferModel(s, BufferSizeToInt(s))).ToList());
 
 		static readonly List<DeviceModel> _asioDevices = new();
 		static readonly List<DeviceModel> _wasapiDevices = new();
