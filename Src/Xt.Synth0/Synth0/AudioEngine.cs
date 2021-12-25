@@ -11,7 +11,7 @@ namespace Xt.Synth0
 	{
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
-		const float WarningSeconds = 0.2f;
+		const float WarningSeconds = 0.5f;
 
 		internal static AudioEngine Create(
 			AppModel app, IntPtr mainWindow, Action<string> log,
@@ -252,7 +252,13 @@ namespace Xt.Synth0
 
 		void ProcessFrame(SynthModel synth, float[] buffer, int frame)
 		{
-			var sample = _dsp.Next(synth, _app.Audio, _rate);
+			var sample = _dsp.Next(synth, _app.Audio, _rate) * MaxAmp;
+			if (sample > MaxAmp)
+			{
+				_clipPosition = _streamPosition;
+				_app.Audio.IsClipping = true;
+			}
+			sample = Math.Clamp(sample, -MaxAmp, MaxAmp);
 			buffer[frame * 2] = sample;
 			buffer[frame * 2 + 1] = sample;
 		}
