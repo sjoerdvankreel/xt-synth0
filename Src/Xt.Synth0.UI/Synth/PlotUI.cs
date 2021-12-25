@@ -51,8 +51,8 @@ namespace Xt.Synth0.UI
 		{
 			var result = new Polyline();
 			result.StrokeThickness = 1;
-			result.Stroke = Brushes.White;
 			result.Points = MapPlotData(container, GetPlotData());
+			result.SetResourceReference(Shape.StrokeProperty, "Foreground2Key");
 			return result;
 		}
 
