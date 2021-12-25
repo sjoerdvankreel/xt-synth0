@@ -1,6 +1,5 @@
 asio->int32
 wasapi->int16
-synthesis methods
+polyblep
 amp as db?
-clipping/overload
 pulse width
