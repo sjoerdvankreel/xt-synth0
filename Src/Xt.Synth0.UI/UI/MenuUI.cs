@@ -30,6 +30,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static MenuItem MakeItem(string header, Action execute)
+		{
+			var result = new MenuItem();
+			result.Header = header;
+			result.Click += (s, e) => execute();
+			return result;
+		}
+
 		static MenuItem MakeItem(
 			ICommand command, string header, Action execute)
 		{
@@ -39,6 +47,15 @@ namespace Xt.Synth0.UI
 			binding.Command = command;
 			binding.Executed += (s, e) => execute();
 			result.CommandBindings.Add(binding);
+			return result;
+		}
+
+		static MenuItem MakeItem(AudioModel model, 
+			string header, Action execute)
+		{
+			var result = MakeItem(header, execute);
+			var binding = Bind.To(model, nameof(model.IsRunning), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
@@ -85,8 +102,11 @@ namespace Xt.Synth0.UI
 			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", doSaveAs));
 			result.Items.Add(new Separator());
 			var doShowSettings = () => ShowSettings(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, audio, "Settings", doShowSettings));
+			result.Items.Add(MakeItem(audio, "Settings", doShowSettings));
 			result.Items.Add(MakeRecent(model));
+			result.Items.Add(new Separator());
+			var doExit = () => Application.Current.MainWindow.Close();
+			result.Items.Add(MakeItem("E_xit", doExit));
 			return result;
 		}
 	}
