@@ -99,21 +99,19 @@ namespace Xt.Synth0.DSP
 
 		float GenerateAdditiveTri(float freq, float rate, int logHarmonics)
 		{
+			int sign = 1;
 			int harmonics = 1;
 			float limit = 0.0f;
 			float result = 0.0f;
 			float nyquist = rate / 2.0f;
 			for (int h = 0; h < logHarmonics; h++)
 				harmonics *= 2;
-			for (int h = 1; h <= harmonics; h++)
+			for (int h = 1; h <= harmonics * 2; h += 2)
 			{
-				var c = MathF.Pow((2 * (h - 1) + 1) * h, -2);
-				limit += c;
+				limit += MathF.Pow(h, -2);
 				if (h * freq >= nyquist) break;
-				var a = 1;// 8.0f / (MathF.PI * MathF.PI);
-				var b = MathF.Pow(-1, h - 1);
-				var d = MathF.Sin(_phase * (2 * (h - 1) + 1) * MathF.PI * 2.0f);
-				result += a * b * c * d;
+				result += sign * MathF.Pow(h, -2) * MathF.Sin(_phase * h * MathF.PI * 2.0f);
+				sign *= -1;
 			}
 			return result / limit;
 		}
