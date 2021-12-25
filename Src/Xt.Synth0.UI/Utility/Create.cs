@@ -30,6 +30,15 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static Grid Grid(
+			int rows, int cols, string colGroup)
+		{
+			var result = Grid(rows, cols);
+			for (int c = 0; c < cols; c++)
+				result.ColumnDefinitions[c].SharedSizeGroup = colGroup;
+			return result;
+		}
+
 		internal static Label Label(string text, Cell cell)
 		{
 			var result = Element<Label>(cell);

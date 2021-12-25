@@ -32,13 +32,23 @@ namespace Xt.Synth0.UI
 		{
 			var result = new GroupBox();
 			result.Header = $"Settings";
-			result.Content = MakeGrid(model);
+			result.Content = MakeContent(model);
 			return result;
 		}
 
-		static UIElement MakeGrid(SettingsModel model)
+		static UIElement MakeContent(SettingsModel model)
 		{
-			var result = Create.Grid(9, 2);
+			var result = new StackPanel();
+			result.Orientation = Orientation.Vertical;
+			result.Children.Add(MakeUpper(model));
+			result.Children.Add(MakeLower(model));
+			result.SetValue(Grid.IsSharedSizeScopeProperty, true);
+			return result;
+		}
+
+		static UIElement MakeUpper(SettingsModel model)
+		{
+			var result = Create.Grid(5, 2, nameof(SettingsUI));
 			result.Children.Add(Create.Label("Theme", new(0, 0)));
 			result.Children.Add(MakeTheme(model, new(0, 1)));
 			result.Children.Add(Create.Label("Write to disk", new(1, 0)));
@@ -49,15 +59,30 @@ namespace Xt.Synth0.UI
 			result.Children.Add(MakeBitDepth(model, new(3, 1)));
 			result.Children.Add(Create.Label("Sample rate", new(4, 0)));
 			result.Children.Add(MakeSampleRate(model, new(4, 1)));
-			result.Children.Add(Create.Label("Use ASIO", new(5, 0)));
-			result.Children.Add(MakeAsio(model, new(5, 1)));
-			result.Children.Add(Create.Label("Device", new(6, 0)));
-			result.Children.Add(MakeAsioDevice(model, new(6, 1)));
-			result.Children.Add(MakeWasapiDevice(model, new(6, 1)));
-			result.Children.Add(Create.Label("Buffer size (ms)", new(7, 0)));
-			result.Children.Add(MakeBufferSize(model, new(7, 1)));
-			result.Children.Add(Create.Label("Format support", new(8, 0)));
-			result.Children.Add(MakeFormatSupport(model, new(8, 1)));
+			return result;
+		}
+
+		static UIElement MakeLower(SettingsModel model)
+		{
+			var result = Create.Grid(4, 2, nameof(SettingsUI));
+			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
+			result.Children.Add(MakeAsio(model, new(0, 1)));
+			result.Children.Add(Create.Label("Device", new(1, 0)));
+			result.Children.Add(MakeAsioDevice(model, new(1, 1)));
+			result.Children.Add(MakeWasapiDevice(model, new(1, 1)));
+			result.Children.Add(Create.Label("Buffer size (ms)", new(2, 0)));
+			result.Children.Add(MakeBufferSize(model, new(2, 1)));
+			result.Children.Add(Create.Label("Format support", new(3, 0)));
+			result.Children.Add(MakeFormatSupport(model, new(3, 1)));
+			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), new VisibilityConverter(false));
+			result.SetBinding(UIElement.VisibilityProperty, binding);
+			return result;
+		}
+
+		static Grid MakeGrid(int rows)
+		{
+			var result = Create.Grid(rows, 2);
+			result.ColumnDefinitions[1].SharedSizeGroup = nameof(SettingsUI);
 			return result;
 		}
 
