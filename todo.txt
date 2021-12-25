@@ -1,5 +1,4 @@
 asio->int32
 wasapi->int16
-plot waveform
 synthesis methods
-param value detail tooltip
+amp as db?
