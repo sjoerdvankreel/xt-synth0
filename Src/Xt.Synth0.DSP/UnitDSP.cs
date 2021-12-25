@@ -57,77 +57,26 @@ namespace Xt.Synth0.DSP
 		float GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics)
 		=> type switch
 		{
-			UnitType.Tri => GenerateAdditiveTri(freq, rate, logHarmonics),
-			UnitType.Saw => GenerateAdditiveSaw(freq, rate, logHarmonics),
-			UnitType.Sqr => GenerateAdditiveSqr(freq, rate, logHarmonics),
-			_ => 0.0f
+			UnitType.Saw => GenerateAdditive(freq, rate, logHarmonics, 1, -1, 1),
+			UnitType.Sqr => GenerateAdditive(freq, rate, logHarmonics, 2, -1, 1),
+			UnitType.Tri => GenerateAdditive(freq, rate, logHarmonics, 2, -2, -1),
+			_ => throw new InvalidOperationException()
 		};
 
-		float GenerateAdditiveSaw(float freq, float rate, int logHarmonics)
+		float GenerateAdditive(float freq, float rate, int logHarmonics, int step, int rolloff, int multiplier)
 		{
-			int mul = 1;
-			int step = 1;
-
 			int sign = 1;
-			int harmonics = 1;
 			float limit = 0.0f;
 			float result = 0.0f;
 			float nyquist = rate / 2.0f;
-			for (int h = 0; h < logHarmonics; h++)
-				harmonics *= 2;
+			int harmonics = (int)MathF.Pow(2, logHarmonics);
 			for (int h = 1; h <= harmonics * step; h += step)
 			{
 				if (h * freq >= nyquist) break;
-				float amp = MathF.Pow(h, -1);
+				float amp = MathF.Pow(h, rolloff);
 				limit += amp;
 				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
-				sign *= mul;
-			}
-			return result / limit;
-		}
-
-		float GenerateAdditiveSqr(float freq, float rate, int logHarmonics)
-		{
-			int mul = 1;
-			int step = 2;
-
-			int sign = 1;
-			int harmonics = 1;
-			float limit = 0.0f;
-			float result = 0.0f;
-			float nyquist = rate / 2.0f;
-			for (int h = 0; h < logHarmonics; h++)
-				harmonics *= 2;
-			for (int h = 1; h <= harmonics * step; h += step)
-			{
-				if (h * freq >= nyquist) break;
-				float amp = MathF.Pow(h, -1);
-				limit += amp;
-				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
-				sign *= mul;
-			}
-			return result / limit;
-		}
-
-		float GenerateAdditiveTri(float freq, float rate, int logHarmonics)
-		{
-			int mul = -1;
-			int step = 2;
-
-			int sign = 1;
-			int harmonics = 1;
-			float limit = 0.0f;
-			float result = 0.0f;
-			float nyquist = rate / 2.0f;
-			for (int h = 0; h < logHarmonics; h++)
-				harmonics *= 2;
-			for (int h = 1; h <= harmonics * step; h += step)
-			{
-				if (h * freq >= nyquist) break;
-				float amp = MathF.Pow(h, -2);
-				limit += amp;
-				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
-				sign *= mul;
+				sign *= multiplier;
 			}
 			return result / limit;
 		}
