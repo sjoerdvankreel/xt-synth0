@@ -17,36 +17,37 @@ namespace Xt.Synth0.UI
 		{
 			var result = new GroupBox();
 			result.Header = "Plot";
-			result.Content = MakeContent(model);
+			var content = new ContentControl();
+			content.MinHeight = MinHeight;
+			content.SizeChanged += (s, e) => Update(result, content);
+			model.Synth.ParamChanged += (s, e) => Update(result, content);
+			model.Settings.PropertyChanged += (s, e) => Update(result, content);
+			result.Content = content;
 			return result;
 		}
 
-		static UIElement MakeContent(AppModel model)
+		static void Update(GroupBox box, ContentControl container)
 		{
-			var result = new ContentControl();
-			result.MinHeight = MinHeight;
-			result.Content = Plot(result);
-			result.SizeChanged += (s, e) => result.Content = Plot(result);
-			model.Synth.ParamChanged += (s, e) => result.Content = Plot(result);
-			model.Settings.PropertyChanged += (s, e) => result.Content = Plot(result);
-			return result;
+			RequestPlotData?.Invoke(null, Args);
+			container.Content = Plot(container, Args.Data, Args.Samples);
+			var freq = Args.Frequency.ToString("N1");
+			box.Header = $"Plot ({Args.Samples} @ {freq}Hz)";
 		}
 
-		static UIElement Plot(FrameworkElement container)
+		static UIElement Plot(FrameworkElement container, float[] data, int samples)
 		{
 			var result = new Canvas();
 			result.Width = container.ActualWidth;
 			result.Height = container.ActualHeight;
-			result.Children.Add(PlotLine(container));
+			result.Children.Add(PlotLine(container, data, samples));
 			return result;
 		}
 
-		static UIElement PlotLine(FrameworkElement container)
+		static UIElement PlotLine(FrameworkElement container, float[] data, int samples)
 		{
 			var result = new Polyline();
 			result.StrokeThickness = 1;
-			RequestPlotData?.Invoke(null, Args);
-			result.Points = MapPlotData(container, Args.Data, Args.Samples);
+			result.Points = MapPlotData(container, data, samples);
 			result.SetResourceReference(Shape.StrokeProperty, "Foreground2Key");
 			return result;
 		}

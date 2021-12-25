@@ -16,7 +16,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo OnInfo = new ToggleInfo(
 			nameof(On), "Enabled");
 		static readonly ParamInfo OctInfo = new DiscreteInfo(
-			nameof(Oct), "Octave", 0, 12, 4);
+			nameof(Oct), "Octave", 0, 9, 4);
 		static readonly ParamInfo CentInfo = new DiscreteInfo(
 			nameof(Cent), "Cent", -50, 49, 0);
 		static readonly ParamInfo AmpInfo = new ContinuousInfo(

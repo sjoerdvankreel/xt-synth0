@@ -6,5 +6,6 @@ namespace Xt.Synth0.UI
 	{
 		public int Samples { get; set; }
 		public float[] Data { get; set; }
+		public float Frequency { get; set; }
 	}
 }

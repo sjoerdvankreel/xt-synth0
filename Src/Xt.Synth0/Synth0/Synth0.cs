@@ -115,23 +115,6 @@ namespace Xt.Synth0
 			e.Handled = true;
 		}
 
-		static void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
-		{
-			e.Data = PlotBuffer;
-			var dsp = new UnitDSP();
-			var synth = Model.Synth;
-			var global = synth.Global;
-			var index = global.Plot.Value;
-			var unit = synth.Units[index - 1];
-			var freq = dsp.Frequency(unit);
-			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
-			var cycleLength = (int)MathF.Ceiling(rate / freq);
-			e.Samples = PlotCycles * cycleLength;
-			var method = (SynthMethod)global.Method.Value;
-			for (int s = 0; s < e.Samples; s++)
-				PlotBuffer[s] = dsp.Next(unit, method, rate);
-		}
-
 		static void OnError(Exception error)
 		{
 			string message = error.Message;
@@ -243,6 +226,23 @@ namespace Xt.Synth0
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
 			return result;
+		}
+
+		static void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
+		{
+			e.Data = PlotBuffer;
+			var dsp = new UnitDSP();
+			var synth = Model.Synth;
+			var global = synth.Global;
+			var index = global.Plot.Value;
+			var unit = synth.Units[index - 1];
+			e.Frequency = dsp.Frequency(unit);
+			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
+			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
+			e.Samples = PlotCycles * cycleLength;
+			var method = (SynthMethod)global.Method.Value;
+			for (int s = 0; s < e.Samples; s++)
+				PlotBuffer[s] = dsp.Next(unit, method, rate);
 		}
 	}
 }
