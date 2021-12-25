@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Xt.Synth0.DSP;
 using Xt.Synth0.Model;
 
@@ -8,6 +9,9 @@ namespace Xt.Synth0
 {
 	class AudioEngine : IDisposable
 	{
+		const float OverloadLimit = 0.9f;
+		const float WarningSeconds = 0.2f;
+
 		internal static AudioEngine Create(
 			AppModel app, IntPtr mainWindow, Action<string> log,
 			Action<Action> dispatchToUI, Action<SynthModel> bufferFinished)
@@ -64,6 +68,11 @@ namespace Xt.Synth0
 
 		readonly ParamAction[] _autoActions;
 		readonly SynthModel _beforeAutomation = new();
+
+		long _clipPosition = -1;
+		long _streamPosition = 0;
+		long _overloadPosition = -1;
+		readonly Stopwatch _stopwatch = new Stopwatch();
 
 		public string AsioDefaultDeviceId { get; }
 		public string WasapiDefaultDeviceId { get; }
@@ -183,6 +192,13 @@ namespace Xt.Synth0
 			_rate = 0;
 			_device?.Dispose();
 			_device = null;
+
+			_stopwatch.Reset();
+			_clipPosition = -1;
+			_streamPosition = 0;
+			_overloadPosition = -1;
+			_app.Audio.IsClipping = false;
+			_app.Audio.IsOverloaded = false;
 		}
 
 		void UpdateAutomation(SynthModel synth)
@@ -213,6 +229,9 @@ namespace Xt.Synth0
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
+			_stopwatch.Restart();
+			float warningFrames = WarningSeconds * _rate;
+			float bufferSeconds = buffer.frames / (float)_rate;
 			var synth = ModelPool.Get();
 			_app.Synth.CopyTo(synth, false);
 			ApplyAutomation(synth);
@@ -221,9 +240,21 @@ namespace Xt.Synth0
 			safe.Lock(buffer);
 			var output = (float[])safe.GetOutput();
 			for (int f = 0; f < buffer.frames; f++)
+			{
 				ProcessFrame(synth, output, f);
+				_streamPosition++;
+			}
 			safe.Unlock(buffer);
 			UpdateAutomation(synth);
+			if (_streamPosition > _overloadPosition + warningFrames)
+				_app.Audio.IsOverloaded = false;
+			_stopwatch.Stop();
+			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+			if (processedSeconds > bufferSeconds * OverloadLimit)
+			{
+				_overloadPosition = _streamPosition;
+				_app.Audio.IsOverloaded = true;
+			}
 			_bufferFinished(synth);
 			return 0;
 		}

@@ -7,7 +7,7 @@ namespace Xt.Synth0.UI
 {
 	static class GroupUI
 	{
-		internal static UIElement Make(AppModel model, GroupModel group)
+		internal static GroupBox Make(AppModel model, GroupModel group)
 		{
 			var result = new GroupBox();
 			result.Header = group.Name();

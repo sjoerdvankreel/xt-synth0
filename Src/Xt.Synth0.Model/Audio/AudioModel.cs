@@ -18,6 +18,10 @@ namespace Xt.Synth0.Model
 		= new PropertyChangedEventArgs(nameof(IsRunning));
 		static readonly PropertyChangedEventArgs CurrentRowChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(CurrentRow));
+		static readonly PropertyChangedEventArgs IsClippingChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(IsClipping));
+		static readonly PropertyChangedEventArgs IsOverloadedChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(IsOverloaded));
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -73,6 +77,30 @@ namespace Xt.Synth0.Model
 				if (_currentRow == value) return;
 				_currentRow = value;
 				PropertyChanged?.Invoke(this, CurrentRowChangedEventArgs);
+			}
+		}
+
+		bool _isClipping;
+		public bool IsClipping
+		{
+			get => _isClipping;
+			set
+			{
+				if (_isClipping == value) return;
+				_isClipping = value;
+				PropertyChanged?.Invoke(this, IsClippingChangedEventArgs);
+			}
+		}
+
+		bool _isOverloaded;
+		public bool IsOverloaded
+		{
+			get => _isOverloaded;
+			set
+			{
+				if (_isOverloaded == value) return;
+				_isOverloaded = value;
+				PropertyChanged?.Invoke(this, IsOverloadedChangedEventArgs);
 			}
 		}
 
