@@ -13,7 +13,7 @@ namespace Xt.Synth0
 		const float OverloadLimit = 0.9f;
 		const float WarningSeconds = 0.5f;
 
-		static XtSample SizeToSample(int size) => size switch
+		static XtSample DepthToSample(int size) => size switch
 		{
 			16 => XtSample.Int16,
 			24 => XtSample.Int24,
@@ -367,7 +367,7 @@ namespace Xt.Synth0
 			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
 			_device = OpenDevice(system, selectedId, defaultId);
 			_rate = AudioModel.RateToInt(model.SampleRate);
-			var sample = SizeToSample(AudioModel.SampleSizeToInt(model.SampleSize));
+			var sample = DepthToSample(AudioModel.BitDepthToInt(model.BitDepth));
 			var mix = new XtMix(_rate, sample);
 			var channels = new XtChannels(0, 0, 2, 0);
 			var format = new XtFormat(in mix, in channels);

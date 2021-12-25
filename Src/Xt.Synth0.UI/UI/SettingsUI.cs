@@ -41,10 +41,10 @@ namespace Xt.Synth0.UI
 			result.Children.Add(Create.Label("Device", new(1, 0)));
 			result.Children.Add(MakeAsioDevice(model, new(1, 1)));
 			result.Children.Add(MakeWasapiDevice(model, new(1, 1)));
-			result.Children.Add(Create.Label("Sample rate", new(2, 0)));
-			result.Children.Add(MakeSampleRate(model, new(2, 1)));
-			result.Children.Add(Create.Label("Sample size", new(3, 0)));
-			result.Children.Add(MakeSampleSize(model, new(3, 1)));
+			result.Children.Add(Create.Label("Bit depth", new(2, 0)));
+			result.Children.Add(MakeBitDepth(model, new(2, 1)));
+			result.Children.Add(Create.Label("Sample rate", new(3, 0)));
+			result.Children.Add(MakeSampleRate(model, new(3, 1)));
 			result.Children.Add(Create.Label("Buffer size (ms)", new(4, 0)));
 			result.Children.Add(MakeBufferSize(model, new(4, 1)));
 			result.Children.Add(Create.Label("Theme", new(5, 0)));
@@ -113,22 +113,22 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static UIElement MakeBitDepth(SettingsModel model, Cell cell)
+		{
+			var result = Create.Element<ComboBox>(cell);
+			result.ItemsSource = AudioModel.BitDepths;
+			result.SelectedValuePath = nameof(DepthModel.Depth);
+			var binding = Bind.To(model, nameof(model.BitDepth));
+			result.SetBinding(Selector.SelectedValueProperty, binding);
+			return result;
+		}
+
 		static UIElement MakeSampleRate(SettingsModel model, Cell cell)
 		{
 			var result = Create.Element<ComboBox>(cell);
 			result.ItemsSource = AudioModel.SampleRates;
 			result.SelectedValuePath = nameof(RateModel.Rate);
 			var binding = Bind.To(model, nameof(model.SampleRate));
-			result.SetBinding(Selector.SelectedValueProperty, binding);
-			return result;
-		}
-
-		static UIElement MakeSampleSize(SettingsModel model, Cell cell)
-		{
-			var result = Create.Element<ComboBox>(cell);
-			result.ItemsSource = AudioModel.SampleSizes;
-			result.SelectedValuePath = nameof(SizeModel.Size);
-			var binding = Bind.To(model, nameof(model.SampleSize));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			return result;
 		}

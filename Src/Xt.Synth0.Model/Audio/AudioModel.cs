@@ -34,11 +34,11 @@ namespace Xt.Synth0.Model
 			_ => throw new InvalidOperationException()
 		};
 
-		public static int SampleSizeToInt(SampleSize size) => size switch
+		public static int BitDepthToInt(BitDepth depth) => depth switch
 		{
-			SampleSize.Size16 => 16,
-			SampleSize.Size24 => 24,
-			SampleSize.Size32 => 32,
+			BitDepth.Depth16 => 16,
+			BitDepth.Depth24 => 24,
+			BitDepth.Depth32 => 32,
 			_ => throw new InvalidOperationException()
 		};
 
@@ -60,9 +60,9 @@ namespace Xt.Synth0.Model
 			= new ReadOnlyCollection<RateModel>(Enum.GetValues<SampleRate>()
 				.Select(r => new RateModel(r, RateToInt(r))).ToList());
 
-		public static IReadOnlyList<SizeModel> SampleSizes { get; }
-			= new ReadOnlyCollection<SizeModel>(Enum.GetValues<SampleSize>()
-				.Select(s => new SizeModel(s, SampleSizeToInt(s))).ToList());
+		public static IReadOnlyList<DepthModel> BitDepths { get; }
+			= new ReadOnlyCollection<DepthModel>(Enum.GetValues<BitDepth>()
+				.Select(s => new DepthModel(s, BitDepthToInt(s))).ToList());
 
 		public static IReadOnlyList<BufferModel> BufferSizes { get; }
 			= new ReadOnlyCollection<BufferModel>(Enum.GetValues<BufferSize>()

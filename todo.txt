@@ -1,6 +1,5 @@
 polyblep
 amp as db?
 pulse width
-allow 16/24/32bit sample select
 show actual buffer size / format support in settings
 monitor section with overload/clip/buffer frames/output latency

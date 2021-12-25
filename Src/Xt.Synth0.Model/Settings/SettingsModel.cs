@@ -26,11 +26,11 @@ namespace Xt.Synth0.Model
 			set => Set(ref _sampleRate, value);
 		}
 
-		SampleSize _sampleSize;
-		public SampleSize SampleSize
+		BitDepth _bitDepth;
+		public BitDepth BitDepth
 		{
-			get => _sampleSize;
-			set => Set(ref _sampleSize, value);
+			get => _bitDepth;
+			set => Set(ref _bitDepth, value);
 		}
 
 		BufferSize _bufferSize;
@@ -77,8 +77,8 @@ namespace Xt.Synth0.Model
 			var settings = (SettingsModel)model;
 			settings.Theme = Theme;
 			settings.UseAsio = UseAsio;
+			settings.BitDepth = BitDepth;
 			settings.SampleRate = SampleRate;
-			settings.SampleSize = SampleSize;
 			settings.BufferSize = BufferSize;
 			settings.AsioDeviceId = AsioDeviceId;
 			settings.WasapiDeviceId = WasapiDeviceId;
