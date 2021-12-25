@@ -65,42 +65,9 @@ namespace Xt.Synth0.DSP
 
 		float GenerateAdditiveSaw(float freq, float rate, int logHarmonics)
 		{
-			int harmonics = 1;
-			float limit = 0.0f;
-			float result = 0.0f;
-			float nyquist = rate / 2.0f;
-			for (int h = 0; h < logHarmonics; h++)
-				harmonics *= 2;
-			for (int h = 1; h <= harmonics; h++)
-			{
-				if (h * freq >= nyquist) break;
-				float amp = 1.0f / h;
-				limit += amp;
-				result += MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
-			}
-			return result / limit;
-		}
+			int mul = 1;
+			int step = 1;
 
-		float GenerateAdditiveSqr(float freq, float rate, int logHarmonics)
-		{
-			int harmonics = 1;
-			float limit = 0.0f;
-			float result = 0.0f;
-			float nyquist = rate / 2.0f;
-			for (int h = 0; h < logHarmonics; h++)
-				harmonics *= 2;
-			for (int h = 1; h <= harmonics * 2; h += 2)
-			{
-				if (h * freq >= nyquist) break;
-				float amp = 1.0f / h;
-				limit += amp;
-				result += MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
-			}
-			return result / limit;
-		}
-
-		float GenerateAdditiveTri(float freq, float rate, int logHarmonics)
-		{
 			int sign = 1;
 			int harmonics = 1;
 			float limit = 0.0f;
@@ -108,13 +75,59 @@ namespace Xt.Synth0.DSP
 			float nyquist = rate / 2.0f;
 			for (int h = 0; h < logHarmonics; h++)
 				harmonics *= 2;
-			for (int h = 1; h <= harmonics * 2; h += 2)
+			for (int h = 1; h <= harmonics * step; h += step)
+			{
+				if (h * freq >= nyquist) break;
+				float amp = 1.0f / h;
+				limit += amp;
+				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
+				sign *= mul;
+			}
+			return result / limit;
+		}
+
+		float GenerateAdditiveSqr(float freq, float rate, int logHarmonics)
+		{
+			int mul = 1;
+			int step = 2;
+
+			int sign = 1;
+			int harmonics = 1;
+			float limit = 0.0f;
+			float result = 0.0f;
+			float nyquist = rate / 2.0f;
+			for (int h = 0; h < logHarmonics; h++)
+				harmonics *= 2;
+			for (int h = 1; h <= harmonics * step; h += step)
+			{
+				if (h * freq >= nyquist) break;
+				float amp = 1.0f / h;
+				limit += amp;
+				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
+				sign *= mul;
+			}
+			return result / limit;
+		}
+
+		float GenerateAdditiveTri(float freq, float rate, int logHarmonics)
+		{
+			int mul = -1;
+			int step = 2;
+
+			int sign = 1;
+			int harmonics = 1;
+			float limit = 0.0f;
+			float result = 0.0f;
+			float nyquist = rate / 2.0f;
+			for (int h = 0; h < logHarmonics; h++)
+				harmonics *= 2;
+			for (int h = 1; h <= harmonics * step; h += step)
 			{
 				if (h * freq >= nyquist) break;
 				float amp = 1.0f / (h * h);
 				limit += amp;
 				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
-				sign *= -1;
+				sign *= mul;
 			}
 			return result / limit;
 		}
