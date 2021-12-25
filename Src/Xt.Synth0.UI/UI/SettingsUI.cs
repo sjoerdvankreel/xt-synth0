@@ -10,6 +10,7 @@ namespace Xt.Synth0.UI
 {
 	public static class SettingsUI
 	{
+		const int ComboWidth = 200;
 		public static event EventHandler ShowASIOControlPanel;
 		public static event EventHandler<QueryFormatSupportEventArgs> QueryFormatSupport;
 
@@ -48,7 +49,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeUpper(SettingsModel model)
 		{
-			var result = Create.Grid(5, 2, nameof(SettingsUI));
+			var result = Create.Grid(5, 2, true);
 			result.Children.Add(Create.Label("Theme", new(0, 0)));
 			result.Children.Add(MakeTheme(model, new(0, 1)));
 			result.Children.Add(Create.Label("Write to disk", new(1, 0)));
@@ -64,7 +65,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeLower(SettingsModel model)
 		{
-			var result = Create.Grid(4, 2, nameof(SettingsUI));
+			var result = Create.Grid(4, 2, true);
 			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
 			result.Children.Add(MakeAsio(model, new(0, 1)));
 			result.Children.Add(Create.Label("Device", new(1, 0)));
@@ -72,17 +73,20 @@ namespace Xt.Synth0.UI
 			result.Children.Add(MakeWasapiDevice(model, new(1, 1)));
 			result.Children.Add(Create.Label("Buffer size (ms)", new(2, 0)));
 			result.Children.Add(MakeBufferSize(model, new(2, 1)));
-			result.Children.Add(Create.Label("Format support", new(3, 0)));
+			result.Children.Add(Create.Label("Format supported", new(3, 0)));
 			result.Children.Add(MakeFormatSupport(model, new(3, 1)));
 			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), new VisibilityConverter(false));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
-		static Grid MakeGrid(int rows)
+		static ComboBox MakeCombo(Cell cell)
 		{
-			var result = Create.Grid(rows, 2);
-			result.ColumnDefinitions[1].SharedSizeGroup = nameof(SettingsUI);
+			var result = Create.Element<ComboBox>(cell);
+			result.Width = ComboWidth;
+			result.MinWidth = ComboWidth;
+			result.MaxWidth = ComboWidth;
+			result.HorizontalAlignment = HorizontalAlignment.Left;
 			return result;
 		}
 
@@ -142,7 +146,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeTheme(SettingsModel model, Cell cell)
 		{
-			var result = Create.Element<ComboBox>(cell);
+			var result = MakeCombo(cell);
 			result.ItemsSource = Enum.GetValues<ThemeType>();
 			var binding = Bind.To(model, nameof(model.Theme));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
@@ -184,7 +188,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeBufferSize(SettingsModel model, Cell cell)
 		{
-			var result = Create.Element<ComboBox>(cell);
+			var result = MakeCombo(cell);
 			result.ItemsSource = AudioModel.BufferSizes;
 			result.SelectedValuePath = nameof(BufferModel.Size);
 			var binding = Bind.To(model, nameof(model.BufferSize));
@@ -194,7 +198,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeBitDepth(SettingsModel model, Cell cell)
 		{
-			var result = Create.Element<ComboBox>(cell);
+			var result = MakeCombo(cell);
 			result.ItemsSource = AudioModel.BitDepths;
 			result.SelectedValuePath = nameof(DepthModel.Depth);
 			var binding = Bind.To(model, nameof(model.BitDepth));
@@ -204,7 +208,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeSampleRate(SettingsModel model, Cell cell)
 		{
-			var result = Create.Element<ComboBox>(cell);
+			var result = MakeCombo(cell);
 			result.ItemsSource = AudioModel.SampleRates;
 			result.SelectedValuePath = nameof(RateModel.Rate);
 			var binding = Bind.To(model, nameof(model.SampleRate));
@@ -215,7 +219,7 @@ namespace Xt.Synth0.UI
 		static ComboBox MakeDevice(
 			SettingsModel model, bool asio, string path, Cell cell)
 		{
-			var result = Create.Element<ComboBox>(cell);
+			var result = MakeCombo(cell);
 			result.SelectedValuePath = nameof(DeviceModel.Id);
 			var binding = Bind.To(model, path);
 			result.SetBinding(Selector.SelectedValueProperty, binding);
@@ -246,11 +250,10 @@ namespace Xt.Synth0.UI
 		{
 			var args = new QueryFormatSupportEventArgs();
 			QueryFormatSupport?.Invoke(null, args);
-			if (!args.IsSupported) return "Not supported";
-			string min = args.MinBuffer.ToString("N2");
-			string max = args.MaxBuffer.ToString("N2");
-			string @default = args.DefaultBuffer.ToString("N2");
-			return $"Supported, buffer size: {min} .. {max}ms";
+			if (!args.IsSupported) return "False";
+			string min = args.MinBuffer.ToString("N1");
+			string max = args.MaxBuffer.ToString("N1");
+			return $"True, buffer: {min} .. {max}ms";
 		}
 
 		static void UpdateDeviceBuffer(Label label, PropertyChangedEventArgs e)

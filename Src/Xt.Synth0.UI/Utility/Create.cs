@@ -31,11 +31,11 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static Grid Grid(
-			int rows, int cols, string colGroup)
+			int rows, int cols, bool sharedColSize)
 		{
 			var result = Grid(rows, cols);
 			for (int c = 0; c < cols; c++)
-				result.ColumnDefinitions[c].SharedSizeGroup = colGroup;
+				result.ColumnDefinitions[c].SharedSizeGroup = $"Group{c}";
 			return result;
 		}
 
