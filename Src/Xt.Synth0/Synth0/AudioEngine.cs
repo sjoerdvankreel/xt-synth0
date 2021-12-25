@@ -9,6 +9,7 @@ namespace Xt.Synth0
 {
 	class AudioEngine : IDisposable
 	{
+		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
 		const float WarningSeconds = 0.2f;
 
@@ -201,6 +202,35 @@ namespace Xt.Synth0
 			_app.Audio.IsOverloaded = false;
 		}
 
+		SynthModel PrepareModel()
+		{
+			var result = ModelPool.Get();
+			_app.Synth.CopyTo(result, false);
+			ApplyAutomation(result);
+			result.CopyTo(_beforeAutomation, true);
+			return result;
+		}
+
+		void UpdateOverloadWarning(in XtBuffer buffer)
+		{
+			float bufferSeconds = buffer.frames / (float)_rate;
+			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+			if (processedSeconds > bufferSeconds * OverloadLimit)
+			{
+				_overloadPosition = _streamPosition;
+				_app.Audio.IsOverloaded = true;
+			}
+		}
+
+		void ResetWarnings()
+		{
+			float warningFrames = WarningSeconds * _rate;
+			if (_streamPosition > _clipPosition + warningFrames)
+				_app.Audio.IsClipping = false;
+			if (_streamPosition > _overloadPosition + warningFrames)
+				_app.Audio.IsOverloaded = false;
+		}
+
 		void UpdateAutomation(SynthModel synth)
 		{
 			var newAutos = synth.AutoParams();
@@ -227,15 +257,8 @@ namespace Xt.Synth0
 			buffer[frame * 2 + 1] = sample;
 		}
 
-		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
+		void ProcessBuffer(XtStream stream, in XtBuffer buffer, SynthModel synth)
 		{
-			_stopwatch.Restart();
-			float warningFrames = WarningSeconds * _rate;
-			float bufferSeconds = buffer.frames / (float)_rate;
-			var synth = ModelPool.Get();
-			_app.Synth.CopyTo(synth, false);
-			ApplyAutomation(synth);
-			synth.CopyTo(_beforeAutomation, true);
 			var safe = XtSafeBuffer.Get(stream);
 			safe.Lock(buffer);
 			var output = (float[])safe.GetOutput();
@@ -245,16 +268,17 @@ namespace Xt.Synth0
 				_streamPosition++;
 			}
 			safe.Unlock(buffer);
+		}
+
+		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
+		{
+			_stopwatch.Restart();
+			var synth = PrepareModel();
+			ProcessBuffer(stream, in buffer, synth);
 			UpdateAutomation(synth);
-			if (_streamPosition > _overloadPosition + warningFrames)
-				_app.Audio.IsOverloaded = false;
+			ResetWarnings();
 			_stopwatch.Stop();
-			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
-			if (processedSeconds > bufferSeconds * OverloadLimit)
-			{
-				_overloadPosition = _streamPosition;
-				_app.Audio.IsOverloaded = true;
-			}
+			UpdateOverloadWarning(in buffer);
 			_bufferFinished(synth);
 			return 0;
 		}
