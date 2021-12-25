@@ -11,6 +11,7 @@ namespace Xt.Synth0.UI
 	{
 		const int MinHeight = 24;
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
+		static readonly RequestPlotDataEventArgs Args = new RequestPlotDataEventArgs();
 
 		internal static UIElement Make(AppModel model)
 		{
@@ -31,13 +32,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static float[] GetPlotData()
-		{
-			var args = new RequestPlotDataEventArgs();
-			RequestPlotData?.Invoke(null, args);
-			return args.Data;
-		}
-
 		static UIElement Plot(FrameworkElement container)
 		{
 			var result = new Canvas();
@@ -51,18 +45,19 @@ namespace Xt.Synth0.UI
 		{
 			var result = new Polyline();
 			result.StrokeThickness = 1;
-			result.Points = MapPlotData(container, GetPlotData());
+			RequestPlotData?.Invoke(null, Args);
+			result.Points = MapPlotData(container, Args.Data, Args.Samples);
 			result.SetResourceReference(Shape.StrokeProperty, "Foreground2Key");
 			return result;
 		}
 
-		static PointCollection MapPlotData(FrameworkElement container, float[] data)
+		static PointCollection MapPlotData(FrameworkElement container, float[] data, int samples)
 		{
 			var result = new PointCollection();
-			for (int i = 0; i < data.Length; i++)
+			for (int i = 0; i < samples; i++)
 			{
-				var x = (double)i / data.Length * container.ActualWidth;
 				var y = (-data[i] * 0.5 + 0.5) * container.ActualHeight;
+				var x = (double)i / (samples - 1) * container.ActualWidth;
 				result.Add(new Point(x, y));
 			}
 			return result;

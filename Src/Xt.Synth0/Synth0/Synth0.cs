@@ -11,6 +11,10 @@ namespace Xt.Synth0
 {
 	static class Synth0
 	{
+		const int PlotCycles = 2;
+		const int PlotBufferSize = 8192;
+		static readonly float[] PlotBuffer = new float[PlotBufferSize];
+
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
@@ -40,7 +44,7 @@ namespace Xt.Synth0
 		{
 			var app = new Application();
 			app.Startup += OnAppStartup;
-			PlotUI.RequestPlotData += (s, e) => e.Data = PlotData();
+			PlotUI.RequestPlotData += OnRequestPlotData;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			app.Run(CreateWindow());
 		}
@@ -111,8 +115,9 @@ namespace Xt.Synth0
 			e.Handled = true;
 		}
 
-		static float[] PlotData()
+		static void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
+			e.Data = PlotBuffer;
 			var dsp = new UnitDSP();
 			var synth = Model.Synth;
 			var global = synth.Global;
@@ -120,12 +125,11 @@ namespace Xt.Synth0
 			var unit = synth.Units[index - 1];
 			var freq = dsp.Frequency(unit);
 			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
-			var samples = (int)(2.0 * rate / freq);
+			var cycleLength = (int)MathF.Ceiling(rate / freq);
+			e.Samples = PlotCycles * cycleLength;
 			var method = (SynthMethod)global.Method.Value;
-			var result = new float[samples];
-			for (int s = 0; s < samples; s++)
-				result[s] = dsp.Next(unit, method, rate);
-			return result;
+			for (int s = 0; s < e.Samples; s++)
+				PlotBuffer[s] = dsp.Next(unit, method, rate);
 		}
 
 		static void OnError(Exception error)
