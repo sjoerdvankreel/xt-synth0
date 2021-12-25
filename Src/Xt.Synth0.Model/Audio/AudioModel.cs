@@ -35,9 +35,12 @@ namespace Xt.Synth0.Model
 
 		public static int SizeToInt(BufferSize size) => size switch
 		{
+			BufferSize.Size1 => 1,
+			BufferSize.Size2 => 2,
 			BufferSize.Size3 => 3,
 			BufferSize.Size5 => 5,
 			BufferSize.Size10 => 10,
+			BufferSize.Size20 => 20,
 			BufferSize.Size30 => 30,
 			BufferSize.Size50 => 50,
 			BufferSize.Size100 => 100,
