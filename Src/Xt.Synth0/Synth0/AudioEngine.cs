@@ -346,11 +346,38 @@ namespace Xt.Synth0
 				_dispatchToUI(ResetStream);
 		}
 
+		internal XtBufferSize? QueryFormatSupport()
+		{
+			var format = GetFormat();
+			using var device = OpenDevice();
+			if (!device.SupportsFormat(in format)) return null;
+			return device.GetBufferSize(in format);
+		}
+
+		XtFormat GetFormat()
+		{
+			var rate = AudioModel.RateToInt(_app.Settings.SampleRate);
+			var depth = AudioModel.BitDepthToInt(_app.Settings.BitDepth);
+			var sample = DepthToSample(depth);
+			var mix = new XtMix(rate, sample);
+			var channels = new XtChannels(0, 0, 2, 0);
+			return new XtFormat(in mix, in channels);
+		}
+
 		XtDevice OpenDevice(XtSystem system, string deviceId, string defaultId)
 		{
 			var service = _platform.GetService(system);
 			var id = string.IsNullOrEmpty(deviceId) ? defaultId : deviceId;
 			return service.OpenDevice(id);
+		}
+
+		XtDevice OpenDevice()
+		{
+			var model = _app.Settings;
+			var system = model.UseAsio ? XtSystem.ASIO : XtSystem.WASAPI;
+			var selectedId = model.UseAsio ? model.AsioDeviceId : model.WasapiDeviceId;
+			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
+			return OpenDevice(system, selectedId, defaultId);
 		}
 
 		internal void ShowASIOControlPanel(string deviceId)
@@ -361,18 +388,11 @@ namespace Xt.Synth0
 
 		void DoStartStream()
 		{
-			var model = _app.Settings;
-			var system = model.UseAsio ? XtSystem.ASIO : XtSystem.WASAPI;
-			var selectedId = model.UseAsio ? model.AsioDeviceId : model.WasapiDeviceId;
-			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
-			_device = OpenDevice(system, selectedId, defaultId);
-			_rate = AudioModel.RateToInt(model.SampleRate);
-			var sample = DepthToSample(AudioModel.BitDepthToInt(model.BitDepth));
-			var mix = new XtMix(_rate, sample);
-			var channels = new XtChannels(0, 0, 2, 0);
-			var format = new XtFormat(in mix, in channels);
+			_device = OpenDevice();
+			var format = GetFormat();
+			_rate = format.mix.rate;
 			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
-			var bufferSize = AudioModel.BufferSizeToInt(model.BufferSize);
+			var bufferSize = AudioModel.BufferSizeToInt(_app.Settings.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 			_stream = _device.OpenStream(in deviceParams, null);
 			_stream.Start();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -9,6 +10,7 @@ namespace Xt.Synth0.UI
 	public static class SettingsUI
 	{
 		public static event EventHandler ShowASIOControlPanel;
+		public static event EventHandler<QueryFormatSupportEventArgs> QueryFormatSupport;
 
 		public static void Show(SettingsModel model)
 		{
@@ -35,7 +37,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeGrid(SettingsModel model)
 		{
-			var result = Create.Grid(6, 2);
+			var result = Create.Grid(7, 2);
 			result.Children.Add(Create.Label("Theme", new(0, 0)));
 			result.Children.Add(MakeTheme(model, new(0, 1)));
 			result.Children.Add(Create.Label("Use ASIO", new(1, 0)));
@@ -49,6 +51,8 @@ namespace Xt.Synth0.UI
 			result.Children.Add(MakeSampleRate(model, new(4, 1)));
 			result.Children.Add(Create.Label("Buffer size (ms)", new(5, 0)));
 			result.Children.Add(MakeBufferSize(model, new(5, 1)));
+			result.Children.Add(Create.Label("Format support", new(6, 0)));
+			result.Children.Add(MakeFormatSupport(model, new(6, 1)));
 			return result;
 		}
 
@@ -153,6 +157,35 @@ namespace Xt.Synth0.UI
 			var binding = Bind.To(model, nameof(SettingsModel.UseAsio), new VisibilityConverter(true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
+		}
+
+		static UIElement MakeFormatSupport(SettingsModel model, Cell cell)
+		{
+			var result = Create.Element<Label>(cell);
+			result.Content = DoQueryFormatSupport();
+			model.PropertyChanged += (s, e) => UpdateDeviceBuffer(result, e);
+			return result;
+		}
+
+		static string DoQueryFormatSupport()
+		{
+			var args = new QueryFormatSupportEventArgs();
+			QueryFormatSupport?.Invoke(null, args);
+			if (!args.IsSupported) return "Not supported";
+			string min = args.MinBuffer.ToString("N2");
+			string max = args.MaxBuffer.ToString("N2");
+			string @default = args.DefaultBuffer.ToString("N2");
+			return $"Supported, buffer size: {min} .. {max}ms";
+		}
+
+		static void UpdateDeviceBuffer(Label label, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(SettingsModel.UseAsio) ||
+				e.PropertyName == nameof(SettingsModel.BitDepth) ||
+				e.PropertyName == nameof(SettingsModel.SampleRate) ||
+				e.PropertyName == nameof(SettingsModel.AsioDeviceId) ||
+				e.PropertyName == nameof(SettingsModel.WasapiDeviceId))
+				label.Content = DoQueryFormatSupport();
 		}
 	}
 }

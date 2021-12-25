@@ -168,9 +168,10 @@ namespace Xt.Synth0
 			MenuUI.SaveAs += (s, e) => SaveAs(window);
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
-			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
-			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
 			Model.Synth.ParamChanged += OnSynthParamChanged;
+			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
+			SettingsUI.QueryFormatSupport += OnQueryFormatSupport;
+			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
 		}
 
 		static void OnStop(object sender, EventArgs e)
@@ -183,6 +184,15 @@ namespace Xt.Synth0
 		{
 			Array.Clear(_uiThreadActions);
 			_engine.Start();
+		}
+
+		static void OnQueryFormatSupport(object sender, QueryFormatSupportEventArgs e)
+		{
+			var support = _engine.QueryFormatSupport();
+			e.IsSupported = support != null;
+			e.MinBuffer = support?.min ?? 0.0;
+			e.MaxBuffer = support?.max ?? 0.0;
+			e.DefaultBuffer = support?.current ?? 0.0;
 		}
 
 		static void CopyToUIThread(SynthModel model)
