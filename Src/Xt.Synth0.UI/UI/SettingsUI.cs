@@ -36,19 +36,19 @@ namespace Xt.Synth0.UI
 		static UIElement MakeGrid(SettingsModel model)
 		{
 			var result = Create.Grid(6, 2);
-			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
-			result.Children.Add(MakeAsio(model, new(0, 1)));
-			result.Children.Add(Create.Label("Device", new(1, 0)));
-			result.Children.Add(MakeAsioDevice(model, new(1, 1)));
-			result.Children.Add(MakeWasapiDevice(model, new(1, 1)));
-			result.Children.Add(Create.Label("Bit depth", new(2, 0)));
-			result.Children.Add(MakeBitDepth(model, new(2, 1)));
-			result.Children.Add(Create.Label("Sample rate", new(3, 0)));
-			result.Children.Add(MakeSampleRate(model, new(3, 1)));
-			result.Children.Add(Create.Label("Buffer size (ms)", new(4, 0)));
-			result.Children.Add(MakeBufferSize(model, new(4, 1)));
-			result.Children.Add(Create.Label("Theme", new(5, 0)));
-			result.Children.Add(MakeTheme(model, new(5, 1)));
+			result.Children.Add(Create.Label("Theme", new(0, 0)));
+			result.Children.Add(MakeTheme(model, new(0, 1)));
+			result.Children.Add(Create.Label("Use ASIO", new(1, 0)));
+			result.Children.Add(MakeAsio(model, new(1, 1)));
+			result.Children.Add(Create.Label("Device", new(2, 0)));
+			result.Children.Add(MakeAsioDevice(model, new(2, 1)));
+			result.Children.Add(MakeWasapiDevice(model, new(2, 1)));
+			result.Children.Add(Create.Label("Bit depth", new(3, 0)));
+			result.Children.Add(MakeBitDepth(model, new(3, 1)));
+			result.Children.Add(Create.Label("Sample rate", new(4, 0)));
+			result.Children.Add(MakeSampleRate(model, new(4, 1)));
+			result.Children.Add(Create.Label("Buffer size (ms)", new(5, 0)));
+			result.Children.Add(MakeBufferSize(model, new(5, 1)));
 			return result;
 		}
 
