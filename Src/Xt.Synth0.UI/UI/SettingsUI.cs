@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,22 +38,26 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeGrid(SettingsModel model)
 		{
-			var result = Create.Grid(7, 2);
+			var result = Create.Grid(9, 2);
 			result.Children.Add(Create.Label("Theme", new(0, 0)));
 			result.Children.Add(MakeTheme(model, new(0, 1)));
-			result.Children.Add(Create.Label("Use ASIO", new(1, 0)));
-			result.Children.Add(MakeAsio(model, new(1, 1)));
-			result.Children.Add(Create.Label("Device", new(2, 0)));
-			result.Children.Add(MakeAsioDevice(model, new(2, 1)));
-			result.Children.Add(MakeWasapiDevice(model, new(2, 1)));
+			result.Children.Add(Create.Label("Write to disk", new(1, 0)));
+			result.Children.Add(MakeWriteToDisk(model, new(1, 1)));
+			result.Children.Add(Create.Label("Output path", new(2, 0)));
+			result.Children.Add(MakeOutputPath(model, new(2, 1)));
 			result.Children.Add(Create.Label("Bit depth", new(3, 0)));
 			result.Children.Add(MakeBitDepth(model, new(3, 1)));
 			result.Children.Add(Create.Label("Sample rate", new(4, 0)));
 			result.Children.Add(MakeSampleRate(model, new(4, 1)));
-			result.Children.Add(Create.Label("Buffer size (ms)", new(5, 0)));
-			result.Children.Add(MakeBufferSize(model, new(5, 1)));
-			result.Children.Add(Create.Label("Format support", new(6, 0)));
-			result.Children.Add(MakeFormatSupport(model, new(6, 1)));
+			result.Children.Add(Create.Label("Use ASIO", new(5, 0)));
+			result.Children.Add(MakeAsio(model, new(5, 1)));
+			result.Children.Add(Create.Label("Device", new(6, 0)));
+			result.Children.Add(MakeAsioDevice(model, new(6, 1)));
+			result.Children.Add(MakeWasapiDevice(model, new(6, 1)));
+			result.Children.Add(Create.Label("Buffer size (ms)", new(7, 0)));
+			result.Children.Add(MakeBufferSize(model, new(7, 1)));
+			result.Children.Add(Create.Label("Format support", new(8, 0)));
+			result.Children.Add(MakeFormatSupport(model, new(8, 1)));
 			return result;
 		}
 
@@ -62,6 +67,51 @@ namespace Xt.Synth0.UI
 			result.Content = "OK";
 			result.Click += (s, e) => window.Close();
 			result.HorizontalAlignment = HorizontalAlignment.Right;
+			return result;
+		}
+
+		static UIElement MakeWriteToDisk(SettingsModel model, Cell cell)
+		{
+			var result = Create.Element<StackPanel>(cell);
+			result.Orientation = Orientation.Horizontal;
+			result.Children.Add(MakeWriteToDisk(model));
+			result.Children.Add(MakeBrowseOutputPath(model));
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
+			return result;
+		}
+
+		static UIElement MakeWriteToDisk(SettingsModel model)
+		{
+			var result = new CheckBox();
+			var binding = Bind.To(model, nameof(model.WriteToDisk));
+			result.SetBinding(ToggleButton.IsCheckedProperty, binding);
+			return result;
+		}
+
+		static UIElement MakeBrowseOutputPath(SettingsModel model)
+		{
+			var result = new Button();
+			result.Content = "Browse";
+			result.Click += (s, e) => BrowseOutputPath(model);
+			result.HorizontalAlignment = HorizontalAlignment.Right;
+			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), new VisibilityConverter(true));
+			result.SetBinding(UIElement.VisibilityProperty, binding);
+			return result;
+		}
+
+		static void BrowseOutputPath(SettingsModel model)
+		{
+			var dialog = new SaveFileDialog();
+			dialog.Filter = "Raw audio (*.raw)|*.raw";
+			if (dialog.ShowDialog() != true) return;
+			model.OutputPath = dialog.FileName;
+		}
+
+		static UIElement MakeOutputPath(SettingsModel model, Cell cell)
+		{
+			var result = Create.Element<Label>(cell);
+			var binding = Bind.To(model, nameof(SettingsModel.OutputPath));
+			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
 

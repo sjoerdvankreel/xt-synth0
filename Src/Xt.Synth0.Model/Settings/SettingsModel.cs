@@ -7,10 +7,25 @@ namespace Xt.Synth0.Model
 {
 	public sealed class SettingsModel : ICopyModel, INotifyPropertyChanged
 	{
+		const string DefaultOutputPath = "synth0.raw";
 		public const int MaxRecentFiles = 10;
 
 		public event EventHandler ThemeChanged;
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		bool _writeToDisk;
+		public bool WriteToDisk
+		{
+			get => _writeToDisk;
+			set => Set(ref _writeToDisk, value);
+		}
+
+		string _outputPath = DefaultOutputPath;
+		public string OutputPath
+		{
+			get => _outputPath;
+			set => Set(ref _outputPath, value);
+		}
 
 		bool _useAsio;
 		public bool UseAsio
@@ -79,7 +94,9 @@ namespace Xt.Synth0.Model
 			settings.UseAsio = UseAsio;
 			settings.BitDepth = BitDepth;
 			settings.SampleRate = SampleRate;
+			settings.OutputPath = OutputPath;
 			settings.BufferSize = BufferSize;
+			settings.WriteToDisk = WriteToDisk;
 			settings.AsioDeviceId = AsioDeviceId;
 			settings.WasapiDeviceId = WasapiDeviceId;
 			settings.RecentFiles.Clear();
