@@ -270,7 +270,28 @@ namespace Xt.Synth0
 			_buffer[frame * 2 + 1] = sample;
 		}
 
-		unsafe void CopyBuffer(in XtBuffer buffer)
+		void CopyBuffer(XtStream stream, in XtBuffer buffer)
+		{
+			var format = stream.GetFormat();
+			switch (format.mix.sample)
+			{
+				case XtSample.Int16: CopyBuffer16(buffer); break;
+				case XtSample.Int32: CopyBuffer32(buffer); break;
+				default: throw new InvalidOperationException();
+			}
+		}
+
+		unsafe void CopyBuffer32(in XtBuffer buffer)
+		{
+			int* samples = (int*)buffer.output;
+			for (int f = 0; f < buffer.frames; f++)
+			{
+				samples[f * 2] = (int)(_buffer[f * 2] * int.MaxValue);
+				samples[f * 2 + 1] = (int)(_buffer[f * 2 + 1] * int.MaxValue);
+			}
+		}
+
+		unsafe void CopyBuffer16(in XtBuffer buffer)
 		{
 			short* samples = (short*)buffer.output;
 			for (int f = 0; f < buffer.frames; f++)
@@ -285,7 +306,7 @@ namespace Xt.Synth0
 			_stopwatch.Restart();
 			var synth = PrepareModel();
 			ProcessBuffer(synth, buffer.frames);
-			CopyBuffer(in buffer);
+			CopyBuffer(stream, in buffer);
 			UpdateAutomation(synth);
 			ResetWarnings();
 			_stopwatch.Stop();
@@ -321,8 +342,8 @@ namespace Xt.Synth0
 			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
 			_device = OpenDevice(system, selectedId, defaultId);
 			_rate = AudioModel.RateToInt(model.SampleRate);
-			var mix = new XtMix(_rate, XtSample.Int16);
 			var channels = new XtChannels(0, 0, 2, 0);
+			var mix = new XtMix(_rate, model.UseAsio ? XtSample.Int32 : XtSample.Int16);
 			var format = new XtFormat(in mix, in channels);
 			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
 			var bufferSize = AudioModel.SizeToInt(model.BufferSize);
