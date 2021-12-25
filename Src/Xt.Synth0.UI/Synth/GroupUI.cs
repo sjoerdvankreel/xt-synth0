@@ -23,7 +23,10 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Top;
 			for (int r = 0; r < rows.Length; r++)
 				for (int c = 0; c < rows[r].Length; c++)
-					ParamUI.Add(result, model, rows[r][c], new(r, c * 3));
+				{
+					var valueSpan = c == rows[r].Length - 1 ? 1 + 3 * (cols - c - 1) : 1;
+					ParamUI.Add(result, model, rows[r][c], new(r, c * 3), valueSpan);
+				}
 			if (group.Automation()) return result;
 			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
