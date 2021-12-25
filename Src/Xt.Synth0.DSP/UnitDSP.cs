@@ -5,8 +5,24 @@ namespace Xt.Synth0.DSP
 {
 	public class UnitDSP
 	{
-		float _phase = 0.0f;
-		internal void Reset() => _phase = 0.0f;
+		const int MaxHarmonics = 32;
+		static readonly float AdditiveScale = 2.0f / (MathF.Log(MaxHarmonics) + 1.0f);
+
+		readonly UnitModel _previous = new UnitModel();
+		readonly float[] _phases = new float[MaxHarmonics];
+
+		internal void Reset() => Array.Clear(_phases);
+
+		void TryReset(UnitModel unit)
+		{
+			if (unit.On.Value != _previous.On.Value ||
+				unit.Oct.Value != _previous.Oct.Value ||
+				unit.Note.Value != _previous.Note.Value ||
+				unit.Cent.Value != _previous.Cent.Value ||
+				unit.Type.Value != _previous.Type.Value)
+				Reset();
+			unit.CopyTo(_previous);
+		}
 
 		public float Frequency(UnitModel unit)
 		{
@@ -19,39 +35,69 @@ namespace Xt.Synth0.DSP
 
 		public float Next(UnitModel unit, SynthMethod method, float rate)
 		{
+			TryReset(unit);
 			if (unit.On.Value == 0) return 0.0f;
 			float amp = unit.Amp.Value / 255.0f;
 			float freq = Frequency(unit);
-			float phase = _phase;
-			_phase += freq / rate;
-			if (_phase >= 1.0f) _phase = 0.0f;
 			var type = (UnitType)unit.Type.Value;
-			return Generate(method, type, phase) * amp;
+			float sample = Generate(method, type, freq, rate);
+			UpdatePhases(freq, rate);
+			return sample * amp;
 		}
 
-		float Generate(SynthMethod method, UnitType type, float phase) => type switch
+		void UpdatePhases(float freq, float rate)
 		{
-			UnitType.Sin => MathF.Sin(phase * MathF.PI * 2.0f),
-			_ => GenerateMethod(method, type, phase)
+			for (int h = 0; h < MaxHarmonics; h++)
+			{
+				_phases[h] += freq * (h + 1) / rate;
+				if (_phases[h] >= 1.0f) _phases[h] = 0.0f;
+			}
+		}
+
+		float Generate(SynthMethod method, UnitType type, float freq, float rate)
+		=> type switch
+		{
+			UnitType.Sin => MathF.Sin(_phases[0] * MathF.PI * 2.0f),
+			_ => GenerateMethod(method, type, freq, rate)
 		};
 
-		float GenerateMethod(SynthMethod method, UnitType type, float phase) => method switch
+		float GenerateMethod(SynthMethod method, UnitType type, float freq, float rate)
+		=> method switch
 		{
-			SynthMethod.Naive => GenerateNaive(type, phase),
-			SynthMethod.Additive => GenerateAdditive(type, phase),
-			SynthMethod.PolyBlep => GeneratePolyBlep(type, phase),
+			SynthMethod.Naive => GenerateNaive(type),
+			SynthMethod.Additive => GenerateAdditive(type, freq, rate),
+			SynthMethod.PolyBlep => GeneratePolyBlep(type),
 			_ => throw new InvalidOperationException()
 		};
 
-		float GenerateNaive(UnitType type, float phase) => type switch
+		float GenerateNaive(UnitType type)
+		=> type switch
 		{
-			UnitType.Saw => phase * 2.0f - 1.0f,
-			UnitType.Sqr => phase > 0.5f ? 1.0f : -1.0f,
-			UnitType.Tri => (phase <= 0.5f ? phase : 1.0f - phase) * 4.0f - 1.0f,
+			UnitType.Saw => _phases[0] * 2.0f - 1.0f,
+			UnitType.Sqr => _phases[0] > 0.5f ? 1.0f : -1.0f,
+			UnitType.Tri => (_phases[0] <= 0.5f ? _phases[0] : 1.0f - _phases[0]) * 4.0f - 1.0f,
 			_ => throw new InvalidOperationException()
 		};
 
-		float GenerateAdditive(UnitType type, float phase) => 0.0f;
-		float GeneratePolyBlep(UnitType type, float phase) => 0.0f;
+		float GenerateAdditive(UnitType type, float freq, float rate)
+		=> type switch
+		{
+			UnitType.Saw => -GenerateAdditiveSaw(freq, rate),
+			_ => 0.0f
+		};
+
+		float GenerateAdditiveSaw(float freq, float rate)
+		{
+			float result = 0.0f;
+			float nyquist = rate / 2.0f;
+			for (int h = 1; h <= MaxHarmonics; h++)
+			{
+				if (h * freq >= nyquist) return result * AdditiveScale;
+				result += MathF.Sin(_phases[h - 1] * MathF.PI * 2.0f) / h;
+			}
+			return result * AdditiveScale;
+		}
+
+		float GeneratePolyBlep(UnitType type) => 0.0f;
 	}
 }
