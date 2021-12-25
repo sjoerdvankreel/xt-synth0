@@ -1,5 +1,4 @@
 polyblep
 amp as db?
 pulse width
-show actual buffer size / format support in settings
-monitor section with overload/clip/buffer frames/output latency
+wave writer
