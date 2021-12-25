@@ -4,4 +4,4 @@ synthesis methods
 amp as db?
 push to github
 clipping
-**just testing
+pulse width

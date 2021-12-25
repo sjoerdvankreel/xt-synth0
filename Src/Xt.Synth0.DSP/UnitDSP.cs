@@ -29,7 +29,13 @@ namespace Xt.Synth0.DSP
 			return Generate(method, type, phase) * amp;
 		}
 
-		float Generate(SynthMethod method, UnitType type, float phase) => method switch
+		float Generate(SynthMethod method, UnitType type, float phase) => type switch
+		{
+			UnitType.Sin => MathF.Sin(phase * MathF.PI * 2.0f),
+			_ => GenerateMethod(method, type, phase)
+		};
+
+		float GenerateMethod(SynthMethod method, UnitType type, float phase) => method switch
 		{
 			SynthMethod.Naive => GenerateNaive(type, phase),
 			SynthMethod.Additive => GenerateAdditive(type, phase),
@@ -41,7 +47,6 @@ namespace Xt.Synth0.DSP
 		{
 			UnitType.Saw => phase * 2.0f - 1.0f,
 			UnitType.Sqr => phase > 0.5f ? 1.0f : -1.0f,
-			UnitType.Sin => MathF.Sin(phase * MathF.PI * 2.0f),
 			UnitType.Tri => (phase <= 0.5f ? phase : 1.0f - phase) * 4.0f - 1.0f,
 			_ => throw new InvalidOperationException()
 		};
