@@ -41,7 +41,7 @@ namespace Xt.Synth0.DSP
 		{
 			SynthMethod.Nve => GenerateNaive(type),
 			SynthMethod.PBP => GeneratePolyBlep(type),
-			SynthMethod.Add => GenerateAdditive(type, global.Hmns.Value, freq, rate),
+			SynthMethod.Add => GenerateAdditive(type, freq, rate, global.Hmns.Value),
 			_ => throw new InvalidOperationException()
 		};
 
@@ -54,14 +54,16 @@ namespace Xt.Synth0.DSP
 			_ => throw new InvalidOperationException()
 		};
 
-		float GenerateAdditive(UnitType type, int logHarmonics, float freq, float rate)
+		float GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics)
 		=> type switch
 		{
-			UnitType.Saw => GenerateAdditiveSaw(logHarmonics, freq, rate),
+			UnitType.Tri => GenerateAdditiveTri(freq, rate, logHarmonics),
+			UnitType.Saw => GenerateAdditiveSawSqr(freq, rate, logHarmonics, 1),
+			UnitType.Sqr => GenerateAdditiveSawSqr(freq, rate, logHarmonics, 2),
 			_ => 0.0f
 		};
 
-		float GenerateAdditiveSaw(int logHarmonics, float freq, float rate)
+		float GenerateAdditiveSawSqr(float freq, float rate, int logHarmonics, int step)
 		{
 			int harmonics = 1;
 			float limit = 0.0f;
@@ -69,7 +71,24 @@ namespace Xt.Synth0.DSP
 			float nyquist = rate / 2.0f;
 			for (int h = 0; h < logHarmonics; h++)
 				harmonics *= 2;
-			for (int h = 1; h <= harmonics; h++)
+			for (int h = 1; h <= harmonics * step; h += step)
+			{
+				limit += 1.0f / h;
+				if (h * freq >= nyquist) break;
+				result += MathF.Sin(_phase * h * MathF.PI * 2.0f) / h;
+			}
+			return result / limit;
+		}
+
+		float GenerateAdditiveTri(float freq, float rate, int logHarmonics)
+		{
+			int harmonics = 1;
+			float limit = 0.0f;
+			float result = 0.0f;
+			float nyquist = rate / 2.0f;
+			for (int h = 0; h < logHarmonics; h++)
+				harmonics *= 2;
+			for (int h = 1; h <= harmonics * 2; h += 2)
 			{
 				limit += 1.0f / h;
 				if (h * freq >= nyquist) break;
