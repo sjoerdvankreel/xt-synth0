@@ -57,7 +57,6 @@ namespace Xt.Synth0
 		int _rate;
 		XtDevice _device;
 		XtStream _stream;
-		XtSafeBuffer _safe;
 
 		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
@@ -74,6 +73,7 @@ namespace Xt.Synth0
 		long _streamPosition = 0;
 		long _overloadPosition = -1;
 		readonly Stopwatch _stopwatch = new Stopwatch();
+		readonly float[] _buffer = new float[192000 * 2];
 
 		public string AsioDefaultDeviceId { get; }
 		public string WasapiDefaultDeviceId { get; }
@@ -188,8 +188,6 @@ namespace Xt.Synth0
 			_stream?.Stop();
 			_stream?.Dispose();
 			_stream = null;
-			_safe?.Dispose();
-			_safe = null;
 			_rate = 0;
 			_device?.Dispose();
 			_device = null;
@@ -211,9 +209,9 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		void UpdateOverloadWarning(in XtBuffer buffer)
+		void UpdateOverloadWarning(int frames)
 		{
-			float bufferSeconds = buffer.frames / (float)_rate;
+			float bufferSeconds = frames / (float)_rate;
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
 			if (processedSeconds > bufferSeconds * OverloadLimit)
 			{
@@ -250,7 +248,16 @@ namespace Xt.Synth0
 					synth.AutoParams()[a].Param.Value = _autoActions[a].Value;
 		}
 
-		void ProcessFrame(SynthModel synth, float[] buffer, int frame)
+		void ProcessBuffer(SynthModel synth, int frames)
+		{
+			for (int f = 0; f < frames; f++)
+			{
+				ProcessFrame(synth, f);
+				_streamPosition++;
+			}
+		}
+
+		void ProcessFrame(SynthModel synth, int frame)
 		{
 			var sample = _dsp.Next(synth, _app.Audio, _rate) * MaxAmp;
 			if (sample > MaxAmp)
@@ -259,32 +266,30 @@ namespace Xt.Synth0
 				_app.Audio.IsClipping = true;
 			}
 			sample = Math.Clamp(sample, -MaxAmp, MaxAmp);
-			buffer[frame * 2] = sample;
-			buffer[frame * 2 + 1] = sample;
+			_buffer[frame * 2] = sample;
+			_buffer[frame * 2 + 1] = sample;
 		}
 
-		void ProcessBuffer(XtStream stream, in XtBuffer buffer, SynthModel synth)
+		unsafe void CopyBuffer(in XtBuffer buffer)
 		{
-			var safe = XtSafeBuffer.Get(stream);
-			safe.Lock(buffer);
-			var output = (float[])safe.GetOutput();
+			short* samples = (short*)buffer.output;
 			for (int f = 0; f < buffer.frames; f++)
 			{
-				ProcessFrame(synth, output, f);
-				_streamPosition++;
+				samples[f * 2] = (short)(_buffer[f * 2] * short.MaxValue);
+				samples[f * 2 + 1] = (short)(_buffer[f * 2 + 1] * short.MaxValue);
 			}
-			safe.Unlock(buffer);
 		}
 
 		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
 		{
 			_stopwatch.Restart();
 			var synth = PrepareModel();
-			ProcessBuffer(stream, in buffer, synth);
+			ProcessBuffer(synth, buffer.frames);
+			CopyBuffer(in buffer);
 			UpdateAutomation(synth);
 			ResetWarnings();
 			_stopwatch.Stop();
-			UpdateOverloadWarning(in buffer);
+			UpdateOverloadWarning(buffer.frames);
 			_bufferFinished(synth);
 			return 0;
 		}
@@ -316,14 +321,13 @@ namespace Xt.Synth0
 			var defaultId = model.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
 			_device = OpenDevice(system, selectedId, defaultId);
 			_rate = AudioModel.RateToInt(model.SampleRate);
-			var mix = new XtMix(_rate, XtSample.Float32);
+			var mix = new XtMix(_rate, XtSample.Int16);
 			var channels = new XtChannels(0, 0, 2, 0);
 			var format = new XtFormat(in mix, in channels);
 			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
 			var bufferSize = AudioModel.SizeToInt(model.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 			_stream = _device.OpenStream(in deviceParams, null);
-			_safe = XtSafeBuffer.Register(_stream);
 			_stream.Start();
 		}
 	}
