@@ -58,12 +58,12 @@ namespace Xt.Synth0.DSP
 		=> type switch
 		{
 			UnitType.Tri => GenerateAdditiveTri(freq, rate, logHarmonics),
-			UnitType.Saw => GenerateAdditiveSawSqr(freq, rate, logHarmonics, 1),
-			UnitType.Sqr => GenerateAdditiveSawSqr(freq, rate, logHarmonics, 2),
+			UnitType.Saw => GenerateAdditiveSaw(freq, rate, logHarmonics),
+			UnitType.Sqr => GenerateAdditiveSqr(freq, rate, logHarmonics),
 			_ => 0.0f
 		};
 
-		float GenerateAdditiveSawSqr(float freq, float rate, int logHarmonics, int step)
+		float GenerateAdditiveSaw(float freq, float rate, int logHarmonics)
 		{
 			int harmonics = 1;
 			float limit = 0.0f;
@@ -71,7 +71,24 @@ namespace Xt.Synth0.DSP
 			float nyquist = rate / 2.0f;
 			for (int h = 0; h < logHarmonics; h++)
 				harmonics *= 2;
-			for (int h = 1; h <= harmonics * step; h += step)
+			for (int h = 1; h <= harmonics; h++)
+			{
+				limit += 1.0f / h;
+				if (h * freq >= nyquist) break;
+				result += MathF.Sin(_phase * h * MathF.PI * 2.0f) / h;
+			}
+			return result / limit;
+		}
+
+		float GenerateAdditiveSqr(float freq, float rate, int logHarmonics)
+		{
+			int harmonics = 1;
+			float limit = 0.0f;
+			float result = 0.0f;
+			float nyquist = rate / 2.0f;
+			for (int h = 0; h < logHarmonics; h++)
+				harmonics *= 2;
+			for (int h = 1; h <= harmonics * 2; h += 2)
 			{
 				limit += 1.0f / h;
 				if (h * freq >= nyquist) break;
@@ -88,11 +105,15 @@ namespace Xt.Synth0.DSP
 			float nyquist = rate / 2.0f;
 			for (int h = 0; h < logHarmonics; h++)
 				harmonics *= 2;
-			for (int h = 1; h <= harmonics * 2; h += 2)
+			for (int h = 1; h <= harmonics; h++)
 			{
-				limit += 1.0f / h;
+				var c = MathF.Pow((2 * (h - 1) + 1) * h, -2);
+				limit += c;
 				if (h * freq >= nyquist) break;
-				result += MathF.Sin(_phase * h * MathF.PI * 2.0f) / h;
+				var a = 1;// 8.0f / (MathF.PI * MathF.PI);
+				var b = MathF.Pow(-1, h - 1);
+				var d = MathF.Sin(_phase * (2 * (h - 1) + 1) * MathF.PI * 2.0f);
+				result += a * b * c * d;
 			}
 			return result / limit;
 		}
