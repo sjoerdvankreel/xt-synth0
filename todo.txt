@@ -1,6 +1,5 @@
-asio->int32
-wasapi->int16
 polyblep
 amp as db?
 pulse width
+allow 16/24/32bit sample select
 monitor section with overload/clip/buffer frames/output latency
