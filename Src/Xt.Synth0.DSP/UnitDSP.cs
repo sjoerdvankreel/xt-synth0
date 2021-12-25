@@ -78,7 +78,7 @@ namespace Xt.Synth0.DSP
 			for (int h = 1; h <= harmonics * step; h += step)
 			{
 				if (h * freq >= nyquist) break;
-				float amp = 1.0f / h;
+				float amp = MathF.Pow(h, -1);
 				limit += amp;
 				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
 				sign *= mul;
@@ -101,7 +101,7 @@ namespace Xt.Synth0.DSP
 			for (int h = 1; h <= harmonics * step; h += step)
 			{
 				if (h * freq >= nyquist) break;
-				float amp = 1.0f / h;
+				float amp = MathF.Pow(h, -1);
 				limit += amp;
 				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
 				sign *= mul;
@@ -124,7 +124,7 @@ namespace Xt.Synth0.DSP
 			for (int h = 1; h <= harmonics * step; h += step)
 			{
 				if (h * freq >= nyquist) break;
-				float amp = 1.0f / (h * h);
+				float amp = MathF.Pow(h, -2);
 				limit += amp;
 				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
 				sign *= mul;
