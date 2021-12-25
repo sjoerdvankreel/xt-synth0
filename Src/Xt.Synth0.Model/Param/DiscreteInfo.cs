@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.Model
 {
-	sealed class DiscreteInfo : ParamInfo
+	class DiscreteInfo : ParamInfo
 	{
 		readonly int _min;
 		readonly int _max;

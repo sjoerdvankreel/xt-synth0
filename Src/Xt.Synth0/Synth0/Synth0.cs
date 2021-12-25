@@ -240,9 +240,8 @@ namespace Xt.Synth0
 			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
 			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
 			e.Samples = PlotCycles * cycleLength;
-			var method = (SynthMethod)global.Method.Value;
 			for (int s = 0; s < e.Samples; s++)
-				PlotBuffer[s] = dsp.Next(unit, method, rate);
+				PlotBuffer[s] = dsp.Next(global, unit, rate);
 		}
 	}
 }

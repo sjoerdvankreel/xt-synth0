@@ -34,12 +34,11 @@ namespace Xt.Synth0.DSP
 		public float Next(SynthModel synth, AudioModel audio, float rate)
 		{
 			float result = 0.0f;
-			var method = (SynthMethod)synth.Global.Method.Value;
 			float amp = synth.Amp.Lvl.Value / 255.0f;
 			if (UpdateRow(synth, audio, rate))
 				_pattern.Automate(synth, audio);
 			for (int u = 0; u < _units.Length; u++)
-				result += _units[u].Next(synth.Units[u], method, rate) * amp;
+				result += _units[u].Next(synth.Global, synth.Units[u], rate) * amp;
 			return result;
 		}
 
