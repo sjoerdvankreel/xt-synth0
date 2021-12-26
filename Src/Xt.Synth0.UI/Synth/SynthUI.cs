@@ -25,7 +25,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeRight(AppModel model)
 		{
 			var result = new DockPanel();
-			AddDocked(result, ControlUI.Make(model.Audio), Dock.Bottom);
+			AddDocked(result, GroupUI.Make(model, model.Synth.Edit), Dock.Bottom);
 			AddDocked(result, PatternUI.Make(model), Dock.Bottom);
 			return result;
 		}
@@ -38,7 +38,7 @@ namespace Xt.Synth0.UI
 			AddDocked(result, GroupUI.Make(model, model.Synth.Amp), Dock.Top);
 			AddDocked(result, GlobalUI.Make(model, model.Synth.Global), Dock.Top);
 			AddDocked(result, PlotUI.Make(model), Dock.Top);
-			AddDocked(result, GroupUI.Make(model, model.Synth.Edit), Dock.Top);
+			AddDocked(result, ControlUI.Make(model.Audio), Dock.Top);
 			return result;
 		}
 	}

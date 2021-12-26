@@ -28,7 +28,9 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeContent(AudioModel model)
 		{
-			var result = new WrapPanel();
+			var result = new StackPanel();
+			result.Orientation = Orientation.Horizontal;
+			result.HorizontalAlignment = HorizontalAlignment.Right;
 			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
 			var binding = Bind.To(model, nameof(AudioModel.IsRunning), new NegateConverter());
 			start.SetBinding(UIElement.IsEnabledProperty, binding);

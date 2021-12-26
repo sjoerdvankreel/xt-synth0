@@ -5,7 +5,7 @@
 		static readonly ParamInfo FxInfo = new DiscreteInfo(
 			nameof(Fx), "Effect count", 0, PatternRow.MaxFxCount, 1);
 		static readonly ParamInfo KeysInfo = new DiscreteInfo(
-			nameof(Keys), "Note count", 1, PatternRow.MaxKeyCount, 1);
+			nameof(Keys), "Note count", 1, PatternRow.MaxKeyCount, 2);
 		static readonly ParamInfo PatsInfo = new DiscreteInfo(
 			nameof(Pats), "Pattern count", 1, PatternModel.PatternCount, 1);
 		static readonly ParamInfo ActInfo = new DiscreteInfo(
