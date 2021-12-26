@@ -37,7 +37,7 @@ namespace Xt.Synth0
 			ResizeMode = ResizeMode.NoResize;
 			SetBinding(TitleProperty, BindTitle());
 			SizeToContent = SizeToContent.WidthAndHeight;
-			Model.Synth.ParamChanged += (s, e) => IsDirty = true;
+			Model.Track.ParamChanged += (s, e) => IsDirty = true;
 		}
 
 		BindingBase BindTitle()

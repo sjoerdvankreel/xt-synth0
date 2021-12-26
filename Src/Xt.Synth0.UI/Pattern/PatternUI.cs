@@ -17,29 +17,14 @@ namespace Xt.Synth0.UI
 		static Visibility GetHightlighterVisibility(AudioModel model, int pattern)
 		=> IsHighlighted(model, pattern, out var _) ? Visibility.Visible : Visibility.Collapsed;
 
-		static void Fill(SynthModel synth, int pattern, int fx)
+		static void Fill(SequencerModel sequencer, int pattern, int fx)
 		{
-			var rows = synth.Pattern.Rows;
+			var rows = sequencer.Pattern.Rows;
 			int rowCount = PatternModel.PatternRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
 			for (int i = start; i <= end; i++)
 				rows[i].Fx[fx].Target.Value = rows[start].Fx[fx].Target.Value;
-		}
-
-		static void Interpolate(SynthModel synth,
-			int pattern, Func<PatternRow, Param> selector)
-		{
-			var rows = synth.Pattern.Rows;
-			int rowCount = PatternModel.PatternRows;
-			int start = pattern * rowCount;
-			int end = start + rowCount - 1;
-			int endValue = selector(rows[end]).Value;
-			int startValue = selector(rows[start]).Value;
-			float range = end - start;
-			float rangeValue = endValue - startValue;
-			for (int i = start; i <= end; i++)
-				selector(rows[i]).Value = (int)(startValue + (i - start) / range * rangeValue);
 		}
 
 		static bool IsHighlighted(AudioModel model, int pattern, out int row)
@@ -51,6 +36,21 @@ namespace Xt.Synth0.UI
 			if (model.CurrentRow < startRow || model.CurrentRow >= endRow) return false;
 			row = model.CurrentRow - startRow;
 			return true;
+		}
+
+		static void Interpolate(SequencerModel sequencer,
+			int pattern, Func<PatternRow, Param> selector)
+		{
+			var rows = sequencer.Pattern.Rows;
+			int rowCount = PatternModel.PatternRows;
+			int start = pattern * rowCount;
+			int end = start + rowCount - 1;
+			int endValue = selector(rows[end]).Value;
+			int startValue = selector(rows[start]).Value;
+			float range = end - start;
+			float rangeValue = endValue - startValue;
+			for (int i = start; i <= end; i++)
+				selector(rows[i]).Value = (int)(startValue + (i - start) / range * rangeValue);
 		}
 
 		static void OnAudioPropertyChanged(Border highlighter, AudioModel model, int pattern)
@@ -69,11 +69,19 @@ namespace Xt.Synth0.UI
 
 		static BindingBase BindHeader(AppModel model)
 		{
-			var pats = Bind.To(model.Synth.Edit.Pats);
-			var active = Bind.To(model.Synth.Edit.Act);
+			var pats = Bind.To(model.Track.Sequencer.Edit.Pats);
+			var active = Bind.To(model.Track.Sequencer.Edit.Act);
 			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
 			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
 			return Bind.To(new PatternFormatter(), running, pats, active, row);
+		}
+
+		static BindingBase BindSelector(AppModel model, UIElement[] patterns)
+		{
+			var active = Bind.To(model.Track.Sequencer.Edit.Act);
+			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
+			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
+			return Bind.To(new PatternSelector(patterns), running, active, row);
 		}
 
 		static UIElement MakeContent(AppModel model)
@@ -88,17 +96,9 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static BindingBase BindSelector(AppModel model, UIElement[] patterns)
-		{
-			var active = Bind.To(model.Synth.Edit.Act);
-			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
-			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
-			return Bind.To(new PatternSelector(patterns), running, active, row);
-		}
-
 		static UIElement MakePattern(AppModel model, int pattern)
 		{
-			var synth = model.Synth;
+			var sequencer = model.Track.Sequencer;
 			var fx = PatternRow.MaxFxCount;
 			var keys = PatternRow.MaxKeyCount;
 			var rows = PatternModel.PatternRows;
@@ -106,17 +106,18 @@ namespace Xt.Synth0.UI
 			var offset = pattern * PatternModel.PatternRows;
 			var result = Create.Grid(rows, cols);
 			for (int r = 0; r < rows; r++)
-				AddRow(result, synth, pattern, synth.Pattern.Rows[offset + r], r);
+				AddRow(result, model.Track, pattern, sequencer.Pattern.Rows[offset + r], r);
 			AddHightlighter(result, model.Audio, pattern, cols);
 			return result;
 		}
 
-		static void AddRow(Grid grid, SynthModel synth, int pattern, PatternRow row, int r)
+		static void AddRow(Grid grid, TrackModel track, int pattern, PatternRow row, int r)
 		{
+			var sequencer = track.Sequencer;
 			int divCol = PatternRow.MaxKeyCount * 5;
-			AddKeys(grid, synth, pattern, row, r);
-			grid.Children.Add(Create.Divider(new(r, divCol), synth.Edit.Fx, 1));
-			AddFx(grid, synth, pattern, row, r);
+			AddKeys(grid, sequencer, pattern, row, r);
+			grid.Children.Add(Create.Divider(new(r, divCol), sequencer.Edit.Fx, 1));
+			AddFx(grid, track, pattern, row, r);
 		}
 
 		static void AddHightlighter(Grid grid, AudioModel model, int pattern, int cols)
@@ -131,27 +132,29 @@ namespace Xt.Synth0.UI
 			model.PropertyChanged += (s, e) => Application.Current?.Dispatcher.BeginInvoke(handler);
 		}
 
-		static void AddKeys(Grid grid, SynthModel synth, int pattern, PatternRow row, int r)
+		static void AddKeys(Grid grid, SequencerModel sequencer, int pattern, PatternRow row, int r)
 		{
 			for (int k = 0; k < PatternRow.MaxKeyCount; k++)
 			{
 				int kLocal = k;
-				Action interpolate = () => Interpolate(synth, pattern, r => r.Keys[kLocal].Amp);
-				PatternKeyUI.Add(grid, row.Keys[k], synth.Edit, k + 1, r, k * 5, interpolate);
-				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), synth.Edit.Keys, k + 2));
+				Action interpolate = () => Interpolate(sequencer, pattern, r => r.Keys[kLocal].Amp);
+				PatternKeyUI.Add(grid, row.Keys[k], sequencer.Edit, k + 1, r, k * 5, interpolate);
+				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), sequencer.Edit.Keys, k + 2));
 			}
 		}
 
-		static void AddFx(Grid grid, SynthModel synth, int pattern, PatternRow row, int r)
+		static void AddFx(Grid grid, TrackModel track, int pattern, PatternRow row, int r)
 		{
-			var fx = synth.Edit.Fx;
+			var synth = track.Synth;
+			var sequencer = track.Sequencer;
+			var fx = track.Sequencer.Edit.Fx;
 			int startCol = PatternRow.MaxKeyCount * 5 + 1;
 			for (int f = 0; f < PatternRow.MaxFxCount; f++)
 			{
 				int fLocal = f;
-				Action fill = () => Fill(synth, pattern, fLocal);
-				Action interpolate = () => Interpolate(synth, pattern, r => r.Fx[fLocal].Value);
-				PatternFxUI.Add(grid, synth, row.Fx[f], synth.Edit.Fx, f + 1, r, startCol + f * 3, fill, interpolate);
+				Action fill = () => Fill(sequencer, pattern, fLocal);
+				Action interpolate = () => Interpolate(sequencer, pattern, r => r.Fx[fLocal].Value);
+				PatternFxUI.Add(grid, synth, row.Fx[f], sequencer.Edit.Fx, f + 1, r, startCol + f * 3, fill, interpolate);
 				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
 		}

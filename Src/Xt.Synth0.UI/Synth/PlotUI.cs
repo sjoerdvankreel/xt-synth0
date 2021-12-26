@@ -20,7 +20,7 @@ namespace Xt.Synth0.UI
 			var content = new ContentControl();
 			content.MinHeight = MinHeight;
 			content.SizeChanged += (s, e) => Update(result, content);
-			model.Synth.ParamChanged += (s, e) => Update(result, content);
+			model.Track.ParamChanged += (s, e) => Update(result, content);
 			model.Settings.PropertyChanged += (s, e) => Update(result, content);
 			result.Content = content;
 			return result;
