@@ -63,8 +63,7 @@ namespace Xt.Synth0
 		}
 
 		int _rate;
-		XtDevice _device;
-		XtStream _stream;
+		IAudioStream _stream;
 
 		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
@@ -193,13 +192,10 @@ namespace Xt.Synth0
 
 		void DoResetStream()
 		{
-			_stream?.Stop();
 			_stream?.Dispose();
 			_stream = null;
-			_rate = 0;
-			_device?.Dispose();
-			_device = null;
 
+			_rate = 0;
 			_stopwatch.Reset();
 			_clipPosition = -1;
 			_streamPosition = 0;
@@ -386,16 +382,31 @@ namespace Xt.Synth0
 			device.ShowControlPanel();
 		}
 
+		IAudioStream OpenStream(in XtDeviceStreamParams deviceParams)
+		{
+			XtDevice device = OpenDevice();
+			try
+			{
+				var stream = device.OpenStream(in deviceParams, null);
+				return new DeviceStream(device, stream);
+			}
+			catch
+			{
+				device.Dispose();
+				throw;
+			}
+		}
+
 		void DoStartStream()
 		{
-			_device = OpenDevice();
 			var format = GetFormat();
-			_rate = format.mix.rate;
 			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
 			var bufferSize = AudioModel.BufferSizeToInt(_app.Settings.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
-			_stream = _device.OpenStream(in deviceParams, null);
-			_stream.Start();
+			var result = OpenStream(in deviceParams);
+			_stream = result;
+			_rate = format.mix.rate;
+			result.Start();
 		}
 	}
 }
