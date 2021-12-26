@@ -5,6 +5,9 @@ namespace Xt.Synth0.Model
 {
 	public sealed class UnitModel : GroupModel
 	{
+		public const int MinOctave = 0;
+		public const int MaxOctave = 9;
+
 		public static readonly string[] Notes = new[] {
 			"C", "C#", "D", "D#", "E", "F",
 			"F#", "G", "G#", "A", "A#", "B"
@@ -16,7 +19,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo OnInfo = new ToggleInfo(
 			nameof(On), "Enabled");
 		static readonly ParamInfo OctInfo = new DiscreteInfo(
-			nameof(Oct), "Octave", 0, 9, 4);
+			nameof(Oct), "Octave", MinOctave, MaxOctave, 4);
 		static readonly ParamInfo CentInfo = new DiscreteInfo(
 			nameof(Cent), "Cent", -50, 49, 0);
 		static readonly ParamInfo AmpInfo = new ContinuousInfo(

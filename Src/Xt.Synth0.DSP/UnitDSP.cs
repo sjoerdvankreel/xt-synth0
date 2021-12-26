@@ -5,6 +5,27 @@ namespace Xt.Synth0.DSP
 {
 	public class UnitDSP
 	{
+		static readonly float[,,] FrequencyTable = MakeFrequencyTable();
+
+		static float Frequency(int oct, int note, int cent)
+		{
+			float midi = (oct + 1) * 12 + note + cent / 100.0f;
+			return 440.0f * MathF.Pow(2.0f, (midi - 69.0f) / 12.0f);
+		}
+
+		static float[,,] MakeFrequencyTable()
+		{
+			const int notes = 12;
+			const int cents = 100;
+			const int octaves = UnitModel.MaxOctave - UnitModel.MinOctave + 1;
+			float[,,] result = new float[octaves, notes, cents];
+			for (int oct = 0; oct < octaves; oct++)
+				for (int note = 0; note < notes; note++)
+					for (int cent = -50; cent < 50; cent++)
+						result[oct, note, cent + 50] = Frequency(oct, note, cent);
+			return result;
+		}
+
 		float _phase = 0.0f;
 		internal void Reset() => _phase = 0.0f;
 
@@ -13,8 +34,7 @@ namespace Xt.Synth0.DSP
 			int oct = unit.Oct.Value;
 			int note = unit.Note.Value;
 			int cent = unit.Cent.Value;
-			float midi = (oct + 1) * 12 + note + cent / 100.0f;
-			return 440.0f * MathF.Pow(2.0f, (midi - 69.0f) / 12.0f);
+			return FrequencyTable[oct, note, cent + 50];
 		}
 
 		public float Next(GlobalModel global, UnitModel unit, float rate)
