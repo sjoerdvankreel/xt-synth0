@@ -16,7 +16,6 @@
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Keys { get; } = new(KeysInfo);
 
-		public override bool Automation() => false;
 		internal EditModel(string name) : base(name) { }
 		internal override Param[][] ListParamGroups() => new[] {
 			new [] { Keys, Fx },

@@ -8,8 +8,7 @@ namespace Xt.Synth0.Model
 	public abstract class SubModel : ICopyModel
 	{
 		readonly Param[] _params;
-		public Param[] Params() => _params;
-
+		internal Param[] Params() => _params;
 		internal abstract IEnumerable<Param> ListParams();
 		internal SubModel() => _params = ListParams().ToArray();
 
@@ -17,13 +16,12 @@ namespace Xt.Synth0.Model
 		{
 			var sub = (SubModel)model;
 			Debug.Assert(ListParams().SequenceEqual(_params));
-			if (_params.Length != sub._params.Length)
-				throw new InvalidOperationException();
+			Debug.Assert(_params.Length == sub._params.Length);
 			for (int p = 0; p < _params.Length; p++)
-				if (!ReferenceEquals(_params[p].Info, sub._params[p].Info))
-					throw new InvalidOperationException();
-				else
-					sub._params[p].Value = _params[p].Value;
+			{
+				Debug.Assert(ReferenceEquals(_params[p].Info, sub._params[p].Info));
+				sub._params[p].Value = _params[p].Value;
+			}
 		}
 	}
 }

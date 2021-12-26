@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Xt.Synth0.Model.Track
+namespace Xt.Synth0.Model
 {
-	internal class SequencerModel
+	public sealed class SequencerModel : MainModel
 	{
+		public PatternModel Pattern { get; } = new();
+		public EditModel Edit { get; } = new(nameof(Edit));		
+		internal override IEnumerable<SubModel> ListSubModels() 
+		=> new SubModel[] { Edit, Pattern };
 	}
 }
