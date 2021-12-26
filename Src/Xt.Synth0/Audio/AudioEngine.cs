@@ -62,9 +62,6 @@ namespace Xt.Synth0
 			return new ReadOnlyCollection<DeviceModel>(result);
 		}
 
-		int _rate;
-		IAudioStream _stream;
-
 		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
 		readonly SynthModel _original = new();
@@ -76,6 +73,7 @@ namespace Xt.Synth0
 		readonly ParamAction[] _autoActions;
 		readonly SynthModel _beforeAutomation = new();
 
+		IAudioStream _stream;
 		long _clipPosition = -1;
 		long _streamPosition = 0;
 		long _overloadPosition = -1;
@@ -194,8 +192,6 @@ namespace Xt.Synth0
 		{
 			_stream?.Dispose();
 			_stream = null;
-
-			_rate = 0;
 			_stopwatch.Reset();
 			_clipPosition = -1;
 			_streamPosition = 0;
@@ -213,9 +209,9 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		void UpdateOverloadWarning(int frames)
+		void UpdateOverloadWarning(int frames, int rate)
 		{
-			float bufferSeconds = frames / (float)_rate;
+			float bufferSeconds = frames / (float)rate;
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
 			if (processedSeconds > bufferSeconds * OverloadLimit)
 			{
@@ -226,7 +222,7 @@ namespace Xt.Synth0
 
 		void ResetWarnings()
 		{
-			float warningFrames = WarningSeconds * _rate;
+			float warningFrames = WarningSeconds;
 			if (_streamPosition > _clipPosition + warningFrames)
 				_app.Audio.IsClipping = false;
 			if (_streamPosition > _overloadPosition + warningFrames)
@@ -252,18 +248,18 @@ namespace Xt.Synth0
 					synth.AutoParams()[a].Param.Value = _autoActions[a].Value;
 		}
 
-		void ProcessBuffer(SynthModel synth, int frames)
+		void ProcessBuffer(SynthModel synth, int frames, int rate)
 		{
 			for (int f = 0; f < frames; f++)
 			{
-				ProcessFrame(synth, f);
+				ProcessFrame(synth, f, rate);
 				_streamPosition++;
 			}
 		}
 
-		void ProcessFrame(SynthModel synth, int frame)
+		void ProcessFrame(SynthModel synth, int frame, int rate)
 		{
-			var sample = _dsp.Next(synth, _app.Audio, _rate) * MaxAmp;
+			var sample = _dsp.Next(synth, _app.Audio, rate) * MaxAmp;
 			if (sample > MaxAmp)
 			{
 				_clipPosition = _streamPosition;
@@ -274,9 +270,8 @@ namespace Xt.Synth0
 			_buffer[frame * 2 + 1] = sample;
 		}
 
-		void CopyBuffer(XtStream stream, in XtBuffer buffer)
+		void CopyBuffer(in XtBuffer buffer, in XtFormat format)
 		{
-			var format = stream.GetFormat();
 			switch (format.mix.sample)
 			{
 				case XtSample.Int16: CopyBuffer16(buffer); break;
@@ -322,24 +317,35 @@ namespace Xt.Synth0
 			}
 		}
 
-		int OnBuffer(XtStream stream, in XtBuffer buffer, object user)
+		internal void OnBuffer(in XtBuffer buffer, in XtFormat format)
 		{
 			_stopwatch.Restart();
+			int rate = format.mix.rate;
 			var synth = PrepareModel();
-			ProcessBuffer(synth, buffer.frames);
-			CopyBuffer(stream, in buffer);
+			ProcessBuffer(synth, buffer.frames, rate);
+			CopyBuffer(in buffer, in format);
 			UpdateAutomation(synth);
 			ResetWarnings();
 			_stopwatch.Stop();
-			UpdateOverloadWarning(buffer.frames);
+			UpdateOverloadWarning(buffer.frames, rate);
 			_bufferFinished(synth);
+		}
+
+		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
+		{
+			OnBuffer(buffer, stream.GetFormat());
 			return 0;
 		}
 
-		void OnRunning(XtStream stream, bool running, ulong error, object user)
+		internal void OnRunning(bool running, ulong error)
 		{
 			if (!running && error != 0)
 				_dispatchToUI(ResetStream);
+		}
+
+		void OnXtRunning(XtStream stream, bool running, ulong error, object user)
+		{
+			OnRunning(running, error);
 		}
 
 		internal XtBufferSize? QueryFormatSupport()
@@ -382,7 +388,7 @@ namespace Xt.Synth0
 			device.ShowControlPanel();
 		}
 
-		IAudioStream OpenStream(in XtDeviceStreamParams deviceParams)
+		IAudioStream OpenDeviceStream(in XtDeviceStreamParams deviceParams)
 		{
 			XtDevice device = OpenDevice();
 			try
@@ -400,13 +406,15 @@ namespace Xt.Synth0
 		void DoStartStream()
 		{
 			var format = GetFormat();
-			var streamParams = new XtStreamParams(true, OnBuffer, null, OnRunning);
-			var bufferSize = AudioModel.BufferSizeToInt(_app.Settings.BufferSize);
+			var settings = _app.Settings;
+			var streamParams = new XtStreamParams(true, OnXtBuffer, null, OnXtRunning);
+			var bufferSize = AudioModel.BufferSizeToInt(settings.BufferSize);
 			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
-			var result = OpenStream(in deviceParams);
-			_stream = result;
-			_rate = format.mix.rate;
-			result.Start();
+			if (settings.WriteToDisk)
+				_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
+			else
+				_stream = OpenDeviceStream(in deviceParams);
+			_stream.Start();
 		}
 	}
 }
