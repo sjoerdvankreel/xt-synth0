@@ -59,20 +59,20 @@ namespace Xt.Synth0
 			File.WriteAllText(GetSettingsPath(), json);
 		}
 
-		internal static void SaveFile(SynthModel model, string path)
+		internal static void SaveFile(TrackModel model, string path)
 		{
 			var json = JsonConvert.SerializeObject(model, MakeFileSettings());
 			File.WriteAllText(path, json);
 		}
 
-		internal static void LoadFile(string path, SynthModel model)
+		internal static void LoadFile(string path, TrackModel model)
 		{
 			var json = File.ReadAllText(path);
-			var newModel = new SynthModel();
+			var newModel = new TrackModel();
 			JsonConvert.PopulateObject(json, newModel, MakeFileSettings());
-			if (newModel.Version != SynthModel.CurrentVersion)
+			if (newModel.Version != TrackModel.CurrentVersion)
 				throw new InvalidOperationException("Wrong file format version.");
-			newModel.CopyTo(model, false);
+			newModel.CopyTo(model);
 		}
 
 		internal static void LogError(DateTime startTime, string message, string trace)

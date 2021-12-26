@@ -17,9 +17,9 @@ namespace Xt.Synth0.UI
 		static Visibility GetHightlighterVisibility(AudioModel model, int pattern)
 		=> IsHighlighted(model, pattern, out var _) ? Visibility.Visible : Visibility.Collapsed;
 
-		static void Fill(SequencerModel sequencer, int pattern, int fx)
+		static void Fill(SequencerModel seq, int pattern, int fx)
 		{
-			var rows = sequencer.Pattern.Rows;
+			var rows = seq.Pattern.Rows;
 			int rowCount = PatternModel.PatternRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
@@ -38,10 +38,10 @@ namespace Xt.Synth0.UI
 			return true;
 		}
 
-		static void Interpolate(SequencerModel sequencer,
+		static void Interpolate(SequencerModel seq,
 			int pattern, Func<PatternRow, Param> selector)
 		{
-			var rows = sequencer.Pattern.Rows;
+			var rows = seq.Pattern.Rows;
 			int rowCount = PatternModel.PatternRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
@@ -132,14 +132,14 @@ namespace Xt.Synth0.UI
 			model.PropertyChanged += (s, e) => Application.Current?.Dispatcher.BeginInvoke(handler);
 		}
 
-		static void AddKeys(Grid grid, SequencerModel sequencer, int pattern, PatternRow row, int r)
+		static void AddKeys(Grid grid, SequencerModel seq, int pattern, PatternRow row, int r)
 		{
 			for (int k = 0; k < PatternRow.MaxKeyCount; k++)
 			{
 				int kLocal = k;
-				Action interpolate = () => Interpolate(sequencer, pattern, r => r.Keys[kLocal].Amp);
-				PatternKeyUI.Add(grid, row.Keys[k], sequencer.Edit, k + 1, r, k * 5, interpolate);
-				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), sequencer.Edit.Keys, k + 2));
+				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
+				PatternKeyUI.Add(grid, row.Keys[k], seq.Edit, k + 1, r, k * 5, interpolate);
+				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
 			}
 		}
 

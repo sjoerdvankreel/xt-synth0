@@ -31,21 +31,21 @@ namespace Xt.Synth0.DSP
 			return result;
 		}
 
-		public float Next(SynthModel synth, AudioModel audio, float rate)
+		public float Next(SynthModel synth, SequencerModel seq, AudioModel audio, float rate)
 		{
 			float result = 0.0f;
 			float amp = synth.Amp.Lvl.Value / 255.0f;
-			if (UpdateRow(synth, audio, rate))
-				_pattern.Automate(synth, audio);
+			if (UpdateRow(synth, seq, audio, rate))
+				_pattern.Automate(synth, seq, audio);
 			for (int u = 0; u < _units.Length; u++)
 				result += _units[u].Next(synth.Global, synth.Units[u], rate) * amp;
 			return result;
 		}
 
-		bool UpdateRow(SynthModel synth, AudioModel audio, float rate)
+		bool UpdateRow(SynthModel synth, SequencerModel seq, AudioModel audio, float rate)
 		{
 			int bpm = synth.Global.Bpm.Value;
-			int patterns = synth.Edit.Pats.Value;
+			int patterns = seq.Edit.Pats.Value;
 			int rowsPerPattern = PatternModel.PatternRows;
 			int totalRows = patterns * rowsPerPattern;
 			_rowFactor += bpm * PatternModel.BeatRows / (60.0 * rate);

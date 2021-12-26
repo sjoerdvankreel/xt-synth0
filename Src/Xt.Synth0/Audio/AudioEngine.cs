@@ -104,7 +104,7 @@ namespace Xt.Synth0
 			_platform = platform;
 			_dispatchToUI = dispatchToUI;
 			_bufferFinished = bufferFinished;
-			_autoActions = new ParamAction[app.Synth.AutoParams().Count];
+			_autoActions = new ParamAction[app.Track.Synth.AutoParams().Count];
 		}
 
 		public void Dispose()
@@ -154,7 +154,7 @@ namespace Xt.Synth0
 			finally
 			{
 				_dsp.Reset(_app.Audio);
-				_original.CopyTo(_app.Synth, true);
+				_original.CopyTo(_app.Track.Synth);
 			}
 		}
 
@@ -163,7 +163,7 @@ namespace Xt.Synth0
 			try
 			{
 				_dsp.Reset(_app.Audio);
-				_app.Synth.CopyTo(_original, true);
+				_app.Track.Synth.CopyTo(_original);
 				_app.Audio.State = AudioState.Running;
 				DoStartStream();
 			}
@@ -203,9 +203,9 @@ namespace Xt.Synth0
 		SynthModel PrepareModel()
 		{
 			var result = ModelPool.Get();
-			_app.Synth.CopyTo(result, false);
+			_app.Track.Synth.CopyTo(result);
 			ApplyAutomation(result);
-			result.CopyTo(_beforeAutomation, true);
+			result.CopyTo(_beforeAutomation);
 			return result;
 		}
 
@@ -259,7 +259,8 @@ namespace Xt.Synth0
 
 		void ProcessFrame(SynthModel synth, int frame, int rate)
 		{
-			var sample = _dsp.Next(synth, _app.Audio, rate) * MaxAmp;
+			var seq = _app.Track.Sequencer;
+			var sample = _dsp.Next(synth, seq, _app.Audio, rate) * MaxAmp;
 			if (sample > MaxAmp)
 			{
 				_clipPosition = _streamPosition;
