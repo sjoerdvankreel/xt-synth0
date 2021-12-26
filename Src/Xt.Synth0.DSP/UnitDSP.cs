@@ -57,23 +57,28 @@ namespace Xt.Synth0.DSP
 		float GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics)
 		=> type switch
 		{
-			UnitType.Saw => GenerateAdditive(freq, rate, logHarmonics, 1, -1, 1),
-			UnitType.Sqr => GenerateAdditive(freq, rate, logHarmonics, 2, -1, 1),
-			UnitType.Tri => GenerateAdditive(freq, rate, logHarmonics, 2, -2, -1),
+			UnitType.Saw => GenerateAdditive(freq, rate, logHarmonics, 1, 1, 0),
+			UnitType.Sqr => GenerateAdditive(freq, rate, logHarmonics, 2, 1, 0),
+			UnitType.Tri => GenerateAdditive(freq, rate, logHarmonics, 2, -1, 1),
 			_ => throw new InvalidOperationException()
 		};
 
-		float GenerateAdditive(float freq, float rate, int logHarmonics, int step, int rolloff, int multiplier)
+		float GenerateAdditive(float freq, float rate, int logHarmonics, int step, int multiplier, int logRolloff)
 		{
 			int sign = 1;
+			int harmonics = 1;
 			float limit = 0.0f;
 			float result = 0.0f;
 			float nyquist = rate / 2.0f;
-			int harmonics = (int)MathF.Pow(2, logHarmonics);
+			for (int h = 0; h < logHarmonics; h++)
+				harmonics *= 2;
 			for (int h = 1; h <= harmonics * step; h += step)
 			{
 				if (h * freq >= nyquist) break;
-				float amp = MathF.Pow(h, rolloff);
+				int rolloff = h;
+				for (int r = 0; r < logRolloff; r++)
+					rolloff *= h;
+				float amp = 1.0f / rolloff;
 				limit += amp;
 				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
 				sign *= multiplier;
