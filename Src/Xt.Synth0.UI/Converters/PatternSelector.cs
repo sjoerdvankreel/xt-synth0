@@ -9,9 +9,9 @@ namespace Xt.Synth0.UI
 		internal PatternSelector(UIElement[] elements) 
 		=> _elements = elements;
 
-		protected override UIElement Convert(bool running, int edit, int row)
+		protected override UIElement Convert(bool running, int active, int row)
 		{
-			if (!running) return _elements[edit - 1];
+			if (!running) return _elements[active - 1];
 			return _elements[row / PatternModel.PatternRows];
 		}
 	}

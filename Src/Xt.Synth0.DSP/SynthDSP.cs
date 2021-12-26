@@ -45,7 +45,7 @@ namespace Xt.Synth0.DSP
 		bool UpdateRow(SynthModel synth, AudioModel audio, float rate)
 		{
 			int bpm = synth.Global.Bpm.Value;
-			int patterns = synth.Track.Pats.Value;
+			int patterns = synth.Edit.Pats.Value;
 			int rowsPerPattern = PatternModel.PatternRows;
 			int totalRows = patterns * rowsPerPattern;
 			_rowFactor += bpm * PatternModel.BeatRows / (60.0 * rate);

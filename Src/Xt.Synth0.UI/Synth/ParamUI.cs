@@ -44,7 +44,7 @@ namespace Xt.Synth0.UI
 			var result = Create.Element<Toggle>(cell);
 			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			result.ToolTip = Tooltip(model.Synth, param);
-			result.MouseRightButtonUp += (s, e) => EditUI.Show(model.Settings, param);
+			result.MouseRightButtonUp += (s, e) => ExactUI.Show(model.Settings, param);
 			return result;
 		}
 
@@ -54,7 +54,7 @@ namespace Xt.Synth0.UI
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.MouseRightButtonUp += (s, e) => EditUI.Show(model.Settings, param);
+			result.MouseRightButtonUp += (s, e) => ExactUI.Show(model.Settings, param);
 			result.ToolTip = Tooltip(model.Synth, param);
 			return result;
 		}

@@ -38,7 +38,7 @@ namespace Xt.Synth0.UI
 			AddDocked(result, GroupUI.Make(model, model.Synth.Amp), Dock.Top);
 			AddDocked(result, GlobalUI.Make(model, model.Synth.Global), Dock.Top);
 			AddDocked(result, PlotUI.Make(model), Dock.Top);
-			AddDocked(result, GroupUI.Make(model, model.Synth.Track), Dock.Top);
+			AddDocked(result, GroupUI.Make(model, model.Synth.Edit), Dock.Top);
 			return result;
 		}
 	}
