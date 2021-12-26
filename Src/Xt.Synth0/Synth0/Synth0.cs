@@ -20,7 +20,7 @@ namespace Xt.Synth0
 		static readonly DateTime StartTime = DateTime.Now;
 
 		static readonly ParamAction[] _uiThreadActions
-		= new ParamAction[Model.Synth.Params().Count];
+		= new ParamAction[Model.Track.Synth.AutoParams().Count];
 
 		[STAThread]
 		static void Main()
@@ -74,7 +74,7 @@ namespace Xt.Synth0
 		static void New(MainWindow window)
 		{
 			if (!SaveUnsavedChanges(window)) return;
-			new SynthModel().CopyTo(Model.Synth, false);
+			new TrackModel().CopyTo(Model.Track);
 			window.SetClean(null);
 		}
 
@@ -93,7 +93,7 @@ namespace Xt.Synth0
 		static void Load(MainWindow window, string path)
 		{
 			if (path == null) return;
-			IO.LoadFile(path, Model.Synth);
+			IO.LoadFile(path, Model.Track);
 			window.SetClean(path);
 			Model.Settings.AddRecentFile(path);
 			IO.SaveSettings(Model.Settings);
@@ -102,7 +102,7 @@ namespace Xt.Synth0
 		static void Save(MainWindow window, string path)
 		{
 			if (path == null) return;
-			IO.SaveFile(Model.Synth, path);
+			IO.SaveFile(Model.Track, path);
 			window.SetClean(path);
 			Model.Settings.AddRecentFile(path);
 			IO.SaveSettings(Model.Settings);
@@ -168,7 +168,7 @@ namespace Xt.Synth0
 			MenuUI.SaveAs += (s, e) => SaveAs(window);
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
-			Model.Synth.ParamChanged += OnSynthParamChanged;
+			Model.Track.ParamChanged += OnTrackParamChanged;
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.QueryFormatSupport += OnQueryFormatSupport;
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
@@ -201,14 +201,14 @@ namespace Xt.Synth0
 			{
 				for (int u = 0; u < _uiThreadActions.Length; u++)
 					if (_uiThreadActions[u].Changed)
-						model.Params()[u].Value = _uiThreadActions[u].Value;
-				model.CopyTo(Model.Synth, true);
+						model.AutoParams()[u].Param.Value = _uiThreadActions[u].Value;
+				model.CopyTo(Model.Track.Synth);
 			}
 			ModelPool.Return(model);
 			Array.Clear(_uiThreadActions);
 		}
 
-		static void OnSynthParamChanged(object sender, ParamChangedEventArgs e)
+		static void OnTrackParamChanged(object sender, ParamChangedEventArgs e)
 		{
 			if (!Model.Audio.IsRunning) return;
 			_uiThreadActions[e.Index].Changed = true;
@@ -242,7 +242,7 @@ namespace Xt.Synth0
 		{
 			e.Data = PlotBuffer;
 			var dsp = new UnitDSP();
-			var synth = Model.Synth;
+			var synth = Model.Track.Synth;
 			var global = synth.Global;
 			var index = global.Plot.Value;
 			var unit = synth.Units[index - 1];
