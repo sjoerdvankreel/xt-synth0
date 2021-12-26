@@ -220,9 +220,9 @@ namespace Xt.Synth0
 			}
 		}
 
-		void ResetWarnings()
+		void ResetWarnings(int rate)
 		{
-			float warningFrames = WarningSeconds;
+			float warningFrames = WarningSeconds * rate;
 			if (_streamPosition > _clipPosition + warningFrames)
 				_app.Audio.IsClipping = false;
 			if (_streamPosition > _overloadPosition + warningFrames)
@@ -325,7 +325,7 @@ namespace Xt.Synth0
 			ProcessBuffer(synth, buffer.frames, rate);
 			CopyBuffer(in buffer, in format);
 			UpdateAutomation(synth);
-			ResetWarnings();
+			ResetWarnings(rate);
 			_stopwatch.Stop();
 			UpdateOverloadWarning(buffer.frames, rate);
 			_bufferFinished(synth);
