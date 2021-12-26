@@ -1,4 +1,4 @@
 polyblep
 amp as db?
 pulse width
-wave writer
+split synth model into static and dynamic part, only dynamic goes in pool. drop automationOnly
