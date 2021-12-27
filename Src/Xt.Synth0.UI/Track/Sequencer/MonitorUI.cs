@@ -17,10 +17,10 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(AudioModel model)
 		{
 			var result = Create.Grid(4, 2);
-			result.Add(Create.Text("GC ", new(0, 0)));
-			result.Add(CreateGC(model, new(0, 1)));
-			result.Add(Create.Text("Cpu ", new(1, 0)));
-			result.Add(CreateCpuUsage(model, new(1, 1)));
+			result.Add(Create.Text("CPU ", new(0, 0)));
+			result.Add(CreateCpuUsage(model, new(0, 1)));
+			result.Add(Create.Text("GC ", new(1, 0)));
+			result.Add(CreateGC(model, new(1, 1)));
 			result.Add(CreateClip(model, new(2, 0)));
 			result.Add(CreateOverload(model, new(2, 1)));
 			result.Add(Create.Text("Buffer ", new(3, 0)));
