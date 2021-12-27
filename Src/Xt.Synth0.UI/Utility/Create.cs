@@ -60,6 +60,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static TextBlock Text(string text, Cell cell)
+		{
+			var result = Element<TextBlock>(cell);
+			result.Text = text;
+			return result;
+		}
+
 		internal static T PatternCell<T>(Cell cell)
 			where T : FrameworkElement, new()
 		{

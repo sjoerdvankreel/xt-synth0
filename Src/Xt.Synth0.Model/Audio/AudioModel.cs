@@ -172,8 +172,8 @@ namespace Xt.Synth0.Model
 			}
 		}
 
-		double _bufferSizeFrames;
-		public double BufferSizeFrames
+		int _bufferSizeFrames;
+		public int BufferSizeFrames
 		{
 			get => _bufferSizeFrames;
 			set

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -8,10 +7,11 @@ namespace Xt.Synth0.UI
 	{
 		internal static UIElement Make(AppModel model)
 		{
-			var result = new DockPanel();
+			var result = Create.Grid(2, 1);
 			var edit = model.Track.Sequencer.Edit;
-			result.Add(GroupUI.MakeStatic(model, edit), Dock.Bottom);
-			result.Add(PatternUI.Make(model), Dock.Bottom);
+			result.Add(PatternUI.Make(model), new Cell(0, 0));
+			result.Add(EditUI.Make(model, edit), new(1, 0));
+			result.Add(MonitorUI.Make(model.Audio), new Cell(1, 0));
 			return result;
 		}
 	}

@@ -214,36 +214,6 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		void UpdateOverloadWarning(int frames, int rate)
-		{
-			float bufferSeconds = frames / (float)rate;
-			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
-			if (processedSeconds > bufferSeconds * OverloadLimit)
-			{
-				_overloadPosition = _streamPosition;
-				_app.Audio.IsOverloaded = true;
-			}
-		}
-
-		void ResetWarnings(int rate)
-		{
-			float warningFrames = WarningDurationSeconds * rate;
-			if (_streamPosition > _clipPosition + warningFrames)
-				_app.Audio.IsClipping = false;
-			if (_streamPosition > _overloadPosition + warningFrames)
-				_app.Audio.IsOverloaded = false;
-		}
-
-		void UpdateStreamInfo(int rate)
-		{
-			if (_streamPosition >= _infoPosition + rate * InfoIntervalSeconds)
-			{
-				_infoPosition = _streamPosition;
-				_app.Audio.LatencyMs = _stream.GetLatencyMs();
-				_app.Audio.BufferSizeFrames = _stream.GetMaxBufferFrames();
-			}
-		}
-
 		void UpdateAutomation(SynthModel synth)
 		{
 			var newAutos = synth.AutoParams();
@@ -284,6 +254,36 @@ namespace Xt.Synth0
 			sample = Math.Clamp(sample, -MaxAmp, MaxAmp);
 			_buffer[frame * 2] = sample;
 			_buffer[frame * 2 + 1] = sample;
+		}
+
+		void ResetWarnings(int rate)
+		{
+			float warningFrames = WarningDurationSeconds * rate;
+			if (_streamPosition > _clipPosition + warningFrames)
+				_app.Audio.IsClipping = false;
+			if (_streamPosition > _overloadPosition + warningFrames)
+				_app.Audio.IsOverloaded = false;
+		}
+
+		void UpdateStreamInfo(int frames, int rate)
+		{
+			float bufferSeconds = frames / (float)rate;
+			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+			if (processedSeconds > bufferSeconds * OverloadLimit)
+			{
+				_overloadPosition = _streamPosition;
+				_app.Audio.IsOverloaded = true;
+			}
+			if (_streamPosition >= _infoPosition + rate * InfoIntervalSeconds)
+			{
+				_app.Audio.CpuUsage = Math.Min(processedSeconds / bufferSeconds, 1.0);
+			}
+			if (_infoPosition == -1 || _streamPosition >= _infoPosition + rate * InfoIntervalSeconds)
+			{
+				_infoPosition = _streamPosition;
+				_app.Audio.LatencyMs = _stream.GetLatencyMs();
+				_app.Audio.BufferSizeFrames = _stream.GetMaxBufferFrames();
+			}
 		}
 
 		void CopyBuffer(in XtBuffer buffer, in XtFormat format)
@@ -343,8 +343,7 @@ namespace Xt.Synth0
 			UpdateAutomation(synth);
 			ResetWarnings(rate);
 			_stopwatch.Stop();
-			UpdateStreamInfo(rate);
-			UpdateOverloadWarning(buffer.frames, rate);
+			UpdateStreamInfo(buffer.frames, rate);
 			_bufferFinished(synth);
 		}
 
@@ -431,7 +430,7 @@ namespace Xt.Synth0
 				_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
 			else
 				_stream = OpenDeviceStream(in deviceParams);
-			UpdateStreamInfo(format.mix.rate);
+			UpdateStreamInfo(0, format.mix.rate);
 			_stream.Start();
 		}
 	}

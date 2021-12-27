@@ -10,18 +10,7 @@ namespace Xt.Synth0.UI
 		internal static GroupBox Make(AppModel model, GroupModel group)
 		=> Create.Group(group.Name(), MakeContent(model, group));
 
-		internal static GroupBox MakeStatic(AppModel model, GroupModel group)
-		=> Create.Group(group.Name(), MakeStaticContent(model, group));
-
-		static UIElement MakeStaticContent(AppModel model, GroupModel group)
-		{
-			var result = MakeContent(model, group);
-			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
-			result.SetBinding(UIElement.IsEnabledProperty, binding);
-			return result;
-		}
-
-		static FrameworkElement MakeContent(AppModel model, GroupModel group)
+		internal static FrameworkElement MakeContent(AppModel model, GroupModel group)
 		{
 			var rows = group.ParamGroups();
 			var cols = rows.Max(r => r.Length);
