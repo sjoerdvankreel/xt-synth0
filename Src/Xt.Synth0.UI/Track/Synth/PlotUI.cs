@@ -38,6 +38,7 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.Add(PlotLine(container, data, samples));
+			result.SetResourceReference(Panel.BackgroundProperty, "ForegroundKey");
 			return result;
 		}
 
@@ -46,7 +47,7 @@ namespace Xt.Synth0.UI
 			var result = new Polyline();
 			result.StrokeThickness = 1;
 			result.Points = MapPlotData(container, data, samples);
-			result.SetResourceReference(Shape.StrokeProperty, "Foreground2Key");
+			result.SetResourceReference(Shape.StrokeProperty, "BackgroundDarkKey");
 			return result;
 		}
 
