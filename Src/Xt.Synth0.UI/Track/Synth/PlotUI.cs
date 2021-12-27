@@ -9,7 +9,6 @@ namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
-		const int MinHeight = 24;
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 		static readonly RequestPlotDataEventArgs Args = new RequestPlotDataEventArgs();
 
@@ -17,7 +16,6 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Group("Plot");
 			var content = new ContentControl();
-			content.MinHeight = MinHeight;
 			content.SizeChanged += (s, e) => Update(result, content);
 			model.Track.ParamChanged += (s, e) => Update(result, content);
 			model.Settings.PropertyChanged += (s, e) => Update(result, content);
