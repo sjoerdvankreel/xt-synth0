@@ -12,7 +12,8 @@ namespace Xt.Synth0
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
 		const float InfoIntervalSeconds = 1.0f;
-		const float WarningDurationSeconds = 1.0f;
+		const float WarningDurationSeconds = 0.5f;
+		const float GcNotificationDurationSeconds = 0.2f;
 
 		static XtSample DepthToSample(int size) => size switch
 		{
@@ -79,6 +80,8 @@ namespace Xt.Synth0
 		long _infoPosition = -1;
 		long _streamPosition = 0;
 		long _overloadPosition = -1;
+		readonly long[] _gcPositions = new long[3];
+		readonly bool[] _gcCollecteds = new bool[3];
 		readonly Stopwatch _stopwatch = new Stopwatch();
 		readonly float[] _buffer = new float[192000 * 2];
 
@@ -107,7 +110,11 @@ namespace Xt.Synth0
 			_dispatchToUI = dispatchToUI;
 			_bufferFinished = bufferFinished;
 			_autoActions = new ParamAction[app.Track.Synth.AutoParams().Count];
+			GCNotification.Register(this);
 		}
+
+		internal void OnGCNotification(int generation)
+		=> _gcCollecteds[generation] = true;
 
 		public void Dispose()
 		{
@@ -195,14 +202,26 @@ namespace Xt.Synth0
 			_stream?.Dispose();
 			_stream = null;
 			_stopwatch.Reset();
+
 			_infoPosition = -1;
 			_clipPosition = -1;
 			_streamPosition = 0;
 			_overloadPosition = -1;
+
 			_app.Audio.CpuUsage = 0.0;
-			_app.Audio.IsClipping = false;
 			_app.Audio.LatencyMs = 0.0;
+			_app.Audio.IsClipping = false;
+			_app.Audio.IsOverloaded = false;
+			_app.Audio.GC0Collected = false;
+			_app.Audio.GC1Collected = false;
+			_app.Audio.GC2Collected = false;
 			_app.Audio.BufferSizeFrames = 0;
+
+			for (int i = 0; i < _gcPositions[i]; i++)
+			{
+				_gcPositions[i] = -1;
+				_gcCollecteds[i] = false;
+			}
 		}
 
 		SynthModel PrepareModel()
@@ -259,16 +278,41 @@ namespace Xt.Synth0
 		void ResetWarnings(int rate)
 		{
 			float warningFrames = WarningDurationSeconds * rate;
+			float gcNotificationFrames = GcNotificationDurationSeconds * rate;
 			if (_streamPosition > _clipPosition + warningFrames)
 				_app.Audio.IsClipping = false;
 			if (_streamPosition > _overloadPosition + warningFrames)
 				_app.Audio.IsOverloaded = false;
+			if (_streamPosition > _gcPositions[0] + gcNotificationFrames)
+				_app.Audio.GC0Collected = false;
+			if (_streamPosition > _gcPositions[1] + gcNotificationFrames)
+				_app.Audio.GC1Collected = false;
+			if (_streamPosition > _gcPositions[2] + gcNotificationFrames)
+				_app.Audio.GC2Collected = false;
 		}
 
 		void UpdateStreamInfo(int frames, int rate)
 		{
 			float bufferSeconds = frames / (float)rate;
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+			if (_gcCollecteds[0])
+			{
+				_gcCollecteds[0] = false;
+				_app.Audio.GC0Collected = true;
+				_gcPositions[0] = _streamPosition;
+			}
+			if (_gcCollecteds[1])
+			{
+				_gcCollecteds[1] = false;
+				_app.Audio.GC1Collected = true;
+				_gcPositions[1] = _streamPosition;
+			}
+			if (_gcCollecteds[2])
+			{
+				_gcCollecteds[2] = false;
+				_app.Audio.GC2Collected = true;
+				_gcPositions[2] = _streamPosition;
+			}
 			if (processedSeconds > bufferSeconds * OverloadLimit)
 			{
 				_overloadPosition = _streamPosition;
@@ -431,6 +475,7 @@ namespace Xt.Synth0
 			else
 				_stream = OpenDeviceStream(in deviceParams);
 			UpdateStreamInfo(0, format.mix.rate);
+			GC.Collect(2, GCCollectionMode.Forced, true, true);
 			_stream.Start();
 		}
 	}

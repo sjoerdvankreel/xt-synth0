@@ -27,6 +27,12 @@ namespace Xt.Synth0.Model
 		= new PropertyChangedEventArgs(nameof(IsClipping));
 		static readonly PropertyChangedEventArgs IsOverloadedChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(IsOverloaded));
+		static readonly PropertyChangedEventArgs GC0CollectedChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(GC0Collected));
+		static readonly PropertyChangedEventArgs GC1CollectedChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(GC1Collected));
+		static readonly PropertyChangedEventArgs GC2CollectedChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(GC2Collected));
 		static readonly PropertyChangedEventArgs BufferSizeFramesChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(BufferSizeFrames));
 
@@ -169,6 +175,42 @@ namespace Xt.Synth0.Model
 				if (_isOverloaded == value) return;
 				_isOverloaded = value;
 				PropertyChanged?.Invoke(this, IsOverloadedChangedEventArgs);
+			}
+		}
+
+		bool _gc0Collected = false;
+		public bool GC0Collected
+		{
+			get => _gc0Collected;
+			set
+			{
+				if (_gc0Collected == value) return;
+				_gc0Collected = value;
+				PropertyChanged?.Invoke(this, GC0CollectedChangedEventArgs);
+			}
+		}
+
+		bool _gc1Collected = false;
+		public bool GC1Collected
+		{
+			get => _gc1Collected;
+			set
+			{
+				if (_gc1Collected == value) return;
+				_gc1Collected = value;
+				PropertyChanged?.Invoke(this, GC1CollectedChangedEventArgs);
+			}
+		}
+
+		bool _gc2Collected = false;
+		public bool GC2Collected
+		{
+			get => _gc2Collected;
+			set
+			{
+				if (_gc2Collected == value) return;
+				_gc2Collected = value;
+				PropertyChanged?.Invoke(this, GC2CollectedChangedEventArgs);
 			}
 		}
 
