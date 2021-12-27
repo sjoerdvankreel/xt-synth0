@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Xt.Synth0.Model
@@ -15,13 +13,8 @@ namespace Xt.Synth0.Model
 		public void CopyTo(ICopyModel model)
 		{
 			var sub = (SubModel)model;
-			Debug.Assert(ListParams().SequenceEqual(_params));
-			Debug.Assert(_params.Length == sub._params.Length);
 			for (int p = 0; p < _params.Length; p++)
-			{
-				Debug.Assert(ReferenceEquals(_params[p].Info, sub._params[p].Info));
 				sub._params[p].Value = _params[p].Value;
-			}
 		}
 	}
 }
