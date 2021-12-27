@@ -6,5 +6,7 @@ namespace Xt.Synth0
 	{
 		void Stop();
 		void Start();
+		double GetLatencyMs();
+		int GetMaxBufferFrames();
 	}
 }

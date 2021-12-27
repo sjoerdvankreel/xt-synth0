@@ -18,6 +18,9 @@ namespace Xt.Synth0
 		readonly int _bufferSizeFrames;
 		readonly object _lock = new object();
 
+		public double GetLatencyMs() => 0.0;
+		public int GetMaxBufferFrames() => _bufferSizeFrames;
+
 		internal DiskStream(AudioEngine engine, in XtFormat format, int bufferSizeMs, string outputPath)
 		{
 			var attrs = XtAudio.GetSampleAttributes(format.mix.sample);

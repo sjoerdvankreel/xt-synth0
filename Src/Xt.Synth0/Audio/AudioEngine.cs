@@ -11,7 +11,8 @@ namespace Xt.Synth0
 	{
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
-		const float WarningSeconds = 0.5f;
+		const float InfoIntervalSeconds = 1.0f;
+		const float WarningDurationSeconds = 0.5f;
 
 		static XtSample DepthToSample(int size) => size switch
 		{
@@ -75,6 +76,7 @@ namespace Xt.Synth0
 
 		IAudioStream _stream;
 		long _clipPosition = -1;
+		long _infoPosition = -1;
 		long _streamPosition = 0;
 		long _overloadPosition = -1;
 		readonly Stopwatch _stopwatch = new Stopwatch();
@@ -193,11 +195,14 @@ namespace Xt.Synth0
 			_stream?.Dispose();
 			_stream = null;
 			_stopwatch.Reset();
+			_infoPosition = -1;
 			_clipPosition = -1;
 			_streamPosition = 0;
 			_overloadPosition = -1;
+			_app.Audio.CpuUsage = 0.0;
 			_app.Audio.IsClipping = false;
-			_app.Audio.IsOverloaded = false;
+			_app.Audio.LatencyMs = 0.0;
+			_app.Audio.BufferSizeFrames = 0;
 		}
 
 		SynthModel PrepareModel()
@@ -222,11 +227,21 @@ namespace Xt.Synth0
 
 		void ResetWarnings(int rate)
 		{
-			float warningFrames = WarningSeconds * rate;
+			float warningFrames = WarningDurationSeconds * rate;
 			if (_streamPosition > _clipPosition + warningFrames)
 				_app.Audio.IsClipping = false;
 			if (_streamPosition > _overloadPosition + warningFrames)
 				_app.Audio.IsOverloaded = false;
+		}
+
+		void UpdateStreamInfo(int rate)
+		{
+			if (_streamPosition >= _infoPosition + rate * InfoIntervalSeconds)
+			{
+				_infoPosition = _streamPosition;
+				_app.Audio.LatencyMs = _stream.GetLatencyMs();
+				_app.Audio.BufferSizeFrames = _stream.GetMaxBufferFrames();
+			}
 		}
 
 		void UpdateAutomation(SynthModel synth)
@@ -328,6 +343,7 @@ namespace Xt.Synth0
 			UpdateAutomation(synth);
 			ResetWarnings(rate);
 			_stopwatch.Stop();
+			UpdateStreamInfo(rate);
 			UpdateOverloadWarning(buffer.frames, rate);
 			_bufferFinished(synth);
 		}
@@ -415,6 +431,7 @@ namespace Xt.Synth0
 				_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
 			else
 				_stream = OpenDeviceStream(in deviceParams);
+			UpdateStreamInfo(format.mix.rate);
 			_stream.Start();
 		}
 	}

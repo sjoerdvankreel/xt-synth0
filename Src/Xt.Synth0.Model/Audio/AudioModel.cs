@@ -18,10 +18,17 @@ namespace Xt.Synth0.Model
 		= new PropertyChangedEventArgs(nameof(IsRunning));
 		static readonly PropertyChangedEventArgs CurrentRowChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(CurrentRow));
+
+		static readonly PropertyChangedEventArgs LatencyMsChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(LatencyMs));
+		static readonly PropertyChangedEventArgs CpuUsageChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(CpuUsage));
 		static readonly PropertyChangedEventArgs IsClippingChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(IsClipping));
 		static readonly PropertyChangedEventArgs IsOverloadedChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(IsOverloaded));
+		static readonly PropertyChangedEventArgs BufferSizeFramesChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(BufferSizeFrames));
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -84,6 +91,27 @@ namespace Xt.Synth0.Model
 		public bool IsRunning => State == AudioState.Running;
 		public bool IsStopped => State == AudioState.Stopped;
 
+		AudioState _state;
+		public AudioState State
+		{
+			get => _state;
+			set
+			{
+				if (_state == value) return;
+				bool wasPaused = _state == AudioState.Paused;
+				bool wasStopped = _state == AudioState.Stopped;
+				bool wasRunning = _state == AudioState.Running;
+				_state = value;
+				PropertyChanged?.Invoke(this, StateChangedEventArgs);
+				if (IsPaused != wasPaused)
+					PropertyChanged?.Invoke(this, IsPausedChangedEventArgs);
+				if (IsStopped != wasStopped)
+					PropertyChanged?.Invoke(this, IsStoppedChangedEventArgs);
+				if (IsRunning != wasRunning)
+					PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
+			}
+		}
+
 		int _currentRow;
 		public int CurrentRow
 		{
@@ -93,6 +121,30 @@ namespace Xt.Synth0.Model
 				if (_currentRow == value) return;
 				_currentRow = value;
 				PropertyChanged?.Invoke(this, CurrentRowChangedEventArgs);
+			}
+		}
+
+		double _cpuUsage;
+		public double CpuUsage
+		{
+			get => _cpuUsage;
+			set
+			{
+				if (_cpuUsage == value) return;
+				_cpuUsage = value;
+				PropertyChanged?.Invoke(this, CpuUsageChangedEventArgs);
+			}
+		}
+
+		double _latencyMs;
+		public double LatencyMs
+		{
+			get => _latencyMs;
+			set
+			{
+				if (_latencyMs == value) return;
+				_latencyMs = value;
+				PropertyChanged?.Invoke(this, LatencyMsChangedEventArgs);
 			}
 		}
 
@@ -120,24 +172,15 @@ namespace Xt.Synth0.Model
 			}
 		}
 
-		AudioState _state;
-		public AudioState State
+		double _bufferSizeFrames;
+		public double BufferSizeFrames
 		{
-			get => _state;
+			get => _bufferSizeFrames;
 			set
 			{
-				if (_state == value) return;
-				bool wasPaused = _state == AudioState.Paused;
-				bool wasStopped = _state == AudioState.Stopped;
-				bool wasRunning = _state == AudioState.Running;
-				_state = value;
-				PropertyChanged?.Invoke(this, StateChangedEventArgs);
-				if (IsPaused != wasPaused)
-					PropertyChanged?.Invoke(this, IsPausedChangedEventArgs);
-				if (IsStopped != wasStopped)
-					PropertyChanged?.Invoke(this, IsStoppedChangedEventArgs);
-				if (IsRunning != wasRunning)
-					PropertyChanged?.Invoke(this, IsRunningChangedEventArgs);
+				if (_bufferSizeFrames == value) return;
+				_bufferSizeFrames = value;
+				PropertyChanged?.Invoke(this, BufferSizeFramesChangedEventArgs);
 			}
 		}
 	}

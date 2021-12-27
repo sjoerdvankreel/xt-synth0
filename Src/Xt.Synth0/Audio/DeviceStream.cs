@@ -7,8 +7,10 @@
 		internal DeviceStream(XtDevice device, XtStream stream)
 		=> (_device, _stream) = (device, stream);
 
-		public void Start() => _stream?.Start();
 		public void Stop() => _stream?.Stop();
+		public void Start() => _stream?.Start();
+		public int GetMaxBufferFrames() => _stream.GetFrames();
+		public double GetLatencyMs() => _stream.GetLatency().output;
 
 		public void Dispose()
 		{

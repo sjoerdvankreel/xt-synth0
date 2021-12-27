@@ -1,11 +1,10 @@
 polyblep
 amp as db?
 pulse width
-split synth model into static and dynamic part, only dynamic goes in pool. drop automationOnly
-automatedui
 canoverload for diskwriter
 drop samples on overload ?
 monitor section with latency, frame buffer size, clip, overload, cpu usage
-split synth/sequi
 better detail tooltips/value tooltips
 dont reset model after stop?/reset model before load
+fastsin
+dont set dirty during playback
