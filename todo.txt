@@ -5,3 +5,4 @@ drop samples on overload ?
 dont reset model after stop?/reset model before load
 fastsin
 dont set dirty during playback
+disable gc from audio thread
