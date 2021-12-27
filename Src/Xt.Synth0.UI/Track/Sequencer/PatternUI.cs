@@ -54,8 +54,10 @@ namespace Xt.Synth0.UI
 				selector(rows[i]).Value = (int)(startValue + (i - start) / range * rangeValue);
 		}
 
-		static void OnAudioPropertyChanged(Border highlighter, AudioModel model, int pattern)
+		static void OnHighlighterPropertyChanged(
+			Border highlighter, AudioModel model, int pattern, string property)
 		{
+			if (property != nameof(model.IsRunning) && property != nameof(model.CurrentRow)) return;
 			highlighter.Visibility = GetHightlighterVisibility(model, pattern);
 			highlighter.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
 		}
@@ -121,19 +123,6 @@ namespace Xt.Synth0.UI
 			AddFx(grid, track, pattern, row, r);
 		}
 
-		static void AddHightlighter(Grid grid, AudioModel model, int pattern, int cols)
-		{
-			var dispatcher = Application.Current?.Dispatcher;
-			var result = Create.Element<Border>(new Cell(0, 0, 1, cols));
-			grid.Add(result);
-			result.Opacity = 0.25;
-			result.Background = Brushes.Gray;
-			result.Visibility = GetHightlighterVisibility(model, pattern);
-			result.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
-			Action handler = () => OnAudioPropertyChanged(result, model, pattern);
-			model.PropertyChanged += (s, e) => dispatcher.BeginInvoke(handler, DispatcherPriority.Background);
-		}
-
 		static void AddKeys(Grid grid, SequencerModel seq, int pattern, PatternRow row, int r)
 		{
 			for (int k = 0; k < PatternRow.MaxKeyCount; k++)
@@ -159,6 +148,19 @@ namespace Xt.Synth0.UI
 				PatternFxUI.Add(grid, synth, row.Fx[f], sequencer.Edit.Fx, f + 1, r, startCol + f * 3, fill, interpolate);
 				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
+		}
+
+		static void AddHightlighter(Grid grid, AudioModel model, int pattern, int cols)
+		{
+			var dispatcher = Application.Current?.Dispatcher;
+			var result = Create.Element<Border>(new Cell(0, 0, 1, cols));
+			grid.Add(result);
+			result.Opacity = 0.25;
+			result.Background = Brushes.Gray;
+			result.Visibility = GetHightlighterVisibility(model, pattern);
+			result.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
+			Action<string> handler = property => OnHighlighterPropertyChanged(result, model, pattern, property);
+			model.PropertyChanged += (s, e) => dispatcher.BeginInvoke(handler, DispatcherPriority.Background, e.PropertyName);
 		}
 	}
 }
