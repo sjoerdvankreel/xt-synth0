@@ -217,7 +217,7 @@ namespace Xt.Synth0
 			_app.Audio.GC2Collected = false;
 			_app.Audio.BufferSizeFrames = 0;
 
-			for (int i = 0; i < _gcPositions[i]; i++)
+			for (int i = 0; i < _gcPositions.Length; i++)
 			{
 				_gcPositions[i] = -1;
 				_gcCollecteds[i] = false;
