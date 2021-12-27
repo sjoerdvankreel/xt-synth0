@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -122,6 +123,7 @@ namespace Xt.Synth0.UI
 
 		static void AddHightlighter(Grid grid, AudioModel model, int pattern, int cols)
 		{
+			var dispatcher = Application.Current?.Dispatcher;
 			var result = Create.Element<Border>(new Cell(0, 0, 1, cols));
 			grid.Add(result);
 			result.Opacity = 0.25;
@@ -129,7 +131,7 @@ namespace Xt.Synth0.UI
 			result.Visibility = GetHightlighterVisibility(model, pattern);
 			result.SetValue(Grid.RowProperty, GetHightlighterRow(model, pattern));
 			Action handler = () => OnAudioPropertyChanged(result, model, pattern);
-			model.PropertyChanged += (s, e) => Application.Current?.Dispatcher.BeginInvoke(handler);
+			model.PropertyChanged += (s, e) => dispatcher.BeginInvoke(handler, DispatcherPriority.Background);
 		}
 
 		static void AddKeys(Grid grid, SequencerModel seq, int pattern, PatternRow row, int r)

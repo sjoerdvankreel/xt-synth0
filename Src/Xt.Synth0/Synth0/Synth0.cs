@@ -222,7 +222,8 @@ namespace Xt.Synth0
 			if (ModelPool.CurrentCopyOperation?.Abort() == true)
 				ModelPool.Return(ModelPool.CurrentModel);
 			ModelPool.CurrentModel = model;
-			ModelPool.CurrentCopyOperation = dispatcher.BeginInvoke(copyToUIThread, model);
+			ModelPool.CurrentCopyOperation = dispatcher.BeginInvoke(
+				copyToUIThread, DispatcherPriority.Background, model);
 		}
 
 		static AudioEngine SetupEngine(Window mainWindow)
