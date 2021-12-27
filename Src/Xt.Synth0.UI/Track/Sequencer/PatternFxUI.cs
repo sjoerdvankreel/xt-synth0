@@ -25,8 +25,8 @@ namespace Xt.Synth0.UI
 			Grid grid, SynthModel synth, PatternFx fx, Param fxCount,
 			int minFx, int row, int col, Action fill, Action interpolate)
 		{
-			grid.Children.Add(MakeTarget(synth, fx.Target, fxCount, minFx, row, col, fill));
-			grid.Children.Add(MakeValue(fx.Value, fxCount, minFx, row, col + 1, interpolate));
+			grid.Add(MakeTarget(synth, fx.Target, fxCount, minFx, row, col, fill));
+			grid.Add(MakeValue(fx.Value, fxCount, minFx, row, col + 1, interpolate));
 		}
 
 		static UIElement MakeValue(Param param, Param fxCount,

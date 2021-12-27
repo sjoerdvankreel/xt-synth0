@@ -8,14 +8,20 @@ namespace Xt.Synth0.UI
 	static class GroupUI
 	{
 		internal static GroupBox Make(AppModel model, GroupModel group)
+		=> Create.Group(group.Name(), MakeContent(model, group));
+
+		internal static GroupBox MakeStatic(AppModel model, GroupModel group)
+		=> Create.Group(group.Name(), MakeStaticContent(model, group));
+
+		static UIElement MakeStaticContent(AppModel model, GroupModel group)
 		{
-			var result = new GroupBox();
-			result.Header = group.Name();
-			result.Content = MakeContent(model, group);
+			var result = MakeContent(model, group);
+			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeContent(AppModel model, GroupModel group)
+		static FrameworkElement MakeContent(AppModel model, GroupModel group)
 		{
 			var rows = group.ParamGroups();
 			var cols = rows.Max(r => r.Length);
@@ -27,9 +33,6 @@ namespace Xt.Synth0.UI
 					var valueSpan = c == rows[r].Length - 1 ? 1 + 3 * (cols - c - 1) : 1;
 					ParamUI.Add(result, model, rows[r][c], new(r, c * 3), valueSpan);
 				}
-			if (group.Automation()) return result;
-			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
-			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 	}

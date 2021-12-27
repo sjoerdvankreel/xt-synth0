@@ -24,26 +24,21 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(Window window, SettingsModel model)
 		{
 			var result = new StackPanel();
-			result.Children.Add(MakeGroup(model));
-			result.Children.Add(MakeOK(window));
+			result.Add(MakeGroup(model));
+			result.Add(MakeOK(window));
 			return result;
 		}
 
 		static UIElement MakeGroup(SettingsModel model)
-		{
-			var result = new GroupBox();
-			result.Header = $"Settings";
-			result.Content = MakeContent(model);
-			return result;
-		}
+		=> Create.Group("Settings", MakeContent(model));
 
 		static UIElement MakeContent(SettingsModel model)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Vertical;
-			result.Children.Add(MakeUpper(model));
-			result.Children.Add(MakeCenter(model));
-			result.Children.Add(MakeLower(model));
+			result.Add(MakeUpper(model));
+			result.Add(MakeCenter(model));
+			result.Add(MakeLower(model));
 			result.SetValue(Grid.IsSharedSizeScopeProperty, true);
 			return result;
 		}
@@ -51,22 +46,22 @@ namespace Xt.Synth0.UI
 		static UIElement MakeUpper(SettingsModel model)
 		{
 			var result = Create.Grid(4, 2, true);
-			result.Children.Add(Create.Label("Theme", new(0, 0)));
-			result.Children.Add(MakeTheme(model, new(0, 1)));
-			result.Children.Add(Create.Label("Bit depth", new(1, 0)));
-			result.Children.Add(MakeBitDepth(model, new(1, 1)));
-			result.Children.Add(Create.Label("Sample rate", new(2, 0)));
-			result.Children.Add(MakeSampleRate(model, new(2, 1)));
-			result.Children.Add(Create.Label("Write to disk", new(3, 0)));
-			result.Children.Add(MakeWriteToDisk(model, new(3, 1)));
+			result.Add(Create.Label("Theme", new(0, 0)));
+			result.Add(MakeTheme(model, new(0, 1)));
+			result.Add(Create.Label("Bit depth", new(1, 0)));
+			result.Add(MakeBitDepth(model, new(1, 1)));
+			result.Add(Create.Label("Sample rate", new(2, 0)));
+			result.Add(MakeSampleRate(model, new(2, 1)));
+			result.Add(Create.Label("Write to disk", new(3, 0)));
+			result.Add(MakeWriteToDisk(model, new(3, 1)));
 			return result;
 		}
 
 		static UIElement MakeCenter(SettingsModel model)
 		{
 			var result = Create.Grid(1, 2, true);
-			result.Children.Add(Create.Label("Output path", new(0, 0)));
-			result.Children.Add(MakeOutputPath(model, new(0, 1)));
+			result.Add(Create.Label("Output path", new(0, 0)));
+			result.Add(MakeOutputPath(model, new(0, 1)));
 			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), 
 				new VisibilityConverter(false, true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
@@ -76,15 +71,15 @@ namespace Xt.Synth0.UI
 		static UIElement MakeLower(SettingsModel model)
 		{
 			var result = Create.Grid(4, 2, true);
-			result.Children.Add(Create.Label("Use ASIO", new(0, 0)));
-			result.Children.Add(MakeAsio(model, new(0, 1)));
-			result.Children.Add(Create.Label("Device", new(1, 0)));
-			result.Children.Add(MakeAsioDevice(model, new(1, 1)));
-			result.Children.Add(MakeWasapiDevice(model, new(1, 1)));
-			result.Children.Add(Create.Label("Buffer size (ms)", new(2, 0)));
-			result.Children.Add(MakeBufferSize(model, new(2, 1)));
-			result.Children.Add(Create.Label("Format supported", new(3, 0)));
-			result.Children.Add(MakeFormatSupport(model, new(3, 1)));
+			result.Add(Create.Label("Use ASIO", new(0, 0)));
+			result.Add(MakeAsio(model, new(0, 1)));
+			result.Add(Create.Label("Device", new(1, 0)));
+			result.Add(MakeAsioDevice(model, new(1, 1)));
+			result.Add(MakeWasapiDevice(model, new(1, 1)));
+			result.Add(Create.Label("Buffer size (ms)", new(2, 0)));
+			result.Add(MakeBufferSize(model, new(2, 1)));
+			result.Add(Create.Label("Format supported", new(3, 0)));
+			result.Add(MakeFormatSupport(model, new(3, 1)));
 			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), 
 				new VisibilityConverter(false, false));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
@@ -114,8 +109,8 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Element<StackPanel>(cell);
 			result.Orientation = Orientation.Horizontal;
-			result.Children.Add(MakeWriteToDisk(model));
-			result.Children.Add(MakeBrowseOutputPath(model));
+			result.Add(MakeWriteToDisk(model));
+			result.Add(MakeBrowseOutputPath(model));
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			return result;
 		}
@@ -169,8 +164,8 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Element<StackPanel>(cell);
 			result.Orientation = Orientation.Horizontal;
-			result.Children.Add(MakeUseAsio(model));
-			result.Children.Add(MakeAsioControlPanel(model));
+			result.Add(MakeUseAsio(model));
+			result.Add(MakeAsioControlPanel(model));
 			return result;
 		}
 

@@ -23,12 +23,12 @@ namespace Xt.Synth0.UI
 		internal static void Add(
 			Grid grid, AppModel model, Param param, Cell cell, int valueSpan)
 		{
-			grid.Children.Add(Create.Label(param.Info.Name, cell.Right(1)));
-			grid.Children.Add(MakeValue(param, new Cell(cell.Row, cell.Col + 2, 1, valueSpan)));
+			grid.Add(Create.Label(param.Info.Name, cell.Right(1)));
+			grid.Add(MakeValue(param, new Cell(cell.Row, cell.Col + 2, 1, valueSpan)));
 			if (param.Info.IsToggle)
-				grid.Children.Add(MakeToggle(model, param, cell));
+				grid.Add(MakeToggle(model, param, cell));
 			else
-				grid.Children.Add(MakeKnob(model, param, cell));
+				grid.Add(MakeKnob(model, param, cell));
 		}
 
 		static UIElement MakeValue(Param param, Cell cell)

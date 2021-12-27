@@ -52,10 +52,10 @@ namespace Xt.Synth0
 			var result = new DockPanel();
 			var menu = MenuUI.Make(Model);
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
-			result.Children.Add(menu);
-			var synth = SynthUI.Make(Model);
-			synth.SetValue(DockPanel.DockProperty, Dock.Bottom);
-			result.Children.Add(synth);
+			result.Add(menu);
+			var track = TrackUI.Make(Model);
+			track.SetValue(DockPanel.DockProperty, Dock.Bottom);
+			result.Add(track);
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
 			result.Resources = Utility.GetThemeResources(Model.Settings.Theme);
 			Model.Settings.ThemeChanged += (s, e) => result.Resources

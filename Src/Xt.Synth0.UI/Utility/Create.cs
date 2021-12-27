@@ -20,6 +20,20 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static GroupBox Group(string header)
+		{
+			var result = new GroupBox();
+			result.Header = header;
+			return result;
+		}
+
+		internal static GroupBox Group(string header, object content)
+		{
+			var result = Group(header);
+			result.Content = content;
+			return result;
+		}
+
 		internal static Grid Grid(int rows, int cols)
 		{
 			var result = new Grid();

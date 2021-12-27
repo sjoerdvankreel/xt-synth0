@@ -116,14 +116,14 @@ namespace Xt.Synth0.UI
 			var sequencer = track.Sequencer;
 			int divCol = PatternRow.MaxKeyCount * 5;
 			AddKeys(grid, sequencer, pattern, row, r);
-			grid.Children.Add(Create.Divider(new(r, divCol), sequencer.Edit.Fx, 1));
+			grid.Add(Create.Divider(new(r, divCol), sequencer.Edit.Fx, 1));
 			AddFx(grid, track, pattern, row, r);
 		}
 
 		static void AddHightlighter(Grid grid, AudioModel model, int pattern, int cols)
 		{
 			var result = Create.Element<Border>(new Cell(0, 0, 1, cols));
-			grid.Children.Add(result);
+			grid.Add(result);
 			result.Opacity = 0.25;
 			result.Background = Brushes.Gray;
 			result.Visibility = GetHightlighterVisibility(model, pattern);
@@ -139,7 +139,7 @@ namespace Xt.Synth0.UI
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
 				PatternKeyUI.Add(grid, row.Keys[k], seq.Edit, k + 1, r, k * 5, interpolate);
-				grid.Children.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
+				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
 			}
 		}
 
@@ -155,7 +155,7 @@ namespace Xt.Synth0.UI
 				Action fill = () => Fill(sequencer, pattern, fLocal);
 				Action interpolate = () => Interpolate(sequencer, pattern, r => r.Fx[fLocal].Value);
 				PatternFxUI.Add(grid, synth, row.Fx[f], sequencer.Edit.Fx, f + 1, r, startCol + f * 3, fill, interpolate);
-				grid.Children.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
+				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
 		}
 	}

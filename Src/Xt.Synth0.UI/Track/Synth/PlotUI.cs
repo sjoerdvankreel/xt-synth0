@@ -15,8 +15,7 @@ namespace Xt.Synth0.UI
 
 		internal static UIElement Make(AppModel model)
 		{
-			var result = new GroupBox();
-			result.Header = "Plot";
+			var result = Create.Group("Plot");
 			var content = new ContentControl();
 			content.MinHeight = MinHeight;
 			content.SizeChanged += (s, e) => Update(result, content);
@@ -39,7 +38,7 @@ namespace Xt.Synth0.UI
 			var result = new Canvas();
 			result.Width = container.ActualWidth;
 			result.Height = container.ActualHeight;
-			result.Children.Add(PlotLine(container, data, samples));
+			result.Add(PlotLine(container, data, samples));
 			return result;
 		}
 

@@ -11,12 +11,7 @@ namespace Xt.Synth0.UI
 		public static event EventHandler Start;
 
 		internal static UIElement Make(AudioModel model)
-		{
-			var result = new GroupBox();
-			result.Header = "Control";
-			result.Content = MakeContent(model);
-			return result;
-		}
+		=> Create.Group("Control", MakeContent(model));
 
 		static Button MakeButton(string content, Action execute)
 		{
@@ -34,11 +29,11 @@ namespace Xt.Synth0.UI
 			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
 			var binding = Bind.To(model, nameof(AudioModel.IsRunning), new NegateConverter());
 			start.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.Children.Add(start);
+			result.Add(start);
 			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
 			binding = Bind.To(model, nameof(AudioModel.IsStopped), new NegateConverter());
 			stop.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.Children.Add(stop);
+			result.Add(stop);
 			return result;
 		}
 	}

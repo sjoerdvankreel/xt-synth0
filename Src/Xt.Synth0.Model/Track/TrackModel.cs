@@ -25,7 +25,6 @@ namespace Xt.Synth0.Model
 
 		public TrackModel()
 		{
-			is this needed ?
 			_params.AddRange(Synth.SubModels().SelectMany(m => m.Params()));
 			_params.AddRange(Sequencer.SubModels().SelectMany(m => m.Params()));
 			for (int p = 0; p < _params.Count; p++)

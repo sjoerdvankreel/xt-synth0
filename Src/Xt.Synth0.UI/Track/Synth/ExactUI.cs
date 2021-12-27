@@ -14,21 +14,16 @@ namespace Xt.Synth0.UI
 		}
 
 		static UIElement MakeGroup(Window window, Param param)
-		{
-			var result = new GroupBox();
-			result.Content = MakeContent(window, param);
-			result.Header = $"{param.Info.Min} to {param.Info.Max}";
-			return result;
-		}
+		=> Create.Group($"{param.Info.Min} to {param.Info.Max}", MakeContent(window, param));
 
 		static UIElement MakeContent(Window window, Param param)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
 			var box = MakeTextBox(param);
-			result.Children.Add(box);
-			result.Children.Add(MakeOK(window, box, param));
-			result.Children.Add(MakeCancel(window));
+			result.Add(box);
+			result.Add(MakeOK(window, box, param));
+			result.Add(MakeCancel(window));
 			return result;
 		}
 
