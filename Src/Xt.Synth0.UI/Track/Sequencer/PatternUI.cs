@@ -56,6 +56,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Element<Border>(cell);
 			result.Opacity = 0.0;
+			result.Focusable = false;
 			result.Background = Brushes.Gray;
 			return result;
 		}
@@ -109,10 +110,10 @@ namespace Xt.Synth0.UI
 			var result = Create.Grid(rows, cols);
 			for (int r = 0; r < rows; r++)
 			{
-				AddRow(result, model.Track, pattern, sequencer.Pattern.Rows[offset + r], r);
 				var highlighter = MakeHighlighter(new Cell(r, 0, 1, cols));
 				result.Add(highlighter);
 				highlighters.Add(highlighter);
+				AddRow(result, model.Track, pattern, sequencer.Pattern.Rows[offset + r], r);
 			}
 			return (result, highlighters);
 		}
