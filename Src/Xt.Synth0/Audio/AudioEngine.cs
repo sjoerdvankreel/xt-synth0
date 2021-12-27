@@ -11,8 +11,9 @@ namespace Xt.Synth0
 	{
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
-		const float InfoIntervalSeconds = 1.0f;
 		const float WarningDurationSeconds = 0.5f;
+		const float CpuUsageIntervalSeconds = 0.5f;
+		const float BufferInfoIntervalSeconds = 1.0f;
 		const float GcNotificationDurationSeconds = 0.2f;
 
 		static XtSample DepthToSample(int size) => size switch
@@ -77,9 +78,10 @@ namespace Xt.Synth0
 
 		IAudioStream _stream;
 		long _clipPosition = -1;
-		long _infoPosition = -1;
 		long _streamPosition = 0;
 		long _overloadPosition = -1;
+		long _cpuUsagePosition = -1;
+		long _bufferInfoPosition = -1;
 		readonly long[] _gcPositions = new long[3];
 		readonly bool[] _gcCollecteds = new bool[3];
 		readonly Stopwatch _stopwatch = new Stopwatch();
@@ -203,10 +205,11 @@ namespace Xt.Synth0
 			_stream = null;
 			_stopwatch.Reset();
 
-			_infoPosition = -1;
 			_clipPosition = -1;
 			_streamPosition = 0;
 			_overloadPosition = -1;
+			_cpuUsagePosition = -1;
+			_bufferInfoPosition = -1;
 
 			_app.Audio.CpuUsage = 0.0;
 			_app.Audio.LatencyMs = 0.0;
@@ -318,13 +321,15 @@ namespace Xt.Synth0
 				_overloadPosition = _streamPosition;
 				_app.Audio.IsOverloaded = true;
 			}
-			if (_streamPosition >= _infoPosition + rate * InfoIntervalSeconds)
+			if (_streamPosition >= _cpuUsagePosition + rate * CpuUsageIntervalSeconds)
 			{
+				_cpuUsagePosition = _streamPosition;
 				_app.Audio.CpuUsage = Math.Min(processedSeconds / bufferSeconds, 1.0);
 			}
-			if (_infoPosition == -1 || _streamPosition >= _infoPosition + rate * InfoIntervalSeconds)
+			if (_bufferInfoPosition == -1 || _streamPosition >= 
+				_bufferInfoPosition + rate * BufferInfoIntervalSeconds)
 			{
-				_infoPosition = _streamPosition;
+				_bufferInfoPosition = _streamPosition;
 				_app.Audio.LatencyMs = _stream.GetLatencyMs();
 				_app.Audio.BufferSizeFrames = _stream.GetMaxBufferFrames();
 			}
