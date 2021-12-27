@@ -13,8 +13,8 @@ namespace Xt.Synth0.UI
 				result.Add(GroupUI.Make(model, unit), Dock.Top);
 			result.Add(GroupUI.Make(model, model.Track.Synth.Amp), Dock.Top);
 			result.Add(GroupUI.Make(model, model.Track.Synth.Global), Dock.Top);
+			result.Add(ControlUI.Make(model.Audio), Dock.Bottom);
 			result.Add(PlotUI.Make(model), Dock.Top);
-			result.Add(ControlUI.Make(model.Audio), Dock.Top);
 			return result;
 		}
 	}
