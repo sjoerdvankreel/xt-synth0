@@ -12,7 +12,7 @@ namespace Xt.Synth0
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
 		const float InfoIntervalSeconds = 1.0f;
-		const float WarningDurationSeconds = 0.5f;
+		const float WarningDurationSeconds = 1.0f;
 
 		static XtSample DepthToSample(int size) => size switch
 		{
