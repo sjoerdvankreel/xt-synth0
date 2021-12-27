@@ -8,8 +8,10 @@ namespace Xt.Synth0.UI
 	{
 		internal static GroupBox Make(AppModel model, GroupModel group)
 		{
-			var result = Create.Group(group.Name(), GroupUI.MakeContent(model, group));
-			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), 
+			var content = GroupUI.MakeContent(model, group);
+			content.VerticalAlignment = VerticalAlignment.Center;
+			var result = Create.Group(group.Name(), content);
+			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning),
 				new VisibilityConverter(true, false));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;

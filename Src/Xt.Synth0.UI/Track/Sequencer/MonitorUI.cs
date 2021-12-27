@@ -9,7 +9,8 @@ namespace Xt.Synth0.UI
 		internal static UIElement Make(AudioModel model)
 		{
 			var result = Create.Group("Monitor", MakeContent(model));
-			var binding = Bind.To(model, nameof(model.IsRunning), new VisibilityConverter(true, true));
+			var binding = Bind.To(model, nameof(model.IsRunning), 
+				new VisibilityConverter(true, true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
