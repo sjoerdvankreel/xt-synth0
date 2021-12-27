@@ -35,8 +35,8 @@ namespace Xt.Synth0.UI
 		static UIElement Plot(FrameworkElement container, float[] data, int samples)
 		{
 			var result = new Canvas();
-			result.Width = container.ActualWidth;
-			result.Height = container.ActualHeight;
+			result.VerticalAlignment = VerticalAlignment.Stretch;
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.Add(PlotLine(container, data, samples));
 			return result;
 		}
