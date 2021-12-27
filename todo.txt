@@ -8,3 +8,4 @@ drop samples on overload ?
 monitor section with latency, frame buffer size, clip, overload, cpu usage
 split synth/sequi
 better detail tooltips/value tooltips
+dont reset model after stop?/reset model before load
