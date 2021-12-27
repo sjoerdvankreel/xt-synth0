@@ -15,6 +15,7 @@ namespace Xt.Synth0.UI
 		internal static UIElement Make(AppModel model)
 		{
 			var result = Create.Group("Plot");
+			result.Padding = new Thickness(2.0);
 			var content = new ContentControl();
 			content.SizeChanged += (s, e) => Update(result, content);
 			model.Track.ParamChanged += (s, e) => Update(result, content);
