@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Xt.Synth0.Model;
@@ -14,6 +15,7 @@ namespace Xt.Synth0
 		= DependencyProperty.Register(nameof(IsDirty), typeof(bool), typeof(MainWindow));
 
 		AppModel Model { get; }
+		readonly NoAutomationPeer _automationPeer;
 
 		public string Path
 		{
@@ -29,6 +31,8 @@ namespace Xt.Synth0
 
 		internal void SetClean(string path)
 		=> (IsDirty, Path) = (false, path);
+		protected override AutomationPeer OnCreateAutomationPeer()
+		=> _automationPeer;
 
 		internal MainWindow(AppModel model)
 		{
@@ -37,6 +41,7 @@ namespace Xt.Synth0
 			ResizeMode = ResizeMode.NoResize;
 			SetBinding(TitleProperty, BindTitle());
 			SizeToContent = SizeToContent.WidthAndHeight;
+			_automationPeer = new NoAutomationPeer(this);
 			Model.Track.ParamChanged += (s, e) => IsDirty = true;
 		}
 
