@@ -26,8 +26,14 @@ namespace Xt.Synth0.DSP
 			return result;
 		}
 
-		float _phase = 0.0f;
-		internal void Reset() => _phase = 0.0f;
+		float _phasef = 0.0f;
+		double _phased = 0.0f;
+		
+		internal void Reset()
+		{
+			_phased = 0.0;
+			_phasef = 0.0f;
+		}
 
 		public float Frequency(UnitModel unit)
 		{
@@ -40,19 +46,20 @@ namespace Xt.Synth0.DSP
 		public float Next(GlobalModel global, UnitModel unit, float rate)
 		{
 			if (unit.On.Value == 0) return 0.0f;
+			_phasef = (float)_phased;
 			float amp = unit.Amp.Value / 255.0f;
 			float freq = Frequency(unit);
 			var type = (UnitType)unit.Type.Value;
 			float sample = Generate(global, type, freq, rate);
-			_phase += freq / rate;
-			if (_phase >= 1.0f) _phase = 0.0f;
+			_phased += freq / rate;
+			if (_phased >= 1.0) _phased = 0.0;
 			return sample * amp;
 		}
 
 		float Generate(GlobalModel global, UnitType type, float freq, float rate)
 		=> type switch
 		{
-			UnitType.Sin => MathF.Sin(_phase * MathF.PI * 2.0f),
+			UnitType.Sin => MathF.Sin(_phasef * MathF.PI * 2.0f),
 			_ => GenerateMethod(global, type, freq, rate)
 		};
 
@@ -68,9 +75,9 @@ namespace Xt.Synth0.DSP
 		float GenerateNaive(UnitType type)
 		=> type switch
 		{
-			UnitType.Saw => _phase * 2.0f - 1.0f,
-			UnitType.Sqr => _phase > 0.5f ? 1.0f : -1.0f,
-			UnitType.Tri => (_phase <= 0.5f ? _phase : 1.0f - _phase) * 4.0f - 1.0f,
+			UnitType.Saw => _phasef * 2.0f - 1.0f,
+			UnitType.Sqr => _phasef > 0.5f ? 1.0f : -1.0f,
+			UnitType.Tri => (_phasef <= 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f,
 			_ => throw new InvalidOperationException()
 		};
 
@@ -100,7 +107,7 @@ namespace Xt.Synth0.DSP
 					rolloff *= h;
 				float amp = 1.0f / rolloff;
 				limit += amp;
-				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
+				result += sign * MathF.Sin(_phasef * h * MathF.PI * 2.0f) * amp;
 				sign *= multiplier;
 			}
 			return result / limit;
