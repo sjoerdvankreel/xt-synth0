@@ -64,7 +64,7 @@ namespace Xt.Synth0
 		}
 
 		readonly AppModel _app;
-		readonly SynthDSP _dsp = new();
+		readonly SequencerDSP _dsp = new();
 		readonly SynthModel _synth = new();
 		readonly SynthModel _original = new();
 
@@ -242,7 +242,7 @@ namespace Xt.Synth0
 		void ProcessFrame(int frame, int rate)
 		{
 			var seq = _app.Track.Sequencer;
-			var sample = _dsp.Next(_synth, seq, _app.Audio, rate) * MaxAmp;
+			var sample = _dsp.Next(_app.Audio, seq, _synth, rate) * MaxAmp;
 			if (sample > MaxAmp)
 			{
 				_clipPosition = _streamPosition;

@@ -3,5 +3,4 @@ amp as db?
 pulse width
 drop samples on overload ?
 fastsin
-sequencerDSP
 check profilers

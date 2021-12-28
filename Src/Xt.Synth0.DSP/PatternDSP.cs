@@ -4,8 +4,8 @@ namespace Xt.Synth0.DSP
 {
 	class PatternDSP
 	{
-		internal void Automate(SynthModel synth, 
-			SequencerModel seq, AudioModel audio)
+		internal void Automate(AudioModel audio,
+			SequencerModel seq, SynthModel synth)
 		{
 			var row = seq.Pattern.Rows[audio.CurrentRow];
 			foreach (var fx in row.Fx)
