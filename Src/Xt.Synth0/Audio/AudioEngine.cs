@@ -66,6 +66,7 @@ namespace Xt.Synth0
 		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
 		readonly SynthModel _synth = new();
+		readonly SynthModel _original = new();
 
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
@@ -118,13 +119,6 @@ namespace Xt.Synth0
 			_platform.Dispose();
 		}
 
-		void DoResumeStream()
-		{
-			AutomationQueue.Clear();
-			_app.Track.Synth.CopyTo(_synth);
-			_stream.Start();
-		}
-
 		internal void Stop()
 		{
 			if (_app.Audio.IsRunning)
@@ -145,36 +139,9 @@ namespace Xt.Synth0
 		{
 			try
 			{
+				_stream?.Stop();
+				_original.CopyTo(_app.Track.Synth);
 				_app.Audio.State = AudioState.Paused;
-				_stream.Stop();
-			}
-			catch
-			{
-				ResetStream();
-				throw;
-			}
-		}
-
-		void ResetStream()
-		{
-			try
-			{
-				_app.Audio.State = AudioState.Stopped;
-				DoResetStream();
-			}
-			finally
-			{
-				_dsp.Reset(_app.Audio);
-			}
-		}
-
-		void StartStream()
-		{
-			try
-			{
-				_dsp.Reset(_app.Audio);
-				_app.Audio.State = AudioState.Running;
-				DoStartStream();
 			}
 			catch
 			{
@@ -187,8 +154,11 @@ namespace Xt.Synth0
 		{
 			try
 			{
+				AutomationQueue.Clear();
+				_app.Track.Synth.CopyTo(_synth);
+				_app.Track.Synth.CopyTo(_original);
 				_app.Audio.State = AudioState.Running;
-				DoResumeStream();
+				_stream.Start();
 			}
 			catch
 			{
@@ -197,31 +167,66 @@ namespace Xt.Synth0
 			}
 		}
 
-		void DoResetStream()
+		void ResetStream()
 		{
-			_stream?.Dispose();
-			_stream = null;
-			_stopwatch.Reset();
-
-			_clipPosition = -1;
-			_streamPosition = 0;
-			_overloadPosition = -1;
-			_cpuUsagePosition = -1;
-			_bufferInfoPosition = -1;
-
-			_app.Audio.CpuUsage = 0.0;
-			_app.Audio.LatencyMs = 0.0;
-			_app.Audio.IsClipping = false;
-			_app.Audio.IsOverloaded = false;
-			_app.Audio.GC0Collected = false;
-			_app.Audio.GC1Collected = false;
-			_app.Audio.GC2Collected = false;
-			_app.Audio.BufferSizeFrames = 0;
-
-			for (int i = 0; i < _gcPositions.Length; i++)
+			try
 			{
-				_gcPositions[i] = -1;
-				_gcCollecteds[i] = false;
+				PauseStream();
+
+				_app.Audio.State = AudioState.Stopped;
+				_stream?.Dispose();
+				_stream = null;
+				_stopwatch.Reset();
+
+				_clipPosition = -1;
+				_streamPosition = 0;
+				_overloadPosition = -1;
+				_cpuUsagePosition = -1;
+				_bufferInfoPosition = -1;
+
+				_app.Audio.CpuUsage = 0.0;
+				_app.Audio.LatencyMs = 0.0;
+				_app.Audio.IsClipping = false;
+				_app.Audio.IsOverloaded = false;
+				_app.Audio.GC0Collected = false;
+				_app.Audio.GC1Collected = false;
+				_app.Audio.GC2Collected = false;
+				_app.Audio.BufferSizeFrames = 0;
+
+				for (int i = 0; i < _gcPositions.Length; i++)
+				{
+					_gcPositions[i] = -1;
+					_gcCollecteds[i] = false;
+				}
+			}
+			finally
+			{
+				_dsp.Reset(_app.Audio);
+			}
+		}
+
+		void StartStream()
+		{
+			try
+			{
+				_dsp.Reset(_app.Audio);
+				var format = GetFormat();
+				var settings = _app.Settings;
+				var streamParams = new XtStreamParams(true, OnXtBuffer, null, OnXtRunning);
+				var bufferSize = AudioModel.BufferSizeToInt(settings.BufferSize);
+				var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
+				if (settings.WriteToDisk)
+					_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
+				else
+					_stream = OpenDeviceStream(in deviceParams);
+				UpdateStreamInfo(0, format.mix.rate);
+				GC.Collect(2, GCCollectionMode.Forced, true, true);
+				ResumeStream();
+			}
+			catch
+			{
+				ResetStream();
+				throw;
 			}
 		}
 
@@ -453,22 +458,6 @@ namespace Xt.Synth0
 				device.Dispose();
 				throw;
 			}
-		}
-
-		void DoStartStream()
-		{
-			var format = GetFormat();
-			var settings = _app.Settings;
-			var streamParams = new XtStreamParams(true, OnXtBuffer, null, OnXtRunning);
-			var bufferSize = AudioModel.BufferSizeToInt(settings.BufferSize);
-			var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
-			if (settings.WriteToDisk)
-				_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
-			else
-				_stream = OpenDeviceStream(in deviceParams);
-			UpdateStreamInfo(0, format.mix.rate);
-			GC.Collect(2, GCCollectionMode.Forced, true, true);
-			DoResumeStream();
 		}
 	}
 }

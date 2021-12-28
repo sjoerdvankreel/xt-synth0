@@ -2,11 +2,6 @@ polyblep
 amp as db?
 pulse width
 drop samples on overload ?
-dont reset model after stop?/reset model before load
 fastsin
-dont set dirty during playback
-disable gc from audio thread
-dont create new canvas/polyline/pointcollection, interpolate into static array
-check whats wrong with onbufferfinished allocations
 sequencerDSP
-restore original after stop/pause
+check profilers

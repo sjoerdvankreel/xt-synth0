@@ -42,7 +42,13 @@ namespace Xt.Synth0
 			SetBinding(TitleProperty, BindTitle());
 			SizeToContent = SizeToContent.WidthAndHeight;
 			_automationPeer = new NoAutomationPeer(this);
-			Model.Track.ParamChanged += (s, e) => IsDirty = true;
+			Model.Track.ParamChanged += OnTrackParamChanged;
+		}
+
+		void OnTrackParamChanged(object sender, ParamChangedEventArgs e)
+		{
+			if (!Model.Audio.IsRunning)
+				IsDirty = true;
 		}
 
 		BindingBase BindTitle()
