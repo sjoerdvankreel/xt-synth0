@@ -1,10 +1,28 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Security;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.DSP
 {
+	[SuppressUnmanagedCodeSecurity]
 	public class UnitDSP
 	{
+		const string NativeLib = "Xt.Synth0.DSP.Native.dll";
+
+		[DllImport("kernel32")]
+		static extern IntPtr LoadLibrary(string path);
+		[DllImport(NativeLib)]
+		static extern float xts0_unit_additive(float phase);
+
+		static UnitDSP()
+		{
+			if (IntPtr.Size == 4)
+				LoadLibrary($"x86/{NativeLib}");
+			else
+				LoadLibrary($"x64/{NativeLib}");
+		}
+
 		static readonly float[,,] FrequencyTable = MakeFrequencyTable();
 
 		static float Frequency(int oct, int note, int cent)
@@ -84,10 +102,11 @@ namespace Xt.Synth0.DSP
 		float GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics)
 		=> type switch
 		{
-			UnitType.Saw => GenerateAdditive(freq, rate, logHarmonics, 1, 1, 0),
-			UnitType.Sqr => GenerateAdditive(freq, rate, logHarmonics, 2, 1, 0),
-			UnitType.Tri => GenerateAdditive(freq, rate, logHarmonics, 2, -1, 1),
-			_ => throw new InvalidOperationException()
+			//UnitType.Saw => GenerateAdditive(freq, rate, logHarmonics, 1, 1, 0),
+			//UnitType.Sqr => GenerateAdditive(freq, rate, logHarmonics, 2, 1, 0),
+			//UnitType.Tri => GenerateAdditive(freq, rate, logHarmonics, 2, -1, 1),
+			//_ => throw new InvalidOperationException()
+			_=>0.0f//; xts0_unit_additive(_phasef)
 		};
 
 		float GenerateAdditive(float freq, float rate, int logHarmonics, int step, int multiplier, int logRolloff)
