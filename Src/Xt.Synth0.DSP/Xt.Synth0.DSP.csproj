@@ -8,4 +8,12 @@
   <ItemGroup>
     <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/Win32/Xt.Synth0.DSP.Native.dll" Link="x86/Xt.Synth0.DSP.Native.dll" />
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/Win32/Xt.Synth0.DSP.Native.pdb" Link="x86/Xt.Synth0.DSP.Native.pdb" />
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.Native.dll" Link="x64/Xt.Synth0.DSP.Native.dll" />
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.Native.pdb" Link="x64/Xt.Synth0.DSP.Native.pdb" />
+    <Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/Win32/Xt.Synth0.DSP.Native.dll" Link="x86/Xt.Synth0.DSP.Native.dll" />
+    <Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.Native.dll" Link="x64/Xt.Synth0.DSP.Native.dll" />
+  </ItemGroup>
 </Project>
