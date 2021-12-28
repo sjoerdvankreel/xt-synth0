@@ -8,3 +8,5 @@ dont set dirty during playback
 disable gc from audio thread
 dont create new canvas/polyline/pointcollection, interpolate into static array
 check whats wrong with onbufferfinished allocations
+sequencerDSP
+restore original after stop/pause

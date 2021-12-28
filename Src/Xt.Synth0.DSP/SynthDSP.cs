@@ -32,12 +32,12 @@ namespace Xt.Synth0.DSP
 		}
 
 		public float Next(SynthModel synth, 
-			SequencerModel seq, AudioModel audio, float rate, bool[] automated)
+			SequencerModel seq, AudioModel audio, float rate)
 		{
 			float result = 0.0f;
 			float amp = synth.Amp.Lvl.Value / 255.0f;
 			if (UpdateRow(synth, seq, audio, rate))
-				_pattern.Automate(synth, seq, audio, automated);
+				_pattern.Automate(synth, seq, audio);
 			for (int u = 0; u < _units.Length; u++)
 				result += _units[u].Next(synth.Global, synth.Units[u], rate) * amp;
 			return result;

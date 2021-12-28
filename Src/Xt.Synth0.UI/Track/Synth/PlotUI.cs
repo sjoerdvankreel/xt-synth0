@@ -19,10 +19,17 @@ namespace Xt.Synth0.UI
 			result.Padding = new Thickness(2.0);
 			var content = new ContentControl();
 			content.SizeChanged += (s, e) => Update(result, content);
-			model.Track.ParamChanged += (s, e) => Update(result, content);
 			model.Settings.PropertyChanged += (s, e) => Update(result, content);
+			model.Track.ParamChanged += (s, e) => OnTrackParamChanged(result, content, e);
 			result.Content = content;
 			return result;
+		}
+
+		static void OnTrackParamChanged(
+			GroupBox box, ContentControl container, ParamChangedEventArgs e)
+		{
+			if (e.IsAutomatable) 
+				Update(box, container);
 		}
 
 		static void Update(GroupBox box, ContentControl container)

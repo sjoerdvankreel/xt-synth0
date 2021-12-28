@@ -24,15 +24,14 @@ namespace Xt.Synth0
 			_ => throw new InvalidOperationException()
 		};
 
-		internal static AudioEngine Create(
-			AppModel app, IntPtr mainWindow, Action<string> log,
-			Action<Action> dispatchToUI, Action<AutomationEntry> bufferFinished)
+		internal static AudioEngine Create(AppModel app,
+			IntPtr mainWindow, Action<string> log, Action<Action> dispatchToUI)
 		{
 			XtAudio.SetOnError(msg => log(msg));
 			var platform = XtAudio.Init(nameof(Synth0), mainWindow);
 			try
 			{
-				return Create(app, platform, dispatchToUI, bufferFinished);
+				return Create(app, platform, dispatchToUI);
 			}
 			catch
 			{
@@ -41,13 +40,12 @@ namespace Xt.Synth0
 			}
 		}
 
-		static AudioEngine Create(AppModel app, XtPlatform platform,
-			Action<Action> dispatchToUI, Action<AutomationEntry> bufferFinished)
+		static AudioEngine Create(AppModel app,
+			XtPlatform platform, Action<Action> dispatchToUI)
 		{
 			var asio = platform.GetService(XtSystem.ASIO);
 			var wasapi = platform.GetService(XtSystem.WASAPI);
-			return new AudioEngine(app, platform,
-				dispatchToUI, bufferFinished,
+			return new AudioEngine(app, platform, dispatchToUI,
 				asio.GetDefaultDeviceId(true),
 				wasapi.GetDefaultDeviceId(true),
 				GetDevices(asio), GetDevices(wasapi));
@@ -67,11 +65,10 @@ namespace Xt.Synth0
 
 		readonly AppModel _app;
 		readonly SynthDSP _dsp = new();
-		readonly SynthModel _original = new();
+		readonly SynthModel _synth = new();
 
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
-		readonly Action<AutomationEntry> _bufferFinished;
 
 		IAudioStream _stream;
 		long _clipPosition = -1;
@@ -82,6 +79,8 @@ namespace Xt.Synth0
 		readonly long[] _gcPositions = new long[3];
 		readonly bool[] _gcCollecteds = new bool[3];
 		readonly Stopwatch _stopwatch = new Stopwatch();
+
+		readonly int[] _automationValues;
 		readonly float[] _buffer = new float[192000 * 2];
 
 		public string AsioDefaultDeviceId { get; }
@@ -93,7 +92,6 @@ namespace Xt.Synth0
 			AppModel app,
 			XtPlatform platform,
 			Action<Action> dispatchToUI,
-			Action<AutomationEntry> bufferFinished,
 			string asioDefaultDeviceId,
 			string wasapiDefaultDeviceId,
 			IReadOnlyList<DeviceModel> asioDevices,
@@ -107,7 +105,7 @@ namespace Xt.Synth0
 			_app = app;
 			_platform = platform;
 			_dispatchToUI = dispatchToUI;
-			_bufferFinished = bufferFinished;
+			_automationValues = new int[_synth.AutoParams().Count];
 			GCNotification.Register(this);
 		}
 
@@ -118,6 +116,13 @@ namespace Xt.Synth0
 		{
 			ResetStream();
 			_platform.Dispose();
+		}
+
+		void DoResumeStream()
+		{
+			AutomationQueue.Clear();
+			_app.Track.Synth.CopyTo(_synth);
+			_stream.Start();
 		}
 
 		internal void Stop()
@@ -160,7 +165,6 @@ namespace Xt.Synth0
 			finally
 			{
 				_dsp.Reset(_app.Audio);
-				_original.CopyTo(_app.Track.Synth);
 			}
 		}
 
@@ -169,7 +173,6 @@ namespace Xt.Synth0
 			try
 			{
 				_dsp.Reset(_app.Audio);
-				_app.Track.Synth.CopyTo(_original);
 				_app.Audio.State = AudioState.Running;
 				DoStartStream();
 			}
@@ -185,7 +188,7 @@ namespace Xt.Synth0
 			try
 			{
 				_app.Audio.State = AudioState.Running;
-				_stream.Start();
+				DoResumeStream();
 			}
 			catch
 			{
@@ -222,19 +225,19 @@ namespace Xt.Synth0
 			}
 		}
 
-		void ProcessBuffer(AutomationEntry entry, int frames, int rate)
+		void ProcessBuffer(int frames, int rate)
 		{
 			for (int f = 0; f < frames; f++)
 			{
-				ProcessFrame(entry, f, rate);
+				ProcessFrame(f, rate);
 				_streamPosition++;
 			}
 		}
 
-		void ProcessFrame(AutomationEntry entry, int frame, int rate)
+		void ProcessFrame(int frame, int rate)
 		{
 			var seq = _app.Track.Sequencer;
-			var sample = _dsp.Next(entry.Model, seq, _app.Audio, rate, entry.Automated) * MaxAmp;
+			var sample = _dsp.Next(_synth, seq, _app.Audio, rate) * MaxAmp;
 			if (sample > MaxAmp)
 			{
 				_clipPosition = _streamPosition;
@@ -293,7 +296,7 @@ namespace Xt.Synth0
 				_cpuUsagePosition = _streamPosition;
 				_app.Audio.CpuUsage = Math.Min(processedSeconds / bufferSeconds, 1.0);
 			}
-			if (_bufferInfoPosition == -1 || _streamPosition >= 
+			if (_bufferInfoPosition == -1 || _streamPosition >=
 				_bufferInfoPosition + rate * BufferInfoIntervalSeconds)
 			{
 				_bufferInfoPosition = _streamPosition;
@@ -349,19 +352,35 @@ namespace Xt.Synth0
 			}
 		}
 
+		void BeginAutomation()
+		{
+			var @params = _synth.AutoParams();
+			var actions = AutomationQueue.DequeueUI(out var count);
+			for (int i = 0; i < count; i++)
+				@params[actions[i].Param].Param.Value = @actions[i].Value;
+			for (int i = 0; i < @params.Count; i++)
+				_automationValues[i] = @params[i].Param.Value;
+		}
+
+		void EndAutomation()
+		{
+			var @params = _synth.AutoParams();
+			for (int i = 0; i < @params.Count; i++)
+				if (@params[i].Param.Value != _automationValues[i])
+					AutomationQueue.EnqueueAudio(i, @params[i].Param.Value);
+		}
+
 		internal void OnBuffer(in XtBuffer buffer, in XtFormat format)
 		{
 			_stopwatch.Restart();
-			var entry = AutomationPool.Get();
-			Array.Clear(entry.Automated);
-			_app.Track.Synth.CopyTo(entry.Model);
+			BeginAutomation();
 			int rate = format.mix.rate;
-			ProcessBuffer(entry, buffer.frames, rate);
+			ProcessBuffer(buffer.frames, rate);
+			EndAutomation();
 			CopyBuffer(in buffer, in format);
 			ResetWarnings(rate);
 			_stopwatch.Stop();
 			UpdateStreamInfo(buffer.frames, rate);
-			_bufferFinished(entry);
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
@@ -449,7 +468,7 @@ namespace Xt.Synth0
 				_stream = OpenDeviceStream(in deviceParams);
 			UpdateStreamInfo(0, format.mix.rate);
 			GC.Collect(2, GCCollectionMode.Forced, true, true);
-			_stream.Start();
+			DoResumeStream();
 		}
 	}
 }

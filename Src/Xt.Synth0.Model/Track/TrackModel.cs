@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class TrackModel: ICopyModel
+	public sealed class TrackModel : ICopyModel
 	{
 		public const int CurrentVersion = 1;
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
@@ -25,13 +25,15 @@ namespace Xt.Synth0.Model
 
 		public TrackModel()
 		{
-			_params.AddRange(Synth.SubModels().SelectMany(m => m.Params()));
+			var synthParams = Synth.SubModels().SelectMany(m => m.Params()).ToArray();
+			_params.AddRange(synthParams);
 			_params.AddRange(Sequencer.SubModels().SelectMany(m => m.Params()));
 			for (int p = 0; p < _params.Count; p++)
 			{
 				int iLocal = p;
-				_params[p].PropertyChanged += (s, e) => ParamChanged?.Invoke(
-					this, new ParamChangedEventArgs(iLocal, _params[iLocal].Value));
+				bool isAutomatable = iLocal < synthParams.Length;
+				_params[p].PropertyChanged += (s, e) => ParamChanged?.Invoke(this,
+					new ParamChangedEventArgs(iLocal, isAutomatable, _params[iLocal].Value));
 			}
 		}
 	}

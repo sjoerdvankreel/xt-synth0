@@ -6,7 +6,8 @@ namespace Xt.Synth0.Model
 	{
 		public int Index { get; }
 		public int Value { get; }
-		internal ParamChangedEventArgs(int index, int value)
-		=> (Index, Value) = (index, value);
+		public bool IsAutomatable { get; }
+		internal ParamChangedEventArgs(int index, bool isAutomatable, int value)
+		=> (Index, IsAutomatable, Value) = (index, isAutomatable, value);
 	}
 }

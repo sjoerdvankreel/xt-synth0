@@ -4,15 +4,15 @@ namespace Xt.Synth0.DSP
 {
 	class PatternDSP
 	{
-		internal void Automate(SynthModel synth,
-			SequencerModel seq, AudioModel audio, bool[] automated)
+		internal void Automate(SynthModel synth, 
+			SequencerModel seq, AudioModel audio)
 		{
 			var row = seq.Pattern.Rows[audio.CurrentRow];
 			foreach (var fx in row.Fx)
-				Automate(synth, fx, automated);
+				Automate(synth, fx);
 		}
 
-		void Automate(SynthModel model, PatternFx fx, bool[] automated)
+		void Automate(SynthModel model, PatternFx fx)
 		{
 			var autos = model.AutoParams();
 			var target = fx.Target.Value;
@@ -22,7 +22,6 @@ namespace Xt.Synth0.DSP
 			if (value < param.Info.Min) param.Value = param.Info.Min;
 			else if (value > param.Info.Max) param.Value = param.Info.Max;
 			else param.Value = value;
-			automated[target - 1] = true;
 		}
 	}
 }

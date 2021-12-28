@@ -42,18 +42,16 @@ namespace Xt.Synth0
 			var app = new Application();
 			app.Startup += OnAppStartup;
 			PlotUI.RequestPlotData += OnRequestPlotData;
+			app.Dispatcher.Hooks.DispatcherInactive += OnDispatcherInactive;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
+			Model.Track.ParamChanged += OnTrackParamChanged;
 			app.Run(CreateWindow());
 		}
 
-		static void CopyToUIThread(AutomationEntry entry)
+		static void OnTrackParamChanged(object sender, ParamChangedEventArgs e)
 		{
-			var audioParams = entry.Model.AutoParams();
-			var uiParams = Model.Track.Synth.AutoParams();
-			for (int a = 0; a < entry.Automated.Length; a++)
-				if (entry.Automated[a])
-					uiParams[a].Param.Value = audioParams[a].Param.Value;
-			AutomationPool.Return(entry);
+			if (Model.Audio.IsRunning && e.IsAutomatable)
+				AutomationQueue.EnqueueUI(e.Index, e.Value);
 		}
 
 		static SettingsModel LoadSettings(AudioEngine engine)
@@ -120,6 +118,14 @@ namespace Xt.Synth0
 		{
 			OnError(e.Exception);
 			e.Handled = true;
+		}
+
+		static void OnDispatcherInactive(object sender, EventArgs e)
+		{
+			var @params = Model.Track.Synth.AutoParams();
+			var actions = AutomationQueue.DequeueAudio(out var count);
+			for (int i = 0; i < count; i++)
+				@params[actions[i].Param].Param.Value = @actions[i].Value;
 		}
 
 		static void OnError(Exception error)
@@ -208,13 +214,9 @@ namespace Xt.Synth0
 		static AudioEngine SetupEngine(Window mainWindow)
 		{
 			var helper = new WindowInteropHelper(mainWindow);
-			Action<AutomationEntry> copyToUIThread = CopyToUIThread;
 			var logger = (string msg) => IO.LogError(StartTime, msg, null);
-			Action<Action> dispatchToUI = a =>
-				Application.Current?.Dispatcher.BeginInvoke(a);
-			Action<AutomationEntry> bufferFinished = e =>
-				Application.Current?.Dispatcher.BeginInvoke(copyToUIThread, DispatcherPriority.Background, e);
-			var result = AudioEngine.Create(Model, helper.Handle, logger, dispatchToUI, bufferFinished);
+			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
+			var result = AudioEngine.Create(Model, helper.Handle, logger, dispatchToUI);
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
 			return result;
