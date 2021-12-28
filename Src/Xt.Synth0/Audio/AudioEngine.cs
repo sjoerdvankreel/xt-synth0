@@ -14,7 +14,6 @@ namespace Xt.Synth0
 		const float WarningDurationSeconds = 0.5f;
 		const float CpuUsageIntervalSeconds = 0.5f;
 		const float BufferInfoIntervalSeconds = 1.0f;
-		const float GcNotificationDurationSeconds = 0.2f;
 
 		static XtSample DepthToSample(int size) => size switch
 		{
@@ -256,17 +255,16 @@ namespace Xt.Synth0
 		void ResetWarnings(int rate)
 		{
 			float warningFrames = WarningDurationSeconds * rate;
-			float gcNotificationFrames = GcNotificationDurationSeconds * rate;
 			if (_streamPosition > _clipPosition + warningFrames)
 				_app.Audio.IsClipping = false;
+			if (_streamPosition > _gcPositions[0] + warningFrames)
+				_app.Audio.GC0Collected = false;
+			if (_streamPosition > _gcPositions[1] + warningFrames)
+				_app.Audio.GC1Collected = false;
+			if (_streamPosition > _gcPositions[2] + warningFrames)
+				_app.Audio.GC2Collected = false;
 			if (_streamPosition > _overloadPosition + warningFrames)
 				_app.Audio.IsOverloaded = false;
-			if (_streamPosition > _gcPositions[0] + gcNotificationFrames)
-				_app.Audio.GC0Collected = false;
-			if (_streamPosition > _gcPositions[1] + gcNotificationFrames)
-				_app.Audio.GC1Collected = false;
-			if (_streamPosition > _gcPositions[2] + gcNotificationFrames)
-				_app.Audio.GC2Collected = false;
 		}
 
 		void UpdateStreamInfo(int frames, int rate)
