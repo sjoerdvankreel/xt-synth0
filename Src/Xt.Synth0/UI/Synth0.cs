@@ -19,9 +19,6 @@ namespace Xt.Synth0
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
 
-		static readonly ParamAction[] _uiThreadActions
-		= new ParamAction[Model.Track.Synth.AutoParams().Count];
-
 		[STAThread]
 		static void Main()
 		{
@@ -47,6 +44,16 @@ namespace Xt.Synth0
 			PlotUI.RequestPlotData += OnRequestPlotData;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			app.Run(CreateWindow());
+		}
+
+		static void CopyToUIThread(AutomationEntry entry)
+		{
+			var audioParams = entry.Model.AutoParams();
+			var uiParams = Model.Track.Synth.AutoParams();
+			for (int a = 0; a < entry.Automated.Length; a++)
+				if (entry.Automated[a])
+					uiParams[a].Param.Value = audioParams[a].Param.Value;
+			AutomationPool.Return(entry);
 		}
 
 		static SettingsModel LoadSettings(AudioEngine engine)
@@ -160,30 +167,17 @@ namespace Xt.Synth0
 			var window = (MainWindow)Application.Current.MainWindow;
 			_engine = SetupEngine(window);
 			LoadSettings(_engine).CopyTo(Model.Settings);
-			ControlUI.Stop += OnStop;
-			ControlUI.Start += OnStart;
 			MenuUI.New += (s, e) => New(window);
 			MenuUI.Open += (s, e) => Load(window);
 			MenuUI.Save += (s, e) => Save(window);
 			MenuUI.SaveAs += (s, e) => SaveAs(window);
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
-			Model.Track.ParamChanged += OnTrackParamChanged;
+			ControlUI.Stop += (s, e) => _engine.Stop();
+			ControlUI.Start += (s, e) => _engine.Start();
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.QueryFormatSupport += OnQueryFormatSupport;
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
-		}
-
-		static void OnStop(object sender, EventArgs e)
-		{
-			_engine.Stop();
-			Array.Clear(_uiThreadActions);
-		}
-
-		static void OnStart(object sender, EventArgs e)
-		{
-			Array.Clear(_uiThreadActions);
-			_engine.Start();
 		}
 
 		static void OnQueryFormatSupport(object sender, QueryFormatSupportEventArgs e)
@@ -193,50 +187,6 @@ namespace Xt.Synth0
 			e.MinBuffer = support?.min ?? 0.0;
 			e.MaxBuffer = support?.max ?? 0.0;
 			e.DefaultBuffer = support?.current ?? 0.0;
-		}
-
-		static void CopyToUIThread(SynthModel model)
-		{
-			if (Model.Audio.IsRunning)
-			{
-				for (int u = 0; u < _uiThreadActions.Length; u++)
-					if (_uiThreadActions[u].Changed)
-						model.AutoParams()[u].Param.Value = _uiThreadActions[u].Value;
-				model.CopyTo(Model.Track.Synth);
-			}
-			ModelPool.Return(model);
-			Array.Clear(_uiThreadActions);
-		}
-
-		static void OnTrackParamChanged(object sender, ParamChangedEventArgs e)
-		{
-			if (!Model.Audio.IsRunning) return;
-			_uiThreadActions[e.Index].Changed = true;
-			_uiThreadActions[e.Index].Value = e.Value;
-		}
-
-		static void OnBufferFinished(SynthModel model, Action<SynthModel> copyToUIThread)
-		{
-			var dispatcher = Application.Current?.Dispatcher;
-			if (dispatcher == null) return;
-			if (ModelPool.CurrentCopyOperation?.Abort() == true)
-				ModelPool.Return(ModelPool.CurrentModel);
-			ModelPool.CurrentModel = model;
-			ModelPool.CurrentCopyOperation = dispatcher.BeginInvoke(
-				copyToUIThread, DispatcherPriority.Background, model);
-		}
-
-		static AudioEngine SetupEngine(Window mainWindow)
-		{
-			var helper = new WindowInteropHelper(mainWindow);
-			Action<SynthModel> copyToUIThread = CopyToUIThread;
-			var logger = (string msg) => IO.LogError(StartTime, msg, null);
-			Action<SynthModel> bufferFinished = m => OnBufferFinished(m, copyToUIThread);
-			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
-			var result = AudioEngine.Create(Model, helper.Handle, logger, dispatchToUI, bufferFinished);
-			AudioModel.AddAsioDevices(result.AsioDevices);
-			AudioModel.AddWasapiDevices(result.WasapiDevices);
-			return result;
 		}
 
 		static void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
@@ -253,6 +203,21 @@ namespace Xt.Synth0
 			e.Samples = PlotCycles * cycleLength;
 			for (int s = 0; s < e.Samples; s++)
 				PlotBuffer[s] = dsp.Next(global, unit, rate);
+		}
+
+		static AudioEngine SetupEngine(Window mainWindow)
+		{
+			var helper = new WindowInteropHelper(mainWindow);
+			Action<AutomationEntry> copyToUIThread = CopyToUIThread;
+			var logger = (string msg) => IO.LogError(StartTime, msg, null);
+			Action<Action> dispatchToUI = a =>
+				Application.Current?.Dispatcher.BeginInvoke(a);
+			Action<AutomationEntry> bufferFinished = e =>
+				Application.Current?.Dispatcher.BeginInvoke(copyToUIThread, DispatcherPriority.Background, e);
+			var result = AudioEngine.Create(Model, helper.Handle, logger, dispatchToUI, bufferFinished);
+			AudioModel.AddAsioDevices(result.AsioDevices);
+			AudioModel.AddWasapiDevices(result.WasapiDevices);
+			return result;
 		}
 	}
 }

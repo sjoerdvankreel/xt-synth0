@@ -26,7 +26,7 @@ namespace Xt.Synth0
 
 		internal static AudioEngine Create(
 			AppModel app, IntPtr mainWindow, Action<string> log,
-			Action<Action> dispatchToUI, Action<SynthModel> bufferFinished)
+			Action<Action> dispatchToUI, Action<AutomationEntry> bufferFinished)
 		{
 			XtAudio.SetOnError(msg => log(msg));
 			var platform = XtAudio.Init(nameof(Synth0), mainWindow);
@@ -42,7 +42,7 @@ namespace Xt.Synth0
 		}
 
 		static AudioEngine Create(AppModel app, XtPlatform platform,
-			Action<Action> dispatchToUI, Action<SynthModel> bufferFinished)
+			Action<Action> dispatchToUI, Action<AutomationEntry> bufferFinished)
 		{
 			var asio = platform.GetService(XtSystem.ASIO);
 			var wasapi = platform.GetService(XtSystem.WASAPI);
@@ -71,10 +71,7 @@ namespace Xt.Synth0
 
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
-		readonly Action<SynthModel> _bufferFinished;
-
-		readonly ParamAction[] _autoActions;
-		readonly SynthModel _beforeAutomation = new();
+		readonly Action<AutomationEntry> _bufferFinished;
 
 		IAudioStream _stream;
 		long _clipPosition = -1;
@@ -96,7 +93,7 @@ namespace Xt.Synth0
 			AppModel app,
 			XtPlatform platform,
 			Action<Action> dispatchToUI,
-			Action<SynthModel> bufferFinished,
+			Action<AutomationEntry> bufferFinished,
 			string asioDefaultDeviceId,
 			string wasapiDefaultDeviceId,
 			IReadOnlyList<DeviceModel> asioDevices,
@@ -111,7 +108,6 @@ namespace Xt.Synth0
 			_platform = platform;
 			_dispatchToUI = dispatchToUI;
 			_bufferFinished = bufferFinished;
-			_autoActions = new ParamAction[app.Track.Synth.AutoParams().Count];
 			GCNotification.Register(this);
 		}
 
@@ -160,7 +156,6 @@ namespace Xt.Synth0
 			{
 				_app.Audio.State = AudioState.Stopped;
 				DoResetStream();
-				Array.Clear(_autoActions);
 			}
 			finally
 			{
@@ -227,47 +222,19 @@ namespace Xt.Synth0
 			}
 		}
 
-		SynthModel PrepareModel()
-		{
-			var result = ModelPool.Get();
-			_app.Track.Synth.CopyTo(result);
-			ApplyAutomation(result);
-			result.CopyTo(_beforeAutomation);
-			return result;
-		}
-
-		void UpdateAutomation(SynthModel synth)
-		{
-			var newAutos = synth.AutoParams();
-			var oldAutos = _beforeAutomation.AutoParams();
-			for (int a = 0; a < _autoActions.Length; a++)
-			{
-				int value = newAutos[a].Param.Value;
-				_autoActions[a].Value = value;
-				_autoActions[a].Changed = value != oldAutos[a].Param.Value;
-			}
-		}
-
-		void ApplyAutomation(SynthModel synth)
-		{
-			for (int a = 0; a < _autoActions.Length; a++)
-				if (_autoActions[a].Changed)
-					synth.AutoParams()[a].Param.Value = _autoActions[a].Value;
-		}
-
-		void ProcessBuffer(SynthModel synth, int frames, int rate)
+		void ProcessBuffer(AutomationEntry entry, int frames, int rate)
 		{
 			for (int f = 0; f < frames; f++)
 			{
-				ProcessFrame(synth, f, rate);
+				ProcessFrame(entry, f, rate);
 				_streamPosition++;
 			}
 		}
 
-		void ProcessFrame(SynthModel synth, int frame, int rate)
+		void ProcessFrame(AutomationEntry entry, int frame, int rate)
 		{
 			var seq = _app.Track.Sequencer;
-			var sample = _dsp.Next(synth, seq, _app.Audio, rate) * MaxAmp;
+			var sample = _dsp.Next(entry.Model, seq, _app.Audio, rate, entry.Automated) * MaxAmp;
 			if (sample > MaxAmp)
 			{
 				_clipPosition = _streamPosition;
@@ -385,15 +352,16 @@ namespace Xt.Synth0
 		internal void OnBuffer(in XtBuffer buffer, in XtFormat format)
 		{
 			_stopwatch.Restart();
+			var entry = AutomationPool.Get();
+			Array.Clear(entry.Automated);
+			_app.Track.Synth.CopyTo(entry.Model);
 			int rate = format.mix.rate;
-			var synth = PrepareModel();
-			ProcessBuffer(synth, buffer.frames, rate);
+			ProcessBuffer(entry, buffer.frames, rate);
 			CopyBuffer(in buffer, in format);
-			UpdateAutomation(synth);
 			ResetWarnings(rate);
 			_stopwatch.Stop();
 			UpdateStreamInfo(buffer.frames, rate);
-			_bufferFinished(synth);
+			_bufferFinished(entry);
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
