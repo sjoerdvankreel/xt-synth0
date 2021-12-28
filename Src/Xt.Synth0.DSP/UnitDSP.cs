@@ -5,6 +5,7 @@ namespace Xt.Synth0.DSP
 {
 	public class UnitDSP
 	{
+		static readonly float[] SineTable = MakeSineTable();
 		static readonly float[,,] FrequencyTable = MakeFrequencyTable();
 
 		static float Frequency(int oct, int note, int cent)
@@ -26,8 +27,27 @@ namespace Xt.Synth0.DSP
 			return result;
 		}
 
-		float _phase = 0.0f;
-		internal void Reset() => _phase = 0.0f;
+		static float Sin(double phase)
+		{
+			return SineTable[(int)((phase - (int)phase) * SineTable.Length)];
+			double p = phase - (int)phase;
+			double x = p * SineTable.Length;
+			int x0 = ((int)x) % SineTable.Length;
+			int x1 = (x0 + 1) % SineTable.Length;
+			float weight = (float)(x - x0);
+			return SineTable[x0] * (1.0f - weight) + SineTable[x1] * weight;
+		}
+
+		static float[] MakeSineTable()
+		{
+			var result = new float[65535];
+			for (int i = 0; i < result.Length; i++)
+				result[i] = MathF.Sin(i / (float)result.Length * 2.0f * MathF.PI);
+			return result;
+		}
+
+		double _phase = 0.0;
+		internal void Reset() => _phase = 0.0;
 
 		public float Frequency(UnitModel unit)
 		{
@@ -45,14 +65,14 @@ namespace Xt.Synth0.DSP
 			var type = (UnitType)unit.Type.Value;
 			float sample = Generate(global, type, freq, rate);
 			_phase += freq / rate;
-			if (_phase >= 1.0f) _phase = 0.0f;
+			if (_phase >= 1.0) _phase = 0.0;
 			return sample * amp;
 		}
 
 		float Generate(GlobalModel global, UnitType type, float freq, float rate)
 		=> type switch
 		{
-			UnitType.Sin => MathF.Sin(_phase * MathF.PI * 2.0f),
+			UnitType.Sin => Sin(_phase),
 			_ => GenerateMethod(global, type, freq, rate)
 		};
 
@@ -68,9 +88,9 @@ namespace Xt.Synth0.DSP
 		float GenerateNaive(UnitType type)
 		=> type switch
 		{
-			UnitType.Saw => _phase * 2.0f - 1.0f,
-			UnitType.Sqr => _phase > 0.5f ? 1.0f : -1.0f,
-			UnitType.Tri => (_phase <= 0.5f ? _phase : 1.0f - _phase) * 4.0f - 1.0f,
+			UnitType.Saw => (float)(_phase * 2.0 - 1.0),
+			UnitType.Sqr => (float)(_phase > 0.5 ? 1.0 : -1.0),
+			UnitType.Tri => (float)((_phase <= 0.5 ? _phase : 1.0 - _phase) * 4.0 - 1.0),
 			_ => throw new InvalidOperationException()
 		};
 
@@ -100,7 +120,9 @@ namespace Xt.Synth0.DSP
 					rolloff *= h;
 				float amp = 1.0f / rolloff;
 				limit += amp;
-				result += sign * MathF.Sin(_phase * h * MathF.PI * 2.0f) * amp;
+				//result += sign * MathF.Sin((float)_phase * h * 2.0f * MathF.PI) * amp;
+				var p = _phase * h;
+				result += sign * amp * SineTable[(int)((p - (int)p) * SineTable.Length)];
 				sign *= multiplier;
 			}
 			return result / limit;
