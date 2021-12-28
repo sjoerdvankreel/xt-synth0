@@ -4,3 +4,4 @@ pulse width
 drop samples on overload ?
 fastsin
 check profilers
+limit fx/notes to usable

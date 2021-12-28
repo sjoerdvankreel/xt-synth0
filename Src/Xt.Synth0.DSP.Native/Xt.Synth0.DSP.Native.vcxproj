@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="dsp.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dsp.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

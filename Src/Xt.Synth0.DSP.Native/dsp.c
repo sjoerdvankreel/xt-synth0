@@ -1,8 +1,6 @@
-#define XT_CALL __stdcall
-#define XT_EXPORT __declspec(dllexport)
+#include "dsp.h"
 
-XT_EXPORT float XT_CALL
-xts0_unit_additive(float phase)
+XTS_EXPORT void XTS_CALL
+xts_process_buffer(xts_synth* synth, int frames, int rate)
 {
-  return phase;
 }
