@@ -6,6 +6,13 @@ namespace Xt.Synth0.Model
 {
 	public sealed class SynthModel : MainModel
 	{
+		public unsafe struct XtsSynthModel
+		{
+			internal AmpModel.Native amp;
+			internal GlobalModel.Native global;
+			internal fixed byte units[UnitCount * sizeof(UnitModel.Native)];
+		}
+
 		public const int UnitCount = 3;
 
 		static IEnumerable<UnitModel> MakeUnits()

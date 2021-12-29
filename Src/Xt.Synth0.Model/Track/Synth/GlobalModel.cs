@@ -5,6 +5,14 @@ namespace Xt.Synth0.Model
 {
 	public sealed class GlobalModel : GroupModel
 	{
+		internal struct Native
+		{
+			internal int bpm;
+			internal int hmns;
+			internal int plot;
+			internal int method;
+		}
+
 		public static readonly string[] Methods = Enum.
 			GetValues<SynthMethod>().Select(v => v.ToString()).ToArray();
 
@@ -28,5 +36,21 @@ namespace Xt.Synth0.Model
 			new[] { Bpm, Plot },
 			new[] { Method, Hmns }
 		};
+
+		internal void ToNative(ref Native native)
+		{
+			native.bpm = Bpm.Value;
+			native.hmns = Hmns.Value;
+			native.plot = Plot.Value;
+			native.method = Method.Value;
+		}
+
+		internal void FromNative(ref Native native)
+		{
+			Bpm.Value = native.bpm;
+			Hmns.Value = native.hmns;
+			Plot.Value = native.plot;
+			Method.Value = native.method;
+		}
 	}
 }

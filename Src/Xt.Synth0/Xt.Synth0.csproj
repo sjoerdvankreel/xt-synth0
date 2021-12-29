@@ -2,6 +2,7 @@
   <PropertyGroup>
     <UseWPF>true</UseWPF>
     <OutputType>WinExe</OutputType>
+    <PlatformTarget>x64</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TargetFramework>net6.0-windows</TargetFramework>
   </PropertyGroup>

@@ -5,6 +5,16 @@ namespace Xt.Synth0.Model
 {
 	public sealed class UnitModel : GroupModel
 	{
+		internal struct Native
+		{
+			internal int on;
+			internal int amp;
+			internal int oct;
+			internal int note;
+			internal int cent;
+			internal int type;
+		}
+
 		public const int MinOctave = 0;
 		public const int MaxOctave = 9;
 
@@ -44,5 +54,25 @@ namespace Xt.Synth0.Model
 			new[] { Amp, Oct },
 			new[] { Note, Cent }
 		};
+
+		internal void ToNative(ref Native native)
+		{
+			native.on = On.Value;
+			native.amp = Amp.Value;
+			native.oct = Oct.Value;
+			native.note = Note.Value;
+			native.cent = Cent.Value;
+			native.type = Type.Value;
+		}
+
+		internal void FromNative(ref Native native)
+		{
+			On.Value = native.on;
+			Amp.Value = native.amp;
+			Oct.Value = native.oct;
+			Note.Value = native.note;
+			Cent.Value = native.cent;
+			Type.Value = native.type;
+		}
 	}
 }
