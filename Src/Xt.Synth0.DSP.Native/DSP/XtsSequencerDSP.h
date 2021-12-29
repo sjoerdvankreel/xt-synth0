@@ -7,10 +7,11 @@
 
 typedef struct XtsSequencerDSP
 {
+  XtsSynthDSP synth;
   int currentRow;
 	int previousRow;
 	double rowFactor;
-  XtsSynthDSP synth;
+  long streamPosition;
 } XtsSequencerDSP;
 
 extern void

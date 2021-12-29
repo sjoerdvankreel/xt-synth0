@@ -4,6 +4,10 @@ void
 XtsSequencerDSPReset(
 XtsSequencerDSP* dsp)
 {
+  dsp->currentRow = 0;
+  dsp->previousRow = -1;
+	dsp->rowFactor = 0.0f;
+  XtsSynthDSPReset(&dsp->synth);
 }
 
 float

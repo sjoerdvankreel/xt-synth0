@@ -4,6 +4,8 @@ void
 XtsUnitDSPReset(
 XtsUnitDSP* dsp)
 {
+  dsp->phased = 0.0;
+  dsp->phasef = 0.0f;
 }
 
 float
