@@ -23,16 +23,16 @@
     <ClInclude Include="DSP\XtsSequencerDSP.h" />
     <ClInclude Include="DSP\XtsSynthDSP.h" />
     <ClInclude Include="DSP\XtsUnitDSP.h" />
-    <ClInclude Include="Model\XtsAudioModel.h" />
     <ClInclude Include="Model\XtsSequencerModel.h" />
     <ClInclude Include="Model\XtsSynthModel.h" />
-    <ClInclude Include="XtsDefines.h" />
+    <ClInclude Include="Xts.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\XtsPatternDSP.c" />
     <ClCompile Include="DSP\XtsSequencerDSP.c" />
     <ClCompile Include="DSP\XtsSynthDSP.c" />
     <ClCompile Include="DSP\XtsUnitDSP.c" />
+    <ClCompile Include="Xts.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

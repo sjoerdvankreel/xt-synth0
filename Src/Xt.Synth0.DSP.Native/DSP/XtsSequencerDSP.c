@@ -1,5 +1,14 @@
-#include "../XtsDefines.h"
-#include "../Model/XtsAudioModel.h"
-#include "../Model/XtsSynthModel.h"
-#include "../Model/XtsSequencerModel.h"
+#include "XtsSequencerDSP.h"
 
+void
+XtsSequencerDSPReset(
+XtsSequencerDSP* dsp)
+{
+}
+
+float
+XtsSequencerDSPNext(
+XtsSequencerDSP* dsp, const XtsSequencerModel* seq, XtsSynthModel* synth, float rate)
+{ 
+  return 0.0f;
+}

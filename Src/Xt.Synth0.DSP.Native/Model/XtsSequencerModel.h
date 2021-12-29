@@ -1,18 +1,18 @@
 #ifndef XTS_SEQUENCER_MODEL_H
 #define XTS_SEQUENCER_MODEL_H
 
-static const int XtsPatternRowMaxFxCount = 3;
-static const int XtsPatternRowMaxKeyCount = 4;
-static const int XtsPatternModelRowCount = 256;
+#define XTS_PATTERN_ROW_MAX_FX_COUNT 3
+#define XTS_PATTERN_ROW_MAX_KEY_COUNT 4
+#define XTS_PATTERN_MODEL_ROW_COUNT 256
 
 typedef enum XtsPatternNote
 {
-	XtsPN_None, XtsPN_Off,
-  XtsPN_C, XtsPN_CSharp,
-  XtsPN_D, XtsPN_DSharp, XtsPN_E,
-  XtsPN_F, XtsPN_FSharp,
-  XtsPN_G, XtsPN_GSharp,
-  XtsPN_A, XtsPN_ASharp, XtsPN_B
+	XtsPnNone, XtsPnOff,
+  XtsPnC, XtsPnCSharp,
+  XtsPnD, XtsPnDSharp, XtsPnE,
+  XtsPnF, XtsPnFSharp,
+  XtsPnG, XtsPnGSharp,
+  XtsPnA, XtsPnASharp, XtsPnB
 } XtsPatternNote;
 
 typedef struct XtsEditModel
@@ -38,13 +38,13 @@ typedef struct XtsPatternKey
 
 typedef struct XtsPatternRow
 {
-  XtsPatternFx fx[XtsPatternRowMaxFxCount];
-  XtsPatternKey keys[XtsPatternRowMaxKeyCount];
+  XtsPatternFx fx[XTS_PATTERN_ROW_MAX_FX_COUNT];
+  XtsPatternKey keys[XTS_PATTERN_ROW_MAX_KEY_COUNT];
 } XtsPatternRow;
 
 typedef struct XtsPatternModel
 {
-  XtsPatternRow rows[XtsPatternModelRowCount];
+  XtsPatternRow rows[XTS_PATTERN_MODEL_ROW_COUNT];
 } XtsPatternModel;
 
 typedef struct XtsSequencerModel

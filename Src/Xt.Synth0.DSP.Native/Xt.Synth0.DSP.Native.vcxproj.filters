@@ -9,9 +9,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model\XtsAudioModel.h">
-      <Filter>Model</Filter>
-    </ClInclude>
     <ClInclude Include="Model\XtsSequencerModel.h">
       <Filter>Model</Filter>
     </ClInclude>
@@ -44,5 +41,6 @@
     <ClCompile Include="DSP\XtsUnitDSP.c">
       <Filter>DSP</Filter>
     </ClCompile>
+    <ClCompile Include="Xts.c" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,7 @@
-#include "../XtsDefines.h"
-#include "../Model/XtsAudioModel.h"
-#include "../Model/XtsSynthModel.h"
-#include "../Model/XtsSequencerModel.h"
+#include "XtsPatternDSP.h"
 
+void 
+XtsPatternDSPAutomate(
+const XtsSequencerModel* seq, XtsSynthModel* synth)
+{
+}

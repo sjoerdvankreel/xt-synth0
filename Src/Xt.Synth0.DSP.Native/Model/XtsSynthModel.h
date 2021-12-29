@@ -1,25 +1,25 @@
 #ifndef XTS_SYNTH_MODEL_H
 #define XTS_SYNTH_MODEL_H
 
-static const int XtsSynthModelUnitCount = 3;
+#define  XTS_SYNTH_MODEL_UNIT_COUNT 3
 
 typedef enum XtsSynthMethod 
 { 
-  XtsSM_PBP, XtsSM_Add, XtsSM_Nve 
+  XtsSmPBP, XtsSmAdd, XtsSmNve 
 } XtsSynthMethod;
 
 typedef enum XtsUnitType 
 { 
-  XtsUT_Sin, XtsUT_Saw, XtsUT_Sqr, XtsUT_Tri 
+  XtsUtSin, XtsUtSaw, XtsUtSqr, XtsUtTri 
 } XtsUnitType;
 
 typedef enum XtsUnitNote
 {
-	XtsUN_C, XtsUN_CSharp,
-	XtsUN_D, XtsUN_DSharp, XtsUN_E,
-	XtsUN_F, XtsUN_FSharp,
-	XtsUN_G, XtsUN_GSharp,
-	XtsUN_A, XtsUN_ASharp, XtsUN_B
+	XtsUnC, XtsUnCSharp,
+	XtsUnD, XtsUnDSharp, XtsUnE,
+	XtsUnF, XtsUnFSharp,
+	XtsUnG, XtsUnGSharp,
+	XtsUnA, XtsUnASharp, XtsUnB
 } XtsUnitNote;
 
 typedef struct XtsAmpModel
@@ -29,7 +29,7 @@ typedef struct XtsAmpModel
   int s;
   int r;
   int lvl;
-};
+} XtsAmpModel;
 
 typedef struct XtsGlobalModel
 {
@@ -53,7 +53,7 @@ typedef struct XtsSynthModel
 {
   XtsAmpModel amp;
   XtsGlobalModel global;
-  XtsUnitModel units[XtsSynthModelUnitCount];
+  XtsUnitModel units[XTS_SYNTH_MODEL_UNIT_COUNT];
 } XtsSynthModel;
 
 #endif // XTS_SYNTH_MODEL_H
