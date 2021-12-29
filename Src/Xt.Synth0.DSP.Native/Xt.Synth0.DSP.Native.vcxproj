@@ -19,10 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dsp.c" />
+    <ClInclude Include="DSP\XtsPatternDSP.h" />
+    <ClInclude Include="DSP\XtsSequencerDSP.h" />
+    <ClInclude Include="DSP\XtsSynthDSP.h" />
+    <ClInclude Include="DSP\XtsUnitDSP.h" />
+    <ClInclude Include="Model\XtsAudioModel.h" />
+    <ClInclude Include="Model\XtsSequencerModel.h" />
+    <ClInclude Include="Model\XtsSynthModel.h" />
+    <ClInclude Include="XtsDefines.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dsp.h" />
+    <ClCompile Include="DSP\XtsPatternDSP.c" />
+    <ClCompile Include="DSP\XtsSequencerDSP.c" />
+    <ClCompile Include="DSP\XtsSynthDSP.c" />
+    <ClCompile Include="DSP\XtsUnitDSP.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

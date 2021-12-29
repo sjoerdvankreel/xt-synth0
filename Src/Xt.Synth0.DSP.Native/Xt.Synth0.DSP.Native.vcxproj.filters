@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Model">
+      <UniqueIdentifier>{c6c985d2-e2c9-4c2c-a07a-a98329bdff2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DSP">
+      <UniqueIdentifier>{d244098d-94dc-4553-a43c-115dcbf113ec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Model\XtsAudioModel.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\XtsSequencerModel.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\XtsSynthModel.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\XtsPatternDSP.h">
+      <Filter>DSP</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\XtsSequencerDSP.h">
+      <Filter>DSP</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\XtsSynthDSP.h">
+      <Filter>DSP</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\XtsUnitDSP.h">
+      <Filter>DSP</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DSP\XtsSequencerDSP.c">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\XtsPatternDSP.c">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\XtsSynthDSP.c">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\XtsUnitDSP.c">
+      <Filter>DSP</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
