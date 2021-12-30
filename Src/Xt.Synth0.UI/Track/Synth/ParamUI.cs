@@ -21,10 +21,10 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static void Add(
-			Grid grid, AppModel model, Param param, Cell cell, int valueSpan)
+			Grid grid, AppModel model, Param param, Cell cell)
 		{
+			grid.Add(MakeValue(param, cell.Right(2)));
 			grid.Add(Create.Label(param.Info.Name, cell.Right(1)));
-			grid.Add(MakeValue(param, new Cell(cell.Row, cell.Col + 2, 1, valueSpan)));
 			if (param.Info.IsToggle)
 				grid.Add(MakeToggle(model, param, cell));
 			else

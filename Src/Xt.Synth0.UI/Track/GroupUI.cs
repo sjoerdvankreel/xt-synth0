@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using Xt.Synth0.Model;
@@ -12,16 +12,17 @@ namespace Xt.Synth0.UI
 
 		internal static FrameworkElement MakeContent(AppModel model, INamedModel group)
 		{
-			var rows = group.ParamGroups();
-			var cols = rows.Max(r => r.Length);
-			var result = Create.Grid(rows.Length, cols * 3);
+			const int cols = 2;
+			var @params = group.Params;
+			int rows = (int)Math.Ceiling(@params.Count / (double)cols);
+			var result = Create.Grid(rows, cols * 3);
 			result.VerticalAlignment = VerticalAlignment.Top;
-			for (int r = 0; r < rows.Length; r++)
-				for (int c = 0; c < rows[r].Length; c++)
-				{
-					var valueSpan = c == rows[r].Length - 1 ? 1 + 3 * (cols - c - 1) : 1;
-					ParamUI.Add(result, model, rows[r][c], new(r, c * 3), valueSpan);
-				}
+			for (int p = 0; p < @params.Count; p++)
+			{
+				int r = p / cols;
+				int c = p % cols;
+				ParamUI.Add(result, model, @params[r * cols + c], new(r, c * 3));
+			}
 			return result;
 		}
 	}
