@@ -5,3 +5,8 @@ drop samples on overload ?
 fastsin
 check profilers
 limit fx/notes to usable
+size checks
+dont do autoparams
+drop json
+drop modellist
+drop copymodel

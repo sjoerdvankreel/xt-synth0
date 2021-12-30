@@ -9,8 +9,7 @@ namespace Xt.Synth0.Model
 		static readonly PropertyChangedEventArgs EventArgs = new(nameof(Value));
 
 		public ParamInfo Info { get; }
-		internal Param(ParamInfo info)
-		=> (Info, Value) = (info, info.Default);
+		internal Param(ParamInfo info) => (Info, Value) = (info, info.Default);
 
 		int _value;
 		public int Value

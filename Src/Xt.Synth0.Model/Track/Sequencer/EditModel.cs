@@ -1,7 +1,20 @@
-﻿namespace Xt.Synth0.Model
+﻿using System.Runtime.InteropServices;
+
+namespace Xt.Synth0.Model
 {
 	public sealed class EditModel : GroupModel
 	{
+		public const int NativeSize = 1;
+
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Native
+		{
+			internal int fx;
+			internal int act;
+			internal int pats;
+			internal int keys;
+		}
+
 		static readonly ParamInfo FxInfo = new DiscreteInfo(
 			nameof(Fx), "Effect count", 0, PatternRow.MaxFxCount, 1);
 		static readonly ParamInfo KeysInfo = new DiscreteInfo(
@@ -21,5 +34,21 @@
 			new [] { Keys, Fx },
 			new [] { Pats, Act }
 		};
+
+		internal unsafe void ToNative(Native* native)
+		{
+			native->fx = Fx.Value;
+			native->act = Act.Value;
+			native->pats = Pats.Value;
+			native->keys = Keys.Value;
+		}
+
+		internal unsafe void FromNative(Native* native)
+		{
+			Fx.Value = native->fx;
+			Act.Value = native->act;
+			Pats.Value = native->pats;
+			Keys.Value = native->keys;
+		}
 	}
 }

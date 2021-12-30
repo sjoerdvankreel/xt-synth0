@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class GlobalModel : GroupModel
+	public sealed class GlobalModel : IGroupModel<GlobalModel>
 	{
+		internal const int Size = 1;
+
+		[StructLayout(LayoutKind.Sequential)]
 		internal struct Native
 		{
 			internal int bpm;
@@ -13,7 +17,7 @@ namespace Xt.Synth0.Model
 			internal int method;
 		}
 
-		public static readonly string[] Methods = Enum.
+		static readonly string[] Methods = Enum.
 			GetValues<SynthMethod>().Select(v => v.ToString()).ToArray();
 
 		static readonly ParamInfo BpmInfo = new DiscreteInfo(
@@ -30,27 +34,47 @@ namespace Xt.Synth0.Model
 		public Param Plot { get; } = new(PlotInfo);
 		public Param Method { get; } = new(MethodInfo);
 
-		internal GlobalModel(string name) : base(name) { }
-		internal override Param[][] ListParamGroups() => new[]
+		public int NativeSize() => Size;
+		public string Name() => "Global";
+
+		public Param[][] ParamGroups() => new[]
 		{
 			new[] { Bpm, Plot },
 			new[] { Method, Hmns }
 		};
 
-		internal void ToNative(ref Native native)
+		public void CopyTo(GlobalModel model)
 		{
-			native.bpm = Bpm.Value;
-			native.hmns = Hmns.Value;
-			native.plot = Plot.Value;
-			native.method = Method.Value;
+			model.Bpm.Value = Bpm.Value;
+			model.Hmns.Value = Hmns.Value;
+			model.Plot.Value = Plot.Value;
+			model.Method.Value = Method.Value;
 		}
 
-		internal void FromNative(ref Native native)
+		public unsafe void ToNative(IntPtr native)
 		{
-			Bpm.Value = native.bpm;
-			Hmns.Value = native.hmns;
-			Plot.Value = native.plot;
-			Method.Value = native.method;
+			Native* p = (Native*)native;
+			p->bpm = Bpm.Value;
+			p->hmns = Hmns.Value;
+			p->plot = Plot.Value;
+			p->method = Method.Value;
+		}
+
+		public unsafe void FromNative(IntPtr native)
+		{
+			Native* p = (Native*)native;
+			Bpm.Value = p->bpm;
+			Hmns.Value = p->hmns;
+			Plot.Value = p->plot;
+			Method.Value = p->method;
+		}
+
+		public void RegisterParams(Action<Param> register)
+		{
+			register(Bpm);
+			register(Hmns);
+			register(Plot);
+			register(Method);
 		}
 	}
 }
