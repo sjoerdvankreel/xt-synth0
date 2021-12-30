@@ -3,13 +3,23 @@
 
 #include "../Model/SynthModel.hpp"
 #include "../Model/SequencerModel.hpp"
+#include <vector>
 
 namespace Xts {
 
 class PatternDSP
 {
+  void Automate(
+    PatternFx const& fx,
+    std::vector<int*> const& params,
+    SynthModel& synth) const;
+
 public:
-  void Automate(SequencerModel const& seq, SynthModel& synth) const;
+  void Automate(
+    EditModel const& edit,
+    PatternRow const& row,
+    std::vector<int*> const& params,
+    SynthModel& synth) const;
 };
 
 } // namespace Xts
