@@ -8,6 +8,8 @@
     <Compile Include="..\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" PrivateAssets="all" />
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.Native.dll" Link="x64/Xt.Synth0.DSP.Native.dll" />
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.Native.pdb" Link="x64/Xt.Synth0.DSP.Native.pdb" />
+    <Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.Native.dll" Link="x64/Xt.Synth0.DSP.Native.dll" />
   </ItemGroup>
 </Project>

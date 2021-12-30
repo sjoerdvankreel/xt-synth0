@@ -1,80 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class GlobalModel : IGroupModel<GlobalModel>
+	public unsafe sealed class GlobalModel : INamedModel
 	{
-		internal const int Size = 1;
-
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct Native
+		static GlobalModel()
 		{
-			internal int bpm;
-			internal int hmns;
-			internal int plot;
-			internal int method;
+			if (Size != XtsGlobalModelSize())
+				throw new InvalidOperationException();
 		}
 
-		static readonly string[] Methods = Enum.
-			GetValues<SynthMethod>().Select(v => v.ToString()).ToArray();
-
-		static readonly ParamInfo BpmInfo = new DiscreteInfo(
-			nameof(Bpm), "Tempo", 1, 255, 120);
-		static readonly ParamInfo PlotInfo = new DiscreteInfo(
-			nameof(Plot), "Plot unit", 1, SynthModel.UnitCount, 1);
-		static readonly ParamInfo HmnsInfo = new ExpInfo(
-			nameof(Hmns), "Additive harmonics", 0, 10, 4);
-		static readonly ParamInfo MethodInfo = new EnumInfo<SynthMethod>(
-			nameof(Method), "Method (PolyBLEP, Additive, Naive)", Methods);
+		internal const int Size = 1;
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsGlobalModelSize();
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Native { internal int bpm, hmns, plot, method; }
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Hmns { get; } = new(HmnsInfo);
 		public Param Plot { get; } = new(PlotInfo);
 		public Param Method { get; } = new(MethodInfo);
 
-		public int NativeSize() => Size;
-		public string Name() => "Global";
+		public string Name => "Global";
+		public IReadOnlyList<Param> Params => new[] { Bpm, Hmns, Plot, Method };
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 
-		public Param[][] ParamGroups() => new[]
-		{
-			new[] { Bpm, Plot },
-			new[] { Method, Hmns }
-		};
-
-		public void CopyTo(GlobalModel model)
-		{
-			model.Bpm.Value = Bpm.Value;
-			model.Hmns.Value = Hmns.Value;
-			model.Plot.Value = Plot.Value;
-			model.Method.Value = Method.Value;
-		}
-
-		public unsafe void ToNative(IntPtr native)
-		{
-			Native* p = (Native*)native;
-			p->bpm = Bpm.Value;
-			p->hmns = Hmns.Value;
-			p->plot = Plot.Value;
-			p->method = Method.Value;
-		}
-
-		public unsafe void FromNative(IntPtr native)
-		{
-			Native* p = (Native*)native;
-			Bpm.Value = p->bpm;
-			Hmns.Value = p->hmns;
-			Plot.Value = p->plot;
-			Method.Value = p->method;
-		}
-
-		public void RegisterParams(Action<Param> register)
-		{
-			register(Bpm);
-			register(Hmns);
-			register(Plot);
-			register(Method);
-		}
+		static readonly string[] Methods = Enum.GetValues<SynthMethod>().Select(v => v.ToString()).ToArray();
+		static readonly ParamInfo BpmInfo = new DiscreteInfo(p => &((Native*)p)->bpm, nameof(Bpm), "Tempo", 1, 255, 120);
+		static readonly ParamInfo PlotInfo = new DiscreteInfo(p => &((Native*)p)->plot, nameof(Plot), "Plot unit", 1, SynthModel.UnitCount, 1);
+		static readonly ParamInfo HmnsInfo = new ExpInfo(p => &((Native*)p)->hmns, nameof(Hmns), "Additive harmonics", 0, 10, 4);
+		static readonly ParamInfo MethodInfo = new EnumInfo<SynthMethod>(p => &((Native*)p)->method, nameof(Method), "Method (PolyBLEP, Additive, Naive)", Methods);
 	}
 }

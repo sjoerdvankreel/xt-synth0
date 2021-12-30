@@ -1,31 +1,41 @@
-﻿using Newtonsoft.Json;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class PatternRow : SubModel
+	public unsafe sealed class PatternRow : IModelGroup
 	{
 		public const int MaxFxCount = 3;
 		public const int MaxKeyCount = 4;
 
-		static IEnumerable<PatternFx> MakeFx()
-		=> Enumerable.Repeat(0, MaxFxCount).Select(_ => new PatternFx());
-		static IEnumerable<PatternKey> MakeKeys()
-		=> Enumerable.Repeat(0, MaxKeyCount).Select(_ => new PatternKey());
+		static PatternRow()
+		{
+			if (Size != XtsPatternRowSize())
+				throw new InvalidOperationException();
+		}
 
-		[JsonIgnore]
-		public IReadOnlyList<PatternFx> Fx => _fx.Items;
-		[JsonProperty(nameof(Fx))]
-		readonly ModelList<PatternFx> _fx = new(MakeFx());
+		internal const int Size = 1;
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsPatternRowSize();		
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Native
+		{
+			internal fixed byte fx[MaxFxCount * PatternFx.Size];
+			internal fixed byte keys[MaxKeyCount * PatternKey.Size];
+		}
 
-		[JsonIgnore]
-		public IReadOnlyList<PatternKey> Keys => _keys.Items;
-		[JsonProperty(nameof(Keys))]
-		readonly ModelList<PatternKey> _keys = new(MakeKeys());
+		readonly int _index;
+		internal PatternRow(int index) => _index = index;
+		public IReadOnlyList<IModelGroup> SubGroups => new IModelGroup[0];
+		public IReadOnlyList<ISubModel> SubModels => Fx.Concat<ISubModel>(Keys).ToArray();
+		public void* Address(void* parent) => &((PatternModel.Native*)parent)->rows[_index * Size];
 
-		internal override IEnumerable<Param> ListParams() =>
-			Fx.SelectMany(f => f.Params()).Concat(
-			Keys.SelectMany(k => k.Params()));
+		public IReadOnlyList<PatternFx> Fx = new ReadOnlyCollection<PatternFx>(MakeFx());
+		public IReadOnlyList<PatternKey> Keys = new ReadOnlyCollection<PatternKey>(MakeKeys());
+		static IList<PatternFx> MakeFx() => Enumerable.Repeat(0, MaxFxCount).Select(i => new PatternFx(i)).ToList();
+		static IList<PatternKey> MakeKeys() => Enumerable.Repeat(0, MaxKeyCount).Select(i => new PatternKey(i)).ToList();
 	}
 }

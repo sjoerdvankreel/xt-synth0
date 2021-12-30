@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class AmpModel : INamedModel
+	public unsafe sealed class AmpModel : INamedModel
 	{
-		internal const int NativeSize = 1;
-
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct Native
+		static AmpModel()
 		{
-			internal int a;
-			internal int d;
-			internal int s;
-			internal int r;
-			internal int lvl;
+			if (Size != XtsAmpModelSize())
+				throw new InvalidOperationException();
 		}
+
+		internal const int Size = 1;
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsAmpModelSize();
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct Native { internal int a, d, s, r, lvl; }
 
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);
@@ -24,13 +25,13 @@ namespace Xt.Synth0.Model
 		public Param Lvl { get; } = new(LvlInfo);
 
 		public string Name => "Amp";
-		public int Size => NativeSize;
-		public Param[] Params => new[] { A, D, S, R, Lvl };
+		public IReadOnlyList<Param> Params => new[] { A, D, S, R, Lvl };
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->amp;
 
-		static unsafe readonly ParamInfo AInfo = new LogInfo(p => new IntPtr(&((Native*)p)->a), nameof(A), "Attack time",  0, 1000, "ms", "s");
-		static readonly ParamInfo DInfo = new LogInfo(nameof(D), "Decay time", 0, 3000, "ms", "s");
-		static readonly ParamInfo SInfo = new ContinuousInfo(nameof(S), "Sustain level", 255);
-		static readonly ParamInfo RInfo = new LogInfo(nameof(R), "Release time", 0, 10000, "ms", "s");
-		static readonly ParamInfo LvlInfo = new ContinuousInfo(nameof(Lvl), "Volume", 128);
+		static readonly ParamInfo LvlInfo = new ContinuousInfo(p => &((Native*)p)->lvl, nameof(Lvl), "Volume", 128);
+		static readonly ParamInfo SInfo = new ContinuousInfo(p => &((Native*)p)->s, nameof(S), "Sustain level", 255);
+		static readonly ParamInfo DInfo = new LogInfo(p => &((Native*)p)->d, nameof(D), "Decay time", 0, 3000, "ms", "s");
+		static readonly ParamInfo AInfo = new LogInfo(p => &((Native*)p)->a, nameof(A), "Attack time", 0, 1000, "ms", "s");
+		static readonly ParamInfo RInfo = new LogInfo(p => &((Native*)p)->r, nameof(R), "Release time", 0, 10000, "ms", "s");
 	}
 }
