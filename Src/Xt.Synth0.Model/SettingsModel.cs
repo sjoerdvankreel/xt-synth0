@@ -1,17 +1,55 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class SettingsModel : ICopyModel, INotifyPropertyChanged
-	{
-		const string DefaultOutputPath = "synth0.raw";
-		public const int MaxRecentFiles = 10;
+	public enum BitDepth { Depth16, Depth24, Depth32 }
+	public enum ThemeType { Generic, Red, Green, Blue }
+	public enum SampleRate { Rate44100, Rate48000, Rate96000, Rate192000 }
+	public enum BufferSize { Size1, Size2, Size3, Size5, Size10, Size20, Size30, Size50, Size100 }
 
-		public event EventHandler ThemeChanged;
+	public sealed class SettingsModel : INotifyPropertyChanged
+	{
+		public const int MaxRecentFiles = 10;
+		const string DefaultOutputPath = "synth0.raw";
+
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		ThemeType _theme;
+		public ThemeType Theme
+		{
+			get => _theme;
+			set => Set(ref _theme, value);
+		}
+
+		bool _useAsio;
+		public bool UseAsio
+		{
+			get => _useAsio;
+			set => Set(ref _useAsio, value);
+		}
+
+		BitDepth _bitDepth;
+		public BitDepth BitDepth
+		{
+			get => _bitDepth;
+			set => Set(ref _bitDepth, value);
+		}
+
+		SampleRate _sampleRate;
+		public SampleRate SampleRate
+		{
+			get => _sampleRate;
+			set => Set(ref _sampleRate, value);
+		}
+
+		BufferSize _bufferSize;
+		public BufferSize BufferSize
+		{
+			get => _bufferSize;
+			set => Set(ref _bufferSize, value);
+		}
 
 		bool _writeToDisk;
 		public bool WriteToDisk
@@ -25,34 +63,6 @@ namespace Xt.Synth0.Model
 		{
 			get => _outputPath;
 			set => Set(ref _outputPath, value);
-		}
-
-		bool _useAsio;
-		public bool UseAsio
-		{
-			get => _useAsio;
-			set => Set(ref _useAsio, value);
-		}
-
-		SampleRate _sampleRate;
-		public SampleRate SampleRate
-		{
-			get => _sampleRate;
-			set => Set(ref _sampleRate, value);
-		}
-
-		BitDepth _bitDepth;
-		public BitDepth BitDepth
-		{
-			get => _bitDepth;
-			set => Set(ref _bitDepth, value);
-		}
-
-		BufferSize _bufferSize;
-		public BufferSize BufferSize
-		{
-			get => _bufferSize;
-			set => Set(ref _bufferSize, value);
 		}
 
 		string _asioDeviceId;
@@ -74,34 +84,6 @@ namespace Xt.Synth0.Model
 		{
 			get => _recentFiles;
 			set => Set(ref _recentFiles, value);
-		}
-
-		ThemeType _theme;
-		public ThemeType Theme
-		{
-			get => _theme;
-			set
-			{
-				Set(ref _theme, value);
-				ThemeChanged?.Invoke(this, EventArgs.Empty);
-			}
-		}
-
-		public void CopyTo(ICopyModel model)
-		{
-			var settings = (SettingsModel)model;
-			settings.Theme = Theme;
-			settings.UseAsio = UseAsio;
-			settings.BitDepth = BitDepth;
-			settings.SampleRate = SampleRate;
-			settings.OutputPath = OutputPath;
-			settings.BufferSize = BufferSize;
-			settings.WriteToDisk = WriteToDisk;
-			settings.AsioDeviceId = AsioDeviceId;
-			settings.WasapiDeviceId = WasapiDeviceId;
-			settings.RecentFiles.Clear();
-			foreach (var f in RecentFiles)
-				settings.RecentFiles.Add(f);
 		}
 
 		public void AddRecentFile(string path)
