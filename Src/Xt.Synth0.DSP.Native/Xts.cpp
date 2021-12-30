@@ -1,42 +1,36 @@
-#include "Xts.h"
+#include "Xts.hpp"
 #include <stdlib.h>
 
-XTS_EXPORT void XTS_CALL
-XtsDSPReset(
-XtsSequencerDSP* dsp)
-{ XtsSequencerDSPReset(dsp); }
+XTS_EXPORT int XTS_CALL XtsAmpModelSize(void) { return sizeof(Xts::AmpModel); }
+XTS_EXPORT int XTS_CALL XtsUnitModelSize(void) { return sizeof(Xts::UnitModel); }
+XTS_EXPORT int XTS_CALL XtsSynthModelSize(void) { return sizeof(Xts::SynthModel); }
+XTS_EXPORT int XTS_CALL XtsGlobalModelSize(void) { return sizeof(Xts::GlobalModel); }
 
-void XTS_CALL
-XtsSynthModelDestroy(XtsSynthModel* synth)
-{ free(synth); }
-XtsSynthModel* XTS_CALL
-XtsSynthModelCreate(void)
-{ return calloc(1, sizeof(XtsSynthModel)); }
+XTS_EXPORT int XTS_CALL XtsEditModelSize(void) { return sizeof(Xts::EditModel); }
+XTS_EXPORT int XTS_CALL XtsPatternFxSize(void) { return sizeof(Xts::PatternFx); }
+XTS_EXPORT int XTS_CALL XtsPatternKeySize(void) { return sizeof(Xts::PatternKey); }
+XTS_EXPORT int XTS_CALL XtsPatternRowSize(void) { return sizeof(Xts::PatternRow); }
+XTS_EXPORT int XTS_CALL XtsPatternModelSize(void) { return sizeof(Xts::PatternModel); }
+XTS_EXPORT int XTS_CALL XtsSequencerModelSize(void) { return sizeof(Xts::SequencerModel); }
 
-void XTS_CALL
-XtsDSPDestroy(XtsSequencerDSP* dsp)
-{ free(dsp); }
-XtsSequencerDSP* XTS_CALL
-XtDSPCreate(void)
-{ return calloc(1, sizeof(XtsSequencerDSP)); }
+XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth) { delete synth; }
+XTS_EXPORT void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* seq) { delete seq; }
+XTS_EXPORT Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
+XTS_EXPORT Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
 
-XtsSequencerModel* XTS_CALL
-XtsSequencerModelCreate(void)
-{ return calloc(1, sizeof(XtsSequencerModel)); }
-void XTS_CALL
-XtsSequencerModelDestroy(XtsSequencerModel* seq)
-{ free(seq); }
+XTS_EXPORT void XTS_CALL XtsDSPReset(Xts::SequencerDSP* dsp) { dsp->Reset(); }
+XTS_EXPORT void XTS_CALL XtsDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }
+XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsDSPCreate(int** params, int length)
+{ return new Xts::SequencerDSP(std::vector<int*>(params, params + length)); }
 
-int XTS_CALL
-XtsProcessBuffer(
-XtsSequencerDSP* dsp, const XtsSequencerModel* seq, XtsSynthModel* synth, float rate, float* buffer, int frames)
+XTS_EXPORT int XTS_CALL XtsDSPProcessBuffer(Xts::SequencerDSP* dsp,
+  Xts::SequencerModel const* seq, Xts::SynthModel* synth, float rate, float* buffer, int frames)
 {
   for(int f = 0; f < frames; f++)
   {
-    float sample = XtsSequencerDSPNext(dsp, seq, synth, rate);
+    float sample = dsp->Next(*seq, *synth, rate);
     buffer[f * 2] = sample;
     buffer[f * 2 + 1] = sample;
-    dsp->streamPosition++;
   }
-  return dsp->currentRow;
+  return dsp->CurrentRow();
 }

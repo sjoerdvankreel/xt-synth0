@@ -9,36 +9,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model\XtsSequencerModel.hpp">
+    <ClInclude Include="Model\SequencerModel.hpp">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="Model\XtsSynthModel.hpp">
+    <ClInclude Include="Model\SynthModel.hpp">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\XtsPatternDSP.hpp">
+    <ClInclude Include="DSP\PatternDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\XtsSequencerDSP.hpp">
+    <ClInclude Include="DSP\SequencerDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\XtsSynthDSP.hpp">
+    <ClInclude Include="DSP\SynthDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\XtsUnitDSP.hpp">
+    <ClInclude Include="DSP\UnitDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DSP\XtsSequencerDSP.cpp">
+    <ClCompile Include="DSP\SequencerDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\XtsPatternDSP.cpp">
+    <ClCompile Include="DSP\PatternDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\XtsSynthDSP.cpp">
+    <ClCompile Include="DSP\SynthDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\XtsUnitDSP.cpp">
+    <ClCompile Include="DSP\UnitDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="Xts.cpp" />

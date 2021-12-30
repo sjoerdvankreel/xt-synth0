@@ -11,19 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DSP\XtsPatternDSP.hpp" />
-    <ClInclude Include="DSP\XtsSequencerDSP.hpp" />
-    <ClInclude Include="DSP\XtsSynthDSP.hpp" />
-    <ClInclude Include="DSP\XtsUnitDSP.hpp" />
-    <ClInclude Include="Model\XtsSequencerModel.hpp" />
-    <ClInclude Include="Model\XtsSynthModel.hpp" />
+    <ClInclude Include="DSP\PatternDSP.hpp" />
+    <ClInclude Include="DSP\SequencerDSP.hpp" />
+    <ClInclude Include="DSP\SynthDSP.hpp" />
+    <ClInclude Include="DSP\UnitDSP.hpp" />
+    <ClInclude Include="Model\SequencerModel.hpp" />
+    <ClInclude Include="Model\SynthModel.hpp" />
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DSP\XtsPatternDSP.cpp" />
-    <ClCompile Include="DSP\XtsSequencerDSP.cpp" />
-    <ClCompile Include="DSP\XtsSynthDSP.cpp" />
-    <ClCompile Include="DSP\XtsUnitDSP.cpp" />
+    <ClCompile Include="DSP\PatternDSP.cpp" />
+    <ClCompile Include="DSP\SequencerDSP.cpp" />
+    <ClCompile Include="DSP\SynthDSP.cpp" />
+    <ClCompile Include="DSP\UnitDSP.cpp" />
     <ClCompile Include="Xts.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
