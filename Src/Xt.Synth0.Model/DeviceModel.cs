@@ -6,7 +6,6 @@
 		public string Name { get; }
 
 		public override string ToString() => Name;
-		public DeviceModel(string id, string name) 
-		=> (Id, Name) = (id, name);
+		public DeviceModel(string id, string name) => (Id, Name) = (id, name);
 	}
 }

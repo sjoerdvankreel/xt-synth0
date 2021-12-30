@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class AudioModel : INotifyPropertyChanged
+	public enum StreamState { Stopped, Paused, Running }
+
+	public sealed class StreamModel : INotifyPropertyChanged
 	{
 		static readonly PropertyChangedEventArgs StateChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(State));
@@ -38,75 +36,20 @@ namespace Xt.Synth0.Model
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public static int RateToInt(SampleRate rate) => rate switch
-		{
-			SampleRate.Rate44100 => 44100,
-			SampleRate.Rate48000 => 48000,
-			SampleRate.Rate96000 => 96000,
-			SampleRate.Rate192000 => 192000,
-			_ => throw new InvalidOperationException()
-		};
+		public bool IsPaused => State == StreamState.Paused;
+		public bool IsRunning => State == StreamState.Running;
+		public bool IsStopped => State == StreamState.Stopped;
 
-		public static int BitDepthToInt(BitDepth depth) => depth switch
-		{
-			BitDepth.Depth16 => 16,
-			BitDepth.Depth24 => 24,
-			BitDepth.Depth32 => 32,
-			_ => throw new InvalidOperationException()
-		};
-
-		public static int BufferSizeToInt(BufferSize size) => size switch
-		{
-			BufferSize.Size1 => 1,
-			BufferSize.Size2 => 2,
-			BufferSize.Size3 => 3,
-			BufferSize.Size5 => 5,
-			BufferSize.Size10 => 10,
-			BufferSize.Size20 => 20,
-			BufferSize.Size30 => 30,
-			BufferSize.Size50 => 50,
-			BufferSize.Size100 => 100,
-			_ => throw new InvalidOperationException()
-		};
-
-		public static IReadOnlyList<RateModel> SampleRates { get; }
-			= new ReadOnlyCollection<RateModel>(Enum.GetValues<SampleRate>()
-				.Select(r => new RateModel(r, RateToInt(r))).ToList());
-
-		public static IReadOnlyList<DepthModel> BitDepths { get; }
-			= new ReadOnlyCollection<DepthModel>(Enum.GetValues<BitDepth>()
-				.Select(s => new DepthModel(s, BitDepthToInt(s))).ToList());
-
-		public static IReadOnlyList<BufferModel> BufferSizes { get; }
-			= new ReadOnlyCollection<BufferModel>(Enum.GetValues<BufferSize>()
-				.Select(s => new BufferModel(s, BufferSizeToInt(s))).ToList());
-
-		static readonly List<DeviceModel> _asioDevices = new();
-		static readonly List<DeviceModel> _wasapiDevices = new();
-		public static void AddAsioDevices(IEnumerable<DeviceModel> models)
-		=> _asioDevices.AddRange(models);
-		public static void AddWasapiDevices(IEnumerable<DeviceModel> models)
-		=> _wasapiDevices.AddRange(models);
-
-		public static IReadOnlyList<DeviceModel> AsioDevices { get; }
-			= new ReadOnlyCollection<DeviceModel>(_asioDevices);
-		public static IReadOnlyList<DeviceModel> WasapiDevices { get; }
-			= new ReadOnlyCollection<DeviceModel>(_wasapiDevices);
-
-		public bool IsPaused => State == AudioState.Paused;
-		public bool IsRunning => State == AudioState.Running;
-		public bool IsStopped => State == AudioState.Stopped;
-
-		AudioState _state;
-		public AudioState State
+		StreamState _state;
+		public StreamState State
 		{
 			get => _state;
 			set
 			{
 				if (_state == value) return;
-				bool wasPaused = _state == AudioState.Paused;
-				bool wasStopped = _state == AudioState.Stopped;
-				bool wasRunning = _state == AudioState.Running;
+				bool wasPaused = _state == StreamState.Paused;
+				bool wasStopped = _state == StreamState.Stopped;
+				bool wasRunning = _state == StreamState.Running;
 				_state = value;
 				PropertyChanged?.Invoke(this, StateChangedEventArgs);
 				if (IsPaused != wasPaused)

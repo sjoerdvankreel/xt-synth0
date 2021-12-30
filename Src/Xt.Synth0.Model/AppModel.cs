@@ -2,8 +2,8 @@
 {
 	public sealed class AppModel
 	{
-		public AudioModel Audio { get; } = new();
 		public TrackModel Track { get; } = new();
+		public StreamModel Stream { get; } = new();
 		public SettingsModel Settings { get; } = new();
 	}
 }

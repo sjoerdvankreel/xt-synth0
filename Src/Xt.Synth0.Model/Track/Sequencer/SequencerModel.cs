@@ -18,8 +18,8 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential)]
 		internal unsafe struct Native
 		{
-			EditModel.Native edit;
-			PatternModel.Native pattern;
+			internal EditModel.Native edit;
+			internal PatternModel.Native pattern;
 		}
 
 		public EditModel Edit { get; } = new();
