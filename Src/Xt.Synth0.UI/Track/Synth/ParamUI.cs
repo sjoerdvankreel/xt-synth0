@@ -10,8 +10,8 @@ namespace Xt.Synth0.UI
 	{
 		static string Tooltip(SynthModel model, Param param)
 		{
+			var auto = model.Auto(param);
 			var result = new StringBuilder();
-			var auto = model.AutoParam(param);
 			result.AppendLine(param.Info.Detail);
 			result.AppendLine($"Range: {param.Info.Min} .. {param.Info.Max}");
 			result.Append("Automation target: ");

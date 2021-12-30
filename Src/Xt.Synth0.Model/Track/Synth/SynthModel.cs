@@ -28,11 +28,12 @@ namespace Xt.Synth0.Model
 			internal fixed byte units[UnitCount * UnitModel.Size];
 		}
 
-		IList<Param> ListParams(IModelGroup group)
+		IList<(ISubModel Owner, Param Param)> ListParams(IModelGroup group)
 		{
-			var result = new List<Param>();
+			var result = new List<(ISubModel, Param)>();
 			foreach (var model in group.SubModels)
-				result.AddRange(model.Params);
+				foreach (var param in model.Params)
+					result.Add((model, param));
 			foreach (var child in group.SubGroups)
 				result.AddRange(ListParams(child));
 			return result;
@@ -42,21 +43,26 @@ namespace Xt.Synth0.Model
 		public GlobalModel Global { get; } = new();
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
 
-		public IReadOnlyList<Param> Params { get; }
+		public IReadOnlyList<AutoParam> Params { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
 		public IReadOnlyList<IModelGroup> SubGroups => new IModelGroup[0];
 		public void* Address(void* parent) => throw new NotSupportedException();
+		public AutoParam Auto(Param param) => Params.Single(p => ReferenceEquals(param, p.Param));
 		public IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Amp, Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, UnitCount).Select(i => new UnitModel(i)).ToList();
 
 		internal SynthModel()
 		{
 			Units[0].On.Value = 1;
-			Params = new ReadOnlyCollection<Param>(ListParams(this));
+			var @params = ListParams(this);
+			var autoParams = new List<AutoParam>();
+			for (int i = 0; i < @params.Count; i++)
+				autoParams.Add(new AutoParam((INamedModel)@params[i].Owner, i, @params[i].Param));
+			Params = new ReadOnlyCollection<AutoParam>(autoParams);
 			for (int p = 0; p < Params.Count; p++)
 			{
 				int local = p;
-				Params[p].PropertyChanged += (s, e) => ParamChanged?.Invoke(this, new ParamChangedEventArgs(local));
+				Params[p].Param.PropertyChanged += (s, e) => ParamChanged?.Invoke(this, new ParamChangedEventArgs(local));
 			}
 		}
 	}
