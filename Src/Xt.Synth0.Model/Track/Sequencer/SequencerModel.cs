@@ -25,8 +25,24 @@ namespace Xt.Synth0.Model
 		public EditModel Edit { get; } = new();
 		public PatternModel Pattern { get; } = new();
 
+		public event EventHandler ParamChanged;
+		internal SequencerModel() => BindParamChanged(this);
 		public IReadOnlyList<ISubModel> SubModels => new[] { Edit };
 		public IReadOnlyList<IModelGroup> SubGroups => new[] { Pattern };
 		public void* Address(void* parent) => throw new NotSupportedException();
+
+		void BindParamChanged(IModelGroup group)
+		{
+			foreach (var model in group.SubModels)
+				BindParamChanged(model);
+			foreach (var child in group.SubGroups)
+				BindParamChanged(child);
+		}
+
+		void BindParamChanged(ISubModel model)
+		{
+			foreach (var param in model.Params)
+				param.PropertyChanged += (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
+		}
 	}
 }

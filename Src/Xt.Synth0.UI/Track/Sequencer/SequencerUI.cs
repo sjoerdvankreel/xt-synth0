@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 			var edit = model.Track.Sequencer.Edit;
 			result.Add(PatternUI.Make(model), new Cell(0, 0));
 			result.Add(EditUI.Make(model, edit), new(1, 0));
-			result.Add(MonitorUI.Make(model.Audio), new Cell(1, 0));
+			result.Add(MonitorUI.Make(model.Stream), new Cell(1, 0));
 			return result;
 		}
 	}

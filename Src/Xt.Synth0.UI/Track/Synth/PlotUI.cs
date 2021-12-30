@@ -20,16 +20,9 @@ namespace Xt.Synth0.UI
 			var content = new ContentControl();
 			content.SizeChanged += (s, e) => Update(result, content);
 			model.Settings.PropertyChanged += (s, e) => Update(result, content);
-			model.Track.ParamChanged += (s, e) => OnTrackParamChanged(result, content, e);
+			model.Track.Synth.ParamChanged += (s, e) => Update(result, content);
 			result.Content = content;
 			return result;
-		}
-
-		static void OnTrackParamChanged(
-			GroupBox box, ContentControl container, ParamChangedEventArgs e)
-		{
-			if (e.IsAutomatable) 
-				Update(box, container);
 		}
 
 		static void Update(GroupBox box, ContentControl container)

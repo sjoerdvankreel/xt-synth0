@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using Xt.Synth0.Model;
 
@@ -109,8 +110,14 @@ namespace Xt.Synth0.UI
 			result.Resources = Utility.GetThemeResources(model.Theme);
 			result.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
-			model.ThemeChanged += (s, e) => result.Resources = Utility.GetThemeResources(model.Theme);
+			model.PropertyChanged += (s, e) => OnSettingsPropertyChanged(result, model, e);
 			return result;
+		}
+
+		private static void OnSettingsPropertyChanged(Window window, SettingsModel model, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(SettingsModel.Theme))
+				window.Resources = Utility.GetThemeResources(model.Theme);
 		}
 	}
 }
