@@ -4,7 +4,6 @@
 #include "DSP/SequencerDSP.hpp"
 #include "Model/SynthModel.hpp"
 #include "Model/SequencerModel.hpp"
-#include <cstdlib>
 
 #define XTS_CALL __stdcall
 #define XTS_EXPORT extern "C" __declspec(dllexport) 
@@ -28,7 +27,7 @@ XTS_EXPORT void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* seq);
 
 XTS_EXPORT void XTS_CALL XtsDSPReset(Xts::SequencerDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsDSPDestroy(Xts::SequencerDSP* dsp);
-XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsDSPCreate(int** params, int length);
+XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsDSPCreate(Xts::Param* params, int length);
 XTS_EXPORT int XTS_CALL XtsDSPProcessBuffer(Xts::SequencerDSP* dsp, 
   Xts::SequencerModel const* seq, Xts::SynthModel* synth, float rate, float* buffer, int frames);
 

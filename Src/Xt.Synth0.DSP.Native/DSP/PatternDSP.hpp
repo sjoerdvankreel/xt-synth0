@@ -7,19 +7,19 @@
 
 namespace Xts {
 
+struct Param
+{
+  int* value;
+  int min, max;
+};
+
 class PatternDSP
 {
-  void Automate(
-    PatternFx const& fx,
-    std::vector<int*> const& params,
-    SynthModel& synth) const;
-
+  std::vector<Param> const _params;
+  void Automate(PatternFx const& fx, SynthModel& synth) const;
 public:
-  void Automate(
-    EditModel const& edit,
-    PatternRow const& row,
-    std::vector<int*> const& params,
-    SynthModel& synth) const;
+  PatternDSP(std::vector<Param> params): _params(params) {}
+  void Automate(EditModel const& edit, PatternRow const& row, SynthModel& synth) const;
 };
 
 } // namespace Xts

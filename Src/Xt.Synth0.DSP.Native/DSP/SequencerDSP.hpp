@@ -18,13 +18,12 @@ class SequencerDSP
 
   SynthDSP _synth;
   PatternDSP const _pattern;
-  std::vector<int*> _params;
-
 public:
-  void Reset();
+  
+void Reset();
   int CurrentRow() const { return _currentRow; }
   float Next(SequencerModel const& seq, SynthModel& synth, float rate);
-  SequencerDSP(std::vector<int*> params) : _synth(), _pattern(), _params(params) {}
+  SequencerDSP(std::vector<Param> params) : _synth(), _pattern(params) {}
 };
 
 } // namespace Xts
