@@ -2,7 +2,6 @@
 {
 	class CpuUsageFormatter : Converter<double, string>
 	{
-		internal override string Convert(double usage)
-		=> usage.ToString("P1");
+		internal override string Convert(double usage) => usage.ToString("P1");
 	}
 }

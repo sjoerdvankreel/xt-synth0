@@ -4,7 +4,7 @@ namespace Xt.Synth0.UI
 {
 	public static class LoadSaveUI
 	{
-		const string Filter = "json (*.json)|*.json";
+		const string Filter = "xs0 (*.xs0)|*.xs0";
 
 		public static string Save()
 		{

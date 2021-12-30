@@ -10,15 +10,14 @@ namespace Xt.Synth0.UI
 	{
 		public static readonly RoutedEvent OnParsedEvent = EventManager.RegisterRoutedEvent(
 			nameof(OnParsed), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(HexBox));
-
+		
 		static readonly DependencyPropertyKey HexValuePropertyKey = DependencyProperty.RegisterReadOnly(
 			nameof(HexValue), typeof(string), typeof(HexBox), new PropertyMetadata(0.ToString("X2")));
 		public static readonly DependencyProperty HexValueProperty = HexValuePropertyKey.DependencyProperty;
 		public static string GetHexValue(DependencyObject obj) => (string)obj.GetValue(HexValueProperty);
 		static void SetHexValue(DependencyObject obj, string value) => obj.SetValue(HexValuePropertyKey, value);
 
-		static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
-		=> ((HexBox)obj).Reformat();
+		static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) => ((HexBox)obj).Reformat();
 
 		static HexBox()
 		{
