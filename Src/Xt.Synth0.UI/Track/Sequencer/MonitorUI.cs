@@ -6,7 +6,7 @@ namespace Xt.Synth0.UI
 {
 	static class MonitorUI
 	{
-		internal static UIElement Make(AudioModel model)
+		internal static UIElement Make(StreamModel model)
 		{
 			var result = Create.Group("Monitor", MakeContent(model));
 			var binding = Bind.To(model, nameof(model.IsRunning), 
@@ -15,7 +15,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeContent(AudioModel model)
+		static UIElement MakeContent(StreamModel model)
 		{
 			var result = Create.Grid(4, 2);
 			result.Add(Create.Text("CPU ", new(0, 0)));
@@ -29,7 +29,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateClip(AudioModel model, Cell cell)
+		static UIElement CreateClip(StreamModel model, Cell cell)
 		{
 			var result = Create.Text("Clip", cell);
 			var binding = Bind.To(model, nameof(model.IsClipping));
@@ -37,7 +37,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateOverload(AudioModel model, Cell cell)
+		static UIElement CreateOverload(StreamModel model, Cell cell)
 		{
 			var result = Create.Text("Overload", cell);
 			var binding = Bind.To(model, nameof(model.IsOverloaded));
@@ -45,7 +45,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateCpuUsage(AudioModel model, Cell cell)
+		static UIElement CreateCpuUsage(StreamModel model, Cell cell)
 		{
 			var result = Create.Element<TextBlock>(cell);
 			var binding = Bind.To(model, nameof(model.CpuUsage), new CpuUsageFormatter());
@@ -53,7 +53,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateBuffer(AudioModel model, Cell cell)
+		static UIElement CreateBuffer(StreamModel model, Cell cell)
 		{
 			var result = Create.Element<TextBlock>(cell);
 			var latencyBinding = Bind.To(model, nameof(model.LatencyMs));
@@ -63,7 +63,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateGC(AudioModel model, Cell cell)
+		static UIElement CreateGC(StreamModel model, Cell cell)
 		{
 			var result = Create.Element<WrapPanel>(cell);
 			result.Add(CreateGCGeneration(model, nameof(model.GC0Collected), "0"));
@@ -72,7 +72,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateGCGeneration(AudioModel model, string path, string generation)
+		static UIElement CreateGCGeneration(StreamModel model, string path, string generation)
 		{
 			var result = new TextBlock();
 			result.Text = generation;

@@ -50,7 +50,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static MenuItem MakeItem(AudioModel model, 
+		static MenuItem MakeItem(StreamModel model, 
 			string header, Action execute)
 		{
 			var result = MakeItem(header, execute);
@@ -60,7 +60,7 @@ namespace Xt.Synth0.UI
 		}
 
 		static MenuItem MakeItem(ICommand command,
-			AudioModel model, string header, Action execute)
+			StreamModel model, string header, Action execute)
 		{
 			var result = MakeItem(command, header, execute);
 			var binding = Bind.To(model, nameof(model.IsRunning), new NegateConverter());
@@ -73,7 +73,7 @@ namespace Xt.Synth0.UI
 			var result = MakeItem("Recent Files");
 			result.Click += OnRecentFileClick;
 			result.ItemsSource = model.Settings.RecentFiles; 
-			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			binding = Bind.Show(model.Settings.RecentFiles, nameof(ICollection.Count), 1);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
@@ -89,12 +89,12 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeFile(AppModel model)
 		{
-			var audio = model.Audio;
+			var stream = model.Stream;
 			var result = MakeItem("_File");
 			var doNew = () => New(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(ApplicationCommands.New, audio, "_New", doNew));
+			result.Items.Add(MakeItem(ApplicationCommands.New, stream, "_New", doNew));
 			var doOpen = () => Open(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(ApplicationCommands.Open, audio, "_Open", doOpen));
+			result.Items.Add(MakeItem(ApplicationCommands.Open, stream, "_Open", doOpen));
 			result.Items.Add(new Separator());
 			var doSave = () => Save(null, EventArgs.Empty);
 			result.Items.Add(MakeItem(ApplicationCommands.Save, "_Save", doSave));
@@ -102,7 +102,7 @@ namespace Xt.Synth0.UI
 			result.Items.Add(MakeItem(ApplicationCommands.SaveAs, "Save _As", doSaveAs));
 			result.Items.Add(new Separator());
 			var doShowSettings = () => ShowSettings(null, EventArgs.Empty);
-			result.Items.Add(MakeItem(audio, "Settings", doShowSettings));
+			result.Items.Add(MakeItem(stream, "Settings", doShowSettings));
 			result.Items.Add(MakeRecent(model));
 			result.Items.Add(new Separator());
 			var doExit = () => Application.Current.MainWindow.Close();

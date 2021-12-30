@@ -65,16 +65,16 @@ namespace Xt.Synth0.UI
 		{
 			var pats = Bind.To(model.Track.Sequencer.Edit.Pats);
 			var active = Bind.To(model.Track.Sequencer.Edit.Act);
-			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
-			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
+			var row = Bind.To(model.Stream, nameof(StreamModel.CurrentRow));
+			var running = Bind.To(model.Stream, nameof(StreamModel.IsRunning));
 			return Bind.To(new PatternFormatter(), running, pats, active, row);
 		}
 
 		static BindingBase BindSelector(AppModel model, UIElement[] patterns)
 		{
 			var active = Bind.To(model.Track.Sequencer.Edit.Act);
-			var row = Bind.To(model.Audio, nameof(AudioModel.CurrentRow));
-			var running = Bind.To(model.Audio, nameof(AudioModel.IsRunning));
+			var row = Bind.To(model.Stream, nameof(StreamModel.CurrentRow));
+			var running = Bind.To(model.Stream, nameof(StreamModel.IsRunning));
 			return Bind.To(new PatternSelector(patterns), running, active, row);
 		}
 
@@ -89,12 +89,12 @@ namespace Xt.Synth0.UI
 				patterns[p] = pattern.Pattern;
 				highlighters.AddRange(pattern.Highlighters);
 			}
-			var binding = Bind.To(model.Audio, nameof(AudioModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.SetBinding(ContentControl.ContentProperty, BindSelector(model, patterns));
 			var dispatcher = Application.Current?.Dispatcher;
-			Action<string> handler = property => OnHighlighterPropertyChanged(model.Audio, highlighters, property);
-			model.Audio.PropertyChanged += (s, e) => dispatcher.BeginInvoke(handler, DispatcherPriority.Background, e.PropertyName);
+			Action<string> handler = property => OnHighlighterPropertyChanged(model.Stream, highlighters, property);
+			model.Stream.PropertyChanged += (s, e) => dispatcher.BeginInvoke(handler, DispatcherPriority.Background, e.PropertyName);
 			return result;
 		}
 
@@ -155,7 +155,7 @@ namespace Xt.Synth0.UI
 		}
 
 		static void OnHighlighterPropertyChanged(
-			AudioModel model, IList<Border> highlighters, string property)
+			StreamModel model, IList<Border> highlighters, string property)
 		{
 			if (property != nameof(model.IsRunning) && property != nameof(model.CurrentRow)) return;
 			for (int i = 0; i < highlighters.Count; i++)

@@ -7,10 +7,10 @@ namespace Xt.Synth0.UI
 {
 	static class GroupUI
 	{
-		internal static GroupBox Make(AppModel model, GroupModel group)
-		=> Create.Group(group.Name(), MakeContent(model, group));
+		internal static GroupBox Make(AppModel model, INamedModel group)
+		=> Create.Group(group.Name, MakeContent(model, group));
 
-		internal static FrameworkElement MakeContent(AppModel model, GroupModel group)
+		internal static FrameworkElement MakeContent(AppModel model, INamedModel group)
 		{
 			var rows = group.ParamGroups();
 			var cols = rows.Max(r => r.Length);
