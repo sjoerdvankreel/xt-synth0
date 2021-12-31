@@ -1,6 +1,7 @@
 #include "Xts.hpp"
 #include <stdlib.h>
 
+XTS_EXPORT int XTS_CALL XtsParamSize(void) { return sizeof(Xts::Param); }
 XTS_EXPORT int XTS_CALL XtsAmpModelSize(void) { return sizeof(Xts::AmpModel); }
 XTS_EXPORT int XTS_CALL XtsUnitModelSize(void) { return sizeof(Xts::UnitModel); }
 XTS_EXPORT int XTS_CALL XtsSynthModelSize(void) { return sizeof(Xts::SynthModel); }
@@ -13,10 +14,16 @@ XTS_EXPORT int XTS_CALL XtsPatternRowSize(void) { return sizeof(Xts::PatternRow)
 XTS_EXPORT int XTS_CALL XtsPatternModelSize(void) { return sizeof(Xts::PatternModel); }
 XTS_EXPORT int XTS_CALL XtsSequencerModelSize(void) { return sizeof(Xts::SequencerModel); }
 
+XTS_EXPORT int XTS_CALL XtsSynthModelUnitCount(void) { return Xts::SynthModel::UnitCount; }
+XTS_EXPORT int XTS_CALL XtsSynthModelParamCount(void) { return Xts::SynthModel::ParamCount; }
+XTS_EXPORT int XTS_CALL XtsPatternRowMaxFxCount(void) { return Xts::PatternRow::MaxFxCount; }
+XTS_EXPORT int XTS_CALL XtsPatternRowMaxKeyCount(void) { return Xts::PatternRow::MaxKeyCount; }
+XTS_EXPORT int XTS_CALL XtsPatternModelPatternRows(void) { return Xts::PatternModel::PatternRows; }
+XTS_EXPORT int XTS_CALL XtsPatternModelPatternCount(void) { return Xts::PatternModel::PatternCount; }
+
 XTS_EXPORT void XTS_CALL XtsDSPReset(Xts::SequencerDSP* dsp) { dsp->Reset(); }
 XTS_EXPORT void XTS_CALL XtsDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }
-XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsDSPCreate(Xts::Param* params, int length)
-{ return new Xts::SequencerDSP(std::vector<Xts::Param>(params, params + length)); }
+XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsDSPCreate(void) { return new Xts::SequencerDSP; }
 
 XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth) { delete synth; }
 XTS_EXPORT void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* seq) { delete seq; }

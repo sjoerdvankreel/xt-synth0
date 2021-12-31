@@ -17,11 +17,21 @@ namespace Xt.Synth0.Model
 		{
 			if (Size != XtsPatternModelSize())
 				throw new InvalidOperationException();
+			if (PatternRows != XtsPatternModelPatternRows())
+				throw new InvalidOperationException();
+			if (PatternCount != XtsPatternModelPatternCount())
+				throw new InvalidOperationException();
 		}
 
 		internal const int Size = 1;
+		
 		[DllImport("Xt.Synth0.DSP.Native")]
 		static extern int XtsPatternModelSize();
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsPatternModelPatternRows();
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsPatternModelPatternCount();
+
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct Native { internal fixed byte rows[RowCount * PatternRow.Size]; }
 

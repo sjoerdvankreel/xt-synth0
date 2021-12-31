@@ -12,20 +12,41 @@ namespace Xt.Synth0.Model
 	{
 		static SynthModel()
 		{
+			if (ParamSize != XtsParamSize())
+				throw new InvalidOperationException();
 			if (Size != XtsSynthModelSize())
+				throw new InvalidOperationException();
+			if (UnitCount != XtsSynthModelUnitCount())
+				throw new InvalidOperationException();
+			if (ParamCount != XtsSynthModelParamCount())
 				throw new InvalidOperationException();
 		}
 
-		internal const int Size = 1;
 		public const int UnitCount = 3;
+
+		internal const int Size = 1;
+		internal const int ParamSize = 1;
+		internal const int ParamCount = 1;
+
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsParamSize();
 		[DllImport("Xt.Synth0.DSP.Native")]
 		static extern int XtsSynthModelSize();
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsSynthModelUnitCount();
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsSynthModelParamCount();
+
 		[StructLayout(LayoutKind.Sequential)]
-		internal unsafe struct Native
+		internal struct Native
 		{
+			[StructLayout(LayoutKind.Sequential)]
+			internal struct Param { int min, max; int* value; }
+
 			internal AmpModel.Native amp;
 			internal GlobalModel.Native global;
 			internal fixed byte units[UnitCount * UnitModel.Size];
+			internal fixed byte @params[ParamCount * ParamSize];
 		}
 
 		IList<(ISubModel Owner, Param Param)> ListParams(IModelGroup group)
@@ -55,6 +76,8 @@ namespace Xt.Synth0.Model
 		{
 			Units[0].On.Value = 1;
 			var @params = ListParams(this);
+			if (@params.Count != ParamCount)
+				throw new InvalidOperationException();
 			var autoParams = new List<AutoParam>();
 			for (int i = 0; i < @params.Count; i++)
 				autoParams.Add(new AutoParam((INamedModel)@params[i].Owner, i, @params[i].Param));

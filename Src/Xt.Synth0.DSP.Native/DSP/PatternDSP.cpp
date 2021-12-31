@@ -12,8 +12,8 @@ PatternDSP::Automate(EditModel const& edit, PatternRow const& row, SynthModel& s
 void 
 PatternDSP::Automate(PatternFx const& fx, SynthModel& synth) const
 {
-		if (fx.target == 0 || fx.target > _params.size()) return;
-    auto const& p = _params[fx.target];
+		if (fx.target == 0 || fx.target > SynthModel::ParamCount) return;
+    auto const& p = synth.params[fx.target - 1];
 		if (fx.value < p.min) *p.value = p.min;
 		else if (fx.value > p.max) *p.value = p.max;
 		else *p.value = fx.value;

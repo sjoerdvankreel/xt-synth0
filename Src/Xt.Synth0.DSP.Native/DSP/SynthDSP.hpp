@@ -3,7 +3,6 @@
 
 #include "UnitDSP.hpp"
 #include "../Model/SynthModel.hpp"
-#include <vector>
 
 namespace Xts {
 

@@ -5,7 +5,6 @@
 #include "PatternDSP.hpp"
 #include "../Model/SynthModel.hpp"
 #include "../Model/SequencerModel.hpp"
-#include <vector>
 
 namespace Xts {
 
@@ -23,7 +22,6 @@ public:
 void Reset();
   int CurrentRow() const { return _currentRow; }
   float Next(SequencerModel const& seq, SynthModel& synth, float rate);
-  SequencerDSP(std::vector<Param> params) : _synth(), _pattern(params) {}
 };
 
 } // namespace Xts

@@ -15,11 +15,21 @@ namespace Xt.Synth0.Model
 		{
 			if (Size != XtsPatternRowSize())
 				throw new InvalidOperationException();
+			if (MaxFxCount != XtsPatternRowMaxFxCount())
+				throw new InvalidOperationException();
+			if (MaxKeyCount != XtsPatternRowMaxKeyCount())
+				throw new InvalidOperationException();
 		}
 
 		internal const int Size = 1;
+		
 		[DllImport("Xt.Synth0.DSP.Native")]
-		static extern int XtsPatternRowSize();		
+		static extern int XtsPatternRowSize();
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsPatternRowMaxFxCount();
+		[DllImport("Xt.Synth0.DSP.Native")]
+		static extern int XtsPatternRowMaxKeyCount();
+
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct Native
 		{
