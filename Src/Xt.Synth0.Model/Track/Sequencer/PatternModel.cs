@@ -8,7 +8,6 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class PatternModel : IModelGroup
 	{
-		public const int BeatRows = 4;
 		public const int PatternRows = 32;
 		public const int PatternCount = 8;
 		public const int RowCount = PatternCount * PatternRows;

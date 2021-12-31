@@ -10,9 +10,12 @@ SynthDSP::Reset()
 }
 
 float
-SynthDSP::Next(SynthModel const& synth, float rate) const
+SynthDSP::Next(SynthModel const& synth, float rate)
 {
-  return 0.0f;
+  float result = 0.0f;
+  for (int u = 0; u < SynthModel::UnitCount; u++)
+    result += _units[u].Next(synth.global, synth.units[u], rate);
+  return result * synth.amp.lvl / 255.0f;
 }
 
 } // namespace Xts

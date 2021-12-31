@@ -17,9 +17,12 @@ class SequencerDSP
 
   SynthDSP _synth;
   PatternDSP const _pattern;
+
+  bool RowUpdated();
+  bool UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate);
+
 public:
-  
-void Reset();
+  void Reset();
   int CurrentRow() const { return _currentRow; }
   float Next(SequencerModel const& seq, SynthModel& synth, float rate);
 };

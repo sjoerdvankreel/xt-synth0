@@ -19,6 +19,7 @@ struct PatternRow
 
 struct PatternModel
 {
+  static constexpr int BeatRows = 4;
   static constexpr int PatternRows = 32;
   static constexpr int PatternCount = 8;
   static constexpr int RowCount = PatternCount * PatternRows;

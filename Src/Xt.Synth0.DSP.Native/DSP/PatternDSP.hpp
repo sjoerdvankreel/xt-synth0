@@ -9,6 +9,7 @@ namespace Xts {
 class PatternDSP
 {
   void Automate(PatternFx const& fx, SynthModel& synth) const;
+
 public:
   void Automate(EditModel const& edit, PatternRow const& row, SynthModel& synth) const;
 };

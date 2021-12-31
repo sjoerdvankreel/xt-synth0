@@ -11,7 +11,7 @@ class SynthDSP
   UnitDSP _units[SynthModel::UnitCount];
 public:
   void Reset();
-  float Next(SynthModel const& synth, float rate) const;
+  float Next(SynthModel const& synth, float rate);
 };
 
 } // namespace Xts
