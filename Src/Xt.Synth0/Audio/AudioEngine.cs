@@ -2,12 +2,41 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0
 {
-	class AudioEngine : IDisposable
+	unsafe class AudioEngine : IDisposable
 	{
+		static AudioEngine()
+		{
+			XtsDSPInit();
+		}
+
+		[DllImport("Xt.Synth0.DSP")]
+		static extern void XtsDSPInit();
+		[DllImport("Xt.Synth0.DSP")]
+		static extern IntPtr XtsDSPCreate();
+		[DllImport("Xt.Synth0.DSP")]
+		static extern void XtsDSPReset(IntPtr dsp);
+		[DllImport("Xt.Synth0.DSP")]
+		static extern void XtsDSPDestroy(IntPtr dsp);
+
+		[DllImport("Xt.Synth0.DSP")]
+		static extern IntPtr XtsSynthModelCreate();
+		[DllImport("Xt.Synth0.DSP")]
+		static extern void XtsSynthModelDestroy(IntPtr synth);
+		[DllImport("Xt.Synth0.DSP")]
+		static extern IntPtr XtsSequencerModelCreate();
+		[DllImport("Xt.Synth0.DSP")]
+		static extern void XtsSequencerModelDestroy(IntPtr seq);
+
+		[DllImport("Xt.Synth0.DSP")]
+		static extern void XtsDSPProcessBuffer(
+			IntPtr dsp, IntPtr seq, IntPtr synth, float rate, 
+			IntPtr buffer, int frames, ref int currentRow, ref ulong streamPosition);
+
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
 		const float WarningDurationSeconds = 0.5f;
@@ -62,7 +91,6 @@ namespace Xt.Synth0
 		}
 
 		readonly AppModel _app;
-		readonly SynthModel _synth = new();
 		readonly SynthModel _original = new();
 
 		readonly XtPlatform _platform;
@@ -70,7 +98,6 @@ namespace Xt.Synth0
 
 		IAudioStream _stream;
 		long _clipPosition = -1;
-		long _streamPosition = 0;
 		long _overloadPosition = -1;
 		long _cpuUsagePosition = -1;
 		long _bufferInfoPosition = -1;
@@ -78,8 +105,8 @@ namespace Xt.Synth0
 		readonly bool[] _gcCollecteds = new bool[3];
 		readonly Stopwatch _stopwatch = new Stopwatch();
 
+		float* _buffer;
 		readonly int[] _automationValues;
-		readonly float[] _buffer = new float[192000 * 2];
 
 		public string AsioDefaultDeviceId { get; }
 		public string WasapiDefaultDeviceId { get; }
@@ -175,8 +202,8 @@ namespace Xt.Synth0
 				_stream = null;
 				_stopwatch.Reset();
 
+				_buffer = null;
 				_clipPosition = -1;
-				_streamPosition = 0;
 				_overloadPosition = -1;
 				_cpuUsagePosition = -1;
 				_bufferInfoPosition = -1;
@@ -206,6 +233,7 @@ namespace Xt.Synth0
 		{
 			try
 			{
+				XtsDSPReset()
 				_dsp.Reset(_app.Stream);
 				var format = GetFormat();
 				var settings = _app.Settings;
@@ -304,6 +332,27 @@ namespace Xt.Synth0
 				_app.Stream.LatencyMs = _stream.GetLatencyMs();
 				_app.Stream.BufferSizeFrames = _stream.GetMaxBufferFrames();
 			}
+		}
+
+		void Clip(int frames)
+		{
+			for(int f = 0; f < frames; f++)
+			{
+				if(_buffer[f*2]>MaxAmp||_buffer[f*2+1]>MaxAmp)
+				{
+					_app.Stream.IsClipping = true;
+					_clipPosition = _streamPosition;
+				}
+			}
+
+			if (sample > MaxAmp)
+			{
+				_clipPosition = _streamPosition;
+				_app.Stream.IsClipping = true;
+			}
+			sample = Math.Clamp(sample, -MaxAmp, MaxAmp);
+			_buffer[frame * 2] = sample;
+			_buffer[frame * 2 + 1] = sample;
 		}
 
 		void CopyBuffer(in XtBuffer buffer, in XtFormat format)

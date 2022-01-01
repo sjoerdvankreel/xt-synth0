@@ -11,12 +11,13 @@ void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* seq) { delete seq; }
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
 Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
 
-int XTS_CALL
+void XTS_CALL
 XtsDSPProcessBuffer(
   Xts::SequencerDSP* dsp,
   Xts::SequencerModel const* seq,
   Xts::SynthModel* synth,
-  float rate, float* buffer, int frames)
+  float rate, float* buffer, int32_t frames,
+  int32_t* currentRow, uint64_t* streamPosition)
 {
   for(int f = 0; f < frames; f++)
   {
@@ -24,5 +25,6 @@ XtsDSPProcessBuffer(
     buffer[f * 2] = sample;
     buffer[f * 2 + 1] = sample;
   }
-  return dsp->CurrentRow();
+  *currentRow = dsp->CurrentRow();
+  *streamPosition = dsp->StreamPosition();
 }
