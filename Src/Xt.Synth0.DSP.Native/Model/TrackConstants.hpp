@@ -3,6 +3,9 @@
 
 namespace Xts { namespace TrackConstants {
 
+constexpr int MinOctave = 0;
+constexpr int MaxOctave = 9;
+
 constexpr int UnitCount = 3;
 constexpr int ParamCount = 1;
 

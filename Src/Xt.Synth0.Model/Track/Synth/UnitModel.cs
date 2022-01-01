@@ -31,9 +31,9 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo OnInfo = new ToggleInfo(p => &((Native*)p)->on, nameof(On), "Enabled");
 		static readonly ParamInfo AmpInfo = new ContinuousInfo(p => &((Native*)p)->amp, nameof(Amp), "Volume", 255);
-		static readonly ParamInfo OctInfo = new DiscreteInfo(p => &((Native*)p)->oct, nameof(Oct), "Octave", 0, 9, 4);
 		static readonly ParamInfo CentInfo = new DiscreteInfo(p => &((Native*)p)->cent, nameof(Cent), "Cent", -50, 49, 0);
 		static readonly ParamInfo NoteInfo = new EnumInfo<UnitNote>(p => &((Native*)p)->note, nameof(Note), "Note", Notes);
 		static readonly ParamInfo TypeInfo = new EnumInfo<UnitType>(p => &((Native*)p)->type, nameof(Type), "Waveform", Types);
+		static readonly ParamInfo OctInfo = new DiscreteInfo(p => &((Native*)p)->oct, nameof(Oct), "Octave", TrackConstants.MinOctave, TrackConstants.MaxOctave, 4);
 	}
 }

@@ -8,6 +8,9 @@
 		internal const int PatternKeySize = 12;
 		internal const int PatternRowSize = 72;
 
+		public const int MinOctave = 0;
+		public const int MaxOctave = 9;
+
 		public const int UnitCount = 3;
 		public const int ParamCount = 1;
 		public const int MaxFxCount = 3;
