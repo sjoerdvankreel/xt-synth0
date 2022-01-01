@@ -15,7 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Xt.Synth0.UI/Xt.Synth0.UI.csproj" PrivateAssets="all" />
-    <ProjectReference Include="../Xt.Synth0.DSP/Xt.Synth0.DSP.csproj" PrivateAssets="all" />
     <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />
   </ItemGroup>
 </Project>
