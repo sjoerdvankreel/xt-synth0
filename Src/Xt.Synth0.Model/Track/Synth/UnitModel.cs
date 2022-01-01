@@ -10,15 +10,6 @@ namespace Xt.Synth0.Model
 
 	public unsafe sealed class UnitModel : INamedModel
 	{
-		static UnitModel()
-		{
-			if (Size != XtsUnitModelSize())
-				throw new InvalidOperationException();
-		}
-
-		internal const int Size = 1;
-		[DllImport("Xt.Synth0.DSP.Native")]
-		static extern int XtsUnitModelSize();
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct Native { internal int on, amp, oct, note, cent, type; }
 
@@ -33,7 +24,7 @@ namespace Xt.Synth0.Model
 		public string Name => $"Unit {_index + 1}";
 		internal UnitModel(int index) => _index = index;
 		public IReadOnlyList<Param> Params => new[] { On, Type, Amp, Oct, Note, Cent };
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Size];
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitSize];
 
 		static readonly string[] Types = Enum.GetValues<UnitType>().Select(v => v.ToString()).ToArray();
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };

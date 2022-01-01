@@ -27,6 +27,13 @@
     <ClInclude Include="DSP\UnitDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="Xts.hpp" />
+    <ClInclude Include="Model\TrackConstants.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SizeChecks.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SequencerDSP.cpp">

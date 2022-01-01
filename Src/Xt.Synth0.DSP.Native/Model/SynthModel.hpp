@@ -1,6 +1,8 @@
 #ifndef XTS_SYNTH_MODEL_HPP
 #define XTS_SYNTH_MODEL_HPP
 
+#include "TrackConstants.hpp"
+
 namespace Xts {
 
 struct AmpModel { int a, d, s, r, lvl; };
@@ -14,12 +16,10 @@ enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, 
 
 struct SynthModel
 {
-  static constexpr int UnitCount = 3;
-  static constexpr int ParamCount = 1;
   AmpModel amp;
   GlobalModel global;
-  UnitModel units[UnitCount];
-  Param params[ParamCount];
+  UnitModel units[TrackConstants::UnitCount];
+  Param params[TrackConstants::ParamCount];
 };
 
 } // namespace Xts

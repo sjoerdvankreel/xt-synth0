@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -8,35 +7,12 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class PatternModel : IModelGroup
 	{
-		public const int PatternRows = 32;
-		public const int PatternCount = 8;
-		public const int RowCount = PatternCount * PatternRows;
-
-		static PatternModel()
-		{
-			if (Size != XtsPatternModelSize())
-				throw new InvalidOperationException();
-			if (PatternRows != XtsPatternModelPatternRows())
-				throw new InvalidOperationException();
-			if (PatternCount != XtsPatternModelPatternCount())
-				throw new InvalidOperationException();
-		}
-
-		internal const int Size = 1;
-		
-		[DllImport("Xt.Synth0.DSP.Native")]
-		static extern int XtsPatternModelSize();
-		[DllImport("Xt.Synth0.DSP.Native")]
-		static extern int XtsPatternModelPatternRows();
-		[DllImport("Xt.Synth0.DSP.Native")]
-		static extern int XtsPatternModelPatternCount();
-
 		[StructLayout(LayoutKind.Sequential)]
-		internal struct Native { internal fixed byte rows[RowCount * PatternRow.Size]; }
+		internal struct Native { internal fixed byte rows[TrackConstants.TotalRowCount * TrackConstants.PatternRowSize]; }
 
 		internal PatternModel()
 		{
-			for (int r = 0; r < RowCount; r += 4)
+			for (int r = 0; r < TrackConstants.TotalRowCount; r += 4)
 				Rows[r].Keys[0].Note.Value = (int)PatternNote.C;
 		}
 
@@ -45,6 +21,6 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->pattern;
 
 		public IReadOnlyList<PatternRow> Rows = new ReadOnlyCollection<PatternRow>(MakeRows());
-		static IList<PatternRow> MakeRows() => Enumerable.Repeat(0, RowCount).Select(i => new PatternRow(i)).ToList();
+		static IList<PatternRow> MakeRows() => Enumerable.Repeat(0, TrackConstants.TotalRowCount).Select(i => new PatternRow(i)).ToList();
 	}
 }

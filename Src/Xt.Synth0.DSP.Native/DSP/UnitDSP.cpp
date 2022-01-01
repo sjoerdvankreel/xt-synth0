@@ -3,6 +3,11 @@
 namespace Xts {
 
 void
+UnitDSP::Init()
+{
+}
+
+void
 UnitDSP::Reset()
 {
   _phased = 0.0;

@@ -8,7 +8,7 @@ namespace Xts {
 
 class SynthDSP
 {
-  UnitDSP _units[SynthModel::UnitCount];
+  UnitDSP _units[TrackConstants::UnitCount];
 public:
   void Reset();
   float Next(SynthModel const& synth, float rate);

@@ -6,15 +6,6 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class SequencerModel : IModelGroup
 	{
-		static SequencerModel()
-		{
-			if (Size != XtsSequencerModelSize())
-				throw new InvalidOperationException();
-		}
-
-		internal const int Size = 1;
-		[DllImport("Xt.Synth0.DSP.Native")]
-		static extern int XtsSequencerModelSize();
 		[StructLayout(LayoutKind.Sequential)]
 		internal unsafe struct Native
 		{

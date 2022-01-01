@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
 	public unsafe sealed class AmpModel : INamedModel
 	{
-		static AmpModel()
-		{
-			if (Size != XtsAmpModelSize())
-				throw new InvalidOperationException();
-		}
-
-		internal const int Size = 1;
-		[DllImport("Xt.Synth0.DSP.Native")]
-		static extern int XtsAmpModelSize();
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct Native { internal int a, d, s, r, lvl; }
 

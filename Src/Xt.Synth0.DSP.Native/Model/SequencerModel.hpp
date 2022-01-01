@@ -1,6 +1,8 @@
 #ifndef XTS_SEQUENCER_MODEL_HPP
 #define XTS_SEQUENCER_MODEL_HPP
 
+#include "TrackConstants.hpp"
+
 namespace Xts {
 
 enum class PatternNote { None, Off, C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
@@ -11,19 +13,13 @@ struct EditModel { int fx, act, pats, keys; };
 
 struct PatternRow
 {
-  static constexpr int MaxFxCount = 3;
-  static constexpr int MaxKeyCount = 4;
-  PatternFx fx[MaxFxCount];
-  PatternKey keys[MaxKeyCount];
+  PatternFx fx[TrackConstants::MaxFxCount];
+  PatternKey keys[TrackConstants::MaxKeyCount];
 };
 
 struct PatternModel
 {
-  static constexpr int BeatRows = 4;
-  static constexpr int PatternRows = 32;
-  static constexpr int PatternCount = 8;
-  static constexpr int RowCount = PatternCount * PatternRows;
-  PatternRow rows[RowCount];
+  PatternRow rows[TrackConstants::TotalRowCount];
 };
 
 struct SequencerModel
