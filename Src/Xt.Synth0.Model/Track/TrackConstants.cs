@@ -10,6 +10,7 @@
 
 		public const int MinOctave = 0;
 		public const int MaxOctave = 9;
+		public const int FormatVersion = 1;
 
 		public const int UnitCount = 3;
 		public const int ParamCount = 1;

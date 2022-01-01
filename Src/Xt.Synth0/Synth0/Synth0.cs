@@ -44,14 +44,15 @@ namespace Xt.Synth0
 			PlotUI.RequestPlotData += OnRequestPlotData;
 			app.Dispatcher.Hooks.DispatcherInactive += OnDispatcherInactive;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
-			Model.Track.ParamChanged += OnTrackParamChanged;
+			Model.Track.Synth.ParamChanged += OnSynthParamChanged;
 			app.Run(CreateWindow());
 		}
 
-		static void OnTrackParamChanged(object sender, ParamChangedEventArgs e)
+		static void OnSynthParamChanged(object sender, ParamChangedEventArgs e)
 		{
-			if (Model.Audio.IsRunning && e.IsAutomatable)
-				AutomationQueue.EnqueueUI(e.Index, e.Value);
+			if (!Model.Stream.IsRunning) return;
+			var value = Model.Track.Synth.Params[e.Index].Param.Value;
+			AutomationQueue.EnqueueUI(e.Index, value);
 		}
 
 		static SettingsModel LoadSettings(AudioEngine engine)
@@ -122,7 +123,7 @@ namespace Xt.Synth0
 
 		static void OnDispatcherInactive(object sender, EventArgs e)
 		{
-			var @params = Model.Track.Synth.AutoParams();
+			var @params = Model.Track.Synth.Params;
 			var actions = AutomationQueue.DequeueAudio(out var count);
 			for (int i = 0; i < count; i++)
 				@params[actions[i].Param].Param.Value = @actions[i].Value;

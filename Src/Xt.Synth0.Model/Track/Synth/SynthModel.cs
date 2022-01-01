@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Amp, Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
 
-		internal SynthModel()
+		public SynthModel()
 		{
 			Units[0].On.Value = 1;
 			var @params = ListParams(this);

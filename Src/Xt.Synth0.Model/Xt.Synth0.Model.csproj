@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PlatformTarget>x64</PlatformTarget>
     <TargetFramework>net6.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.Native.dll" Link="x64/Xt.Synth0.DSP.Native.dll" />
-    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.Native.pdb" Link="x64/Xt.Synth0.DSP.Native.pdb" />
-    <Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.Native.dll" Link="x64/Xt.Synth0.DSP.Native.dll" />
   </ItemGroup>
 </Project>

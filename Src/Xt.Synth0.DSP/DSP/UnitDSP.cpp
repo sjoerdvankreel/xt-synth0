@@ -56,9 +56,9 @@ UnitDSP::Next(GlobalModel const& global, UnitModel const& unit, float rate)
 float 
 UnitDSP::Generate(GlobalModel const& global, UnitType type, float freq, float rate)
 {
-  switch(type)
+	auto pi = static_cast<float>(M_PI);
+	switch(type)
   {
-    auto pi = static_cast<float>(M_PI);
     case UnitType::Sin: return sinf(_phasef * pi * 2.0f);
     default: return GenerateMethod(global, type, freq, rate);
   }

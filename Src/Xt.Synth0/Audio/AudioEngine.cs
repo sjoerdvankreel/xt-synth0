@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Xt.Synth0.DSP;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0
@@ -63,7 +62,6 @@ namespace Xt.Synth0
 		}
 
 		readonly AppModel _app;
-		readonly SequencerDSP _dsp = new();
 		readonly SynthModel _synth = new();
 		readonly SynthModel _original = new();
 
@@ -105,7 +103,7 @@ namespace Xt.Synth0
 			_app = app;
 			_platform = platform;
 			_dispatchToUI = dispatchToUI;
-			_automationValues = new int[_synth.AutoParams().Count];
+			_automationValues = new int[_synth.Params.Count];
 			GCNotification.Register(this);
 		}
 
@@ -120,7 +118,7 @@ namespace Xt.Synth0
 
 		internal void Stop()
 		{
-			if (_app.Audio.IsRunning)
+			if (_app.Stream.IsRunning)
 				PauseStream();
 			else
 				ResetStream();
@@ -128,7 +126,7 @@ namespace Xt.Synth0
 
 		internal void Start()
 		{
-			if (_app.Audio.IsPaused)
+			if (_app.Stream.IsPaused)
 				ResumeStream();
 			else
 				StartStream();
@@ -140,7 +138,7 @@ namespace Xt.Synth0
 			{
 				_stream?.Stop();
 				_original.CopyTo(_app.Track.Synth);
-				_app.Audio.State = AudioState.Paused;
+				_app.Stream.State = StreamState.Paused;
 			}
 			catch
 			{
@@ -156,7 +154,7 @@ namespace Xt.Synth0
 				AutomationQueue.Clear();
 				_app.Track.Synth.CopyTo(_synth);
 				_app.Track.Synth.CopyTo(_original);
-				_app.Audio.State = AudioState.Running;
+				_app.Stream.State = StreamState.Running;
 				_stream.Start();
 			}
 			catch
@@ -172,7 +170,7 @@ namespace Xt.Synth0
 			{
 				PauseStream();
 
-				_app.Audio.State = AudioState.Stopped;
+				_app.Stream.State = StreamState.Stopped;
 				_stream?.Dispose();
 				_stream = null;
 				_stopwatch.Reset();
@@ -183,14 +181,14 @@ namespace Xt.Synth0
 				_cpuUsagePosition = -1;
 				_bufferInfoPosition = -1;
 
-				_app.Audio.CpuUsage = 0.0;
-				_app.Audio.LatencyMs = 0.0;
-				_app.Audio.IsClipping = false;
-				_app.Audio.IsOverloaded = false;
-				_app.Audio.GC0Collected = false;
-				_app.Audio.GC1Collected = false;
-				_app.Audio.GC2Collected = false;
-				_app.Audio.BufferSizeFrames = 0;
+				_app.Stream.CpuUsage = 0.0;
+				_app.Stream.LatencyMs = 0.0;
+				_app.Stream.IsClipping = false;
+				_app.Stream.IsOverloaded = false;
+				_app.Stream.GC0Collected = false;
+				_app.Stream.GC1Collected = false;
+				_app.Stream.GC2Collected = false;
+				_app.Stream.BufferSizeFrames = 0;
 
 				for (int i = 0; i < _gcPositions.Length; i++)
 				{
@@ -200,7 +198,7 @@ namespace Xt.Synth0
 			}
 			finally
 			{
-				_dsp.Reset(_app.Audio);
+				_dsp.Reset(_app.Stream);
 			}
 		}
 
@@ -208,11 +206,11 @@ namespace Xt.Synth0
 		{
 			try
 			{
-				_dsp.Reset(_app.Audio);
+				_dsp.Reset(_app.Stream);
 				var format = GetFormat();
 				var settings = _app.Settings;
+				var bufferSize = settings.BufferSize.ToInt();
 				var streamParams = new XtStreamParams(true, OnXtBuffer, null, OnXtRunning);
-				var bufferSize = AudioModel.BufferSizeToInt(settings.BufferSize);
 				var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
 				if (settings.WriteToDisk)
 					_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
@@ -241,11 +239,11 @@ namespace Xt.Synth0
 		void ProcessFrame(int frame, int rate)
 		{
 			var seq = _app.Track.Sequencer;
-			var sample = _dsp.Next(_app.Audio, seq, _synth, rate) * MaxAmp;
+			var sample = _dsp.Next(_app.Stream, seq, _synth, rate) * MaxAmp;
 			if (sample > MaxAmp)
 			{
 				_clipPosition = _streamPosition;
-				_app.Audio.IsClipping = true;
+				_app.Stream.IsClipping = true;
 			}
 			sample = Math.Clamp(sample, -MaxAmp, MaxAmp);
 			_buffer[frame * 2] = sample;
@@ -256,15 +254,15 @@ namespace Xt.Synth0
 		{
 			float warningFrames = WarningDurationSeconds * rate;
 			if (_streamPosition > _clipPosition + warningFrames)
-				_app.Audio.IsClipping = false;
+				_app.Stream.IsClipping = false;
 			if (_streamPosition > _gcPositions[0] + warningFrames)
-				_app.Audio.GC0Collected = false;
+				_app.Stream.GC0Collected = false;
 			if (_streamPosition > _gcPositions[1] + warningFrames)
-				_app.Audio.GC1Collected = false;
+				_app.Stream.GC1Collected = false;
 			if (_streamPosition > _gcPositions[2] + warningFrames)
-				_app.Audio.GC2Collected = false;
+				_app.Stream.GC2Collected = false;
 			if (_streamPosition > _overloadPosition + warningFrames)
-				_app.Audio.IsOverloaded = false;
+				_app.Stream.IsOverloaded = false;
 		}
 
 		void UpdateStreamInfo(int frames, int rate)
@@ -274,37 +272,37 @@ namespace Xt.Synth0
 			if (_gcCollecteds[0])
 			{
 				_gcCollecteds[0] = false;
-				_app.Audio.GC0Collected = true;
+				_app.Stream.GC0Collected = true;
 				_gcPositions[0] = _streamPosition;
 			}
 			if (_gcCollecteds[1])
 			{
 				_gcCollecteds[1] = false;
-				_app.Audio.GC1Collected = true;
+				_app.Stream.GC1Collected = true;
 				_gcPositions[1] = _streamPosition;
 			}
 			if (_gcCollecteds[2])
 			{
 				_gcCollecteds[2] = false;
-				_app.Audio.GC2Collected = true;
+				_app.Stream.GC2Collected = true;
 				_gcPositions[2] = _streamPosition;
 			}
 			if (processedSeconds > bufferSeconds * OverloadLimit)
 			{
 				_overloadPosition = _streamPosition;
-				_app.Audio.IsOverloaded = true;
+				_app.Stream.IsOverloaded = true;
 			}
 			if (_streamPosition >= _cpuUsagePosition + rate * CpuUsageIntervalSeconds)
 			{
 				_cpuUsagePosition = _streamPosition;
-				_app.Audio.CpuUsage = Math.Min(processedSeconds / bufferSeconds, 1.0);
+				_app.Stream.CpuUsage = Math.Min(processedSeconds / bufferSeconds, 1.0);
 			}
 			if (_bufferInfoPosition == -1 || _streamPosition >=
 				_bufferInfoPosition + rate * BufferInfoIntervalSeconds)
 			{
 				_bufferInfoPosition = _streamPosition;
-				_app.Audio.LatencyMs = _stream.GetLatencyMs();
-				_app.Audio.BufferSizeFrames = _stream.GetMaxBufferFrames();
+				_app.Stream.LatencyMs = _stream.GetLatencyMs();
+				_app.Stream.BufferSizeFrames = _stream.GetMaxBufferFrames();
 			}
 		}
 
@@ -357,7 +355,7 @@ namespace Xt.Synth0
 
 		void BeginAutomation()
 		{
-			var @params = _synth.AutoParams();
+			var @params = _synth.Params;
 			var actions = AutomationQueue.DequeueUI(out var count);
 			for (int i = 0; i < count; i++)
 				@params[actions[i].Param].Param.Value = @actions[i].Value;
@@ -367,7 +365,7 @@ namespace Xt.Synth0
 
 		void EndAutomation()
 		{
-			var @params = _synth.AutoParams();
+			var @params = _synth.Params;
 			for (int i = 0; i < @params.Count; i++)
 				if (@params[i].Param.Value != _automationValues[i])
 					AutomationQueue.EnqueueAudio(i, @params[i].Param.Value);
@@ -413,8 +411,8 @@ namespace Xt.Synth0
 
 		XtFormat GetFormat()
 		{
-			var rate = AudioModel.RateToInt(_app.Settings.SampleRate);
-			var depth = AudioModel.BitDepthToInt(_app.Settings.BitDepth);
+			var depth = _app.Settings.BitDepth.ToInt();
+			var rate = _app.Settings.SampleRate.ToInt();
 			var sample = DepthToSample(depth);
 			var mix = new XtMix(rate, sample);
 			var channels = new XtChannels(0, 0, 2, 0);

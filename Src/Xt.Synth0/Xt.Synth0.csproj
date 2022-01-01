@@ -17,4 +17,9 @@
     <ProjectReference Include="../Xt.Synth0.UI/Xt.Synth0.UI.csproj" PrivateAssets="all" />
     <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.dll" Link="x64/Xt.Synth0.DSP.dll" />
+    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.pdb" Link="x64/Xt.Synth0.DSP.pdb" />
+    <Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.dll" Link="x64/Xt.Synth0.DSP.dll" />
+  </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 		protected override UIElement Convert(bool running, int active, int row)
 		{
 			if (!running) return _elements[active - 1];
-			return _elements[row / PatternModel.PatternRows];
+			return _elements[row / TrackConstants.PatternRows];
 		}
 	}
 }
