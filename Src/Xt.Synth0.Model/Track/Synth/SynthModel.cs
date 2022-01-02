@@ -28,7 +28,7 @@ namespace Xt.Synth0.Model
 
 		public IReadOnlyList<AutoParam> AutoParams { get; }
 		public override IReadOnlyList<IModelGroup> SubGroups => new IModelGroup[0];
-		public AutoParam Auto(Param param) => AutoParams.Single(p => ReferenceEquals(param, p.Param));
+		public AutoParam Auto(Param param) => AutoParams.SingleOrDefault(p => ReferenceEquals(param, p.Param));
 		public override IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Amp, Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
 
@@ -48,7 +48,7 @@ namespace Xt.Synth0.Model
 		public SynthModel()
 		{
 			Units[0].On.Value = 1;
-			var @params = ListParams(this).Select((p, i) => new AutoParam((INamedModel)p.Model, i, p.Param));
+			var @params = ListParams(this).Select((p, i) => new AutoParam((INamedModel)p.Model, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
 			if (AutoParams.Count != TrackConstants.ParamCount)
 				throw new InvalidOperationException();
