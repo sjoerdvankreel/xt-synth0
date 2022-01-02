@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Xt.Synth0": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
