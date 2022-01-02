@@ -27,6 +27,6 @@ XTS_EXPORT void XTS_CALL XtsSequencerDSPReset(Xts::SequencerDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSequencerDSPDSPProcessBuffer(
   Xts::SequencerDSP* dsp, Xts::SequencerModel const* seq, Xts::SynthModel* synth, 
-  float rate, float* buffer, int32_t frames, int32_t* currentRow, uint64_t* streamPosition);
+  float rate, float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition);
 
 #endif // XTS_HPP

@@ -33,7 +33,7 @@ SequencerDSP::Next(SequencerModel const& seq, SynthModel& synth, float rate)
 void
 SequencerDSP::ProcessBuffer(
 	SequencerModel const& seq, SynthModel& synth, float rate,
-	float* buffer, int32_t frames, int32_t* currentRow, uint64_t* streamPosition)
+	float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition)
 {
 	for (int f = 0; f < frames; f++)
 	{

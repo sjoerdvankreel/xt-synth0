@@ -44,6 +44,6 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")]
 		internal static extern void XtsSequencerDSPDSPProcessBuffer(
 			IntPtr dsp, IntPtr seq, IntPtr synth, float rate, 
-			float* buffer, int frames, int* currentRow, ulong* streamPosition);
+			float* buffer, int frames, int* currentRow, long* streamPosition);
 	}
 }

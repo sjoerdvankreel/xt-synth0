@@ -27,7 +27,7 @@ public:
   void Reset();
   void ProcessBuffer(
     SequencerModel const& seq, SynthModel& synth, float rate, 
-    float* buffer, int32_t frames, int32_t* currentRow, uint64_t* streamPosition);
+    float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition);
 };
 
 } // namespace Xts

@@ -20,5 +20,5 @@ void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }
 Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void) { return new Xts::SequencerDSP; }
 void XTS_CALL XtsSequencerDSPDSPProcessBuffer(
   Xts::SequencerDSP* dsp, Xts::SequencerModel const* seq, Xts::SynthModel* synth,
-  float rate, float* buffer, int32_t frames, int32_t* currentRow, uint64_t* streamPosition)
+  float rate, float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition)
 { dsp->ProcessBuffer(*seq, *synth, rate, buffer, frames, currentRow, streamPosition); }

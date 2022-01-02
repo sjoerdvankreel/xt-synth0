@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0
@@ -68,6 +69,11 @@ namespace Xt.Synth0
 		readonly Action<Action> _dispatchToUI;
 
 		IAudioStream _stream;
+		IntPtr _nativeSynthModel;
+		IntPtr _nativeSequencerDSP;
+		IntPtr _nativeSequencerModel;
+		readonly SynthModel _managedSynthModel = new();
+
 		long _clipPosition = -1;
 		long _overloadPosition = -1;
 		long _cpuUsagePosition = -1;
@@ -93,6 +99,8 @@ namespace Xt.Synth0
 			IReadOnlyList<DeviceModel> asioDevices,
 			IReadOnlyList<DeviceModel> wasapiDevices)
 		{
+			GCNotification.Register(this);
+
 			AsioDevices = asioDevices;
 			WasapiDevices = wasapiDevices;
 			AsioDefaultDeviceId = asioDefaultDeviceId;
@@ -101,8 +109,12 @@ namespace Xt.Synth0
 			_app = app;
 			_platform = platform;
 			_dispatchToUI = dispatchToUI;
-			_automationValues = new int[_synth.Params.Count];
-			GCNotification.Register(this);
+			_automationValues = new int[_original.Params.Count];
+
+			_nativeSynthModel = Native.XtsSynthModelCreate();
+			_managedSynthModel.PrepareNative(_nativeSynthModel);
+			_nativeSequencerDSP = Native.XtsSequencerDSPCreate();
+			_nativeSequencerModel = Native.XtsSequencerModelCreate();
 		}
 
 		internal void OnGCNotification(int generation)
@@ -112,6 +124,9 @@ namespace Xt.Synth0
 		{
 			ResetStream();
 			_platform.Dispose();
+			Native.XtsSynthModelDestroy(_nativeSynthModel);
+			Native.XtsSequencerDSPDestroy(_nativeSequencerDSP);
+			Native.XtsSequencerModelDestroy(_nativeSequencerModel);
 		}
 
 		internal void Stop()
@@ -150,8 +165,10 @@ namespace Xt.Synth0
 			try
 			{
 				AutomationQueue.Clear();
-				_app.Track.Synth.CopyTo(_synth);
 				_app.Track.Synth.CopyTo(_original);
+				_app.Track.Synth.CopyTo(_managedSynthModel);
+				_app.Track.Synth.ToNative(_nativeSynthModel.ToPointer());
+				_app.Track.Sequencer.ToNative(_nativeSequencerModel.ToPointer());
 				_app.Stream.State = StreamState.Running;
 				_stream.Start();
 			}
@@ -173,6 +190,7 @@ namespace Xt.Synth0
 				_stream = null;
 				_stopwatch.Reset();
 
+				Marshal.FreeHGlobal(new IntPtr(_buffer));
 				_buffer = null;
 				_clipPosition = -1;
 				_overloadPosition = -1;
@@ -196,7 +214,7 @@ namespace Xt.Synth0
 			}
 			finally
 			{
-				_dsp.Reset(_app.Stream);
+				Native.XtsSequencerDSPReset(_nativeSequencerDSP);
 			}
 		}
 
@@ -204,7 +222,6 @@ namespace Xt.Synth0
 		{
 			try
 			{
-				_dsp.Reset(_app.Stream);
 				var format = GetFormat();
 				var settings = _app.Settings;
 				var bufferSize = settings.BufferSize.ToInt();
@@ -214,8 +231,10 @@ namespace Xt.Synth0
 					_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
 				else
 					_stream = OpenDeviceStream(in deviceParams);
-				UpdateStreamInfo(0, format.mix.rate);
+				Native.XtsSequencerDSPReset(_nativeSequencerDSP);
+				UpdateStreamInfo(0, format.mix.rate, 0);
 				GC.Collect(2, GCCollectionMode.Forced, true, true);
+				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
 				ResumeStream();
 			}
 			catch
@@ -225,45 +244,22 @@ namespace Xt.Synth0
 			}
 		}
 
-		void ProcessBuffer(int frames, int rate)
-		{
-			for (int f = 0; f < frames; f++)
-			{
-				ProcessFrame(f, rate);
-				_streamPosition++;
-			}
-		}
-
-		void ProcessFrame(int frame, int rate)
-		{
-			var seq = _app.Track.Sequencer;
-			var sample = _dsp.Next(_app.Stream, seq, _synth, rate) * MaxAmp;
-			if (sample > MaxAmp)
-			{
-				_clipPosition = _streamPosition;
-				_app.Stream.IsClipping = true;
-			}
-			sample = Math.Clamp(sample, -MaxAmp, MaxAmp);
-			_buffer[frame * 2] = sample;
-			_buffer[frame * 2 + 1] = sample;
-		}
-
-		void ResetWarnings(int rate)
+		void ResetWarnings(int rate, long streamPosition)
 		{
 			float warningFrames = WarningDurationSeconds * rate;
-			if (_streamPosition > _clipPosition + warningFrames)
+			if (streamPosition > _clipPosition + warningFrames)
 				_app.Stream.IsClipping = false;
-			if (_streamPosition > _gcPositions[0] + warningFrames)
+			if (streamPosition > _gcPositions[0] + warningFrames)
 				_app.Stream.GC0Collected = false;
-			if (_streamPosition > _gcPositions[1] + warningFrames)
+			if (streamPosition > _gcPositions[1] + warningFrames)
 				_app.Stream.GC1Collected = false;
-			if (_streamPosition > _gcPositions[2] + warningFrames)
+			if (streamPosition > _gcPositions[2] + warningFrames)
 				_app.Stream.GC2Collected = false;
-			if (_streamPosition > _overloadPosition + warningFrames)
+			if (streamPosition > _overloadPosition + warningFrames)
 				_app.Stream.IsOverloaded = false;
 		}
 
-		void UpdateStreamInfo(int frames, int rate)
+		void UpdateStreamInfo(int frames, int rate, long streamPosition)
 		{
 			float bufferSeconds = frames / (float)rate;
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
@@ -271,58 +267,52 @@ namespace Xt.Synth0
 			{
 				_gcCollecteds[0] = false;
 				_app.Stream.GC0Collected = true;
-				_gcPositions[0] = _streamPosition;
+				_gcPositions[0] = streamPosition;
 			}
 			if (_gcCollecteds[1])
 			{
 				_gcCollecteds[1] = false;
 				_app.Stream.GC1Collected = true;
-				_gcPositions[1] = _streamPosition;
+				_gcPositions[1] = streamPosition;
 			}
 			if (_gcCollecteds[2])
 			{
 				_gcCollecteds[2] = false;
 				_app.Stream.GC2Collected = true;
-				_gcPositions[2] = _streamPosition;
+				_gcPositions[2] = streamPosition;
 			}
 			if (processedSeconds > bufferSeconds * OverloadLimit)
 			{
-				_overloadPosition = _streamPosition;
+				_overloadPosition = streamPosition;
 				_app.Stream.IsOverloaded = true;
 			}
-			if (_streamPosition >= _cpuUsagePosition + rate * CpuUsageIntervalSeconds)
+			if (streamPosition >= _cpuUsagePosition + rate * CpuUsageIntervalSeconds)
 			{
-				_cpuUsagePosition = _streamPosition;
+				_cpuUsagePosition = streamPosition;
 				_app.Stream.CpuUsage = Math.Min(processedSeconds / bufferSeconds, 1.0);
 			}
-			if (_bufferInfoPosition == -1 || _streamPosition >=
+			if (_bufferInfoPosition == -1 || streamPosition >=
 				_bufferInfoPosition + rate * BufferInfoIntervalSeconds)
 			{
-				_bufferInfoPosition = _streamPosition;
+				_bufferInfoPosition = streamPosition;
 				_app.Stream.LatencyMs = _stream.GetLatencyMs();
 				_app.Stream.BufferSizeFrames = _stream.GetMaxBufferFrames();
 			}
 		}
 
-		void Clip(int frames)
+		void Clip(int frames, long streamPosition)
 		{
-			for(int f = 0; f < frames; f++)
+			for (int f = 0; f < frames; f++)
 			{
-				if(_buffer[f*2]>MaxAmp||_buffer[f*2+1]>MaxAmp)
+				if (Math.Abs(_buffer[f * 2]) > MaxAmp
+					|| Math.Abs(_buffer[f * 2 + 1]) > MaxAmp)
 				{
 					_app.Stream.IsClipping = true;
-					_clipPosition = _streamPosition;
+					_clipPosition = streamPosition;
 				}
+				_buffer[f * 2] = Math.Clamp(_buffer[f * 2], -MaxAmp, MaxAmp);
+				_buffer[f * 2 + 1] = Math.Clamp(_buffer[f * 2 + 1], -MaxAmp, MaxAmp);
 			}
-
-			if (sample > MaxAmp)
-			{
-				_clipPosition = _streamPosition;
-				_app.Stream.IsClipping = true;
-			}
-			sample = Math.Clamp(sample, -MaxAmp, MaxAmp);
-			_buffer[frame * 2] = sample;
-			_buffer[frame * 2 + 1] = sample;
 		}
 
 		void CopyBuffer(in XtBuffer buffer, in XtFormat format)
@@ -374,33 +364,40 @@ namespace Xt.Synth0
 
 		void BeginAutomation()
 		{
-			var @params = _synth.Params;
+			var @params = _managedSynthModel.Params;
 			var actions = AutomationQueue.DequeueUI(out var count);
 			for (int i = 0; i < count; i++)
-				@params[actions[i].Param].Param.Value = @actions[i].Value;
+				@params[actions[i].Param].Value = @actions[i].Value;
 			for (int i = 0; i < @params.Count; i++)
-				_automationValues[i] = @params[i].Param.Value;
+				_automationValues[i] = @params[i].Value;
+			_managedSynthModel.ToNative(_nativeSynthModel.ToPointer());
 		}
 
 		void EndAutomation()
 		{
-			var @params = _synth.Params;
+			_managedSynthModel.FromNative(_nativeSynthModel.ToPointer());
+			var @params = _managedSynthModel.Params;
 			for (int i = 0; i < @params.Count; i++)
-				if (@params[i].Param.Value != _automationValues[i])
-					AutomationQueue.EnqueueAudio(i, @params[i].Param.Value);
+				if (@params[i].Value != _automationValues[i])
+					AutomationQueue.EnqueueAudio(i, @params[i].Value);
 		}
 
-		internal void OnBuffer(in XtBuffer buffer, in XtFormat format)
+		internal unsafe void OnBuffer(in XtBuffer buffer, in XtFormat format)
 		{
 			_stopwatch.Restart();
 			BeginAutomation();
+			int currentRow;
+			long streamPosition;
 			int rate = format.mix.rate;
-			ProcessBuffer(buffer.frames, rate);
+			Native.XtsSequencerDSPDSPProcessBuffer(
+				_nativeSequencerDSP, _nativeSequencerModel, _nativeSynthModel, 
+				rate, _buffer, buffer.frames, &currentRow, &streamPosition);
 			EndAutomation();
 			CopyBuffer(in buffer, in format);
-			ResetWarnings(rate);
+			ResetWarnings(rate, streamPosition);
+			_app.Stream.CurrentRow = currentRow;
 			_stopwatch.Stop();
-			UpdateStreamInfo(buffer.frames, rate);
+			UpdateStreamInfo(buffer.frames, rate, streamPosition);
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
