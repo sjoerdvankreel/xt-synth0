@@ -13,7 +13,7 @@
 		public const int FormatVersion = 1;
 
 		public const int UnitCount = 3;
-		public const int ParamCount = 1;
+		public const int ParamCount = 27;
 		public const int MaxFxCount = 3;
 		public const int MaxKeyCount = 4;
 		public const int PatternRows = 32;
