@@ -86,6 +86,22 @@ namespace Xt.Synth0.Model
 			set => Set(ref _recentFiles, value);
 		}
 
+		public void CopyTo(SettingsModel model)
+		{
+			model.Theme = Theme;
+			model.UseAsio = UseAsio;
+			model.BitDepth = BitDepth;
+			model.SampleRate = SampleRate;
+			model.OutputPath = OutputPath;
+			model.BufferSize = BufferSize;
+			model.WriteToDisk = WriteToDisk;
+			model.AsioDeviceId = AsioDeviceId;
+			model.WasapiDeviceId = WasapiDeviceId;
+			model.RecentFiles.Clear();
+			foreach (var f in RecentFiles)
+				model.RecentFiles.Add(f);
+		}
+
 		public void AddRecentFile(string path)
 		{
 			RecentFiles.Remove(path);

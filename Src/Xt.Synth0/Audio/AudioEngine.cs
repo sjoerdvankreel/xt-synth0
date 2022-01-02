@@ -233,7 +233,6 @@ namespace Xt.Synth0
 		{
 			try
 			{
-				XtsDSPReset()
 				_dsp.Reset(_app.Stream);
 				var format = GetFormat();
 				var settings = _app.Settings;

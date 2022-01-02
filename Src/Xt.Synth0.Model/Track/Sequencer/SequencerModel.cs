@@ -14,6 +14,15 @@ namespace Xt.Synth0.Model
 			internal PatternModel.Native pattern;
 		}
 
+		public EditModel Edit { get; } = new();
+		public PatternModel Pattern { get; } = new();
+
+		public event EventHandler ParamChanged;
+		public IReadOnlyList<Param> Params { get; }
+		public IReadOnlyList<ISubModel> SubModels => new[] { Edit };
+		public IReadOnlyList<IModelGroup> SubGroups => new[] { Pattern };
+		public void* Address(void* parent) => throw new NotSupportedException();
+
 		IList<Param> ListParams(IModelGroup group)
 		{
 			var result = new List<Param>();
@@ -25,14 +34,11 @@ namespace Xt.Synth0.Model
 			return result;
 		}
 
-		public EditModel Edit { get; } = new();
-		public PatternModel Pattern { get; } = new();
-
-		public event EventHandler ParamChanged;
-		public IReadOnlyList<Param> Params { get; }
-		public IReadOnlyList<ISubModel> SubModels => new[] { Edit };
-		public IReadOnlyList<IModelGroup> SubGroups => new[] { Pattern };
-		public void* Address(void* parent) => throw new NotSupportedException();
+		public void CopyTo(SequencerModel model)
+		{
+			for (int p = 0; p < Params.Count; p++)
+				model.Params[p].Value = Params[p].Value;
+		}
 
 		public SequencerModel()
 		{

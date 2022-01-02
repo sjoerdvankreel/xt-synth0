@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -45,9 +47,9 @@ namespace Xt.Synth0
 			Model.Track.ParamChanged += OnTrackParamChanged;
 		}
 
-		void OnTrackParamChanged(object sender, ParamChangedEventArgs e)
+		void OnTrackParamChanged(object sender, EventArgs e)
 		{
-			if (!Model.Audio.IsRunning)
+			if (!Model.Stream.IsRunning)
 				IsDirty = true;
 		}
 
@@ -69,9 +71,14 @@ namespace Xt.Synth0
 			result.Add(track);
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
 			result.Resources = Utility.GetThemeResources(Model.Settings.Theme);
-			Model.Settings.ThemeChanged += (s, e) => result.Resources
-				= Utility.GetThemeResources(Model.Settings.Theme);
+			Model.Settings.PropertyChanged += (s, e) => OnSettingsPropertyChanged(result, e);
 			return result;
+		}
+
+		void OnSettingsPropertyChanged(FrameworkElement panel, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(SettingsModel.Theme))
+				panel.Resources = Utility.GetThemeResources(Model.Settings.Theme);
 		}
 	}
 }

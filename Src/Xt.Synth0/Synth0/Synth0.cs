@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using Xt.Synth0.DSP;
 using Xt.Synth0.Model;
 using Xt.Synth0.UI;
 
@@ -205,7 +204,7 @@ namespace Xt.Synth0
 			var index = global.Plot.Value;
 			var unit = synth.Units[index - 1];
 			e.Frequency = dsp.Frequency(unit);
-			var rate = AudioModel.RateToInt(Model.Settings.SampleRate);
+			var rate = Model.Settings.SampleRate.ToInt();
 			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
 			e.Samples = PlotCycles * cycleLength;
 			for (int s = 0; s < e.Samples; s++)

@@ -22,17 +22,6 @@ namespace Xt.Synth0.Model
 			internal fixed byte @params[TrackConstants.ParamCount * TrackConstants.ParamSize];
 		}
 
-		IList<(ISubModel Owner, Param Param)> ListParams(IModelGroup group)
-		{
-			var result = new List<(ISubModel, Param)>();
-			foreach (var model in group.SubModels)
-				foreach (var param in model.Params)
-					result.Add((model, param));
-			foreach (var child in group.SubGroups)
-				result.AddRange(ListParams(child));
-			return result;
-		}
-
 		public AmpModel Amp { get; } = new();
 		public GlobalModel Global { get; } = new();
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
@@ -44,6 +33,23 @@ namespace Xt.Synth0.Model
 		public AutoParam Auto(Param param) => Params.Single(p => ReferenceEquals(param, p.Param));
 		public IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Amp, Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
+
+		public void CopyTo(SynthModel model)
+		{
+			for (int p = 0; p < Params.Count; p++)
+				model.Params[p].Param.Value = Params[p].Param.Value;
+		}
+
+		IList<(ISubModel Owner, Param Param)> ListParams(IModelGroup group)
+		{
+			var result = new List<(ISubModel, Param)>();
+			foreach (var model in group.SubModels)
+				foreach (var param in model.Params)
+					result.Add((model, param));
+			foreach (var child in group.SubGroups)
+				result.AddRange(ListParams(child));
+			return result;
+		}
 
 		public SynthModel()
 		{
