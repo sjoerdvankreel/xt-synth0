@@ -14,6 +14,7 @@ namespace Xt.Synth0
 		const int PlotBufferSize = 192000;
 		static readonly float[] PlotBuffer = new float[PlotBufferSize];
 
+		static IntPtr _unitDSP;
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
@@ -23,11 +24,14 @@ namespace Xt.Synth0
 		{
 			try
 			{
+				_unitDSP = Native.XtsUnitDSPCreate();
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
+				Native.XtsUnitDSPDestroy(_unitDSP);
+				_unitDSP = IntPtr.Zero;
 			}
 		}
 
@@ -198,7 +202,7 @@ namespace Xt.Synth0
 		static void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
 			e.Data = PlotBuffer;
-			var dsp = new UnitDSP();
+			Native.XtsUnitDSPReset(_unitDSP);
 			var synth = Model.Track.Synth;
 			var global = synth.Global;
 			var index = global.Plot.Value;

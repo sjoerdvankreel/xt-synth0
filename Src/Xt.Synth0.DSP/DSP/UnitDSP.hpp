@@ -8,8 +8,8 @@ namespace Xts {
 
 class UnitDSP 
 {
-  float _phasef;
-  double _phased;
+  float _phasef = 0.0f;
+  double _phased = 0.0;
 
   float GenerateNaive(UnitType type);
   float GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics);
@@ -20,6 +20,7 @@ class UnitDSP
 public:
   void Reset();
   static void Init();
+  float Frequency(UnitModel const& unit) const;
   float Next(GlobalModel const& global, UnitModel const& unit, float rate);
 };
 

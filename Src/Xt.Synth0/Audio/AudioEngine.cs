@@ -2,41 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0
 {
 	unsafe class AudioEngine : IDisposable
 	{
-		static AudioEngine()
-		{
-			XtsDSPInit();
-		}
-
-		[DllImport("Xt.Synth0.DSP")]
-		static extern void XtsDSPInit();
-		[DllImport("Xt.Synth0.DSP")]
-		static extern IntPtr XtsDSPCreate();
-		[DllImport("Xt.Synth0.DSP")]
-		static extern void XtsDSPReset(IntPtr dsp);
-		[DllImport("Xt.Synth0.DSP")]
-		static extern void XtsDSPDestroy(IntPtr dsp);
-
-		[DllImport("Xt.Synth0.DSP")]
-		static extern IntPtr XtsSynthModelCreate();
-		[DllImport("Xt.Synth0.DSP")]
-		static extern void XtsSynthModelDestroy(IntPtr synth);
-		[DllImport("Xt.Synth0.DSP")]
-		static extern IntPtr XtsSequencerModelCreate();
-		[DllImport("Xt.Synth0.DSP")]
-		static extern void XtsSequencerModelDestroy(IntPtr seq);
-
-		[DllImport("Xt.Synth0.DSP")]
-		static extern void XtsDSPProcessBuffer(
-			IntPtr dsp, IntPtr seq, IntPtr synth, float rate, 
-			IntPtr buffer, int frames, ref int currentRow, ref ulong streamPosition);
-
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
 		const float WarningDurationSeconds = 0.5f;

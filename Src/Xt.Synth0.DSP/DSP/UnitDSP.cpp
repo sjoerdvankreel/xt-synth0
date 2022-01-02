@@ -10,15 +10,11 @@ OctaveCount = TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
 static float FrequencyTable[OctaveCount][12][100];
 
 static float
-Frequency(int oct, int note, int cent)
+GetFrequency(int oct, int note, int cent)
 {
   float midi = (oct + 1) * 12 + note + cent / 100.0f;
 	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
-
-static float
-Frequency(UnitModel const& unit)
-{ return FrequencyTable[unit.oct][unit.note][unit.cent + 50]; }
 
 void
 UnitDSP::Init()
@@ -29,7 +25,7 @@ UnitDSP::Init()
 	for (int oct = 0; oct < octaves; oct++)
 		for (int note = 0; note < notes; note++)
 			for (int cent = -50; cent < 50; cent++)
-				FrequencyTable[oct][note][cent + 50] = Frequency(oct, note, cent);
+				FrequencyTable[oct][note][cent + 50] = GetFrequency(oct, note, cent);
 }
 
 void
@@ -38,6 +34,10 @@ UnitDSP::Reset()
   _phased = 0.0;
   _phasef = 0.0f;
 }
+
+float
+UnitDSP::Frequency(UnitModel const& unit) const
+{ return FrequencyTable[unit.oct][unit.note][unit.cent + 50]; }
 
 float
 UnitDSP::Next(GlobalModel const& global, UnitModel const& unit, float rate)

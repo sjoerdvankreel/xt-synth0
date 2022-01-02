@@ -22,4 +22,7 @@
     <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.pdb" Link="x64/Xt.Synth0.DSP.pdb" />
     <Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.dll" Link="x64/Xt.Synth0.DSP.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <NativeLibs Remove="Synth0\Native.cs" />
+  </ItemGroup>
 </Project>

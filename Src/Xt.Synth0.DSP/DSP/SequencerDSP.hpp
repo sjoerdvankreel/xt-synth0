@@ -20,13 +20,14 @@ class SequencerDSP
   PatternDSP const _pattern;
 
   bool RowUpdated();
+  float Next(SequencerModel const& seq, SynthModel& synth, float rate);
   bool UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate);
 
 public:
   void Reset();
-  int CurrentRow() const { return _currentRow; }
-  uint64_t StreamPosition() const { return _streamPosition; }
-  float Next(SequencerModel const& seq, SynthModel& synth, float rate);
+  void ProcessBuffer(
+    SequencerModel const& seq, SynthModel& synth, float rate, 
+    float* buffer, int32_t frames, int32_t* currentRow, uint64_t* streamPosition);
 };
 
 } // namespace Xts

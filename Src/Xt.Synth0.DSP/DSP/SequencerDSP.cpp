@@ -30,6 +30,21 @@ SequencerDSP::Next(SequencerModel const& seq, SynthModel& synth, float rate)
   return result;
 }
 
+void
+SequencerDSP::ProcessBuffer(
+	SequencerModel const& seq, SynthModel& synth, float rate,
+	float* buffer, int32_t frames, int32_t* currentRow, uint64_t* streamPosition)
+{
+	for (int f = 0; f < frames; f++)
+	{
+		float sample = Next(seq, synth, rate);
+		buffer[f * 2] = sample;
+		buffer[f * 2 + 1] = sample;
+	}
+	*currentRow = _currentRow;
+	*streamPosition = _streamPosition;
+}
+
 bool 
 SequencerDSP::UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate)
 {
