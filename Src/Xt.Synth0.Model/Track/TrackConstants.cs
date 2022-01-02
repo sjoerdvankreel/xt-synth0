@@ -2,8 +2,8 @@
 {
 	public static class TrackConstants
 	{
-		internal const int UnitSize = 16;
-		internal const int ParamSize = 24;
+		internal const int ParamSize = 16;
+		internal const int UnitSize = 24;
 		internal const int PatternFxSize = 8;
 		internal const int PatternKeySize = 12;
 		internal const int PatternRowSize = 72;
