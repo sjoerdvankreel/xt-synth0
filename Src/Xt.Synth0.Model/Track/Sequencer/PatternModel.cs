@@ -21,6 +21,6 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->pattern;
 
 		public IReadOnlyList<PatternRow> Rows = new ReadOnlyCollection<PatternRow>(MakeRows());
-		static IList<PatternRow> MakeRows() => Enumerable.Repeat(0, TrackConstants.TotalRowCount).Select(i => new PatternRow(i)).ToList();
+		static IList<PatternRow> MakeRows() => Enumerable.Range(0, TrackConstants.TotalRowCount).Select(i => new PatternRow(i)).ToList();
 	}
 }
