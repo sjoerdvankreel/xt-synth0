@@ -22,7 +22,7 @@ namespace Xt.Synth0.Model
 
 		public IReadOnlyList<PatternFx> Fx = new ReadOnlyCollection<PatternFx>(MakeFx());
 		public IReadOnlyList<PatternKey> Keys = new ReadOnlyCollection<PatternKey>(MakeKeys());
-		static IList<PatternFx> MakeFx() => Enumerable.Repeat(0, TrackConstants.MaxFxCount).Select(i => new PatternFx(i)).ToList();
-		static IList<PatternKey> MakeKeys() => Enumerable.Repeat(0, TrackConstants.MaxKeyCount).Select(i => new PatternKey(i)).ToList();
+		static IList<PatternFx> MakeFx() => Enumerable.Range(0, TrackConstants.MaxFxCount).Select(i => new PatternFx(i)).ToList();
+		static IList<PatternKey> MakeKeys() => Enumerable.Range(0, TrackConstants.MaxKeyCount).Select(i => new PatternKey(i)).ToList();
 	}
 }
