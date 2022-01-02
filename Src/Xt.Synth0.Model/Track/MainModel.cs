@@ -40,7 +40,7 @@ namespace Xt.Synth0.Model
 			return result;
 		}
 
-		public void ToNative(IntPtr native) => ToNative(this, (void*)native);		
+		public void ToNative(void* native) => ToNative(this, native);		
 		void ToNative(IModelGroup group, void* native)
 		{
 			foreach (var model in group.SubModels)
@@ -53,7 +53,7 @@ namespace Xt.Synth0.Model
 				ToNative(child, child.Address(native));
 		}
 
-		public void FromNative(IntPtr native) => FromNative(this, (void*)native);
+		public void FromNative(void* native) => FromNative(this, native);
 		void FromNative(IModelGroup group, void* native)
 		{
 			foreach (var model in group.SubModels)

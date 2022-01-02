@@ -199,22 +199,6 @@ namespace Xt.Synth0
 			e.DefaultBuffer = support?.current ?? 0.0;
 		}
 
-		static void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
-		{
-			e.Data = PlotBuffer;
-			Native.XtsUnitDSPReset(_unitDSP);
-			var synth = Model.Track.Synth;
-			var global = synth.Global;
-			var index = global.Plot.Value;
-			var unit = synth.Units[index - 1];
-			e.Frequency = dsp.Frequency(unit);
-			var rate = Model.Settings.SampleRate.ToInt();
-			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
-			e.Samples = PlotCycles * cycleLength;
-			for (int s = 0; s < e.Samples; s++)
-				PlotBuffer[s] = dsp.Next(global, unit, rate);
-		}
-
 		static AudioEngine SetupEngine(Window mainWindow)
 		{
 			var helper = new WindowInteropHelper(mainWindow);
@@ -224,6 +208,23 @@ namespace Xt.Synth0
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
 			return result;
+		}
+
+		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
+		{
+			SynthModel.Native native;
+			var synth = Model.Track.Synth;
+			synth.ToNative(&native);
+			Native.XtsUnitDSPReset(_unitDSP);
+			void* global = synth.Global.Address(&native);
+			void* unit = synth.Units[synth.Global.Plot.Value - 1].Address(&native);
+			var rate = Model.Settings.SampleRate.ToInt();
+			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
+			e.Data = PlotBuffer;
+			e.Samples = PlotCycles * cycleLength;
+			e.Frequency = Native.XtsUnitDSPFrequency(_unitDSP, new IntPtr(unit));
+			for (int s = 0; s < e.Samples; s++)
+				PlotBuffer[s] = Native.XtsUnitDSPNext(_unitDSP, new IntPtr(global), new IntPtr(unit), rate);
 		}
 	}
 }
