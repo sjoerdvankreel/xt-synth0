@@ -8,13 +8,13 @@ namespace Xt.Synth0.Model
 {
 	public enum SynthMethod { PBP, Add, Nve }
 
-	public unsafe sealed class SynthModel : IModelGroup
+	public unsafe sealed class SynthModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct Native
 		{
 			[StructLayout(LayoutKind.Sequential)]
-			internal struct Param { int min, max; int* value; }
+			internal struct Param { internal int min, max; internal int* value; }
 
 			internal AmpModel.Native amp;
 			internal GlobalModel.Native global;
@@ -26,46 +26,32 @@ namespace Xt.Synth0.Model
 		public GlobalModel Global { get; } = new();
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
 
-		public IReadOnlyList<AutoParam> Params { get; }
-		public event EventHandler<ParamChangedEventArgs> ParamChanged;
-		public IReadOnlyList<IModelGroup> SubGroups => new IModelGroup[0];
-		public void* Address(void* parent) => throw new NotSupportedException();
-		public AutoParam Auto(Param param) => Params.Single(p => ReferenceEquals(param, p.Param));
-		public IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Amp, Global }).ToArray();
+		public IReadOnlyList<AutoParam> AutoParams { get; }
+		public override IReadOnlyList<IModelGroup> SubGroups => new IModelGroup[0];
+		public AutoParam Auto(Param param) => AutoParams.Single(p => ReferenceEquals(param, p.Param));
+		public override IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Amp, Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
 
-		public void CopyTo(SynthModel model)
+		public void PrepareNative(IntPtr native)
 		{
+			Native* nativePtr = (Native*)native;
+			var nativeParams = (Native.Param*)nativePtr->@params;
 			for (int p = 0; p < Params.Count; p++)
-				model.Params[p].Param.Value = Params[p].Param.Value;
-		}
-
-		IList<(ISubModel Owner, Param Param)> ListParams(IModelGroup group)
-		{
-			var result = new List<(ISubModel, Param)>();
-			foreach (var model in group.SubModels)
-				foreach (var param in model.Params)
-					result.Add((model, param));
-			foreach (var child in group.SubGroups)
-				result.AddRange(ListParams(child));
-			return result;
+			{
+				nativeParams[p].min = AutoParams[p].Param.Info.Min;
+				nativeParams[p].max = AutoParams[p].Param.Info.Max;
+				var ownerAddress = AutoParams[p].Owner.Address(nativePtr);
+				nativeParams[p].value = AutoParams[p].Param.Info.Address(ownerAddress);
+			}
 		}
 
 		public SynthModel()
 		{
 			Units[0].On.Value = 1;
-			var @params = ListParams(this);
-			if (@params.Count != TrackConstants.ParamCount)
+			var @params = ListParams(this).Select((p, i) => new AutoParam((INamedModel)p.Model, i, p.Param));
+			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
+			if (AutoParams.Count != TrackConstants.ParamCount)
 				throw new InvalidOperationException();
-			var autoParams = new List<AutoParam>();
-			for (int i = 0; i < @params.Count; i++)
-				autoParams.Add(new AutoParam((INamedModel)@params[i].Owner, i, @params[i].Param));
-			Params = new ReadOnlyCollection<AutoParam>(autoParams);
-			for (int p = 0; p < Params.Count; p++)
-			{
-				int local = p;
-				Params[p].Param.PropertyChanged += (s, e) => ParamChanged?.Invoke(this, new ParamChangedEventArgs(local));
-			}
 		}
 	}
 }

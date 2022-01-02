@@ -50,7 +50,7 @@ namespace Xt.Synth0
 		internal static void SaveFile(TrackModel model, string path)
 		{
 			var ints = new[] { TrackConstants.FormatVersion }.Concat(
-				model.Synth.Params.Select(p => p.Param.Value)).Concat(
+				model.Synth.Params.Select(p => p.Value)).Concat(
 				model.Sequencer.Params.Select(p => p.Value)).ToArray();
 			var bytes = ints.SelectMany(i => BitConverter.GetBytes(i)).ToArray();
 			File.WriteAllBytes(path, bytes);
@@ -64,7 +64,7 @@ namespace Xt.Synth0
 			if (ints[0] != TrackConstants.FormatVersion)
 				throw new InvalidOperationException("Wrong file format version.");
 			for (int i = 0; i < model.Synth.Params.Count; i++)
-				model.Synth.Params[i].Param.Value = ints[i + 1];
+				model.Synth.Params[i].Value = ints[i + 1];
 			for (int i = 0; i < model.Sequencer.Params.Count; i++)
 				model.Sequencer.Params[i].Value = ints[model.Synth.Params.Count + i + 1];
 		}

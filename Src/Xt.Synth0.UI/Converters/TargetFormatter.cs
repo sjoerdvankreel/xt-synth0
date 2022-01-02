@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -14,7 +13,7 @@ namespace Xt.Synth0.UI
 		internal override string Convert(int target)
 		{
 			var result = new StringBuilder();
-			var param = _synth.Params[target];
+			var param = _synth.AutoParams[target];
 			result.AppendLine(_param.Info.Detail);
 			result.AppendLine("Ctrl + F to fill");
 			result.AppendLine(PatternUI.EditHint);
