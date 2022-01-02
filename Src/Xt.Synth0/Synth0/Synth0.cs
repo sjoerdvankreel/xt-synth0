@@ -219,10 +219,10 @@ namespace Xt.Synth0
 			void* global = synth.Global.Address(&native);
 			void* unit = synth.Units[synth.Global.Plot.Value - 1].Address(&native);
 			var rate = Model.Settings.SampleRate.ToInt();
+			e.Frequency = Native.XtsUnitDSPFrequency(_unitDSP, new IntPtr(unit));
 			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
 			e.Data = PlotBuffer;
 			e.Samples = PlotCycles * cycleLength;
-			e.Frequency = Native.XtsUnitDSPFrequency(_unitDSP, new IntPtr(unit));
 			for (int s = 0; s < e.Samples; s++)
 				PlotBuffer[s] = Native.XtsUnitDSPNext(_unitDSP, new IntPtr(global), new IntPtr(unit), rate);
 		}
