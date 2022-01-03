@@ -24,7 +24,7 @@ namespace Xt.Synth0.Model
 		public string Name => $"Unit {_index + 1}";
 		internal UnitModel(int index) => _index = index;
 		public IReadOnlyList<Param> Params => new[] { On, Type, Amp, Oct, Note, Cent };
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitSize];
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitModelSize];
 
 		static readonly string[] Types = Enum.GetValues<UnitType>().Select(v => v.ToString()).ToArray();
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };

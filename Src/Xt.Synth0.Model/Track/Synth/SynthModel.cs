@@ -18,7 +18,7 @@ namespace Xt.Synth0.Model
 
 			internal AmpModel.Native amp;
 			internal GlobalModel.Native global;
-			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitSize];
+			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitModelSize];
 			internal fixed byte @params[TrackConstants.ParamCount * TrackConstants.ParamSize];
 		}
 

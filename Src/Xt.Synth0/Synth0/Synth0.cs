@@ -22,6 +22,7 @@ namespace Xt.Synth0
 		[STAThread]
 		static void Main()
 		{
+			TrackConstants.SanityChecks();
 			try
 			{
 				_unitDSP = Native.XtsUnitDSPCreate();
