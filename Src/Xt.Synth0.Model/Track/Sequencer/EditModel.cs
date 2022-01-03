@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class EditModel : INamedModel
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal int fx, act, pats, keys; }
 
 		public Param Fx { get; } = new(FxInfo);

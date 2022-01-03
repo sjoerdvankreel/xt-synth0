@@ -15,17 +15,17 @@ template<int Actual, int Expected>
 struct CheckSize { static_assert(Actual == Expected); };
 
 XTS_CHECK_SIZE(Param, 16);
-XTS_CHECK_SIZE(AmpModel, 20);
+XTS_CHECK_SIZE(AmpModel, 24);
 XTS_CHECK_SIZE(UnitModel, 24);
 XTS_CHECK_SIZE(GlobalModel, 16);
 XTS_CHECK_SIZE(SynthModel, 544);
 
 XTS_CHECK_SIZE(EditModel, 16);
 XTS_CHECK_SIZE(PatternFx, 8);
-XTS_CHECK_SIZE(PatternKey, 12);
-XTS_CHECK_SIZE(PatternRow, 72);
-XTS_CHECK_SIZE(PatternModel, 18432);
-XTS_CHECK_SIZE(SequencerModel, 18448);
+XTS_CHECK_SIZE(PatternKey, 16);
+XTS_CHECK_SIZE(PatternRow, 88);
+XTS_CHECK_SIZE(PatternModel, 22528);
+XTS_CHECK_SIZE(SequencerModel, 22544);
 
 } // namespace Xts
 #endif // XTS_SIZE_CHECKS_HPP

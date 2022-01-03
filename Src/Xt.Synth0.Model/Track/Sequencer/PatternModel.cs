@@ -7,7 +7,7 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class PatternModel : IModelGroup
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal fixed byte rows[TrackConstants.TotalRowCount * TrackConstants.PatternRowSize]; }
 
 		internal PatternModel()

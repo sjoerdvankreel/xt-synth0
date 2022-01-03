@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public sealed class SequencerModel : MainModel
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
 			internal EditModel.Native edit;

@@ -27,18 +27,20 @@ namespace Xt.Synth0.Model
 				throw new InvalidOperationException();
 		}
 
+		internal const int Alignment = 8;
+
 		internal const int ParamSize = 16;
-		internal const int AmpModelSize = 20;
+		internal const int AmpModelSize = 24;
 		internal const int UnitModelSize = 24;
 		internal const int GlobalModelSize = 16;
 		internal const int SynthModelSize = 544;
 
 		internal const int EditModelSize = 16;
 		internal const int PatternFxSize = 8;
-		internal const int PatternKeySize = 12;
-		internal const int PatternRowSize = 72;
-		internal const int PatternModelSize = 18432;
-		internal const int SequencerModelSize = 18448;
+		internal const int PatternKeySize = 16;
+		internal const int PatternRowSize = 88;
+		internal const int PatternModelSize = 22528;
+		internal const int SequencerModelSize = 22544;
 
 		public const int MinOctave = 0;
 		public const int MaxOctave = 9;

@@ -7,22 +7,22 @@ namespace Xts {
 
 enum class PatternNote { None, Off, C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 
-struct PatternFx { int value, target; };
-struct PatternKey { int amp, oct, note; };
-struct EditModel { int fx, act, pats, keys; };
+struct alignas(TrackConstants::Alignment) PatternFx { int value, target; };
+struct alignas(TrackConstants::Alignment) PatternKey { int amp, oct, note; };
+struct alignas(TrackConstants::Alignment) EditModel { int fx, act, pats, keys; };
 
-struct PatternRow
+struct alignas(TrackConstants::Alignment) PatternRow
 {
   PatternFx fx[TrackConstants::MaxFxCount];
   PatternKey keys[TrackConstants::MaxKeyCount];
 };
 
-struct PatternModel
+struct alignas(TrackConstants::Alignment) PatternModel
 {
   PatternRow rows[TrackConstants::TotalRowCount];
 };
 
-struct SequencerModel
+struct alignas(TrackConstants::Alignment) SequencerModel
 {
   EditModel edit;
   PatternModel pattern;

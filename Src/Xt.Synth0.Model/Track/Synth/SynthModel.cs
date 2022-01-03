@@ -10,10 +10,10 @@ namespace Xt.Synth0.Model
 
 	public unsafe sealed class SynthModel : MainModel
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		public struct Native
 		{
-			[StructLayout(LayoutKind.Sequential)]
+			[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 			internal struct Param { internal int min, max; internal int* value; }
 
 			internal AmpModel.Native amp;

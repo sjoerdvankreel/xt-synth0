@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class PatternFx : ISubModel
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal int value, target; }
 
 		public Param Value { get; } = new(ValueInfo);

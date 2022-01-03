@@ -12,7 +12,7 @@ namespace Xt.Synth0.Model
 			"F-", "F#", "G-", "G#", "A-", "A#", "B-"
 		};
 
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal int amp, oct, note; }
 
 		public Param Amp { get; } = new(AmpInfo);

@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class AmpModel : INamedModel
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal int a, d, s, r, lvl; }
 
 		public Param A { get; } = new(AInfo);

@@ -10,7 +10,7 @@ namespace Xt.Synth0.Model
 
 	public unsafe sealed class UnitModel : INamedModel
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal int on, amp, oct, note, cent, type; }
 
 		public Param On { get; } = new(OnInfo);

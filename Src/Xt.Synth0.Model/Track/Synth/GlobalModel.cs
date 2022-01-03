@@ -7,7 +7,7 @@ namespace Xt.Synth0.Model
 {
 	public unsafe sealed class GlobalModel : INamedModel
 	{
-		[StructLayout(LayoutKind.Sequential)]
+		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal int bpm, hmns, plot, method; }
 
 		public Param Bpm { get; } = new(BpmInfo);

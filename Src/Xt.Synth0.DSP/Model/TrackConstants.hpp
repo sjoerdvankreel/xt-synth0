@@ -3,6 +3,8 @@
 
 namespace Xts { namespace TrackConstants {
 
+constexpr int Alignment = 8;
+
 constexpr int MinOctave = 0;
 constexpr int MaxOctave = 9;
 
