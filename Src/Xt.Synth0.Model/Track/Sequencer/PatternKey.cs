@@ -13,7 +13,7 @@ namespace Xt.Synth0.Model
 		};
 
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int amp, oct, note; }
+		internal struct Native { internal int amp, oct, note, pad__; }
 
 		public Param Amp { get; } = new(AmpInfo);
 		public Param Oct { get; } = new(OctInfo);

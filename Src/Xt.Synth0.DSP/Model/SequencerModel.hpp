@@ -8,8 +8,8 @@ namespace Xts {
 enum class PatternNote { None, Off, C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 
 struct alignas(TrackConstants::Alignment) PatternFx { int value, target; };
-struct alignas(TrackConstants::Alignment) PatternKey { int amp, oct, note; };
 struct alignas(TrackConstants::Alignment) EditModel { int fx, act, pats, keys; };
+struct alignas(TrackConstants::Alignment) PatternKey { int amp, oct, note, pad__; };
 
 struct alignas(TrackConstants::Alignment) PatternRow
 {

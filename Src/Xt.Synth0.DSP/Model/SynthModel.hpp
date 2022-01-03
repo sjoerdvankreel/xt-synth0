@@ -5,8 +5,8 @@
 
 namespace Xts {
 
-struct alignas(TrackConstants::Alignment) AmpModel { int a, d, s, r, lvl; };
 struct alignas(TrackConstants::Alignment) Param { int min, max; int* value; };
+struct alignas(TrackConstants::Alignment) AmpModel { int a, d, s, r, lvl, pad__; };
 struct alignas(TrackConstants::Alignment) GlobalModel { int bpm, hmns, plot, method; };
 struct alignas(TrackConstants::Alignment) UnitModel { int on, amp, oct, note, cent, type; };
 
