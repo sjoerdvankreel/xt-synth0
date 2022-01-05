@@ -5,8 +5,9 @@
 
 namespace Xts {
 
-static constexpr int 
-OctaveCount = TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
+static constexpr int SineTableSize = 4096;
+static constexpr int OctaveCount = TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
+static float SineTable[SineTableSize];
 static float FrequencyTable[OctaveCount][12][100];
 
 static float
@@ -16,8 +17,12 @@ GetFrequency(int oct, int note, int cent)
 	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
 
-void
-UnitDSP::Init()
+inline static float
+Sin(double phase)
+{ return SineTable[static_cast<size_t>(phase * SineTableSize)]; }
+
+static void
+InitFrequencyTable()
 {
 	const int notes = 12;
 	const int cents = 100;
@@ -26,6 +31,20 @@ UnitDSP::Init()
 		for (int note = 0; note < notes; note++)
 			for (int cent = -50; cent < 50; cent++)
 				FrequencyTable[oct][note][cent + 50] = GetFrequency(oct, note, cent);
+}
+
+static void
+InitSineTable()
+{
+  for(int i = 0; i < SineTableSize; i++)
+    SineTable[i] = static_cast<float>(sin(i / (double)SineTableSize * 2.0 * M_PI));
+}
+
+void
+UnitDSP::Init()
+{
+	InitSineTable();
+	InitFrequencyTable();
 }
 
 void
@@ -59,7 +78,7 @@ UnitDSP::Generate(GlobalModel const& global, UnitType type, float freq, float ra
 	auto pi = static_cast<float>(M_PI);
 	switch(type)
   {
-    case UnitType::Sin: return sinf(_phasef * pi * 2.0f);
+    case UnitType::Sin: return Sin(_phased);
     default: return GenerateMethod(global, type, freq, rate);
   }
 }
@@ -120,7 +139,9 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, in
 			rolloff *= h;
 		float amp = 1.0f / rolloff;
 		limit += amp;
-		result += sign * sinf(_phasef * h * pi * 2.0f) * amp;
+    double phase = _phased * h;
+    phase -=static_cast<int>(phase);
+		result += sign * Sin(phase) * amp;
 		sign *= multiplier;
 	}
 	return result / limit;
