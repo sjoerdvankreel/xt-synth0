@@ -83,7 +83,7 @@ UnitDSP::GenerateNaive(UnitType type)
   switch(type)
   {
     case UnitType::Saw: return _phasef * 2.0f - 1.0f;
-		case UnitType::Sqr: return _phasef > 0.5f ? 1.0f : -1.0f;
+		case UnitType::Sqr: return _phasef < 0.5f ? 1.0f : -1.0f;
 		case UnitType::Tri: return (_phasef <= 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f;
 		default: assert(false); return 0.0f;
 	}
