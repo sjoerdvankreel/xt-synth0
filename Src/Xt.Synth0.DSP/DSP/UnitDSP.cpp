@@ -113,15 +113,15 @@ UnitDSP::GenerateAdditive(UnitType type, float freq, float rate, int logHarmonic
 {
 	switch (type)
 	{
-	case UnitType::Saw: return GenerateAdditive(freq, rate, logHarmonics, 1, 1, 0);
-	case UnitType::Sqr: return GenerateAdditive(freq, rate, logHarmonics, 2, 1, 0);
-	case UnitType::Tri: return GenerateAdditive(freq, rate, logHarmonics, 2, -1, 1);
+	case UnitType::Saw: return GenerateAdditive(freq, rate, logHarmonics, 1, 1, false);
+	case UnitType::Sqr: return GenerateAdditive(freq, rate, logHarmonics, 2, 1, false);
+	case UnitType::Tri: return GenerateAdditive(freq, rate, logHarmonics, 2, -1, true);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, int multiplier, int logRolloff)
+UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, int multiplier, bool sqrRolloff)
 {
 	int sign = 1;
 	int harmonics = 1;
@@ -134,15 +134,13 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, in
 	for (int h = 1; h <= harmonics * step; h += step)
 	{
 		if (h * freq >= nyquist) break;
-		int rolloff = h;
-		for (int r = 0; r < logRolloff; r++)
-			rolloff *= h;
+		int rolloff = sqrRolloff? h * h: h;
 		float amp = 1.0f / rolloff;
-		limit += amp;
     double phase = _phased * h;
     phase -=static_cast<int>(phase);
 		result += sign * Sin(phase) * amp;
 		sign *= multiplier;
+		limit += amp;
 	}
 	return result / limit;
 }
