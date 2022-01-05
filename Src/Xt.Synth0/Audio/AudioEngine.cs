@@ -429,6 +429,7 @@ namespace Xt.Synth0
 				_nativeSequencerDSP, _nativeSequencerModel, _nativeSynthModel,
 				rate, _buffer, buffer.frames, &currentRow, &streamPosition);
 			EndAutomation();
+			Clip(buffer.frames, streamPosition);
 			CopyBuffer(in buffer, in format);
 			ResetWarnings(rate, streamPosition);
 			_app.Stream.CurrentRow = currentRow;
