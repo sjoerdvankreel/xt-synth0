@@ -6,9 +6,7 @@
 
 namespace Xts {
 
-static constexpr int SineTableSize = 4096;
 static constexpr int OctaveCount = TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
-static float SineTable[SineTableSize];
 static float FrequencyTable[OctaveCount][12][100];
 
 static inline float
@@ -18,12 +16,8 @@ GetFrequency(int oct, int note, int cent)
 	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
 
-static inline float
-Sin(float phase)
-{ return SineTable[static_cast<size_t>(phase * SineTableSize)]; }
-
-static void
-InitFrequencyTable()
+void
+UnitDSP::Init()
 {
 	const int notes = 12;
 	const int cents = 100;
@@ -32,20 +26,6 @@ InitFrequencyTable()
 		for (int note = 0; note < notes; note++)
 			for (int cent = -50; cent < 50; cent++)
 				FrequencyTable[oct][note][cent + 50] = GetFrequency(oct, note, cent);
-}
-
-static void
-InitSineTable()
-{
-  for(int i = 0; i < SineTableSize; i++)
-    SineTable[i] = static_cast<float>(sin(i / (double)SineTableSize * 2.0 * M_PI));
-}
-
-void
-UnitDSP::Init()
-{
-	InitSineTable();
-	InitFrequencyTable();
 }
 
 void
@@ -79,7 +59,7 @@ UnitDSP::Generate(GlobalModel const& global, UnitType type, float freq, float ra
 	auto pi = static_cast<float>(M_PI);
 	switch(type)
   {
-    case UnitType::Sin: return Sin(_phasef);
+    case UnitType::Sin: return std::sinf(_phasef * 2.0f * pi);
     default: return GenerateMethod(global, type, freq, rate);
   }
 }
@@ -127,13 +107,14 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
 	int harmonics = 1;
 	float limit = 0.0;
 	float result = 0.0;
+  float pi = static_cast<float>(M_PI);
   __m256 ones = _mm256_set1_ps(1.0f);
 	__m256 signs = _mm256_set1_ps(1.0f);
 	__m256 freqs = _mm256_set1_ps(freq);
 	__m256 limits = _mm256_set1_ps(0.0f);
 	__m256 results = _mm256_set1_ps(0.0f);
 	__m256 phases = _mm256_set1_ps(_phasef);
-  __m256 twopis = _mm256_set1_ps(2.0f * M_PI);
+  __m256 twopis = _mm256_set1_ps(2.0f * pi);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   if(tri)
    signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
@@ -142,16 +123,20 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
 	for (int h = 1; h <= harmonics * step; h += step * 8)
 	{
     __m256 hs = _mm256_set_ps(
-      h + 0 * step, h + 1 * step, h + 2 * step, h + 3 * step, 
-      h + 4 * step, h + 5 * step, h + 6 * step, h + 7 * step);
-    __m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(hs, freqs), nyquists, _CMP_LT_OQ);
+      static_cast<float>(h + 0 * step),
+			static_cast<float>(h + 1 * step),
+			static_cast<float>(h + 2 * step),
+			static_cast<float>(h + 3 * step),
+			static_cast<float>(h + 4 * step),
+			static_cast<float>(h + 5 * step),
+			static_cast<float>(h + 6 * step),
+			static_cast<float>(h + 7 * step));
+			__m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(hs, freqs), nyquists, _CMP_LT_OQ);
 		if(!_mm256_movemask_ps(cmps)) break;
     __m256 rolloffs = tri? _mm256_mul_ps(hs, hs): hs;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 hsPhases = _mm256_mul_ps(phases, hs);
-    __m256 hsPhasesFloors = _mm256_round_ps(hsPhases, 0x09);
-    __m256 hsPhases0To1 = _mm256_sub_ps(hsPhases, hsPhasesFloors);
-    __m256 sines = _mm256_sin_ps(_mm256_mul_ps(hsPhases0To1, twopis));
+    __m256 sines = _mm256_sin_ps(_mm256_mul_ps(hsPhases, twopis));
     __m256 hmnsResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
 		results = _mm256_add_ps(results, hmnsResults);
     limits = _mm256_add_ps(limits, amps);
