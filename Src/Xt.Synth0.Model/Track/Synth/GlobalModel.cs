@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class GlobalModel : INamedModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int bpm, hmns, plot, method; }
+		internal struct Native { internal int bpm, plot, method, hmns; }
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Hmns { get; } = new(HmnsInfo);
@@ -16,7 +16,7 @@ namespace Xt.Synth0.Model
 		public Param Method { get; } = new(MethodInfo);
 
 		public string Name => "Global";
-		public IReadOnlyList<Param> Params => new[] { Bpm, Hmns, Plot, Method };
+		public IReadOnlyList<Param> Params => new[] { Bpm, Plot, Method, Hmns };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 
 		static readonly string[] Methods = Enum.GetValues<SynthMethod>().Select(v => v.ToString()).ToArray();

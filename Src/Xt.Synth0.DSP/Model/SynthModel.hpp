@@ -7,7 +7,7 @@ namespace Xts {
 
 struct XTS_ALIGN Param { int min, max; int* value; };
 struct XTS_ALIGN AmpModel { int a, d, s, r, lvl, pad__; };
-struct XTS_ALIGN GlobalModel { int bpm, hmns, plot, method; };
+struct XTS_ALIGN GlobalModel { int bpm, plot, method, hmns; };
 struct XTS_ALIGN UnitModel { int on, amp, oct, note, cent, type; };
 
 enum class SynthMethod { PBP, Add, Nve };
