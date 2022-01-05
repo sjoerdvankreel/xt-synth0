@@ -18,7 +18,7 @@ GetFrequency(int oct, int note, int cent)
 }
 
 inline static float
-Sin(double phase)
+Sin(float phase)
 { return SineTable[static_cast<size_t>(phase * SineTableSize)]; }
 
 static void
@@ -78,7 +78,7 @@ UnitDSP::Generate(GlobalModel const& global, UnitType type, float freq, float ra
 	auto pi = static_cast<float>(M_PI);
 	switch(type)
   {
-    case UnitType::Sin: return Sin(_phased);
+    case UnitType::Sin: return Sin(_phasef);
     default: return GenerateMethod(global, type, freq, rate);
   }
 }
@@ -128,7 +128,6 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, in
 	float limit = 0.0f;
 	float result = 0.0f;
 	float nyquist = rate / 2.0f;
-	auto pi = static_cast<float>(M_PI);
 	for (int h = 0; h < logHarmonics; h++)
 		harmonics *= 2;
 	for (int h = 1; h <= harmonics * step; h += step)
@@ -136,7 +135,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, in
 		if (h * freq >= nyquist) break;
 		int rolloff = sqrRolloff? h * h: h;
 		float amp = 1.0f / rolloff;
-    double phase = _phased * h;
+    float phase = _phasef * h;
     phase -=static_cast<int>(phase);
 		result += sign * Sin(phase) * amp;
 		sign *= multiplier;
