@@ -2,6 +2,7 @@
 #include <cassert>
 #define _USE_MATH_DEFINES 1
 #include <cmath>
+#include <immintrin.h>
 
 namespace Xts {
 
@@ -10,14 +11,14 @@ static constexpr int OctaveCount = TrackConstants::MaxOctave - TrackConstants::M
 static float SineTable[SineTableSize];
 static float FrequencyTable[OctaveCount][12][100];
 
-static float
+static inline float
 GetFrequency(int oct, int note, int cent)
 {
   float midi = (oct + 1) * 12 + note + cent / 100.0f;
 	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
 
-inline static float
+static inline float
 Sin(float phase)
 { return SineTable[static_cast<size_t>(phase * SineTableSize)]; }
 
@@ -123,24 +124,38 @@ UnitDSP::GenerateAdditive(UnitType type, float freq, float rate, int logHarmonic
 float 
 UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, int multiplier, bool sqrRolloff)
 {
-	int sign = 1;
 	int harmonics = 1;
-	float limit = 0.0f;
-	float result = 0.0f;
-	float nyquist = rate / 2.0f;
+	float limit = 0.0;
+	float result = 0.0;
+  __m256 ones = _mm256_set1_ps(1.0f);
+	__m256 freqs = _mm256_set1_ps(freq);
+	__m256 limits = _mm256_set1_ps(0.0f);
+	__m256 results = _mm256_set1_ps(0.0f);
+	__m256 phases = _mm256_set1_ps(_phasef);
+  __m256 twopis = _mm256_set1_ps(2.0f * M_PI);
+	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
+	__m256 signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int h = 0; h < logHarmonics; h++)
 		harmonics *= 2;
-	for (int h = 1; h <= harmonics * step; h += step)
+	for (int h = 1; h <= harmonics * step; h += step * 8)
 	{
-		if (h * freq >= nyquist) break;
-		int rolloff = sqrRolloff? h * h: h;
-		float amp = 1.0f / rolloff;
-    float phase = _phasef * h;
-    phase -=static_cast<int>(phase);
-		result += sign * Sin(phase) * amp;
-		sign *= multiplier;
-		limit += amp;
+    __m256 hs = _mm256_set_ps(h, h + 1, h + 2, h + 3, h + 4, h + 5, h + 6, h + 7);
+    __m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(hs, freqs), nyquists, _CMP_LT_OQ);
+		if(!_mm256_movemask_ps(cmps)) break;
+    __m256 rolloffs = sqrRolloff? _mm256_mul_ps(hs, hs): hs;
+    __m256 amps = _mm256_div_ps(ones, rolloffs);
+    __m256 hsPhases = _mm256_mul_ps(phases, hs);
+    __m256 hsPhasesFloors = _mm256_round_ps(hsPhases, 0x09);
+    __m256 hsPhases0To1 = _mm256_sub_ps(hsPhases, hsPhasesFloors);
+    __m256 sines = _mm256_sin_ps(_mm256_mul_ps(hsPhases0To1, twopis));
+		results = _mm256_add_ps(results, _mm256_mul_ps(sines, amps));
+    limits = _mm256_add_ps(limits, amps);
 	}
+  for(int i = 0; i < 8; i++) 
+  {
+		limit += limits.m256_f32[i];
+		result += results.m256_f32[i];
+  }
 	return result / limit;
 }
 
