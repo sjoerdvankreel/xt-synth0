@@ -156,10 +156,10 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
 		results = _mm256_add_ps(results, hmnsResults);
     limits = _mm256_add_ps(limits, amps);
 	}
-  for(int i = 0; i < 8; i++)
+  for(int i = 0; i < harmonics && i < 8; i++)
   {
-		limit += limits.m256_f32[i];
-		result += results.m256_f32[i];
+		limit += limits.m256_f32[7 - i];
+		result += results.m256_f32[7 - i];
   }
 	return result / limit;
 }
