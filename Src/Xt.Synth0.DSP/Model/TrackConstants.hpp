@@ -1,9 +1,9 @@
 #ifndef XTS_TRACK_CONSTANTS_HPP
 #define XTS_TRACK_CONSTANTS_HPP
 
-namespace Xts { namespace TrackConstants {
+#define XTS_ALIGN alignas(8)
 
-constexpr int Alignment = 8;
+namespace Xts { namespace TrackConstants {
 
 constexpr int MinOctave = 0;
 constexpr int MaxOctave = 9;

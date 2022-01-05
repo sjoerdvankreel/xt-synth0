@@ -12,8 +12,9 @@ namespace Xt.Synth0
 		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
 		const float WarningDurationSeconds = 0.5f;
-		const float CpuUsageIntervalSeconds = 0.5f;
 		const float BufferInfoIntervalSeconds = 1.0f;
+		const float CpuUsageUpdateIntervalSeconds = 0.2f;
+		const float CpuUsageSamplingPeriodSeconds = 0.5f;
 
 		static XtSample DepthToSample(int size) => size switch
 		{
@@ -75,14 +76,18 @@ namespace Xt.Synth0
 		readonly SynthModel _managedSynthModel = new();
 
 		long _clipPosition = -1;
-		long _overloadPosition = -1;
 		long _cpuUsagePosition = -1;
+		long _overloadPosition = -1;
 		long _bufferInfoPosition = -1;
 		readonly long[] _gcPositions = new long[3];
 		readonly bool[] _gcCollecteds = new bool[3];
 		readonly Stopwatch _stopwatch = new Stopwatch();
 
 		float* _buffer;
+		int _cpuUsageIndex;
+		double[] _cpuUsageFactors;
+		int[] _cpuUsageFrameCounts;
+		int _cpuUsageTotalFrameCount;
 		readonly int[] _automationValues;
 
 		public string AsioDefaultDeviceId { get; }
@@ -197,6 +202,11 @@ namespace Xt.Synth0
 				_cpuUsagePosition = -1;
 				_bufferInfoPosition = -1;
 
+				_cpuUsageIndex = 0;
+				_cpuUsageFactors = null;
+				_cpuUsageFrameCounts = null;
+				_cpuUsageTotalFrameCount = 0;
+
 				_app.Stream.CpuUsage = 0.0;
 				_app.Stream.LatencyMs = 0.0;
 				_app.Stream.IsClipping = false;
@@ -231,10 +241,14 @@ namespace Xt.Synth0
 					_stream = new DiskStream(this, in format, bufferSize, settings.OutputPath);
 				else
 					_stream = OpenDeviceStream(in deviceParams);
-				Native.XtsSequencerDSPReset(_nativeSequencerDSP);
-				UpdateStreamInfo(0, format.mix.rate, 0);
-				GC.Collect(2, GCCollectionMode.Forced, true, true);
+				_cpuUsageIndex = 0;
+				_cpuUsageTotalFrameCount = 0;
+				_cpuUsageFactors = new double[format.mix.rate];
+				_cpuUsageFrameCounts = new int[format.mix.rate];
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
+				UpdateStreamInfo(0, format.mix.rate, 0);
+				Native.XtsSequencerDSPReset(_nativeSequencerDSP);
+				GC.Collect(2, GCCollectionMode.Forced, true, true);
 				ResumeStream();
 			}
 			catch
@@ -286,17 +300,39 @@ namespace Xt.Synth0
 				_overloadPosition = streamPosition;
 				_app.Stream.IsOverloaded = true;
 			}
-			if (streamPosition >= _cpuUsagePosition + rate * CpuUsageIntervalSeconds)
-			{
-				_cpuUsagePosition = streamPosition;
-				_app.Stream.CpuUsage = Math.Min(processedSeconds / bufferSeconds, 1.0);
-			}
 			if (_bufferInfoPosition == -1 || streamPosition >=
 				_bufferInfoPosition + rate * BufferInfoIntervalSeconds)
 			{
 				_bufferInfoPosition = streamPosition;
 				_app.Stream.LatencyMs = _stream.GetLatencyMs();
 				_app.Stream.BufferSizeFrames = _stream.GetMaxBufferFrames();
+			}
+		}
+
+		void UpdateCpuUsage(int frames, int rate, long streamPosition)
+		{
+			float bufferSeconds = frames / (float)rate;
+			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+			int cpuUsageCountToRemove = 0;
+			_cpuUsageTotalFrameCount += frames;
+			_cpuUsageFrameCounts[_cpuUsageIndex] = frames;
+			_cpuUsageFactors[_cpuUsageIndex] = Math.Min(processedSeconds / bufferSeconds, 1.0);
+			while (_cpuUsageTotalFrameCount > CpuUsageSamplingPeriodSeconds * rate)
+				_cpuUsageTotalFrameCount -= _cpuUsageFrameCounts[_cpuUsageIndex - cpuUsageCountToRemove++];
+			for (int i = 0; i <= _cpuUsageIndex - cpuUsageCountToRemove; i++)
+			{
+				_cpuUsageFactors[i] = _cpuUsageFactors[i + cpuUsageCountToRemove];
+				_cpuUsageFrameCounts[i] = _cpuUsageFrameCounts[i + cpuUsageCountToRemove];
+			}
+			_cpuUsageIndex -= cpuUsageCountToRemove;
+			double cpuUsage = 0.0;
+			for (int i = 0; i <= _cpuUsageIndex; i++)
+				cpuUsage += _cpuUsageFactors[i] * _cpuUsageFrameCounts[i] / _cpuUsageTotalFrameCount;
+			_cpuUsageIndex++;
+			if (streamPosition > _cpuUsagePosition + CpuUsageUpdateIntervalSeconds * rate)
+			{
+				_app.Stream.CpuUsage = cpuUsage;
+				_cpuUsagePosition = streamPosition;
 			}
 		}
 
@@ -389,14 +425,15 @@ namespace Xt.Synth0
 			int currentRow;
 			long streamPosition;
 			int rate = format.mix.rate;
-			Native.XtsSequencerDSPDSPProcessBuffer(
-				_nativeSequencerDSP, _nativeSequencerModel, _nativeSynthModel, 
+			Native.XtsSequencerDSPProcessBuffer(
+				_nativeSequencerDSP, _nativeSequencerModel, _nativeSynthModel,
 				rate, _buffer, buffer.frames, &currentRow, &streamPosition);
 			EndAutomation();
 			CopyBuffer(in buffer, in format);
 			ResetWarnings(rate, streamPosition);
 			_app.Stream.CurrentRow = currentRow;
 			_stopwatch.Stop();
+			UpdateCpuUsage(buffer.frames, rate, streamPosition);
 			UpdateStreamInfo(buffer.frames, rate, streamPosition);
 		}
 

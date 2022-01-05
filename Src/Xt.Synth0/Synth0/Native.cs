@@ -42,7 +42,7 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")]
 		internal static extern void XtsSequencerDSPDestroy(IntPtr dsp);
 		[DllImport("XT.Synth0.DSP")]
-		internal static extern void XtsSequencerDSPDSPProcessBuffer(
+		internal static extern void XtsSequencerDSPProcessBuffer(
 			IntPtr dsp, IntPtr seq, IntPtr synth, float rate, 
 			float* buffer, int frames, int* currentRow, long* streamPosition);
 	}

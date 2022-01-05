@@ -18,7 +18,7 @@ float XTS_CALL XtsUnitDSPNext(Xts::UnitDSP* dsp, Xts::GlobalModel const* global,
 void XTS_CALL XtsSequencerDSPReset(Xts::SequencerDSP* dsp) { dsp->Reset(); }
 void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }
 Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void) { return new Xts::SequencerDSP; }
-void XTS_CALL XtsSequencerDSPDSPProcessBuffer(
+void XTS_CALL XtsSequencerDSPProcessBuffer(
   Xts::SequencerDSP* dsp, Xts::SequencerModel const* seq, Xts::SynthModel* synth,
   float rate, float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition)
 { dsp->ProcessBuffer(*seq, *synth, rate, buffer, frames, currentRow, streamPosition); }

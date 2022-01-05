@@ -25,7 +25,7 @@ XTS_EXPORT float XTS_CALL XtsUnitDSPNext(Xts::UnitDSP* dsp, Xts::GlobalModel con
 XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void);
 XTS_EXPORT void XTS_CALL XtsSequencerDSPReset(Xts::SequencerDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsSequencerDSPDSPProcessBuffer(
+XTS_EXPORT void XTS_CALL XtsSequencerDSPProcessBuffer(
   Xts::SequencerDSP* dsp, Xts::SequencerModel const* seq, Xts::SynthModel* synth, 
   float rate, float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition);
 
