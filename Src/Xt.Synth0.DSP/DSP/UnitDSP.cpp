@@ -145,16 +145,10 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
     __m256 rolloffs = tri? _mm256_mul_ps(hs, hs): hs;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 hsPhases = _mm256_mul_ps(phases, hs);
-    __m256i hsTableIndices = _mm256_cvtps_epi32(_mm256_mul_ps(hsPhases, tableSizes));
-    __m256 sines = _mm256_set_ps(
-      SineTable[hsTableIndices.m256i_i32[7] % SineTableSize],
-			SineTable[hsTableIndices.m256i_i32[6] % SineTableSize],
-			SineTable[hsTableIndices.m256i_i32[5] % SineTableSize],
-			SineTable[hsTableIndices.m256i_i32[4] % SineTableSize],
-			SineTable[hsTableIndices.m256i_i32[3] % SineTableSize],
-			SineTable[hsTableIndices.m256i_i32[2] % SineTableSize],
-			SineTable[hsTableIndices.m256i_i32[1] % SineTableSize],
-			SineTable[hsTableIndices.m256i_i32[0] % SineTableSize]);
+		__m256 hsPhasesFloors = _mm256_round_ps(hsPhases, 0x09);
+		__m256 hsPhases0To1 = _mm256_sub_ps(hsPhases, hsPhasesFloors);
+    __m256i hsTableIndices = _mm256_cvtps_epi32(_mm256_mul_ps(hsPhases0To1, tableSizes));
+    __m256 sines = _mm256_i32gather_ps(SineTable, hsTableIndices, sizeof(float));
     __m256 hmnsResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
 		results = _mm256_add_ps(results, hmnsResults);
     limits = _mm256_add_ps(limits, amps);
