@@ -248,7 +248,6 @@ namespace Xt.Synth0
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
 				UpdateStreamInfo(0, format.mix.rate, 0);
 				Native.XtsSequencerDSPReset(_nativeSequencerDSP);
-				GC.Collect(2, GCCollectionMode.Forced, true, true);
 				ResumeStream();
 			}
 			catch
