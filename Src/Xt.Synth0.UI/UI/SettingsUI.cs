@@ -199,7 +199,7 @@ namespace Xt.Synth0.UI
 			result.ItemsSource = AudioModel.BufferSizes;
 			var binding = Bind.To(model, nameof(model.BufferSize));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
-			result.SelectedValuePath = nameof(EnumModel<BufferSize>.Value);
+			result.SelectedValuePath = nameof(EnumModel<BufferSize>.Enum);
 			return result;
 		}
 
@@ -209,7 +209,7 @@ namespace Xt.Synth0.UI
 			result.ItemsSource = AudioModel.BitDepths;
 			var binding = Bind.To(model, nameof(model.BitDepth));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
-			result.SelectedValuePath = nameof(EnumModel<BitDepth>.Value);
+			result.SelectedValuePath = nameof(EnumModel<BitDepth>.Enum);
 			return result;
 		}
 
@@ -219,7 +219,7 @@ namespace Xt.Synth0.UI
 			result.ItemsSource = AudioModel.SampleRates;
 			var binding = Bind.To(model, nameof(model.SampleRate));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
-			result.SelectedValuePath = nameof(EnumModel<SampleRate>.Value);
+			result.SelectedValuePath = nameof(EnumModel<SampleRate>.Enum);
 			return result;
 		}
 
