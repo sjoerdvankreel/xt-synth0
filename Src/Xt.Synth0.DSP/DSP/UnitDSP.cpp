@@ -131,15 +131,25 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
 			static_cast<float>(h + 5 * step),
 			static_cast<float>(h + 6 * step),
 			static_cast<float>(h + 7 * step));
-			__m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(hs, freqs), nyquists, _CMP_LT_OQ);
-		if(!_mm256_movemask_ps(cmps)) break;
-    __m256 rolloffs = tri? _mm256_mul_ps(hs, hs): hs;
+  	__m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(hs, freqs), nyquists, _CMP_LT_OQ);
+    int mask = _mm256_movemask_ps(cmps);
+		if(!mask) break;
+    __m256 belowNyquists = _mm256_set_ps(
+		  static_cast<float>((mask & (1 << 7)) ? 1 : 0),
+			static_cast<float>((mask & (1 << 6)) ? 1 : 0),
+			static_cast<float>((mask & (1 << 5)) ? 1 : 0),
+			static_cast<float>((mask & (1 << 4)) ? 1 : 0),
+			static_cast<float>((mask & (1 << 3)) ? 1 : 0),
+			static_cast<float>((mask & (1 << 2)) ? 1 : 0),
+			static_cast<float>((mask & (1 << 1)) ? 1 : 0),
+			static_cast<float>((mask & (1 << 0)) ? 1 : 0));
+  	__m256 rolloffs = tri? _mm256_mul_ps(hs, hs): hs;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 hsPhases = _mm256_mul_ps(phases, hs);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(hsPhases, twopis));
     __m256 hmnsResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
-		results = _mm256_add_ps(results, hmnsResults);
-    limits = _mm256_add_ps(limits, amps);
+		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, belowNyquists));
+		results = _mm256_add_ps(results, _mm256_mul_ps(hmnsResults, belowNyquists));
 	}
   for(int i = 0; i < harmonics && i < 8; i++)
   {
