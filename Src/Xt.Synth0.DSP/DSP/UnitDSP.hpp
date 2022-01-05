@@ -14,8 +14,8 @@ class UnitDSP
   float GenerateNaive(UnitType type);
   float GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics);
   float Generate(GlobalModel const& global, UnitType type, float freq, float rate);
+  float GenerateAdditive(float freq, float rate, int logHarmonics, int step, bool tri);
   float GenerateMethod(GlobalModel const& global, UnitType type, float freq, float rate);
-  float GenerateAdditive(float freq, float rate, int logHarmonics, int step, int multiplier, bool sqrRolloff);
 
 public:
   void Reset();

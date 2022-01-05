@@ -114,44 +114,49 @@ UnitDSP::GenerateAdditive(UnitType type, float freq, float rate, int logHarmonic
 {
 	switch (type)
 	{
-	case UnitType::Saw: return GenerateAdditive(freq, rate, logHarmonics, 1, 1, false);
-	case UnitType::Sqr: return GenerateAdditive(freq, rate, logHarmonics, 2, 1, false);
-	case UnitType::Tri: return GenerateAdditive(freq, rate, logHarmonics, 2, -1, true);
+	case UnitType::Saw: return GenerateAdditive(freq, rate, logHarmonics, 1, false);
+	case UnitType::Sqr: return GenerateAdditive(freq, rate, logHarmonics, 2, false);
+	case UnitType::Tri: return GenerateAdditive(freq, rate, logHarmonics, 2, true);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, int multiplier, bool sqrRolloff)
+UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bool tri)
 {
 	int harmonics = 1;
 	float limit = 0.0;
 	float result = 0.0;
   __m256 ones = _mm256_set1_ps(1.0f);
+	__m256 signs = _mm256_set1_ps(1.0f);
 	__m256 freqs = _mm256_set1_ps(freq);
 	__m256 limits = _mm256_set1_ps(0.0f);
 	__m256 results = _mm256_set1_ps(0.0f);
 	__m256 phases = _mm256_set1_ps(_phasef);
   __m256 twopis = _mm256_set1_ps(2.0f * M_PI);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
-	__m256 signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
+  if(tri)
+   signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int h = 0; h < logHarmonics; h++)
 		harmonics *= 2;
 	for (int h = 1; h <= harmonics * step; h += step * 8)
 	{
-    __m256 hs = _mm256_set_ps(h, h + 1, h + 2, h + 3, h + 4, h + 5, h + 6, h + 7);
+    __m256 hs = _mm256_set_ps(
+      h + 0 * step, h + 1 * step, h + 2 * step, h + 3 * step, 
+      h + 4 * step, h + 5 * step, h + 6 * step, h + 7 * step);
     __m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(hs, freqs), nyquists, _CMP_LT_OQ);
 		if(!_mm256_movemask_ps(cmps)) break;
-    __m256 rolloffs = sqrRolloff? _mm256_mul_ps(hs, hs): hs;
+    __m256 rolloffs = tri? _mm256_mul_ps(hs, hs): hs;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 hsPhases = _mm256_mul_ps(phases, hs);
     __m256 hsPhasesFloors = _mm256_round_ps(hsPhases, 0x09);
     __m256 hsPhases0To1 = _mm256_sub_ps(hsPhases, hsPhasesFloors);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(hsPhases0To1, twopis));
-		results = _mm256_add_ps(results, _mm256_mul_ps(sines, amps));
+    __m256 hmnsResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
+		results = _mm256_add_ps(results, hmnsResults);
     limits = _mm256_add_ps(limits, amps);
 	}
-  for(int i = 0; i < 8; i++) 
+  for(int i = 0; i < 8; i++)
   {
 		limit += limits.m256_f32[i];
 		result += results.m256_f32[i];
