@@ -40,39 +40,38 @@ UnitDSP::Frequency(UnitModel const& unit) const
 { return FrequencyTable[unit.oct][unit.note][unit.cent + 50]; }
 
 float
-UnitDSP::Next(GlobalModel const& global, UnitModel const& unit, float rate)
+UnitDSP::Next(UnitModel const& unit, float rate)
 {
 	if (unit.on == 0) return 0.0f;
 	_phasef = (float)_phased;
 	float freq = Frequency(unit);
-	float amp = unit.amp / 255.0f;
-	auto wave = static_cast<UnitWave>(unit.wave);
-	float sample = Generate(global, wave, freq, rate);
+	float sample = Generate(unit, freq, rate);
 	_phased += freq / rate;
 	if (_phased >= 1.0) _phased = 0.0;
-	return sample * amp;
+	return sample * unit.amp / 255.0f;
 }
 
 float 
-UnitDSP::Generate(GlobalModel const& global, UnitWave wave, float freq, float rate)
+UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
 {
 	auto pi = static_cast<float>(M_PI);
-	switch(wave)
+	switch(static_cast<UnitWave>(unit.wave))
   {
     case UnitWave::Sin: return std::sinf(_phasef * 2.0f * pi);
-    default: return GenerateMethod(global, wave, freq, rate);
+    default: return GenerateType(unit, freq, rate);
   }
 }
 
 float
-UnitDSP::GenerateMethod(GlobalModel const& global, UnitWave wave, float freq, float rate)
+UnitDSP::GenerateType(UnitModel const& unit, float freq, float rate)
 {
-  auto method = static_cast<SynthMethod>(global.method);
-  switch(method)
+  auto type = static_cast<UnitType>(unit.type);
+  auto wave = static_cast<UnitWave>(unit.wave);
+  switch(type)
   {
-    case SynthMethod::PBP: return 0.0f;
-		case SynthMethod::Nve: return GenerateNaive(wave);
-		case SynthMethod::Add: return GenerateAdditive(wave, freq, rate, global.hmns);
+    case UnitType::PBP: return 0.0f;
+		case UnitType::Nve: return GenerateNaive(wave);
+		case UnitType::Add: return GenerateAdditive(unit, freq, rate);
     default: assert(false); return 0.0f;
 	}
 }
@@ -90,13 +89,13 @@ UnitDSP::GenerateNaive(UnitWave wave)
 }
 
 float
-UnitDSP::GenerateAdditive(UnitWave wave, float freq, float rate, int logHarmonics)
+UnitDSP::GenerateAdditive(UnitModel const& unit, float freq, float rate)
 {
-	switch (wave)
+	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, logHarmonics, 1, false);
-	case UnitWave::Sqr: return GenerateAdditive(freq, rate, logHarmonics, 2, false);
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, logHarmonics, 2, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.hmns, 1, false);
+	case UnitWave::Sqr: return GenerateAdditive(freq, rate, unit.hmns, 2, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.hmns, 2, true);
 	default: assert(false); return 0.0f;
 	}
 }

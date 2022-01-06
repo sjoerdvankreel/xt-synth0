@@ -12,8 +12,8 @@ void XTS_CALL XtsUnitDSPDestroy(Xts::UnitDSP* dsp) { delete dsp; }
 void XTS_CALL XtsUnitDSPReset(Xts::UnitDSP* dsp) { dsp->Reset(); }
 Xts::UnitDSP* XTS_CALL XtsUnitDSPCreate(void) { return new Xts::UnitDSP; }
 float XTS_CALL XtsUnitDSPFrequency(Xts::UnitDSP* dsp, Xts::UnitModel const* unit) { return dsp->Frequency(*unit); }
-float XTS_CALL XtsUnitDSPNext(Xts::UnitDSP* dsp, Xts::GlobalModel const* global, Xts::UnitModel const* unit, float rate)
-{ return dsp->Next(*global, *unit, rate); }
+float XTS_CALL XtsUnitDSPNext(Xts::UnitDSP* dsp, Xts::UnitModel const* unit, float rate)
+{ return dsp->Next(*unit, rate); }
 
 void XTS_CALL XtsSequencerDSPReset(Xts::SequencerDSP* dsp) { dsp->Reset(); }
 void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }

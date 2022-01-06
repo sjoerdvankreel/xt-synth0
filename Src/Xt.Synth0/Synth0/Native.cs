@@ -33,7 +33,7 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")]
 		internal static extern float XtsUnitDSPFrequency(IntPtr dsp, IntPtr unit);
 		[DllImport("XT.Synth0.DSP")]
-		internal static extern float XtsUnitDSPNext(IntPtr dsp, IntPtr global, IntPtr unit, float rate);
+		internal static extern float XtsUnitDSPNext(IntPtr dsp, IntPtr unit, float rate);
 
 		[DllImport("XT.Synth0.DSP")]
 		internal static extern IntPtr XtsSequencerDSPCreate();

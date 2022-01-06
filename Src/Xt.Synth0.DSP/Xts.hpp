@@ -20,7 +20,7 @@ XTS_EXPORT Xts::UnitDSP* XTS_CALL XtsUnitDSPCreate(void);
 XTS_EXPORT void XTS_CALL XtsUnitDSPReset(Xts::UnitDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsUnitDSPDestroy(Xts::UnitDSP* dsp);
 XTS_EXPORT float XTS_CALL XtsUnitDSPFrequency(Xts::UnitDSP* dsp, Xts::UnitModel const* unit);
-XTS_EXPORT float XTS_CALL XtsUnitDSPNext(Xts::UnitDSP* dsp, Xts::GlobalModel const* global, Xts::UnitModel const* unit, float rate);
+XTS_EXPORT float XTS_CALL XtsUnitDSPNext(Xts::UnitDSP* dsp, Xts::UnitModel const* unit, float rate);
 
 XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void);
 XTS_EXPORT void XTS_CALL XtsSequencerDSPReset(Xts::SequencerDSP* dsp);

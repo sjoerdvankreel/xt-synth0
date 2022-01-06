@@ -31,9 +31,9 @@ namespace Xt.Synth0.Model
 
 		internal const int ParamSize = 16;
 		internal const int AmpModelSize = 24;
-		internal const int UnitModelSize = 24;
-		internal const int GlobalModelSize = 16;
-		internal const int SynthModelSize = 544;
+		internal const int UnitModelSize = 32;
+		internal const int GlobalModelSize = 8;
+		internal const int SynthModelSize = 624;
 
 		internal const int EditModelSize = 16;
 		internal const int PatternFxSize = 8;
@@ -47,7 +47,7 @@ namespace Xt.Synth0.Model
 		public const int FormatVersion = 1;
 
 		public const int UnitCount = 3;
-		public const int ParamCount = 27;
+		public const int ParamCount = 31;
 		public const int MaxFxCount = 3;
 		public const int MaxKeyCount = 4;
 		public const int PatternRows = 32;

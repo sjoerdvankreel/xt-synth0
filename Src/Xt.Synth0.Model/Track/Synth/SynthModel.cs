@@ -6,8 +6,6 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum SynthMethod { PBP, Add, Nve }
-
 	public unsafe sealed class SynthModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]

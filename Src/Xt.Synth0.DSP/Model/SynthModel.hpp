@@ -5,12 +5,12 @@
 
 namespace Xts {
 
+struct XTS_ALIGN GlobalModel { int bpm, plot; };
 struct XTS_ALIGN Param { int min, max; int* value; };
 struct XTS_ALIGN AmpModel { int a, d, s, r, lvl, pad__; };
-struct XTS_ALIGN GlobalModel { int bpm, plot, method, hmns; };
-struct XTS_ALIGN UnitModel { int on, amp, oct, note, cent, wave; };
+struct XTS_ALIGN UnitModel { int on, amp, oct, note, cent, wave, type, hmns; };
 
-enum class SynthMethod { PBP, Add, Nve };
+enum class UnitType { PBP, Add, Nve };
 enum class UnitWave { Sin, Saw, Sqr, Tri };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 

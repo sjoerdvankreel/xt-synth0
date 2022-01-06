@@ -12,16 +12,16 @@ class UnitDSP
   double _phased = 0.0;
 
   float GenerateNaive(UnitWave wave);
-  float GenerateAdditive(UnitWave wave, float freq, float rate, int logHarmonics);
-  float Generate(GlobalModel const& global, UnitWave wave, float freq, float rate);
+  float Generate(UnitModel const& unit, float freq, float rate);
+  float GenerateType(UnitModel const& unit, float freq, float rate);
+  float GenerateAdditive(UnitModel const& unit, float freq, float rate);
   float GenerateAdditive(float freq, float rate, int logHarmonics, int step, bool tri);
-  float GenerateMethod(GlobalModel const& global, UnitWave wave, float freq, float rate);
 
 public:
   void Reset();
   static void Init();
   float Frequency(UnitModel const& unit) const;
-  float Next(GlobalModel const& global, UnitModel const& unit, float rate);
+  float Next(UnitModel const& unit, float rate);
 };
 
 } // namespace Xts
