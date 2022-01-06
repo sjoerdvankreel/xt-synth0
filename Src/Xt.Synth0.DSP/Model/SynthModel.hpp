@@ -6,7 +6,7 @@
 namespace Xts {
 
 struct XTS_ALIGN Param { int min, max; int* value; };
-struct XTS_ALIGN GlobalModel { int bpm, lvl, plot, pad__; };
+struct XTS_ALIGN GlobalModel { int bpm, amp, plot, pad__; };
 struct XTS_ALIGN UnitModel { int on, amp, oct, note, cent, wave, type, hmns; };
 
 enum class UnitType { PBP, Add, Nve };
