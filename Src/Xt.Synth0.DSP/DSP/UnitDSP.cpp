@@ -6,7 +6,8 @@
 
 namespace Xts {
 
-static constexpr int OctaveCount = TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
+static constexpr int OctaveCount 
+= TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
 static float FrequencyTable[OctaveCount][12][100];
 
 static inline float
@@ -116,7 +117,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
   __m256 twopis = _mm256_set1_ps(2.0f * pi);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   if(tri)
-   signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
+    signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int h = 0; h < logHarmonics; h++)
 		harmonics *= 2;
 	for (int h = 1; h <= harmonics * step; h += step * 8)

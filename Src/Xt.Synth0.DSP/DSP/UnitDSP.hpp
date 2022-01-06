@@ -11,17 +11,18 @@ class UnitDSP
   float _phasef = 0.0f;
   double _phased = 0.0;
 
-  float GenerateNaive(UnitWave wave);
-  float Generate(UnitModel const& unit, float freq, float rate);
-  float GenerateType(UnitModel const& unit, float freq, float rate);
-  float GenerateAdditive(UnitModel const& unit, float freq, float rate);
-  float GenerateAdditive(float freq, float rate, int logHarmonics, int step, bool tri);
-
 public:
   void Reset();
   static void Init();
   float Frequency(UnitModel const& unit) const;
   float Next(UnitModel const& unit, float rate);
+
+private:
+  float GenerateNaive(UnitWave wave);
+  float Generate(UnitModel const& unit, float freq, float rate);
+  float GenerateType(UnitModel const& unit, float freq, float rate);
+  float GenerateAdditive(UnitModel const& unit, float freq, float rate);
+  float GenerateAdditive(float freq, float rate, int logHarmonics, int step, bool tri);
 };
 
 } // namespace Xts
