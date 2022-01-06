@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 		{
 			var auto = model.Auto(param);
 			var result = new StringBuilder();
-			result.AppendLine(param.Info.Detail);
+			result.AppendLine(param.Info.Name);
 			result.AppendLine($"Range: {param.Info.Min} .. {param.Info.Max}");
 			result.Append("Automation target: ");
 			result.AppendLine(auto?.Index.ToString("X2") ?? "none");

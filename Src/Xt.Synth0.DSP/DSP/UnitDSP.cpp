@@ -38,7 +38,7 @@ UnitDSP::Reset()
 
 float
 UnitDSP::Frequency(UnitModel const& unit) const
-{ return FrequencyTable[unit.oct][unit.note][unit.cent + 50]; }
+{ return FrequencyTable[unit.octave][unit.note][unit.cent + 50]; }
 
 float
 UnitDSP::Next(UnitModel const& unit, float rate)
@@ -70,9 +70,9 @@ UnitDSP::GenerateType(UnitModel const& unit, float freq, float rate)
   auto wave = static_cast<UnitWave>(unit.wave);
   switch(type)
   {
-    case UnitType::PBP: return 0.0f;
-		case UnitType::Nve: return GenerateNaive(wave);
-		case UnitType::Add: return GenerateAdditive(unit, freq, rate);
+    case UnitType::PolyBlep: return 0.0f;
+		case UnitType::Naive: return GenerateNaive(wave);
+		case UnitType::Additive: return GenerateAdditive(unit, freq, rate);
     default: assert(false); return 0.0f;
 	}
 }
@@ -94,17 +94,17 @@ UnitDSP::GenerateAdditive(UnitModel const& unit, float freq, float rate)
 {
 	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.hmns, 1, false);
-	case UnitWave::Sqr: return GenerateAdditive(freq, rate, unit.hmns, 2, false);
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.hmns, 2, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.logPartials, 1, false);
+	case UnitWave::Sqr: return GenerateAdditive(freq, rate, unit.logPartials, 2, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.logPartials, 2, true);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bool tri)
+UnitDSP::GenerateAdditive(float freq, float rate, int logPartials, int step, bool tri)
 {
-	int harmonics = 1;
+	int partials = 1;
 	float limit = 0.0;
 	float result = 0.0;
   float pi = static_cast<float>(M_PI);
@@ -118,20 +118,20 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   if(tri)
     signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
-	for (int h = 0; h < logHarmonics; h++)
-		harmonics *= 2;
-	for (int h = 1; h <= harmonics * step; h += step * 8)
+	for (int p = 0; p < logPartials; p++)
+		partials *= 2;
+	for (int p = 1; p <= partials * step; p += step * 8)
 	{
-    __m256 hs = _mm256_set_ps(
-      static_cast<float>(h + 0 * step),
-			static_cast<float>(h + 1 * step),
-			static_cast<float>(h + 2 * step),
-			static_cast<float>(h + 3 * step),
-			static_cast<float>(h + 4 * step),
-			static_cast<float>(h + 5 * step),
-			static_cast<float>(h + 6 * step),
-			static_cast<float>(h + 7 * step));
-  	__m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(hs, freqs), nyquists, _CMP_LT_OQ);
+    __m256 ps = _mm256_set_ps(
+      static_cast<float>(p + 0 * step),
+			static_cast<float>(p + 1 * step),
+			static_cast<float>(p + 2 * step),
+			static_cast<float>(p + 3 * step),
+			static_cast<float>(p + 4 * step),
+			static_cast<float>(p + 5 * step),
+			static_cast<float>(p + 6 * step),
+			static_cast<float>(p + 7 * step));
+  	__m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(ps, freqs), nyquists, _CMP_LT_OQ);
     int mask = _mm256_movemask_ps(cmps);
 		if(!mask) break;
     __m256 belowNyquists = _mm256_set_ps(
@@ -143,15 +143,15 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logHarmonics, int step, bo
 			static_cast<float>((mask & (1 << 2)) ? 1 : 0),
 			static_cast<float>((mask & (1 << 1)) ? 1 : 0),
 			static_cast<float>((mask & (1 << 0)) ? 1 : 0));
-  	__m256 rolloffs = tri? _mm256_mul_ps(hs, hs): hs;
+  	__m256 rolloffs = tri? _mm256_mul_ps(ps, ps): ps;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
-    __m256 hsPhases = _mm256_mul_ps(phases, hs);
-    __m256 sines = _mm256_sin_ps(_mm256_mul_ps(hsPhases, twopis));
-    __m256 hmnsResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
+    __m256 psPhases = _mm256_mul_ps(phases, ps);
+    __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
+    __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
 		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, belowNyquists));
-		results = _mm256_add_ps(results, _mm256_mul_ps(hmnsResults, belowNyquists));
+		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, belowNyquists));
 	}
-  for(int i = 0; i < harmonics && i < 8; i++)
+  for(int i = 0; i < partials && i < 8; i++)
   {
 		limit += limits.m256_f32[7 - i];
 		result += results.m256_f32[7 - i];

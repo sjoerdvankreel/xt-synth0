@@ -57,7 +57,7 @@ namespace Xt.Synth0.UI
 			Param keys, int minKeys, int row, int col)
 		{
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.ToolTip = string.Join("\n", param.Info.Detail, NoteEditHint);
+			result.ToolTip = string.Join("\n", param.Info.Name, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(param));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
@@ -72,7 +72,7 @@ namespace Xt.Synth0.UI
 			var binding = Bind.To(model.Note, model.Octave, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
-			result.ToolTip = string.Join("\n", model.Octave.Info.Detail, PatternUI.EditHint);
+			result.ToolTip = string.Join("\n", model.Octave.Info.Name, PatternUI.EditHint);
 			return result;
 		}
 
@@ -83,7 +83,7 @@ namespace Xt.Synth0.UI
 			result.Minimum = model.Amp.Info.Min;
 			result.Maximum = model.Amp.Info.Max;
 			result.OnParsed += (s, e) => Utility.FocusDown();
-			result.ToolTip = string.Join("\n", model.Amp.Info.Detail,
+			result.ToolTip = string.Join("\n", model.Amp.Info.Name,
 				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
