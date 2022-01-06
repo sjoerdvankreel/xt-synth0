@@ -15,12 +15,12 @@ namespace Xt.Synth0.UI
 		{
 			var result = new StringBuilder();
 			var auto = _synth.AutoParams.SingleOrDefault(p => p.Index == target);
-			result.AppendLine(_param.Info.Detail);
+			result.AppendLine(_param.Info.Name);
 			result.AppendLine("Ctrl + F to fill");
 			result.AppendLine(PatternUI.EditHint);
 			var current = "none";
 			if (auto != null)
-				current = $"{auto.Owner.Name} {auto.Param.Info.Detail}";
+				current = $"{auto.Owner.Name} {auto.Param.Info.Name}";
 			result.Append($"Current: {current}");
 			if (auto != null)
 			{

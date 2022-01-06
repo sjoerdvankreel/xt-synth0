@@ -39,7 +39,7 @@ namespace Xt.Synth0.Model
 		internal static ParamInfo Lin(Address address, string name, int min, int max, int @default, Func<int, string> display = null)
 		=> new ParamInfo(ParamType.Lin, address, name, min, max, @default, display ?? (x => x.ToString()));
 		internal static ParamInfo List<TEnum>(Address address, string name, string[] display = null) where TEnum : struct, Enum
-		=> new ParamInfo(ParamType.List, address, name, 0, display.Length - 1, 0, display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x]);
+		=> new ParamInfo(ParamType.List, address, name, 0, Enum.GetValues<TEnum>().Length - 1, 0, display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x]);
 		ParamInfo(ParamType type, Address address, string name, int min, int max, int @default, Func<int, string> display)
 		=> (Type, _address, Name, Min, Max, Default, _display) = (type, address, name, min, max, @default, display);
 	}
