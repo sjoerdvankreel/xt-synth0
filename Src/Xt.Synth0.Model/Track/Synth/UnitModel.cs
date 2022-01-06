@@ -10,21 +10,21 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class UnitModel : INamedModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int on, type, wave, logPartials, amp, octave, note, cent; }
+		internal struct Native { internal int on, type, wave, logParts, amp, oct, note, cent; }
 
 		public Param On { get; } = new(OnInfo);
+		public Param Oct { get; } = new(OctInfo);
 		public Param Amp { get; } = new(AmpInfo);
 		public Param Note { get; } = new(NoteInfo);
 		public Param Cent { get; } = new(CentInfo);
 		public Param Wave { get; } = new(WaveInfo);
 		public Param Type { get; } = new(TypeInfo);
-		public Param Octave { get; } = new(OctaveInfo);
-		public Param LogPartials { get; } = new(LogPartialsInfo);
+		public Param LogParts { get; } = new(LogPartsInfo);
 
 		readonly int _index;
 		public string Name => $"Unit {_index + 1}";
 		internal UnitModel(int index) => _index = index;
-		public IReadOnlyList<Param> Params => new[] { On, Type, Wave, LogPartials, Amp, Octave, Note, Cent };
+		public IReadOnlyList<Param> Params => new[] { On, Type, Wave, LogParts, Amp, Oct, Note, Cent };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitModelSize];
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
@@ -34,7 +34,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
-		static readonly ParamInfo LogPartialsInfo = ParamInfo.Exp(p => &((Native*)p)->logPartials, "Partials", 0, 10, 4);
-		static readonly ParamInfo OctaveInfo = ParamInfo.Lin(p => &((Native*)p)->octave, nameof(Octave), TrackConstants.MinOctave, TrackConstants.MaxOctave, 4);
+		static readonly ParamInfo LogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->logParts, "Parts", 0, 10, 4);
+		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
 	}
 }

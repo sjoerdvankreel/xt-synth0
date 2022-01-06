@@ -8,7 +8,7 @@ namespace Xts {
 enum class PatternNote { None, Off, C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 
 struct XTS_ALIGN PatternFx { int target, value; };
-struct XTS_ALIGN PatternKey { int amp, note, octave, pad__; };
+struct XTS_ALIGN PatternKey { int amp, note, oct, pad__; };
 struct XTS_ALIGN EditModel { int keyCount, fxCount, patternCount, activePattern; };
 
 struct XTS_ALIGN PatternRow

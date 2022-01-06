@@ -6,9 +6,9 @@
 
 namespace Xts {
 
-static constexpr int OctaveCount 
-= TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
-static float FrequencyTable[OctaveCount][12][100];
+static constexpr int OctCount 
+= TrackConstants::MaxOct - TrackConstants::MinOct + 1;
+static float FrequencyTable[OctCount][12][100];
 
 static inline float
 GetFrequency(int oct, int note, int cent)
@@ -22,8 +22,8 @@ UnitDSP::Init()
 {
 	const int notes = 12;
 	const int cents = 100;
-	const int octaves = TrackConstants::MaxOctave - TrackConstants::MinOctave + 1;
-	for (int oct = 0; oct < octaves; oct++)
+	const int octs = TrackConstants::MaxOct - TrackConstants::MinOct + 1;
+	for (int oct = 0; oct < octs; oct++)
 		for (int note = 0; note < notes; note++)
 			for (int cent = -50; cent < 50; cent++)
 				FrequencyTable[oct][note][cent + 50] = GetFrequency(oct, note, cent);
@@ -38,7 +38,7 @@ UnitDSP::Reset()
 
 float
 UnitDSP::Frequency(UnitModel const& unit) const
-{ return FrequencyTable[unit.octave][unit.note][unit.cent + 50]; }
+{ return FrequencyTable[unit.oct][unit.note][unit.cent + 50]; }
 
 float
 UnitDSP::Next(UnitModel const& unit, float rate)
@@ -94,17 +94,17 @@ UnitDSP::GenerateAdditive(UnitModel const& unit, float freq, float rate)
 {
 	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.logPartials, 1, false);
-	case UnitWave::Sqr: return GenerateAdditive(freq, rate, unit.logPartials, 2, false);
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.logPartials, 2, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.logParts, 1, false);
+	case UnitWave::Sqr: return GenerateAdditive(freq, rate, unit.logParts, 2, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.logParts, 2, true);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int logPartials, int step, bool tri)
+UnitDSP::GenerateAdditive(float freq, float rate, int logParts, int step, bool tri)
 {
-	int partials = 1;
+	int parts = 1;
 	float limit = 0.0;
 	float result = 0.0;
   float pi = static_cast<float>(M_PI);
@@ -118,9 +118,9 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logPartials, int step, boo
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   if(tri)
     signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
-	for (int p = 0; p < logPartials; p++)
-		partials *= 2;
-	for (int p = 1; p <= partials * step; p += step * 8)
+	for (int p = 0; p < logParts; p++)
+		parts *= 2;
+	for (int p = 1; p <= parts * step; p += step * 8)
 	{
     __m256 ps = _mm256_set_ps(
       static_cast<float>(p + 0 * step),
@@ -151,7 +151,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logPartials, int step, boo
 		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, belowNyquists));
 		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, belowNyquists));
 	}
-  for(int i = 0; i < partials && i < 8; i++)
+  for(int i = 0; i < parts && i < 8; i++)
   {
 		limit += limits.m256_f32[7 - i];
 		result += results.m256_f32[7 - i];

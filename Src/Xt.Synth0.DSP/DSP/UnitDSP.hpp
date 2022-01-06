@@ -22,7 +22,7 @@ private:
   float Generate(UnitModel const& unit, float freq, float rate);
   float GenerateType(UnitModel const& unit, float freq, float rate);
   float GenerateAdditive(UnitModel const& unit, float freq, float rate);
-  float GenerateAdditive(float freq, float rate, int logPartials, int step, bool tri);
+  float GenerateAdditive(float freq, float rate, int logParts, int step, bool tri);
 };
 
 } // namespace Xts

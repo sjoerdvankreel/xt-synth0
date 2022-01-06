@@ -40,8 +40,8 @@ namespace Xt.Synth0.Model
 		internal const int PatternModelSize = 22528;
 		internal const int SequencerModelSize = 22544;
 
-		public const int MinOctave = 0;
-		public const int MaxOctave = 9;
+		public const int MinOct = 0;
+		public const int MaxOct = 9;
 		public const int FormatVersion = 1;
 
 		public const int UnitCount = 3;

@@ -68,11 +68,11 @@ namespace Xt.Synth0.UI
 			Param keys, int minKeys, int row, int col)
 		{
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.TextInput += (s, e) => OnOctTextInput(model.Octave, e);
-			var binding = Bind.To(model.Note, model.Octave, new OctFormatter(model));
+			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
+			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
-			result.ToolTip = string.Join("\n", model.Octave.Info.Name, PatternUI.EditHint);
+			result.ToolTip = string.Join("\n", model.Oct.Info.Name, PatternUI.EditHint);
 			return result;
 		}
 
