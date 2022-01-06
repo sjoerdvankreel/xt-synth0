@@ -66,22 +66,4 @@ namespace Xt.Synth0.Model
 		internal DiscreteInfo(Address address, string name, string detail, int min, int max, int @default) :
 		base(address, name, detail) => (_min, _max, _default) = (min, max, @default);
 	}
-
-	sealed class LogInfo : ContinuousInfo
-	{
-		readonly int _range;
-		readonly string _postfix1;
-		readonly string _postfix1k;
-
-		public override string Format(int value)
-		{
-			var pos = (double)value / Max * 9.0;
-			var log = (1.0 - Math.Log10(10.0 - pos)) * _range;
-			if (log < 1000) return $"{(int)log}{_postfix1}";
-			return $"{(log / 1000).ToString("0.##")}{_postfix1k}";
-		}
-
-		internal LogInfo(Address address, string name, string detail, int @default, int range, string postfix1, string postfix1k) :
-		base(address, name, detail, @default) => (_range, _postfix1, _postfix1k) = (range, postfix1, postfix1k);
-	}
 }
