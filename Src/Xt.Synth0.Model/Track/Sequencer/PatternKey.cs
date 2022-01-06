@@ -25,7 +25,7 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->keys[_index * TrackConstants.PatternKeySize];
 
 		static readonly ParamInfo OctInfo = new DiscreteInfo(p => &((Native*)p)->oct, nameof(Oct), "Octave", 0, 9, 4);
-		static readonly ParamInfo AmpInfo = new ContinuousInfo(p => &((Native*)p)->amp, nameof(Amp), "Velocity", 255);
+		static readonly ParamInfo AmpInfo = new DiscreteInfo(p => &((Native*)p)->amp, nameof(Amp), "Velocity", 0, 255, 255);
 		static readonly ParamInfo NoteInfo = new EnumInfo<PatternNote>(p => &((Native*)p)->note, nameof(Note), "Note", Notes);
 	}
 }

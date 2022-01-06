@@ -34,8 +34,8 @@ namespace Xt.Synth0.Model
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
 		static readonly ParamInfo OnInfo = new ToggleInfo(p => &((Native*)p)->on, nameof(On), "Enabled");
-		static readonly ParamInfo AmpInfo = new ContinuousInfo(p => &((Native*)p)->amp, nameof(Amp), "Volume", 255);
 		static readonly ParamInfo CentInfo = new DiscreteInfo(p => &((Native*)p)->cent, nameof(Cent), "Cent", -50, 49, 0);
+		static readonly ParamInfo AmpInfo = new DiscreteInfo(p => &((Native*)p)->amp, nameof(Amp), "Volume", 0, 255, 255);
 		static readonly ParamInfo NoteInfo = new EnumInfo<UnitNote>(p => &((Native*)p)->note, nameof(Note), "Note", Notes);
 		static readonly ParamInfo WaveInfo = new EnumInfo<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), "Waveform", Waves);
 		static readonly ParamInfo HmnsInfo = new ExpInfo(p => &((Native*)p)->hmns, nameof(Hmns), "Additive harmonics", 0, 10, 4);
