@@ -47,10 +47,10 @@ namespace Xt.Synth0.UI
 		internal static void Add(Grid grid, PatternKey model,
 			EditModel edit, int minKeys, int row, int col, Action interpolate)
 		{
-			grid.Add(MakeNote(model.Note, edit.Keys, minKeys, row, col));
-			grid.Add(MakeOct(model, edit.Keys, minKeys, row, col + 1));
-			grid.Add(Create.Divider(new(row, col + 2), edit.Keys, minKeys));
-			grid.Add(MakeAmp(model, edit.Keys, minKeys, row, col + 3, interpolate));
+			grid.Add(MakeNote(model.Note, edit.KeyCount, minKeys, row, col));
+			grid.Add(MakeOct(model, edit.KeyCount, minKeys, row, col + 1));
+			grid.Add(Create.Divider(new(row, col + 2), edit.KeyCount, minKeys));
+			grid.Add(MakeAmp(model, edit.KeyCount, minKeys, row, col + 3, interpolate));
 		}
 
 		static UIElement MakeNote(Param param,
@@ -68,11 +68,11 @@ namespace Xt.Synth0.UI
 			Param keys, int minKeys, int row, int col)
 		{
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
-			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
+			result.TextInput += (s, e) => OnOctTextInput(model.Octave, e);
+			var binding = Bind.To(model.Note, model.Octave, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
-			result.ToolTip = string.Join("\n", model.Oct.Info.Detail, PatternUI.EditHint);
+			result.ToolTip = string.Join("\n", model.Octave.Info.Detail, PatternUI.EditHint);
 			return result;
 		}
 

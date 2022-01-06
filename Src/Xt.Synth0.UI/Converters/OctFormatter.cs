@@ -9,7 +9,7 @@ namespace Xt.Synth0.UI
 
 		protected override string Convert(int note, int oct)
 		{
-			if (note >= (int)PatternNote.C) return _model.Oct.Info.Format(oct);
+			if (note >= (int)PatternNote.C) return _model.Octave.Info.Format(oct);
 			return new string(_model.Note.Info.Format(note)[0], 1);
 		}
 	}

@@ -63,8 +63,8 @@ namespace Xt.Synth0.UI
 
 		static BindingBase BindHeader(AppModel model)
 		{
-			var pats = Bind.To(model.Track.Sequencer.Edit.Pats);
-			var active = Bind.To(model.Track.Sequencer.Edit.Act);
+			var pats = Bind.To(model.Track.Sequencer.Edit.PatternCount);
+			var active = Bind.To(model.Track.Sequencer.Edit.ActivePattern);
 			var row = Bind.To(model.Stream, nameof(StreamModel.CurrentRow));
 			var running = Bind.To(model.Stream, nameof(StreamModel.IsRunning));
 			return Bind.To(new PatternFormatter(), running, pats, active, row);
@@ -72,7 +72,7 @@ namespace Xt.Synth0.UI
 
 		static BindingBase BindSelector(AppModel model, UIElement[] patterns)
 		{
-			var active = Bind.To(model.Track.Sequencer.Edit.Act);
+			var active = Bind.To(model.Track.Sequencer.Edit.ActivePattern);
 			var row = Bind.To(model.Stream, nameof(StreamModel.CurrentRow));
 			var running = Bind.To(model.Stream, nameof(StreamModel.IsRunning));
 			return Bind.To(new PatternSelector(patterns), running, active, row);
@@ -123,7 +123,7 @@ namespace Xt.Synth0.UI
 			var sequencer = track.Sequencer;
 			int divCol = TrackConstants.MaxKeyCount * 5;
 			AddKeys(grid, sequencer, pattern, row, r);
-			grid.Add(Create.Divider(new(r, divCol), sequencer.Edit.Fx, 1));
+			grid.Add(Create.Divider(new(r, divCol), sequencer.Edit.FxCount, 1));
 			AddFx(grid, track, pattern, row, r);
 		}
 
@@ -134,7 +134,7 @@ namespace Xt.Synth0.UI
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
 				PatternKeyUI.Add(grid, row.Keys[k], seq.Edit, k + 1, r, k * 5, interpolate);
-				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
+				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.KeyCount, k + 2));
 			}
 		}
 
@@ -142,14 +142,14 @@ namespace Xt.Synth0.UI
 		{
 			var synth = track.Synth;
 			var sequencer = track.Sequencer;
-			var fx = track.Sequencer.Edit.Fx;
+			var fx = track.Sequencer.Edit.FxCount;
 			int startCol = TrackConstants.MaxKeyCount * 5 + 1;
 			for (int f = 0; f < TrackConstants.MaxFxCount; f++)
 			{
 				int fLocal = f;
 				Action fill = () => Fill(sequencer, pattern, fLocal);
 				Action interpolate = () => Interpolate(sequencer, pattern, r => r.Fx[fLocal].Value);
-				PatternFxUI.Add(grid, synth, row.Fx[f], sequencer.Edit.Fx, f + 1, r, startCol + f * 3, fill, interpolate);
+				PatternFxUI.Add(grid, synth, row.Fx[f], sequencer.Edit.FxCount, f + 1, r, startCol + f * 3, fill, interpolate);
 				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), fx, f + 2));
 			}
 		}

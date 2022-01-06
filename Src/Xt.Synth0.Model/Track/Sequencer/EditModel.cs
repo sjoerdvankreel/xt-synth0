@@ -6,20 +6,20 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class EditModel : INamedModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int fx, act, pats, keys; }
+		internal struct Native { internal int keyCount, fxCount, patternCount, activePattern; }
 
-		public Param Fx { get; } = new(FxInfo);
-		public Param Act { get; } = new(ActInfo);
-		public Param Pats { get; } = new(PatsInfo);
-		public Param Keys { get; } = new(KeysInfo);
+		public Param FxCount { get; } = new(FxCountInfo);
+		public Param KeyCount { get; } = new(KeyCountInfo);
+		public Param PatternCount { get; } = new(PatternCountInfo);
+		public Param ActivePattern { get; } = new(ActivePatternInfo);
 
 		public string Name => "Edit";
-		public IReadOnlyList<Param> Params => new[] { Keys, Fx, Pats, Act };
+		public IReadOnlyList<Param> Params => new[] { KeyCount, FxCount, PatternCount, ActivePattern };
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
 
-		static readonly ParamInfo FxInfo = new DiscreteInfo(p => &((Native*)p)->fx, nameof(Fx), "Effect count", 0, TrackConstants.MaxFxCount, 1);
-		static readonly ParamInfo KeysInfo = new DiscreteInfo(p => &((Native*)p)->keys, nameof(Keys), "Note count", 1, TrackConstants.MaxKeyCount, 2);
-		static readonly ParamInfo ActInfo = new DiscreteInfo(p => &((Native*)p)->act, nameof(Act), "Active pattern", 1, TrackConstants.PatternCount, 1);
-		static readonly ParamInfo PatsInfo = new DiscreteInfo(p => &((Native*)p)->pats, nameof(Pats), "Pattern count", 1, TrackConstants.PatternCount, 1);
+		static readonly ParamInfo FxCountInfo = ParamInfo.Lin(p => &((Native*)p)->fxCount, nameof(FxCount), 0, TrackConstants.MaxFxCount, 1);
+		static readonly ParamInfo KeyCountInfo = ParamInfo.Lin(p => &((Native*)p)->keyCount, nameof(KeyCount), 1, TrackConstants.MaxKeyCount, 2);
+		static readonly ParamInfo PatternCountInfo = ParamInfo.Lin(p => &((Native*)p)->patternCount, nameof(PatternCount), 1, TrackConstants.PatternCount, 1);
+		static readonly ParamInfo ActivePatternInfo = ParamInfo.Lin(p => &((Native*)p)->activePattern, nameof(ActivePattern), 1, TrackConstants.PatternCount, 1);
 	}
 }

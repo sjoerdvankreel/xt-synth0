@@ -13,19 +13,19 @@ namespace Xt.Synth0.Model
 		};
 
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int amp, oct, note, pad__; }
+		internal struct Native { internal int amp, note, octave, pad__; }
 
 		public Param Amp { get; } = new(AmpInfo);
-		public Param Oct { get; } = new(OctInfo);
 		public Param Note { get; } = new(NoteInfo);
+		public Param Octave { get; } = new(OctaveInfo);
 
 		readonly int _index;
 		internal PatternKey(int index) => _index = index;
-		public IReadOnlyList<Param> Params => new[] { Note, Oct, Amp };
+		public IReadOnlyList<Param> Params => new[] { Note, Octave, Amp };
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->keys[_index * TrackConstants.PatternKeySize];
 
-		static readonly ParamInfo OctInfo = new DiscreteInfo(p => &((Native*)p)->oct, nameof(Oct), "Octave", 0, 9, 4);
-		static readonly ParamInfo AmpInfo = new DiscreteInfo(p => &((Native*)p)->amp, nameof(Amp), "Velocity", 0, 255, 255);
-		static readonly ParamInfo NoteInfo = new EnumInfo<PatternNote>(p => &((Native*)p)->note, nameof(Note), "Note", Notes);
+		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), 0, 255, 255);
+		static readonly ParamInfo OctaveInfo = ParamInfo.Lin(p => &((Native*)p)->octave, nameof(Octave), 0, 9, 4);
+		static readonly ParamInfo NoteInfo = ParamInfo.List<PatternNote>(p => &((Native*)p)->note, nameof(Note), Notes);
 	}
 }
