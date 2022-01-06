@@ -11,7 +11,6 @@ namespace Xt.Synth0.UI
 			var result = new DockPanel();
 			foreach (var unit in model.Track.Synth.Units)
 				result.Add(GroupUI.Make(model, unit), Dock.Top);
-			result.Add(GroupUI.Make(model, model.Track.Synth.Amp), Dock.Top);
 			result.Add(GroupUI.Make(model, model.Track.Synth.Global), Dock.Top);
 			result.Add(ControlUI.Make(model.Stream), Dock.Bottom);
 			result.Add(PlotUI.Make(model), Dock.Top);

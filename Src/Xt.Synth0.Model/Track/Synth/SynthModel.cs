@@ -14,20 +14,18 @@ namespace Xt.Synth0.Model
 			[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 			internal struct Param { internal int min, max; internal int* value; }
 
-			internal AmpModel.Native amp;
 			internal GlobalModel.Native global;
 			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitModelSize];
 			internal fixed byte @params[TrackConstants.ParamCount * TrackConstants.ParamSize];
 		}
 
-		public AmpModel Amp { get; } = new();
 		public GlobalModel Global { get; } = new();
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
 
 		public IReadOnlyList<AutoParam> AutoParams { get; }
 		public override IReadOnlyList<IModelGroup> SubGroups => new IModelGroup[0];
 		public AutoParam Auto(Param param) => AutoParams.SingleOrDefault(p => ReferenceEquals(param, p.Param));
-		public override IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Amp, Global }).ToArray();
+		public override IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
 
 		public void PrepareNative(IntPtr native)
