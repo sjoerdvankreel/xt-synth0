@@ -17,9 +17,9 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { KeyCount, FxCount, PatternCount, ActivePattern };
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
 
-		static readonly ParamInfo FxCountInfo = ParamInfo.Lin(p => &((Native*)p)->fxCount, nameof(FxCount), 0, TrackConstants.MaxFxCount, 1);
-		static readonly ParamInfo KeyCountInfo = ParamInfo.Lin(p => &((Native*)p)->keyCount, nameof(KeyCount), 1, TrackConstants.MaxKeyCount, 2);
-		static readonly ParamInfo PatternCountInfo = ParamInfo.Lin(p => &((Native*)p)->patternCount, nameof(PatternCount), 1, TrackConstants.PatternCount, 1);
-		static readonly ParamInfo ActivePatternInfo = ParamInfo.Lin(p => &((Native*)p)->activePattern, nameof(ActivePattern), 1, TrackConstants.PatternCount, 1);
+		static readonly ParamInfo FxCountInfo = ParamInfo.Lin(p => &((Native*)p)->fxCount, "#Fx", 0, TrackConstants.MaxFxCount, 1);
+		static readonly ParamInfo KeyCountInfo = ParamInfo.Lin(p => &((Native*)p)->keyCount, "#Keys", 1, TrackConstants.MaxKeyCount, 2);
+		static readonly ParamInfo ActivePatternInfo = ParamInfo.Lin(p => &((Native*)p)->activePattern, "Edit", 1, TrackConstants.PatternCount, 1);
+		static readonly ParamInfo PatternCountInfo = ParamInfo.Lin(p => &((Native*)p)->patternCount, "#Patterns", 1, TrackConstants.PatternCount, 1);
 	}
 }
