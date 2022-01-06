@@ -16,11 +16,11 @@ struct CheckSize { static_assert(Actual == Expected); };
 
 XTS_CHECK_SIZE(Param, 16);
 XTS_CHECK_SIZE(UnitModel, 32);
-XTS_CHECK_SIZE(GlobalModel, 16);
 XTS_CHECK_SIZE(SynthModel, 544);
+XTS_CHECK_SIZE(GlobalModel, 16);
 
-XTS_CHECK_SIZE(EditModel, 16);
 XTS_CHECK_SIZE(PatternFx, 8);
+XTS_CHECK_SIZE(EditModel, 16);
 XTS_CHECK_SIZE(PatternKey, 16);
 XTS_CHECK_SIZE(PatternRow, 88);
 XTS_CHECK_SIZE(PatternModel, 22528);

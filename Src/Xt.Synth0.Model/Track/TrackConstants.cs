@@ -7,10 +7,10 @@ namespace Xt.Synth0.Model
 	{
 		public static void SanityChecks()
 		{
-			VerifySize<SynthModel.Native.Param>(ParamSize);
 			VerifySize<UnitModel.Native>(UnitModelSize);
-			VerifySize<GlobalModel.Native>(GlobalModelSize);
 			VerifySize<SynthModel.Native>(SynthModelSize);
+			VerifySize<SynthModel.Native.Param>(ParamSize);
+			VerifySize<GlobalModel.Native>(GlobalModelSize);
 
 			VerifySize<EditModel.Native>(EditModelSize);
 			VerifySize<PatternFx.Native>(PatternFxSize);
@@ -30,11 +30,11 @@ namespace Xt.Synth0.Model
 
 		internal const int ParamSize = 16;
 		internal const int UnitModelSize = 32;
-		internal const int GlobalModelSize = 16;
 		internal const int SynthModelSize = 544;
+		internal const int GlobalModelSize = 16;
 
-		internal const int EditModelSize = 16;
 		internal const int PatternFxSize = 8;
+		internal const int EditModelSize = 16;
 		internal const int PatternKeySize = 16;
 		internal const int PatternRowSize = 88;
 		internal const int PatternModelSize = 22528;
