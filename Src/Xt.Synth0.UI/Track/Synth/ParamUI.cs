@@ -41,10 +41,9 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeToggle(AppModel model, Param param, Cell cell)
 		{
-			var result = Create.Element<Toggle>(cell);
+			var result = Create.Element<CheckBox>(cell);
 			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			result.ToolTip = Tooltip(model.Track.Synth, param);
-			result.MouseRightButtonUp += (s, e) => ExactUI.Show(model.Settings, param);
 			return result;
 		}
 

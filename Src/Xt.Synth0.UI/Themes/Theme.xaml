@@ -20,13 +20,6 @@
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
     </Style>
 
-    <Style TargetType="{x:Type local:Toggle}">
-        <Setter Property="OnFill" Value="{DynamicResource Foreground1Key}"/>
-        <Setter Property="OnStroke" Value="{DynamicResource ForegroundKey}"/>
-        <Setter Property="OffStroke" Value="{DynamicResource ForegroundKey}"/>
-        <Setter Property="OffFill" Value="{DynamicResource BackgroundLightKey}"/>
-    </Style>
-
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="RotaryStroke" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="RotaryFill" Value="{DynamicResource BackgroundLightKey}"/>

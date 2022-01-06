@@ -77,25 +77,6 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:Toggle}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:Toggle}">
-                    <Canvas Background="{TemplateBinding Background}">
-                        <Ellipse Width="{TemplateBinding EffectiveSize}" Height="{TemplateBinding EffectiveSize}" 
-                            Fill="{TemplateBinding EffectiveFill}" Stroke="{TemplateBinding EffectiveStroke}" />
-                    </Canvas>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
