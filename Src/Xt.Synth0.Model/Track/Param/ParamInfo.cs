@@ -28,6 +28,8 @@ namespace Xt.Synth0.Model
 			_ => throw new InvalidOperationException()
 		};
 
+		internal static ParamInfo Lin(Address address, string name, string[] display)
+		=> new ParamInfo(ParamType.Lin, address, name, 0, display.Length - 1, 0, x => display[x]);
 		internal static ParamInfo Toggle(Address address, string name, bool @default)
 		=> new ParamInfo(ParamType.Toggle, address, name, 0, 1, @default ? 1 : 0, null);
 		internal static ParamInfo Exp(Address address, string name, int min, int max, int @default)
