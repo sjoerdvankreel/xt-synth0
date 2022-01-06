@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,14 +56,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeList(AppModel model, Param param, Cell cell)
-		{
-			var result = Create.Element<ComboBox>(cell);
-			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
-			result.ToolTip = Tooltip(model.Track.Synth, param);
-			return result;
-		}
-
 		static UIElement MakeKnob(AppModel model, Param param, Cell cell)
 		{
 			var result = Create.Element<Knob>(cell);
@@ -71,6 +64,18 @@ namespace Xt.Synth0.UI
 			result.ToolTip = Tooltip(model.Track.Synth, param);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.MouseRightButtonUp += (s, e) => ExactUI.Show(model.Settings, param);
+			return result;
+		}
+
+		static UIElement MakeList(AppModel model, Param param, Cell cell)
+		{
+			var result = Create.Element<ComboBox>(cell);
+			result.SelectedValuePath = nameof(ListItem.Value);
+			result.ToolTip = Tooltip(model.Track.Synth, param);
+			var range = Enumerable.Range(param.Info.Min, param.Info.Max - param.Info.Min + 1);
+			var items = range.Select(i => new ListItem(i, param.Info.Format(i))).ToArray();
+			result.SetBinding(Selector.SelectedValueProperty, Bind.To(param));
+			result.SetValue(ItemsControl.ItemsSourceProperty, items);
 			return result;
 		}
 	}

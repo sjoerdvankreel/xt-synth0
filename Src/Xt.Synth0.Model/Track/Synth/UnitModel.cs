@@ -34,7 +34,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
-		static readonly ParamInfo LogPartialsInfo = ParamInfo.Exp(p => &((Native*)p)->logPartials, nameof(LogPartials), 0, 10, 4);
+		static readonly ParamInfo LogPartialsInfo = ParamInfo.Exp(p => &((Native*)p)->logPartials, "Partials", 0, 10, 4);
 		static readonly ParamInfo OctaveInfo = ParamInfo.Lin(p => &((Native*)p)->octave, nameof(Octave), TrackConstants.MinOctave, TrackConstants.MaxOctave, 4);
 	}
 }
