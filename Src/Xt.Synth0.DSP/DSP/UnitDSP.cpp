@@ -46,57 +46,57 @@ UnitDSP::Next(GlobalModel const& global, UnitModel const& unit, float rate)
 	_phasef = (float)_phased;
 	float freq = Frequency(unit);
 	float amp = unit.amp / 255.0f;
-	auto type = static_cast<UnitType>(unit.type);
-	float sample = Generate(global, type, freq, rate);
+	auto wave = static_cast<UnitWave>(unit.wave);
+	float sample = Generate(global, wave, freq, rate);
 	_phased += freq / rate;
 	if (_phased >= 1.0) _phased = 0.0;
 	return sample * amp;
 }
 
 float 
-UnitDSP::Generate(GlobalModel const& global, UnitType type, float freq, float rate)
+UnitDSP::Generate(GlobalModel const& global, UnitWave wave, float freq, float rate)
 {
 	auto pi = static_cast<float>(M_PI);
-	switch(type)
+	switch(wave)
   {
-    case UnitType::Sin: return std::sinf(_phasef * 2.0f * pi);
-    default: return GenerateMethod(global, type, freq, rate);
+    case UnitWave::Sin: return std::sinf(_phasef * 2.0f * pi);
+    default: return GenerateMethod(global, wave, freq, rate);
   }
 }
 
 float
-UnitDSP::GenerateMethod(GlobalModel const& global, UnitType type, float freq, float rate)
+UnitDSP::GenerateMethod(GlobalModel const& global, UnitWave wave, float freq, float rate)
 {
   auto method = static_cast<SynthMethod>(global.method);
   switch(method)
   {
     case SynthMethod::PBP: return 0.0f;
-		case SynthMethod::Nve: return GenerateNaive(type);
-		case SynthMethod::Add: return GenerateAdditive(type, freq, rate, global.hmns);
+		case SynthMethod::Nve: return GenerateNaive(wave);
+		case SynthMethod::Add: return GenerateAdditive(wave, freq, rate, global.hmns);
     default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateNaive(UnitType type)
+UnitDSP::GenerateNaive(UnitWave wave)
 {
-  switch(type)
+  switch(wave)
   {
-    case UnitType::Saw: return _phasef * 2.0f - 1.0f;
-		case UnitType::Sqr: return _phasef < 0.5f ? 1.0f : -1.0f;
-		case UnitType::Tri: return (_phasef <= 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f;
+    case UnitWave::Saw: return _phasef * 2.0f - 1.0f;
+		case UnitWave::Sqr: return _phasef < 0.5f ? 1.0f : -1.0f;
+		case UnitWave::Tri: return (_phasef <= 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f;
 		default: assert(false); return 0.0f;
 	}
 }
 
 float
-UnitDSP::GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics)
+UnitDSP::GenerateAdditive(UnitWave wave, float freq, float rate, int logHarmonics)
 {
-	switch (type)
+	switch (wave)
 	{
-	case UnitType::Saw: return GenerateAdditive(freq, rate, logHarmonics, 1, false);
-	case UnitType::Sqr: return GenerateAdditive(freq, rate, logHarmonics, 2, false);
-	case UnitType::Tri: return GenerateAdditive(freq, rate, logHarmonics, 2, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, logHarmonics, 1, false);
+	case UnitWave::Sqr: return GenerateAdditive(freq, rate, logHarmonics, 2, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, logHarmonics, 2, true);
 	default: assert(false); return 0.0f;
 	}
 }

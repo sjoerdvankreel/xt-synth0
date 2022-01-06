@@ -11,11 +11,11 @@ class UnitDSP
   float _phasef = 0.0f;
   double _phased = 0.0;
 
-  float GenerateNaive(UnitType type);
-  float GenerateAdditive(UnitType type, float freq, float rate, int logHarmonics);
-  float Generate(GlobalModel const& global, UnitType type, float freq, float rate);
+  float GenerateNaive(UnitWave wave);
+  float GenerateAdditive(UnitWave wave, float freq, float rate, int logHarmonics);
+  float Generate(GlobalModel const& global, UnitWave wave, float freq, float rate);
   float GenerateAdditive(float freq, float rate, int logHarmonics, int step, bool tri);
-  float GenerateMethod(GlobalModel const& global, UnitType type, float freq, float rate);
+  float GenerateMethod(GlobalModel const& global, UnitWave wave, float freq, float rate);
 
 public:
   void Reset();
