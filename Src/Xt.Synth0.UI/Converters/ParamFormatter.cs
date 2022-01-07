@@ -6,6 +6,6 @@ namespace Xt.Synth0.UI
 	{
 		readonly ParamInfo _info;
 		internal ParamFormatter(ParamInfo info) => _info = info;
-		internal override string Convert(int value) => _info.Format(value);
+		internal override string Convert(int value) => _info.Format(value).PadRight(_info.MaxDisplayLength);
 	}
 }

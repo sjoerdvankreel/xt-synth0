@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Xt.Synth0.Model
 {
@@ -7,6 +8,7 @@ namespace Xt.Synth0.Model
 
 	public sealed class ParamInfo
 	{
+		int? _maxDisplayLength;
 		readonly Address _address;
 		readonly Func<int, string> _display;
 
@@ -15,8 +17,6 @@ namespace Xt.Synth0.Model
 		public int Default { get; }
 		public string Name { get; }
 		public ParamType Type { get; }
-
-		public unsafe int* Address(void* native) => _address(native);
 
 		public string Format(int value) => Type switch
 		{
@@ -27,6 +27,10 @@ namespace Xt.Synth0.Model
 			ParamType.Toggle => value == 0 ? "Off" : "On",
 			_ => throw new InvalidOperationException()
 		};
+
+		public unsafe int* Address(void* native) => _address(native);
+		public int MaxDisplayLength => _maxDisplayLength ??= GetMaxDisplayLength();
+		int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 
 		internal static ParamInfo Lin(Address address, string name, string[] display)
 		=> new ParamInfo(ParamType.Lin, address, name, 0, display.Length - 1, 0, x => display[x]);
