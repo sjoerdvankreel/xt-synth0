@@ -4,7 +4,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -15,10 +14,12 @@ namespace Xt.Synth0.UI
 		{
 			var auto = model.Auto(param);
 			var result = new StringBuilder();
-			result.AppendLine(param.Info.Name);
-			result.AppendLine($"Range: {param.Info.Min} .. {param.Info.Max}");
 			result.Append("Automation target: ");
-			result.AppendLine(auto?.Index.ToString("X2") ?? "none");
+			result.Append(auto?.Index.ToString("X2") ?? "none");
+			if (param.Info.Type == ParamType.Toggle || param.Info.Type == ParamType.List)
+				return result.ToString();
+			result.AppendLine();
+			result.AppendLine($"Range: {param.Info.Min} .. {param.Info.Max}");
 			result.Append("Right-click to set exact value");
 			return result.ToString();
 		}
