@@ -10,7 +10,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class UnitModel : INamedModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int type, wave, logParts, amp, oct, note, cent, pad__; }
+		internal struct Native { internal int type, wave, amp, oct, note, cent, logParts, pad__; }
 
 		public Param Oct { get; } = new(OctInfo);
 		public Param Amp { get; } = new(AmpInfo);
@@ -23,7 +23,7 @@ namespace Xt.Synth0.Model
 		readonly int _index;
 		public string Name => $"Unit {_index + 1}";
 		internal UnitModel(int index) => _index = index;
-		public IReadOnlyList<Param> Params => new[] { Type, Wave, LogParts, Amp, Oct, Note, Cent };
+		public IReadOnlyList<Param> Params => new[] { Type, Wave, Amp, Oct, Note, Cent, LogParts };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitModelSize];
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };

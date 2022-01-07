@@ -11,7 +11,7 @@ enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, 
 
 struct XTS_ALIGN Param { int min, max; int* value; };
 struct XTS_ALIGN GlobalModel { int bpm, amp, plot, pad__; };
-struct XTS_ALIGN UnitModel { int type, wave, logParts, amp, oct, note, cent, pad__; };
+struct XTS_ALIGN UnitModel { int type, wave, amp, oct, note, cent, logParts, pad__; };
 
 struct XTS_ALIGN SynthModel
 {
