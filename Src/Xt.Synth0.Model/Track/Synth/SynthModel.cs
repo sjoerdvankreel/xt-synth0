@@ -43,7 +43,7 @@ namespace Xt.Synth0.Model
 
 		public SynthModel()
 		{
-			Units[0].On.Value = 1;
+			Units[0].Type.Value = 1;
 			var @params = ListParams(this).Select((p, i) => new AutoParam((INamedModel)p.Model, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
 			if (AutoParams.Count != TrackConstants.ParamCount)

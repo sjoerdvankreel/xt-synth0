@@ -43,7 +43,7 @@ UnitDSP::Frequency(UnitModel const& unit) const
 float
 UnitDSP::Next(UnitModel const& unit, float rate)
 {
-	if (unit.on == 0) return 0.0f;
+	if (unit.type == static_cast<int>(UnitType::Off)) return 0.0f;
 	_phasef = (float)_phased;
 	float freq = Frequency(unit);
 	float sample = Generate(unit, freq, rate);
