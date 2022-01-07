@@ -78,7 +78,7 @@ namespace Xt.Synth0.UI
 			result.SelectedValuePath = nameof(ListItem.Value);
 			result.ToolTip = Tooltip(model.Track.Synth, param);
 			var range = Enumerable.Range(param.Info.Min, param.Info.Max - param.Info.Min + 1);
-			var items = range.Select(i => new ListItem(i, param.Info.Format(i))).ToArray();
+			var items = range.Select(i => new ListItem(param.Info, i)).ToArray();
 			result.SetBinding(Selector.SelectedValueProperty, Bind.To(param));
 			result.SetValue(ItemsControl.ItemsSourceProperty, items);
 			return result;
