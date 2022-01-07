@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -18,6 +19,7 @@ namespace Xt.Synth0.UI
 			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
+			result.SetResourceReference(Control.BackgroundProperty, "BorderParamKey");
 			result.RowDefinitions[rows - 1].Height = new GridLength(1.0, GridUnitType.Star);
 			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
 			for (int p = 0; p < @params.Count; p++)
