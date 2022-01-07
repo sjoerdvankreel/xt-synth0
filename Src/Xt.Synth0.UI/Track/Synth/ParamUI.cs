@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -27,6 +28,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Element<StackPanel>(cell);
 			result.Orientation = Orientation.Horizontal;
+			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
 			result.Add(MakeControl(model, param));
 			if (param.Info.Type == ParamType.List) return result;
 			result.Add(Create.Label(param.Info.Name));
