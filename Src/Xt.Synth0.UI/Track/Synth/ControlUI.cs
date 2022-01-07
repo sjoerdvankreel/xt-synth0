@@ -23,18 +23,19 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeContent(StreamModel model)
 		{
-			var result = new StackPanel();
-			result.Orientation = Orientation.Horizontal;
+			var result = new DockPanel();
+			result.LastChildFill = false;
 			result.VerticalAlignment = VerticalAlignment.Bottom;
-			result.HorizontalAlignment = HorizontalAlignment.Right;
-			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
-			var binding = Bind.To(model, nameof(StreamModel.IsRunning), new NegateConverter());
-			start.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.Add(start);
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
+			result.SetResourceReference(Panel.BackgroundProperty, "BackgroundParamKey");
 			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
-			binding = Bind.To(model, nameof(StreamModel.IsStopped), new NegateConverter());
+			var binding = Bind.To(model, nameof(StreamModel.IsStopped), new NegateConverter());
 			stop.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.Add(stop);
+			result.Add(stop, Dock.Right);
+			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
+			binding = Bind.To(model, nameof(StreamModel.IsRunning), new NegateConverter());
+			start.SetBinding(UIElement.IsEnabledProperty, binding);
+			result.Add(start, Dock.Right);
 			return result;
 		}
 	}

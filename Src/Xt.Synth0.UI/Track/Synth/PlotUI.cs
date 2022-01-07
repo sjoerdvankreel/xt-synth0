@@ -18,10 +18,10 @@ namespace Xt.Synth0.UI
 			var result = Create.Group("Plot");
 			result.Padding = new Thickness(2.0);
 			var content = new ContentControl();
+			result.Content = content;
 			content.SizeChanged += (s, e) => Update(result, content);
 			model.Settings.PropertyChanged += (s, e) => Update(result, content);
 			model.Track.Synth.ParamChanged += (s, e) => Update(result, content);
-			result.Content = content;
 			return result;
 		}
 
@@ -39,6 +39,7 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.Add(PlotLine(container, data, samples));
+			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
 			return result;
 		}
 

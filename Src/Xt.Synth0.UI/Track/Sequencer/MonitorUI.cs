@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -8,10 +9,18 @@ namespace Xt.Synth0.UI
 	{
 		internal static UIElement Make(StreamModel model)
 		{
-			var result = Create.Group("Monitor", MakeContent(model));
-			var binding = Bind.To(model, nameof(model.IsRunning), 
+			var result = Create.Group("Monitor", MakeBorder(model));
+			var binding = Bind.To(model, nameof(model.IsRunning),
 				new VisibilityConverter(true, true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
+			return result;
+		}
+
+		static UIElement MakeBorder(StreamModel model)
+		{
+			var result = new Border();
+			result.Child = MakeContent(model);
+			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
 			return result;
 		}
 
