@@ -23,12 +23,18 @@ namespace Xt.Synth0.UI
 			return result.ToString();
 		}
 
-		internal static UIElement Make(
-			AppModel model, Param param, Cell cell)
+		internal static DockPanel MakeEmpty(Cell cell)
 		{
 			var result = Create.Element<DockPanel>(cell);
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
+			return result;
+		}
+
+		internal static UIElement Make(
+			AppModel model, Param param, Cell cell)
+		{
+			var result = MakeEmpty(cell);
 			result.Add(MakeControl(model, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
 			result.Add(Create.Label(param.Info.Name), Dock.Left);

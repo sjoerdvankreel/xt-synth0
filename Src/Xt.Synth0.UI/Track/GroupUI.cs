@@ -25,6 +25,8 @@ namespace Xt.Synth0.UI
 				int c = p % cols;
 				result.Add(ParamUI.Make(model, @params[p], new(r, c)));
 			}
+			if (@params.Count % 2 == 1)
+				result.Add(ParamUI.MakeEmpty(new Cell(rows - 1, cols - 1)));
 			return result;
 		}
 	}
