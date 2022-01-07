@@ -4,7 +4,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:local="clr-namespace:Xt.Synth0.UI">
 
-    <Thickness x:Key="Margin">3</Thickness>
+    <Thickness x:Key="Margin">2</Thickness>
     <sys:Double x:Key="Opacity">0.75</sys:Double>
     <Brush x:Key="Foreground2Key">Gray</Brush>
     <Brush x:Key="FocusBackgroundKey">LightGray</Brush>
@@ -78,6 +78,7 @@
     </Style>
 
     <Style TargetType="{x:Type local:Knob}">
+        <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>

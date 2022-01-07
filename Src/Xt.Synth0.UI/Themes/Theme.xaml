@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Xt.Synth0.UI">
 
-    <Thickness x:Key="Margin">3</Thickness>
+    <Thickness x:Key="Margin">2</Thickness>
 
     <Style TargetType="{x:Type DockPanel}">
         <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
@@ -21,6 +21,7 @@
     </Style>
 
     <Style TargetType="{x:Type local:Knob}">
+        <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="RotaryStroke" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="RotaryFill" Value="{DynamicResource BackgroundLightKey}"/>
         <Setter Property="MarkerFill" Value="{DynamicResource Foreground1Key}"/>
