@@ -28,6 +28,10 @@ namespace Xt.Synth0.Model
 
 		internal const int Alignment = 8;
 
+		public const int MinOct = 0;
+		public const int MaxOct = 9;
+		public const int FormatVersion = 1;
+
 		internal const int ParamSize = 16;
 		internal const int UnitModelSize = 32;
 		internal const int SynthModelSize = 496;
@@ -39,10 +43,6 @@ namespace Xt.Synth0.Model
 		internal const int PatternRowSize = 88;
 		internal const int PatternModelSize = 22528;
 		internal const int SequencerModelSize = 22544;
-
-		public const int MinOct = 0;
-		public const int MaxOct = 9;
-		public const int FormatVersion = 1;
 
 		public const int UnitCount = 3;
 		public const int ParamCount = 24;
