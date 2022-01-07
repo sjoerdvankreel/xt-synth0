@@ -17,6 +17,7 @@ namespace Xt.Synth0.UI
 			int rows = (int)Math.Ceiling(@params.Count / (double)cols);
 			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Top;
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			for (int p = 0; p < @params.Count; p++)
 			{
 				int r = p / cols;

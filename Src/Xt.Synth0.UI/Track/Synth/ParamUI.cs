@@ -26,14 +26,14 @@ namespace Xt.Synth0.UI
 		internal static UIElement Make(
 			AppModel model, Param param, Cell cell)
 		{
-			var result = Create.Element<StackPanel>(cell);
-			result.Orientation = Orientation.Horizontal;
+			var result = Create.Element<DockPanel>(cell);
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
-			result.Add(MakeControl(model, param));
+			result.Add(MakeControl(model, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
-			result.Add(Create.Label(param.Info.Name));
+			result.Add(Create.Label(param.Info.Name), Dock.Left);
 			if (param.Info.Type == ParamType.Toggle) return result;
-			result.Add(MakeValue(param));
+			result.Add(MakeValue(param), Dock.Left);
 			return result;
 		}
 
@@ -80,6 +80,7 @@ namespace Xt.Synth0.UI
 			var result = new ComboBox();
 			result.SelectedValuePath = nameof(ListItem.Value);
 			result.ToolTip = Tooltip(model.Track.Synth, param);
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			var range = Enumerable.Range(param.Info.Min, param.Info.Max - param.Info.Min + 1);
 			var items = range.Select(i => new ListItem(param.Info, i)).ToArray();
 			result.SetBinding(Selector.SelectedValueProperty, Bind.To(param));
