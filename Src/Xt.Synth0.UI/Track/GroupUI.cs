@@ -18,6 +18,7 @@ namespace Xt.Synth0.UI
 			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Top;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
+			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
 			for (int p = 0; p < @params.Count; p++)
 			{
 				int r = p / cols;
