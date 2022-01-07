@@ -39,7 +39,7 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.Add(PlotLine(container, data, samples));
-			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
+			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 
@@ -49,7 +49,7 @@ namespace Xt.Synth0.UI
 			result.StrokeThickness = 1;
 			MapPlotData(container, data, samples);
 			result.Points = PlotData;
-			result.SetResourceReference(Shape.StrokeProperty, "Foreground2Key");
+			result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground2Key);
 			return result;
 		}
 

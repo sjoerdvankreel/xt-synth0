@@ -9,6 +9,9 @@ namespace Xt.Synth0.UI
 	public static class Utility
 	{
 		public static readonly FontFamily FontFamily = new("Consolas");
+		internal static string Foreground2Key = nameof(Foreground2Key);
+		internal static string BorderParamKey = nameof(BorderParamKey);
+		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
 
 		internal static void FocusDown()
 		{

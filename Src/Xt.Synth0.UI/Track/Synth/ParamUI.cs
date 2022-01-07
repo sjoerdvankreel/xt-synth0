@@ -27,7 +27,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Element<DockPanel>(cell);
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
+			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 

@@ -27,7 +27,6 @@ namespace Xt.Synth0.UI
 			result.LastChildFill = false;
 			result.VerticalAlignment = VerticalAlignment.Bottom;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			result.SetResourceReference(Panel.BackgroundProperty, "BackgroundParamKey");
 			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
 			var binding = Bind.To(model, nameof(StreamModel.IsStopped), new NegateConverter());
 			stop.SetBinding(UIElement.IsEnabledProperty, binding);
@@ -36,6 +35,7 @@ namespace Xt.Synth0.UI
 			binding = Bind.To(model, nameof(StreamModel.IsRunning), new NegateConverter());
 			start.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Add(start, Dock.Right);
+			result.SetResourceReference(Panel.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 	}

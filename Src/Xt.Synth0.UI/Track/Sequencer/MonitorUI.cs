@@ -20,7 +20,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new Border();
 			result.Child = MakeContent(model);
-			result.SetResourceReference(Control.BackgroundProperty, "BackgroundParamKey");
+			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 
