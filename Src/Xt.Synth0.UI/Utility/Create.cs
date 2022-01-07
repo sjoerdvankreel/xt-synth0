@@ -68,6 +68,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static TextBlock Text(string text)
+		{
+			var result = new TextBlock();
+			result.Text = text;
+			return result;
+		}
+
 		internal static TextBlock Text(string text, Cell cell)
 		{
 			var result = Element<TextBlock>(cell);

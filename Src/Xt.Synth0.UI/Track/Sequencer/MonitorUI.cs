@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -26,15 +25,12 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeContent(StreamModel model)
 		{
-			var result = Create.Grid(4, 2);
-			result.Add(Create.Text("CPU ", new(0, 0)));
-			result.Add(CreateCpuUsage(model, new(0, 1)));
-			result.Add(Create.Text("GC ", new(1, 0)));
-			result.Add(CreateGC(model, new(1, 1)));
-			result.Add(CreateClip(model, new(2, 0)));
-			result.Add(CreateOverload(model, new(2, 1)));
-			result.Add(Create.Text("Buffer ", new(3, 0)));
-			result.Add(CreateBuffer(model, new(3, 1)));
+			var result = Create.Grid(3, 2);
+			result.Add(CreateBuffer(model, new(0, 0)));
+			result.Add(CreateOverload(model, new(1, 0)));
+			result.Add(CreateClip(model, new(1, 1)));
+			result.Add(CreateCpuUsage(model, new(2, 0)));
+			result.Add(CreateGC(model, new(2, 1)));
 			return result;
 		}
 
@@ -56,9 +52,13 @@ namespace Xt.Synth0.UI
 
 		static UIElement CreateCpuUsage(StreamModel model, Cell cell)
 		{
-			var result = Create.Element<TextBlock>(cell);
+			var result = Create.Element<WrapPanel>(cell);
+			result.Add(Create.Text("CPU "));
+			var text = Create.Element<TextBlock>(cell);
 			var binding = Bind.To(model, nameof(model.CpuUsage), new CpuUsageFormatter());
-			result.SetBinding(TextBlock.TextProperty, binding);
+			text.SetBinding(TextBlock.TextProperty, binding);
+			result.Add(text);
+			result.Add(Create.Text(" "));
 			return result;
 		}
 
@@ -69,12 +69,14 @@ namespace Xt.Synth0.UI
 			var bufferBinding = Bind.To(model, nameof(model.BufferSizeFrames));
 			var binding = Bind.To(new MonitorFormatter(), bufferBinding, latencyBinding);
 			result.SetBinding(TextBlock.TextProperty, binding);
+			result.SetValue(Grid.ColumnSpanProperty, 2);
 			return result;
 		}
 
 		static UIElement CreateGC(StreamModel model, Cell cell)
 		{
 			var result = Create.Element<WrapPanel>(cell);
+			result.Add(Create.Text("GC "));
 			result.Add(CreateGCGeneration(model, nameof(model.GC0Collected), "0"));
 			result.Add(CreateGCGeneration(model, nameof(model.GC1Collected), " 1"));
 			result.Add(CreateGCGeneration(model, nameof(model.GC2Collected), " 2"));
