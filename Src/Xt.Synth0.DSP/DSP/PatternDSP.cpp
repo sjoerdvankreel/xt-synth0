@@ -18,7 +18,7 @@ PatternDSP::Automate(PatternFx const& fx, SynthModel& synth) const
 void
 PatternDSP::Automate(EditModel const& edit, PatternRow const& row, SynthModel& synth) const
 {
-  for (int f = 0; f < edit.fxCount; f++)
+  for (int f = 0; f < edit.fxs; f++)
     Automate(row.fx[f], synth);
 }
 

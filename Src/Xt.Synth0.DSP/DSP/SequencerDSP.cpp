@@ -49,9 +49,9 @@ bool
 SequencerDSP::UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate)
 {
 	int bpm = synth.global.bpm;
-	int patterns = seq.edit.patternCount;
+	int pats = seq.edit.pats;
 	int rowsPerPattern = TrackConstants::PatternRows;
-	int totalRows = patterns * rowsPerPattern;
+	int totalRows = pats * rowsPerPattern;
 	_rowFactor += bpm * TrackConstants::BeatRows / (60.0 * rate);
 	if (_rowFactor < 1.0) return RowUpdated();
 	_rowFactor = 0.0f;
