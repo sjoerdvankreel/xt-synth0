@@ -58,7 +58,7 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
 	auto pi = static_cast<float>(M_PI);
 	switch(static_cast<UnitWave>(unit.wave))
   {
-    case UnitWave::Sine: return std::sinf(_phasef * 2.0f * pi);
+    case UnitWave::Sin: return std::sinf(_phasef * 2.0f * pi);
     default: return GenerateType(unit, freq, rate);
   }
 }
@@ -84,7 +84,7 @@ UnitDSP::GenerateNaive(UnitWave wave)
   {
     case UnitWave::Saw: return _phasef * 2.0f - 1.0f;
 		case UnitWave::Pulse: return _phasef < 0.5f ? 1.0f : -1.0f;
-		case UnitWave::Triangle: return (_phasef <= 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f;
+		case UnitWave::Tri: return (_phasef <= 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f;
 		default: assert(false); return 0.0f;
 	}
 }
@@ -96,7 +96,7 @@ UnitDSP::GenerateAdditive(UnitModel const& unit, float freq, float rate)
 	{
 	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.logParts, 1, false);
 	case UnitWave::Pulse: return GenerateAdditive(freq, rate, unit.logParts, 2, false);
-	case UnitWave::Triangle: return GenerateAdditive(freq, rate, unit.logParts, 2, true);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.logParts, 2, true);
 	default: assert(false); return 0.0f;
 	}
 }

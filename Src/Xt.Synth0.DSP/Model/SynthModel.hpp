@@ -5,7 +5,7 @@
 
 namespace Xts {
 
-enum class UnitWave { Sine, Saw, Pulse, Triangle };
+enum class UnitWave { Sin, Saw, Pulse, Tri };
 enum class UnitType { Off, PolyBlep, Additive, Naive };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 

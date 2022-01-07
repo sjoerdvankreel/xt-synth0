@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum UnitWave { Sine, Saw, Pulse, Triangle }
+	public enum UnitWave { Sin, Saw, Pulse, Tri }
 	public enum UnitType { Off, PolyBlep, Additive, Naive }
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 
