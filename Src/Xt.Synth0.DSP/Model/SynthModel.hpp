@@ -5,8 +5,8 @@
 
 namespace Xts {
 
-enum class UnitWave { Sin, Saw, Sqr, Tri };
 enum class UnitType { PolyBlep, Additive, Naive };
+enum class UnitWave { Sine, Saw, Pulse, Triangle };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 
 struct XTS_ALIGN Param { int min, max; int* value; };
