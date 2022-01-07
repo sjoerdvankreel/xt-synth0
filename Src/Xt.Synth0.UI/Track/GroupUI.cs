@@ -15,13 +15,13 @@ namespace Xt.Synth0.UI
 			const int cols = 2;
 			var @params = group.Params;
 			int rows = (int)Math.Ceiling(@params.Count / (double)cols);
-			var result = Create.Grid(rows, cols * 3);
+			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Top;
 			for (int p = 0; p < @params.Count; p++)
 			{
 				int r = p / cols;
 				int c = p % cols;
-				ParamUI.Add(result, model, @params[r * cols + c], new(r, c * 3));
+				result.Add(ParamUI.Make(model, @params[p], new(r, c)));
 			}
 			return result;
 		}

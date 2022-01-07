@@ -54,6 +54,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static Label Label(string text)
+		{
+			var result = new Label();
+			result.Content = text;
+			return result;
+		}
+
 		internal static Label Label(string text, Cell cell)
 		{
 			var result = Element<Label>(cell);

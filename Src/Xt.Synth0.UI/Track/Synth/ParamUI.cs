@@ -22,43 +22,48 @@ namespace Xt.Synth0.UI
 			return result.ToString();
 		}
 
-		internal static void Add(
-			Grid grid, AppModel model, Param param, Cell cell)
+		internal static UIElement Make(
+			AppModel model, Param param, Cell cell)
 		{
-			grid.Add(MakeValue(param, cell.Right(2)));
-			grid.Add(Create.Label(param.Info.Name, cell.Right(1)));
-			grid.Add(MakeControl(model, param, cell));
+			var result = Create.Element<StackPanel>(cell);
+			result.Orientation = Orientation.Horizontal;
+			result.Add(MakeControl(model, param));
+			if (param.Info.Type == ParamType.List) return result;
+			result.Add(Create.Label(param.Info.Name));
+			result.Add(MakeValue(param));
+			return result;
 		}
 
-		static UIElement MakeControl(AppModel model, Param param, Cell cell) => param.Info.Type switch
+		static UIElement MakeControl(AppModel model, Param param)
+		=> param.Info.Type switch
 		{
-			ParamType.Lin => MakeKnob(model, param, cell),
-			ParamType.Exp => MakeKnob(model, param, cell),
-			ParamType.Quad => MakeKnob(model, param, cell),
-			ParamType.List => MakeList(model, param, cell),
-			ParamType.Toggle => MakeToggle(model, param, cell),
+			ParamType.Lin => MakeKnob(model, param),
+			ParamType.Exp => MakeKnob(model, param),
+			ParamType.Quad => MakeKnob(model, param),
+			ParamType.List => MakeList(model, param),
+			ParamType.Toggle => MakeToggle(model, param),
 			_ => throw new InvalidOperationException()
 		};
 
-		static UIElement MakeValue(Param param, Cell cell)
+		static UIElement MakeValue(Param param)
 		{
+			var result = new Label();
 			var binding = Bind.Format(param);
-			var result = Create.Element<Label>(cell);
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeToggle(AppModel model, Param param, Cell cell)
+		static UIElement MakeToggle(AppModel model, Param param)
 		{
-			var result = Create.Element<CheckBox>(cell);
-			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
+			var result = new CheckBox();
 			result.ToolTip = Tooltip(model.Track.Synth, param);
+			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			return result;
 		}
 
-		static UIElement MakeKnob(AppModel model, Param param, Cell cell)
+		static UIElement MakeKnob(AppModel model, Param param)
 		{
-			var result = Create.Element<Knob>(cell);
+			var result = new Knob();
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.ToolTip = Tooltip(model.Track.Synth, param);
@@ -67,9 +72,9 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeList(AppModel model, Param param, Cell cell)
+		static UIElement MakeList(AppModel model, Param param)
 		{
-			var result = Create.Element<ComboBox>(cell);
+			var result = new ComboBox();
 			result.SelectedValuePath = nameof(ListItem.Value);
 			result.ToolTip = Tooltip(model.Track.Synth, param);
 			var range = Enumerable.Range(param.Info.Min, param.Info.Max - param.Info.Min + 1);
