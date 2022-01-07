@@ -30,6 +30,7 @@ namespace Xt.Synth0.UI
 			result.Add(MakeControl(model, param));
 			if (param.Info.Type == ParamType.List) return result;
 			result.Add(Create.Label(param.Info.Name));
+			if (param.Info.Type == ParamType.Toggle) return result;
 			result.Add(MakeValue(param));
 			return result;
 		}
