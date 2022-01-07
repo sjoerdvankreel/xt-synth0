@@ -9,7 +9,6 @@ namespace Xt.Synth0.UI
 		internal static GroupBox Make(AppModel model, INamedModel group)
 		{
 			var content = GroupUI.MakeContent(model, group);
-			content.VerticalAlignment = VerticalAlignment.Center;
 			var result = Create.Group(group.Name, content);
 			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning),
 				new VisibilityConverter(true, false));
