@@ -62,8 +62,10 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
   {
 	case UnitType::Naive: return GenerateNaive(wave);
 	case UnitType::Sin: return std::sinf(_phasef * 2.0f * pi);
-  case UnitType::BasicAdd: return GenerateBasicAdd(unit, freq, rate);
-  default: assert(false); return 0.0f;
+	case UnitType::BasicAdd: return GenerateBasicAdd(unit, freq, rate);
+	case UnitType::CustAdd: return GenerateAdditive(freq, rate, 
+    unit.custAddParts, unit.custAddStep, unit.custAddNegate, unit.custAddQuadRolloff);
+	default: assert(false); return 0.0f;
 	}
 }
 
@@ -82,17 +84,18 @@ UnitDSP::GenerateNaive(UnitWave wave)
 float
 UnitDSP::GenerateBasicAdd(UnitModel const& unit, float freq, float rate)
 {
+  int partials = 1 << unit.basicAddlogParts;
 	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, 1 << unit.basicAddlogParts, 2, true);
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, 1 << unit.basicAddlogParts, 1, false);
-	case UnitWave::Pulse: return GenerateAdditive(freq, rate, 1 << unit.basicAddlogParts, 2, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, partials, 2, true, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, partials, 1, false, false);
+	case UnitWave::Pulse: return GenerateAdditive(freq, rate, partials, 2, false, false);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool tri)
+UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool negate, bool quadRolloff)
 {
 	float limit = 0.0;
 	float result = 0.0;
@@ -105,7 +108,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool tri)
 	__m256 phases = _mm256_set1_ps(_phasef);
   __m256 twopis = _mm256_set1_ps(2.0f * pi);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
-  if(tri) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
+  if(negate) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
     __m256 ps = _mm256_set_ps(
@@ -129,7 +132,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool tri)
 			static_cast<float>((mask & (1 << 2)) ? 1 : 0),
 			static_cast<float>((mask & (1 << 1)) ? 1 : 0),
 			static_cast<float>((mask & (1 << 0)) ? 1 : 0));
-  	__m256 rolloffs = tri? _mm256_mul_ps(ps, ps): ps;
+  	__m256 rolloffs = quadRolloff? _mm256_mul_ps(ps, ps): ps;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 psPhases = _mm256_mul_ps(phases, ps);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
