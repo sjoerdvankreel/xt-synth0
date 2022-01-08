@@ -57,7 +57,7 @@ namespace Xt.Synth0.UI
 			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Fxs, minFx));
-			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
+			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
 			return result;
 		}
 	}

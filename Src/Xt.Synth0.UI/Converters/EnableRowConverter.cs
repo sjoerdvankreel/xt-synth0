@@ -1,9 +1,11 @@
-﻿namespace Xt.Synth0.UI
+﻿using System.Windows.Media;
+
+namespace Xt.Synth0.UI
 {
-	class EnableRowConverter : Converter<int, bool>
+	class EnableRowConverter : Converter<int, Brush>
 	{
 		readonly int _row;
 		internal EnableRowConverter(int row) => _row = row;
-		protected override bool Convert(int rows) => _row < rows;
+		protected override Brush Convert(int rows) => _row < rows ? Brushes.White : Brushes.Black;
 	}
 }

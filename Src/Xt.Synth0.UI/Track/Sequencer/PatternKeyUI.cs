@@ -59,7 +59,7 @@ namespace Xt.Synth0.UI
 			result.ToolTip = string.Join("\n", param.Info.Name, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(param));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
+			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
 			return result;
 		}
@@ -71,7 +71,7 @@ namespace Xt.Synth0.UI
 			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
+			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
 			result.ToolTip = string.Join("\n", model.Oct.Info.Name, PatternUI.EditHint);
 			return result;
 		}
@@ -89,7 +89,7 @@ namespace Xt.Synth0.UI
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
+			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
 			return result;
 		}
 	}
