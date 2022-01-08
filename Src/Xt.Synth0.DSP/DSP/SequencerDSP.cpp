@@ -50,14 +50,16 @@ SequencerDSP::UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate
 {
 	int lpb = seq.edit.lpb;
 	int pats = seq.edit.pats;
+	int rows = seq.edit.rows;
 	int bpm = synth.global.bpm;
-	int rowsPerPattern = TrackConstants::MaxRows;
-	int totalRows = pats * rowsPerPattern;
+  int maxRows = TrackConstants::MaxRows;
 	_rowFactor += bpm * lpb / (60.0 * rate);
-	if (_rowFactor < 1.0) return RowUpdated();
+	if (_rowFactor < 1.0) 
+    return RowUpdated();
 	_rowFactor = 0.0f;
-	if (_currentRow < totalRows - 1) _currentRow++;
-	else _currentRow = 0;
+  _currentRow++;
+  if(_currentRow % maxRows == rows) _currentRow += maxRows - rows;
+  if(_currentRow == pats * maxRows) _currentRow = 0;
 	return RowUpdated();
 }
 
