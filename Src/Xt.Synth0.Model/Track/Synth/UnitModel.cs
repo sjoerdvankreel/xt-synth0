@@ -12,7 +12,7 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int type, wave, amp, oct, note, cent, basicAddlogParts;
+			internal int type, wave, amp, oct, note, cent, basicAddLogParts;
 			internal int custAddParts, custAddStep, custAddNegate, custAddQuadRolloff, pad__;
 		}
 
@@ -57,7 +57,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo CustAddStepInfo = ParamInfo.Lin(p => &((Native*)p)->custAddStep, "Step", 1, 16, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo CustAddNegateInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddNegate, "Negate", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo CustAddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->custAddParts, "Parts", 1, 255, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
-		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddlogParts, "Parts", 0, 10, 4, m => ((UnitModel)m).Type, (int)UnitType.BasicAdd);
+		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddLogParts, "Parts", 0, 10, 4, m => ((UnitModel)m).Type, (int)UnitType.BasicAdd);
 		static readonly ParamInfo CustAddQuadRolloffInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddQuadRolloff, "Quad rolloff", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.Naive, (int)UnitType.BasicAdd);
 	}
