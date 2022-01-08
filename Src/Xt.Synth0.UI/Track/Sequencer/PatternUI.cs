@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -89,12 +90,18 @@ namespace Xt.Synth0.UI
 				patterns[p] = pattern.Pattern;
 				highlighters.AddRange(pattern.Highlighters);
 			}
+			var edit = model.Track.Sequencer.Edit;
 			var dispatcher = Application.Current?.Dispatcher;
 			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.SetBinding(ContentControl.ContentProperty, BindSelector(model, patterns));
-			Action<string> handler = property => OnHighlighterPropertyChanged(model.Stream, highlighters, property);
-			model.Stream.PropertyChanged += (s, e) => dispatcher.BeginInvoke(handler, DispatcherPriority.Background, e.PropertyName);
+			PropertyChangedEventHandler editHandler = (s, e) => UpdateHighlighters(model.Stream, edit, highlighters);
+			edit.Lpb.PropertyChanged += editHandler;
+			edit.Rows.PropertyChanged += editHandler;
+			edit.Pats.PropertyChanged += editHandler;
+			Action<string> streamHandler = property => OnStreamPropertyChanged(model.Stream, edit, highlighters, property);
+			model.Stream.PropertyChanged += (s, e) => dispatcher.BeginInvoke(streamHandler, DispatcherPriority.Background, e.PropertyName);
+			UpdateHighlighters(model.Stream, edit, highlighters);
 			return result;
 		}
 
@@ -153,13 +160,19 @@ namespace Xt.Synth0.UI
 			}
 		}
 
-		static void OnHighlighterPropertyChanged(
-			StreamModel model, IList<Border> highlighters, string property)
+		static void OnStreamPropertyChanged(
+			StreamModel stream, EditModel edit, IList<Border> highlighters, string property)
 		{
-			if (property != nameof(model.IsRunning) && property != nameof(model.CurrentRow)) return;
+			if (property == nameof(stream.IsRunning) ||
+				property == nameof(stream.CurrentRow))
+				UpdateHighlighters(stream, edit, highlighters);
+		}
+
+		static void UpdateHighlighters(StreamModel stream, EditModel edit, IList<Border> highlighters)
+		{
 			for (int i = 0; i < highlighters.Count; i++)
 			{
-				bool highlighted = model.IsRunning && i == model.CurrentRow;
+				bool highlighted = stream.IsRunning && i == stream.CurrentRow;
 				object opacity = highlighted ? HighlightedOpacityBoxed : NotHighlightedOpacityBoxed;
 				highlighters[i].SetValue(UIElement.OpacityProperty, opacity);
 			}
