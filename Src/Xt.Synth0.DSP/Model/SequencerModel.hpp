@@ -9,7 +9,7 @@ enum class PatternNote { None, Off, C, CSharp, D, DSharp, E, F, FSharp, G, GShar
 
 struct XTS_ALIGN PatternFx { int target, value; };
 struct XTS_ALIGN PatternKey { int amp, note, oct, pad__; };
-struct XTS_ALIGN EditModel { int pats, rows, fxs, keys, lpb, edit; };
+struct XTS_ALIGN EditModel { int pats, rows, keys, fxs, lpb, edit; };
 
 struct XTS_ALIGN PatternRow
 {

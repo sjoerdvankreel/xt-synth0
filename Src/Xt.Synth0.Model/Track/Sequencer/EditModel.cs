@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class EditModel : INamedModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int pats, rows, fxs, keys, lpb, edit; }
+		internal struct Native { internal int pats, rows, keys, fxs, lpb, edit; }
 
 		public Param Fxs { get; } = new(FxsInfo);
 		public Param Lpb { get; } = new(LpbInfo);
@@ -16,7 +16,7 @@ namespace Xt.Synth0.Model
 		public Param Rows { get; } = new(RowsInfo);
 
 		public string Name => "Edit";
-		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Fxs, Keys, Lpb, Edit };
+		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Lpb, Edit };
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
 
 		static readonly ParamInfo FxsInfo = ParamInfo.Lin(p => &((Native*)p)->fxs, nameof(Fxs), 0, TrackConstants.MaxFxs, 1);
