@@ -23,18 +23,18 @@ namespace Xt.Synth0.UI
 			return result.ToString(0, result.Length - Environment.NewLine.Length);
 		}
 
-		internal static DockPanel MakeEmpty(Cell cell)
+		internal static DockPanel MakeEmpty()
 		{
-			var result = Create.Element<DockPanel>(cell);
+			var result = new DockPanel();
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 
 		internal static UIElement Make(
-			AppModel app, ISubModel sub, Param param, Cell cell)
+			AppModel app, ISubModel sub, Param param)
 		{
-			var result = MakeEmpty(cell);
+			var result = MakeEmpty();
 			bool conditional = param.Info.Relevant(sub) != null;
 			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
 			result.Add(MakeControl(app, param), Dock.Left);
