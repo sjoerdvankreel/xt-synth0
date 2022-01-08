@@ -1,4 +1,5 @@
 #include "SequencerDSP.hpp"
+#include <cassert>
 
 namespace Xts {
 
@@ -58,7 +59,11 @@ SequencerDSP::UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate
     return RowUpdated();
 	_rowFactor = 0.0f;
   _currentRow++;
-  if(_currentRow % maxRows == rows) _currentRow += maxRows - rows;
+  if(_currentRow % maxRows == rows)
+  {
+     _currentRow += maxRows - rows;
+     assert(_currentRow % maxRows == 0);
+  }
   if(_currentRow == pats * maxRows) _currentRow = 0;
 	return RowUpdated();
 }
