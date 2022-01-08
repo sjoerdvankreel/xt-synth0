@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Media;
-using System.Windows.Threading;
+﻿using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
