@@ -32,7 +32,21 @@ namespace Xt.Synth0.Model
 		public string Name => $"Unit {_index + 1}";
 		internal UnitModel(int index) => _index = index;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitModelSize];
-		public IReadOnlyList<Param> Params => new[] { Type, Wave, Amp, Oct, Note, Cent, BasicAddLogParts, CustAddParts, CustAddStep, CustAddNegate, CustAddQuadRolloff };
+		
+		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
+		{
+			{ Type, 0 },
+			{ Wave, 1 },
+			{ Amp, 2 },
+			{ Oct, 3 },
+			{ Note, 4 },
+			{ Cent, 5 },
+			{ BasicAddLogParts, 6 },
+			{ CustAddParts, 7 },
+			{ CustAddStep, 7 },
+			{ CustAddNegate, 8 },
+			{ CustAddQuadRolloff, 9 },
+		};
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);
@@ -44,7 +58,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo CustAddNegateInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddNegate, "Negate", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo CustAddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->custAddParts, "Parts", 1, 255, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddlogParts, "Parts", 0, 10, 4, m => ((UnitModel)m).Type, (int)UnitType.BasicAdd);
-		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.BasicAdd);
 		static readonly ParamInfo CustAddQuadRolloffInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddQuadRolloff, "Quad rolloff", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
+		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.Naive, (int)UnitType.BasicAdd);
 	}
 }
