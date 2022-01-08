@@ -98,7 +98,6 @@ namespace Xt.Synth0.UI
 			PropertyChangedEventHandler editHandler = (s, e) => UpdateHighlighters(model.Stream, edit, highlighters);
 			edit.Lpb.PropertyChanged += editHandler;
 			edit.Rows.PropertyChanged += editHandler;
-			edit.Pats.PropertyChanged += editHandler;
 			Action<string> streamHandler = property => OnStreamPropertyChanged(model.Stream, edit, highlighters, property);
 			model.Stream.PropertyChanged += (s, e) => dispatcher.BeginInvoke(streamHandler, DispatcherPriority.Background, e.PropertyName);
 			UpdateHighlighters(model.Stream, edit, highlighters);
@@ -170,11 +169,24 @@ namespace Xt.Synth0.UI
 
 		static void UpdateHighlighters(StreamModel stream, EditModel edit, IList<Border> highlighters)
 		{
-			for (int i = 0; i < highlighters.Count; i++)
+			if (stream.IsRunning)
 			{
-				bool highlighted = stream.IsRunning && i == stream.CurrentRow;
-				object opacity = highlighted ? HighlightedOpacityBoxed : NotHighlightedOpacityBoxed;
-				highlighters[i].SetValue(UIElement.OpacityProperty, opacity);
+				for (int i = 0; i < highlighters.Count; i++)
+					highlighters[i].SetValue(UIElement.OpacityProperty,
+						i == stream.CurrentRow ? HighlightedOpacityBoxed : NotHighlightedOpacityBoxed);
+				return;
+			}
+			int actual = 0;
+			foreach (var highlighter in highlighters)
+				highlighter.SetValue(UIElement.OpacityProperty, NotHighlightedOpacityBoxed);
+			for (int row = 0; row < highlighters.Count; )
+			{
+				if (actual % edit.Lpb.Value == 0)
+					highlighters[row].SetValue(UIElement.OpacityProperty, HighlightedOpacityBoxed);
+				row++;
+				actual++;
+				if (row % TrackConstants.MaxRows == edit.Rows.Value)
+					row += TrackConstants.MaxRows - edit.Rows.Value;
 			}
 		}
 	}
