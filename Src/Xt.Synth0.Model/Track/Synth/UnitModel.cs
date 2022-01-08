@@ -42,7 +42,7 @@ namespace Xt.Synth0.Model
 			{ Note, 4 },
 			{ Cent, 5 },
 			{ BasicAddLogParts, 6 },
-			{ CustAddParts, 7 },
+			{ CustAddParts, 6 },
 			{ CustAddStep, 7 },
 			{ CustAddNegate, 8 },
 			{ CustAddQuadRolloff, 9 },
