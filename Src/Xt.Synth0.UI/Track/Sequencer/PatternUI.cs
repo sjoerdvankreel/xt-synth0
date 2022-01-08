@@ -22,7 +22,7 @@ namespace Xt.Synth0.UI
 		static void Fill(SequencerModel seq, int pattern, int fx)
 		{
 			var rows = seq.Pattern.Rows;
-			int rowCount = TrackConstants.PatternRows;
+			int rowCount = TrackConstants.MaxRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
 			for (int i = start; i <= end; i++)
@@ -33,7 +33,7 @@ namespace Xt.Synth0.UI
 			int pattern, Func<PatternRow, Param> selector)
 		{
 			var rows = seq.Pattern.Rows;
-			int rowCount = TrackConstants.PatternRows;
+			int rowCount = TrackConstants.MaxRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
 			int endValue = selector(rows[end]).Value;
@@ -82,7 +82,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new ContentControl();
 			var highlighters = new List<Border>();
-			var patterns = new UIElement[TrackConstants.PatternCount];
+			var patterns = new UIElement[TrackConstants.MaxPatterns];
 			for (int p = 0; p < patterns.Length; p++)
 			{
 				var pattern = MakePattern(model, p);
@@ -100,9 +100,9 @@ namespace Xt.Synth0.UI
 
 		static (UIElement Pattern, IList<Border> Highlighters) MakePattern(AppModel model, int pattern)
 		{
-			var fx = TrackConstants.MaxFxCount;
-			var keys = TrackConstants.MaxKeyCount;
-			var rows = TrackConstants.PatternRows;
+			var fx = TrackConstants.MaxFxs;
+			var keys = TrackConstants.MaxKeys;
+			var rows = TrackConstants.MaxRows;
 			int cols = keys * 5 + 1 + fx * 3;
 			var highlighters = new List<Border>();
 			var sequencer = model.Track.Sequencer;
@@ -121,7 +121,7 @@ namespace Xt.Synth0.UI
 		static void AddRow(Grid grid, TrackModel track, int pattern, PatternRow row, int r)
 		{
 			var sequencer = track.Sequencer;
-			int divCol = TrackConstants.MaxKeyCount * 5;
+			int divCol = TrackConstants.MaxKeys * 5;
 			AddKeys(grid, sequencer, pattern, row, r);
 			grid.Add(Create.Divider(new(r, divCol), sequencer.Edit.Fxs, 1));
 			AddFx(grid, track, pattern, row, r);
@@ -129,7 +129,7 @@ namespace Xt.Synth0.UI
 
 		static void AddKeys(Grid grid, SequencerModel seq, int pattern, PatternRow row, int r)
 		{
-			for (int k = 0; k < TrackConstants.MaxKeyCount; k++)
+			for (int k = 0; k < TrackConstants.MaxKeys; k++)
 			{
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
@@ -143,8 +143,8 @@ namespace Xt.Synth0.UI
 			var synth = track.Synth;
 			var sequencer = track.Sequencer;
 			var fx = track.Sequencer.Edit.Fxs;
-			int startCol = TrackConstants.MaxKeyCount * 5 + 1;
-			for (int f = 0; f < TrackConstants.MaxFxCount; f++)
+			int startCol = TrackConstants.MaxKeys * 5 + 1;
+			for (int f = 0; f < TrackConstants.MaxFxs; f++)
 			{
 				int fLocal = f;
 				Action fill = () => Fill(sequencer, pattern, fLocal);

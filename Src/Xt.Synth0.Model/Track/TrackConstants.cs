@@ -32,24 +32,26 @@ namespace Xt.Synth0.Model
 		public const int MaxOct = 9;
 		public const int FormatVersion = 1;
 
+		public const int UnitCount = 3;
+		public const int ParamCount = 27;
+
 		internal const int ParamSize = 16;
 		internal const int UnitModelSize = 32;
 		internal const int SynthModelSize = 544;
 		internal const int GlobalModelSize = 16;
 
 		internal const int PatternFxSize = 8;
-		internal const int EditModelSize = 16;
+		internal const int EditModelSize = 24;
 		internal const int PatternKeySize = 16;
 		internal const int PatternRowSize = 88;
 		internal const int PatternModelSize = 22528;
-		internal const int SequencerModelSize = 22544;
+		internal const int SequencerModelSize = 22552;
 
-		public const int UnitCount = 3;
-		public const int ParamCount = 27;
-		public const int MaxFxCount = 3;
-		public const int MaxKeyCount = 4;
-		public const int PatternRows = 32;
-		public const int PatternCount = 8;
-		public const int TotalRowCount = PatternCount * PatternRows;
+		public const int MaxFxs = 3;
+		public const int MaxLpb = 16;
+		public const int MaxKeys = 4;
+		public const int MaxRows = 32;
+		public const int MaxPatterns = 8;
+		public const int TotalRows = MaxPatterns * MaxRows;
 	}
 }

@@ -20,11 +20,11 @@ XTS_CHECK_SIZE(SynthModel, 544);
 XTS_CHECK_SIZE(GlobalModel, 16);
 
 XTS_CHECK_SIZE(PatternFx, 8);
-XTS_CHECK_SIZE(EditModel, 16);
+XTS_CHECK_SIZE(EditModel, 24);
 XTS_CHECK_SIZE(PatternKey, 16);
 XTS_CHECK_SIZE(PatternRow, 88);
 XTS_CHECK_SIZE(PatternModel, 22528);
-XTS_CHECK_SIZE(SequencerModel, 22544);
+XTS_CHECK_SIZE(SequencerModel, 22552);
 
 } // namespace Xts
 #endif // XTS_SIZE_CHECKS_HPP

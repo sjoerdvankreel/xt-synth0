@@ -10,8 +10,8 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal fixed byte fx[TrackConstants. MaxFxCount * TrackConstants.PatternFxSize];
-			internal fixed byte keys[TrackConstants.MaxKeyCount * TrackConstants.PatternKeySize];
+			internal fixed byte fx[TrackConstants. MaxFxs * TrackConstants.PatternFxSize];
+			internal fixed byte keys[TrackConstants.MaxKeys * TrackConstants.PatternKeySize];
 		}
 
 		readonly int _index;
@@ -22,7 +22,7 @@ namespace Xt.Synth0.Model
 
 		public IReadOnlyList<PatternFx> Fx = new ReadOnlyCollection<PatternFx>(MakeFx());
 		public IReadOnlyList<PatternKey> Keys = new ReadOnlyCollection<PatternKey>(MakeKeys());
-		static IList<PatternFx> MakeFx() => Enumerable.Range(0, TrackConstants.MaxFxCount).Select(i => new PatternFx(i)).ToList();
-		static IList<PatternKey> MakeKeys() => Enumerable.Range(0, TrackConstants.MaxKeyCount).Select(i => new PatternKey(i)).ToList();
+		static IList<PatternFx> MakeFx() => Enumerable.Range(0, TrackConstants.MaxFxs).Select(i => new PatternFx(i)).ToList();
+		static IList<PatternKey> MakeKeys() => Enumerable.Range(0, TrackConstants.MaxKeys).Select(i => new PatternKey(i)).ToList();
 	}
 }

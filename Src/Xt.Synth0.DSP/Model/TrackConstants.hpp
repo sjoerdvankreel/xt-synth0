@@ -11,12 +11,12 @@ constexpr int MaxOct = 9;
 constexpr int UnitCount = 3;
 constexpr int ParamCount = 27;
 
-constexpr int BeatRows = 4;
-constexpr int MaxFxCount = 3;
-constexpr int MaxKeyCount = 4;
-constexpr int PatternRows = 32;
-constexpr int PatternCount = 8;
-constexpr int TotalRowCount = PatternCount * PatternRows;
+constexpr int MaxFxs = 3;
+constexpr int MaxLpb = 16;
+constexpr int MaxKeys = 4;
+constexpr int MaxRows = 32;
+constexpr int MaxPatterns = 8;
+constexpr int TotalRows = MaxPatterns * MaxRows;
 
 } } // namespace Xts::TrackConstants
 #endif // XTS_TRACK_CONSTANTS_HPP
