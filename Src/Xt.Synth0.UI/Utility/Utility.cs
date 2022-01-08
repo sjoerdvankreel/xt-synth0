@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -8,6 +9,8 @@ namespace Xt.Synth0.UI
 {
 	public static class Utility
 	{
+		static readonly Dictionary<ThemeType, ResourceDictionary> ThemeResources = new();
+
 		public static readonly FontFamily FontFamily = new("Consolas");
 		internal static string RowEnabledKey = nameof(RowEnabledKey);
 		internal static string RowDisabledKey = nameof(RowDisabledKey);
@@ -23,9 +26,11 @@ namespace Xt.Synth0.UI
 
 		public static ResourceDictionary GetThemeResources(ThemeType theme)
 		{
+			if (ThemeResources.TryGetValue(theme, out var result)) return result;
 			var location = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{theme}.xaml";
-			var result = new ResourceDictionary();
+			result = new ResourceDictionary();
 			result.Source = new Uri(location);
+			ThemeResources.Add(theme, result);
 			return result;
 		}
 	}
