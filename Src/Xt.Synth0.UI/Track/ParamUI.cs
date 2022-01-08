@@ -37,13 +37,11 @@ namespace Xt.Synth0.UI
 			var result = MakeEmpty(cell);
 			bool conditional = param.Info.Relevant(sub) != null;
 			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
-			var control = result.Add(MakeControl(app, param), Dock.Left);
+			result.Add(MakeControl(app, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
-			var label = result.Add(Create.Label(param.Info.Name), Dock.Left);
-			//if (conditional) label.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
+			result.Add(Create.Label(param.Info.Name), Dock.Left);
 			if (param.Info.Type == ParamType.Toggle) return result;
-			var value = result.Add(MakeValue(param), Dock.Left);
-			//if (conditional) value.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
+			result.Add(MakeValue(param), Dock.Left);
 			return result;
 		}
 

@@ -26,9 +26,9 @@ namespace Xt.Synth0.UI
 			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			result.SetResourceReference(Control.BackgroundProperty, Utility.BorderParamKey);
 			result.RowDefinitions[rows - 1].Height = new GridLength(1.0, GridUnitType.Star);
 			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
+			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			for (int l = 0; l < layout.Length; l++)
 				AddParams(result, app, group, layout[l], l, cols);
 			if (layout.Length % 2 == 1)
