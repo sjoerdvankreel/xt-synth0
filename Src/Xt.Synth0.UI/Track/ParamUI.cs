@@ -32,18 +32,22 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static UIElement Make(
-			AppModel model, Param param, Cell cell)
+			AppModel app, ISubModel sub, Param param, Cell cell)
 		{
 			var result = MakeEmpty(cell);
-			result.Add(MakeControl(model, param), Dock.Left);
+			bool conditional = param.Info.Relevant(sub) != null;
+			var control = result.Add(MakeControl(app, param), Dock.Left);
+			if (conditional) control.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
 			if (param.Info.Type == ParamType.List) return result;
-			result.Add(Create.Label(param.Info.Name), Dock.Left);
+			var label = result.Add(Create.Label(param.Info.Name), Dock.Left);
+			if (conditional) label.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
 			if (param.Info.Type == ParamType.Toggle) return result;
-			result.Add(MakeValue(param), Dock.Left);
+			var value = result.Add(MakeValue(param), Dock.Left);
+			if (conditional) value.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
 			return result;
 		}
 
-		static UIElement MakeControl(AppModel model, Param param)
+		static Control MakeControl(AppModel model, Param param)
 		=> param.Info.Type switch
 		{
 			ParamType.Lin => MakeKnob(model, param),
@@ -54,7 +58,7 @@ namespace Xt.Synth0.UI
 			_ => throw new InvalidOperationException()
 		};
 
-		static UIElement MakeValue(Param param)
+		static Control MakeValue(Param param)
 		{
 			var result = new Label();
 			var binding = Bind.Format(param);
@@ -62,7 +66,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeToggle(AppModel model, Param param)
+		static Control MakeToggle(AppModel model, Param param)
 		{
 			var result = new CheckBox();
 			result.ToolTip = Tooltip(model.Track.Synth, param);
@@ -70,7 +74,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeKnob(AppModel model, Param param)
+		static Control MakeKnob(AppModel model, Param param)
 		{
 			var result = new Knob();
 			result.Minimum = param.Info.Min;
@@ -81,7 +85,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeList(AppModel model, Param param)
+		static Control MakeList(AppModel model, Param param)
 		{
 			var result = new ComboBox();
 			result.SelectedValuePath = nameof(ListItem.Value);

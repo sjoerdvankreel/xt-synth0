@@ -52,6 +52,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static Binding Relevant(ISubModel sub, Param param)
+		{
+			var result = To(param.Info.Relevant(sub));
+			result.Converter = new RelevantConverter(param);
+			return result;
+		}
+
 		internal static MultiBinding EnableRow(AppModel app, int row)
 		{
 			var theme = To(app.Settings, nameof(app.Settings.Theme));
