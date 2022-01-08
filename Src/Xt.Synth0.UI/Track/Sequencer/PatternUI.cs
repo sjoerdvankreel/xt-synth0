@@ -113,22 +113,23 @@ namespace Xt.Synth0.UI
 				var highlighter = MakeHighlighter(new Cell(r, 0, 1, cols));
 				result.Add(highlighter);
 				highlighters.Add(highlighter);
-				AddRow(result, model.Track, pattern, sequencer.Pattern.Rows[offset + r], r);
+				AddRow(result, model, pattern, sequencer.Pattern.Rows[offset + r], r);
 			}
 			return (result, highlighters);
 		}
 
-		static void AddRow(Grid grid, TrackModel track, int pattern, PatternRow row, int r)
+		static void AddRow(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
-			var sequencer = track.Sequencer;
+			var seq = app.Track.Sequencer;
 			int divCol = TrackConstants.MaxKeys * 5;
-			AddKeys(grid, sequencer, pattern, row, r);
-			grid.Add(Create.Divider(new(r, divCol), sequencer.Edit.Fxs, 1));
-			AddFx(grid, track, pattern, row, r);
+			AddKeys(grid, app, pattern, row, r);
+			grid.Add(Create.Divider(new(r, divCol), seq.Edit.Fxs, 1));
+			AddFx(grid, app, pattern, row, r);
 		}
 
-		static void AddKeys(Grid grid, SequencerModel seq, int pattern, PatternRow row, int r)
+		static void AddKeys(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
+			var seq = app.Track.Sequencer;
 			for (int k = 0; k < TrackConstants.MaxKeys; k++)
 			{
 				int kLocal = k;
@@ -138,11 +139,11 @@ namespace Xt.Synth0.UI
 			}
 		}
 
-		static void AddFx(Grid grid, TrackModel track, int pattern, PatternRow row, int r)
+		static void AddFx(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
-			var synth = track.Synth;
-			var sequencer = track.Sequencer;
-			var fx = track.Sequencer.Edit.Fxs;
+			var synth = app.Track.Synth;
+			var sequencer = app.Track.Sequencer;
+			var fx = app.Track.Sequencer.Edit.Fxs;
 			int startCol = TrackConstants.MaxKeys * 5 + 1;
 			for (int f = 0; f < TrackConstants.MaxFxs; f++)
 			{
