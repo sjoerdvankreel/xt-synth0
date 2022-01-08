@@ -47,7 +47,7 @@ namespace Xt.Synth0.Model
 			var @params = ListParams(this).Select((p, i) => new AutoParam((INamedModel)p.Model, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
 			if (AutoParams.Count != TrackConstants.ParamCount)
-				;// TODO throw new InvalidOperationException();
+				throw new InvalidOperationException();
 		}
 	}
 }

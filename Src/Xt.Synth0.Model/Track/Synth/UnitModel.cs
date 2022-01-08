@@ -10,7 +10,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class UnitModel : INamedModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int type, wave, amp, oct, note, cent, logParts, TEMP; }
+		internal struct Native { internal int type, wave, amp, oct, note, cent, logParts, pad__; }
 
 		public Param Oct { get; } = new(OctInfo);
 		public Param Amp { get; } = new(AmpInfo);
@@ -19,16 +19,14 @@ namespace Xt.Synth0.Model
 		public Param Wave { get; } = new(WaveInfo);
 		public Param Type { get; } = new(TypeInfo);
 		public Param LogParts { get; } = new(LogPartsInfo);
-		public Param TEMP { get; } = new(TEMPInfo);
 
 		readonly int _index;
 		public string Name => $"Unit {_index + 1}";
 		internal UnitModel(int index) => _index = index;
-		public IReadOnlyList<Param> Params => new[] { Type, Wave, Amp, Oct, Note, Cent, LogParts, TEMP };
+		public IReadOnlyList<Param> Params => new[] { Type, Wave, Amp, Oct, Note, Cent, LogParts };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitModelSize];
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
-		static readonly ParamInfo TEMPInfo = ParamInfo.Toggle(p => &((Native*)p)->TEMP, "On/off", false);
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);
 		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), 0, 255, 255);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));

@@ -9,7 +9,7 @@ constexpr int MinOct = 0;
 constexpr int MaxOct = 9;
 
 constexpr int UnitCount = 3;
-constexpr int ParamCount = 27;
+constexpr int ParamCount = 24;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;
