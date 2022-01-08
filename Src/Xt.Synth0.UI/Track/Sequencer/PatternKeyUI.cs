@@ -59,8 +59,9 @@ namespace Xt.Synth0.UI
 			var edit = app.Track.Sequencer.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.ToolTip = string.Join("\n", note.Info.Name, NoteEditHint);
+			var binding = Bind.EnableRow(TextBlock.ForegroundProperty, result, app, row);
+			result.SetBinding(TextBlock.ForegroundProperty, binding);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(note));
-			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
 			result.KeyDown += (s, e) => OnNoteKeyDown(note, e);
 			return result;
@@ -74,8 +75,9 @@ namespace Xt.Synth0.UI
 			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.ToolTip = string.Join("\n", key.Oct.Info.Name, PatternUI.EditHint);
-			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
+			binding = Bind.EnableRow(TextBlock.ForegroundProperty, result, app, row);
+			result.SetBinding(TextBlock.ForegroundProperty, binding);
 			return result;
 		}
 
@@ -89,9 +91,10 @@ namespace Xt.Synth0.UI
 			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(key.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
-			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
 			result.ToolTip = string.Join("\n", key.Amp.Info.Name, PatternUI.InterpolateHint, PatternUI.EditHint);
+			var binding = Bind.EnableRow(Control.ForegroundProperty, result, app, row);
+			result.SetBinding(Control.ForegroundProperty, binding);
 			return result;
 		}
 	}

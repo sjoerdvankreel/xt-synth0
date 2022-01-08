@@ -1,4 +1,5 @@
-﻿using System.Windows.Data;
+﻿using System.Windows;
+using System.Windows.Data;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -51,6 +52,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static MultiBinding EnableRow(AppModel app, int row)
+		{
+			var theme = To(app.Settings, nameof(app.Settings.Theme));
+			var rows = To(app.Track.Sequencer.Edit.Rows);
+			var result = To(new EnableRowConverter(row), theme, rows);
+			return result;
+		}
+
 		internal static MultiBinding To(Param first,
 			Param second, MultiConverter<int, int, string> formatter)
 		{
@@ -69,13 +78,6 @@ namespace Xt.Synth0.UI
 				result.Bindings.Add(b);
 			result.Converter = formatter;
 			return result;
-		}
-
-		internal static BindingBase EnableRow(AppModel app, int row)
-		{
-			var theme = To(app.Settings, nameof(app.Settings.Theme));
-			var rows = To(app.Track.Sequencer.Edit.Rows);
-			return To(new EnableRowConverter(app.Settings, row), theme, rows);
 		}
 	}
 }

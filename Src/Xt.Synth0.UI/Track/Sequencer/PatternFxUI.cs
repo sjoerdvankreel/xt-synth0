@@ -28,7 +28,7 @@ namespace Xt.Synth0.UI
 			grid.Add(MakeValue(app, fx.Value, minFx, row, col + 1, interpolate));
 		}
 
-		static UIElement MakeValue(AppModel app, Param value, 
+		static UIElement MakeValue(AppModel app, Param value,
 			int minFx, int row, int col, Action interpolate)
 		{
 			var result = MakeHex(app, value, minFx, row, col);
@@ -38,7 +38,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeTarget(AppModel app, Param target, 
+		static UIElement MakeTarget(AppModel app, Param target,
 			int minFx, int row, int col, Action fill)
 		{
 			var synth = app.Track.Synth;
@@ -50,7 +50,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static FrameworkElement MakeHex(AppModel app, 
+		static FrameworkElement MakeHex(AppModel app,
 			Param param, int minFx, int row, int col)
 		{
 			var edit = app.Track.Sequencer.Edit;
@@ -58,8 +58,9 @@ namespace Xt.Synth0.UI
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.OnParsed += (s, e) => Utility.FocusDown();
+			var binding = Bind.EnableRow(Control.ForegroundProperty, result, app, row);
+			result.SetBinding(Control.ForegroundProperty, binding);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Fxs, minFx));
 			return result;
 		}
