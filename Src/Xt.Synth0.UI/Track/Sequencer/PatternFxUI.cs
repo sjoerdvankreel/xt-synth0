@@ -21,43 +21,46 @@ namespace Xt.Synth0.UI
 				interpolate();
 		}
 
-		internal static void Add(Grid grid, TrackModel track, PatternFx fx,
+		internal static void Add(Grid grid, AppModel app, PatternFx fx,
 			int minFx, int row, int col, Action fill, Action interpolate)
 		{
-			grid.Add(MakeTarget(track, fx.Target, minFx, row, col, fill));
-			grid.Add(MakeValue(track.Sequencer.Edit, fx.Value, minFx, row, col + 1, interpolate));
+			grid.Add(MakeTarget(app, fx.Target, minFx, row, col, fill));
+			grid.Add(MakeValue(app, fx.Value, minFx, row, col + 1, interpolate));
 		}
 
-		static UIElement MakeValue(EditModel edit, Param param,
+		static UIElement MakeValue(AppModel app, Param value, 
 			int minFx, int row, int col, Action interpolate)
 		{
-			var result = MakeHex(edit, param, minFx, row, col);
-			result.ToolTip = string.Join("\n", param.Info.Name,
+			var result = MakeHex(app, value, minFx, row, col);
+			result.ToolTip = string.Join("\n", value.Info.Name,
 				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
 			return result;
 		}
 
-		static UIElement MakeTarget(TrackModel track,
-			Param param, int minFx, int row, int col, Action fill)
+		static UIElement MakeTarget(AppModel app, Param target, 
+			int minFx, int row, int col, Action fill)
 		{
-			var result = MakeHex(track.Sequencer.Edit, param, minFx, row, col);
-			var binding = Bind.To(param, nameof(Param.Value), new TargetFormatter(track.Synth, param));
+			var synth = app.Track.Synth;
+			var result = MakeHex(app, target, minFx, row, col);
+			var formatter = new TargetFormatter(synth, target);
+			var binding = Bind.To(target, nameof(Param.Value), formatter);
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
 			result.KeyDown += (s, e) => OnTargetKeyDown(fill, e);
 			return result;
 		}
 
-		static FrameworkElement MakeHex(EditModel edit,
+		static FrameworkElement MakeHex(AppModel app, 
 			Param param, int minFx, int row, int col)
 		{
+			var edit = app.Track.Sequencer.Edit;
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
+			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Fxs, minFx));
-			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
 			return result;
 		}
 	}

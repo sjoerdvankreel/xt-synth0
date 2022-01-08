@@ -44,52 +44,54 @@ namespace Xt.Synth0.UI
 				interpolate();
 		}
 
-		internal static void Add(Grid grid, PatternKey model,
-			EditModel edit, int minKeys, int row, int col, Action interpolate)
+		internal static void Add(Grid grid, AppModel app,
+			PatternKey key, int minKeys, int row, int col, Action interpolate)
 		{
-			grid.Add(MakeNote(edit, model.Note, minKeys, row, col));
-			grid.Add(MakeOct(edit, model, minKeys, row, col + 1));
+			var edit = app.Track.Sequencer.Edit;
+			grid.Add(MakeNote(app, key.Note, minKeys, row, col));
+			grid.Add(MakeOct(app, key, minKeys, row, col + 1));
 			grid.Add(Create.Divider(new(row, col + 2), edit.Keys, minKeys));
-			grid.Add(MakeAmp(edit, model, minKeys, row, col + 3, interpolate));
+			grid.Add(MakeAmp(app, key, minKeys, row, col + 3, interpolate));
 		}
 
-		static UIElement MakeNote(EditModel edit, Param param, int minKeys, int row, int col)
+		static UIElement MakeNote(AppModel app, Param note, int minKeys, int row, int col)
 		{
+			var edit = app.Track.Sequencer.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.ToolTip = string.Join("\n", param.Info.Name, NoteEditHint);
-			result.SetBinding(TextBlock.TextProperty, Bind.Format(param));
+			result.ToolTip = string.Join("\n", note.Info.Name, NoteEditHint);
+			result.SetBinding(TextBlock.TextProperty, Bind.Format(note));
+			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
-			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
+			result.KeyDown += (s, e) => OnNoteKeyDown(note, e);
 			return result;
 		}
 
-		static UIElement MakeOct(EditModel edit, PatternKey model, int minKeys, int row, int col)
+		static UIElement MakeOct(AppModel app, PatternKey key, int minKeys, int row, int col)
 		{
+			var edit = app.Track.Sequencer.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
-			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
+			result.TextInput += (s, e) => OnOctTextInput(key.Oct, e);
+			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
 			result.SetBinding(TextBlock.TextProperty, binding);
+			result.ToolTip = string.Join("\n", key.Oct.Info.Name, PatternUI.EditHint);
+			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
-			result.ToolTip = string.Join("\n", model.Oct.Info.Name, PatternUI.EditHint);
 			return result;
 		}
 
-		static UIElement MakeAmp(EditModel edit, PatternKey model,
-			int minKeys, int row, int col, Action interpolate)
+		static UIElement MakeAmp(AppModel app, PatternKey key, int minKeys, int row, int col, Action interpolate)
 		{
+			var edit = app.Track.Sequencer.Edit;
 			var result = Create.PatternCell<AmpBox>(new(row, col));
-			result.Minimum = model.Amp.Info.Min;
-			result.Maximum = model.Amp.Info.Max;
+			result.Minimum = key.Amp.Info.Min;
+			result.Maximum = key.Amp.Info.Max;
 			result.OnParsed += (s, e) => Utility.FocusDown();
-			result.ToolTip = string.Join("\n", model.Amp.Info.Name,
-				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
-			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
-			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
+			result.SetBinding(AmpBox.NoteProperty, Bind.To(key.Note));
+			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
+			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(edit.Rows, row));
+			result.ToolTip = string.Join("\n", key.Amp.Info.Name, PatternUI.InterpolateHint, PatternUI.EditHint);
 			return result;
 		}
 	}

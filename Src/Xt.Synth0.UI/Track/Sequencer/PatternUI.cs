@@ -134,7 +134,7 @@ namespace Xt.Synth0.UI
 			{
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
-				PatternKeyUI.Add(grid, row.Keys[k], seq.Edit, k + 1, r, k * 5, interpolate);
+				PatternKeyUI.Add(grid, app, row.Keys[k], k + 1, r, k * 5, interpolate);
 				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
 			}
 		}
@@ -148,7 +148,7 @@ namespace Xt.Synth0.UI
 				int fLocal = f;
 				Action fill = () => Fill(seq, pattern, fLocal);
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Fx[fLocal].Value);
-				PatternFxUI.Add(grid, app.Track, row.Fx[f], f + 1, r, startCol + f * 3, fill, interpolate);
+				PatternFxUI.Add(grid, app, row.Fx[f], f + 1, r, startCol + f * 3, fill, interpolate);
 				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), seq.Edit.Fxs, f + 2));
 			}
 		}

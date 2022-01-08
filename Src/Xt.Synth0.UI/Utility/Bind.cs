@@ -44,13 +44,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Binding EnableRow(Param rows, int row)
-		{
-			var result = To(rows);
-			result.Converter = new EnableRowConverter(row);
-			return result;
-		}
-
 		internal static Binding Format(Param param)
 		{
 			var result = To(param);
@@ -76,6 +69,13 @@ namespace Xt.Synth0.UI
 				result.Bindings.Add(b);
 			result.Converter = formatter;
 			return result;
+		}
+
+		internal static BindingBase EnableRow(AppModel app, int row)
+		{
+			var theme = To(app.Settings, nameof(app.Settings.Theme));
+			var rows = To(app.Track.Sequencer.Edit.Rows);
+			return To(new EnableRowConverter(app.Settings, row), theme, rows);
 		}
 	}
 }
