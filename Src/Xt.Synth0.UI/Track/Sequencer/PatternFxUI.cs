@@ -56,8 +56,8 @@ namespace Xt.Synth0.UI
 			result.Maximum = param.Info.Max;
 			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			var binding = Bind.ShowRow(edit.Rows, row, edit.Fxs, minFx);
-			result.SetBinding(UIElement.VisibilityProperty, binding);
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Fxs, minFx));
+			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
 			return result;
 		}
 	}

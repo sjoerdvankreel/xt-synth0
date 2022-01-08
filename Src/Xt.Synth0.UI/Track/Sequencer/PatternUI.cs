@@ -123,7 +123,7 @@ namespace Xt.Synth0.UI
 			var edit = app.Track.Sequencer.Edit;
 			int divCol = TrackConstants.MaxKeys * 5;
 			AddKeys(grid, app, pattern, row, r);
-			grid.Add(Create.Divider(new(r, divCol), edit.Rows, r, edit.Fxs, 1));
+			grid.Add(Create.Divider(new(r, divCol), edit.Fxs, 1));
 			AddFx(grid, app, pattern, row, r);
 		}
 
@@ -135,7 +135,7 @@ namespace Xt.Synth0.UI
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
 				PatternKeyUI.Add(grid, row.Keys[k], seq.Edit, k + 1, r, k * 5, interpolate);
-				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Rows, r, seq.Edit.Keys, k + 2));
+				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
 			}
 		}
 
@@ -149,7 +149,7 @@ namespace Xt.Synth0.UI
 				Action fill = () => Fill(seq, pattern, fLocal);
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Fx[fLocal].Value);
 				PatternFxUI.Add(grid, app.Track, row.Fx[f], f + 1, r, startCol + f * 3, fill, interpolate);
-				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), seq.Edit.Rows, r, seq.Edit.Fxs, f + 2));
+				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), seq.Edit.Fxs, f + 2));
 			}
 		}
 

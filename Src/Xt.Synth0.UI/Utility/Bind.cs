@@ -36,12 +36,19 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static MultiBinding ShowRow(
-			Param rows, int row, Param param, int min)
+		internal static Binding Show(
+			Param param, int min)
 		{
-			var rowBinding = To(rows);
-			var paramBinding = To(param);
-			return To(new ShowRowConverter(row, min), rowBinding, paramBinding);
+			var result = To(param);
+			result.Converter = new ShowConverter(min);
+			return result;
+		}
+
+		internal static Binding EnableRow(Param rows, int row)
+		{
+			var result = To(rows);
+			result.Converter = new EnableRowConverter(row);
+			return result;
 		}
 
 		internal static Binding Format(Param param)

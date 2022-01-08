@@ -49,7 +49,7 @@ namespace Xt.Synth0.UI
 		{
 			grid.Add(MakeNote(edit, model.Note, minKeys, row, col));
 			grid.Add(MakeOct(edit, model, minKeys, row, col + 1));
-			grid.Add(Create.Divider(new(row, col + 2), edit.Rows, row, edit.Keys, minKeys));
+			grid.Add(Create.Divider(new(row, col + 2), edit.Keys, minKeys));
 			grid.Add(MakeAmp(edit, model, minKeys, row, col + 3, interpolate));
 		}
 
@@ -58,8 +58,8 @@ namespace Xt.Synth0.UI
 			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.ToolTip = string.Join("\n", param.Info.Name, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(param));
-			var binding = Bind.ShowRow(edit.Rows, row, edit.Keys, minKeys);
-			result.SetBinding(UIElement.VisibilityProperty, binding);
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
+			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
 			return result;
 		}
@@ -70,8 +70,8 @@ namespace Xt.Synth0.UI
 			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
 			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
-			binding = Bind.ShowRow(edit.Rows, row, edit.Keys, minKeys);
-			result.SetBinding(UIElement.VisibilityProperty, binding);
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
+			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
 			result.ToolTip = string.Join("\n", model.Oct.Info.Name, PatternUI.EditHint);
 			return result;
 		}
@@ -88,8 +88,8 @@ namespace Xt.Synth0.UI
 			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
-			var binding = Bind.ShowRow(edit.Rows, row, edit.Keys, minKeys);
-			result.SetBinding(UIElement.VisibilityProperty, binding);
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
+			result.SetBinding(UIElement.IsEnabledProperty, Bind.EnableRow(edit.Rows, row));
 			return result;
 		}
 	}
