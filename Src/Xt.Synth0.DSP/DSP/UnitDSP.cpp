@@ -84,9 +84,9 @@ UnitDSP::GenerateBasicAdd(UnitModel const& unit, float freq, float rate)
 {
 	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.logParts, 2, true);
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.logParts, 1, false);
-	case UnitWave::Pulse: return GenerateAdditive(freq, rate, unit.logParts, 2, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.basicAddlogParts, 2, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.basicAddlogParts, 1, false);
+	case UnitWave::Pulse: return GenerateAdditive(freq, rate, unit.basicAddlogParts, 2, false);
 	default: assert(false); return 0.0f;
 	}
 }
