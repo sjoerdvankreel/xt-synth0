@@ -84,17 +84,16 @@ UnitDSP::GenerateBasicAdd(UnitModel const& unit, float freq, float rate)
 {
 	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.basicAddlogParts, 2, true);
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.basicAddlogParts, 1, false);
-	case UnitWave::Pulse: return GenerateAdditive(freq, rate, unit.basicAddlogParts, 2, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, 1 << unit.basicAddlogParts, 2, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, 1 << unit.basicAddlogParts, 1, false);
+	case UnitWave::Pulse: return GenerateAdditive(freq, rate, 1 << unit.basicAddlogParts, 2, false);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int logParts, int step, bool tri)
+UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool tri)
 {
-	int parts = 1;
 	float limit = 0.0;
 	float result = 0.0;
   float pi = static_cast<float>(M_PI);
@@ -106,10 +105,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int logParts, int step, bool t
 	__m256 phases = _mm256_set1_ps(_phasef);
   __m256 twopis = _mm256_set1_ps(2.0f * pi);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
-  if(tri)
-    signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
-	for (int p = 0; p < logParts; p++)
-		parts *= 2;
+  if(tri) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
     __m256 ps = _mm256_set_ps(
