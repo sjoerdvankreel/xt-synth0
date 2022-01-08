@@ -20,8 +20,7 @@ public:
 private:
   float GenerateNaive(UnitWave wave);
   float Generate(UnitModel const& unit, float freq, float rate);
-  float GenerateType(UnitModel const& unit, float freq, float rate);
-  float GenerateAdditive(UnitModel const& unit, float freq, float rate);
+  float GenerateBasicAdd(UnitModel const& unit, float freq, float rate);
   float GenerateAdditive(float freq, float rate, int logParts, int step, bool tri);
 };
 

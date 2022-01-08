@@ -56,24 +56,14 @@ float
 UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
 {
 	auto pi = static_cast<float>(M_PI);
-	switch(static_cast<UnitWave>(unit.wave))
-  {
-    case UnitWave::Sin: return std::sinf(_phasef * 2.0f * pi);
-    default: return GenerateType(unit, freq, rate);
-  }
-}
-
-float
-UnitDSP::GenerateType(UnitModel const& unit, float freq, float rate)
-{
-  auto type = static_cast<UnitType>(unit.type);
+	auto type = static_cast<UnitType>(unit.type);
   auto wave = static_cast<UnitWave>(unit.wave);
   switch(type)
   {
-    case UnitType::PolyBlep: return 0.0f;
-		case UnitType::Naive: return GenerateNaive(wave);
-		case UnitType::Additive: return GenerateAdditive(unit, freq, rate);
-    default: assert(false); return 0.0f;
+	case UnitType::Naive: return GenerateNaive(wave);
+	case UnitType::Sin: return std::sinf(_phasef * 2.0f * pi);
+  case UnitType::BasicAdd: return GenerateBasicAdd(unit, freq, rate);
+  default: assert(false); return 0.0f;
 	}
 }
 
@@ -90,13 +80,13 @@ UnitDSP::GenerateNaive(UnitWave wave)
 }
 
 float
-UnitDSP::GenerateAdditive(UnitModel const& unit, float freq, float rate)
+UnitDSP::GenerateBasicAdd(UnitModel const& unit, float freq, float rate)
 {
 	switch (static_cast<UnitWave>(unit.wave))
 	{
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.logParts, 2, true);
 	case UnitWave::Saw: return GenerateAdditive(freq, rate, unit.logParts, 1, false);
 	case UnitWave::Pulse: return GenerateAdditive(freq, rate, unit.logParts, 2, false);
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, unit.logParts, 2, true);
 	default: assert(false); return 0.0f;
 	}
 }
