@@ -19,6 +19,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new Border();
 			result.Child = MakeContent(model);
+			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
@@ -31,6 +32,7 @@ namespace Xt.Synth0.UI
 			result.Add(CreateClip(model, new(1, 1)));
 			result.Add(CreateCpuUsage(model, new(2, 0)));
 			result.Add(CreateGC(model, new(2, 1)));
+			result.VerticalAlignment = VerticalAlignment.Center;
 			return result;
 		}
 
