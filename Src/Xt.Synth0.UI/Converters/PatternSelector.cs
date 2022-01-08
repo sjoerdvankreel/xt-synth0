@@ -9,7 +9,7 @@ namespace Xt.Synth0.UI
 		internal PatternSelector(UIElement[] elements) 
 		=> _elements = elements;
 
-		protected override UIElement Convert(bool running, int active, int row)
+		internal override UIElement Convert(bool running, int active, int row)
 		{
 			if (!running) return _elements[active - 1];
 			return _elements[row / TrackConstants.MaxRows];

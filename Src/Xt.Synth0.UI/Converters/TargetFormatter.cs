@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 		internal TargetFormatter(SynthModel synth, Param param)
 		=> (_synth, _param) = (synth, param);
 
-		internal override string Convert(int target)
+		protected override string Convert(int target)
 		{
 			var result = new StringBuilder();
 			var auto = _synth.AutoParams.SingleOrDefault(p => p.Index == target);

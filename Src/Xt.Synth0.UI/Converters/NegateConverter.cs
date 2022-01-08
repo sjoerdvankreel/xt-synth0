@@ -2,7 +2,7 @@
 {
 	class NegateConverter : Converter<bool, bool>
 	{
-		internal override bool Convert(bool value) => !value;
-		internal override bool ConvertBack(bool value) => !value;
+		protected override bool Convert(bool value) => !value;
+		protected override bool ConvertBack(bool value) => !value;
 	}
 }

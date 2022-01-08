@@ -6,7 +6,7 @@ namespace Xt.Synth0.UI
 	{
 		readonly int _min;
 		internal ShowConverter(int min) => _min = min;
-		internal override Visibility Convert(int value)
+		protected override Visibility Convert(int value)
 		=> value >= _min ? Visibility.Visible : Visibility.Collapsed;
 	}
 }

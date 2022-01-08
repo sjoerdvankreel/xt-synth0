@@ -93,11 +93,12 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static UIElement Divider(
-			Cell cell, Param param, int min)
+			Cell cell, Param rows, int row, Param param, int min)
 		{
 			var result = Element<TextBlock>(cell);
 			result.Text = " ";
-			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(param, min));
+			var binding = Bind.ShowRow(rows, row, param, min);
+			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 

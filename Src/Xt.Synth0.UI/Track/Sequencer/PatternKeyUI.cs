@@ -47,37 +47,37 @@ namespace Xt.Synth0.UI
 		internal static void Add(Grid grid, PatternKey model,
 			EditModel edit, int minKeys, int row, int col, Action interpolate)
 		{
-			grid.Add(MakeNote(model.Note, edit.Keys, minKeys, row, col));
-			grid.Add(MakeOct(model, edit.Keys, minKeys, row, col + 1));
-			grid.Add(Create.Divider(new(row, col + 2), edit.Keys, minKeys));
-			grid.Add(MakeAmp(model, edit.Keys, minKeys, row, col + 3, interpolate));
+			grid.Add(MakeNote(edit, model.Note, minKeys, row, col));
+			grid.Add(MakeOct(edit, model, minKeys, row, col + 1));
+			grid.Add(Create.Divider(new(row, col + 2), edit.Rows, row, edit.Keys, minKeys));
+			grid.Add(MakeAmp(edit, model, minKeys, row, col + 3, interpolate));
 		}
 
-		static UIElement MakeNote(Param param,
-			Param keys, int minKeys, int row, int col)
+		static UIElement MakeNote(EditModel edit, Param param, int minKeys, int row, int col)
 		{
 			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.ToolTip = string.Join("\n", param.Info.Name, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(param));
-			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
+			var binding = Bind.ShowRow(edit.Rows, row, edit.Keys, minKeys);
+			result.SetBinding(UIElement.VisibilityProperty, binding);
 			result.KeyDown += (s, e) => OnNoteKeyDown(param, e);
 			return result;
 		}
 
-		static UIElement MakeOct(PatternKey model,
-			Param keys, int minKeys, int row, int col)
+		static UIElement MakeOct(EditModel edit, PatternKey model, int minKeys, int row, int col)
 		{
 			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(model.Oct, e);
 			var binding = Bind.To(model.Note, model.Oct, new OctFormatter(model));
 			result.SetBinding(TextBlock.TextProperty, binding);
-			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
+			binding = Bind.ShowRow(edit.Rows, row, edit.Keys, minKeys);
+			result.SetBinding(UIElement.VisibilityProperty, binding);
 			result.ToolTip = string.Join("\n", model.Oct.Info.Name, PatternUI.EditHint);
 			return result;
 		}
 
-		static UIElement MakeAmp(PatternKey model,
-			Param keys, int minKeys, int row, int col, Action interpolate)
+		static UIElement MakeAmp(EditModel edit, PatternKey model,
+			int minKeys, int row, int col, Action interpolate)
 		{
 			var result = Create.PatternCell<AmpBox>(new(row, col));
 			result.Minimum = model.Amp.Info.Min;
@@ -88,7 +88,8 @@ namespace Xt.Synth0.UI
 			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
 			result.SetBinding(AmpBox.NoteProperty, Bind.To(model.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(model.Amp));
-			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(keys, minKeys));
+			var binding = Bind.ShowRow(edit.Rows, row, edit.Keys, minKeys);
+			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 	}
