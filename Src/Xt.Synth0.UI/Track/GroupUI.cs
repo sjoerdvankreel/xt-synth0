@@ -22,20 +22,22 @@ namespace Xt.Synth0.UI
 
 		internal static FrameworkElement MakeContent(AppModel app, INamedModel group)
 		{
-			var border = new Border();
-			border.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
-			border.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
-			border.Child = MakeGrid(app, group);
-			return border;
+			var result = new Border();
+			result.SnapsToDevicePixels = true;
+			result.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
+			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
+			result.Child = MakeGrid(app, group);
+			return result;
 		}
 
 		static Border MakeBorder(UIElement child, Cell cell)
 		{
-			var border = Create.Element<Border>(cell);
-			border.BorderThickness = new(BorderThickness, BorderThickness, 0, 0);
-			border.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
-			border.Child = child;
-			return border;
+			var result = Create.Element<Border>(cell);
+			result.SnapsToDevicePixels = true;
+			result.BorderThickness = new(BorderThickness, BorderThickness, 0, 0);
+			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
+			result.Child = child;
+			return result;
 		}
 
 		static void AddParams(Grid grid, AppModel model, 

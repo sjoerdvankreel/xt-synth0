@@ -9,7 +9,7 @@
     <Brush x:Key="Foreground2Key">Gray</Brush>
     <Brush x:Key="RowEnabledKey">Black</Brush>
     <Brush x:Key="RowDisabledKey">LightGray</Brush>
-    <Brush x:Key="BorderParamKey">LightGray</Brush>
+    <Brush x:Key="BorderParamKey">#EEEEEE</Brush>
     <Brush x:Key="BackgroundParamKey">White</Brush>
     <Brush x:Key="FocusBackgroundKey">LightGray</Brush>
 

@@ -9,7 +9,7 @@
     <Brush x:Key="ForegroundKey">#FF5733</Brush>
     <Brush x:Key="Foreground1Key">#FF8970</Brush>
     <Brush x:Key="Foreground2Key">#D62500</Brush>
-    <Brush x:Key="BorderParamKey">#FFFFFF</Brush>
+    <Brush x:Key="BorderParamKey">#343434</Brush>
     <Brush x:Key="RowDisabledKey">#606060</Brush>
     <Brush x:Key="RowEnabledKey">#FF8970</Brush>
 
