@@ -4,6 +4,7 @@ using System.Linq;
 namespace Xt.Synth0.Model
 {
 	unsafe delegate int* Address(void* parent);
+	public enum ParamControl { Toggle, List, Knob };
 	public enum ParamType { Toggle, List, Lin, Quad, Exp };
 
 	public sealed class ParamInfo
@@ -17,6 +18,16 @@ namespace Xt.Synth0.Model
 		public int Default { get; }
 		public string Name { get; }
 		public ParamType Type { get; }
+
+		public ParamControl Control => Type switch
+		{
+			ParamType.Exp => ParamControl.Knob,
+			ParamType.Lin => ParamControl.Knob,
+			ParamType.Quad => ParamControl.Knob,
+			ParamType.List => ParamControl.List,
+			ParamType.Toggle => ParamControl.Toggle,
+			_ => throw new InvalidOperationException()
+		};
 
 		public string Format(int value) => Type switch
 		{

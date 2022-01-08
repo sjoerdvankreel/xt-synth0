@@ -14,14 +14,13 @@ namespace Xt.Synth0.UI
 		{
 			var auto = model.Auto(param);
 			var result = new StringBuilder();
-			result.Append("Automation target: ");
-			result.Append(auto?.Index.ToString("X2") ?? "none");
-			if (param.Info.Type == ParamType.Toggle || param.Info.Type == ParamType.List)
-				return result.ToString();
-			result.AppendLine();
-			result.AppendLine($"Range: {param.Info.Min} .. {param.Info.Max}");
-			result.Append("Right-click to set exact value");
-			return result.ToString();
+			if (param.Info.Control == ParamControl.Knob)
+				result.AppendLine($"Range: {param.Info.Min} .. {param.Info.Max}");
+			if (auto != null)
+				result.AppendLine($"Automation target: {auto?.Index.ToString("X2")}");
+			if (param.Info.Control == ParamControl.Knob)
+				result.AppendLine("Right-click to set exact value");
+			return result.ToString(0, result.Length - Environment.NewLine.Length);
 		}
 
 		internal static DockPanel MakeEmpty(Cell cell)
