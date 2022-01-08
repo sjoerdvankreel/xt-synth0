@@ -89,10 +89,10 @@ namespace Xt.Synth0.UI
 				patterns[p] = pattern.Pattern;
 				highlighters.AddRange(pattern.Highlighters);
 			}
+			var dispatcher = Application.Current?.Dispatcher;
 			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.SetBinding(ContentControl.ContentProperty, BindSelector(model, patterns));
-			var dispatcher = Application.Current?.Dispatcher;
 			Action<string> handler = property => OnHighlighterPropertyChanged(model.Stream, highlighters, property);
 			model.Stream.PropertyChanged += (s, e) => dispatcher.BeginInvoke(handler, DispatcherPriority.Background, e.PropertyName);
 			return result;
