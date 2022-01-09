@@ -14,8 +14,7 @@ struct XTS_ALIGN Param { int min, max; int* value; };
 struct XTS_ALIGN GlobalModel { int bpm, amp, plot, pad__; };
 struct XTS_ALIGN UnitModel { 
   int type, wave, amp, oct, note, cent;
-  int basicAddLogParts;
-  int addType, addParts, addStep, addRolloff;
+  int addType, addParts, addMaxParts, addStep, addRolloff;
   int pad__;
 };
 

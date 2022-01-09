@@ -85,7 +85,7 @@ UnitDSP::GenerateNaive(UnitWave wave)
 float
 UnitDSP::GenerateBasicAdd(UnitModel const& unit, float freq, float rate)
 {
-  int partials = 1 << unit.basicAddLogParts;
+  int partials = 1 << unit.addMaxParts;
 	switch (static_cast<UnitWave>(unit.wave))
 	{
 	case UnitWave::Tri: return GenerateAdditive(freq, rate, AdditiveType::SinMinSin, partials, 2, 2.0f);
