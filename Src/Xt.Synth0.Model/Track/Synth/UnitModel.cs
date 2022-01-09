@@ -64,18 +64,23 @@ namespace Xt.Synth0.Model
 			Relevance.When((UnitModel m) => m.AddType, (AdditiveType t) => BasicAddTypes.Contains(t)));
 		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdditive,
 			Relevance.When((UnitModel m) => m.AddType, (AdditiveType t) => CustomAddTypes.Contains(t)));
+		static readonly IRelevance RelevancePwm = Relevance.Any(
+			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive),
+			Relevance.When((UnitModel m) => m.NaiveType, (NaiveType t) => t == Model.NaiveType.Pulse)),
+			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Additive),
+			Relevance.When((UnitModel m) => m.AddType, (AdditiveType t) => t == AdditiveType.Pulse)));
 
-		static readonly ParamInfo PwmInfo = ParamInfo.Lin(p => &((Native*)p)->pwm, "PWM", 0, 255, 0);
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);
 		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), 0, 255, 255);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
-		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
-		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", null, RelevanceNaive);
-		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AdditiveType>(p => &((Native*)p)->addType, "Type", null, RelevanceAdditive);
-		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Parts", 0, 12, 4, RelevanceAddBasic);
+		static readonly ParamInfo PwmInfo = ParamInfo.Lin(p => &((Native*)p)->pwm, "PWM", 0, 255, 0, null, RelevancePwm);
 		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", null, RelevanceNaive);
+		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Parts", 0, 12, 4, RelevanceAddBasic);
 		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AdditiveType>(p => &((Native*)p)->addType, "Type", null, RelevanceAdditive);
 		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, RelevanceAddCustom);
+		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
 	}
 }
