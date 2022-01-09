@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
 	public enum UnitWave { Saw, Pulse, Tri }
-	public enum UnitType { Off, Sin, Naive, BasicAdd, CustAdd }
+	public enum UnitType { Off, Sin, Naive, BasicAdd, Additive }
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 
 	public unsafe sealed class UnitModel : INamedModel
@@ -13,7 +13,7 @@ namespace Xt.Synth0.Model
 		internal struct Native
 		{
 			internal int type, wave, amp, oct, note, cent, basicAddLogParts;
-			internal int custAddParts, custAddStep, custAddNegate, custAddRolloff, pad__;
+			internal int addParts, addStep, addNegate, addRolloff, pad__;
 		}
 
 		public Param Oct { get; } = new(OctInfo);
@@ -22,10 +22,10 @@ namespace Xt.Synth0.Model
 		public Param Cent { get; } = new(CentInfo);
 		public Param Wave { get; } = new(WaveInfo);
 		public Param Type { get; } = new(TypeInfo);
-		public Param CustAddStep { get; } = new(CustAddStepInfo);
-		public Param CustAddParts { get; } = new(CustAddPartsInfo);
-		public Param CustAddNegate { get; } = new(CustAddNegateInfo);
-		public Param CustAddRolloff { get; } = new(CustAddRolloffInfo);
+		public Param AddStep { get; } = new(AddStepInfo);
+		public Param AddParts { get; } = new(AddPartsInfo);
+		public Param AddNegate { get; } = new(AddNegateInfo);
+		public Param AddRolloff { get; } = new(AddRolloffInfo);
 		public Param BasicAddLogParts { get; } = new(BasicAddLogPartsInfo);
 
 		readonly int _index;
@@ -42,10 +42,10 @@ namespace Xt.Synth0.Model
 			{ Note, 4 },
 			{ Cent, 5 },
 			{ BasicAddLogParts, 6 },
-			{ CustAddParts, 6 },
-			{ CustAddStep, 7 },
-			{ CustAddNegate, 8 },
-			{ CustAddRolloff, 9 },
+			{ AddParts, 6 },
+			{ AddStep, 7 },
+			{ AddNegate, 8 },
+			{ AddRolloff, 9 },
 		};
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
@@ -54,11 +54,11 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
-		static readonly ParamInfo CustAddStepInfo = ParamInfo.Lin(p => &((Native*)p)->custAddStep, "Step", 1, 16, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
-		static readonly ParamInfo CustAddNegateInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddNegate, "Negate", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
-		static readonly ParamInfo CustAddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->custAddParts, "Parts", 1, 32, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
+		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 16, 1, null, m => ((UnitModel)m).Type, (int)UnitType.Additive);
+		static readonly ParamInfo AddNegateInfo = ParamInfo.Toggle(p => &((Native*)p)->addNegate, "Negate", false, m => ((UnitModel)m).Type, (int)UnitType.Additive);
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, m => ((UnitModel)m).Type, (int)UnitType.Additive);
+		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, m => ((UnitModel)m).Type, (int)UnitType.Additive);
 		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddLogParts, "Parts", 0, 10, 4, m => ((UnitModel)m).Type, (int)UnitType.BasicAdd);
-		static readonly ParamInfo CustAddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->custAddRolloff, "Rolloff", 0, 255, 0, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
-		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.Naive, (int)UnitType.BasicAdd);
+		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.BasicAdd);
 	}
 }

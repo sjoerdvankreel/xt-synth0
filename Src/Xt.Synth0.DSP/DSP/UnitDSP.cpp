@@ -63,8 +63,8 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
 	case UnitType::Naive: return GenerateNaive(wave);
 	case UnitType::Sin: return std::sinf(_phasef * 2.0f * pi);
 	case UnitType::BasicAdd: return GenerateBasicAdd(unit, freq, rate);
-	case UnitType::CustAdd: return GenerateAdditive(freq, rate, 
-    unit.custAddParts, unit.custAddStep, unit.custAddRolloff / 128.0f, unit.custAddNegate);
+	case UnitType::Additive: return GenerateAdditive(freq, rate, 
+    unit.addParts, unit.addStep, unit.addRolloff / 128.0f, unit.addNegate);
 	default: assert(false); return 0.0f;
 	}
 }
