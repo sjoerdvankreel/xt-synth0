@@ -58,7 +58,7 @@ namespace Xt.Synth0.Model
 		static readonly Relevance RelevanceAddCustom = Relevance.When((UnitModel m) => m.AddType, 
 			AdditiveType.SinAddSin, AdditiveType.SinSubSin, AdditiveType.SinAddCos, AdditiveType.SinSubCos);
 		static readonly Relevance RelevanceNaive = Relevance.When((UnitModel m) => m.Type, UnitType.Naive);
-		static readonly Relevance RelevanceAdditive = Relevance.When((UnitModel m) => m.Type, UnitType.Naive);
+		static readonly Relevance RelevanceAdditive = Relevance.When((UnitModel m) => m.Type, UnitType.Additive);
 
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);
 		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), 0, 255, 255);
