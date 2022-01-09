@@ -6,10 +6,11 @@
 
     <Thickness x:Key="Margin">3</Thickness>
     <sys:Double x:Key="Opacity">0.75</sys:Double>
-    <Brush x:Key="Foreground2Key">Gray</Brush>
+    
     <Brush x:Key="RowEnabledKey">Black</Brush>
-    <Brush x:Key="RowDisabledKey">LightGray</Brush>
+    <Brush x:Key="Foreground2Key">Gray</Brush>
     <Brush x:Key="BorderParamKey">#EEEEEE</Brush>
+    <Brush x:Key="RowDisabledKey">LightGray</Brush>
     <Brush x:Key="BackgroundParamKey">White</Brush>
     <Brush x:Key="FocusBackgroundKey">LightGray</Brush>
 

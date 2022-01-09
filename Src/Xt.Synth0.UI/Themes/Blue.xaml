@@ -5,12 +5,10 @@
         <ResourceDictionary Source="Theme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Brush x:Key="ButtonKey">#1E90FF</Brush>
     <Brush x:Key="RowEnabledKey">#78BCFF</Brush>
     <Brush x:Key="ForegroundKey">#1E90FF</Brush>
     <Brush x:Key="Foreground1Key">#78BCFF</Brush>
     <Brush x:Key="Foreground2Key">#0056AB</Brush>
     <Brush x:Key="FocusBackgroundKey">#003972</Brush>
-    <Brush x:Key="BackgroundButtonKey">#78BCFF</Brush>
     
 </ResourceDictionary>

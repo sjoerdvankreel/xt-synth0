@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Xt.Synth0.UI">
 
     <Thickness x:Key="Margin">3</Thickness>
-
+    
     <Brush x:Key="BackgroundKey">#101010</Brush>
     <Brush x:Key="BorderParamKey">#343434</Brush>
     <Brush x:Key="RowDisabledKey">#606060</Brush>
@@ -115,7 +115,7 @@
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground2Key}"/>
-        <Setter Property="Background" Value="{DynamicResource BackgroundButtonKey}"/>
+        <Setter Property="Background" Value="{DynamicResource Foreground1Key}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -130,7 +130,7 @@
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="border" Property="BorderBrush" 
-                                Value="{DynamicResource ButtonKey}" />
+                                Value="{DynamicResource ForegroundKey}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
