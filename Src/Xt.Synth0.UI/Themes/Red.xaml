@@ -6,18 +6,18 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Brush x:Key="ButtonKey">#FF5733</Brush>
+    <Brush x:Key="RowEnabledKey">#FF8970</Brush>
     <Brush x:Key="ForegroundKey">#FF5733</Brush>
     <Brush x:Key="Foreground1Key">#FF8970</Brush>
     <Brush x:Key="Foreground2Key">#D62500</Brush>
-    <Brush x:Key="BorderParamKey">#343434</Brush>
-    <Brush x:Key="RowDisabledKey">#606060</Brush>
-    <Brush x:Key="RowEnabledKey">#FF8970</Brush>
+    <Brush x:Key="FocusBackgroundKey">#7A1500</Brush>
+    <Brush x:Key="BackgroundButtonKey">#FF8970</Brush>
 
     <Brush x:Key="BackgroundKey">#101010</Brush>
+    <Brush x:Key="BorderParamKey">#343434</Brush>
+    <Brush x:Key="RowDisabledKey">#606060</Brush>
     <Brush x:Key="BackgroundDarkKey">#000000</Brush>
     <Brush x:Key="BackgroundLightKey">#202020</Brush>
-    <Brush x:Key="BackgroundButtonKey">#FF8970</Brush>
     <Brush x:Key="BackgroundParamKey">#282828</Brush>
-    <Brush x:Key="FocusBackgroundKey">#7A1500</Brush>
 
 </ResourceDictionary>
