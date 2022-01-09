@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
@@ -51,15 +52,18 @@ namespace Xt.Synth0.Model
 			{ AddRolloff, 9 },
 		};
 
-		static Param[] RelevantAdditive(INamedModel m) => new[] { ((UnitModel)m).Type };
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+		static readonly AdditiveType[] BasicAddTypes = new[] { AdditiveType.Saw, AdditiveType.Pulse, AdditiveType.Triangle, AdditiveType.Impulse };
+		static readonly AdditiveType[] CustomAddTypes = new[] { AdditiveType.SinAddSin, AdditiveType.SinSubSin, AdditiveType.SinAddCos, AdditiveType.SinSubCos };
 
-		static readonly IRelevance RelevanceNaive = Relevance.When((UnitModel m) => m.Type, UnitType.Naive);
-		static readonly IRelevance RelevanceAdditive = Relevance.When((UnitModel m) => m.Type, UnitType.Additive);
-		static readonly IRelevance RelevanceAddBasic = Relevance.All(RelevanceAdditive, Relevance.When(
-			(UnitModel m) => m.AddType, AdditiveType.Saw, AdditiveType.Pulse, AdditiveType.Triangle, AdditiveType.Impulse));
-		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdditive, Relevance.When(
-			(UnitModel m) => m.AddType, AdditiveType.SinAddSin, AdditiveType.SinSubSin, AdditiveType.SinAddCos, AdditiveType.SinSubCos));
+		static readonly IRelevance RelevanceNaive = Relevance.When(
+			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive);
+		static readonly IRelevance RelevanceAdditive = Relevance.When(
+			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Additive);
+		static readonly IRelevance RelevanceAddBasic = Relevance.All(RelevanceAdditive,
+			Relevance.When((UnitModel m) => m.AddType, (AdditiveType t) => BasicAddTypes.Contains(t)));
+		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdditive,
+			Relevance.When((UnitModel m) => m.AddType, (AdditiveType t) => CustomAddTypes.Contains(t)));
 
 		static readonly ParamInfo PwmInfo = ParamInfo.Lin(p => &((Native*)p)->pwm, "PWM", 0, 255, 0);
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);

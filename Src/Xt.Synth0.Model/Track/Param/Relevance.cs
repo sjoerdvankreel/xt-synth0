@@ -34,16 +34,16 @@ namespace Xt.Synth0.Model
 
 	class Relevance : IRelevance
 	{
-		readonly int[] _values;
+		readonly Func<int, bool> _relevant;
 		readonly Func<ISubModel, Param> _param;
 
 		public Param[] Params(ISubModel model) => new[] { _param(model) };
-		public bool Relevant(ISubModel model, int[] values) => _values.Contains(values.Single());
-		internal Relevance(Func<ISubModel, Param> param, int[] values) => (_param, _values) = (param, values);
+		public bool Relevant(ISubModel model, int[] values) => _relevant(values.Single());
+		internal Relevance(Func<ISubModel, Param> param, Func<int, bool> relevant) => (_param, _relevant) = (param, relevant);
 
 		internal static IRelevance All(params IRelevance[] relevance) => new CombinedRelevance(relevance, true);
 		internal static IRelevance Any(params IRelevance[] relevance) => new CombinedRelevance(relevance, false);
-		internal static IRelevance When<TModel, TValue>(Func<TModel, Param> param, params TValue[] values)
-		where TModel : ISubModel => new Relevance(m => param((TModel)m), values.Select(v => Convert.ToInt32(v)).ToArray());
+		internal static IRelevance When<TModel, TValue>(Func<TModel, Param> param, Func<TValue, bool> relevant)
+		where TModel : ISubModel => new Relevance(m => param((TModel)m), v => relevant((TValue)(object)v));
 	}
 }
