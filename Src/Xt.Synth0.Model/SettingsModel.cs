@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace Xt.Synth0.Model
 {
 	public enum BitDepth { Depth16, Depth24, Depth32 }
-	public enum ThemeType { Generic, Red, Green, Blue }
+	public enum ThemeType { Generic, Red, Green, Blue, Yellow }
 	public enum SampleRate { Rate44100, Rate48000, Rate96000, Rate192000 }
 	public enum BufferSize { Size1, Size2, Size3, Size5, Size10, Size20, Size30, Size50, Size100 }
 

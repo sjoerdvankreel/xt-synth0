@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Theme.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <Brush x:Key="RowEnabledKey">#FFFF33</Brush>
+    <Brush x:Key="ForegroundKey">#FFCC00</Brush>
+    <Brush x:Key="Foreground1Key">#FFFF33</Brush>
+    <Brush x:Key="Foreground2Key">#E6B300</Brush>
+    <Brush x:Key="FocusBackgroundKey">#996600</Brush>
+
+</ResourceDictionary>
