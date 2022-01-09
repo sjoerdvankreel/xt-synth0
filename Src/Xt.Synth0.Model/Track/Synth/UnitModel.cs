@@ -3,8 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum UnitWave { Saw, Pulse, Triangle }
-	public enum UnitType { Off, Sin, Naive, Additive }
+	public enum UnitType { Off, Sine, Naive, Additive }
+	public enum NaiveType { Saw, Pulse, Triangle, Impulse }
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 	public enum AdditiveType { Saw, Pulse, Triangle, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
@@ -13,7 +13,7 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int type, wave, amp, oct, note, cent;
+			internal int type, naiveType, amp, oct, note, cent;
 			internal int addType, addParts, addMaxParts, addStep, addRolloff;
 			internal int pad__;
 		}
@@ -22,8 +22,8 @@ namespace Xt.Synth0.Model
 		public Param Amp { get; } = new(AmpInfo);
 		public Param Note { get; } = new(NoteInfo);
 		public Param Cent { get; } = new(CentInfo);
-		public Param Wave { get; } = new(WaveInfo);
 		public Param Type { get; } = new(TypeInfo);
+		public Param NaiveType { get; } = new(NaiveTypeInfo);
 		public Param AddType { get; } = new(AddTypeInfo);
 		public Param AddStep { get; } = new(AddStepInfo);
 		public Param AddParts { get; } = new(AddPartsInfo);
@@ -38,8 +38,8 @@ namespace Xt.Synth0.Model
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
 			{ Type, 0 },
-			{ Wave, 1 },
 			{ AddType, 1 },
+			{ NaiveType, 1 },
 			{ Amp, 2 },
 			{ Oct, 3 },
 			{ Note, 4 },
@@ -58,7 +58,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
-		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Naive });
+		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Naive });
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AdditiveType>(p => &((Native*)p)->addType, "Type", null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Additive });
 		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Parts", 0, 12, 4, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.Saw, (int)AdditiveType.Pulse, (int)AdditiveType.Triangle, (int)AdditiveType.Impulse });
 		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.SinSubSin, (int)AdditiveType.SinAddSin, (int)AdditiveType.SinSubCos, (int)AdditiveType.SinAddCos });

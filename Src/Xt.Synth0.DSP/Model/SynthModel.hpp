@@ -5,15 +5,15 @@
 
 namespace Xts {
 
-enum class UnitWave { Saw, Pulse, Tri };
-enum class UnitType { Off, Sin, Naive, Additive };
+enum class UnitType { Off, Sine, Naive, Additive };
+enum class NaiveType { Saw, Pulse, Triangle, Impulse };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AdditiveType { Saw, Pulse, Triangle, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
 struct XTS_ALIGN Param { int min, max; int* value; };
 struct XTS_ALIGN GlobalModel { int bpm, amp, plot, pad__; };
 struct XTS_ALIGN UnitModel { 
-  int type, wave, amp, oct, note, cent;
+  int type, naiveType, amp, oct, note, cent;
   int addType, addParts, addMaxParts, addStep, addRolloff;
   int pad__;
 };
