@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 using Xt.Synth0.Model;
 
@@ -55,7 +54,7 @@ namespace Xt.Synth0.UI
 
 		internal static MultiBinding Relevant(ISubModel sub, Param param)
 		{
-			var bindings = param.Info.Relevant(sub).Select(To);
+			var bindings = param.Info.RelevanceParams(sub).Select(To);
 			return To(new RelevantConverter(param), bindings.ToArray());
 		}
 
