@@ -33,11 +33,11 @@ namespace Xt.Synth0.Model
 		public const int FormatVersion = 1;
 
 		public const int UnitCount = 3;
-		public const int ParamCount = 36;
+		public const int ParamCount = 39;
 
 		internal const int ParamSize = 16;
 		internal const int UnitModelSize = 48;
-		internal const int SynthModelSize = 736;
+		internal const int SynthModelSize = 784;
 		internal const int GlobalModelSize = 16;
 
 		internal const int PatternFxSize = 8;

@@ -13,13 +13,13 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int type, naiveType, amp, oct, note, cent;
+			internal int type, naiveType, amp, oct, note, cent, pwm;
 			internal int addType, addParts, addMaxParts, addStep, addRolloff;
-			internal int pad__;
 		}
 
 		public Param Oct { get; } = new(OctInfo);
 		public Param Amp { get; } = new(AmpInfo);
+		public Param Pwm { get; } = new(PwmInfo);
 		public Param Note { get; } = new(NoteInfo);
 		public Param Cent { get; } = new(CentInfo);
 		public Param Type { get; } = new(TypeInfo);
@@ -44,10 +44,11 @@ namespace Xt.Synth0.Model
 			{ Oct, 3 },
 			{ Note, 4 },
 			{ Cent, 5 },
-			{ AddParts, 6 },
-			{ AddMaxParts, 6 },
-			{ AddStep, 7 },
-			{ AddRolloff, 8 },
+			{ Pwm, 6 },
+			{ AddParts, 7 },
+			{ AddMaxParts, 7 },
+			{ AddStep, 8 },
+			{ AddRolloff, 9 },
 		};
 
 		static Param[] RelevantAdditive(INamedModel m) => new[] { ((UnitModel)m).Type };
@@ -62,6 +63,7 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);
 		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), 0, 255, 255);
+		static readonly ParamInfo PwmInfo = ParamInfo.Lin(p => &((Native*)p)->pwm, nameof(Pwm), 0, 255, 255);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);

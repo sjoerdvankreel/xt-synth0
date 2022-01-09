@@ -13,9 +13,8 @@ enum class AdditiveType { Saw, Pulse, Triangle, Impulse, SinAddSin, SinAddCos, S
 struct XTS_ALIGN Param { int min, max; int* value; };
 struct XTS_ALIGN GlobalModel { int bpm, amp, plot, pad__; };
 struct XTS_ALIGN UnitModel { 
-  int type, naiveType, amp, oct, note, cent;
+  int type, naiveType, amp, oct, note, cent, pwm;
   int addType, addParts, addMaxParts, addStep, addRolloff;
-  int pad__;
 };
 
 struct XTS_ALIGN SynthModel
