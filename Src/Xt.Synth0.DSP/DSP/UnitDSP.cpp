@@ -132,7 +132,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool nega
 			static_cast<float>((mask & (1 << 2)) ? 1 : 0),
 			static_cast<float>((mask & (1 << 1)) ? 1 : 0),
 			static_cast<float>((mask & (1 << 0)) ? 1 : 0));
-  	__m256 rolloffs = _mm256_set1_ps(1.0f);//  quadRolloff? _mm256_mul_ps(ps, ps): ps;
+  	__m256 rolloffs = quadRolloff? _mm256_mul_ps(ps, ps): ps;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 psPhases = _mm256_mul_ps(phases, ps);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
