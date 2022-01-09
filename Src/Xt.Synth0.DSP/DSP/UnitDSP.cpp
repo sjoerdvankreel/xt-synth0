@@ -74,7 +74,7 @@ UnitDSP::GenerateNaive(UnitModel const& unit)
   switch(type)
   {
     case NaiveType::Saw: return _phasef * 2.0f - 1.0f;
-		case NaiveType::Pulse: return _phasef < pwm ? 1.0f : -1.0f;
+		case NaiveType::Pulse: return _phasef <= pwm ? 1.0f : -1.0f;
 		case NaiveType::Impulse: return _phasef == 0.0f ? 1.0f : 0.0f;
 		case NaiveType::Triangle: return (_phasef < 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f;
 		default: assert(false); return 0.0f;
