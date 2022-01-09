@@ -19,8 +19,8 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Lpb, Edit };
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
 
+		static readonly ParamInfo LpbInfo = ParamInfo.Lin(p => &((Native*)p)->lpb, "LPB", 1, TrackConstants.MaxLpb, 4);
 		static readonly ParamInfo FxsInfo = ParamInfo.Lin(p => &((Native*)p)->fxs, nameof(Fxs), 0, TrackConstants.MaxFxs, 1);
-		static readonly ParamInfo LpbInfo = ParamInfo.Lin(p => &((Native*)p)->lpb, nameof(Lpb), 1, TrackConstants.MaxLpb, 4);
 		static readonly ParamInfo KeysInfo = ParamInfo.Lin(p => &((Native*)p)->keys, nameof(Keys), 1, TrackConstants.MaxKeys, 2);
 		static readonly ParamInfo PatsInfo = ParamInfo.Lin(p => &((Native*)p)->pats, nameof(Pats), 1, TrackConstants.MaxPatterns, 1);
 		static readonly ParamInfo EditInfo = ParamInfo.Lin(p => &((Native*)p)->edit, nameof(Edit), 1, TrackConstants.MaxPatterns, 1);

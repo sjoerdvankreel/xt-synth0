@@ -61,9 +61,9 @@ namespace Xt.Synth0.Model
 		static readonly Relevance RelevanceNaive = Relevance.When((UnitModel m) => m.Type, UnitType.Naive);
 		static readonly Relevance RelevanceAdditive = Relevance.When((UnitModel m) => m.Type, UnitType.Additive);
 
+		static readonly ParamInfo PwmInfo = ParamInfo.Lin(p => &((Native*)p)->pwm, "PWM", 0, 255, 0);
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);
 		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), 0, 255, 255);
-		static readonly ParamInfo PwmInfo = ParamInfo.Lin(p => &((Native*)p)->pwm, nameof(Pwm), 0, 255, 255);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
