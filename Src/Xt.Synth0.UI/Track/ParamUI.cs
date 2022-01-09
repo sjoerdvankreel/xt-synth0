@@ -35,8 +35,8 @@ namespace Xt.Synth0.UI
 			AppModel app, ISubModel sub, Param param)
 		{
 			var result = MakeEmpty();
-			bool conditional = param.Info.RelevanceParams(sub) != null;
-			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevant(sub, param));
+			bool conditional = param.Info.Relevance != null;
+			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(sub, param));
 			result.Add(MakeControl(app, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
 			result.Add(Create.Label(param.Info.Name), Dock.Left);

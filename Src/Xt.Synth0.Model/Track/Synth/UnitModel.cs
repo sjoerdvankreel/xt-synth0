@@ -54,12 +54,12 @@ namespace Xt.Synth0.Model
 		static Param[] RelevantAdditive(INamedModel m) => new[] { ((UnitModel)m).Type };
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
-		static readonly Relevance RelevanceAddBasic = Relevance.When((UnitModel m) => m.AddType, 
-			AdditiveType.Saw, AdditiveType.Pulse, AdditiveType.Triangle, AdditiveType.Impulse);
-		static readonly Relevance RelevanceAddCustom = Relevance.When((UnitModel m) => m.AddType, 
-			AdditiveType.SinAddSin, AdditiveType.SinSubSin, AdditiveType.SinAddCos, AdditiveType.SinSubCos);
-		static readonly Relevance RelevanceNaive = Relevance.When((UnitModel m) => m.Type, UnitType.Naive);
-		static readonly Relevance RelevanceAdditive = Relevance.When((UnitModel m) => m.Type, UnitType.Additive);
+		static readonly IRelevance RelevanceNaive = Relevance.When((UnitModel m) => m.Type, UnitType.Naive);
+		static readonly IRelevance RelevanceAdditive = Relevance.When((UnitModel m) => m.Type, UnitType.Additive);
+		static readonly IRelevance RelevanceAddBasic = Relevance.All(RelevanceAdditive, Relevance.When(
+			(UnitModel m) => m.AddType, AdditiveType.Saw, AdditiveType.Pulse, AdditiveType.Triangle, AdditiveType.Impulse));
+		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdditive, Relevance.When(
+			(UnitModel m) => m.AddType, AdditiveType.SinAddSin, AdditiveType.SinSubSin, AdditiveType.SinAddCos, AdditiveType.SinSubCos));
 
 		static readonly ParamInfo PwmInfo = ParamInfo.Lin(p => &((Native*)p)->pwm, "PWM", 0, 255, 0);
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), Notes);
@@ -69,9 +69,9 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
 		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", null, RelevanceNaive);
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AdditiveType>(p => &((Native*)p)->addType, "Type", null, RelevanceAdditive);
-		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Parts", 0, 12, 4, RelevanceAdditive, RelevanceAddBasic);
-		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, RelevanceAdditive, RelevanceAddCustom);
-		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, RelevanceAdditive, RelevanceAddCustom);
-		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, RelevanceAdditive, RelevanceAddCustom);
+		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Parts", 0, 12, 4, RelevanceAddBasic);
+		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, RelevanceAddCustom);
 	}
 }

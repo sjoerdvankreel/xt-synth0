@@ -9,16 +9,16 @@ namespace Xt.Synth0.Model
 
 	public sealed class ParamInfo
 	{
+		int? _maxDisplayLength;
+		readonly Address _address;
+		readonly Func<int, string> _display;
+
 		public int Min { get; }
 		public int Max { get; }
 		public int Default { get; }
 		public string Name { get; }
 		public ParamType Type { get; }
-
-		int? _maxDisplayLength;
-		readonly Address _address;
-		readonly Relevance[] _relevance;
-		readonly Func<int, string> _display;
+		public IRelevance Relevance { get; }
 
 		public ParamControl Control => Type switch
 		{
@@ -40,40 +40,31 @@ namespace Xt.Synth0.Model
 			_ => throw new InvalidOperationException()
 		};
 
-		public bool IsRelevant(int[] values)
-		{
-			for (int i = 0; i < _relevance.Length; i++)
-				if (!_relevance[i].Values.Contains(values[i]))
-					return false;
-			return true;
-		}
-
 		public unsafe int* Address(void* native) => _address(native);
 		public int MaxDisplayLength => _maxDisplayLength ??= GetMaxDisplayLength();
-		public Param[] RelevanceParams(ISubModel sub) => _relevance?.Select(r => r.Param(sub)).ToArray();
 		int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 
 		ParamInfo(ParamType type, Address address, string name, int min, int max, 
-			int @default, Func<int, string> display, Relevance[] relevance)
-		=> (Type, _address, Name, Min, Max, Default, _display, _relevance) 
+			int @default, Func<int, string> display, IRelevance relevance)
+		=> (Type, _address, Name, Min, Max, Default, _display, Relevance) 
 		= (type, address, name, min, max, @default, display, relevance);
 
 		internal static ParamInfo List<TEnum>(Address address, string name,
-			string[] display = null, params Relevance[] relevance) where TEnum : struct, Enum
+			string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum
 		=> new ParamInfo(ParamType.List, address, name, 0, Enum.GetValues<TEnum>().Length - 1, 0,
 			display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x], relevance);
 
 		internal static ParamInfo Lin(Address address, string name, int min, int max, 
-			int @default, Func<int, string> display = null, params Relevance[] relevance)
+			int @default, Func<int, string> display = null, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, name, min, max, @default, display ?? (x => x.ToString()), relevance);
 
-		internal static ParamInfo Toggle(Address address, string name, bool @default, params Relevance[] relevance)
+		internal static ParamInfo Toggle(Address address, string name, bool @default, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Toggle, address, name, 0, 1, @default ? 1 : 0, null, relevance);
-		internal static ParamInfo Lin(Address address, string name, string[] display, params Relevance[] relevance)
+		internal static ParamInfo Lin(Address address, string name, string[] display, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, name, 0, display.Length - 1, 0, x => display[x], relevance);
-		internal static ParamInfo Exp(Address address, string name, int min, int max, int @default, params Relevance[] relevance)
+		internal static ParamInfo Exp(Address address, string name, int min, int max, int @default, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Exp, address, name, min, max, @default, null, relevance);
-		internal static ParamInfo Quad(Address address, string name, int min, int max, int @default, params Relevance[] relevance)
+		internal static ParamInfo Quad(Address address, string name, int min, int max, int @default, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Quad, address, name, min, max, @default, null, relevance);
 	}
 }
