@@ -223,7 +223,7 @@ namespace Xt.Synth0
 			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
 			e.Data = PlotBuffer;
 			e.Samples = PlotCycles * cycleLength;
-			for (int s = 0; s < e.Samples; s++)
+			for (int s = 0; s <= e.Samples; s++)
 				PlotBuffer[s] = Native.XtsUnitDSPNext(_unitDSP, new IntPtr(unit), rate);
 		}
 	}
