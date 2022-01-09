@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xt.Synth0.Model", "Xt.Synth0.Model\Xt.Synth0.Model.csproj", "{45844DC0-3F80-499B-A413-D60CCEC3F809}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xt.Synth0", "Xt.Synth0\Xt.Synth0.csproj", "{972CF362-631E-46E9-827B-7F55ADF4ABEB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B37DA984-648C-486E-9153-E6507C2C02E0} = {B37DA984-648C-486E-9153-E6507C2C02E0}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xt.Synth0.UI", "Xt.Synth0.UI\Xt.Synth0.UI.csproj", "{7845B671-12B4-437F-992B-9A69EF1D29FF}"
 EndProject

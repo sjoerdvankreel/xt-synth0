@@ -101,44 +101,32 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool nega
 	float result = 0.0;
   float pi = static_cast<float>(M_PI);
   __m256 ones = _mm256_set1_ps(1.0f);
+	__m256 zeros = _mm256_set1_ps(0.0f);
 	__m256 signs = _mm256_set1_ps(1.0f);
 	__m256 freqs = _mm256_set1_ps(freq);
 	__m256 limits = _mm256_set1_ps(0.0f);
 	__m256 results = _mm256_set1_ps(0.0f);
 	__m256 phases = _mm256_set1_ps(_phasef);
   __m256 twopis = _mm256_set1_ps(2.0f * pi);
+	__m256 maxPs = _mm256_set1_ps(parts * step);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   if(negate) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
-    __m256 ps = _mm256_set_ps(
-      static_cast<float>(p + 0 * step),
-			static_cast<float>(p + 1 * step),
-			static_cast<float>(p + 2 * step),
-			static_cast<float>(p + 3 * step),
-			static_cast<float>(p + 4 * step),
-			static_cast<float>(p + 5 * step),
-			static_cast<float>(p + 6 * step),
-			static_cast<float>(p + 7 * step));
-  	__m256 cmps = _mm256_cmp_ps(_mm256_mul_ps(ps, freqs), nyquists, _CMP_LT_OQ);
-    int mask = _mm256_movemask_ps(cmps);
-		if(!mask) break;
-    __m256 belowNyquists = _mm256_set_ps(
-		  static_cast<float>((mask & (1 << 7)) ? 1 : 0),
-			static_cast<float>((mask & (1 << 6)) ? 1 : 0),
-			static_cast<float>((mask & (1 << 5)) ? 1 : 0),
-			static_cast<float>((mask & (1 << 4)) ? 1 : 0),
-			static_cast<float>((mask & (1 << 3)) ? 1 : 0),
-			static_cast<float>((mask & (1 << 2)) ? 1 : 0),
-			static_cast<float>((mask & (1 << 1)) ? 1 : 0),
-			static_cast<float>((mask & (1 << 0)) ? 1 : 0));
-  	__m256 rolloffs = quadRolloff? _mm256_mul_ps(ps, ps): ps;
+    if(p * freq >= rate / 2.0f) break;
+    __m256 allPs = _mm256_set_ps(
+      p + 0.0f * step, p + 1.0f * step, p + 2.0f * step, p + 3.0f * step,
+			p + 4.0f * step, p + 5.0f * step,	p + 6.0f * step, p + 7.0f * step);
+		__m256 belowMax = _mm256_cmp_ps(allPs, maxPs, _CMP_LE_OQ);
+		__m256 belowNyquists = _mm256_cmp_ps(_mm256_mul_ps(allPs, freqs), nyquists, _CMP_LT_OQ);
+    __m256 wantedPs = _mm256_blendv_ps(zeros, _mm256_blendv_ps(zeros, ones, belowMax), belowNyquists);
+  	__m256 rolloffs = _mm256_set1_ps(1);// quadRolloff? _mm256_mul_ps(ps, ps): ps;
     __m256 amps = _mm256_div_ps(ones, rolloffs);
-    __m256 psPhases = _mm256_mul_ps(phases, ps);
+    __m256 psPhases = _mm256_mul_ps(phases, allPs);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
     __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
-		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, belowNyquists));
-		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, belowNyquists));
+		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, wantedPs));
+		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, wantedPs));
 	}
   for(int i = 0; i < parts && i < 8; i++)
   {

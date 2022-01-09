@@ -56,7 +56,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
 		static readonly ParamInfo CustAddStepInfo = ParamInfo.Lin(p => &((Native*)p)->custAddStep, "Step", 1, 16, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo CustAddNegateInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddNegate, "Negate", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
-		static readonly ParamInfo CustAddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->custAddParts, "Parts", 1, 255, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
+		static readonly ParamInfo CustAddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->custAddParts, "Parts", 1, 32, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddLogParts, "Parts", 0, 10, 4, m => ((UnitModel)m).Type, (int)UnitType.BasicAdd);
 		static readonly ParamInfo CustAddQuadRolloffInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddQuadRolloff, "Quad rolloff", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.Naive, (int)UnitType.BasicAdd);
