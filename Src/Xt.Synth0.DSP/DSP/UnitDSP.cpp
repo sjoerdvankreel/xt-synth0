@@ -69,7 +69,7 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
 float 
 UnitDSP::GenerateNaive(UnitModel const& unit)
 {
-  float pwm = unit.pwm / 255.0f;
+  float pwm = unit.pwm / 256.0f;
 	auto type = static_cast<NaiveType>(unit.naiveType);
   switch(type)
   {
