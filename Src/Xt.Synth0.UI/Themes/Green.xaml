@@ -7,17 +7,10 @@
 
     <Brush x:Key="ButtonKey">#00A040</Brush>
     <Brush x:Key="RowEnabledKey">#00A040</Brush>
-    <Brush x:Key="ForegroundKey">#00e65b</Brush>
-    <Brush x:Key="Foreground1Key">#00A040</Brush>
+    <Brush x:Key="ForegroundKey">#00A040</Brush>
+    <Brush x:Key="Foreground1Key">#00e65b</Brush>
     <Brush x:Key="Foreground2Key">#006026</Brush>
     <Brush x:Key="FocusBackgroundKey">#00451B</Brush>
     <Brush x:Key="BackgroundButtonKey">#00e65b</Brush>
-
-    <Brush x:Key="BackgroundKey">#101010</Brush>
-    <Brush x:Key="BorderParamKey">#2E2E2E</Brush>
-    <Brush x:Key="RowDisabledKey">#606060</Brush>
-    <Brush x:Key="BackgroundDarkKey">#000000</Brush>
-    <Brush x:Key="BackgroundLightKey">#303030</Brush>
-    <Brush x:Key="BackgroundParamKey">#202020</Brush>
 
 </ResourceDictionary>

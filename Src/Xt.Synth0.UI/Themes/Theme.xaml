@@ -4,18 +4,25 @@
 
     <Thickness x:Key="Margin">3</Thickness>
 
+    <Brush x:Key="BackgroundKey">#101010</Brush>
+    <Brush x:Key="BorderParamKey">#343434</Brush>
+    <Brush x:Key="RowDisabledKey">#606060</Brush>
+    <Brush x:Key="BackgroundDarkKey">#000000</Brush>
+    <Brush x:Key="BackgroundLightKey">#202020</Brush>
+    <Brush x:Key="BackgroundParamKey">#282828</Brush>
+
     <Style TargetType="{x:Type DockPanel}">
-        <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkKey}"/>
     </Style>
 
     <Style TargetType="{x:Type Window}">
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{DynamicResource Foreground1Key}"/>
-        <Setter Property="Background" Value="{DynamicResource BackgroundDarkKey}"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkKey}"/>
     </Style>
 
     <Style TargetType="{x:Type ToolTip}">
-        <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundKey}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
     </Style>
@@ -23,7 +30,7 @@
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="RotaryStroke" Value="{DynamicResource ForegroundKey}"/>
-        <Setter Property="RotaryFill" Value="{DynamicResource BackgroundLightKey}"/>
+        <Setter Property="RotaryFill" Value="{StaticResource BackgroundLightKey}"/>
         <Setter Property="MarkerFill" Value="{DynamicResource Foreground1Key}"/>
         <Setter Property="MarkerStroke" Value="{DynamicResource Foreground1Key}"/>
     </Style>
@@ -65,11 +72,11 @@
                         </Grid.RowDefinitions>
                         <Border Grid.Row="0" BorderThickness="1" CornerRadius="3,3,0,0"
                             BorderBrush="{DynamicResource ForegroundKey}"
-                            Background="{DynamicResource BackgroundLightKey}">
+                            Background="{StaticResource BackgroundLightKey}">
                             <ContentPresenter Margin="{StaticResource Margin}" ContentSource="Header"/>
                         </Border>
                         <Border Grid.Row="1" BorderThickness="1,0,1,1" CornerRadius="0,0,3,3" 
-                            Background="{DynamicResource BackgroundKey}" 
+                            Background="{StaticResource BackgroundKey}" 
                             BorderBrush="{DynamicResource ForegroundKey}">
                             <ContentPresenter Margin="{StaticResource Margin}" />
                         </Border>
@@ -89,7 +96,7 @@
                     <Grid>
                         <Border Width="13" Height="13" BorderThickness="1"
                                  BorderBrush="{DynamicResource ForegroundKey}"
-                                 Background="{DynamicResource BackgroundDarkKey}">
+                                 Background="{StaticResource BackgroundDarkKey}">
                             <Path x:Name="CheckMark" Width="7" Height="7" StrokeThickness="2"
                                   SnapsToDevicePixels="False" Data="M 0 0 L 7 7 M 0 7 L 7 0" 
                                   Stroke="{DynamicResource Foreground1Key}" />
@@ -136,7 +143,7 @@
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Right"/>
-        <Setter Property="Background" Value="{DynamicResource BackgroundKey}"/>
+        <Setter Property="Background" Value="{StaticResource BackgroundKey}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground1Key}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>
         <Setter Property="Template">
@@ -209,7 +216,7 @@
                                         </Grid.ColumnDefinitions>
                                         <Border Grid.ColumnSpan="2" BorderThickness="1"
                                             BorderBrush="{DynamicResource ForegroundKey}" 
-                                            Background="{DynamicResource BackgroundKey}" />
+                                            Background="{StaticResource BackgroundKey}" />
                                         <Path Grid.Column="1" VerticalAlignment="Center"
                                             Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
                                             HorizontalAlignment="Center" Fill="{DynamicResource ForegroundKey}" />
@@ -226,7 +233,7 @@
                                 MinWidth="{TemplateBinding FrameworkElement.ActualWidth}"
                                 MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}">
                                 <Border Margin="0, 1, 0, 0" BorderThickness="1" 
-                                    Background="{DynamicResource BackgroundDarkKey}"
+                                    Background="{StaticResource BackgroundDarkKey}"
                                     BorderBrush="{DynamicResource ForegroundKey}"/>
                                 <ScrollViewer Margin="4" SnapsToDevicePixels="True">
                                     <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
