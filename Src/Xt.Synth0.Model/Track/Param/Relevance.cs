@@ -28,7 +28,7 @@ namespace Xt.Synth0.Model
 				if (!relevant && _all) return false;
 				p += subValues.Length;
 			}
-			return true;
+			return _all;
 		}
 	}
 
