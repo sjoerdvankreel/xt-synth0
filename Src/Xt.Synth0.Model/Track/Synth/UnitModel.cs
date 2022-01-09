@@ -13,7 +13,7 @@ namespace Xt.Synth0.Model
 		internal struct Native
 		{
 			internal int type, wave, amp, oct, note, cent, basicAddLogParts;
-			internal int custAddParts, custAddStep, custAddNegate, custAddQuadRolloff, pad__;
+			internal int custAddParts, custAddStep, custAddNegate, custAddRolloff, pad__;
 		}
 
 		public Param Oct { get; } = new(OctInfo);
@@ -25,14 +25,14 @@ namespace Xt.Synth0.Model
 		public Param CustAddStep { get; } = new(CustAddStepInfo);
 		public Param CustAddParts { get; } = new(CustAddPartsInfo);
 		public Param CustAddNegate { get; } = new(CustAddNegateInfo);
+		public Param CustAddRolloff { get; } = new(CustAddRolloffInfo);
 		public Param BasicAddLogParts { get; } = new(BasicAddLogPartsInfo);
-		public Param CustAddQuadRolloff { get; } = new(CustAddQuadRolloffInfo);
 
 		readonly int _index;
 		public string Name => $"Unit {_index + 1}";
 		internal UnitModel(int index) => _index = index;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitModelSize];
-		
+
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
 			{ Type, 0 },
@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
 			{ CustAddParts, 6 },
 			{ CustAddStep, 7 },
 			{ CustAddNegate, 8 },
-			{ CustAddQuadRolloff, 9 },
+			{ CustAddRolloff, 9 },
 		};
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
@@ -58,7 +58,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo CustAddNegateInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddNegate, "Negate", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo CustAddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->custAddParts, "Parts", 1, 32, 1, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddLogParts, "Parts", 0, 10, 4, m => ((UnitModel)m).Type, (int)UnitType.BasicAdd);
-		static readonly ParamInfo CustAddQuadRolloffInfo = ParamInfo.Toggle(p => &((Native*)p)->custAddQuadRolloff, "Quad rolloff", false, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
+		static readonly ParamInfo CustAddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->custAddRolloff, "Rolloff", 0, 255, 0, null, m => ((UnitModel)m).Type, (int)UnitType.CustAdd);
 		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.Naive, (int)UnitType.BasicAdd);
 	}
 }

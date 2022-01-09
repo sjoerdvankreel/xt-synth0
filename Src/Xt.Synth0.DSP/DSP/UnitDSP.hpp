@@ -21,7 +21,7 @@ private:
   float GenerateNaive(UnitWave wave);
   float Generate(UnitModel const& unit, float freq, float rate);
   float GenerateBasicAdd(UnitModel const& unit, float freq, float rate);
-  float GenerateAdditive(float freq, float rate, int parts, int step, bool negate, bool quadRolloff);
+  float GenerateAdditive(float freq, float rate, int parts, int step, float logRolloff, bool negate);
 };
 
 } // namespace Xts

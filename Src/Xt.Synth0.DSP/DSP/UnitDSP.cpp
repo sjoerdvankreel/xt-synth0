@@ -64,7 +64,7 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
 	case UnitType::Sin: return std::sinf(_phasef * 2.0f * pi);
 	case UnitType::BasicAdd: return GenerateBasicAdd(unit, freq, rate);
 	case UnitType::CustAdd: return GenerateAdditive(freq, rate, 
-    unit.custAddParts, unit.custAddStep, unit.custAddNegate, unit.custAddQuadRolloff);
+    unit.custAddParts, unit.custAddStep, unit.custAddRolloff / 128.0f, unit.custAddNegate);
 	default: assert(false); return 0.0f;
 	}
 }
@@ -87,15 +87,15 @@ UnitDSP::GenerateBasicAdd(UnitModel const& unit, float freq, float rate)
   int partials = 1 << unit.basicAddLogParts;
 	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, partials, 2, true, true);
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, partials, 1, false, false);
-	case UnitWave::Pulse: return GenerateAdditive(freq, rate, partials, 2, false, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, partials, 2, 2.0f, true);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, partials, 1, 1.0f, false);
+	case UnitWave::Pulse: return GenerateAdditive(freq, rate, partials, 2, 1.0f, false);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool negate, bool quadRolloff)
+UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, float logRolloff, bool negate)
 {
 	float limit = 0.0;
 	float result = 0.0;
@@ -110,6 +110,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool nega
   __m256 twopis = _mm256_set1_ps(2.0f * pi);
 	__m256 maxPs = _mm256_set1_ps(parts * step);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
+  __m256 logRolloffs = _mm256_set1_ps(logRolloff);
   if(negate) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
@@ -120,7 +121,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, bool nega
 		__m256 belowMax = _mm256_cmp_ps(allPs, maxPs, _CMP_LE_OQ);
 		__m256 belowNyquists = _mm256_cmp_ps(_mm256_mul_ps(allPs, freqs), nyquists, _CMP_LT_OQ);
     __m256 wantedPs = _mm256_blendv_ps(zeros, _mm256_blendv_ps(zeros, ones, belowMax), belowNyquists);
-  	__m256 rolloffs = _mm256_set1_ps(1);// quadRolloff? _mm256_mul_ps(ps, ps): ps;
+  	__m256 rolloffs = _mm256_pow_ps(allPs, logRolloffs);
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
