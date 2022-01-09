@@ -7,9 +7,9 @@
 
     <Brush x:Key="ButtonKey">#00A040</Brush>
     <Brush x:Key="RowEnabledKey">#00A040</Brush>
-    <Brush x:Key="ForegroundKey">#00A040</Brush>
-    <Brush x:Key="Foreground1Key">#00e65b</Brush>
-    <Brush x:Key="Foreground2Key">#006026</Brush>
+    <Brush x:Key="ForegroundKey">#00C34D</Brush>
+    <Brush x:Key="Foreground1Key">#00e259</Brush>
+    <Brush x:Key="Foreground2Key">#00af45</Brush>
     <Brush x:Key="FocusBackgroundKey">#00451B</Brush>
     <Brush x:Key="BackgroundButtonKey">#00e65b</Brush>
 
