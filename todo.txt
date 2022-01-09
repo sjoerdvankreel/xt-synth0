@@ -4,3 +4,4 @@ dont plot too often
 dont trigger gc from the callback - dispatch all to ui
 mixed theme
 hard sync
+plot anything
