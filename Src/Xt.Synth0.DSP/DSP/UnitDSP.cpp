@@ -58,13 +58,14 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
 	auto pi = static_cast<float>(M_PI);
 	auto type = static_cast<UnitType>(unit.type);
   auto wave = static_cast<UnitWave>(unit.wave);
+  auto addType = static_cast<AdditiveType>(unit.addType);
   switch(type)
   {
 	case UnitType::Naive: return GenerateNaive(wave);
 	case UnitType::Sin: return std::sinf(_phasef * 2.0f * pi);
 	case UnitType::BasicAdd: return GenerateBasicAdd(unit, freq, rate);
-	case UnitType::Additive: return GenerateAdditive(freq, rate, 
-    unit.addParts, unit.addStep, unit.addRolloff / 128.0f, unit.addNegate);
+	case UnitType::Additive: return GenerateAdditive(
+    freq, rate, addType, unit.addParts, unit.addStep, unit.addRolloff / 128.0f);
 	default: assert(false); return 0.0f;
 	}
 }
@@ -87,19 +88,24 @@ UnitDSP::GenerateBasicAdd(UnitModel const& unit, float freq, float rate)
   int partials = 1 << unit.basicAddLogParts;
 	switch (static_cast<UnitWave>(unit.wave))
 	{
-	case UnitWave::Tri: return GenerateAdditive(freq, rate, partials, 2, 2.0f, true);
-	case UnitWave::Saw: return GenerateAdditive(freq, rate, partials, 1, 1.0f, false);
-	case UnitWave::Pulse: return GenerateAdditive(freq, rate, partials, 2, 1.0f, false);
+	case UnitWave::Tri: return GenerateAdditive(freq, rate, AdditiveType::SinMinSin, partials, 2, 2.0f);
+	case UnitWave::Saw: return GenerateAdditive(freq, rate, AdditiveType::SinPlusSin, partials, 1, 1.0f);
+	case UnitWave::Pulse: return GenerateAdditive(freq, rate, AdditiveType::SinPlusSin, partials, 2, 1.0f);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, float logRolloff, bool negate)
+UnitDSP::GenerateAdditive(float freq, float rate, AdditiveType type, int parts, int step, float logRolloff)
 {
+	__m256 cosines;
 	float limit = 0.0;
 	float result = 0.0;
-  float pi = static_cast<float>(M_PI);
+	const int selector = 0b01010101;
+  bool plusMin = type == AdditiveType::SinMinSin || type == AdditiveType::SinMinCos;
+  bool sinCos = type == AdditiveType::SinPlusCos || type == AdditiveType::SinMinCos;
+
+	float pi = static_cast<float>(M_PI);
   __m256 ones = _mm256_set1_ps(1.0f);
 	__m256 zeros = _mm256_set1_ps(0.0f);
 	__m256 signs = _mm256_set1_ps(1.0f);
@@ -111,7 +117,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, float log
 	__m256 maxPs = _mm256_set1_ps(parts * step);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   __m256 logRolloffs = _mm256_set1_ps(logRolloff);
-  if(negate) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
+  if(plusMin) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
     if(p * freq >= rate / 2.0f) break;
@@ -124,8 +130,9 @@ UnitDSP::GenerateAdditive(float freq, float rate, int parts, int step, float log
   	__m256 rolloffs = _mm256_pow_ps(allPs, logRolloffs);
     __m256 amps = _mm256_div_ps(ones, rolloffs);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
-    __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
-    __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
+    __m256 sines = _mm256_sincos_ps(&cosines, _mm256_mul_ps(psPhases, twopis));
+    __m256 waves = !sinCos? sines: _mm256_blend_ps(sines, cosines, selector);
+    __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(waves, amps), signs);
 		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, wantedPs));
 		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, wantedPs));
 	}
