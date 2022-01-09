@@ -86,32 +86,32 @@ UnitDSP::GenerateAdditive(UnitModel const& unit, float freq, float rate)
   int step;
 	int parts;
 	bool sinCos;
-	bool plusMin;
+	bool addSub;
 	float logRolloff;
   auto type = static_cast<AdditiveType>(unit.addType);
   switch(type)
   {
-  case AdditiveType::Saw: step = 1; sinCos = false, plusMin = false, logRolloff = 1.0f; parts = 1 << unit.addMaxParts; break;
-	case AdditiveType::Pulse:	step = 2;	sinCos = false, plusMin = false, logRolloff = 1.0f; parts = 1 << unit.addMaxParts; break;
-	case AdditiveType::Impulse:	step = 1; sinCos = false, plusMin = false, logRolloff = 0.0f; parts = 1 << unit.addMaxParts; break;
-	case AdditiveType::Triangle: step = 2; sinCos = false, plusMin = true, logRolloff = 2.0f;	parts = 1 << unit.addMaxParts;	break;
-	case AdditiveType::SinMinSin:
-	case AdditiveType::SinMinCos:
-	case AdditiveType::SinPlusSin:
-	case AdditiveType::SinPlusCos: 
+  case AdditiveType::Saw: step = 1; sinCos = false, addSub = false, logRolloff = 1.0f; parts = 1 << unit.addMaxParts; break;
+	case AdditiveType::Pulse:	step = 2;	sinCos = false, addSub = false, logRolloff = 1.0f; parts = 1 << unit.addMaxParts; break;
+	case AdditiveType::Impulse:	step = 1; sinCos = false, addSub = false, logRolloff = 0.0f; parts = 1 << unit.addMaxParts; break;
+	case AdditiveType::Triangle: step = 2; sinCos = false, addSub = true, logRolloff = 2.0f;	parts = 1 << unit.addMaxParts;	break;
+	case AdditiveType::SinAddSin:
+	case AdditiveType::SinAddCos:
+	case AdditiveType::SinSubSin:
+	case AdditiveType::SinSubCos: 
     step = unit.addStep;
 		parts = unit.addParts;
     logRolloff = unit.addRolloff / 128.0f;
-    plusMin = type == AdditiveType::SinMinSin || type == AdditiveType::SinMinCos;
-    sinCos = type == AdditiveType::SinPlusCos || type == AdditiveType::SinMinCos;
+		sinCos = type == AdditiveType::SinAddCos || type == AdditiveType::SinSubCos;
+		addSub = type == AdditiveType::SinSubSin || type == AdditiveType::SinSubCos;
     break;
   default: assert(false); break;
 	}
-  return GenerateAdditive(freq, rate, plusMin, sinCos, parts, step, logRolloff);
+  return GenerateAdditive(freq, rate, addSub, sinCos, parts, step, logRolloff);
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, bool plusMin, bool sinCos, int parts, int step, float logRolloff)
+UnitDSP::GenerateAdditive(float freq, float rate, bool addSub, bool sinCos, int parts, int step, float logRolloff)
 {
 	__m256 cosines;
 	float limit = 0.0;
@@ -130,7 +130,7 @@ UnitDSP::GenerateAdditive(float freq, float rate, bool plusMin, bool sinCos, int
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   __m256 logRolloffs = _mm256_set1_ps(logRolloff);
 	__m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
-	if(plusMin) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
+	if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
     if(p * freq >= rate / 2.0f) break;

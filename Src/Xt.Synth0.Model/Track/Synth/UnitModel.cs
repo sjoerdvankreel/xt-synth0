@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 	public enum UnitWave { Saw, Pulse, Triangle }
 	public enum UnitType { Off, Sin, Naive, Additive }
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
-	public enum AdditiveType { Saw, Pulse, Triangle, Impulse, SinPlusSin, SinPlusCos, SinMinSin, SinMinCos };
+	public enum AdditiveType { Saw, Pulse, Triangle, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
 	public unsafe sealed class UnitModel : INamedModel
 	{
@@ -61,8 +61,8 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Naive });
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AdditiveType>(p => &((Native*)p)->addType, "Type", null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Additive });
 		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Parts", 0, 12, 4, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.Saw, (int)AdditiveType.Pulse, (int)AdditiveType.Triangle, (int)AdditiveType.Impulse });
-		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.SinMinSin, (int)AdditiveType.SinPlusSin, (int)AdditiveType.SinMinCos, (int)AdditiveType.SinPlusCos });
-		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.SinMinSin, (int)AdditiveType.SinPlusSin, (int)AdditiveType.SinMinCos, (int)AdditiveType.SinPlusCos });
-		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.SinMinSin, (int)AdditiveType.SinPlusSin, (int)AdditiveType.SinMinCos, (int)AdditiveType.SinPlusCos });
+		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.SinSubSin, (int)AdditiveType.SinAddSin, (int)AdditiveType.SinSubCos, (int)AdditiveType.SinAddCos });
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.SinSubSin, (int)AdditiveType.SinAddSin, (int)AdditiveType.SinSubCos, (int)AdditiveType.SinAddCos });
+		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, m => new[] { ((UnitModel)m).Type, ((UnitModel)m).AddType }, new[] { (int)UnitType.Additive }, new[] { (int)AdditiveType.SinSubSin, (int)AdditiveType.SinAddSin, (int)AdditiveType.SinSubCos, (int)AdditiveType.SinAddCos });
 	}
 }
