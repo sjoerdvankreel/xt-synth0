@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Xt.Synth0
 {
-	internal class DiskStream : IAudioStream
+	class DiskStream : IAudioStream
 	{
 		bool _running;
 		bool _disposed;

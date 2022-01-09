@@ -2,3 +2,4 @@ polyblep
 pulse width
 dont plot too often
 dont trigger gc from the callback - dispatch all to ui
+additive type impulse, sqrtmax = 255

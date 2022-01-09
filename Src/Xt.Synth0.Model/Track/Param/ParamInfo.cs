@@ -17,9 +17,9 @@ namespace Xt.Synth0.Model
 
 		int? _maxDisplayLength;
 		readonly Address _address;
-		readonly int[] _relevantWhen;
+		readonly int[][] _relevantWhen;
 		readonly Func<int, string> _display;
-		readonly Func<ISubModel, Param> _relevant;
+		readonly Func<ISubModel, Param[]> _relevant;
 
 		public ParamControl Control => Type switch
 		{
@@ -41,39 +41,46 @@ namespace Xt.Synth0.Model
 			_ => throw new InvalidOperationException()
 		};
 
+		public bool IsRelevant(int[] relevantValues)
+		{
+			for (int i = 0; i < _relevantWhen.Length; i++)
+				if (!_relevantWhen[i].Contains(relevantValues[i]))
+					return false;
+			return true;
+		}
+
 		public unsafe int* Address(void* native) => _address(native);
-		public Param Relevant(ISubModel sub) => _relevant?.Invoke(sub);
+		public Param[] Relevant(ISubModel sub) => _relevant?.Invoke(sub);
 		public int MaxDisplayLength => _maxDisplayLength ??= GetMaxDisplayLength();
-		public bool IsRelevant(int relevantValue) => _relevantWhen.Contains(relevantValue);
 		int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 
 		ParamInfo(ParamType type, Address address, string name, int min, int max, int @default,
-			Func<int, string> display, Func<ISubModel, Param> relevant, int[] relevantWhen)
+			Func<int, string> display, Func<ISubModel, Param[]> relevant, int[][] relevantWhen)
 		=> (Type, _address, Name, Min, Max, Default, _display, _relevant, _relevantWhen)
 		= (type, address, name, min, max, @default, display, relevant, relevantWhen);
 
 		internal static ParamInfo Lin(Address address, string name, string[] display,
-			Func<ISubModel, Param> relevant = null, params int[] relevantWhen)
+			Func<ISubModel, Param[]> relevant = null, params int[][] relevantWhen)
 		=> new ParamInfo(ParamType.Lin, address, name, 0, display.Length - 1, 0, x => display[x], relevant, relevantWhen);
 
 		internal static ParamInfo Toggle(Address address, string name, bool @default,
-			Func<ISubModel, Param> relevant = null, params int[] relevantWhen)
+			Func<ISubModel, Param[]> relevant = null, params int[][] relevantWhen)
 		=> new ParamInfo(ParamType.Toggle, address, name, 0, 1, @default ? 1 : 0, null, relevant, relevantWhen);
 
 		internal static ParamInfo Exp(Address address, string name, int min, int max,
-			int @default, Func<ISubModel, Param> relevant = null, params int[] relevantWhen)
+			int @default, Func<ISubModel, Param[]> relevant = null, params int[][] relevantWhen)
 		=> new ParamInfo(ParamType.Exp, address, name, min, max, @default, null, relevant, relevantWhen);
 
 		internal static ParamInfo Quad(Address address, string name, int min, int max,
-			int @default, Func<ISubModel, Param> relevant = null, params int[] relevantWhen)
+			int @default, Func<ISubModel, Param[]> relevant = null, params int[][] relevantWhen)
 		=> new ParamInfo(ParamType.Quad, address, name, min, max, @default, null, relevant, relevantWhen);
 
 		internal static ParamInfo Lin(Address address, string name, int min, int max,
-			int @default, Func<int, string> display = null, Func<ISubModel, Param> relevant = null, params int[] relevantWhen)
+			int @default, Func<int, string> display = null, Func<ISubModel, Param[]> relevant = null, params int[][] relevantWhen)
 		=> new ParamInfo(ParamType.Lin, address, name, min, max, @default, display ?? (x => x.ToString()), relevant, relevantWhen);
 
 		internal static ParamInfo List<TEnum>(Address address, string name, string[] display = null,
-			Func<ISubModel, Param> relevant = null, params int[] relevantWhen) where TEnum : struct, Enum
+			Func<ISubModel, Param[]> relevant = null, params int[][] relevantWhen) where TEnum : struct, Enum
 		=> new ParamInfo(ParamType.List, address, name, 0, Enum.GetValues<TEnum>().Length - 1, 0,
 			display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x], relevant, relevantWhen);
 	}

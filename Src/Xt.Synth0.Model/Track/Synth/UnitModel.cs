@@ -57,11 +57,11 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type));
 		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), -50, 49, 0);
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), TrackConstants.MinOct, TrackConstants.MaxOct, 4);
-		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, m => ((UnitModel)m).Type, (int)UnitType.Additive);
-		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, m => ((UnitModel)m).Type, (int)UnitType.Additive);
-		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AdditiveType>(p => &((Native*)p)->addType, "Type", null, m => ((UnitModel)m).Type, (int)UnitType.Additive);
-		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, m => ((UnitModel)m).Type, (int)UnitType.Additive);
-		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddLogParts, "Parts", 0, 10, 4, m => ((UnitModel)m).Type, (int)UnitType.BasicAdd);
-		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => ((UnitModel)m).Type, (int)UnitType.Naive, (int)UnitType.BasicAdd);
+		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", 1, 32, 1, null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Additive });
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Parts", 1, 32, 1, null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Additive });
+		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AdditiveType>(p => &((Native*)p)->addType, "Type", null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Additive });
+		static readonly ParamInfo AddRolloffInfo = ParamInfo.Lin(p => &((Native*)p)->addRolloff, "Rolloff", 0, 255, 0, null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Additive });
+		static readonly ParamInfo BasicAddLogPartsInfo = ParamInfo.Exp(p => &((Native*)p)->basicAddLogParts, "Parts", 0, 10, 4, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.BasicAdd });
+		static readonly ParamInfo WaveInfo = ParamInfo.List<UnitWave>(p => &((Native*)p)->wave, nameof(Wave), null, m => new[] { ((UnitModel)m).Type }, new[] { (int)UnitType.Naive, (int)UnitType.BasicAdd });
 	}
 }

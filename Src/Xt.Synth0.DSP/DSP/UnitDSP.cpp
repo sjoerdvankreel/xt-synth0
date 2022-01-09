@@ -114,10 +114,10 @@ UnitDSP::GenerateAdditive(float freq, float rate, AdditiveType type, int parts, 
 	__m256 results = _mm256_set1_ps(0.0f);
 	__m256 phases = _mm256_set1_ps(_phasef);
   __m256 twopis = _mm256_set1_ps(2.0f * pi);
-	__m256 maxPs = _mm256_set1_ps(parts * step);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
   __m256 logRolloffs = _mm256_set1_ps(logRolloff);
-  if(plusMin) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
+	__m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
+	if(plusMin) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
     if(p * freq >= rate / 2.0f) break;

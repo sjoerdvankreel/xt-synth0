@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.UI
 {
-	internal class ListItem
+	class ListItem
 	{
 		readonly ParamInfo _info;
 		public int Value { get; }

@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0
 {
-	internal class DeviceStream : IAudioStream
+	class DeviceStream : IAudioStream
 	{
 		XtDevice _device;
 		XtStream _stream;

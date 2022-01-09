@@ -4,7 +4,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	internal class TargetFormatter : Converter<int, string>
+	class TargetFormatter : Converter<int, string>
 	{
 		readonly Param _param;
 		readonly SynthModel _synth;
