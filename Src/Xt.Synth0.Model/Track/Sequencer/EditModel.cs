@@ -15,9 +15,10 @@ namespace Xt.Synth0.Model
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Rows { get; } = new(RowsInfo);
 
+		public int ColumnCount => 3;
 		public string Name => "Edit";
 		public ThemeGroup Group => ThemeGroup.EditPattern;
-		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Lpb, Edit };
+		public IReadOnlyList<Param> Params => new[] { Pats, Keys, Lpb, Rows, Fxs, Edit };
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
 
 		static readonly ParamInfo LpbInfo = ParamInfo.Lin(p => &((Native*)p)->lpb, "LPB", 1, TrackConstants.MaxLpb, 4);

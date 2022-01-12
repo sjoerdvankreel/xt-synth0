@@ -37,7 +37,7 @@ namespace Xt.Synth0.UI
 
 		static Grid MakeGrid(AppModel app, IThemedSubModel sub)
 		{
-			const int cols = 2;
+			int cols = sub.ColumnCount;
 			var positions = sub.ParamLayout.Max(p => p.Value) + 1;
 			int rows = (int)Math.Ceiling(positions / (double)cols);
 			var result = Create.Grid(rows, cols);

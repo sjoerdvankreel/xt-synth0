@@ -25,6 +25,7 @@ namespace Xt.Synth0.Model
 		public Param RSlope { get; } = new(RSlopeInfo);
 
 		readonly int _index;
+		public int ColumnCount => 3;
 		public string Name => $"Env {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Envs;
 		internal EnvModel(int index) => _index = index;
@@ -32,15 +33,15 @@ namespace Xt.Synth0.Model
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
-			{ Dly, 0 },
-			{ Hld, 1 },
-			{ ASlope, 2 },
-			{ A, 3 },
-			{ DSlope, 4 },
-			{ D, 5 },
-			{ S, 7 },
-			{ RSlope, 8 },
-			{ R, 9 }
+			{ Dly, 2 },
+			{ ASlope, 3 },
+			{ A, 4 },
+			{ Hld, 5 },
+			{ DSlope, 6 },
+			{ D, 7 },
+			{ S, 8 },
+			{ RSlope, 9 },
+			{ R, 10 }
 		};
 
 		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), 0, 100, 3);
