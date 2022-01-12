@@ -9,6 +9,7 @@ namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
+		const double Padding = 2.0;
 		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 
@@ -17,7 +18,7 @@ namespace Xt.Synth0.UI
 			var plot = app.Track.Synth.Plot;
 			var result = Create.ThemedGroup(app.Settings, plot, null);
 			result.Content = MakeContent(app, result);
-			result.Padding = new Thickness(2.0);
+			result.Padding = new(Padding);
 			return result;
 		}
 
@@ -26,10 +27,12 @@ namespace Xt.Synth0.UI
 			var synth = app.Track.Synth;
 			var result = new DockPanel();
 			result.Add(SubUI.MakeContent(app, synth.Plot), Dock.Top);
-			var content = result.Add(new ContentControl(), Dock.Top);
+			var content = new ContentControl();
+			var border = result.Add(SubUI.MakeOuterBorder(content), Dock.Top);
 			synth.ParamChanged += (s, e) => Update(synth.Plot, box, content);
 			content.SizeChanged += (s, e) => Update(synth.Plot, box, content);
 			app.Settings.PropertyChanged += (s, e) => Update(synth.Plot, box, content);
+			border.BorderThickness = new(SubUI.BorderThickness, 0, SubUI.BorderThickness, SubUI.BorderThickness);
 			return result;
 		}
 

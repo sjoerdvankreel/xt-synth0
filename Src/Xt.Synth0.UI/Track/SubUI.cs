@@ -8,22 +8,24 @@ namespace Xt.Synth0.UI
 {
 	static class SubUI
 	{
-		const double BorderThickness = 1;
+		internal const double BorderThickness = 1;
 
 		internal static GroupBox Make(AppModel app, IThemedSubModel sub)
 		=> Create.ThemedGroup(app.Settings, sub, MakeContent(app, sub));
-
 		internal static FrameworkElement MakeContent(AppModel app, IThemedSubModel sub)
+		=> MakeOuterBorder(MakeGrid(app, sub));
+
+		internal static Border MakeOuterBorder(UIElement child)
 		{
 			var result = new Border();
+			result.Child = child;
 			result.SnapsToDevicePixels = true;
-			result.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
-			result.Child = MakeGrid(app, sub);
+			result.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
 			return result;
 		}
 
-		static Border MakeBorder(UIElement child, Cell cell)
+		static Border MakeInnerBorder(UIElement child, Cell cell)
 		{
 			var result = Create.Element<Border>(cell);
 			result.SnapsToDevicePixels = true;
@@ -45,9 +47,9 @@ namespace Xt.Synth0.UI
 			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			foreach (var p in sub.ParamLayout)
-				result.Add(MakeBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));
+				result.Add(MakeInnerBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));
 			if (positions % 2 == 1)
-				result.Add(MakeBorder(null, new Cell(rows - 1, cols - 1)));
+				result.Add(MakeInnerBorder(null, new Cell(rows - 1, cols - 1)));
 			return result;
 		}
 	}
