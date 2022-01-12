@@ -92,7 +92,7 @@ PlotDSP::RenderEnv(
     _samples.push_back(lvl);
     if (stage == EnvStage::S) activeSamples++;
     if (sample != 0 && stage != prevStage && stage != EnvStage::End)
-      _splits.push_back(sample + 1);
+      _splits.push_back(sample);
     prevStage = stage;
     sample++;
   }
