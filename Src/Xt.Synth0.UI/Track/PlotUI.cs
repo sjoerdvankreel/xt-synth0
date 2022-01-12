@@ -70,7 +70,7 @@ namespace Xt.Synth0.UI
 			Args.Pixels = w;
 			RequestPlotData?.Invoke(null, Args);
 			container.Content = Plot(w, h);
-			string header = $"{(PlotType)synth.Global.Plot.Value} @ {Args.SampleRate}Hz";
+			string header = $"{(PlotSource)synth.Global.PlotSource.Value} @ {Args.SampleRate}Hz";
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
 			if (Args.Frequency != 0.0f) header += $", {Args.Frequency.ToString("N1")}Hz";
 			box.Header = header;

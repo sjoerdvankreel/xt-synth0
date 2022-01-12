@@ -18,9 +18,9 @@ private:
   std::vector<int32_t> _splits;
 
   void RenderEnv(
-    EnvModel const& env, int32_t pixels, bool fit, int32_t* rate);
+    EnvModel const& env, int32_t pixels, PlotFit fit, int32_t* rate);
   void RenderUnit(
-    UnitModel const& unit, int32_t pixels, bool fit, int32_t* rate, float* frequency);
+    UnitModel const& unit, int32_t pixels, PlotFit fit, int32_t* rate, float* frequency);
 public:
   void Render(
     SynthModel const& synth, int32_t pixels, int32_t* rate, float* frequency,
