@@ -68,16 +68,15 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
     _stage = EnvStage::End;
   }
 
-  float base = env.base >= 128? env.base - 127.0f: env.base / 128.0f;
   float result = 0.0f;
   switch(_stage)
   {
   case EnvStage::S: result = s; break;
   case EnvStage::Dly: result = 0.0f; break;
   case EnvStage::Hld: result = 1.0f; break;
-  case EnvStage::R: result = s + powf(_stagePos / r, base) * (0.0f - s); break;
-  case EnvStage::D: result = 1.0f + powf(_stagePos / d, base) * (s - 1.0f); break;
-  case EnvStage::A: result = 0.0f + powf(_stagePos / a, base) * (1.0f - 0.0f); break;
+  case EnvStage::R: result = s + powf(_stagePos / r, env.rSlope >= 128 ? env.rSlope - 127.0f : env.rSlope / 128.0f) * (0.0f - s); break;
+  case EnvStage::D: result = 1.0f + powf(_stagePos / d, env.dSlope >= 128 ? env.dSlope - 127.0f : env.dSlope / 128.0f) * (s - 1.0f); break;
+  case EnvStage::A: result = 0.0f + powf(_stagePos / a, env.aSlope >= 128 ? env.aSlope - 127.0f : env.aSlope / 128.0f) * (1.0f - 0.0f); break;
   case EnvStage::End: result = 0.0f; break;
   default: assert(false); break;
   }
