@@ -7,5 +7,6 @@ integrate blit / PWM triangle
 panning
 env off
 env slopes
+custom color scheme
 
 

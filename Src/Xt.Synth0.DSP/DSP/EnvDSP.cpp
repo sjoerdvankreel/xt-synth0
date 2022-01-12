@@ -32,9 +32,11 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
     *stage = _stage;
     return 0.0f;
   }
+
   float dly, a, hld, d, r;
   float s = static_cast<float>(env.s / 255.0f);
   Length(env, rate, &dly, &a, &hld, &d, &r);  
+
   if(_stage == EnvStage::Dly && _stagePos >= dly)
   {
     _stagePos = 0;
@@ -65,20 +67,45 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
     _stagePos = 0;
     _stage = EnvStage::End;
   }
+
+  float lin = 0.0f;
   float result = 0.0f;
   switch(_stage)
   {
-  case EnvStage::Dly: result = 0.0f; break;
-  case EnvStage::A: result = _stagePos / a; break;
-  case EnvStage::Hld: result = 1.0f; break;
-  case EnvStage::D: result = s + (1.0f - _stagePos / d) * (1.0f - s); break;
-  case EnvStage::S: result = s; break;
-  case EnvStage::R: result = s * (1.0f - _stagePos / r); break;
-  case EnvStage::End: result = 0.0f; break;
-  default: assert(false); break;
+  case EnvStage::Dly: 
+    result = 0.0f; 
+    break;
+  case EnvStage::A: 
+    lin = _stagePos / a;
+    switch(static_cast<SlopeType>(env.aSlope))
+    {
+    case SlopeType::Lin: result = lin; break;
+    case SlopeType::Sqrt: result = lin * lin; break;
+    case SlopeType::Quad: result = 1.0f - ((1.0f - lin) * (1.0f - lin)); break;
+    default: break;
+    }
+    break;
+  case EnvStage::Hld: 
+    result = 1.0f; 
+    break;
+  case EnvStage::D: 
+    result = s + (1.0f - _stagePos / d) * (1.0f - s); 
+    break;
+  case EnvStage::S:
+    result = s; 
+    break;
+  case EnvStage::R:
+    result = s * (1.0f - _stagePos / r); 
+    break;
+  case EnvStage::End:
+    result = 0.0f; 
+    break;
+  default: assert(false); 
+    break;
   }
+
   assert(!isnan(result));
-  if(_stage != EnvStage::End) _stagePos++;
+  if (_stage != EnvStage::End) _stagePos++;
   if((_stage == EnvStage::S || _stage == EnvStage::R) && result <= threshold)
   {
     _stagePos = 0;
