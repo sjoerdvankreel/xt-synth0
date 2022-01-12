@@ -2,4 +2,7 @@ polyblep
 dont plot too often
 dont trigger gc from the callback - dispatch all to ui
 hard sync
-plot anything
+throttle plot paint
+integrate blit / PWM triangle
+
+

@@ -10,10 +10,10 @@ PlotDSP::RenderEnv(
 {
   _env.Reset();
   int sample = 0;
-  bool active = true;
   int activeSamples = 0;
   float dly, a, hld, d, r;
   const int maxSamples = 96000;
+  const int minHoldSamples = 10;
   EnvStage stage = EnvStage::Dly;
   EnvStage prevStage = EnvStage::Dly;
   const float holdFactor = 1.0f / 3.0f;
@@ -21,21 +21,26 @@ PlotDSP::RenderEnv(
   _env.Length(env, ratef, &dly, &a, &hld, &d, &r);
   float envSamples = dly + a + hld + d + r;
   int holdSamples = static_cast<int>(envSamples * holdFactor);
+  holdSamples = std::max(holdSamples, minHoldSamples);
   float totalSamples = holdSamples + envSamples;
-  if(fit || totalSamples > maxSamples)
+  if(fit)
   {
-    *rate = static_cast<int32_t>(*rate * totalSamples / pixels);
+    *rate = static_cast<int32_t>(*rate / totalSamples * pixels);
     RenderEnv(env, pixels, false, rate);
+    return;
   }
-  while(stage != EnvStage::End)
+  else if(totalSamples > maxSamples)
   {
-    _samples.push_back(_env.Next(env, ratef, active, &stage));
-    if(stage == EnvStage::S)
-    {
-      activeSamples++;
-      if(activeSamples >= holdSamples)
-        active = false;
-    }
+    *rate = static_cast<int32_t>(*rate / totalSamples * maxSamples);
+    RenderEnv(env, pixels, false, rate);
+    return;
+  }
+  while(true)
+  {
+    float lvl = _env.Next(env, ratef, activeSamples < holdSamples, &stage);
+    if(stage == EnvStage::End) break;
+    _samples.push_back(lvl);
+    if(stage == EnvStage::S) activeSamples++;
     if(sample != 0 && stage != prevStage && stage != EnvStage::End)
       _splits.push_back(sample + 1);
     prevStage = stage;
