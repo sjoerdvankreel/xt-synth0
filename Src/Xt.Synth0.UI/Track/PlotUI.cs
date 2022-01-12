@@ -14,13 +14,22 @@ namespace Xt.Synth0.UI
 
 		internal static UIElement Make(AppModel app)
 		{
-			var synth = app.Track.Synth;
-			var content = new ContentControl();
-			var result = Create.ThemedGroup(app.Settings, synth.Plot, content);
+			var plot = app.Track.Synth.Plot;
+			var result = Create.ThemedGroup(app.Settings, plot, null);
+			result.Content = MakeContent(app, result);
 			result.Padding = new Thickness(2.0);
-			synth.ParamChanged += (s, e) => Update(synth, result, content);
-			content.SizeChanged += (s, e) => Update(synth, result, content);
-			app.Settings.PropertyChanged += (s, e) => Update(synth, result, content);
+			return result;
+		}
+
+		static UIElement MakeContent(AppModel app, GroupBox box)
+		{
+			var synth = app.Track.Synth;
+			var result = new DockPanel();
+			result.Add(SubUI.MakeContent(app, synth.Plot), Dock.Top);
+			var content = result.Add(new ContentControl(), Dock.Top);
+			synth.ParamChanged += (s, e) => Update(synth.Plot, box, content);
+			content.SizeChanged += (s, e) => Update(synth.Plot, box, content);
+			app.Settings.PropertyChanged += (s, e) => Update(synth.Plot, box, content);
 			return result;
 		}
 
@@ -64,14 +73,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void Update(SynthModel synth, GroupBox box, ContentControl container)
+		static void Update(PlotModel plot, GroupBox box, ContentControl container)
 		{
 			int w = (int)container.ActualWidth;
 			double h = container.ActualHeight;
 			Args.Pixels = w;
 			RequestPlotData?.Invoke(null, Args);
 			container.Content = Plot(w, h);
-			string header = $"{(PlotSource)synth.Global.PlotSource.Value} @ {Args.SampleRate}Hz";
+			string header = $"{plot.Name} @ {Args.SampleRate}Hz";
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
 			if (Args.Frequency != 0.0f) header += $", {Args.Frequency.ToString("N1")}Hz";
 			box.Header = header;

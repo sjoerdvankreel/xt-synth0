@@ -13,8 +13,8 @@ PlotDSP::Render(
   _samples.clear();
   *frequency = 0.0f;
   *bipolar = XtsFalse;
-  PlotFit fit = static_cast<PlotFit>(synth.global.plotFit);
-  switch(static_cast<PlotSource>(synth.global.plotSource))
+  PlotFit fit = static_cast<PlotFit>(synth.plot.fit);
+  switch(static_cast<PlotSource>(synth.plot.source))
   {
   case PlotSource::Env1: RenderEnv(synth.envs[0], pixels, fit, rate, bipolar); break;
   case PlotSource::Env2: RenderEnv(synth.envs[1], pixels, fit, rate, bipolar); break;

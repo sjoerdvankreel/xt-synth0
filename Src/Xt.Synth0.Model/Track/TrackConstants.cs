@@ -38,8 +38,9 @@ namespace Xt.Synth0.Model
 
 		internal const int ParamSize = 16;
 		internal const int EnvModelSize = 40;
+		internal const int PlotModelSize = 8;
 		internal const int UnitModelSize = 48;
-		internal const int GlobalModelSize = 16;
+		internal const int GlobalModelSize = 8;
 		internal const int SynthModelSize = 1168;
 
 		internal const int PatternFxSize = 8;

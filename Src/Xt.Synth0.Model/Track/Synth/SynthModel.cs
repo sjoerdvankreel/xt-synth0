@@ -6,12 +6,6 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class PlotModel : IThemedModel
-	{
-		public string Name => "Plot";
-		public ThemeGroup Group => ThemeGroup.GlobalPlot;
-	}
-
 	public unsafe sealed class SynthModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
@@ -20,6 +14,7 @@ namespace Xt.Synth0.Model
 			[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 			internal struct Param { internal int min, max; internal int* value; }
 
+			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
 			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitModelSize];
 			internal fixed byte envs[TrackConstants.EnvCount * TrackConstants.EnvModelSize];
@@ -34,9 +29,9 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<AutoParam> AutoParams { get; }
 		public override IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
 		public AutoParam Auto(Param param) => AutoParams.SingleOrDefault(p => ReferenceEquals(param, p.Param));
-		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(new ISubModel[] { Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, TrackConstants.EnvCount).Select(i => new EnvModel(i)).ToList();
+		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(new ISubModel[] { Plot, Global }).ToArray();
 
 		public void PrepareNative(IntPtr native)
 		{
