@@ -68,7 +68,7 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
     _stage = EnvStage::End;
   }
 
-  float base = 1.0f;
+  float base = env.base >= 128? env.base - 127.0f: env.base / 128.0f;
   float result = 0.0f;
   switch(_stage)
   {

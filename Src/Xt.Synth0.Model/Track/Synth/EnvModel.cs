@@ -53,9 +53,9 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo SInfo = ParamInfo.Lin(p => &((Native*)p)->s, nameof(S), 0, 255, 128);
 		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), 0, 100, 0);
 		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), 0, 100, 0);
-		static readonly ParamInfo BaseInfo = ParamInfo.Lin(p => &((Native*)p)->@base, nameof(Base), 0, 255, 0);
-		static readonly ParamInfo ASlopeInfo = ParamInfo.Lin(p => &((Native*)p)->aSlope, nameof(ASlope), 0, 255, 0);
-		static readonly ParamInfo DSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->dSlope, nameof(DSlope), 0, 255, 0);
-		static readonly ParamInfo RSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->rSlope, nameof(RSlope), 0, 255, 0);
+		static readonly ParamInfo ASlopeInfo = ParamInfo.Lin(p => &((Native*)p)->aSlope, "Slp", 0, 255, 128);
+		static readonly ParamInfo DSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->dSlope, "Slp", 0, 255, 128);
+		static readonly ParamInfo RSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->rSlope, "Slp", 0, 255, 128);
+		static readonly ParamInfo BaseInfo = ParamInfo.Lin(p => &((Native*)p)->@base, nameof(Base), 1, 255, 128);
 	}
 }
