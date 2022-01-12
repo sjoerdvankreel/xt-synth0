@@ -66,26 +66,29 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
     _stage = EnvStage::End;
   }
   float result = 0.0f;
-  switch(_stage)
-  {
-  case EnvStage::Dly: result = 0.0f; break;
-  case EnvStage::A: result = _stagePos / a; break;
-  case EnvStage::Hld: result = 1.0f; break;
-  case EnvStage::D: result = s + (1.0f - _stagePos / d) * (1.0f - s); break;
-  case EnvStage::S: result = s; break;
-  case EnvStage::R: result = s * (1.0f - _stagePos / r); break;
-  case EnvStage::End: result = 0.0f; break;
-  default: assert(false); break;
+  if(_stage == EnvStage::R)
+    result = s * (1.0f - _stagePos / r);
+  if(env.on)
+    switch(_stage)
+    {
+    case EnvStage::Dly: result = 0.0f; break;
+    case EnvStage::A: result = _stagePos / a; break;
+    case EnvStage::Hld: result = 1.0f; break;
+    case EnvStage::D: result = s + (1.0f - _stagePos / d) * (1.0f - s); break;
+    case EnvStage::S: result = s; break;
+    case EnvStage::R: break;
+    case EnvStage::End: result = 0.0f; break;
+    default: assert(false); break;
   }
   assert(!isnan(result));
-  _stagePos++;
+  if(_stage != EnvStage::End) _stagePos++;
   if(_stage == EnvStage::R && result <= threshold)
   {
     _stagePos = 0;
     _stage = EnvStage::End;
   }
   *stage = _stage;
-  return result;
+  return env.on? result: 0.0f;
 }
 
 } // namespace Xts

@@ -18,7 +18,7 @@ struct XTS_ALIGN Param { int min, max; int* value; };
 
 struct XTS_ALIGN EnvModel {
   int a, d, s, r, hld, dly;
-  int aSlope, dSlope, rSlope, pad__;
+  int on, aSlope, dSlope, rSlope;
 };
 
 struct XTS_ALIGN UnitModel {

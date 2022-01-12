@@ -48,7 +48,8 @@ namespace Xt.Synth0.Model
 
 		public SynthModel()
 		{
-			Units[0].Type.Value = 1;
+			Envs[0].On.Value = 1;
+			Units[0].Type.Value = (int)UnitType.Sin;
 			var @params = ListParams(this).Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
 			if (AutoParams.Count != TrackConstants.ParamCount)

@@ -18,8 +18,8 @@ namespace Xt.Synth0.Model
 		public int ColumnCount => 3;
 		public string Name => "Edit";
 		public ThemeGroup Group => ThemeGroup.EditPattern;
-		public IReadOnlyList<Param> Params => new[] { Pats, Keys, Lpb, Rows, Fxs, Edit };
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
+		public IReadOnlyList<Param> Params => new[] { Pats, Keys, Lpb, Rows, Fxs, Edit };
 
 		static readonly ParamInfo LpbInfo = ParamInfo.Lin(p => &((Native*)p)->lpb, "LPB", 1, TrackConstants.MaxLpb, 4);
 		static readonly ParamInfo FxsInfo = ParamInfo.Lin(p => &((Native*)p)->fxs, nameof(Fxs), 0, TrackConstants.MaxFxs, 1);

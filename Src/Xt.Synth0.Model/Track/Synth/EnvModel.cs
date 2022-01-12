@@ -11,13 +11,14 @@ namespace Xt.Synth0.Model
 		internal struct Native
 		{
 			internal int a, d, s, r, hld, dly;
-			internal int aSlope, dSlope, rSlope, pad__;
+			internal int on, aSlope, dSlope, rSlope;
 		}
 
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);
 		public Param S { get; } = new(SInfo);
 		public Param R { get; } = new(RInfo);
+		public Param On { get; } = new(OnInfo);
 		public Param Hld { get; } = new(HldInfo);
 		public Param Dly { get; } = new(DlyInfo);
 		public Param ASlope { get; } = new(ASlopeInfo);
@@ -33,6 +34,7 @@ namespace Xt.Synth0.Model
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
+			{ On, 0 },
 			{ Dly, 2 },
 			{ ASlope, 3 },
 			{ A, 4 },
@@ -44,6 +46,7 @@ namespace Xt.Synth0.Model
 			{ R, 10 }
 		};
 
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), false);
 		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), 0, 100, 3);
 		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), 0, 100, 7);
 		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), 0, 100, 14);
