@@ -1,7 +1,13 @@
 #ifndef XTS_TRACK_CONSTANTS_HPP
 #define XTS_TRACK_CONSTANTS_HPP
 
+#include <cstdint>
+
 #define XTS_ALIGN alignas(8)
+
+typedef int32_t XtsBool;
+inline constexpr XtsBool XtsTrue = 1;
+inline constexpr XtsBool XtsFalse = 0;
 
 namespace Xts { namespace TrackConstants {
 

@@ -214,15 +214,19 @@ namespace Xt.Synth0
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
 			int* splits;
+			int bipolar;
 			float* samples;
 			int splitCount;
 			int sampleCount;
 			float frequency;
 			int rate = Model.Settings.SampleRate.ToInt();
 			Model.Track.Synth.ToNative(_plotSynthModel.ToPointer());
-			Native.XtsPlotDSPRender(_plotDSP, _plotSynthModel, e.Pixels, &rate, &frequency, &samples, &sampleCount, &splits, &splitCount);
+			Native.XtsPlotDSPRender(
+				_plotDSP, _plotSynthModel, e.Pixels, &rate, &bipolar,
+				&frequency, &samples, &sampleCount, &splits, &splitCount);
 			e.SampleRate = rate;
 			e.Frequency = frequency;
+			e.Bipolar = bipolar != 0;
 			e.Splits.Clear();
 			for (int i = 0; i < splitCount; i++)
 				e.Splits.Add(splits[i]);

@@ -19,6 +19,6 @@ void XTS_CALL XtsSequencerDSPProcessBuffer(
 XTS_EXPORT void XTS_CALL XtsPlotDSPDestroy(Xts::PlotDSP* dsp) { delete dsp; }
 XTS_EXPORT Xts::PlotDSP* XTS_CALL XtsPlotDSPCreate(void) { return new Xts::PlotDSP; }
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(
-  Xts::PlotDSP* dsp, Xts::SynthModel const* synth, int32_t pixels, int32_t* rate, 
+  Xts::PlotDSP* dsp, Xts::SynthModel const* synth, int32_t pixels, int32_t* rate, XtsBool* bipolar,
   float* frequency, float** samples, int32_t* sampleCount, int32_t** splits, int32_t* splitCount)
-{ dsp->Render(*synth, pixels, rate, frequency, samples, sampleCount, splits, splitCount); }
+{ dsp->Render(*synth, pixels, rate, bipolar, frequency, samples, sampleCount, splits, splitCount); }

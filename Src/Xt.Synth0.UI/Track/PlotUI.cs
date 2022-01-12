@@ -35,7 +35,8 @@ namespace Xt.Synth0.UI
 				var x1 = (int)Math.Ceiling(xSample);
 				var y0 = (1.0 - weight) * Args.Samples[(int)xSample];
 				var y1 = weight * Args.Samples[x1];
-				var y = (-(y0 + y1) * 0.5 + 0.5) * h;
+				var y = (1.0 - (y0 + y1)) * h;
+				if (Args.Bipolar) y = (-(y0 + y1) * 0.5 + 0.5) * h;
 				var screenPos = i / (Args.Samples.Count - 1.0);
 				result.Add(new Point(screenPos * w, y));
 			}
@@ -80,7 +81,8 @@ namespace Xt.Synth0.UI
 		{
 			var result = new Canvas();
 			result.Add(PlotLine(w, h));
-			result.Add(Marker(0, w, h / 2.0, h / 2.0));
+			if (Args.Bipolar)
+				result.Add(Marker(0, w, h / 2.0, h / 2.0));
 			for (int i = 0; i < Args.Splits.Count; i++)
 			{
 				double pos = Args.Splits[i] / (Args.Samples.Count - 1.0);

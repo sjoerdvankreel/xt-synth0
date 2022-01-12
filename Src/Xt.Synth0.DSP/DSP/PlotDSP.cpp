@@ -6,20 +6,21 @@ namespace Xts {
 
 void 
 PlotDSP::Render(
-  SynthModel const& synth, int32_t pixels, int32_t* rate, float* frequency,
-  float** samples, int32_t* sampleCount, int32_t** splits, int32_t* splitCount)
+  SynthModel const& synth, int32_t pixels, int32_t* rate, XtsBool* bipolar, 
+  float* frequency, float** samples, int32_t* sampleCount, int32_t** splits, int32_t* splitCount)
 {
   _splits.clear();
   _samples.clear();
   *frequency = 0.0f;
+  *bipolar = XtsFalse;
   PlotFit fit = static_cast<PlotFit>(synth.global.plotFit);
   switch(static_cast<PlotSource>(synth.global.plotSource))
   {
-  case PlotSource::Env1: RenderEnv(synth.envs[0], pixels, fit, rate); break;
-  case PlotSource::Env2: RenderEnv(synth.envs[1], pixels, fit, rate); break;
-  case PlotSource::Unit1: RenderUnit(synth.units[0], pixels, fit, rate, frequency); break;
-  case PlotSource::Unit2: RenderUnit(synth.units[1], pixels, fit, rate, frequency); break;
-  case PlotSource::Unit3: RenderUnit(synth.units[2], pixels, fit, rate, frequency); break;
+  case PlotSource::Env1: RenderEnv(synth.envs[0], pixels, fit, rate, bipolar); break;
+  case PlotSource::Env2: RenderEnv(synth.envs[1], pixels, fit, rate, bipolar); break;
+  case PlotSource::Unit1: RenderUnit(synth.units[0], pixels, fit, rate, bipolar, frequency); break;
+  case PlotSource::Unit2: RenderUnit(synth.units[1], pixels, fit, rate, bipolar, frequency); break;
+  case PlotSource::Unit3: RenderUnit(synth.units[2], pixels, fit, rate, bipolar, frequency); break;
   default: assert(false); break;
   }
   *splits = _splits.data();
@@ -30,13 +31,15 @@ PlotDSP::Render(
 
 void
 PlotDSP::RenderUnit(
-  UnitModel const& unit, int32_t pixels, PlotFit fit, int32_t* rate, float* frequency)
+  UnitModel const& unit, int32_t pixels, PlotFit fit, 
+  int32_t* rate, XtsBool* bipolar, float* frequency)
 {
   bool cycled;
   _unit.Reset();
+  *bipolar = XtsTrue;
   const float cycleCount = 1.5f;
-  *frequency = _unit.Frequency(unit);
   bool doFit = fit == PlotFit::Fit;
+  *frequency = _unit.Frequency(unit);
   if (doFit) *rate = static_cast<int32_t>(ceilf(*frequency * pixels / cycleCount));
   float cycleLength = *rate / *frequency;
   float ratef = static_cast<float>(*rate);
@@ -50,10 +53,12 @@ PlotDSP::RenderUnit(
 
 void
 PlotDSP::RenderEnv(
-  EnvModel const& env, int32_t pixels, PlotFit fit, int32_t* rate)
+  EnvModel const& env, int32_t pixels, 
+  PlotFit fit, int32_t* rate, XtsBool* bipolar)
 {
   _env.Reset();
   int sample = 0;
+  *bipolar = XtsFalse;
   int activeSamples = 0;
   float dly, a, hld, d, r;
   const int maxSamples = 96000;
@@ -71,13 +76,13 @@ PlotDSP::RenderEnv(
   if (doFit)
   {
     *rate = static_cast<int32_t>(*rate / totalSamples * pixels);
-    RenderEnv(env, pixels, PlotFit::Rate, rate);
+    RenderEnv(env, pixels, PlotFit::Rate, rate, bipolar);
     return;
   }
   else if (totalSamples > maxSamples)
   {
     *rate = static_cast<int32_t>(*rate / totalSamples * maxSamples);
-    RenderEnv(env, pixels, PlotFit::Rate, rate);
+    RenderEnv(env, pixels, PlotFit::Rate, rate, bipolar);
     return;
   }
   while (true)
