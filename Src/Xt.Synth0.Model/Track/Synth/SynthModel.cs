@@ -6,6 +6,12 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+	public sealed class PlotModel : IThemedModel
+	{
+		public string Name => "Plot";
+		public ThemeGroup Group => ThemeGroup.GlobalPlot;
+	}
+
 	public unsafe sealed class SynthModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
@@ -16,17 +22,21 @@ namespace Xt.Synth0.Model
 
 			internal GlobalModel.Native global;
 			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitModelSize];
+			internal fixed byte envs[TrackConstants.EnvCount * TrackConstants.EnvModelSize];
 			internal fixed byte @params[TrackConstants.ParamCount * TrackConstants.ParamSize];
 		}
 
+		public PlotModel Plot { get; } = new();
 		public GlobalModel Global { get; } = new();
+		public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
 
 		public IReadOnlyList<AutoParam> AutoParams { get; }
-		public override IReadOnlyList<IModelGroup> SubGroups => new IModelGroup[0];
+		public override IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
 		public AutoParam Auto(Param param) => AutoParams.SingleOrDefault(p => ReferenceEquals(param, p.Param));
-		public override IReadOnlyList<ISubModel> SubModels => Units.Concat(new ISubModel[] { Global }).ToArray();
+		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(new ISubModel[] { Global }).ToArray();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
+		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, TrackConstants.EnvCount).Select(i => new EnvModel(i)).ToList();
 
 		public void PrepareNative(IntPtr native)
 		{
@@ -44,7 +54,7 @@ namespace Xt.Synth0.Model
 		public SynthModel()
 		{
 			Units[0].Type.Value = 1;
-			var @params = ListParams(this).Select((p, i) => new AutoParam((INamedModel)p.Model, i + 1, p.Param));
+			var @params = ListParams(this).Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
 			if (AutoParams.Count != TrackConstants.ParamCount)
 				throw new InvalidOperationException();

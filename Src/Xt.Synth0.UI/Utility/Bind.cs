@@ -60,6 +60,7 @@ namespace Xt.Synth0.UI
 
 		internal static MultiBinding EnableRow(AppModel app, int row)
 		{
+			var pattern = app.Track.Sequencer.Pattern;
 			var theme = To(app.Settings, nameof(app.Settings.Theme));
 			var rows = To(app.Track.Sequencer.Edit.Rows);
 			var result = To(new EnableRowConverter(row), theme, rows);

@@ -3,13 +3,15 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public interface INamedModel : ISubModel { string Name { get; } }
+	public interface IThemedSubModel : ISubModel, IThemedModel { }
+	public interface IThemedContainer : IModelContainer, IThemedModel { }
 	public interface INativeModel { unsafe void* Address(void* parent); }
+	public interface IThemedModel { string Name { get; } ThemeGroup Group { get; } }
 
-	public interface IModelGroup : INativeModel
+	public interface IModelContainer : INativeModel
 	{
 		IReadOnlyList<ISubModel> SubModels { get; }
-		IReadOnlyList<IModelGroup> SubGroups { get; }
+		IReadOnlyList<IModelContainer> SubContainers { get; }
 	}
 
 	public interface ISubModel : INativeModel

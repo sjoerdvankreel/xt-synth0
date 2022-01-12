@@ -13,6 +13,7 @@ namespace Xt.Synth0.UI
 		const double DefaultMarkerSize = 6.0;
 		const double DefaultRotarySize = 16.0;
 		const double DefaultSensitivity = 50.0;
+		public const double MinSensitivityHint = 20.0;
 
 		static Knob ActiveKnob;
 		static Point? ActivePosition;

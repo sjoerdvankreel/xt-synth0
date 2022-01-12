@@ -5,15 +5,17 @@ using System.Runtime.CompilerServices;
 namespace Xt.Synth0.Model
 {
 	public enum BitDepth { Depth16, Depth24, Depth32 }
-	public enum ThemeType { Generic, Red, Green, Blue, Yellow }
 	public enum SampleRate { Rate44100, Rate48000, Rate96000, Rate192000 }
+	public enum ThemeType { Generic, Grouped, White, Orange, Rose, Cyan, Spring, Yellow, Azure }
 	public enum BufferSize { Size1, Size2, Size3, Size5, Size10, Size20, Size30, Size50, Size100 }
 
-	public sealed class SettingsModel : INotifyPropertyChanged
+	public sealed class SettingsModel : IThemedModel, INotifyPropertyChanged
 	{
 		public const int MaxRecentFiles = 10;
 		const string DefaultOutputPath = "synth0.raw";
 
+		public string Name => "Settings";
+		public ThemeGroup Group => ThemeGroup.Settings;
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		ThemeType _theme;
@@ -86,20 +88,20 @@ namespace Xt.Synth0.Model
 			set => Set(ref _recentFiles, value);
 		}
 
-		public void CopyTo(SettingsModel model)
+		public void CopyTo(SettingsModel settings)
 		{
-			model.Theme = Theme;
-			model.UseAsio = UseAsio;
-			model.BitDepth = BitDepth;
-			model.SampleRate = SampleRate;
-			model.OutputPath = OutputPath;
-			model.BufferSize = BufferSize;
-			model.WriteToDisk = WriteToDisk;
-			model.AsioDeviceId = AsioDeviceId;
-			model.WasapiDeviceId = WasapiDeviceId;
-			model.RecentFiles.Clear();
+			settings.UseAsio = UseAsio;
+			settings.BitDepth = BitDepth;
+			settings.SampleRate = SampleRate;
+			settings.OutputPath = OutputPath;
+			settings.BufferSize = BufferSize;
+			settings.WriteToDisk = WriteToDisk;
+			settings.Theme = Theme;
+			settings.AsioDeviceId = AsioDeviceId;
+			settings.WasapiDeviceId = WasapiDeviceId;
+			settings.RecentFiles.Clear();
 			foreach (var f in RecentFiles)
-				model.RecentFiles.Add(f);
+				settings.RecentFiles.Add(f);
 		}
 
 		public void AddRecentFile(string path)

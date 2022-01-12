@@ -1,5 +1,7 @@
 ﻿namespace Xt.Synth0.Model
 {
+	public enum ThemeGroup { Settings, Units, Envs, GlobalPlot, EditPattern, MonitorControl }
+
 	public sealed class AppModel
 	{
 		public TrackModel Track { get; } = new();

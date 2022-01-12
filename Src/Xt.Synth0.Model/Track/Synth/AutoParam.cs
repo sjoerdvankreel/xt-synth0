@@ -4,8 +4,8 @@
 	{
 		public int Index { get; }
 		public Param Param { get; }
-		public INamedModel Owner { get; }
-		internal AutoParam(INamedModel owner, int index, Param param) 
+		public IThemedSubModel Owner { get; }
+		internal AutoParam(IThemedSubModel owner, int index, Param param) 
 		=> (Owner, Index, Param) = (owner, index, param);
 	}
 }

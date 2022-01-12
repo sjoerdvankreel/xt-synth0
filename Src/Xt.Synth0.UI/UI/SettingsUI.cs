@@ -14,73 +14,73 @@ namespace Xt.Synth0.UI
 		public static event EventHandler ShowASIOControlPanel;
 		public static event EventHandler<QueryFormatSupportEventArgs> QueryFormatSupport;
 
-		public static void Show(SettingsModel model)
+		public static void Show(SettingsModel settings)
 		{
-			var window = Create.Window(model);
-			window.Content = MakeContent(window, model);
+			var window = Create.Window(settings, settings.Group);
+			window.Content = MakeContent(window, settings);
 			window.ShowDialog();
 		}
 
-		static UIElement MakeContent(Window window, SettingsModel model)
+		static UIElement MakeContent(Window window, SettingsModel settings)
 		{
 			var result = new StackPanel();
-			result.Add(MakeGroup(model));
+			result.Add(MakeGroup(settings));
 			result.Add(MakeOK(window));
 			return result;
 		}
 
-		static UIElement MakeGroup(SettingsModel model)
-		=> Create.Group("Settings", MakeContent(model));
+		static UIElement MakeGroup(SettingsModel settings)
+		=> Create.ThemedGroup(settings, settings, MakeContent(settings));
 
-		static UIElement MakeContent(SettingsModel model)
+		static UIElement MakeContent(SettingsModel settings)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Vertical;
-			result.Add(MakeUpper(model));
-			result.Add(MakeCenter(model));
-			result.Add(MakeLower(model));
+			result.Add(MakeUpper(settings));
+			result.Add(MakeCenter(settings));
+			result.Add(MakeLower(settings));
 			result.SetValue(Grid.IsSharedSizeScopeProperty, true);
 			return result;
 		}
 
-		static UIElement MakeUpper(SettingsModel model)
+		static UIElement MakeUpper(SettingsModel settings)
 		{
 			var result = Create.Grid(4, 2, true);
 			result.Add(Create.Label("Theme", new(0, 0)));
-			result.Add(MakeTheme(model, new(0, 1)));
+			result.Add(MakeTheme(settings, new(0, 1)));
 			result.Add(Create.Label("Bit depth", new(1, 0)));
-			result.Add(MakeBitDepth(model, new(1, 1)));
+			result.Add(MakeBitDepth(settings, new(1, 1)));
 			result.Add(Create.Label("Sample rate", new(2, 0)));
-			result.Add(MakeSampleRate(model, new(2, 1)));
+			result.Add(MakeSampleRate(settings, new(2, 1)));
 			result.Add(Create.Label("Write to disk", new(3, 0)));
-			result.Add(MakeWriteToDisk(model, new(3, 1)));
+			result.Add(MakeWriteToDisk(settings, new(3, 1)));
 			return result;
 		}
 
-		static UIElement MakeCenter(SettingsModel model)
+		static UIElement MakeCenter(SettingsModel settings)
 		{
 			var result = Create.Grid(1, 2, true);
 			result.Add(Create.Label("Output path", new(0, 0)));
-			result.Add(MakeOutputPath(model, new(0, 1)));
-			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), 
+			result.Add(MakeOutputPath(settings, new(0, 1)));
+			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk),
 				new VisibilityConverter(false, true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeLower(SettingsModel model)
+		static UIElement MakeLower(SettingsModel settings)
 		{
 			var result = Create.Grid(4, 2, true);
 			result.Add(Create.Label("Use ASIO", new(0, 0)));
-			result.Add(MakeAsio(model, new(0, 1)));
+			result.Add(MakeAsio(settings, new(0, 1)));
 			result.Add(Create.Label("Device", new(1, 0)));
-			result.Add(MakeAsioDevice(model, new(1, 1)));
-			result.Add(MakeWasapiDevice(model, new(1, 1)));
+			result.Add(MakeAsioDevice(settings, new(1, 1)));
+			result.Add(MakeWasapiDevice(settings, new(1, 1)));
 			result.Add(Create.Label("Buffer size (ms)", new(2, 0)));
-			result.Add(MakeBufferSize(model, new(2, 1)));
+			result.Add(MakeBufferSize(settings, new(2, 1)));
 			result.Add(Create.Label("Format supported", new(3, 0)));
-			result.Add(MakeFormatSupport(model, new(3, 1)));
-			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), 
+			result.Add(MakeFormatSupport(settings, new(3, 1)));
+			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk),
 				new VisibilityConverter(false, false));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
@@ -105,153 +105,153 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeWriteToDisk(SettingsModel model, Cell cell)
+		static UIElement MakeWriteToDisk(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<StackPanel>(cell);
 			result.Orientation = Orientation.Horizontal;
-			result.Add(MakeWriteToDisk(model));
-			result.Add(MakeBrowseOutputPath(model));
+			result.Add(MakeWriteToDisk(settings));
+			result.Add(MakeBrowseOutputPath(settings));
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			return result;
 		}
 
-		static UIElement MakeWriteToDisk(SettingsModel model)
+		static UIElement MakeWriteToDisk(SettingsModel settings)
 		{
 			var result = new CheckBox();
-			var binding = Bind.To(model, nameof(model.WriteToDisk));
+			var binding = Bind.To(settings, nameof(settings.WriteToDisk));
 			result.SetBinding(ToggleButton.IsCheckedProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeBrowseOutputPath(SettingsModel model)
+		static UIElement MakeBrowseOutputPath(SettingsModel settings)
 		{
 			var result = new Button();
 			result.Content = "Browse";
-			result.Click += (s, e) => BrowseOutputPath(model);
+			result.Click += (s, e) => BrowseOutputPath(settings);
 			result.HorizontalAlignment = HorizontalAlignment.Right;
-			var binding = Bind.To(model, nameof(SettingsModel.WriteToDisk), 
+			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk),
 				new VisibilityConverter(true, true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
-		static void BrowseOutputPath(SettingsModel model)
+		static void BrowseOutputPath(SettingsModel settings)
 		{
 			var dialog = new SaveFileDialog();
 			dialog.Filter = "Raw audio (*.raw)|*.raw";
 			if (dialog.ShowDialog() != true) return;
-			model.OutputPath = dialog.FileName;
+			settings.OutputPath = dialog.FileName;
 		}
 
-		static UIElement MakeOutputPath(SettingsModel model, Cell cell)
+		static UIElement MakeOutputPath(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<Label>(cell);
-			var binding = Bind.To(model, nameof(SettingsModel.OutputPath));
+			var binding = Bind.To(settings, nameof(SettingsModel.OutputPath));
 			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeTheme(SettingsModel model, Cell cell)
+		static UIElement MakeTheme(SettingsModel settings, Cell cell)
 		{
 			var result = MakeCombo(cell);
 			result.ItemsSource = Enum.GetValues<ThemeType>();
-			var binding = Bind.To(model, nameof(model.Theme));
+			var binding = Bind.To(settings, nameof(settings.Theme));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeAsio(SettingsModel model, Cell cell)
+		static UIElement MakeAsio(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<StackPanel>(cell);
 			result.Orientation = Orientation.Horizontal;
-			result.Add(MakeUseAsio(model));
-			result.Add(MakeAsioControlPanel(model));
+			result.Add(MakeUseAsio(settings));
+			result.Add(MakeAsioControlPanel(settings));
 			return result;
 		}
 
-		static UIElement MakeUseAsio(SettingsModel model)
+		static UIElement MakeUseAsio(SettingsModel settings)
 		{
 			var result = new CheckBox();
-			var binding = Bind.To(model, nameof(model.UseAsio));
+			var binding = Bind.To(settings, nameof(settings.UseAsio));
 			result.SetBinding(ToggleButton.IsCheckedProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeAsioDevice(SettingsModel model, Cell cell)
+		static UIElement MakeAsioDevice(SettingsModel settings, Cell cell)
 		{
-			var result = MakeDevice(model, true,
+			var result = MakeDevice(settings, true,
 				nameof(SettingsModel.AsioDeviceId), cell);
 			result.ItemsSource = AudioModel.AsioDevices;
 			return result;
 		}
 
-		static UIElement MakeWasapiDevice(SettingsModel model, Cell cell)
+		static UIElement MakeWasapiDevice(SettingsModel settings, Cell cell)
 		{
-			var result = MakeDevice(model, false,
+			var result = MakeDevice(settings, false,
 				nameof(SettingsModel.WasapiDeviceId), cell);
 			result.ItemsSource = AudioModel.WasapiDevices;
 			return result;
 		}
 
-		static UIElement MakeBufferSize(SettingsModel model, Cell cell)
+		static UIElement MakeBufferSize(SettingsModel settings, Cell cell)
 		{
 			var result = MakeCombo(cell);
 			result.ItemsSource = AudioModel.BufferSizes;
-			var binding = Bind.To(model, nameof(model.BufferSize));
+			var binding = Bind.To(settings, nameof(settings.BufferSize));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			result.SelectedValuePath = nameof(EnumModel<BufferSize>.Enum);
 			return result;
 		}
 
-		static UIElement MakeBitDepth(SettingsModel model, Cell cell)
+		static UIElement MakeBitDepth(SettingsModel settings, Cell cell)
 		{
 			var result = MakeCombo(cell);
 			result.ItemsSource = AudioModel.BitDepths;
-			var binding = Bind.To(model, nameof(model.BitDepth));
+			var binding = Bind.To(settings, nameof(settings.BitDepth));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			result.SelectedValuePath = nameof(EnumModel<BitDepth>.Enum);
 			return result;
 		}
 
-		static UIElement MakeSampleRate(SettingsModel model, Cell cell)
+		static UIElement MakeSampleRate(SettingsModel settings, Cell cell)
 		{
 			var result = MakeCombo(cell);
 			result.ItemsSource = AudioModel.SampleRates;
-			var binding = Bind.To(model, nameof(model.SampleRate));
+			var binding = Bind.To(settings, nameof(settings.SampleRate));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			result.SelectedValuePath = nameof(EnumModel<SampleRate>.Enum);
 			return result;
 		}
 
 		static ComboBox MakeDevice(
-			SettingsModel model, bool asio, string path, Cell cell)
+			SettingsModel settings, bool asio, string path, Cell cell)
 		{
 			var result = MakeCombo(cell);
 			result.SelectedValuePath = nameof(DeviceModel.Id);
-			var binding = Bind.To(model, path);
+			var binding = Bind.To(settings, path);
 			result.SetBinding(Selector.SelectedValueProperty, binding);
-			binding = Bind.To(model, nameof(SettingsModel.UseAsio), 
+			binding = Bind.To(settings, nameof(SettingsModel.UseAsio),
 				new VisibilityConverter(false, asio));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeAsioControlPanel(SettingsModel model)
+		static UIElement MakeAsioControlPanel(SettingsModel settings)
 		{
 			var result = new Button();
 			result.Content = "Control panel";
 			result.Click += (s, e) => ShowASIOControlPanel?.Invoke(null, EventArgs.Empty);
-			var binding = Bind.To(model, nameof(SettingsModel.UseAsio), 
+			var binding = Bind.To(settings, nameof(SettingsModel.UseAsio),
 				new VisibilityConverter(true, true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeFormatSupport(SettingsModel model, Cell cell)
+		static UIElement MakeFormatSupport(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<Label>(cell);
 			result.Content = DoQueryFormatSupport();
-			model.PropertyChanged += (s, e) => UpdateDeviceBuffer(result, e);
+			settings.PropertyChanged += (s, e) => UpdateDeviceBuffer(result, e);
 			return result;
 		}
 

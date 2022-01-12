@@ -10,10 +10,10 @@ namespace Xt.Synth0.UI
 	class RelevanceConverter : IMultiValueConverter
 	{
 		readonly Param _param;
-		readonly ISubModel _model;
-		internal RelevanceConverter(ISubModel model, Param param) => (_model, _param) = (model, param);
+		readonly ISubModel _sub;
+		internal RelevanceConverter(ISubModel sub, Param param) => (_sub, _param) = (sub, param);
 		public object[] ConvertBack(object v, Type[] t, object p, CultureInfo c) => throw new NotSupportedException();
 		public object Convert(object[] vs, Type t, object p, CultureInfo c)
-		=> _param.Info.Relevance.Relevant(_model, vs.Cast<int>().ToArray()) ? Visibility.Visible : Visibility.Hidden;
+		=> _param.Info.Relevance.Relevant(_sub, vs.Cast<int>().ToArray()) ? Visibility.Visible : Visibility.Hidden;
 	}
 }

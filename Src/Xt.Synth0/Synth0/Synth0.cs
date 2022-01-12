@@ -10,11 +10,8 @@ namespace Xt.Synth0
 {
 	static class Synth0
 	{
-		const int PlotCycles = 2;
-		const int PlotBufferSize = 192000;
-		static readonly float[] PlotBuffer = new float[PlotBufferSize];
-
-		static IntPtr _unitDSP;
+		static IntPtr _plotDSP;
+		static IntPtr _plotSynthModel;
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
@@ -25,14 +22,17 @@ namespace Xt.Synth0
 			TrackConstants.SanityChecks();
 			try
 			{
-				_unitDSP = Native.XtsUnitDSPCreate();
+				_plotSynthModel = Native.XtsSynthModelCreate();
+				_plotDSP = Native.XtsPlotDSPCreate();
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
-				Native.XtsUnitDSPDestroy(_unitDSP);
-				_unitDSP = IntPtr.Zero;
+				Native.XtsPlotDSPDestroy(_plotDSP);
+				_plotDSP = IntPtr.Zero;
+				Native.XtsSynthModelDestroy(_plotSynthModel);
+				_plotSynthModel = IntPtr.Zero;
 			}
 		}
 
@@ -213,18 +213,22 @@ namespace Xt.Synth0
 
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
-			SynthModel.Native native;
-			var synth = Model.Track.Synth;
-			synth.ToNative(&native);
-			Native.XtsUnitDSPReset(_unitDSP);
-			void* unit = synth.Units[synth.Global.Plot.Value - 1].Address(&native);
-			var rate = Model.Settings.SampleRate.ToInt();
-			e.Frequency = Native.XtsUnitDSPFrequency(_unitDSP, new IntPtr(unit));
-			var cycleLength = (int)MathF.Ceiling(rate / e.Frequency);
-			e.Data = PlotBuffer;
-			e.Samples = PlotCycles * cycleLength;
-			for (int s = 0; s <= e.Samples; s++)
-				PlotBuffer[s] = Native.XtsUnitDSPNext(_unitDSP, new IntPtr(unit), rate);
+			int* splits;
+			float* samples;
+			int splitCount;
+			int sampleCount;
+			float frequency;
+			int rate = Model.Settings.SampleRate.ToInt();
+			Model.Track.Synth.ToNative(_plotSynthModel.ToPointer());
+			Native.XtsPlotDSPRender(_plotDSP, _plotSynthModel, e.Pixels, &rate, &frequency, &samples, &sampleCount, &splits, &splitCount);
+			e.SampleRate = rate;
+			e.Frequency = frequency;
+			e.Splits.Clear();
+			for (int i = 0; i < splitCount; i++)
+				e.Splits.Add(splits[i]);
+			e.Samples.Clear();
+			for (int i = 0; i < sampleCount; i++)
+				e.Samples.Add(samples[i]);
 		}
 	}
 }

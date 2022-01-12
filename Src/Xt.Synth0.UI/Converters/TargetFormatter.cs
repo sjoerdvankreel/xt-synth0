@@ -21,7 +21,7 @@ namespace Xt.Synth0.UI
 			if (auto != null)
 				current = $"{auto.Owner.Name} {auto.Param.Info.Name}";
 			if (auto != null)
-				result.AppendLine($"Value range: {auto.Param.Info.Min} .. {auto.Param.Info.Max}");
+				result.AppendLine($"Range: {auto.Param.Info.Range}");
 			result.AppendLine($"Current: {current}");
 			result.Append(PatternUI.EditHint);
 			return result.ToString();

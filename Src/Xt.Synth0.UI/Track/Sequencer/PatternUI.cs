@@ -45,11 +45,11 @@ namespace Xt.Synth0.UI
 				selector(rows[i]).Value = (int)(startValue + (i - start) / range * rangeValue);
 		}
 
-		internal static UIElement Make(AppModel model)
+		internal static UIElement Make(AppModel app)
 		{
-			var result = new GroupBox();
-			result.Content = MakeContent(model);
-			result.SetBinding(HeaderedContentControl.HeaderProperty, BindHeader(model));
+			var pattern = app.Track.Sequencer.Pattern;
+			var result = Create.ThemedGroup(app.Settings, pattern, MakeContent(app));
+			result.SetBinding(HeaderedContentControl.HeaderProperty, BindHeader(app));
 			return result;
 		}
 
@@ -62,56 +62,58 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static BindingBase BindHeader(AppModel model)
+		static BindingBase BindHeader(AppModel app)
 		{
-			var pats = Bind.To(model.Track.Sequencer.Edit.Pats);
-			var active = Bind.To(model.Track.Sequencer.Edit.Edit);
-			var row = Bind.To(model.Stream, nameof(StreamModel.CurrentRow));
-			var running = Bind.To(model.Stream, nameof(StreamModel.IsRunning));
-			return Bind.To(new PatternFormatter(), running, pats, active, row);
+			var edit = app.Track.Sequencer.Edit;
+			var pats = Bind.To(edit.Pats);
+			var active = Bind.To(edit.Edit);
+			var header = app.Track.Sequencer.Pattern.Name;
+			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
+			var running = Bind.To(app.Stream, nameof(StreamModel.IsRunning));
+			return Bind.To(new PatternFormatter(header), running, pats, active, row);
 		}
 
-		static BindingBase BindSelector(AppModel model, UIElement[] patterns)
+		static BindingBase BindSelector(AppModel app, UIElement[] patterns)
 		{
-			var active = Bind.To(model.Track.Sequencer.Edit.Edit);
-			var row = Bind.To(model.Stream, nameof(StreamModel.CurrentRow));
-			var running = Bind.To(model.Stream, nameof(StreamModel.IsRunning));
+			var active = Bind.To(app.Track.Sequencer.Edit.Edit);
+			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
+			var running = Bind.To(app.Stream, nameof(StreamModel.IsRunning));
 			return Bind.To(new PatternSelector(patterns), running, active, row);
 		}
 
-		static UIElement MakeContent(AppModel model)
+		static UIElement MakeContent(AppModel app)
 		{
 			var result = new ContentControl();
 			var highlighters = new List<Border>();
 			var patterns = new UIElement[TrackConstants.MaxPatterns];
 			for (int p = 0; p < patterns.Length; p++)
 			{
-				var pattern = MakePattern(model, p);
+				var pattern = MakePattern(app, p);
 				patterns[p] = pattern.Pattern;
 				highlighters.AddRange(pattern.Highlighters);
 			}
-			var edit = model.Track.Sequencer.Edit;
+			var edit = app.Track.Sequencer.Edit;
 			var dispatcher = Application.Current?.Dispatcher;
-			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.SetBinding(ContentControl.ContentProperty, BindSelector(model, patterns));
-			PropertyChangedEventHandler editHandler = (s, e) => UpdateHighlighters(model.Stream, edit, highlighters);
+			result.SetBinding(ContentControl.ContentProperty, BindSelector(app, patterns));
+			PropertyChangedEventHandler editHandler = (s, e) => UpdateHighlighters(app.Stream, edit, highlighters);
 			edit.Lpb.PropertyChanged += editHandler;
 			edit.Rows.PropertyChanged += editHandler;
-			Action<string> streamHandler = property => OnStreamPropertyChanged(model.Stream, edit, highlighters, property);
-			model.Stream.PropertyChanged += (s, e) => dispatcher.BeginInvoke(streamHandler, DispatcherPriority.Background, e.PropertyName);
-			UpdateHighlighters(model.Stream, edit, highlighters);
+			Action<string> streamHandler = property => OnStreamPropertyChanged(app.Stream, edit, highlighters, property);
+			app.Stream.PropertyChanged += (s, e) => dispatcher.BeginInvoke(streamHandler, DispatcherPriority.Background, e.PropertyName);
+			UpdateHighlighters(app.Stream, edit, highlighters);
 			return result;
 		}
 
-		static (UIElement Pattern, IList<Border> Highlighters) MakePattern(AppModel model, int pattern)
+		static (UIElement Pattern, IList<Border> Highlighters) MakePattern(AppModel app, int pattern)
 		{
 			var fx = TrackConstants.MaxFxs;
 			var keys = TrackConstants.MaxKeys;
 			var rows = TrackConstants.MaxRows;
 			int cols = keys * 5 + 1 + fx * 3;
 			var highlighters = new List<Border>();
-			var sequencer = model.Track.Sequencer;
+			var sequencer = app.Track.Sequencer;
 			var offset = pattern * rows;
 			var result = Create.Grid(rows, cols);
 			for (int r = 0; r < rows; r++)
@@ -119,7 +121,7 @@ namespace Xt.Synth0.UI
 				var highlighter = MakeHighlighter(new Cell(r, 0, 1, cols));
 				result.Add(highlighter);
 				highlighters.Add(highlighter);
-				AddRow(result, model, pattern, sequencer.Pattern.Rows[offset + r], r);
+				AddRow(result, app, pattern, sequencer.Pattern.Rows[offset + r], r);
 			}
 			return (result, highlighters);
 		}

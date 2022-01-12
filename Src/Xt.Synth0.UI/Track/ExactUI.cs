@@ -6,15 +6,15 @@ namespace Xt.Synth0.UI
 {
 	static class ExactUI
 	{
-		internal static void Show(SettingsModel model, Param param)
+		internal static void Show(SettingsModel settings, ThemeGroup group, Param param)
 		{
-			var window = Create.Window(model);
+			var window = Create.Window(settings, group);
 			window.Content = MakeGroup(window, param);
 			window.ShowDialog();
 		}
 
 		static UIElement MakeGroup(Window window, Param param)
-		=> Create.Group($"{param.Info.Min} to {param.Info.Max}", MakeContent(window, param));
+		=> Create.Group(param.Info.Range, MakeContent(window, param));
 
 		static UIElement MakeContent(Window window, Param param)
 		{

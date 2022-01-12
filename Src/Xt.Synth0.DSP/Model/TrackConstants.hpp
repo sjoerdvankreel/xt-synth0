@@ -8,8 +8,9 @@ namespace Xts { namespace TrackConstants {
 constexpr int MinOct = 0;
 constexpr int MaxOct = 9;
 
+constexpr int EnvCount = 2;
 constexpr int UnitCount = 3;
-constexpr int ParamCount = 39;
+constexpr int ParamCount = 58;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;

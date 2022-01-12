@@ -8,20 +8,20 @@ namespace Xts {
 
 class UnitDSP 
 {
-  float _phasef = 0.0f;
-  double _phased = 0.0;
+  double _phase = 0.0;
 
 public:
   void Reset();
   static void Init();
   float Frequency(UnitModel const& unit) const;
-  float Next(UnitModel const& unit, float rate);
+  float Next(UnitModel const& unit, float rate, bool* cycled);
 
 private:
-  float GenerateNaive(UnitModel const& unit);
-  float Generate(UnitModel const& unit, float freq, float rate);
-  float GenerateAdditive(UnitModel const& unit, float freq, float rate);
-  float GenerateAdditive(float freq, float rate, bool addSub, bool sinCos, int parts, int step, float logRolloff);
+  float PwmPhase(float phase, int pwm) const;
+  float GenerateNaive(NaiveType type, int pwm, float phase) const;
+  float Generate(UnitModel const& unit, float freq, float rate, float phase) const;
+  float GenerateAdd(UnitModel const& unit, float freq, float rate, float phase) const;
+  float GenerateAdd(float freq, float rate, float phase, bool addSub, bool sinCos, int parts, int step, float logRoll) const;
 };
 
 } // namespace Xts

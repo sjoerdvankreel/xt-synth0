@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class PatternModel : IModelGroup
+	public unsafe sealed class PatternModel : IThemedContainer
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal fixed byte rows[TrackConstants.TotalRows * TrackConstants.PatternRowSize]; }
@@ -16,7 +16,9 @@ namespace Xt.Synth0.Model
 				Rows[r].Keys[0].Note.Value = (int)PatternNote.C;
 		}
 
-		public IReadOnlyList<IModelGroup> SubGroups => Rows;
+		public string Name => "Pattern";
+		public ThemeGroup Group => ThemeGroup.EditPattern;
+		public IReadOnlyList<IModelContainer> SubContainers => Rows;
 		public IReadOnlyList<ISubModel> SubModels => new ISubModel[0];
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->pattern;
 

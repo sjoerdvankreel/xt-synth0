@@ -6,92 +6,93 @@ namespace Xt.Synth0.UI
 {
 	static class MonitorUI
 	{
-		internal static UIElement Make(StreamModel model)
+		internal static UIElement Make(AppModel app)
 		{
-			var result = Create.Group("Monitor", MakeBorder(model));
-			var binding = Bind.To(model, nameof(model.IsRunning),
+			var monitor = app.Track.Sequencer.Monitor;
+			var result = Create.ThemedGroup(app.Settings, monitor, MakeBorder(app.Stream));
+			var binding = Bind.To(app.Stream, nameof(app.Stream.IsRunning),
 				new VisibilityConverter(true, true));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeBorder(StreamModel model)
+		static UIElement MakeBorder(StreamModel stream)
 		{
 			var result = new Border();
-			result.Child = MakeContent(model);
+			result.Child = MakeContent(stream);
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 
-		static UIElement MakeContent(StreamModel model)
+		static UIElement MakeContent(StreamModel stream)
 		{
 			var result = Create.Grid(3, 2);
-			result.Add(CreateBuffer(model, new(0, 0)));
-			result.Add(CreateOverload(model, new(1, 0)));
-			result.Add(CreateClip(model, new(1, 1)));
-			result.Add(CreateCpuUsage(model, new(2, 0)));
-			result.Add(CreateGC(model, new(2, 1)));
+			result.Add(CreateBuffer(stream, new(0, 0)));
+			result.Add(CreateOverload(stream, new(1, 0)));
+			result.Add(CreateClip(stream, new(1, 1)));
+			result.Add(CreateCpuUsage(stream, new(2, 0)));
+			result.Add(CreateGC(stream, new(2, 1)));
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.HorizontalAlignment = HorizontalAlignment.Center;
 			return result;
 		}
 
-		static UIElement CreateClip(StreamModel model, Cell cell)
+		static UIElement CreateClip(StreamModel stream, Cell cell)
 		{
 			var result = Create.Text("Clip", cell);
-			var binding = Bind.To(model, nameof(model.IsClipping));
+			var binding = Bind.To(stream, nameof(stream.IsClipping));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
-		static UIElement CreateOverload(StreamModel model, Cell cell)
+		static UIElement CreateOverload(StreamModel stream, Cell cell)
 		{
 			var result = Create.Text("Overload", cell);
-			var binding = Bind.To(model, nameof(model.IsOverloaded));
+			var binding = Bind.To(stream, nameof(stream.IsOverloaded));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
-		static UIElement CreateCpuUsage(StreamModel model, Cell cell)
+		static UIElement CreateCpuUsage(StreamModel stream, Cell cell)
 		{
 			var result = Create.Element<WrapPanel>(cell);
 			result.Add(Create.Text("CPU "));
 			var text = Create.Element<TextBlock>(cell);
-			var binding = Bind.To(model, nameof(model.CpuUsage), new CpuUsageFormatter());
+			var binding = Bind.To(stream, nameof(stream.CpuUsage), new CpuUsageFormatter());
 			text.SetBinding(TextBlock.TextProperty, binding);
 			result.Add(text);
 			result.Add(Create.Text(" "));
 			return result;
 		}
 
-		static UIElement CreateBuffer(StreamModel model, Cell cell)
+		static UIElement CreateBuffer(StreamModel stream, Cell cell)
 		{
 			var result = Create.Element<TextBlock>(cell);
-			var latencyBinding = Bind.To(model, nameof(model.LatencyMs));
-			var bufferBinding = Bind.To(model, nameof(model.BufferSizeFrames));
+			var latencyBinding = Bind.To(stream, nameof(stream.LatencyMs));
+			var bufferBinding = Bind.To(stream, nameof(stream.BufferSizeFrames));
 			var binding = Bind.To(new MonitorFormatter(), bufferBinding, latencyBinding);
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.SetValue(Grid.ColumnSpanProperty, 2);
 			return result;
 		}
 
-		static UIElement CreateGC(StreamModel model, Cell cell)
+		static UIElement CreateGC(StreamModel stream, Cell cell)
 		{
 			var result = Create.Element<WrapPanel>(cell);
 			result.Add(Create.Text("GC "));
-			result.Add(CreateGCGeneration(model, nameof(model.GC0Collected), "0"));
-			result.Add(CreateGCGeneration(model, nameof(model.GC1Collected), " 1"));
-			result.Add(CreateGCGeneration(model, nameof(model.GC2Collected), " 2"));
+			result.Add(CreateGCGeneration(stream, nameof(stream.GC0Collected), "0"));
+			result.Add(CreateGCGeneration(stream, nameof(stream.GC1Collected), " 1"));
+			result.Add(CreateGCGeneration(stream, nameof(stream.GC2Collected), " 2"));
 			return result;
 		}
 
-		static UIElement CreateGCGeneration(StreamModel model, string path, string generation)
+		static UIElement CreateGCGeneration(StreamModel stream, string path, string generation)
 		{
 			var result = new TextBlock();
 			result.Text = generation;
-			var binding = Bind.To(model, path);
+			var binding = Bind.To(stream, path);
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}

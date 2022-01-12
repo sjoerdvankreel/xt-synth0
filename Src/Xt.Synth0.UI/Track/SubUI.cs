@@ -6,27 +6,20 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	static class GroupUI
+	static class SubUI
 	{
 		const double BorderThickness = 1;
 
-		internal static GroupBox Make(AppModel model, INamedModel group)
-		=> Create.Group(group.Name, MakeContent(model, group));
+		internal static GroupBox Make(AppModel app, IThemedSubModel sub)
+		=> Create.ThemedGroup(app.Settings, sub, MakeContent(app, sub));
 
-		static Param[][] Layout(INamedModel group) =>
-			group.ParamLayout
-			.GroupBy(e => e.Value)
-			.OrderBy(e => e.Key)
-			.Select(e => e.Select(p => p.Key).ToArray())
-			.ToArray();
-
-		internal static FrameworkElement MakeContent(AppModel app, INamedModel group)
+		internal static FrameworkElement MakeContent(AppModel app, IThemedSubModel sub)
 		{
 			var result = new Border();
 			result.SnapsToDevicePixels = true;
 			result.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
-			result.Child = MakeGrid(app, group);
+			result.Child = MakeGrid(app, sub);
 			return result;
 		}
 
@@ -40,29 +33,20 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void AddParams(Grid grid, AppModel model, 
-			INamedModel group, Param[] @params, int l, int cols)
-		{
-			int r = l / cols;
-			int c = l % cols;
-			for (int p = 0; p < @params.Length; p++)
-				grid.Add(MakeBorder(ParamUI.Make(model, group, @params[p]), new(r, c)));
-		}
-
-		static Grid MakeGrid(AppModel app, INamedModel group)
+		static Grid MakeGrid(AppModel app, IThemedSubModel sub)
 		{
 			const int cols = 2;
-			var layout = Layout(group);
-			int rows = (int)Math.Ceiling(layout.Length / (double)cols);
+			var positions = sub.ParamLayout.Max(p => p.Value) + 1;
+			int rows = (int)Math.Ceiling(positions / (double)cols);
 			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.RowDefinitions[rows - 1].Height = new GridLength(1.0, GridUnitType.Star);
 			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
-			for (int l = 0; l < layout.Length; l++)
-				AddParams(result, app, group, layout[l], l, cols);
-			if (layout.Length % 2 == 1)
+			foreach (var p in sub.ParamLayout)
+				result.Add(MakeBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));
+			if (positions % 2 == 1)
 				result.Add(MakeBorder(null, new Cell(rows - 1, cols - 1)));
 			return result;
 		}

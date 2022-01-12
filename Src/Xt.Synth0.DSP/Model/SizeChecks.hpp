@@ -15,9 +15,10 @@ template<int Actual, int Expected>
 struct CheckSize { static_assert(Actual == Expected); };
 
 XTS_CHECK_SIZE(Param, 16);
+XTS_CHECK_SIZE(EnvModel, 40);
 XTS_CHECK_SIZE(UnitModel, 48);
-XTS_CHECK_SIZE(SynthModel, 784);
 XTS_CHECK_SIZE(GlobalModel, 16);
+XTS_CHECK_SIZE(SynthModel, 1168);
 
 XTS_CHECK_SIZE(PatternFx, 8);
 XTS_CHECK_SIZE(EditModel, 24);

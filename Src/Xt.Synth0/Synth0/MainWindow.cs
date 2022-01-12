@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
@@ -62,23 +61,13 @@ namespace Xt.Synth0
 
 		UIElement MakeContent()
 		{
-			var result = new DockPanel();
-			var menu = MenuUI.Make(Model);
+			var result = Create.Themed<DockPanel>(Model.Settings, ThemeGroup.Settings);
+			var menu = result.Add(MenuUI.Make(Model));
 			menu.SetValue(DockPanel.DockProperty, Dock.Top);
-			result.Add(menu);
-			var track = TrackUI.Make(Model);
+			var track = result.Add(TrackUI.Make(Model));
 			track.SetValue(DockPanel.DockProperty, Dock.Bottom);
-			result.Add(track);
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
-			result.Resources = Utility.GetThemeResources(Model.Settings.Theme);
-			Model.Settings.PropertyChanged += (s, e) => OnSettingsPropertyChanged(result, e);
 			return result;
-		}
-
-		void OnSettingsPropertyChanged(FrameworkElement panel, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(SettingsModel.Theme))
-				panel.Resources = Utility.GetThemeResources(Model.Settings.Theme);
 		}
 	}
 }

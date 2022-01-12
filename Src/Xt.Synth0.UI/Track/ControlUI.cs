@@ -10,8 +10,8 @@ namespace Xt.Synth0.UI
 		public static event EventHandler Stop;
 		public static event EventHandler Start;
 
-		internal static UIElement Make(StreamModel model)
-		=> Create.Group("Control", MakeContent(model));
+		internal static UIElement Make(AppModel app)
+		=> Create.ThemedGroup(app.Settings, app.Track.Sequencer.Control, MakeContent(app.Stream));
 
 		static Button MakeButton(string content, Action execute)
 		{
@@ -21,18 +21,18 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeContent(StreamModel model)
+		static UIElement MakeContent(StreamModel stream)
 		{
 			var result = new DockPanel();
 			result.LastChildFill = false;
 			result.VerticalAlignment = VerticalAlignment.Bottom;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
-			var binding = Bind.To(model, nameof(StreamModel.IsStopped), new NegateConverter());
+			var binding = Bind.To(stream, nameof(StreamModel.IsStopped), new NegateConverter());
 			stop.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Add(stop, Dock.Right);
 			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
-			binding = Bind.To(model, nameof(StreamModel.IsRunning), new NegateConverter());
+			binding = Bind.To(stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			start.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Add(start, Dock.Right);
 			result.SetResourceReference(Panel.BackgroundProperty, Utility.BackgroundParamKey);

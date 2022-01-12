@@ -3,6 +3,18 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+	public sealed class ControlModel : IThemedModel
+	{
+		public string Name => "Control";
+		public ThemeGroup Group => ThemeGroup.MonitorControl;
+	}
+
+	public sealed class MonitorModel : IThemedModel
+	{
+		public string Name => "Monitor";
+		public ThemeGroup Group => ThemeGroup.MonitorControl;
+	}
+
 	public sealed class SequencerModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
@@ -14,7 +26,9 @@ namespace Xt.Synth0.Model
 
 		public EditModel Edit { get; } = new();
 		public PatternModel Pattern { get; } = new();
+		public ControlModel Control { get; } = new();
+		public MonitorModel Monitor { get; } = new();
 		public override IReadOnlyList<ISubModel> SubModels => new[] { Edit };
-		public override IReadOnlyList<IModelGroup> SubGroups => new[] { Pattern };
+		public override IReadOnlyList<IModelContainer> SubContainers => new[] { Pattern };
 	}
 }

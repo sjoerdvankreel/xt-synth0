@@ -32,13 +32,15 @@ namespace Xt.Synth0.Model
 		public const int MaxOct = 9;
 		public const int FormatVersion = 1;
 
+		public const int EnvCount = 2;
 		public const int UnitCount = 3;
-		public const int ParamCount = 39;
+		public const int ParamCount = 58;
 
 		internal const int ParamSize = 16;
+		internal const int EnvModelSize = 40;
 		internal const int UnitModelSize = 48;
-		internal const int SynthModelSize = 784;
 		internal const int GlobalModelSize = 16;
+		internal const int SynthModelSize = 1168;
 
 		internal const int PatternFxSize = 8;
 		internal const int EditModelSize = 24;

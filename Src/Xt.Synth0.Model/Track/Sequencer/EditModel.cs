@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class EditModel : INamedModel
+	public unsafe sealed class EditModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native { internal int pats, rows, keys, fxs, lpb, edit; }
@@ -16,6 +16,7 @@ namespace Xt.Synth0.Model
 		public Param Rows { get; } = new(RowsInfo);
 
 		public string Name => "Edit";
+		public ThemeGroup Group => ThemeGroup.EditPattern;
 		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Lpb, Edit };
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
 

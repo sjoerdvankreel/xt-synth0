@@ -25,15 +25,13 @@ namespace Xt.Synth0
 		internal static extern void XtsSequencerModelDestroy(IntPtr seq);
 
 		[DllImport("XT.Synth0.DSP")]
-		internal static extern IntPtr XtsUnitDSPCreate();
+		internal static extern IntPtr XtsPlotDSPCreate();
 		[DllImport("XT.Synth0.DSP")]
-		internal static extern void XtsUnitDSPReset(IntPtr dsp);
+		internal static extern void XtsPlotDSPDestroy(IntPtr dsp);
 		[DllImport("XT.Synth0.DSP")]
-		internal static extern void XtsUnitDSPDestroy(IntPtr dsp);
-		[DllImport("XT.Synth0.DSP")]
-		internal static extern float XtsUnitDSPFrequency(IntPtr dsp, IntPtr unit);
-		[DllImport("XT.Synth0.DSP")]
-		internal static extern float XtsUnitDSPNext(IntPtr dsp, IntPtr unit, float rate);
+		internal static extern void XtsPlotDSPRender(
+		  IntPtr dsp, IntPtr synth, int pixels, int* rate, float* frequency,
+			float** samples, int* sampleCount, int** splits, int* splitCount);
 
 		[DllImport("XT.Synth0.DSP")]
 		internal static extern IntPtr XtsSequencerDSPCreate();
@@ -43,7 +41,7 @@ namespace Xt.Synth0
 		internal static extern void XtsSequencerDSPDestroy(IntPtr dsp);
 		[DllImport("XT.Synth0.DSP")]
 		internal static extern void XtsSequencerDSPProcessBuffer(
-			IntPtr dsp, IntPtr seq, IntPtr synth, float rate, 
+			IntPtr dsp, IntPtr seq, IntPtr synth, float rate,
 			float* buffer, int frames, int* currentRow, long* streamPosition);
 	}
 }

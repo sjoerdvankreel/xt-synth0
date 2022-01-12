@@ -14,10 +14,10 @@ namespace Xt.Synth0.Model
 			Sequencer.ParamChanged += (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		public void CopyTo(TrackModel model)
+		public void CopyTo(TrackModel track)
 		{
-			Synth.CopyTo(model.Synth);
-			Sequencer.CopyTo(model.Sequencer);
+			Synth.CopyTo(track.Synth);
+			Sequencer.CopyTo(track.Sequencer);
 		}
 	}
 }

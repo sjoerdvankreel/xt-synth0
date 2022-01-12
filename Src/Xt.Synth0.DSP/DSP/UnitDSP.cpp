@@ -31,9 +31,13 @@ UnitDSP::Init()
 
 void
 UnitDSP::Reset()
+{ _phase = 0.0; }
+
+float 
+UnitDSP::PwmPhase(float phase, int pwm) const
 {
-  _phased = 0.0;
-  _phasef = 0.0f;
+	float result = phase + pwm / 256.0f;
+	return result - (int)result;
 }
 
 float
@@ -41,78 +45,89 @@ UnitDSP::Frequency(UnitModel const& unit) const
 { return FrequencyTable[unit.oct][unit.note][unit.cent + 50]; }
 
 float
-UnitDSP::Next(UnitModel const& unit, float rate)
+UnitDSP::Next(UnitModel const& unit, float rate, bool* cycled)
 {
-	if (unit.type == static_cast<int>(UnitType::Off)) return 0.0f;
-	_phasef = (float)_phased;
+  *cycled = false;
+  float result = 0.0f;
 	float freq = Frequency(unit);
-	float sample = Generate(unit, freq, rate);
-	_phased += freq / rate;
-	if (_phased >= 1.0) _phased = 0.0;
-	return sample * unit.amp / 255.0f;
+	if (unit.type != static_cast<int>(UnitType::Off))
+	{
+		float phase = static_cast<float>(_phase);
+		result = Generate(unit, freq, rate, phase);
+	}
+	_phase += freq / rate;
+	if (_phase >= 1.0)
+  { 
+    Reset();
+    *cycled = true;
+  }
+	return result * unit.amp / 255.0f;
 }
 
 float 
-UnitDSP::Generate(UnitModel const& unit, float freq, float rate)
+UnitDSP::Generate(UnitModel const& unit, float freq, float rate, float phase) const
 {
 	auto pi = static_cast<float>(M_PI);
 	auto type = static_cast<UnitType>(unit.type);
+  auto naiveType = static_cast<NaiveType>(unit.naiveType);
 	switch(type)
   {
-	case UnitType::Naive: return GenerateNaive(unit);
-	case UnitType::Sine: return std::sinf(_phasef * 2.0f * pi);
-	case UnitType::Additive: return GenerateAdditive(unit, freq, rate);
+	case UnitType::Sin: return std::sinf(phase * 2.0f * pi);
+	case UnitType::Add: return GenerateAdd(unit, freq, rate, phase);
+	case UnitType::Naive: return GenerateNaive(naiveType, unit.pwm, phase);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateNaive(UnitModel const& unit)
+UnitDSP::GenerateNaive(NaiveType type, int pwm, float phase) const
 {
-  float pwm = unit.pwm / 256.0f;
-	auto type = static_cast<NaiveType>(unit.naiveType);
   switch(type)
   {
-    case NaiveType::Saw: return _phasef * 2.0f - 1.0f;
-		case NaiveType::Pulse: return _phasef <= pwm ? 1.0f : -1.0f;
-		case NaiveType::Impulse: return _phasef == 0.0f ? 1.0f : 0.0f;
-		case NaiveType::Triangle: return (_phasef < 0.5f ? _phasef : 1.0f - _phasef) * 4.0f - 1.0f;
+    case NaiveType::Saw: return phase * 2.0f - 1.0f;
+		case NaiveType::Tri: return (phase < 0.5f ? phase : 1.0f - phase) * 4.0f - 1.0f;
+		case NaiveType::Pulse: return (GenerateNaive(NaiveType::Saw, pwm, phase)
+			- GenerateNaive(NaiveType::Saw, pwm, PwmPhase(phase, pwm))) / 2.0f;
 		default: assert(false); return 0.0f;
 	}
 }
 
 float
-UnitDSP::GenerateAdditive(UnitModel const& unit, float freq, float rate)
+UnitDSP::GenerateAdd(UnitModel const& unit, float freq, float rate, float phase) const
 {
   int step;
 	int parts;
 	bool sinCos;
 	bool addSub;
-	float logRolloff;
-  auto type = static_cast<AdditiveType>(unit.addType);
+	float logRoll;
+  auto type = static_cast<AddType>(unit.addType);
   switch(type)
   {
-  case AdditiveType::Saw: step = 1; sinCos = false, addSub = false, logRolloff = 1.0f; parts = 1 << unit.addMaxParts; break;
-	case AdditiveType::Pulse:	step = 2;	sinCos = false, addSub = false, logRolloff = 1.0f; parts = 1 << unit.addMaxParts; break;
-	case AdditiveType::Impulse:	step = 1; sinCos = false, addSub = false, logRolloff = 0.0f; parts = 1 << unit.addMaxParts; break;
-	case AdditiveType::Triangle: step = 2; sinCos = false, addSub = true, logRolloff = 2.0f;	parts = 1 << unit.addMaxParts;	break;
-	case AdditiveType::SinAddSin:
-	case AdditiveType::SinAddCos:
-	case AdditiveType::SinSubSin:
-	case AdditiveType::SinSubCos: 
+  case AddType::Saw: step = 1; sinCos = false, addSub = false, logRoll = 1.0f; parts = 1 << unit.addMaxParts; break;
+	case AddType::Tri: step = 2; sinCos = false, addSub = true, logRoll = 2.0f;	parts = 1 << unit.addMaxParts;	break;
+	case AddType::Sqr: step = 2;	sinCos = false, addSub = false, logRoll = 1.0f; parts = 1 << unit.addMaxParts; break;
+	case AddType::Pulse: step = 1; sinCos = false, addSub = false, logRoll = 1.0f; parts = 1 << unit.addMaxParts; break;
+	case AddType::Impulse:	step = 1; sinCos = false, addSub = false, logRoll = 0.0f; parts = 1 << unit.addMaxParts; break;
+	case AddType::SinAddSin:
+	case AddType::SinAddCos:
+	case AddType::SinSubSin:
+	case AddType::SinSubCos:
     step = unit.addStep;
 		parts = unit.addParts;
-    logRolloff = unit.addRolloff / 128.0f;
-		sinCos = type == AdditiveType::SinAddCos || type == AdditiveType::SinSubCos;
-		addSub = type == AdditiveType::SinSubSin || type == AdditiveType::SinSubCos;
+		logRoll = unit.addRoll / 128.0f;
+		sinCos = type == AddType::SinAddCos || type == AddType::SinSubCos;
+		addSub = type == AddType::SinSubSin || type == AddType::SinSubCos;
     break;
   default: assert(false); break;
 	}
-  return GenerateAdditive(freq, rate, addSub, sinCos, parts, step, logRolloff);
+  float result = GenerateAdd(freq, rate, phase, addSub, sinCos, parts, step, logRoll);
+  if(type != AddType::Pulse) return result;
+	float phase2 = PwmPhase(phase, unit.pwm);
+  return (result - GenerateAdd(freq, rate, phase2, addSub, sinCos, parts, step, logRoll)) / 2.0f;
 }
 
 float 
-UnitDSP::GenerateAdditive(float freq, float rate, bool addSub, bool sinCos, int parts, int step, float logRolloff)
+UnitDSP::GenerateAdd(float freq, float rate, float phase, bool addSub, bool sinCos, int parts, int step, float logRoll) const
 {
 	__m256 cosines;
 	float limit = 0.0;
@@ -126,10 +141,10 @@ UnitDSP::GenerateAdditive(float freq, float rate, bool addSub, bool sinCos, int 
 	__m256 freqs = _mm256_set1_ps(freq);
 	__m256 limits = _mm256_set1_ps(0.0f);
 	__m256 results = _mm256_set1_ps(0.0f);
-	__m256 phases = _mm256_set1_ps(_phasef);
+	__m256 phases = _mm256_set1_ps(phase);
   __m256 twopis = _mm256_set1_ps(2.0f * pi);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
-  __m256 logRolloffs = _mm256_set1_ps(logRolloff);
+  __m256 logRolls = _mm256_set1_ps(logRoll);
 	__m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
 	if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 	for (int p = 1; p <= parts * step; p += step * 8)
@@ -141,8 +156,8 @@ UnitDSP::GenerateAdditive(float freq, float rate, bool addSub, bool sinCos, int 
 		__m256 belowMax = _mm256_cmp_ps(allPs, maxPs, _CMP_LE_OQ);
 		__m256 belowNyquists = _mm256_cmp_ps(_mm256_mul_ps(allPs, freqs), nyquists, _CMP_LT_OQ);
     __m256 wantedPs = _mm256_blendv_ps(zeros, _mm256_blendv_ps(zeros, ones, belowMax), belowNyquists);
-  	__m256 rolloffs = _mm256_pow_ps(allPs, logRolloffs);
-    __m256 amps = _mm256_div_ps(ones, rolloffs);
+  	__m256 rolls = _mm256_pow_ps(allPs, logRolls);
+    __m256 amps = _mm256_div_ps(ones, rolls);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
     __m256 sines = _mm256_sincos_ps(&cosines, _mm256_mul_ps(psPhases, twopis));
     __m256 waves = !sinCos? sines: _mm256_blend_ps(sines, cosines, selector);

@@ -10,12 +10,12 @@ namespace Xt.Synth0.UI
 {
 	static class ParamUI
 	{
-		static string Tooltip(SynthModel model, Param param)
+		static string Tooltip(SynthModel synth, Param param)
 		{
-			var auto = model.Auto(param);
+			var auto = synth.Auto(param);
 			var result = new StringBuilder();
 			if (param.Info.Control == ParamControl.Knob)
-				result.AppendLine($"Range: {param.Info.Min} .. {param.Info.Max}");
+				result.AppendLine($"Range: {param.Info.Range}");
 			if (auto != null)
 				result.AppendLine($"Automation target: {auto?.Index.ToString("X2")}");
 			if (param.Info.Control == ParamControl.Knob)
@@ -32,67 +32,70 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static UIElement Make(
-			AppModel app, ISubModel sub, Param param)
+			AppModel app, IThemedSubModel sub, Param param)
 		{
 			var result = MakeEmpty();
 			bool conditional = param.Info.Relevance != null;
 			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(sub, param));
-			result.Add(MakeControl(app, param), Dock.Left);
+			result.Add(MakeControl(app, sub, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
-			result.Add(Create.Label(param.Info.Name), Dock.Left);
+			var name = result.Add(Create.Text($"{param.Info.Name} "), Dock.Left);
+			name.VerticalAlignment = VerticalAlignment.Center;
 			if (param.Info.Type == ParamType.Toggle) return result;
 			result.Add(MakeValue(param), Dock.Left);
 			return result;
 		}
 
-		static Control MakeControl(AppModel model, Param param)
+		static Control MakeControl(AppModel app, IThemedSubModel sub, Param param)
 		=> param.Info.Type switch
 		{
-			ParamType.Lin => MakeKnob(model, param),
-			ParamType.Exp => MakeKnob(model, param),
-			ParamType.Quad => MakeKnob(model, param),
-			ParamType.List => MakeList(model, param),
-			ParamType.Toggle => MakeToggle(model, param),
+			ParamType.List => MakeList(app, param),
+			ParamType.Toggle => MakeToggle(app, param),
+			ParamType.Lin => MakeKnob(app, sub, param),
+			ParamType.Exp => MakeKnob(app, sub, param),
+			ParamType.Time => MakeKnob(app, sub, param),
 			_ => throw new InvalidOperationException()
 		};
 
-		static Control MakeValue(Param param)
+		static TextBlock MakeValue(Param param)
 		{
-			var result = new Label();
+			var result = new TextBlock();
 			var binding = Bind.Format(param);
-			result.SetBinding(ContentControl.ContentProperty, binding);
+			result.SetBinding(TextBlock.TextProperty, binding);
+			result.VerticalAlignment = VerticalAlignment.Center;
 			return result;
 		}
 
-		static Control MakeToggle(AppModel model, Param param)
+		static Control MakeToggle(AppModel app, Param param)
 		{
 			var result = new CheckBox();
-			result.ToolTip = Tooltip(model.Track.Synth, param);
+			result.ToolTip = Tooltip(app.Track.Synth, param);
 			result.SetBinding(ToggleButton.IsCheckedProperty, Bind.To(param));
 			return result;
 		}
 
-		static Control MakeKnob(AppModel model, Param param)
-		{
-			var result = new Knob();
-			result.Minimum = param.Info.Min;
-			result.Maximum = param.Info.Max;
-			result.ToolTip = Tooltip(model.Track.Synth, param);
-			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.MouseRightButtonUp += (s, e) => ExactUI.Show(model.Settings, param);
-			return result;
-		}
-
-		static Control MakeList(AppModel model, Param param)
+		static Control MakeList(AppModel app, Param param)
 		{
 			var result = new ComboBox();
 			result.SelectedValuePath = nameof(ListItem.Value);
-			result.ToolTip = Tooltip(model.Track.Synth, param);
+			result.ToolTip = Tooltip(app.Track.Synth, param);
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			var range = Enumerable.Range(param.Info.Min, param.Info.Max - param.Info.Min + 1);
 			var items = range.Select(i => new ListItem(param.Info, i)).ToArray();
 			result.SetBinding(Selector.SelectedValueProperty, Bind.To(param));
 			result.SetValue(ItemsControl.ItemsSourceProperty, items);
+			return result;
+		}
+
+		static Control MakeKnob(AppModel app, IThemedSubModel sub, Param param)
+		{
+			var result = new Knob();
+			result.Minimum = param.Info.Min;
+			result.Maximum = param.Info.Max;
+			result.ToolTip = Tooltip(app.Track.Synth, param);
+			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
+			result.MouseRightButtonUp += (s, e) => ExactUI.Show(app.Settings, sub.Group, param);
+			result.Sensitivity = Math.Max(Knob.MinSensitivityHint, param.Info.Max - param.Info.Min);
 			return result;
 		}
 	}

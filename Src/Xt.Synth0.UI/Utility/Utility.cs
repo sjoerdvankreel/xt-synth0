@@ -13,10 +13,23 @@ namespace Xt.Synth0.UI
 
 		public static readonly FontFamily FontFamily = new("Consolas");
 		internal static string RowEnabledKey = nameof(RowEnabledKey);
+		internal static string ForegroundKey = nameof(ForegroundKey);
+		internal static string Foreground1Key = nameof(Foreground1Key);
+		internal static string Foreground2Key = nameof(Foreground2Key);
 		internal static string RowDisabledKey = nameof(RowDisabledKey);
 		internal static string BorderParamKey = nameof(BorderParamKey);
-		internal static string Foreground2Key = nameof(Foreground2Key);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
+
+		static ThemeType GroupType(ThemeGroup group) => group switch
+		{
+			ThemeGroup.Settings => ThemeType.White,
+			ThemeGroup.Envs => ThemeType.Spring,
+			ThemeGroup.Units => ThemeType.Orange,
+			ThemeGroup.EditPattern => ThemeType.Cyan,
+			ThemeGroup.GlobalPlot => ThemeType.Yellow,
+			ThemeGroup.MonitorControl => ThemeType.Azure,
+			_ => throw new InvalidOperationException()
+		};
 
 		internal static void FocusDown()
 		{
@@ -24,13 +37,14 @@ namespace Xt.Synth0.UI
 			(Keyboard.FocusedElement as UIElement)?.MoveFocus(request);
 		}
 
-		public static ResourceDictionary GetThemeResources(ThemeType theme)
+		public static ResourceDictionary GetThemeResources(ThemeType theme, ThemeGroup group)
 		{
-			if (ThemeResources.TryGetValue(theme, out var result)) return result;
-			var location = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{theme}.xaml";
+			var effectiveTheme = theme != ThemeType.Grouped ? theme : GroupType(group);
+			if (ThemeResources.TryGetValue(effectiveTheme, out var result)) return result;
+			var location = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{effectiveTheme}.xaml";
 			result = new ResourceDictionary();
 			result.Source = new Uri(location);
-			ThemeResources.Add(theme, result);
+			ThemeResources.Add(effectiveTheme, result);
 			return result;
 		}
 	}

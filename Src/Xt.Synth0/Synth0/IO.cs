@@ -33,40 +33,40 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		internal static void LoadSetting(SettingsModel model)
+		internal static void LoadSetting(SettingsModel settings)
 		{
 			var path = GetSettingsPath();
 			if (!File.Exists(path)) return;
 			var json = File.ReadAllText(path);
-			JsonConvert.PopulateObject(json, model, MakeSettings());
+			JsonConvert.PopulateObject(json, settings, MakeSettings());
 		}
 
-		internal static void SaveSettings(SettingsModel model)
+		internal static void SaveSettings(SettingsModel settings)
 		{
-			var json = JsonConvert.SerializeObject(model, MakeSettings());
+			var json = JsonConvert.SerializeObject(settings, MakeSettings());
 			File.WriteAllText(GetSettingsPath(), json);
 		}
 
-		internal static void SaveFile(TrackModel model, string path)
+		internal static void SaveFile(TrackModel track, string path)
 		{
 			var ints = new[] { TrackConstants.FormatVersion }.Concat(
-				model.Synth.Params.Select(p => p.Value)).Concat(
-				model.Sequencer.Params.Select(p => p.Value)).ToArray();
+				track.Synth.Params.Select(p => p.Value)).Concat(
+				track.Sequencer.Params.Select(p => p.Value)).ToArray();
 			var bytes = ints.SelectMany(i => BitConverter.GetBytes(i)).ToArray();
 			File.WriteAllBytes(path, bytes);
 		}
 
-		internal static void LoadFile(string path, TrackModel model)
+		internal static void LoadFile(string path, TrackModel track)
 		{
 			var bytes = File.ReadAllBytes(path);
 			var range = Enumerable.Range(0, bytes.Length / 4);
 			var ints = range.Select(i => BitConverter.ToInt32(bytes, i * 4)).ToArray();
 			if (ints[0] != TrackConstants.FormatVersion)
 				throw new InvalidOperationException("Wrong file format version.");
-			for (int i = 0; i < model.Synth.Params.Count; i++)
-				model.Synth.Params[i].Value = ints[i + 1];
-			for (int i = 0; i < model.Sequencer.Params.Count; i++)
-				model.Sequencer.Params[i].Value = ints[model.Synth.Params.Count + i + 1];
+			for (int i = 0; i < track.Synth.Params.Count; i++)
+				track.Synth.Params[i].Value = ints[i + 1];
+			for (int i = 0; i < track.Sequencer.Params.Count; i++)
+				track.Sequencer.Params[i].Value = ints[track.Synth.Params.Count + i + 1];
 		}
 
 		internal static void LogError(DateTime startTime, string message, string trace)

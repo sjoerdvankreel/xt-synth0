@@ -16,10 +16,10 @@ namespace Xt.Synth0.UI
 		public static event EventHandler ShowSettings;
 		public static event EventHandler<OpenRecentEventArgs> OpenRecent;
 
-		public static UIElement Make(AppModel model)
+		public static UIElement Make(AppModel app)
 		{
 			var result = new Menu();
-			result.Items.Add(MakeFile(model));
+			result.Items.Add(MakeFile(app));
 			return result;
 		}
 
@@ -50,32 +50,32 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static MenuItem MakeItem(StreamModel model, 
+		static MenuItem MakeItem(StreamModel stream, 
 			string header, Action execute)
 		{
 			var result = MakeItem(header, execute);
-			var binding = Bind.To(model, nameof(model.IsRunning), new NegateConverter());
+			var binding = Bind.To(stream, nameof(stream.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
 		static MenuItem MakeItem(ICommand command,
-			StreamModel model, string header, Action execute)
+			StreamModel stream, string header, Action execute)
 		{
 			var result = MakeItem(command, header, execute);
-			var binding = Bind.To(model, nameof(model.IsRunning), new NegateConverter());
+			var binding = Bind.To(stream, nameof(stream.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
-		static MenuItem MakeRecent(AppModel model)
+		static MenuItem MakeRecent(AppModel app)
 		{
 			var result = MakeItem("Recent Files");
 			result.Click += OnRecentFileClick;
-			result.ItemsSource = model.Settings.RecentFiles; 
-			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			result.ItemsSource = app.Settings.RecentFiles; 
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
-			binding = Bind.Show(model.Settings.RecentFiles, nameof(ICollection.Count), 1);
+			binding = Bind.Show(app.Settings.RecentFiles, nameof(ICollection.Count), 1);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
@@ -87,9 +87,9 @@ namespace Xt.Synth0.UI
 			OpenRecent?.Invoke(null, new OpenRecentEventArgs(source.Header.ToString()));
 		}
 
-		static UIElement MakeFile(AppModel model)
+		static UIElement MakeFile(AppModel app)
 		{
-			var stream = model.Stream;
+			var stream = app.Stream;
 			var result = MakeItem("_File");
 			var doNew = () => New(null, EventArgs.Empty);
 			result.Items.Add(MakeItem(ApplicationCommands.New, stream, "_New", doNew));
@@ -103,7 +103,7 @@ namespace Xt.Synth0.UI
 			result.Items.Add(new Separator());
 			var doShowSettings = () => ShowSettings(null, EventArgs.Empty);
 			result.Items.Add(MakeItem(stream, "Settings", doShowSettings));
-			result.Items.Add(MakeRecent(model));
+			result.Items.Add(MakeRecent(app));
 			result.Items.Add(new Separator());
 			var doExit = () => Application.Current.MainWindow.Close();
 			result.Items.Add(MakeItem("E_xit", doExit));

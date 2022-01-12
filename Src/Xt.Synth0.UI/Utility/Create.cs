@@ -5,7 +5,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	static class Create
+	public static class Create
 	{
 		static RowDefinition Row()
 		{
@@ -21,17 +21,21 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static GroupBox Group(string header)
+		internal static GroupBox Group(
+			string header, object content)
 		{
 			var result = new GroupBox();
+			result.Content = content;
 			result.Header = header;
 			return result;
 		}
 
-		internal static GroupBox Group(string header, object content)
+		internal static GroupBox ThemedGroup(
+			SettingsModel settings, IThemedModel themed, object content)
 		{
-			var result = Group(header);
+			var result = Themed<GroupBox>(settings, themed.Group);
 			result.Content = content;
+			result.Header = themed.Name;
 			return result;
 		}
 
@@ -113,26 +117,34 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Window Window(SettingsModel model)
+		internal static Window Window(SettingsModel settings, ThemeGroup group)
 		{
-			var result = new Window();
+			var result = Themed<Window>(settings, group);
 			result.ShowInTaskbar = false;
 			result.SnapsToDevicePixels = true;
 			result.WindowStyle = WindowStyle.None;
 			result.ResizeMode = ResizeMode.NoResize;
 			result.Owner = Application.Current.MainWindow;
 			result.SizeToContent = SizeToContent.WidthAndHeight;
-			result.Resources = Utility.GetThemeResources(model.Theme);
 			result.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
-			model.PropertyChanged += (s, e) => OnSettingsPropertyChanged(result, model, e);
 			return result;
 		}
 
-		private static void OnSettingsPropertyChanged(Window window, SettingsModel model, PropertyChangedEventArgs e)
+		static void OnSettingsPropertyChanged(SettingsModel settings,
+			ThemeGroup group, FrameworkElement element, PropertyChangedEventArgs e)
 		{
 			if (e.PropertyName == nameof(SettingsModel.Theme))
-				window.Resources = Utility.GetThemeResources(model.Theme);
+				element.Resources = Utility.GetThemeResources(settings.Theme, group);
+		}
+
+		public static T Themed<T>(SettingsModel settings, ThemeGroup group)
+			where T : FrameworkElement, new()
+		{
+			var result = new T();
+			result.Resources = Utility.GetThemeResources(settings.Theme, group);
+			settings.PropertyChanged += (s, e) => OnSettingsPropertyChanged(settings, group, result, e);
+			return result;
 		}
 	}
 }

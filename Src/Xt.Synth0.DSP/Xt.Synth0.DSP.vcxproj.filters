@@ -34,6 +34,12 @@
     <ClInclude Include="Model\SizeChecks.hpp">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\EnvDSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\PlotDSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SequencerDSP.cpp">
@@ -49,5 +55,11 @@
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="Xts.cpp" />
+    <ClCompile Include="DSP\EnvDSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\PlotDSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DSP\EnvDSP.hpp" />
     <ClInclude Include="DSP\PatternDSP.hpp" />
+    <ClInclude Include="DSP\PlotDSP.hpp" />
     <ClInclude Include="DSP\SequencerDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />
     <ClInclude Include="DSP\UnitDSP.hpp" />
@@ -22,7 +24,9 @@
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DSP\EnvDSP.cpp" />
     <ClCompile Include="DSP\PatternDSP.cpp" />
+    <ClCompile Include="DSP\PlotDSP.cpp" />
     <ClCompile Include="DSP\SequencerDSP.cpp" />
     <ClCompile Include="DSP\SynthDSP.cpp" />
     <ClCompile Include="DSP\UnitDSP.cpp" />

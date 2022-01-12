@@ -6,11 +6,12 @@ namespace Xt.Synth0.UI
 {
 	static class EditUI
 	{
-		internal static GroupBox Make(AppModel model, INamedModel group)
+		internal static GroupBox Make(AppModel app)
 		{
-			var content = GroupUI.MakeContent(model, group);
-			var result = Create.Group(group.Name, content);
-			var binding = Bind.To(model.Stream, nameof(StreamModel.IsRunning),
+			var edit = app.Track.Sequencer.Edit;
+			var content = SubUI.MakeContent(app, edit);
+			var result = Create.ThemedGroup(app.Settings, edit, content);
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning),
 				new VisibilityConverter(true, false));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
