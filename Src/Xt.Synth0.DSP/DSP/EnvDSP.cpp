@@ -30,8 +30,8 @@ EnvDSP::Generate(float from, float to, float pos, SlopeType slope) const
   switch(slope)
   {
   case SlopeType::Lin: return from + pos * range;
-  case SlopeType::Sqrt: return from + powf(pos, 2) * range;
-  case SlopeType::Quad: return from + ((1 - powf(pos - 1, 2))) * range;
+  case SlopeType::Sqrt: return from + powf(pos, 0.1) * range;
+  case SlopeType::Quad: return from + powf(pos, 10) * range;
   case SlopeType::Log: return from + pos * range;
   case SlopeType::Exp: return from + pos * range;
   default: assert(false); return 0.0f;
