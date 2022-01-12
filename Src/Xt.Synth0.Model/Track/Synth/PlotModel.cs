@@ -15,7 +15,7 @@ namespace Xt.Synth0.Model
 		public Param Source { get; } = new(SourceInfo);
 
 		public string Name => "Plot";
-		public ThemeGroup Group => ThemeGroup.GlobalPlot;
+		public ThemeGroup Group => ThemeGroup.Plot;
 		public IReadOnlyList<Param> Params => new[] { Source, Fit };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 

@@ -4,5 +4,8 @@ dont trigger gc from the callback - dispatch all to ui
 hard sync
 throttle plot paint
 integrate blit / PWM triangle
+panning
+env off
+env slopes
 
 

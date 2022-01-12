@@ -12,7 +12,7 @@ namespace Xt.Synth0.Model
 		public Param Amp { get; } = new(AmpInfo);
 
 		public string Name => "Global";
-		public ThemeGroup Group => ThemeGroup.GlobalPlot;
+		public ThemeGroup Group => ThemeGroup.Global;
 		public IReadOnlyList<Param> Params => new[] { Bpm, Amp };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 
