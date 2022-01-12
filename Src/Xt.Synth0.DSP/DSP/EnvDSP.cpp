@@ -26,15 +26,14 @@ EnvDSP::Length(
 float
 EnvDSP::Generate(float from, float to, float pos, SlopeType slope) const
 {
-  float sign = to > from ? 1.0f : -1.0f;
-  float range = (to - from) * sign;
+  float range = to - from;
   switch(slope)
   {
-  case SlopeType::Lin: return from + pos * sign * range;
-  case SlopeType::Sqrt: return from + pos * pos * sign * range;
-  case SlopeType::Quad: return from + ((1 - (pos - 1) * (pos - 1))) * sign * range;
-  case SlopeType::Log: return from + pos * sign * range;
-  case SlopeType::Exp: return from + pos * sign * range;
+  case SlopeType::Lin: return from + pos * range;
+  case SlopeType::Sqrt: return from + pos * pos * range;
+  case SlopeType::Quad: return from + ((1 - (pos - 1) * (pos - 1))) * range;
+  case SlopeType::Log: return from + pos * range;
+  case SlopeType::Exp: return from + pos * range;
   default: assert(false); return 0.0f;
   }
 }
