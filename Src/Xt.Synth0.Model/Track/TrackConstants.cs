@@ -34,14 +34,14 @@ namespace Xt.Synth0.Model
 
 		public const int EnvCount = 2;
 		public const int UnitCount = 3;
-		public const int ParamCount = 62;
+		public const int ParamCount = 60;
 
 		internal const int ParamSize = 16;
-		internal const int EnvModelSize = 48;
+		internal const int EnvModelSize = 40;
 		internal const int PlotModelSize = 8;
 		internal const int UnitModelSize = 48;
 		internal const int GlobalModelSize = 8;
-		internal const int SynthModelSize = 1248;
+		internal const int SynthModelSize = 1200;
 
 		internal const int PatternFxSize = 8;
 		internal const int EditModelSize = 24;

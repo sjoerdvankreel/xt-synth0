@@ -17,8 +17,8 @@ struct XTS_ALIGN PlotModel { int source, fit; };
 struct XTS_ALIGN Param { int min, max; int* value; };
 
 struct XTS_ALIGN EnvModel {
-  int on, a, d, s, r, hld, dly;
-  int base, aSlope, dSlope, rSlope, pad__;
+  int a, d, s, r, hld, dly;
+  int on, aSlope, dSlope, rSlope;
 };
 
 struct XTS_ALIGN UnitModel {
