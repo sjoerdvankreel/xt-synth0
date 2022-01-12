@@ -23,21 +23,6 @@ EnvDSP::Length(
   *hld = static_cast<float>(env.hld * env.hld * rate / 1000.0f);
 }
 
-float
-EnvDSP::Generate(float from, float to, float pos, SlopeType slope) const
-{
-  float range = to - from;
-  switch(slope)
-  {
-  case SlopeType::Lin: return from + pos * range;
-  case SlopeType::Sqrt: return from + powf(pos, 0.1) * range;
-  case SlopeType::Quad: return from + powf(pos, 10) * range;
-  case SlopeType::Log: return from + pos * range;
-  case SlopeType::Exp: return from + pos * range;
-  default: assert(false); return 0.0f;
-  }
-}
-
 float 
 EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
 {
@@ -83,15 +68,16 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
     _stage = EnvStage::End;
   }
 
+  float base = 1.0f;
   float result = 0.0f;
   switch(_stage)
   {
-  case EnvStage::Dly: result = 0.0f; break;
-  case EnvStage::A: result = Generate(0.0f, 1.0f, _stagePos / a, static_cast<SlopeType>(env.aSlope)); break;
-  case EnvStage::Hld: result = 1.0f; break;
-  case EnvStage::D: result = Generate(1.0f, s, _stagePos / d, static_cast<SlopeType>(env.dSlope)); break;
   case EnvStage::S: result = s; break;
-  case EnvStage::R: result = Generate(s, 0.0f, _stagePos / r, static_cast<SlopeType>(env.rSlope)); break;
+  case EnvStage::Dly: result = 0.0f; break;
+  case EnvStage::Hld: result = 1.0f; break;
+  case EnvStage::R: result = s + powf(_stagePos / r, base) * (0.0f - s); break;
+  case EnvStage::D: result = 1.0f + powf(_stagePos / d, base) * (s - 1.0f); break;
+  case EnvStage::A: result = 0.0f + powf(_stagePos / a, base) * (1.0f - 0.0f); break;
   case EnvStage::End: result = 0.0f; break;
   default: assert(false); break;
   }

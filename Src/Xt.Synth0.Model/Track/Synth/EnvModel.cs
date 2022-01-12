@@ -3,15 +3,13 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum SlopeType { Lin, Sqrt, Quad, Log, Exp }
-
 	public unsafe sealed class EnvModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int a, d, s, r, hld, dly;
-			internal int on, aSlope, dSlope, rSlope;
+			internal int on, a, d, s, r, hld, dly;
+			internal int @base, aSlope, dSlope, rSlope, pad__;
 		}
 
 		public Param A { get; } = new(AInfo);
@@ -21,6 +19,7 @@ namespace Xt.Synth0.Model
 		public Param On { get; } = new(OnInfo);
 		public Param Hld { get; } = new(HldInfo);
 		public Param Dly { get; } = new(DlyInfo);
+		public Param Base { get; } = new(BaseInfo);
 		public Param ASlope { get; } = new(ASlopeInfo);
 		public Param DSlope { get; } = new(DSlopeInfo);
 		public Param RSlope { get; } = new(RSlopeInfo);
@@ -35,6 +34,7 @@ namespace Xt.Synth0.Model
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
 			{ On, 0 },
+			{ Base, 1 },
 			{ Dly, 2 },
 			{ ASlope, 3 },
 			{ A, 4 },
@@ -53,8 +53,9 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo SInfo = ParamInfo.Lin(p => &((Native*)p)->s, nameof(S), 0, 255, 128);
 		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), 0, 100, 0);
 		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), 0, 100, 0);
-		static readonly ParamInfo ASlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->aSlope, nameof(ASlope));
-		static readonly ParamInfo DSlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->dSlope, nameof(DSlope));
-		static readonly ParamInfo RSlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->rSlope, nameof(RSlope));
+		static readonly ParamInfo BaseInfo = ParamInfo.Lin(p => &((Native*)p)->@base, nameof(Base), 0, 255, 0);
+		static readonly ParamInfo ASlopeInfo = ParamInfo.Lin(p => &((Native*)p)->aSlope, nameof(ASlope), 0, 255, 0);
+		static readonly ParamInfo DSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->dSlope, nameof(DSlope), 0, 255, 0);
+		static readonly ParamInfo RSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->rSlope, nameof(RSlope), 0, 255, 0);
 	}
 }
