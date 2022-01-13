@@ -9,4 +9,5 @@ env off
 env slopes
 custom color scheme
 sampler
+dont automate on/off ?
 

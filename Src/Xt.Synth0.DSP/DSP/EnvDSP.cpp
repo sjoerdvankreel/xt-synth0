@@ -12,6 +12,13 @@ EnvDSP::Reset()
 }
 
 void 
+EnvDSP::NextStage(EnvStage stage)
+{
+  _stagePos = 0;
+  _stage = stage;
+}
+
+void 
 EnvDSP::Length(
   EnvModel const& env, float rate, float* dly,
   float* a, float* hld, float* d, float* r) const
@@ -21,6 +28,34 @@ EnvDSP::Length(
   *r = static_cast<float>(env.r * env.r * rate / 1000.0f);
   *dly = static_cast<float>(env.dly * env.dly * rate / 1000.0f);
   *hld = static_cast<float>(env.hld * env.hld * rate / 1000.0f);
+}
+
+void
+EnvDSP::CycleStage(float dly, float a, float hld, float d, float r, bool active)
+{
+  if (_stage == EnvStage::Dly && _stagePos >= dly) NextStage(EnvStage::A);
+  if (_stage == EnvStage::A && _stagePos >= a) NextStage(EnvStage::Hld);
+  if (_stage == EnvStage::Hld && _stagePos >= hld) NextStage(EnvStage::D);
+  if (_stage == EnvStage::D && _stagePos >= d) NextStage(EnvStage::S);
+  if (!active && _stage != EnvStage::R) NextStage(EnvStage::R);
+  if (_stage == EnvStage::R && _stagePos >= r) NextStage(EnvStage::End);
+}
+
+float
+EnvDSP::Generate(EnvModel const& env, float a, float d, float r) const
+{
+  float s = static_cast<float>(env.s / 255.0f);
+  switch (_stage)
+  {
+  case EnvStage::S: return s; break;
+  case EnvStage::Dly: return 0.0f; break;
+  case EnvStage::Hld: return 1.0f; break;
+  case EnvStage::End: return 0.0f; break;
+  case EnvStage::R: return Generate(s, 0.0, _stagePos / r, env.rSlope); break;
+  case EnvStage::D: return Generate(1.0, s, _stagePos / d, env.dSlope); break;
+  case EnvStage::A: return Generate(0.0, 1.0, _stagePos / a, env.aSlope); break;
+  default: assert(false); break;
+  }
 }
 
 float
@@ -35,7 +70,6 @@ EnvDSP::Generate(float from, float to, float pos, int slope) const
 float 
 EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
 {
-  const float threshold = 1.0E-5f;
   if(_stage == EnvStage::End)
   {
     *stage = _stage;
@@ -43,61 +77,13 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
   }
 
   float dly, a, hld, d, r;
-  float s = static_cast<float>(env.s / 255.0f);
+  const float threshold = 1.0E-5f;
   Length(env, rate, &dly, &a, &hld, &d, &r);  
-
-  if(_stage == EnvStage::Dly && _stagePos >= dly)
-  {
-    _stagePos = 0;
-    _stage = EnvStage::A;
-  } 
-  if (_stage == EnvStage::A && _stagePos >= a)
-  {
-    _stagePos = 0;
-    _stage = EnvStage::Hld;
-  }
-  if (_stage == EnvStage::Hld && _stagePos >= hld)
-  {
-    _stagePos = 0;
-    _stage = EnvStage::D;
-  }
-  if (_stage == EnvStage::D && _stagePos >= d)
-  {
-    _stagePos = 0;
-    _stage = EnvStage::S;
-  }
-  if(!active && _stage != EnvStage::R)
-  {
-    _stagePos = 0;
-    _stage = EnvStage::R;
-  }
-  if (_stage == EnvStage::R && _stagePos >= r)
-  {
-    _stagePos = 0;
-    _stage = EnvStage::End;
-  }
-
-  int x = 1;
-  float result = 0.0f;
-  switch(_stage)
-  {
-  case EnvStage::S: result = s; break;
-  case EnvStage::Dly: result = 0.0f; break;
-  case EnvStage::Hld: result = 1.0f; break;
-  case EnvStage::End: result = 0.0f; break;
-  case EnvStage::R: result = Generate(s, 0.0, _stagePos / r, env.rSlope); break;
-  case EnvStage::D: result = Generate(1.0, s, _stagePos / d, env.dSlope); break;
-  case EnvStage::A: result = Generate(0.0, 1.0, _stagePos / a, env.aSlope); break;
-  default: assert(false); break;
-  }
-
+  CycleStage(dly, a, hld, d, r, active);
+  float result = Generate(env, a, d, r);
   assert(!isnan(result));
-  if (_stage != EnvStage::End) _stagePos++;
-  if((_stage == EnvStage::S || _stage == EnvStage::R) && result <= threshold)
-  {
-    _stagePos = 0;
-    _stage = EnvStage::End;
-  }
+  if(_stage != EnvStage::End) _stagePos++;
+  if((_stage == EnvStage::S || _stage == EnvStage::R) && result <= threshold) NextStage(EnvStage::End);
   *stage = _stage;
   return env.on? result: 0.0f;
 }
