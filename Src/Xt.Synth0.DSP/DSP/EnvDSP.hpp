@@ -22,7 +22,7 @@ public:
   void Length(
     EnvModel const& env, float rate, float* dly,
     float* a, float* hld, float* d, float* r) const;
-  float Next(EnvModel const& env, float rate, bool active, EnvStage* stage);
+  float Next(EnvModel const& env, float rate, bool active, bool plot, EnvStage* stage);
 };
 
 } // namespace Xts

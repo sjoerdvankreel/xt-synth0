@@ -46,7 +46,7 @@ PlotDSP::RenderUnit(
   int samples = static_cast<int>(cycleCount * cycleLength);
   for (int i = 0; i <= samples; i++)
   {
-    _samples.push_back(_unit.Next(unit, ratef, &cycled));
+    _samples.push_back(_unit.Next(unit, ratef, true, &cycled));
     if (cycled) _splits.push_back(i + 1);
   }
 }
@@ -87,7 +87,7 @@ PlotDSP::RenderEnv(
   }
   while (true)
   {
-    float lvl = _env.Next(env, ratef, activeSamples < holdSamples, &stage);
+    float lvl = _env.Next(env, ratef, activeSamples < holdSamples, true, &stage);
     if (stage == EnvStage::End) break;
     _samples.push_back(lvl);
     if (stage == EnvStage::S) activeSamples++;

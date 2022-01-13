@@ -12,6 +12,6 @@ sampler
 dont automate on/off ?
 better serialization
 rename PWM
-on/off=return 1/0 in dsp
 darker disabled Bacground for custom controls
+merge simple converters
 

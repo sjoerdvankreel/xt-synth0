@@ -45,16 +45,16 @@ UnitDSP::Frequency(UnitModel const& unit) const
 { return FrequencyTable[unit.oct][unit.note][unit.cent + 50]; }
 
 float
-UnitDSP::Next(UnitModel const& unit, float rate, bool* cycled)
+UnitDSP::Next(UnitModel const& unit, float rate, bool plot, bool* cycled)
 {
-  *cycled = false;
-  float result = 0.0f;
+	*cycled = false;
+	float result = 0.0f;
+	auto off = static_cast<int>(UnitType::Off);
+  if(!plot && unit.type == off) return 0.0;
+
 	float freq = Frequency(unit);
-	if (unit.type != static_cast<int>(UnitType::Off))
-	{
-		float phase = static_cast<float>(_phase);
-		result = Generate(unit, freq, rate, phase);
-	}
+	float phase = static_cast<float>(_phase);
+	result = Generate(unit, freq, rate, phase);
 	_phase += freq / rate;
 	if (_phase >= 1.0)
   { 
@@ -72,6 +72,7 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate, float phase) co
   auto naiveType = static_cast<NaiveType>(unit.naiveType);
 	switch(type)
   {
+  case UnitType::Off: return 0.0f;
 	case UnitType::Sin: return std::sinf(phase * 2.0f * pi);
 	case UnitType::Add: return GenerateAdd(unit, freq, rate, phase);
 	case UnitType::Naive: return GenerateNaive(naiveType, unit.pwm, phase);

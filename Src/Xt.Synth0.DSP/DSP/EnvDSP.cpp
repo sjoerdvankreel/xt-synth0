@@ -68,8 +68,14 @@ EnvDSP::Generate(float from, float to, float pos, int slope) const
 }
 
 float 
-EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
+EnvDSP::Next(EnvModel const& env, float rate, bool active, bool plot, EnvStage* stage)
 {
+  if(!plot && !env.on)
+  {
+    *stage = EnvStage::End;
+    return 1.0f;
+  }
+
   if(_stage == EnvStage::End)
   {
     *stage = _stage;
@@ -85,7 +91,7 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
   if(_stage != EnvStage::End) _stagePos++;
   if((_stage == EnvStage::S || _stage == EnvStage::R) && result <= threshold) NextStage(EnvStage::End);
   *stage = _stage;
-  return env.on? result: 0.0f;
+  return result;
 }
 
 } // namespace Xts
