@@ -9,14 +9,20 @@ SynthDSP::Reset()
     _units[u].Reset();
 }
 
-float
-SynthDSP::Next(SynthModel const& synth, float rate)
+void
+SynthDSP::Next(SynthModel const& synth, float rate, float* l, float* r)
 {
-  bool reset = false;
-  float result = 0.0f;
+  float ul;
+  float ur;
+  *l = 0.0f;
+  *r = 0.0f;
+  bool cycled = false;
   for (int u = 0; u < TrackConstants::UnitCount; u++)
-    result += _units[u].Next(synth.units[u], rate, false, &reset);
-  return result * synth.global.amp / 255.0f;
+  {
+    _units[u].Next(synth.units[u], rate, false, &ul, &ur, &cycled);
+    *l += ul * synth.global.amp / 255.0f;
+    *r += ur * synth.global.amp / 255.0f;
+  }
 }
 
 } // namespace Xts

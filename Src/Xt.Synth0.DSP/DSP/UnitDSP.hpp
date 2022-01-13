@@ -14,7 +14,7 @@ public:
   void Reset();
   static void Init();
   float Frequency(UnitModel const& unit) const;
-  float Next(UnitModel const& unit, float rate, bool plot, bool* cycled);
+  void Next(UnitModel const& unit, float rate, bool plot, float* l, float* r, bool* cycled);
 
 private:
   float PwPhase(float phase, int pw) const;

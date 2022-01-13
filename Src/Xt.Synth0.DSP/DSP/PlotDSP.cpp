@@ -34,6 +34,8 @@ PlotDSP::RenderUnit(
   UnitModel const& unit, int32_t pixels, PlotFit fit, 
   int32_t* rate, XtsBool* bipolar, float* frequency)
 {
+  float l;
+  float r;
   bool cycled;
   _unit.Reset();
   *bipolar = XtsTrue;
@@ -46,7 +48,8 @@ PlotDSP::RenderUnit(
   int samples = static_cast<int>(cycleCount * cycleLength);
   for (int i = 0; i <= samples; i++)
   {
-    _samples.push_back(_unit.Next(unit, ratef, true, &cycled));
+    _unit.Next(unit, ratef, true, &l, &r, &cycled);
+    _samples.push_back((l + r) / 2.0f);
     if (cycled) _splits.push_back(i + 1);
   }
 }

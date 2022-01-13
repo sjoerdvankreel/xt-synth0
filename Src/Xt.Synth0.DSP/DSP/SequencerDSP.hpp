@@ -20,8 +20,8 @@ class SequencerDSP
   PatternDSP const _pattern;
 
   bool RowUpdated();
-  float Next(SequencerModel const& seq, SynthModel& synth, float rate);
   bool UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate);
+  void Next(SequencerModel const& seq, SynthModel& synth, float rate, float* l, float* r);
 
 public:
   void Reset();

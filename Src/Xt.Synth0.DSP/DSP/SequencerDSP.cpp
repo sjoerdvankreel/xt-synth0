@@ -21,14 +21,13 @@ SequencerDSP::RowUpdated()
 	return result;
 }
 
-float 
-SequencerDSP::Next(SequencerModel const& seq, SynthModel& synth, float rate)
+void 
+SequencerDSP::Next(SequencerModel const& seq, SynthModel& synth, float rate, float* l, float* r)
 {
 	if (UpdateRow(seq, synth, rate))
 		_pattern.Automate(seq.edit, seq.pattern.rows[_currentRow], synth);
-	float result = _synth.Next(synth, rate);
+	_synth.Next(synth, rate, l, r);
 	_streamPosition++;
-  return result;
 }
 
 void
@@ -36,11 +35,13 @@ SequencerDSP::ProcessBuffer(
 	SequencerModel const& seq, SynthModel& synth, float rate,
 	float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition)
 {
+  float l;
+  float r;
 	for (int f = 0; f < frames; f++)
 	{
-		float sample = Next(seq, synth, rate);
-		buffer[f * 2] = sample;
-		buffer[f * 2 + 1] = sample;
+		Next(seq, synth, rate, &l, &r);
+		buffer[f * 2] = l;
+		buffer[f * 2 + 1] = r;
 	}
 	*currentRow = _currentRow;
 	*streamPosition = _streamPosition;

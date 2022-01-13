@@ -47,24 +47,28 @@ UnitDSP::Frequency(UnitModel const& unit) const
   return FrequencyTable[unit.oct][unit.note][cent + 50]; 
 }
 
-float
-UnitDSP::Next(UnitModel const& unit, float rate, bool plot, bool* cycled)
+void
+UnitDSP::Next(UnitModel const& unit, float rate, bool plot, float* l, float* r, bool* cycled)
 {
+	*l = 0.0f;
+  *r = 0.0f;
 	*cycled = false;
-	float result = 0.0f;
 	auto off = static_cast<int>(UnitType::Off);
-  if(!plot && unit.type == off) return 0.0;
+  if(!plot && unit.type == off) return;
 
 	float freq = Frequency(unit);
+	float amp = unit.amp / 255.0f;
+  float pan = (unit.pan - 1.0f) / 254.0f;
 	float phase = static_cast<float>(_phase);
-	result = Generate(unit, freq, rate, phase);
+	float sample = Generate(unit, freq, rate, phase);
 	_phase += freq / rate;
 	if (_phase >= 1.0)
   { 
     Reset();
     *cycled = true;
   }
-	return result * unit.amp / 255.0f;
+  *l = sample * amp * (1.0f - pan);
+  *r = sample * amp * pan;
 }
 
 float 
