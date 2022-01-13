@@ -81,9 +81,9 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, "Type", "Additive type", true, AddNames, RelevanceAdd);
 		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", "Naive type", true, null, RelevanceNaive);
 		static readonly ParamInfo OctInfo = ParamInfo.Lin(p => &((Native*)p)->oct, nameof(Oct), "Octave", true, TrackConstants.MinOct, TrackConstants.MaxOct, 4);
-		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", "Additive custom wave step", true, 1, 32, 1, null, RelevanceAddCustom);
-		static readonly ParamInfo AddRollInfo = ParamInfo.Lin(p => &((Native*)p)->addRoll, "Roll", "Additive custom wave rolloff", true, 0, 255, 0, null, RelevanceAddCustom);
-		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Hms", "Additive basic wave harmonic count", true, 0, 12, 4, RelevanceAddBasic);
-		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Hms", "Additive custom wave harmonic count", true, 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo AddStepInfo = ParamInfo.Lin(p => &((Native*)p)->addStep, "Step", "Additive custom step", true, 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Hms", "Additive basic partials", true, 0, 12, 4, RelevanceAddBasic);
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Lin(p => &((Native*)p)->addParts, "Hms", "Additive custom partials", true, 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo AddRollInfo = ParamInfo.Lin(p => &((Native*)p)->addRoll, "Roll", "Additive custom rolloff", true, 0, 255, 0, null, RelevanceAddCustom);
 	}
 }
