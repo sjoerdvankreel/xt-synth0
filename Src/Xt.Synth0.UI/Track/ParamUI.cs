@@ -14,7 +14,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new StringBuilder();
 			result.AppendLine(param.Info.Description);
-			if (param.Info.Control == ParamControl.Knob)
+			if (param.Info.Automatable || param.Info.Control == ParamControl.Knob)
 				result.AppendLine($"Range: {param.Info.Range}");
 			if (param.Info.Automatable)
 				result.AppendLine($"Automation target: {synth.AutoParam(param).Index.ToString("X2")}");
@@ -51,7 +51,7 @@ namespace Xt.Synth0.UI
 		static Control MakeAutoControl(AppModel app, IThemedSubModel sub, Param param)
 		{
 			var result = MakeControl(app, sub, param);
-			if (param.Info.Automatable) return result; 
+			if (param.Info.Automatable) return result;
 			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
