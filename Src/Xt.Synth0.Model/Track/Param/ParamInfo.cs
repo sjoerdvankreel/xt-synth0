@@ -58,8 +58,12 @@ namespace Xt.Synth0.Model
 
 		ParamInfo(ParamType type, Address address, string name, string description, bool automatable,
 			int min, int max, int @default, Func<int, string> display, IRelevance relevance)
-		=> (Type, _address, Name, Description, Automatable, Min, Max, Default, _display, Relevance)
-		= (type, address, name, description, automatable, min, max, @default, display, relevance);
+		{
+			(Type, _address, Name, Description, Automatable, Min, Max, Default, _display, Relevance)
+			= (type, address, name, description, automatable, min, max, @default, display, relevance);
+			if (min < 0 || max > 255 || min >= max)
+				throw new InvalidOperationException();
+		}
 
 		internal static ParamInfo Exp(Address address, string name, string description,
 			bool automatable, int min, int max, int @default, IRelevance relevance = null)

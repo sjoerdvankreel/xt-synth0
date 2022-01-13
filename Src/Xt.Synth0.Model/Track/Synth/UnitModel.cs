@@ -14,15 +14,15 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int type, naiveType, amp, oct, note, cent, pw;
+			internal int type, naiveType, amp, oct, note, dtn, pw;
 			internal int addType, addParts, addMaxParts, addStep, addRoll;
 		}
 
 		public Param Pw { get; } = new(PwInfo);
 		public Param Oct { get; } = new(OctInfo);
 		public Param Amp { get; } = new(AmpInfo);
+		public Param Dtn { get; } = new(DtnInfo);
 		public Param Note { get; } = new(NoteInfo);
-		public Param Cent { get; } = new(CentInfo);
 		public Param Type { get; } = new(TypeInfo);
 		public Param NaiveType { get; } = new(NaiveTypeInfo);
 		public Param AddType { get; } = new(AddTypeInfo);
@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
 			{ Amp, 2 },
 			{ Oct, 3 },
 			{ Note, 4 },
-			{ Cent, 5 },
+			{ Dtn, 5 },
 			{ Pw, 6 },
 			{ AddParts, 7 },
 			{ AddMaxParts, 7 },
@@ -76,7 +76,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo NoteInfo = ParamInfo.Lin(p => &((Native*)p)->note, nameof(Note), "Note", true, Notes);
 		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), "Level", true, 0, 255, 255);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type", false);
-		static readonly ParamInfo CentInfo = ParamInfo.Lin(p => &((Native*)p)->cent, nameof(Cent), "Detune", true, -50, 49, 0);
+		static readonly ParamInfo DtnInfo = ParamInfo.Lin(p => &((Native*)p)->dtn, nameof(Dtn), "Detune", true, 0, 255, 128);
 		static readonly ParamInfo PwInfo = ParamInfo.Lin(p => &((Native*)p)->pw, "PW", "Pulse width", true, 1, 255, 128, null, RelevancePw);
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, "Type", "Additive type", true, AddNames, RelevanceAdd);
 		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", "Naive type", true, null, RelevanceNaive);
