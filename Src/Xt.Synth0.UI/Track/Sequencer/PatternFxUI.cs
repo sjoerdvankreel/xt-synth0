@@ -32,7 +32,7 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, Action interpolate)
 		{
 			var result = MakeHex(app, value, minFx, row, col);
-			result.ToolTip = string.Join("\n", value.Info.Name,
+			result.ToolTip = string.Join("\n", value.Info.Description,
 				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
 			return result;

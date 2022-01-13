@@ -58,7 +58,7 @@ namespace Xt.Synth0.UI
 		{
 			var edit = app.Track.Sequencer.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.ToolTip = string.Join("\n", note.Info.Name, NoteEditHint);
+			result.ToolTip = string.Join("\n", note.Info.Description, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(note));
 			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
@@ -73,7 +73,7 @@ namespace Xt.Synth0.UI
 			result.TextInput += (s, e) => OnOctTextInput(key.Oct, e);
 			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
 			result.SetBinding(TextBlock.TextProperty, binding);
-			result.ToolTip = string.Join("\n", key.Oct.Info.Name, PatternUI.EditHint);
+			result.ToolTip = string.Join("\n", key.Oct.Info.Description, PatternUI.EditHint);
 			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
 			return result;
@@ -91,7 +91,7 @@ namespace Xt.Synth0.UI
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.ToolTip = string.Join("\n", key.Amp.Info.Name, PatternUI.InterpolateHint, PatternUI.EditHint);
+			result.ToolTip = string.Join("\n", key.Amp.Info.Description, PatternUI.InterpolateHint, PatternUI.EditHint);
 			return result;
 		}
 	}

@@ -44,15 +44,15 @@ namespace Xt.Synth0.Model
 			{ R, 10 }
 		};
 
-		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), false, false);
-		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), true, 0, 100, 3);
-		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), true, 0, 100, 7);
-		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), true, 0, 100, 14);
-		static readonly ParamInfo SInfo = ParamInfo.Lin(p => &((Native*)p)->s, nameof(S), true, 0, 255, 128);
-		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), true, 0, 100, 0);
-		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), true, 0, 100, 0);
-		static readonly ParamInfo ASlopeInfo = ParamInfo.Lin(p => &((Native*)p)->aSlope, "Slp", true, 1, 255, 128);
-		static readonly ParamInfo DSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->dSlope, "Slp", true, 1, 255, 128);
-		static readonly ParamInfo RSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->rSlope, "Slp", true, 1, 255, 128);
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "On/Off", false, false);
+		static readonly ParamInfo SInfo = ParamInfo.Lin(p => &((Native*)p)->s, nameof(S), "Sustain level", true, 0, 255, 128);
+		static readonly ParamInfo DSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->dSlope, "Slp", "Decay slope", true, 1, 255, 128);
+		static readonly ParamInfo ASlopeInfo = ParamInfo.Lin(p => &((Native*)p)->aSlope, "Slp", "Attack slope", true, 1, 255, 128);
+		static readonly ParamInfo RSlopeInfo = ParamInfo.Lin(p => &((Native*)p)->rSlope, "Slp", "Release slope", true, 1, 255, 128);
+		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), "Decay milliseconds", true, 0, 100, 7);
+		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), "Attack milliseconds", true, 0, 100, 3);
+		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), "Release milliseconds", true, 0, 100, 14);
+		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), "Hold milliseconds", true, 0, 100, 0);
+		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), "Delay milliseconds", true, 0, 100, 0);
 	}
 }

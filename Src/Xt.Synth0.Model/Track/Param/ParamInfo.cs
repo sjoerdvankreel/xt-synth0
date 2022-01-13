@@ -19,6 +19,7 @@ namespace Xt.Synth0.Model
 		public string Name { get; }
 		public ParamType Type { get; }
 		public bool Automatable { get; }
+		public string Description { get; }
 		public IRelevance Relevance { get; }
 
 		public ParamControl Control => Type switch
@@ -55,34 +56,34 @@ namespace Xt.Synth0.Model
 		int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 		public string Range => Type != ParamType.Time && Type != ParamType.Exp ? $"{Min} .. {Max}" : $"{Min} ({Format(Min)}) .. {Max} ({Format(Max)})";
 
-		ParamInfo(ParamType type, Address address, string name, bool automatable, int min,
-			int max, int @default, Func<int, string> display, IRelevance relevance)
-		=> (Type, _address, Name, Automatable, Min, Max, Default, _display, Relevance)
-		= (type, address, name, automatable, min, max, @default, display, relevance);
+		ParamInfo(ParamType type, Address address, string name, string description, bool automatable,
+			int min, int max, int @default, Func<int, string> display, IRelevance relevance)
+		=> (Type, _address, Name, Description, Automatable, Min, Max, Default, _display, Relevance)
+		= (type, address, name, description, automatable, min, max, @default, display, relevance);
 
-		internal static ParamInfo Exp(Address address, string name,
+		internal static ParamInfo Exp(Address address, string name, string description,
 			bool automatable, int min, int max, int @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Exp, address, name, automatable, min, max, @default, null, relevance);
+		=> new ParamInfo(ParamType.Exp, address, name, description, automatable, min, max, @default, null, relevance);
 
-		internal static ParamInfo Time(Address address, string name,
+		internal static ParamInfo Time(Address address, string name, string description,
 			bool automatable, int min, int max, int @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Time, address, name, automatable, min, max, @default, null, relevance);
+		=> new ParamInfo(ParamType.Time, address, name, description, automatable, min, max, @default, null, relevance);
 
-		internal static ParamInfo Toggle(Address address, string name,
+		internal static ParamInfo Toggle(Address address, string name, string description,
 			bool automatable, bool @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Toggle, address, name, automatable, 0, 1, @default ? 1 : 0, null, relevance);
+		=> new ParamInfo(ParamType.Toggle, address, name, description, automatable, 0, 1, @default ? 1 : 0, null, relevance);
 
-		internal static ParamInfo Lin(Address address, string name,
+		internal static ParamInfo Lin(Address address, string name, string description,
 			bool automatable, string[] display, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Lin, address, name, automatable, 0, display.Length - 1, 0, x => display[x], relevance);
+		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, 0, display.Length - 1, 0, x => display[x], relevance);
 
-		internal static ParamInfo Lin(Address address, string name, bool automatable, int min,
-			int max, int @default, Func<int, string> display = null, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Lin, address, name, automatable, min, max, @default, display ?? (x => x.ToString()), relevance);
+		internal static ParamInfo Lin(Address address, string name, string description, bool automatable,
+			int min, int max, int @default, Func<int, string> display = null, IRelevance relevance = null)
+		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, min, max, @default, display ?? (x => x.ToString()), relevance);
 
-		internal static ParamInfo List<TEnum>(Address address, string name, bool automatable,
-			string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum
-		=> new ParamInfo(ParamType.List, address, name, automatable, 0, Enum.GetValues<TEnum>().Length - 1, 0,
+		internal static ParamInfo List<TEnum>(Address address, string name, string description,
+			bool automatable, string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum
+		=> new ParamInfo(ParamType.List, address, name, description, automatable, 0, Enum.GetValues<TEnum>().Length - 1, 0,
 			display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x], relevance);
 	}
 }

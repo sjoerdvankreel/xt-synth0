@@ -21,11 +21,11 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->edit;
 		public IReadOnlyList<Param> Params => new[] { Pats, Keys, Lpb, Rows, Fxs, Edit };
 
-		static readonly ParamInfo LpbInfo = ParamInfo.Lin(p => &((Native*)p)->lpb, "LPB", false, 1, TrackConstants.MaxLpb, 4);
-		static readonly ParamInfo FxsInfo = ParamInfo.Lin(p => &((Native*)p)->fxs, nameof(Fxs), false, 0, TrackConstants.MaxFxs, 1);
-		static readonly ParamInfo KeysInfo = ParamInfo.Lin(p => &((Native*)p)->keys, nameof(Keys), false, 1, TrackConstants.MaxKeys, 2);
-		static readonly ParamInfo PatsInfo = ParamInfo.Lin(p => &((Native*)p)->pats, nameof(Pats), false, 1, TrackConstants.MaxPatterns, 1);
-		static readonly ParamInfo EditInfo = ParamInfo.Lin(p => &((Native*)p)->edit, nameof(Edit), false, 1, TrackConstants.MaxPatterns, 1);
-		static readonly ParamInfo RowsInfo = ParamInfo.Lin(p => &((Native*)p)->rows, nameof(Rows), false, 1, TrackConstants.MaxRows, TrackConstants.MaxRows);
+		static readonly ParamInfo LpbInfo = ParamInfo.Lin(p => &((Native*)p)->lpb, "LPB", "Lines per beat", false, 1, TrackConstants.MaxLpb, 4);
+		static readonly ParamInfo FxsInfo = ParamInfo.Lin(p => &((Native*)p)->fxs, nameof(Fxs), "Effect count", false, 0, TrackConstants.MaxFxs, 1);
+		static readonly ParamInfo KeysInfo = ParamInfo.Lin(p => &((Native*)p)->keys, nameof(Keys), "Key count", false, 1, TrackConstants.MaxKeys, 2);
+		static readonly ParamInfo PatsInfo = ParamInfo.Lin(p => &((Native*)p)->pats, nameof(Pats), "Pattern count", false, 1, TrackConstants.MaxPatterns, 1);
+		static readonly ParamInfo EditInfo = ParamInfo.Lin(p => &((Native*)p)->edit, nameof(Edit), "Active pattern", false, 1, TrackConstants.MaxPatterns, 1);
+		static readonly ParamInfo RowsInfo = ParamInfo.Lin(p => &((Native*)p)->rows, nameof(Rows), "Rows per pattern", false, 1, TrackConstants.MaxRows, TrackConstants.MaxRows);
 	}
 }

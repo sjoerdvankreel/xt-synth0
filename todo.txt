@@ -11,4 +11,7 @@ custom color scheme
 sampler
 dont automate on/off ?
 better serialization
+rename PWM
+on/off=return 1/0 in dsp
+check when to enable running/paused/stopped
 

@@ -16,7 +16,7 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { Target, Value };
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[_index * TrackConstants.PatternFxSize];
 
-		static readonly ParamInfo ValueInfo = ParamInfo.Lin(p => &((Native*)p)->value, nameof(Value), false, 0, 255, 0);
-		static readonly ParamInfo TargetInfo = ParamInfo.Lin(p => &((Native*)p)->target, nameof(Target), false, 0, 255, 0);
+		static readonly ParamInfo ValueInfo = ParamInfo.Lin(p => &((Native*)p)->value, nameof(Value), "Automation value", false, 0, 255, 0);
+		static readonly ParamInfo TargetInfo = ParamInfo.Lin(p => &((Native*)p)->target, nameof(Target), "Automation target", false, 0, 255, 0);
 	}
 }

@@ -13,7 +13,7 @@ namespace Xt.Synth0.UI
 		static string Tooltip(SynthModel synth, Param param)
 		{
 			var result = new StringBuilder();
-			result.AppendLine(param.Info.Name);
+			result.AppendLine(param.Info.Description);
 			if (param.Info.Control == ParamControl.Knob)
 				result.AppendLine($"Range: {param.Info.Range}");
 			if (param.Info.Automatable)
