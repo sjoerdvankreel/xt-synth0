@@ -34,9 +34,9 @@ UnitDSP::Reset()
 { _phase = 0.0; }
 
 float 
-UnitDSP::PwmPhase(float phase, int pwm) const
+UnitDSP::PwPhase(float phase, int pw) const
 {
-	float result = phase + pwm / 256.0f;
+	float result = phase + pw / 256.0f;
 	return result - (int)result;
 }
 
@@ -75,20 +75,20 @@ UnitDSP::Generate(UnitModel const& unit, float freq, float rate, float phase) co
   case UnitType::Off: return 0.0f;
 	case UnitType::Sin: return std::sinf(phase * 2.0f * pi);
 	case UnitType::Add: return GenerateAdd(unit, freq, rate, phase);
-	case UnitType::Naive: return GenerateNaive(naiveType, unit.pwm, phase);
+	case UnitType::Naive: return GenerateNaive(naiveType, unit.pw, phase);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateNaive(NaiveType type, int pwm, float phase) const
+UnitDSP::GenerateNaive(NaiveType type, int pw, float phase) const
 {
   switch(type)
   {
     case NaiveType::Saw: return phase * 2.0f - 1.0f;
 		case NaiveType::Tri: return (phase < 0.5f ? phase : 1.0f - phase) * 4.0f - 1.0f;
-		case NaiveType::Pulse: return (GenerateNaive(NaiveType::Saw, pwm, phase)
-			- GenerateNaive(NaiveType::Saw, pwm, PwmPhase(phase, pwm))) / 2.0f;
+		case NaiveType::Pulse: return (GenerateNaive(NaiveType::Saw, pw, phase)
+			- GenerateNaive(NaiveType::Saw, pw, PwPhase(phase, pw))) / 2.0f;
 		default: assert(false); return 0.0f;
 	}
 }
@@ -123,7 +123,7 @@ UnitDSP::GenerateAdd(UnitModel const& unit, float freq, float rate, float phase)
 	}
   float result = GenerateAdd(freq, rate, phase, addSub, sinCos, parts, step, logRoll);
   if(type != AddType::Pulse) return result;
-	float phase2 = PwmPhase(phase, unit.pwm);
+	float phase2 = PwPhase(phase, unit.pw);
   return (result - GenerateAdd(freq, rate, phase2, addSub, sinCos, parts, step, logRoll)) / 2.0f;
 }
 
