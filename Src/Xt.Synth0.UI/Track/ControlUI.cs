@@ -25,21 +25,33 @@ namespace Xt.Synth0.UI
 		{
 			var result = new DockPanel();
 			result.LastChildFill = false;
+			result.Add(MakeStop(stream), Dock.Right);
+			result.Add(MakeStart(stream), Dock.Right);
 			result.VerticalAlignment = VerticalAlignment.Bottom;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
-			var binding = Bind.To(stream, nameof(stream.IsRunning), new StopFormatter());
-			stop.SetBinding(ContentControl.ContentProperty, binding);
-			binding = Bind.To(stream, nameof(StreamModel.IsStopped), new NegateConverter());
-			stop.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.Add(stop, Dock.Right);
-			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
-			binding = Bind.To(stream, nameof(stream.IsStopped), new StartFormatter());
-			start.SetBinding(ContentControl.ContentProperty, binding);
-			binding = Bind.To(stream, nameof(StreamModel.IsRunning), new NegateConverter());
-			start.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.Add(start, Dock.Right);
 			result.SetResourceReference(Panel.BackgroundProperty, Utility.BackgroundParamKey);
+			return result;
+		}
+
+		static UIElement MakeStop(StreamModel stream)
+		{
+			var result = MakeButton("Stop ", () => Stop(null, EventArgs.Empty));
+			result.HorizontalContentAlignment = HorizontalAlignment.Center;
+			var binding = Bind.To(stream, nameof(StreamModel.IsStopped), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
+			binding = Bind.To(stream, nameof(stream.IsRunning), new Formatter<bool>(r => r ? "Pause" : "Stop "));
+			result.SetBinding(ContentControl.ContentProperty, binding);
+			return result;
+		}
+
+		static UIElement MakeStart(StreamModel stream)
+		{
+			var result = MakeButton("Start ", () => Start(null, EventArgs.Empty));
+			result.HorizontalContentAlignment = HorizontalAlignment.Center;
+			var binding = Bind.To(stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
+			binding = Bind.To(stream, nameof(stream.IsStopped), new Formatter<bool>(s => s ? "Start " : "Resume"));
+			result.SetBinding(ContentControl.ContentProperty, binding);
 			return result;
 		}
 	}

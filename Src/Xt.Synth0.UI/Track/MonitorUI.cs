@@ -55,18 +55,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateCpuUsage(StreamModel stream, Cell cell)
-		{
-			var result = Create.Element<WrapPanel>(cell);
-			result.Add(Create.Text("CPU "));
-			var text = Create.Element<TextBlock>(cell);
-			var binding = Bind.To(stream, nameof(stream.CpuUsage), new CpuUsageFormatter());
-			text.SetBinding(TextBlock.TextProperty, binding);
-			result.Add(text);
-			result.Add(Create.Text(" "));
-			return result;
-		}
-
 		static UIElement CreateBuffer(StreamModel stream, Cell cell)
 		{
 			var result = Create.Element<TextBlock>(cell);
@@ -94,6 +82,18 @@ namespace Xt.Synth0.UI
 			result.Text = generation;
 			var binding = Bind.To(stream, path);
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
+			return result;
+		}
+
+		static UIElement CreateCpuUsage(StreamModel stream, Cell cell)
+		{
+			var result = Create.Element<WrapPanel>(cell);
+			result.Add(Create.Text("CPU "));
+			var text = Create.Element<TextBlock>(cell);
+			var binding = Bind.To(stream, nameof(stream.CpuUsage), new Formatter<double>(u => u.ToString("P1")));
+			text.SetBinding(TextBlock.TextProperty, binding);
+			result.Add(text);
+			result.Add(Create.Text(" "));
 			return result;
 		}
 	}
