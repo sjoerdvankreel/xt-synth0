@@ -43,7 +43,7 @@ UnitDSP::PwPhase(float phase, int pw) const
 float
 UnitDSP::Frequency(UnitModel const& unit) const
 { 
-  int cent = -50 + static_cast<float>(unit.dtn / 256.0f * 100.0f);
+  int cent = -50 + static_cast<int>(unit.dtn / 256.0f * 100.0f);
   return FrequencyTable[unit.oct][unit.note][cent + 50]; 
 }
 

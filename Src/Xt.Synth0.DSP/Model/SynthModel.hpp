@@ -22,8 +22,8 @@ struct XTS_ALIGN EnvModel {
 };
 
 struct XTS_ALIGN UnitModel {
-  int type, naiveType, amp, oct, note, dtn, pw;
-  int addType, addParts, addMaxParts, addStep, addRoll;
+  int type, naiveType, amp, pan, oct, note, dtn, pw;
+  int addType, addParts, addMaxParts, addStep, addRoll, pad__;
 };
 
 struct XTS_ALIGN SynthModel

@@ -14,13 +14,14 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int type, naiveType, amp, oct, note, dtn, pw;
-			internal int addType, addParts, addMaxParts, addStep, addRoll;
+			internal int type, naiveType, amp, pan, oct, note, dtn, pw;
+			internal int addType, addParts, addMaxParts, addStep, addRoll, pad__;
 		}
 
 		public Param Pw { get; } = new(PwInfo);
 		public Param Oct { get; } = new(OctInfo);
 		public Param Amp { get; } = new(AmpInfo);
+		public Param Pan { get; } = new(PanInfo);
 		public Param Dtn { get; } = new(DtnInfo);
 		public Param Note { get; } = new(NoteInfo);
 		public Param Type { get; } = new(TypeInfo);
@@ -43,16 +44,16 @@ namespace Xt.Synth0.Model
 			{ AddType, 1 },
 			{ NaiveType, 1 },
 			{ Amp, 2 },
-			{ Oct, 3 },
-			{ Note, 4 },
-			{ Dtn, 5 },
-			{ Pw, 6 },
-			{ AddParts, 7 },
-			{ AddMaxParts, 7 },
-			{ AddStep, 8 },
-			{ AddRoll, 9 },
+			{ Pan, 3 },
+			{ Oct, 4 },
+			{ Note, 5 },
+			{ Dtn, 6 },
+			{ Pw, 7 },
+			{ AddParts, 8 },
+			{ AddMaxParts, 8 },
+			{ AddStep, 9 },
+			{ AddRoll, 10 },
 		};
-
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 		static readonly string[] AddNames = { "Saw", "Sqr", "Pulse", "Tri", "Impulse", "Sin+Sin", "Sin+Cos", "Sin-Sin", "Sin-Cos" };
@@ -77,6 +78,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), "Level", true, 0, 255, 255);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type", false);
 		static readonly ParamInfo DtnInfo = ParamInfo.Lin(p => &((Native*)p)->dtn, nameof(Dtn), "Detune", true, 0, 255, 128);
+		static readonly ParamInfo PanInfo = ParamInfo.Lin(p => &((Native*)p)->pan, nameof(Pan), "Panning", true, 1, 255, 128);
 		static readonly ParamInfo PwInfo = ParamInfo.Lin(p => &((Native*)p)->pw, "PW", "Pulse width", true, 1, 255, 128, null, RelevancePw);
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, "Type", "Additive type", true, AddNames, RelevanceAdd);
 		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", "Naive type", true, null, RelevanceNaive);
