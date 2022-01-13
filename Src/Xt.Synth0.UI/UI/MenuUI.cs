@@ -54,7 +54,7 @@ namespace Xt.Synth0.UI
 			string header, Action execute)
 		{
 			var result = MakeItem(header, execute);
-			var binding = Bind.To(stream, nameof(stream.IsRunning), new NegateConverter());
+			var binding = Bind.To(stream, nameof(stream.IsStopped));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
@@ -63,7 +63,7 @@ namespace Xt.Synth0.UI
 			StreamModel stream, string header, Action execute)
 		{
 			var result = MakeItem(command, header, execute);
-			var binding = Bind.To(stream, nameof(stream.IsRunning), new NegateConverter());
+			var binding = Bind.To(stream, nameof(stream.IsStopped));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
@@ -73,7 +73,7 @@ namespace Xt.Synth0.UI
 			var result = MakeItem("Recent Files");
 			result.Click += OnRecentFileClick;
 			result.ItemsSource = app.Settings.RecentFiles; 
-			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsStopped));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			binding = Bind.Show(app.Settings.RecentFiles, nameof(ICollection.Count), 1);
 			result.SetBinding(UIElement.VisibilityProperty, binding);

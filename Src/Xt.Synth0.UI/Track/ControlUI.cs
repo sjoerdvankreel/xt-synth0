@@ -28,10 +28,14 @@ namespace Xt.Synth0.UI
 			result.VerticalAlignment = VerticalAlignment.Bottom;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			var stop = MakeButton("Stop", () => Stop(null, EventArgs.Empty));
-			var binding = Bind.To(stream, nameof(StreamModel.IsStopped), new NegateConverter());
+			var binding = Bind.To(stream, nameof(stream.IsRunning), new StopFormatter());
+			stop.SetBinding(ContentControl.ContentProperty, binding);
+			binding = Bind.To(stream, nameof(StreamModel.IsStopped), new NegateConverter());
 			stop.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Add(stop, Dock.Right);
 			var start = MakeButton("Start", () => Start(null, EventArgs.Empty));
+			binding = Bind.To(stream, nameof(stream.IsStopped), new StartFormatter());
+			start.SetBinding(ContentControl.ContentProperty, binding);
 			binding = Bind.To(stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			start.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Add(start, Dock.Right);

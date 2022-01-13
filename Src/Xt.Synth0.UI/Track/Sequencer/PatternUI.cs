@@ -69,7 +69,7 @@ namespace Xt.Synth0.UI
 			var active = Bind.To(edit.Edit);
 			var header = app.Track.Sequencer.Pattern.Name;
 			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
-			var running = Bind.To(app.Stream, nameof(StreamModel.IsRunning));
+			var running = Bind.To(app.Stream, nameof(StreamModel.IsStopped), new NegateConverter());
 			return Bind.To(new PatternFormatter(header), running, pats, active, row);
 		}
 
@@ -77,7 +77,7 @@ namespace Xt.Synth0.UI
 		{
 			var active = Bind.To(app.Track.Sequencer.Edit.Edit);
 			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
-			var running = Bind.To(app.Stream, nameof(StreamModel.IsRunning));
+			var running = Bind.To(app.Stream, nameof(StreamModel.IsStopped), new NegateConverter());
 			return Bind.To(new PatternSelector(patterns), running, active, row);
 		}
 
@@ -94,7 +94,7 @@ namespace Xt.Synth0.UI
 			}
 			var edit = app.Track.Sequencer.Edit;
 			var dispatcher = Application.Current?.Dispatcher;
-			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsStopped));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.SetBinding(ContentControl.ContentProperty, BindSelector(app, patterns));
 			PropertyChangedEventHandler editHandler = (s, e) => UpdateHighlighters(app.Stream, edit, highlighters);
@@ -164,14 +164,14 @@ namespace Xt.Synth0.UI
 		static void OnStreamPropertyChanged(
 			StreamModel stream, EditModel edit, IList<Border> highlighters, string property)
 		{
-			if (property == nameof(stream.IsRunning) ||
+			if (property == nameof(stream.IsStopped) ||
 				property == nameof(stream.CurrentRow))
 				UpdateHighlighters(stream, edit, highlighters);
 		}
 
 		static void UpdateHighlighters(StreamModel stream, EditModel edit, IList<Border> highlighters)
 		{
-			if (stream.IsRunning)
+			if (!stream.IsStopped)
 			{
 				for (int i = 0; i < highlighters.Count; i++)
 					highlighters[i].SetValue(UIElement.OpacityProperty,

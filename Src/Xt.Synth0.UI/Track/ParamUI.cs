@@ -52,7 +52,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = MakeControl(app, sub, param);
 			if (param.Info.Automatable) return result;
-			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsStopped));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
