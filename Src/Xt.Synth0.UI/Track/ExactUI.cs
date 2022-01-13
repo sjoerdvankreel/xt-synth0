@@ -14,7 +14,7 @@ namespace Xt.Synth0.UI
 		}
 
 		static UIElement MakeGroup(Window window, Param param)
-		=> Create.Group(param.Info.Range, MakeContent(window, param));
+		=> Create.Group(param.Info.Range(false), MakeContent(window, param));
 
 		static UIElement MakeContent(Window window, Param param)
 		{

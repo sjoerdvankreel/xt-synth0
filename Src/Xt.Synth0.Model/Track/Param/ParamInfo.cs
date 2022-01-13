@@ -51,10 +51,17 @@ namespace Xt.Synth0.Model
 			throw new InvalidOperationException();
 		}
 
+		public string Range(bool hex)
+		{
+			bool lin = Type != ParamType.Time && Type != ParamType.Exp;
+			string min = hex ? Min.ToString("X2") : Min.ToString();
+			string max = hex ? Max.ToString("X2") : Max.ToString();
+			return lin ? $"{min} .. {max}" : $"{min} ({Format(Min)}) .. {max} ({Format(Max)})";
+		}
+
 		public unsafe int* Address(void* native) => _address(native);
 		public int MaxDisplayLength => _maxDisplayLength ??= GetMaxDisplayLength();
 		int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
-		public string Range => Type != ParamType.Time && Type != ParamType.Exp ? $"{Min} .. {Max}" : $"{Min} ({Format(Min)}) .. {Max} ({Format(Max)})";
 
 		ParamInfo(ParamType type, Address address, string name, string description, bool automatable,
 			int min, int max, int @default, Func<int, string> display, IRelevance relevance)

@@ -15,7 +15,7 @@ namespace Xt.Synth0.UI
 			var result = new StringBuilder();
 			result.AppendLine(param.Info.Description);
 			if (param.Info.Automatable || param.Info.Control == ParamControl.Knob)
-				result.AppendLine($"Range: {param.Info.Range}");
+				result.AppendLine($"Range: {param.Info.Range(false)}");
 			if (param.Info.Automatable)
 				result.AppendLine($"Automation target: {synth.AutoParam(param).Index.ToString("X2")}");
 			else

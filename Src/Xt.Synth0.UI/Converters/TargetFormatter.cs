@@ -19,7 +19,7 @@ namespace Xt.Synth0.UI
 			result.AppendLine($"{_param.Info.Description}: {(auto != null ? targetDetail: "None")}");
 			result.AppendLine("Ctrl + F to fill");
 			if (auto != null)
-				result.AppendLine($"Range: {auto.Param.Info.Range}");
+				result.AppendLine($"Range: {auto.Param.Info.Range(true)}");
 			result.Append(PatternUI.EditHint);
 			return result.ToString();
 		}
