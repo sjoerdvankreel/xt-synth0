@@ -8,5 +8,4 @@ panning
 custom color scheme
 sampler
 better serialization
-darker disabled Bacground for custom controls
 

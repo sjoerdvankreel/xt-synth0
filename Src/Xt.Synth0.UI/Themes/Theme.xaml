@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Xt.Synth0.UI">
 
     <Thickness x:Key="Margin">3</Thickness>
-    
+
     <Brush x:Key="BackgroundKey">#101010</Brush>
     <Brush x:Key="BorderParamKey">#343434</Brush>
     <Brush x:Key="RowDisabledKey">#606060</Brush>
@@ -33,6 +33,14 @@
         <Setter Property="RotaryFill" Value="{StaticResource BackgroundLightKey}"/>
         <Setter Property="MarkerFill" Value="{DynamicResource Foreground1Key}"/>
         <Setter Property="MarkerStroke" Value="{DynamicResource Foreground1Key}"/>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Trigger.Setters>
+                    <Setter Property="RotaryStroke" Value="{DynamicResource Foreground2Key}"/>
+                    <Setter Property="RotaryFill" Value="{DynamicResource BackgroundDarkKey}"/>
+                </Trigger.Setters>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type TextBlock}">
@@ -45,7 +53,7 @@
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
                 <Setter Property="Background" 
-                        Value="{DynamicResource FocusBackgroundKey}"/>
+                        Value="{DynamicResource Foreground3Key}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -94,7 +102,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type CheckBox}">
                     <Grid>
-                        <Border Width="13" Height="13" BorderThickness="1"
+                        <Border x:Name="border" Width="13" Height="13" BorderThickness="1"
                                  BorderBrush="{DynamicResource ForegroundKey}"
                                  Background="{StaticResource BackgroundDarkKey}">
                             <Path x:Name="CheckMark" Width="7" Height="7" StrokeThickness="2"
@@ -106,6 +114,12 @@
                         <Trigger Property="IsChecked" Value="false">
                             <Setter TargetName="CheckMark" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Trigger.Setters>
+                                <Setter TargetName="CheckMark" Property="Stroke" Value="{DynamicResource Foreground3Key}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Foreground4Key}"/>
+                            </Trigger.Setters>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -115,7 +129,7 @@
     <Style TargetType="{x:Type Button}">
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="Foreground" Value="{DynamicResource Foreground2Key}"/>
-        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundKey}"/>
+        <Setter Property="Background" Value="{DynamicResource Foreground4Key}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -190,7 +204,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Trigger.Setters>
-                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>                               
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource ForegroundKey}"/>
                             </Trigger.Setters>
                         </Trigger>
                     </ControlTemplate.Triggers>

@@ -9,7 +9,7 @@
     <Brush x:Key="ForegroundKey">#0080FF</Brush>
     <Brush x:Key="Foreground1Key">#00A0FF</Brush>
     <Brush x:Key="Foreground2Key">#0060FF</Brush>
-    <Brush x:Key="FocusBackgroundKey">#004080</Brush>
-    <Brush x:Key="ButtonBackgroundKey">#002040</Brush>
+    <Brush x:Key="Foreground3Key">#004080</Brush>
+    <Brush x:Key="Foreground4Key">#002040</Brush>
 
 </ResourceDictionary>
