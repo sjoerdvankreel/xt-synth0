@@ -10,7 +10,8 @@ enum class EnvStage { Dly, A, Hld, D, S, R, End };
 class EnvDSP 
 {
   int _stagePos = 0;
-  EnvStage _stage = EnvStage::Dly;
+  EnvStage _stage = EnvStage::Dly; 
+  float Generate(float from, float to, float pos, int slope) const;
 public:
   void Reset();
   void Length(

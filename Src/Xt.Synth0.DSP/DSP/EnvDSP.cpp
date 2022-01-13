@@ -23,6 +23,15 @@ EnvDSP::Length(
   *hld = static_cast<float>(env.hld * env.hld * rate / 1000.0f);
 }
 
+float
+EnvDSP::Generate(float from, float to, float pos, int slope) const
+{
+  float range = to - from;
+  float slopef = static_cast<float>(slope);
+  if(slopef <= 128.0f) return from + range * powf(pos, slopef / 128.0f);
+  return from + range * (1.0f - powf(1.0f - pos, 1.0f - (slopef - 128.0f) / 128.0f));
+}
+
 float 
 EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
 {
@@ -75,10 +84,10 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
   case EnvStage::S: result = s; break;
   case EnvStage::Dly: result = 0.0f; break;
   case EnvStage::Hld: result = 1.0f; break;
-  case EnvStage::R: result = s + powf(_stagePos / r, env.rSlope >= 128 ? (env.rSlope - 128.0f) / x + 1 : env.rSlope / 128.0f) * (0.0f - s); break;
-  case EnvStage::D: result = 1.0f + powf(_stagePos / d, env.dSlope >= 128 ? (env.dSlope - 128.0f) / x + 1 : env.dSlope / 128.0f) * (s - 1.0f); break;
-  case EnvStage::A: result = 0.0f + (env.aSlope<=128.0f? powf(_stagePos / a, env.aSlope / 128.0f): 1.0f - powf(1.0f - (_stagePos / a), 1.0f-(env.aSlope-128.0f) / 128.0f)) * (1.0f - 0.0f); break;
   case EnvStage::End: result = 0.0f; break;
+  case EnvStage::R: result = Generate(s, 0.0, _stagePos / r, env.rSlope); break;
+  case EnvStage::D: result = Generate(1.0, s, _stagePos / d, env.dSlope); break;
+  case EnvStage::A: result = Generate(0.0, 1.0, _stagePos / a, env.aSlope); break;
   default: assert(false); break;
   }
 
