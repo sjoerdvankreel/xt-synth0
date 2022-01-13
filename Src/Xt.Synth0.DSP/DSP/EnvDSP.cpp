@@ -47,14 +47,14 @@ EnvDSP::Generate(EnvModel const& env, float a, float d, float r) const
   float s = static_cast<float>(env.s / 255.0f);
   switch (_stage)
   {
-  case EnvStage::S: return s; break;
-  case EnvStage::Dly: return 0.0f; break;
-  case EnvStage::Hld: return 1.0f; break;
-  case EnvStage::End: return 0.0f; break;
+  case EnvStage::S: return s; 
+  case EnvStage::Dly: return 0.0f; 
+  case EnvStage::Hld: return 1.0f; 
+  case EnvStage::End: return 0.0f; 
   case EnvStage::R: return Generate(s, 0.0, _stagePos / r, env.rSlope); break;
   case EnvStage::D: return Generate(1.0, s, _stagePos / d, env.dSlope); break;
   case EnvStage::A: return Generate(0.0, 1.0, _stagePos / a, env.aSlope); break;
-  default: assert(false); break;
+  default: assert(false); return 0.0f;
   }
 }
 

@@ -12,12 +12,14 @@ namespace Xt.Synth0.UI
 	{
 		static string Tooltip(SynthModel synth, Param param)
 		{
-			var auto = synth.Auto(param);
 			var result = new StringBuilder();
+			result.AppendLine(param.Info.Name);
 			if (param.Info.Control == ParamControl.Knob)
 				result.AppendLine($"Range: {param.Info.Range}");
-			if (auto != null)
-				result.AppendLine($"Automation target: {auto?.Index.ToString("X2")}");
+			if (param.Info.Automatable)
+				result.AppendLine($"Automation target: {synth.AutoParam(param).Index.ToString("X2")}");
+			else
+				result.AppendLine("Not automatable");
 			if (param.Info.Control == ParamControl.Knob)
 				result.AppendLine("Right-click to set exact value");
 			return result.ToString(0, result.Length - Environment.NewLine.Length);
@@ -37,12 +39,21 @@ namespace Xt.Synth0.UI
 			var result = MakeEmpty();
 			bool conditional = param.Info.Relevance != null;
 			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(sub, param));
-			result.Add(MakeControl(app, sub, param), Dock.Left);
+			result.Add(MakeAutoControl(app, sub, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
 			var name = result.Add(Create.Text($"{param.Info.Name} "), Dock.Left);
 			name.VerticalAlignment = VerticalAlignment.Center;
 			if (param.Info.Type == ParamType.Toggle) return result;
 			result.Add(MakeValue(param), Dock.Left);
+			return result;
+		}
+
+		static Control MakeAutoControl(AppModel app, IThemedSubModel sub, Param param)
+		{
+			var result = MakeControl(app, sub, param);
+			if (param.Info.Automatable) return result; 
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 

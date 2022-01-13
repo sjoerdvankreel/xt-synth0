@@ -9,10 +9,8 @@ namespace Xt.Synth0.UI
 		internal static GroupBox Make(AppModel app)
 		{
 			var edit = app.Track.Sequencer.Edit;
-			var content = SubUI.MakeContent(app, edit);
-			var result = Create.ThemedGroup(app.Settings, edit, content);
-			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning),
-				new VisibilityConverter(true, false));
+			var result = SubUI.Make(app, edit);
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new VisibilityConverter(true, false));
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}

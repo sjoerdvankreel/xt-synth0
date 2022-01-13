@@ -12,13 +12,13 @@ namespace Xt.Synth0.Model
 		public struct Native
 		{
 			[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-			internal struct Param { internal int min, max; internal int* value; }
+			internal struct AutoParam { internal int min, max; internal int* value; }
 
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
 			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitModelSize];
 			internal fixed byte envs[TrackConstants.EnvCount * TrackConstants.EnvModelSize];
-			internal fixed byte @params[TrackConstants.ParamCount * TrackConstants.ParamSize];
+			internal fixed byte autoParams[TrackConstants.AutoParamCount * TrackConstants.AutoParamSize];
 		}
 
 		public PlotModel Plot { get; } = new();
@@ -28,16 +28,16 @@ namespace Xt.Synth0.Model
 
 		public IReadOnlyList<AutoParam> AutoParams { get; }
 		public override IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
-		public AutoParam Auto(Param param) => AutoParams.SingleOrDefault(p => ReferenceEquals(param, p.Param));
-		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
+		public AutoParam AutoParam(Param param) => AutoParams.Single(p => ReferenceEquals(param, p.Param));
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, TrackConstants.EnvCount).Select(i => new EnvModel(i)).ToList();
+		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
 		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(new ISubModel[] { Plot, Global }).ToArray();
 
 		public void PrepareNative(IntPtr native)
 		{
 			Native* nativePtr = (Native*)native;
-			var nativeParams = (Native.Param*)nativePtr->@params;
-			for (int p = 0; p < Params.Count; p++)
+			var nativeParams = (Native.AutoParam*)nativePtr->autoParams;
+			for (int p = 0; p < AutoParams.Count; p++)
 			{
 				nativeParams[p].min = AutoParams[p].Param.Info.Min;
 				nativeParams[p].max = AutoParams[p].Param.Info.Max;
@@ -50,9 +50,10 @@ namespace Xt.Synth0.Model
 		{
 			Envs[0].On.Value = 1;
 			Units[0].Type.Value = (int)UnitType.Sin;
-			var @params = ListParams(this).Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
+			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
+				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
-			if (AutoParams.Count != TrackConstants.ParamCount)
+			if (AutoParams.Count != TrackConstants.AutoParamCount)
 				throw new InvalidOperationException();
 		}
 	}

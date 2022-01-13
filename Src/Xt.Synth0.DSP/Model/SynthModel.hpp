@@ -14,7 +14,7 @@ enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSub
 
 struct XTS_ALIGN GlobalModel { int bpm, amp; };
 struct XTS_ALIGN PlotModel { int source, fit; };
-struct XTS_ALIGN Param { int min, max; int* value; };
+struct XTS_ALIGN AutoParam { int min, max; int* value; };
 
 struct XTS_ALIGN EnvModel {
   int a, d, s, r, hld, dly;
@@ -32,7 +32,7 @@ struct XTS_ALIGN SynthModel
   GlobalModel global;
   UnitModel units[TrackConstants::UnitCount];
   EnvModel envs[TrackConstants::EnvCount];
-  Param params[TrackConstants::ParamCount];
+  AutoParam autoParams[TrackConstants::AutoParamCount];
 };
 
 } // namespace Xts

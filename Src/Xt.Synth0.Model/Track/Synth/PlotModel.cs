@@ -19,7 +19,7 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { Source, Fit };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 
-		static readonly ParamInfo FitInfo = ParamInfo.List<PlotFit>(p => &((Native*)p)->fit, nameof(PlotSource));
-		static readonly ParamInfo SourceInfo = ParamInfo.List<PlotSource>(p => &((Native*)p)->source, nameof(PlotSource));
+		static readonly ParamInfo FitInfo = ParamInfo.List<PlotFit>(p => &((Native*)p)->fit, nameof(PlotSource), true);
+		static readonly ParamInfo SourceInfo = ParamInfo.List<PlotSource>(p => &((Native*)p)->source, nameof(PlotSource), true);
 	}
 }
