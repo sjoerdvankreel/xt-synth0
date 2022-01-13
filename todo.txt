@@ -8,4 +8,5 @@ panning
 custom color scheme
 sampler
 better serialization
+automate cents (negative hex not supported)
 
