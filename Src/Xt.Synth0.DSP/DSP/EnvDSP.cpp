@@ -77,7 +77,7 @@ EnvDSP::Next(EnvModel const& env, float rate, bool active, EnvStage* stage)
   case EnvStage::Hld: result = 1.0f; break;
   case EnvStage::R: result = s + powf(_stagePos / r, env.rSlope >= 128 ? (env.rSlope - 128.0f) / x + 1 : env.rSlope / 128.0f) * (0.0f - s); break;
   case EnvStage::D: result = 1.0f + powf(_stagePos / d, env.dSlope >= 128 ? (env.dSlope - 128.0f) / x + 1 : env.dSlope / 128.0f) * (s - 1.0f); break;
-  case EnvStage::A: result = 0.0f + (env.aSlope<=128.0f? powf(_stagePos / a, env.aSlope / 128.0f): 1.0f - powf(1.0f - (_stagePos / a), (env.aSlope-128.0f) / 128.0f)) * (1.0f - 0.0f); break;
+  case EnvStage::A: result = 0.0f + (env.aSlope<=128.0f? powf(_stagePos / a, env.aSlope / 128.0f): 1.0f - powf(1.0f - (_stagePos / a), 1.0f-(env.aSlope-128.0f) / 128.0f)) * (1.0f - 0.0f); break;
   case EnvStage::End: result = 0.0f; break;
   default: assert(false); break;
   }
