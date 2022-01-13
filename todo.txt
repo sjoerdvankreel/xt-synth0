@@ -5,11 +5,8 @@ hard sync
 throttle plot paint
 integrate blit / PWM triangle
 panning
-env off
-env slopes
 custom color scheme
 sampler
-dont automate on/off ?
 better serialization
 darker disabled Bacground for custom controls
 
