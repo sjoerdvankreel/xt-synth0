@@ -49,7 +49,7 @@ PlotDSP::RenderUnit(
   for (int i = 0; i <= samples; i++)
   {
     _unit.Next(unit, ratef, true, &l, &r, &cycled);
-    _samples.push_back((l + r) / 2.0f);
+    _samples.push_back(l + r);
     if (cycled) _splits.push_back(i + 1);
   }
 }
