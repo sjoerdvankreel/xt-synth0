@@ -9,29 +9,32 @@
 
 namespace Xts {
 
-struct SeqOutput
+struct SeqState
 {
+  float rate;
+  float* buffer;
+  int32_t frames;
+  SynthModel* synth;
   int32_t currentRow;
+  SeqModel const* seq;
   int64_t streamPosition;
 };
 
 class SeqDSP
 {
+  int _previousRow = -1;
+  double _rowFactor = 0.0;
   SynthDSP _synth;
   PatternDSP const _pattern;
 
-  int _currentRow = 0;
-	int _previousRow = -1;
-  double _rowFactor = 0.0;
-  uint64_t _streamPosition = 0;
-
-  bool RowUpdated();
-  bool UpdateRow(SeqModel const& seq, SynthModel& synth, float rate);
-  void Next(SeqModel const& seq, SynthModel& synth, float rate, SynthOutput& output);
-
 public:
   void Init();
-  void ProcessBuffer(SeqModel const& seq, SynthModel& synth, float rate, float* buffer, int32_t frames, SeqOutput& output);
+  void ProcessBuffer(SeqState& state);
+
+private:
+  bool RowUpdated(int currentRow);
+  bool UpdateRow(SeqState& state);
+  void Next(SeqState& state, SynthOutput& output);
 };
 
 } // namespace Xts

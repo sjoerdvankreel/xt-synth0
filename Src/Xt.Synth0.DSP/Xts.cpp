@@ -8,13 +8,10 @@ void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth) { delete synth; }
 Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void) { return new Xts::SeqModel; }
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
 
-void XTS_CALL XtsSeqDSPReset(Xts::SeqDSP* dsp) { dsp->Reset(); }
+void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp) { dsp->Init(); }
 void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp) { delete dsp; }
 Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void) { return new Xts::SeqDSP; }
-void XTS_CALL XtsSeqDSPProcessBuffer(
-  Xts::SeqDSP* dsp, Xts::SeqModel const* seq, Xts::SynthModel* synth,
-  float rate, float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition)
-{ dsp->ProcessBuffer(*seq, *synth, rate, buffer, frames, currentRow, streamPosition); }
+void XTS_CALL XtsSeqDSPProcessBuffer(Xts::SeqDSP* dsp, Xts::SeqState* state) { dsp->ProcessBuffer(*state); }
 
 XTS_EXPORT void XTS_CALL XtsPlotDSPDestroy(Xts::PlotDSP* dsp) { delete dsp; }
 XTS_EXPORT Xts::PlotDSP* XTS_CALL XtsPlotDSPCreate(void) { return new Xts::PlotDSP; }

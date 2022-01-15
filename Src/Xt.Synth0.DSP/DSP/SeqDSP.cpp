@@ -4,72 +4,66 @@
 namespace Xts {
 
 void 
-SeqDSP::Reset()
+SeqDSP::Init()
 {
-  _currentRow = 0;
   _rowFactor = 0.0;
   _previousRow = -1;
-  _streamPosition = 0;
-  _synth.Reset();
 }
 
-bool 
-SeqDSP::RowUpdated()
+void
+SeqDSP::ProcessBuffer(SeqState& state)
 {
-	bool result = _previousRow != _currentRow;
-	_previousRow = _currentRow;
+  SynthOutput audio;
+	for (int f = 0; f < state.frames; f++)
+	{
+		Next(state, audio);
+		state.buffer[f * 2] = audio.l;
+		state.buffer[f * 2 + 1] = audio.r;
+	}
+}
+
+bool
+SeqDSP::RowUpdated(int currentRow)
+{
+	bool result = _previousRow != currentRow;
+	_previousRow = currentRow;
 	return result;
 }
 
-void
-SeqDSP::ProcessBuffer(
-	SeqModel const& seq, SynthModel& synth, float rate,
-	float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition)
-{
-  float l;
-  float r;
-	for (int f = 0; f < frames; f++)
-	{
-		Next(seq, synth, rate, &l, &r);
-		buffer[f * 2] = l;
-		buffer[f * 2 + 1] = r;
-	}
-	*currentRow = _currentRow;
-	*streamPosition = _streamPosition;
-}
-
 bool 
-SeqDSP::UpdateRow(SeqModel const& seq, SynthModel& synth, float rate)
+SeqDSP::UpdateRow(SeqState&  state)
 {
-	int lpb = seq.edit.lpb;
-	int pats = seq.edit.pats;
-	int rows = seq.edit.rows;
-	int bpm = synth.global.bpm;
+	int lpb = state.seq->edit.lpb;
+	int pats = state.seq->edit.pats;
+	int rows = state.seq->edit.rows;
+	int bpm = state.synth->global.bpm;
   int maxRows = TrackConstants::MaxRows;
-	_rowFactor += bpm * lpb / (60.0 * rate);
-	if (_rowFactor < 1.0) 
-    return RowUpdated();
+	_rowFactor += bpm * lpb / (60.0 * state.rate);
+	if (_rowFactor < 1.0) return RowUpdated(state.currentRow);
 	_rowFactor = 0.0f;
-  _currentRow++;
-  if(_currentRow % maxRows == rows)
+	state.currentRow++;
+  if(state.currentRow % maxRows == rows)
   {
-     _currentRow += maxRows - rows;
-     assert(_currentRow % maxRows == 0);
+		state.currentRow += maxRows - rows;
+    assert(state.currentRow % maxRows == 0);
   }
-  if(_currentRow == pats * maxRows) _currentRow = 0;
-	return RowUpdated();
+  if(state.currentRow == pats * maxRows) state.currentRow = 0;
+	return RowUpdated(state.currentRow);
 }
 
 void
-SeqDSP::Next(SeqModel const& seq, SynthModel& synth, float rate, float* l, float* r)
+SeqDSP::Next(SeqState& state, SynthOutput& output)
 {
-	bool updated = UpdateRow(seq, synth, rate);
-	if (updated) _pattern.Automate(seq.edit, seq.pattern.rows[_currentRow], synth);
-  auto key = seq.pattern.rows[_currentRow].keys[0];
-  auto note = static_cast<PatternNote>(key.note); 
-  bool tick = updated && note > PatternNote::Off;
-	_synth.Next(synth, rate,key.oct, note, tick, l, r);
-	_streamPosition++;
+	bool updated = UpdateRow(state);
+  auto row = state.seq->pattern.rows[state.currentRow];
+	if (updated) _pattern.Automate(state.seq->edit, row, *state.synth);
+  auto key = row.keys[0];
+  auto note = static_cast<PatternNote>(key.note);
+  auto unitNote = static_cast<UnitNote>(static_cast<int>(note) - 2);
+	if (updated && note == PatternNote::Off) _synth.Release();
+	if(updated && note >= PatternNote::C) _synth.Init(key.oct, unitNote);
+	_synth.Next(*state.synth, state.rate, output);
+	state.streamPosition++;
 }
 
 } // namespace Xts

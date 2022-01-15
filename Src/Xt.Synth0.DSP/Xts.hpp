@@ -18,11 +18,9 @@ XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* seq);
 XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth);
 
 XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
-XTS_EXPORT void XTS_CALL XtsSeqDSPReset(Xts::SeqDSP* dsp);
+XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsSeqDSPProcessBuffer(
-  Xts::SeqDSP* dsp, Xts::SeqModel const* seq, Xts::SynthModel* synth,
-  float rate, float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition);
+XTS_EXPORT void XTS_CALL XtsSeqDSPProcessBuffer(Xts::SeqDSP* dsp, Xts::SeqState* state);
 
 XTS_EXPORT Xts::PlotDSP* XTS_CALL XtsPlotDSPCreate(void);
 XTS_EXPORT void XTS_CALL XtsPlotDSPDestroy(Xts::PlotDSP* dsp);
