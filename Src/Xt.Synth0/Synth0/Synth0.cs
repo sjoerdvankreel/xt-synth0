@@ -12,27 +12,32 @@ namespace Xt.Synth0
 	{
 		static IntPtr _plotDSP;
 		static IntPtr _plotSynthModel;
+		static unsafe Native.PlotInput* _plotInput;
+		static unsafe Native.PlotOutput* _plotOutput;
+
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
 
 		[STAThread]
-		static void Main()
+		static unsafe void Main()
 		{
 			TrackConstants.SanityChecks();
 			try
 			{
-				_plotSynthModel = Native.XtsSynthModelCreate();
 				_plotDSP = Native.XtsPlotDSPCreate();
+				_plotInput = Native.XtsPlotInputCreate();
+				_plotOutput = Native.XtsPlotOutputCreate();
+				_plotSynthModel = Native.XtsSynthModelCreate();
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
 				Native.XtsPlotDSPDestroy(_plotDSP);
-				_plotDSP = IntPtr.Zero;
+				Native.XtsPlotInputDestroy(_plotInput);
+				Native.XtsPlotOutputDestroy(_plotOutput);
 				Native.XtsSynthModelDestroy(_plotSynthModel);
-				_plotSynthModel = IntPtr.Zero;
 			}
 		}
 
@@ -213,26 +218,21 @@ namespace Xt.Synth0
 
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
-			int* splits;
-			int bipolar;
-			float* samples;
-			int splitCount;
-			int sampleCount;
-			float frequency;
-			int rate = Model.Settings.SampleRate.ToInt();
+			_plotInput->pixels = e.Pixels;
+			_plotInput->synth = _plotSynthModel;
+			_plotInput->rate = Model.Settings.SampleRate.ToInt();
 			Model.Track.Synth.ToNative(_plotSynthModel.ToPointer());
-			Native.XtsPlotDSPRender(
-				_plotDSP, _plotSynthModel, e.Pixels, &rate, &bipolar,
-				&frequency, &samples, &sampleCount, &splits, &splitCount);
-			e.SampleRate = rate;
-			e.Freq = frequency;
-			e.Bipolar = bipolar != 0;
+			Native.XtsPlotDSPRender(_plotDSP, _plotInput, _plotOutput);
+
+			e.Freq = _plotOutput->freq;
+			e.SampleRate = _plotOutput->rate;
+			e.Bipolar = _plotOutput->bipolar != 0;
 			e.Splits.Clear();
-			for (int i = 0; i < splitCount; i++)
-				e.Splits.Add(splits[i]);
+			for (int i = 0; i < _plotOutput->splitCount; i++)
+				e.Splits.Add(_plotOutput->splits[i]);
 			e.Samples.Clear();
-			for (int i = 0; i < sampleCount; i++)
-				e.Samples.Add(samples[i]);
+			for (int i = 0; i < _plotOutput->sampleCount; i++)
+				e.Samples.Add(_plotOutput->samples[i]);
 		}
 	}
 }

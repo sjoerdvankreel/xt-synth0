@@ -9,11 +9,38 @@ namespace Xt.Synth0
 	internal static unsafe class Native
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct PlotInput { int rate; int pixels; IntPtr synth; }
+		internal struct PlotInput
+		{
+			internal int rate;
+			internal int pixels;
+			internal IntPtr synth;
+		}
+
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct PlotOutput { float freq; int rate; int bipolar; int splitCount; int sampleCount; int pad__; float* samples; int* splits; }
+		internal struct PlotOutput
+		{
+			internal float freq;
+			internal int rate;
+			internal int bipolar;
+			internal int splitCount;
+			internal int sampleCount;
+			int pad__;
+			internal float* samples;
+			internal int* splits;
+		}
+
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct SeqState { float rate; int frames; int currentRow; int pad__; long streamPosition; float* buffer; IntPtr synth; IntPtr seq; }
+		internal struct SeqState
+		{
+			internal float rate;
+			internal int frames;
+			internal int currentRow;
+			int pad__; 
+			internal long streamPosition;
+			internal float* buffer; 
+			internal IntPtr synth; 
+			internal IntPtr seq;
+		}
 
 		static Native() { XtsDSPInit(); }
 
