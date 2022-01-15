@@ -10,6 +10,7 @@ namespace Xts {
 class UnitDSP 
 {
   double _phase = 0.0;
+  PatternNote _note = PatternNote::None;
 
   float PwPhase(float phase, int pw) const;
   float GenerateNaive(NaiveType type, int pw, float phase) const;
@@ -20,7 +21,7 @@ class UnitDSP
 public:
   void Reset();
   static void Init();
-  float Frequency(UnitModel const& unit) const;
+  float Frequency(UnitModel const& unit, int octave, UnitNote note) const;
   void Next(UnitModel const& unit, float rate, int octave, PatternNote note, bool tick, bool plot, float* l, float* r, bool* cycled);
 };
 

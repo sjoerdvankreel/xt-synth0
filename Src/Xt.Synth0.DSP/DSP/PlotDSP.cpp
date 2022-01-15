@@ -41,7 +41,7 @@ PlotDSP::RenderUnit(
   *bipolar = XtsTrue;
   const float cycleCount = 1.5f;
   bool doFit = fit == PlotFit::Fit;
-  *frequency = _unit.Frequency(unit);
+  *frequency = _unit.Frequency(unit, 4, UnitNote::C);
   if (doFit) *rate = static_cast<int32_t>(ceilf(*frequency * pixels / cycleCount));
   float cycleLength = *rate / *frequency;
   float ratef = static_cast<float>(*rate);

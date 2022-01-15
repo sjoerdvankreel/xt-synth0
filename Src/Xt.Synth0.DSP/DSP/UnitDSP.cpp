@@ -34,7 +34,10 @@ UnitDSP::Init()
 
 void
 UnitDSP::Reset()
-{ _phase = 0.0; }
+{ 
+  _phase = 0.0; 
+	_note = PatternNote::None;
+}
 
 float 
 UnitDSP::PwPhase(float phase, int pw) const
@@ -44,10 +47,12 @@ UnitDSP::PwPhase(float phase, int pw) const
 }
 
 float
-UnitDSP::Frequency(UnitModel const& unit) const
+UnitDSP::Frequency(UnitModel const& unit, int octave, UnitNote note) const
 { 
+  auto c = static_cast<int>(UnitNote::C);
+  int offset = NoteNum(octave, static_cast<int>(note) - NoteNum(4, c));
   int cent = static_cast<int>(Mix0100Inclusive(unit.dtn));
-  return FrequencyTable[NoteNum(unit.oct + 1, unit.note)][cent];
+  return FrequencyTable[NoteNum(unit.oct + 1, unit.note) - offset][cent];
 }
 
 void
@@ -59,11 +64,16 @@ UnitDSP::Next(UnitModel const& unit, float rate, int octave, PatternNote note, b
 	auto off = static_cast<int>(UnitType::Off);
   if(!plot && unit.type == off) return;
   if(tick) Reset();
-	float amp = Level(unit.amp);
-	float freq = Frequency(unit);
-  float pan = Mix01Inclusive(unit.pan);
-	float phase = static_cast<float>(_phase);
-	float sample = Generate(unit, freq, rate, phase);
+  if(tick && note >= PatternNote::C) _note = note;
+  
+	if(_note >= PatternNote::C)
+  {
+	  float amp = Level(unit.amp);
+    float pan = Mix01Inclusive(unit.pan);
+	  float phase = static_cast<float>(_phase);
+	  float freq = Frequency(unit, octave, _note);
+	  float sample = Generate(unit, freq, rate, phase);
+  }
 	_phase += freq / rate;
 	if (_phase >= 1.0)
   { 
