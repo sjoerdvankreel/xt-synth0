@@ -18,6 +18,7 @@ struct SeqState
   int32_t currentRow;
   SeqModel const* seq;
   int64_t streamPosition;
+  SeqState() = default;
 };
 
 class SeqDSP

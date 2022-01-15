@@ -9,6 +9,26 @@
 
 namespace Xts {
 
+struct PlotInput
+{
+  int32_t rate;
+  int32_t pixels;
+  SynthModel const* synth;
+  PlotInput() = default;
+};
+
+struct PlotOutput
+{
+  float freq;
+  int32_t rate;
+  XtsBool bipolar;
+  float* samples;
+  int32_t* splits;
+  int32_t splitCount;
+  int32_t sampleCount;
+  PlotOutput() = default;
+};
+
 class PlotDSP
 {
 private:
@@ -17,16 +37,12 @@ private:
   std::vector<float> _samples;
   std::vector<int32_t> _splits;
 
-  void RenderEnv(
-    EnvModel const& env, int32_t pixels, 
-    PlotFit fit, int32_t* rate, XtsBool* bipolar);
-  void RenderUnit(
-    UnitModel const& unit, int32_t pixels, PlotFit fit, 
-    int32_t* rate, XtsBool* bipolar, float* frequency);
 public:
-  void Render(
-    SynthModel const& synth, int32_t pixels, int32_t* rate, XtsBool* bipolar, 
-    float* frequency, float** samples, int32_t* sampleCount, int32_t** splits, int32_t* splitCount);
+  void Render(PlotInput const& input, PlotOutput& output);
+
+private:
+  void RenderEnv(PlotInput const& input, int index, PlotOutput& output);
+  void RenderUnit(PlotInput const& input, int index, PlotOutput& output);
 };
 
 } // namespace Xts

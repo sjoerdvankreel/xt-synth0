@@ -75,6 +75,7 @@ EnvDSP::Next(EnvModel const& env, float rate, EnvOutput& output)
 {
   const float threshold = 1.0E-5f;
   memset(&output, 0, sizeof(output));
+  output.stage = _stage;
   if(!env.on || _stage == EnvStage::End) return;
   EnvParams params = Params(env, rate);
   CycleStage(params);
@@ -82,6 +83,7 @@ EnvDSP::Next(EnvModel const& env, float rate, EnvOutput& output)
   if(_stage != EnvStage::End) _stagePos++;
   if(_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
   output.lvl = result;
+  output.stage = _stage;
   output.staged = _stage != _prevStage;
   _prevStage = _stage;
 }

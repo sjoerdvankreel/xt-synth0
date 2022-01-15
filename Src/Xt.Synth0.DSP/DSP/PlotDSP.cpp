@@ -5,100 +5,85 @@
 namespace Xts {
 
 void 
-PlotDSP::Render(
-  SynthModel const& synth, int32_t pixels, int32_t* rate, XtsBool* bipolar, 
-  float* frequency, float** samples, int32_t* sampleCount, int32_t** splits, int32_t* splitCount)
+PlotDSP::Render(PlotInput const& input, PlotOutput& output)
 {
   _splits.clear();
   _samples.clear();
-  *frequency = 0.0f;
-  *bipolar = XtsFalse;
-  PlotFit fit = static_cast<PlotFit>(synth.plot.fit);
-  switch(static_cast<PlotSource>(synth.plot.source))
+  output.freq = 0.0f;
+  output.bipolar = XtsFalse;
+  switch(static_cast<PlotSource>(input.synth->plot.source))
   {
-  case PlotSource::Env1: RenderEnv(synth.envs[0], pixels, fit, rate, bipolar); break;
-  case PlotSource::Env2: RenderEnv(synth.envs[1], pixels, fit, rate, bipolar); break;
-  case PlotSource::Unit1: RenderUnit(synth.units[0], pixels, fit, rate, bipolar, frequency); break;
-  case PlotSource::Unit2: RenderUnit(synth.units[1], pixels, fit, rate, bipolar, frequency); break;
-  case PlotSource::Unit3: RenderUnit(synth.units[2], pixels, fit, rate, bipolar, frequency); break;
+  case PlotSource::Env1: RenderEnv(input, 0, output); break;
+  case PlotSource::Env2: RenderEnv(input, 1, output); break;
+  case PlotSource::Unit1: RenderUnit(input, 0, output); break;
+  case PlotSource::Unit2: RenderUnit(input, 1, output); break;
+  case PlotSource::Unit3: RenderUnit(input, 2, output); break;
   default: assert(false); break;
   }
-  *splits = _splits.data();
-  *samples = _samples.data();
-  *splitCount = static_cast<int32_t>(_splits.size());
-  *sampleCount = static_cast<int32_t>(_samples.size());
+  output.splits = _splits.data();
+  output.samples = _samples.data();
+  output.splitCount = static_cast<int32_t>(_splits.size());
+  output.sampleCount = static_cast<int32_t>(_samples.size());
 }
 
 void
-PlotDSP::RenderUnit(
-  UnitModel const& unit, int32_t pixels, PlotFit fit, 
-  int32_t* rate, XtsBool* bipolar, float* frequency)
+PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput& output)
 {
-  float l;
-  float r;
-  bool cycled;
-  _unit.Reset();
-  *bipolar = XtsTrue;
   const float cycleCount = 1.5f;
-  bool doFit = fit == PlotFit::Fit;
-  *frequency = _unit.Frequency(unit, 4, UnitNote::C);
-  if (doFit) *rate = static_cast<int32_t>(ceilf(*frequency * pixels / cycleCount));
-  float cycleLength = *rate / *frequency;
-  float ratef = static_cast<float>(*rate);
+
+  UnitOutput uout;
+  int32_t rate = input.rate;
+  _unit.Init(4, UnitNote::C);
+  float freq = _unit.Freq(input.synth->units[index]);
+  bool doFit = input.synth->plot.fit == static_cast<int>(PlotFit::Fit);
+  if (doFit) rate = static_cast<int32_t>(ceilf(freq * input.pixels / cycleCount));
+
+  float cycleLength = rate / freq;
+  float ratef = static_cast<float>(rate);
   int samples = static_cast<int>(cycleCount * cycleLength);
   for (int i = 0; i <= samples; i++)
   {
-    _unit.Next(unit, ratef, 4, PatternNote::C, false, true, &l, &r, &cycled);
-    _samples.push_back(l + r);
-    if (cycled) _splits.push_back(i + 1);
+    _unit.Next(input.synth->units[index], ratef, uout);
+    _samples.push_back(uout.l + uout.r);
+    if (uout.cycled) _splits.push_back(i + 1);
   }
+  output.rate = rate;
+  output.freq = freq;
+  output.bipolar = XtsTrue;
 }
 
 void
-PlotDSP::RenderEnv(
-  EnvModel const& env, int32_t pixels, 
-  PlotFit fit, int32_t* rate, XtsBool* bipolar)
+PlotDSP::RenderEnv(PlotInput const& input, int index, PlotOutput& output)
 {
-  _env.Reset();
-  int sample = 0;
-  *bipolar = XtsFalse;
-  int activeSamples = 0;
-  float dly, a, hld, d, r;
   const int maxSamples = 96000;
   const int minHoldSamples = 10;
-  EnvStage stage = EnvStage::Dly;
-  EnvStage prevStage = EnvStage::Dly;
   const float holdFactor = 1.0f / 3.0f;
-  bool doFit = fit != PlotFit::Rate;
-  float ratef = static_cast<float>(*rate);
-  _env.Length(env, ratef, &dly, &a, &hld, &d, &r);
-  float envSamples = dly + a + hld + d + r;
-  int holdSamples = static_cast<int>(envSamples * holdFactor);
-  holdSamples = std::max(holdSamples, minHoldSamples);
-  float totalSamples = holdSamples + envSamples;
-  if (doFit)
-  {
-    *rate = static_cast<int32_t>(*rate / totalSamples * pixels);
-    RenderEnv(env, pixels, PlotFit::Rate, rate, bipolar);
-    return;
-  }
-  else if (totalSamples > maxSamples)
-  {
-    *rate = static_cast<int32_t>(*rate / totalSamples * maxSamples);
-    RenderEnv(env, pixels, PlotFit::Rate, rate, bipolar);
-    return;
-  }
+
+  _env.Init();
+  int sample = 0;
+  int sustainSamples = 0;
+  int32_t rate = input.rate;
+  EnvParams params = _env.Params(input.synth->envs[index], input.rate);
+  bool doFit = input.synth->plot.fit != static_cast<int>(PlotFit::Rate);
+  float length = params.dly + params.a + params.hld + params.d + params.r;
+  int holdSamples = std::max(static_cast<int>(length * holdFactor), minHoldSamples);
+  float totalSamples = holdSamples + length;
+  if (doFit) rate = static_cast<int32_t>(rate / totalSamples * input.pixels);
+  if (totalSamples > maxSamples) rate = static_cast<int32_t>(rate / totalSamples * maxSamples);
+
+  EnvOutput eout;
+  float ratef = static_cast<float>(rate);
   while (true)
   {
-    float lvl = _env.Next(env, ratef, activeSamples < holdSamples, true, &stage);
-    if (stage == EnvStage::End) break;
-    _samples.push_back(lvl);
-    if (stage == EnvStage::S) activeSamples++;
-    if (sample != 0 && stage != prevStage && stage != EnvStage::End)
-      _splits.push_back(sample);
-    prevStage = stage;
+    _env.Next(input.synth->envs[index], ratef, eout);
+    if (eout.stage == EnvStage::End) break;
+    _samples.push_back(eout.lvl);
+    if (eout.stage == EnvStage::S) sustainSamples++;
+    if (sample != 0 && eout.staged) _splits.push_back(sample);
     sample++;
   }
+  output.rate = rate;
+  output.bipolar = XtsFalse;
 }
 
 } // namespace Xts

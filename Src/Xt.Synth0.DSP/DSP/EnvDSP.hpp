@@ -11,12 +11,15 @@ struct EnvOutput
 {
   float lvl;
   bool staged;
+  EnvStage stage;
+  EnvOutput() = default;
 };
 
 struct EnvParams
 {
   float dly, hld;
   float a, d, s, r;
+  EnvParams() = default;
 };
 
 class EnvDSP 

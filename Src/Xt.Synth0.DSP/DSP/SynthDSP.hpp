@@ -11,6 +11,7 @@ struct SynthOutput
 {
   float l;
   float r;
+  SynthOutput() = default;
 };
 
 class SynthDSP

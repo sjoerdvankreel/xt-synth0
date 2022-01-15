@@ -85,7 +85,7 @@ namespace Xt.Synth0.UI
 			container.Content = Plot(w, h);
 			string header = $"{plot.Name} @ {Args.SampleRate}Hz";
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
-			if (Args.Frequency != 0.0f) header += $", {Args.Frequency.ToString("N1")}Hz";
+			if (Args.Freq != 0.0f) header += $", {Args.Freq.ToString("N1")}Hz";
 			box.Header = header;
 		}
 

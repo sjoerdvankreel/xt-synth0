@@ -225,7 +225,7 @@ namespace Xt.Synth0
 				_plotDSP, _plotSynthModel, e.Pixels, &rate, &bipolar,
 				&frequency, &samples, &sampleCount, &splits, &splitCount);
 			e.SampleRate = rate;
-			e.Frequency = frequency;
+			e.Freq = frequency;
 			e.Bipolar = bipolar != 0;
 			e.Splits.Clear();
 			for (int i = 0; i < splitCount; i++)
