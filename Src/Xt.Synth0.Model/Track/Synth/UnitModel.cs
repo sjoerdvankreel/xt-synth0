@@ -49,10 +49,10 @@ namespace Xt.Synth0.Model
 			{ Note, 5 },
 			{ Dtn, 6 },
 			{ Pw, 7 },
-			{ AddParts, 8 },
+			{ AddParts, 7 },
 			{ AddMaxParts, 8 },
-			{ AddStep, 9 },
-			{ AddRoll, 10 },
+			{ AddStep, 8 },
+			{ AddRoll, 9 }
 		};
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };

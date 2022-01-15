@@ -9,6 +9,5 @@ sampler
 better serialization
 fix panning in xtaudio
 automation groups
-shrink unit rows
 change global color
 
