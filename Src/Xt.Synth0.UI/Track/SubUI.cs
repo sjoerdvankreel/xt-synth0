@@ -48,8 +48,9 @@ namespace Xt.Synth0.UI
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			foreach (var p in sub.ParamLayout)
 				result.Add(MakeInnerBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));
-			if (positions % 2 == 1)
-				result.Add(MakeInnerBorder(null, new Cell(rows - 1, cols - 1)));
+			for (int p = 0; p < rows * cols; p++)
+				if (!sub.ParamLayout.Values.Contains(p))
+					result.Add(MakeInnerBorder(null, new Cell(p / cols, p % cols)));
 			return result;
 		}
 	}
