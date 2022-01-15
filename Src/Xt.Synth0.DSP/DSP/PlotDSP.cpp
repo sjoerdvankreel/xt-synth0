@@ -43,12 +43,13 @@ PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput& output)
   float cycleLength = rate / freq;
   float ratef = static_cast<float>(rate);
   int samples = static_cast<int>(cycleCount * cycleLength);
-  for (int i = 0; i <= samples; i++)
-  {
-    _unit.Next(input.synth->units[index], ratef, uout);
-    _samples.push_back(uout.l + uout.r);
-    if (uout.cycled) _splits.push_back(i + 1);
-  }
+  if(input.synth->units[index].type != static_cast<int>(UnitType::Off))
+    for (int i = 0; i <= samples; i++)
+    {
+      _unit.Next(input.synth->units[index], ratef, uout);
+      _samples.push_back(uout.l + uout.r);
+      if (uout.cycled) _splits.push_back(i + 1);
+    }
   output.rate = rate;
   output.freq = freq;
   output.bipolar = XtsTrue;
