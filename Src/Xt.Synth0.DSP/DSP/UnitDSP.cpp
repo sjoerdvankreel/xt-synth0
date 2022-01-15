@@ -28,8 +28,8 @@ UnitDSP::Init()
 {
 	for (int oct = 0; oct < OctCount; oct++)
 		for (int note = 0; note < NoteCount; note++)
-			for (int cent = -50; cent <= 50; cent++)
-				FrequencyTable[oct][note][cent + 50] = GetFrequency(oct, note, cent);
+			for (int cent = 0; cent < CentCount; cent++)
+				FrequencyTable[oct][note][cent] = GetFrequency(oct, note, cent - 50);
 }
 
 void
