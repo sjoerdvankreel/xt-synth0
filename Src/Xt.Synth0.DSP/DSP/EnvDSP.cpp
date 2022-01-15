@@ -64,8 +64,8 @@ EnvDSP::Generate(float from, float to, float pos, int slope) const
 {
   float range = to - from;
   float slopef = static_cast<float>(slope);
-  if(slopef <= 128.0f) return from + range * powf(pos, slopef / 128.0f);
-  return from + range * (1.0f - powf(1.0f - pos, 1.0f - (slopef - 128.0f) / 128.0f));
+  if(slopef <= 128.0f) return from + range * powf(pos, Mix02Exclusive(slopef));
+  return from + range * (1.0f - powf(1.0f - pos, 2.0f - Mix02Exclusive(slopef)));
 }
 
 float 
