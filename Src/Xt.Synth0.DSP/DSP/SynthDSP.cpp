@@ -11,7 +11,7 @@ SynthDSP::Reset()
 }
 
 void
-SynthDSP::Next(SynthModel const& synth, float rate, float* l, float* r)
+SynthDSP::Next(SynthModel const& synth, float rate, int octave, PatternNote note, bool tick, float* l, float* r)
 {
   float ul;
   float ur;
@@ -21,7 +21,7 @@ SynthDSP::Next(SynthModel const& synth, float rate, float* l, float* r)
   float amp = Level(synth.global.amp);
   for (int u = 0; u < TrackConstants::UnitCount; u++)
   {
-    _units[u].Next(synth.units[u], rate, false, &ul, &ur, &cycled);
+    _units[u].Next(synth.units[u], rate, octave, note, tick, false, &ul, &ur, &cycled);
     *l += ul * amp;
     *r += ur * amp;
   }

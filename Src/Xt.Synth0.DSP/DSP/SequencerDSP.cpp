@@ -21,15 +21,6 @@ SequencerDSP::RowUpdated()
 	return result;
 }
 
-void 
-SequencerDSP::Next(SequencerModel const& seq, SynthModel& synth, float rate, float* l, float* r)
-{
-	if (UpdateRow(seq, synth, rate))
-		_pattern.Automate(seq.edit, seq.pattern.rows[_currentRow], synth);
-	_synth.Next(synth, rate, l, r);
-	_streamPosition++;
-}
-
 void
 SequencerDSP::ProcessBuffer(
 	SequencerModel const& seq, SynthModel& synth, float rate,
@@ -67,6 +58,18 @@ SequencerDSP::UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate
   }
   if(_currentRow == pats * maxRows) _currentRow = 0;
 	return RowUpdated();
+}
+
+void
+SequencerDSP::Next(SequencerModel const& seq, SynthModel& synth, float rate, float* l, float* r)
+{
+	bool updated = UpdateRow(seq, synth, rate);
+	if (updated) _pattern.Automate(seq.edit, seq.pattern.rows[_currentRow], synth);
+  auto key = seq.pattern.rows[_currentRow].keys[0];
+  auto note = static_cast<PatternNote>(key.note); 
+  bool tick = updated && note > PatternNote::Off;
+	_synth.Next(synth, rate,key.oct, note, tick, l, r);
+	_streamPosition++;
 }
 
 } // namespace Xts

@@ -11,9 +11,6 @@ inline constexpr XtsBool XtsFalse = 0;
 
 namespace Xts { namespace TrackConstants {
 
-constexpr int MinOct = 0;
-constexpr int MaxOct = 9;
-
 constexpr int EnvCount = 2;
 constexpr int UnitCount = 3;
 constexpr int AutoParamCount = 60;

@@ -7,9 +7,10 @@
 
 namespace Xts {
 
-static constexpr int OctCount 
-= TrackConstants::MaxOct - TrackConstants::MinOct + 1;
-static float FrequencyTable[OctCount][12][101];
+const int OctCount = 10;
+const int NoteCount = 12;
+const int CentCount = 101;
+static float FrequencyTable[OctCount][NoteCount][CentCount];
 
 static inline float
 GetFrequency(int oct, int note, int cent)
@@ -21,11 +22,8 @@ GetFrequency(int oct, int note, int cent)
 void
 UnitDSP::Init()
 {
-	const int notes = 12;
-	const int cents = 101;
-	const int octs = TrackConstants::MaxOct - TrackConstants::MinOct + 1;
-	for (int oct = 0; oct < octs; oct++)
-		for (int note = 0; note < notes; note++)
+	for (int oct = 0; oct < OctCount; oct++)
+		for (int note = 0; note < NoteCount; note++)
 			for (int cent = -50; cent <= 50; cent++)
 				FrequencyTable[oct][note][cent + 50] = GetFrequency(oct, note, cent);
 }
@@ -49,14 +47,14 @@ UnitDSP::Frequency(UnitModel const& unit) const
 }
 
 void
-UnitDSP::Next(UnitModel const& unit, float rate, bool plot, float* l, float* r, bool* cycled)
+UnitDSP::Next(UnitModel const& unit, float rate, int octave, PatternNote note, bool tick, bool plot, float* l, float* r, bool* cycled)
 {
 	*l = 0.0f;
   *r = 0.0f;
 	*cycled = false;
 	auto off = static_cast<int>(UnitType::Off);
   if(!plot && unit.type == off) return;
-
+  if(tick) Reset();
 	float amp = Level(unit.amp);
 	float freq = Frequency(unit);
   float pan = Mix01Inclusive(unit.pan);

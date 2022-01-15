@@ -3,6 +3,7 @@
 
 #include "UnitDSP.hpp"
 #include "../Model/SynthModel.hpp"
+#include "../Model/SequencerModel.hpp"
 
 namespace Xts {
 
@@ -11,7 +12,7 @@ class SynthDSP
   UnitDSP _units[TrackConstants::UnitCount];
 public:
   void Reset();
-  void Next(SynthModel const& synth, float rate, float* l, float* r);
+  void Next(SynthModel const& synth, float rate, int octave, PatternNote note, bool tick, float* l, float* r);
 };
 
 } // namespace Xts

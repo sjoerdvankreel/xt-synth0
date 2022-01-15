@@ -48,7 +48,7 @@ PlotDSP::RenderUnit(
   int samples = static_cast<int>(cycleCount * cycleLength);
   for (int i = 0; i <= samples; i++)
   {
-    _unit.Next(unit, ratef, true, &l, &r, &cycled);
+    _unit.Next(unit, ratef, 4, PatternNote::C, false, true, &l, &r, &cycled);
     _samples.push_back(l + r);
     if (cycled) _splits.push_back(i + 1);
   }

@@ -27,9 +27,6 @@ namespace Xt.Synth0.Model
 		}
 
 		internal const int Alignment = 8;
-
-		public const int MinOct = 0;
-		public const int MaxOct = 9;
 		public const int FormatVersion = 1;
 
 		public const int EnvCount = 2;
