@@ -9,7 +9,7 @@
 
 namespace Xts {
 
-struct PlotInput
+struct XTS_ALIGN PlotInput
 {
   int32_t rate;
   int32_t pixels;
@@ -17,15 +17,16 @@ struct PlotInput
   PlotInput() = default;
 };
 
-struct PlotOutput
+struct XTS_ALIGN PlotOutput
 {
   float freq;
   int32_t rate;
   XtsBool bipolar;
-  float* samples;
-  int32_t* splits;
   int32_t splitCount;
   int32_t sampleCount;
+  int32_t pad__;
+  float* samples;
+  int32_t* splits;
   PlotOutput() = default;
 };
 

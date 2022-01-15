@@ -1,13 +1,15 @@
 #include "SeqDSP.hpp"
+#include <string>
 #include <cassert>
 
 namespace Xts {
 
 void 
-SeqDSP::Init()
+SeqDSP::Init(SeqState& state)
 {
   _rowFactor = 0.0;
   _previousRow = -1;
+  memset(&state, 0, sizeof(state));
 }
 
 void

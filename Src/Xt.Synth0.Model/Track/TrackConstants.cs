@@ -26,7 +26,7 @@ namespace Xt.Synth0.Model
 				throw new InvalidOperationException();
 		}
 
-		internal const int Alignment = 8;
+		public const int Alignment = 8;
 		public const int FormatVersion = 1;
 
 		public const int EnvCount = 2;

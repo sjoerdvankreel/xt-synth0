@@ -9,15 +9,16 @@
 
 namespace Xts {
 
-struct SeqState
+struct XTS_ALIGN SeqState
 {
   float rate;
-  float* buffer;
   int32_t frames;
-  SynthModel* synth;
   int32_t currentRow;
-  SeqModel const* seq;
+  int32_t pad__;
   int64_t streamPosition;
+  float* buffer;
+  SynthModel* synth;
+  SeqModel const* seq;
   SeqState() = default;
 };
 
@@ -29,7 +30,7 @@ class SeqDSP
   PatternDSP const _pattern;
 
 public:
-  void Init();
+  void Init(SeqState& state);
   void ProcessBuffer(SeqState& state);
 
 private:
