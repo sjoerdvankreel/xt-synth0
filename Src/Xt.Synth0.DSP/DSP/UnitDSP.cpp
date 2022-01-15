@@ -10,11 +10,11 @@ namespace Xts {
 const int OctCount = 10;
 const int NoteCount = 12;
 const int CentCount = 101;
-static float FrequencyTable[OctCount][NoteCount][CentCount];
+static float FrequencyTable[OctCount * NoteCount][CentCount];
 
 static inline int
 NoteNum(int oct, int note)
-{ return (oct + 1) * NoteCount + note; }
+{ return oct * NoteCount + note; }
 
 static inline float
 GetFrequency(int oct, int note, int cent)
@@ -29,7 +29,7 @@ UnitDSP::Init()
 	for (int oct = 0; oct < OctCount; oct++)
 		for (int note = 0; note < NoteCount; note++)
 			for (int cent = 0; cent < CentCount; cent++)
-				FrequencyTable[oct][note][cent] = GetFrequency(oct, note, cent - 50);
+				FrequencyTable[NoteNum(oct, note)][cent] = GetFrequency(oct, note, cent - 50);
 }
 
 void
@@ -46,8 +46,8 @@ UnitDSP::PwPhase(float phase, int pw) const
 float
 UnitDSP::Frequency(UnitModel const& unit) const
 { 
-  int cent = -50 + static_cast<int>(Mix0100Inclusive(unit.dtn));
-  return FrequencyTable[unit.oct][unit.note][cent + 50]; 
+  int cent = static_cast<int>(Mix0100Inclusive(unit.dtn));
+  return FrequencyTable[NoteNum(unit.oct + 1, unit.note)][cent];
 }
 
 void
