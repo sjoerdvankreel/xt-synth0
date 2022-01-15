@@ -37,7 +37,7 @@ UnitDSP::Reset()
 float 
 UnitDSP::PwPhase(float phase, int pw) const
 {
-	float result = phase + pw / 256.0f;
+	float result = phase + Mix01Exclusive(pw);
 	return result - (int)result;
 }
 
