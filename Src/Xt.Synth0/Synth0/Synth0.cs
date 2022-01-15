@@ -10,10 +10,10 @@ namespace Xt.Synth0
 {
 	static class Synth0
 	{
-		static IntPtr _plotDSP;
-		static IntPtr _plotSynthModel;
-		static unsafe Native.PlotInput* _plotInput;
-		static unsafe Native.PlotOutput* _plotOutput;
+		static IntPtr _nativePlotDSP;
+		static IntPtr _nativePlotSynthModel;
+		static unsafe Native.PlotInput* _nativePlotInput;
+		static unsafe Native.PlotOutput* _nativePlotOutput;
 
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
@@ -25,19 +25,19 @@ namespace Xt.Synth0
 			TrackConstants.SanityChecks();
 			try
 			{
-				_plotDSP = Native.XtsPlotDSPCreate();
-				_plotInput = Native.XtsPlotInputCreate();
-				_plotOutput = Native.XtsPlotOutputCreate();
-				_plotSynthModel = Native.XtsSynthModelCreate();
+				_nativePlotDSP = Native.XtsPlotDSPCreate();
+				_nativePlotInput = Native.XtsPlotInputCreate();
+				_nativePlotOutput = Native.XtsPlotOutputCreate();
+				_nativePlotSynthModel = Native.XtsSynthModelCreate();
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
-				Native.XtsPlotDSPDestroy(_plotDSP);
-				Native.XtsPlotInputDestroy(_plotInput);
-				Native.XtsPlotOutputDestroy(_plotOutput);
-				Native.XtsSynthModelDestroy(_plotSynthModel);
+				Native.XtsPlotDSPDestroy(_nativePlotDSP);
+				Native.XtsPlotInputDestroy(_nativePlotInput);
+				Native.XtsPlotOutputDestroy(_nativePlotOutput);
+				Native.XtsSynthModelDestroy(_nativePlotSynthModel);
 			}
 		}
 
@@ -218,21 +218,21 @@ namespace Xt.Synth0
 
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
-			_plotInput->pixels = e.Pixels;
-			_plotInput->synth = _plotSynthModel;
-			_plotInput->rate = Model.Settings.SampleRate.ToInt();
-			Model.Track.Synth.ToNative(_plotSynthModel.ToPointer());
-			Native.XtsPlotDSPRender(_plotDSP, _plotInput, _plotOutput);
+			_nativePlotInput->pixels = e.Pixels;
+			_nativePlotInput->synth = _nativePlotSynthModel;
+			_nativePlotInput->rate = Model.Settings.SampleRate.ToInt();
+			Model.Track.Synth.ToNative(_nativePlotSynthModel.ToPointer());
+			Native.XtsPlotDSPRender(_nativePlotDSP, _nativePlotInput, _nativePlotOutput);
 
-			e.Freq = _plotOutput->freq;
-			e.SampleRate = _plotOutput->rate;
-			e.Bipolar = _plotOutput->bipolar != 0;
+			e.Freq = _nativePlotOutput->freq;
+			e.SampleRate = _nativePlotOutput->rate;
+			e.Bipolar = _nativePlotOutput->bipolar != 0;
 			e.Splits.Clear();
-			for (int i = 0; i < _plotOutput->splitCount; i++)
-				e.Splits.Add(_plotOutput->splits[i]);
+			for (int i = 0; i < _nativePlotOutput->splitCount; i++)
+				e.Splits.Add(_nativePlotOutput->splits[i]);
 			e.Samples.Clear();
-			for (int i = 0; i < _plotOutput->sampleCount; i++)
-				e.Samples.Add(_plotOutput->samples[i]);
+			for (int i = 0; i < _nativePlotOutput->sampleCount; i++)
+				e.Samples.Add(_nativePlotOutput->samples[i]);
 		}
 	}
 }
