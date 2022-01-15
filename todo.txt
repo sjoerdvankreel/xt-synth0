@@ -7,6 +7,5 @@ integrate blit / PWM triangle
 custom color scheme
 sampler
 better serialization
-fix panning in xtaudio
 automation groups
 

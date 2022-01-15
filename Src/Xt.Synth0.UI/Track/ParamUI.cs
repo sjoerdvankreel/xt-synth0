@@ -101,7 +101,7 @@ namespace Xt.Synth0.UI
 			result.ToolTip = Tooltip(app.Track.Synth, param);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.MouseRightButtonUp += (s, e) => ExactUI.Show(app.Settings, sub.Group, param);
-			result.Sensitivity = Math.Max(Knob.MinSensitivityHint, param.Info.Max - param.Info.Min);
+			result.Sensitivity = Math.Max(Knob.DefaultSensitivity, param.Info.Max - param.Info.Min);
 			return result;
 		}
 	}
