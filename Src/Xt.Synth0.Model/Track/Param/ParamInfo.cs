@@ -68,27 +68,35 @@ namespace Xt.Synth0.Model
 		{
 			(Type, _address, Name, Description, Automatable, Min, Max, Default, _display, Relevance)
 			= (type, address, name, description, automatable, min, max, @default, display, relevance);
-			if (min < 0 || max > 255 || min >= max)
+			if (min < 0 || max > 255 || min >= max || @default < min || @default > max)
 				throw new InvalidOperationException();
 		}
 
 		internal static ParamInfo Exp(Address address, string name, string description,
-			bool automatable, int min, int max, int @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Exp, address, name, description, automatable, min, max, @default, null, relevance);
+			bool automatable, int max, int @default, IRelevance relevance = null)
+		=> new ParamInfo(ParamType.Exp, address, name, description, automatable, 0, max, @default, null, relevance);
 
 		internal static ParamInfo Time(Address address, string name, string description,
-			bool automatable, int min, int max, int @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Time, address, name, description, automatable, min, max, @default, null, relevance);
+			bool automatable, int @default, IRelevance relevance = null)
+		=> new ParamInfo(ParamType.Time, address, name, description, automatable, 0, 100, @default, null, relevance);
 
 		internal static ParamInfo Toggle(Address address, string name, string description,
 			bool automatable, bool @default, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Toggle, address, name, description, automatable, 0, 1, @default ? 1 : 0, null, relevance);
 
-		internal static ParamInfo Lin(Address address, string name, string description,
+		internal static ParamInfo Select(Address address, string name, string description,
 			bool automatable, string[] display, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, 0, display.Length - 1, 0, x => display[x], relevance);
 
-		internal static ParamInfo Lin(Address address, string name, string description, bool automatable,
+		internal static ParamInfo Mix(Address address, string name, string description, bool automatable,
+			Func<int, string> display = null, IRelevance relevance = null)
+		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, 1, 255, 128, display ?? (x => x.ToString()), relevance);
+
+		internal static ParamInfo Level(Address address, string name, string description, bool automatable,
+			int @default, Func<int, string> display = null, IRelevance relevance = null)
+		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, 0, 255, @default, display ?? (x => x.ToString()), relevance);
+
+		internal static ParamInfo Select(Address address, string name, string description, bool automatable,
 			int min, int max, int @default, Func<int, string> display = null, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, min, max, @default, display ?? (x => x.ToString()), relevance);
 

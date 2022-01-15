@@ -16,7 +16,7 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { Bpm, Amp };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 
-		static readonly ParamInfo AmpInfo = ParamInfo.Lin(p => &((Native*)p)->amp, nameof(Amp), "Level", true, 0, 255, 128);
-		static readonly ParamInfo BpmInfo = ParamInfo.Lin(p => &((Native*)p)->bpm, "BPM", "Beats per minute", true, 1, 255, 120);
+		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Level", true, 128);
+		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, "BPM", "Beats per minute", true, 1, 255, 120);
 	}
 }
