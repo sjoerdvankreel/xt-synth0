@@ -1,3 +1,4 @@
+#include "DSP.hpp"
 #include "UnitDSP.hpp"
 #include <cassert>
 #define _USE_MATH_DEFINES 1
@@ -8,7 +9,7 @@ namespace Xts {
 
 static constexpr int OctCount 
 = TrackConstants::MaxOct - TrackConstants::MinOct + 1;
-static float FrequencyTable[OctCount][12][100];
+static float FrequencyTable[OctCount][12][101];
 
 static inline float
 GetFrequency(int oct, int note, int cent)
@@ -21,11 +22,11 @@ void
 UnitDSP::Init()
 {
 	const int notes = 12;
-	const int cents = 100;
+	const int cents = 101;
 	const int octs = TrackConstants::MaxOct - TrackConstants::MinOct + 1;
 	for (int oct = 0; oct < octs; oct++)
 		for (int note = 0; note < notes; note++)
-			for (int cent = -50; cent < 50; cent++)
+			for (int cent = -50; cent <= 50; cent++)
 				FrequencyTable[oct][note][cent + 50] = GetFrequency(oct, note, cent);
 }
 
@@ -43,7 +44,7 @@ UnitDSP::PwPhase(float phase, int pw) const
 float
 UnitDSP::Frequency(UnitModel const& unit) const
 { 
-  int cent = -50 + static_cast<int>((unit.dtn - 1) / 254.0f * 100.0f);
+  int cent = -50 + static_cast<int>(Mix01Inclusive(unit.dtn) * 100.0f);
   return FrequencyTable[unit.oct][unit.note][cent + 50]; 
 }
 
@@ -58,7 +59,7 @@ UnitDSP::Next(UnitModel const& unit, float rate, bool plot, float* l, float* r, 
 
 	float freq = Frequency(unit);
 	float amp = unit.amp / 255.0f;
-  float pan = (unit.pan - 1.0f) / 254.0f;
+  float pan = Mix01Exclusive(unit.pan);
 	float phase = static_cast<float>(_phase);
 	float sample = Generate(unit, freq, rate, phase);
 	_phase += freq / rate;
