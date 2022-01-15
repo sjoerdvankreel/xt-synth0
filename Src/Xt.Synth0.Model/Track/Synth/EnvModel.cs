@@ -9,7 +9,7 @@ namespace Xt.Synth0.Model
 		internal struct Native
 		{
 			internal int a, d, s, r, hld, dly;
-			internal int on, aSlope, dSlope, rSlope;
+			internal int on, aSlp, dSlp, rSlp;
 		}
 
 		public Param A { get; } = new(AInfo);
@@ -19,9 +19,9 @@ namespace Xt.Synth0.Model
 		public Param On { get; } = new(OnInfo);
 		public Param Hld { get; } = new(HldInfo);
 		public Param Dly { get; } = new(DlyInfo);
-		public Param ASlope { get; } = new(ASlopeInfo);
-		public Param DSlope { get; } = new(DSlopeInfo);
-		public Param RSlope { get; } = new(RSlopeInfo);
+		public Param ASlp { get; } = new(ASlpInfo);
+		public Param DSlp { get; } = new(DSlpInfo);
+		public Param RSlp { get; } = new(RSlpInfo);
 
 		readonly int _index;
 		public int ColumnCount => 3;
@@ -34,19 +34,19 @@ namespace Xt.Synth0.Model
 		{
 			{ On, 0 },
 			{ Dly, 2 },
-			{ ASlope, 3 },
+			{ ASlp, 3 },
 			{ A, 4 },
 			{ Hld, 5 },
-			{ DSlope, 6 },
+			{ DSlp, 6 },
 			{ D, 7 },
 			{ S, 8 },
-			{ RSlope, 9 },
+			{ RSlp, 9 },
 			{ R, 10 }
 		};
 
-		static readonly ParamInfo DSlopeInfo = ParamInfo.Mix(p => &((Native*)p)->dSlope, "Slp", "Decay slope", true);
-		static readonly ParamInfo ASlopeInfo = ParamInfo.Mix(p => &((Native*)p)->aSlope, "Slp", "Attack slope", true);
-		static readonly ParamInfo RSlopeInfo = ParamInfo.Mix(p => &((Native*)p)->rSlope, "Slp", "Release slope", true);
+		static readonly ParamInfo DSlpInfo = ParamInfo.Mix(p => &((Native*)p)->dSlp, "Slp", "Decay slope", true);
+		static readonly ParamInfo ASlpInfo = ParamInfo.Mix(p => &((Native*)p)->aSlp, "Slp", "Attack slope", true);
+		static readonly ParamInfo RSlpInfo = ParamInfo.Mix(p => &((Native*)p)->rSlp, "Slp", "Release slope", true);
 		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "On/Off", false, false);
 		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), "Sustain level", true, 128);
 		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), "Decay milliseconds", true, 7);

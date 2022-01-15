@@ -76,7 +76,7 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), "Detune", true);
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), "Panning", true);
-		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Level", true, 255);
+		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", true, 255);
 		static readonly ParamInfo NoteInfo = ParamInfo.Select(p => &((Native*)p)->note, nameof(Note), "Note", true, Notes);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type", false);
 		static readonly ParamInfo PwInfo = ParamInfo.Mix(p => &((Native*)p)->pw, "PW", "Pulse width", true, null, RelevancePw);

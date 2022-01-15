@@ -16,7 +16,7 @@ constexpr int MaxOct = 9;
 
 constexpr int EnvCount = 2;
 constexpr int UnitCount = 3;
-constexpr int AutoParamCount = 58;
+constexpr int AutoParamCount = 60;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;

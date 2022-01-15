@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+	public enum AmpEnvSource { Off, Env1, Env2 }
+
 	public unsafe sealed class SynthModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]

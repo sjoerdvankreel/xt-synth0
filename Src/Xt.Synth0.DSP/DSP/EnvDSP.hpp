@@ -13,7 +13,7 @@ class EnvDSP
   EnvStage _stage = EnvStage::Dly; 
 
   void NextStage(EnvStage stage);
-  float Generate(float from, float to, float pos, int slope) const;
+  float Generate(float from, float to, float pos, int slp) const;
   float Generate(EnvModel const& env, float a, float d, float r) const;
   void CycleStage(float dly, float a, float hld, float d, float r, bool active);
 

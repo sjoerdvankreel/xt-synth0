@@ -32,10 +32,10 @@ EnvDSP::Length(
 }
 
 float
-EnvDSP::Generate(float from, float to, float pos, int slope) const
+EnvDSP::Generate(float from, float to, float pos, int slp) const
 {
   float range = to - from;
-  float mix = Mix02Exclusive(slope);
+  float mix = Mix02Exclusive(slp);
   if (mix <= 1.0f) return from + range * powf(pos, mix);
   return from + range * (1.0f - powf(1.0f - pos, 2.0f - mix));
 }
@@ -61,9 +61,9 @@ EnvDSP::Generate(EnvModel const& env, float a, float d, float r) const
   case EnvStage::Dly: return 0.0f; 
   case EnvStage::Hld: return 1.0f; 
   case EnvStage::End: return 0.0f; 
-  case EnvStage::R: return Generate(s, 0.0, _stagePos / r, env.rSlope); break;
-  case EnvStage::D: return Generate(1.0, s, _stagePos / d, env.dSlope); break;
-  case EnvStage::A: return Generate(0.0, 1.0, _stagePos / a, env.aSlope); break;
+  case EnvStage::R: return Generate(s, 0.0, _stagePos / r, env.rSlp); break;
+  case EnvStage::D: return Generate(1.0, s, _stagePos / d, env.dSlp); break;
+  case EnvStage::A: return Generate(0.0, 1.0, _stagePos / a, env.aSlp); break;
   default: assert(false); return 0.0f;
   }
 }
