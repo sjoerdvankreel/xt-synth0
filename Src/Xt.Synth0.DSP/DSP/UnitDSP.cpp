@@ -46,7 +46,7 @@ UnitDSP::Init(int oct, UnitNote note)
 { 
 	_phase = 0.0;
 	int c = static_cast<int>(UnitNote::C);
-  int index = NoteNum(oct + 1, static_cast<int>(note));
+  int index = NoteNum(oct, static_cast<int>(note));
   _noteOffset = index - NoteNum(4, c);
 }
 
