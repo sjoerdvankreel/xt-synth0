@@ -3,11 +3,6 @@
 
 namespace Xts {
 
-inline int Exp(int val)
-{ return 1 << val; }
-inline float Level(int val)
-{ return static_cast<float>(val / 255.0f); }
-
 inline float Mix01Exclusive(int val)
 { return static_cast<float>(val / 256.0f); }
 inline float Mix02Exclusive(int val)
@@ -19,6 +14,13 @@ inline float Mix02Inclusive(int val)
 { return static_cast<float>((val - 1) / 127.0f); }
 inline float Mix0100Inclusive(int val)
 { return static_cast<float>((val - 1) / 2.54f); }
+
+inline int Exp(int val)
+{ return 1 << val; }
+inline float Level(int val)
+{ return static_cast<float>(val / 255.0f); }
+inline float Time(int val, float rate)
+{ return static_cast<float>(val * val * rate / 1000.0f); }
 
 } // namespace Xts
 #endif // XTS_DSP_HPP

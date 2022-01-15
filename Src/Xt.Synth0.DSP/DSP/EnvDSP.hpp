@@ -7,22 +7,35 @@ namespace Xts {
 
 enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
+struct EnvOutput
+{
+  float lvl;
+  bool staged;
+};
+
+struct EnvParams
+{
+  float dly, hld;
+  float a, d, s, r;
+};
+
 class EnvDSP 
 {
   int _stagePos = 0;
   EnvStage _stage = EnvStage::Dly; 
-
-  void NextStage(EnvStage stage);
-  float Generate(float from, float to, float pos, int slp) const;
-  float Generate(EnvModel const& env, float a, float d, float r) const;
-  void CycleStage(float dly, float a, float hld, float d, float r, bool active);
+  EnvStage _prevStage = EnvStage::Dly;
 
 public:
-  void Reset();
-  void Length(
-    EnvModel const& env, float rate, float* dly,
-    float* a, float* hld, float* d, float* r) const;
-  float Next(EnvModel const& env, float rate, bool active, bool plot, EnvStage* stage);
+  void Init();
+  void Release();
+  EnvParams Params(EnvModel const& env, float rate) const;
+  void Next(EnvModel const& env, float rate, EnvOutput& output);
+
+private:
+  void NextStage(EnvStage stage);
+  void CycleStage(EnvParams const& params);
+  float Generate(float from, float to, float len, int slp) const;
+  float Generate(EnvModel const& env, EnvParams const& params) const;
 };
 
 } // namespace Xts
