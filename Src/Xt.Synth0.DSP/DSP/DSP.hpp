@@ -3,6 +3,8 @@
 
 namespace Xts {
 
+inline int Exp(int val)
+{ return 1 << val; }
 inline float Level(int val)
 { return static_cast<float>(val / 255.0f); }
 
