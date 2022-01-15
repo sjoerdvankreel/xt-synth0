@@ -123,7 +123,7 @@ UnitDSP::GenerateAdd(UnitModel const& unit, float freq, float rate, float phase)
 	case AddType::SinSubCos:
     step = unit.addStep;
 		parts = unit.addParts;
-		logRoll = unit.addRoll / 128.0f;
+		logRoll = Mix01Inclusive(unit.addRoll) * 2.0f;
 		sinCos = type == AddType::SinAddCos || type == AddType::SinSubCos;
 		addSub = type == AddType::SinSubSin || type == AddType::SinSubCos;
     break;
