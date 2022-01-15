@@ -42,10 +42,6 @@ namespace Xt.Synth0
 			internal IntPtr seq;
 		}
 
-		static Native() { XtsDSPInit(); }
-
-		[DllImport("XT.Synth0.DSP")] static extern void XtsDSPInit();
-
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqModelCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSynthModelCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqModelDestroy(IntPtr seq);

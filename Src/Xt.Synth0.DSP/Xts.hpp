@@ -10,8 +10,6 @@
 #define XTS_CALL __stdcall
 #define XTS_EXPORT extern "C" __declspec(dllexport) 
 
-XTS_EXPORT void XTS_CALL XtsDSPInit(void);
-
 XTS_EXPORT Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void);
 XTS_EXPORT Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void);
 XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* seq);

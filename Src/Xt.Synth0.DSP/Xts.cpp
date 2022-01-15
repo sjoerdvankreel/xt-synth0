@@ -1,8 +1,6 @@
 #include "Xts.hpp"
 #include "Model/SizeChecks.hpp"
 
-void XTS_CALL XtsDSPInit(void) { Xts::UnitDSP::Init(); }
-
 void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* seq) { delete seq; }
 void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth) { delete synth; }
 Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void) { return new Xts::SeqModel; }

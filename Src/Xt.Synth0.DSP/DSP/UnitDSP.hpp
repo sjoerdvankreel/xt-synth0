@@ -33,7 +33,6 @@ class UnitDSP
   double _phase = 0.0;
 
 public:
-  static void Init();
   void Init(int oct, UnitNote note);
   float Freq(UnitModel const& unit) const;
   void Next(UnitModel const& unit, float rate, UnitOutput& output);
