@@ -31,6 +31,15 @@ EnvDSP::Length(
   *hld = static_cast<float>(env.hld * env.hld * rate / 1000.0f);
 }
 
+float
+EnvDSP::Generate(float from, float to, float pos, int slope) const
+{
+  float range = to - from;
+  float mix = Mix02Exclusive(slope);
+  if (mix <= 1.0f) return from + range * powf(pos, mix);
+  return from + range * (1.0f - powf(1.0f - pos, 2.0f - mix));
+}
+
 void
 EnvDSP::CycleStage(float dly, float a, float hld, float d, float r, bool active)
 {
@@ -57,15 +66,6 @@ EnvDSP::Generate(EnvModel const& env, float a, float d, float r) const
   case EnvStage::A: return Generate(0.0, 1.0, _stagePos / a, env.aSlope); break;
   default: assert(false); return 0.0f;
   }
-}
-
-float
-EnvDSP::Generate(float from, float to, float pos, int slope) const
-{
-  float range = to - from;
-  float slopef = static_cast<float>(slope);
-  if(slopef <= 128.0f) return from + range * powf(pos, Mix02Exclusive(slopef));
-  return from + range * (1.0f - powf(1.0f - pos, 2.0f - Mix02Exclusive(slopef)));
 }
 
 float 
