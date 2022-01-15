@@ -1,5 +1,5 @@
-#include "DSP.hpp"
 #include "UnitDSP.hpp"
+#include "DSP.hpp"
 #include <cassert>
 #define _USE_MATH_DEFINES 1
 #include <cmath>
@@ -57,8 +57,8 @@ UnitDSP::Next(UnitModel const& unit, float rate, bool plot, float* l, float* r, 
 	auto off = static_cast<int>(UnitType::Off);
   if(!plot && unit.type == off) return;
 
+	float amp = Level(unit.amp);
 	float freq = Frequency(unit);
-	float amp = unit.amp / 255.0f;
   float pan = Mix01Exclusive(unit.pan);
 	float phase = static_cast<float>(_phase);
 	float sample = Generate(unit, freq, rate, phase);

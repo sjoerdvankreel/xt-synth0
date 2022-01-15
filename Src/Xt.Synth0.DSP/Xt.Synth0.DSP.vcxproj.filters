@@ -40,6 +40,9 @@
     <ClInclude Include="DSP\PlotDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\DSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SequencerDSP.cpp">

@@ -3,6 +3,8 @@
 
 namespace Xts {
 
+inline float Level(int val)
+{ return static_cast<float>(val / 255.0f); }
 inline float Mix01Exclusive(int val)
 { return static_cast<float>(val / 256.0f); }
 inline float Mix01Inclusive(int val)

@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DSP\DSP.hpp" />
     <ClInclude Include="DSP\EnvDSP.hpp" />
     <ClInclude Include="DSP\PatternDSP.hpp" />
     <ClInclude Include="DSP\PlotDSP.hpp" />

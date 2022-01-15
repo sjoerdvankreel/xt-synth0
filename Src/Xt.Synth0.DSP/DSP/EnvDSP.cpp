@@ -1,4 +1,5 @@
 #include "EnvDSP.hpp"
+#include "DSP.hpp"
 #include <cmath>
 #include <cassert>
 
@@ -44,7 +45,7 @@ EnvDSP::CycleStage(float dly, float a, float hld, float d, float r, bool active)
 float
 EnvDSP::Generate(EnvModel const& env, float a, float d, float r) const
 {
-  float s = static_cast<float>(env.s / 255.0f);
+  float s = Level(env.s);
   switch (_stage)
   {
   case EnvStage::S: return s; 
