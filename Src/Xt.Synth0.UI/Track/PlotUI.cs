@@ -10,8 +10,18 @@ namespace Xt.Synth0.UI
 	public static class PlotUI
 	{
 		const double Padding = 2.0;
+		static readonly DockPanel Empty;
 		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
+
+		static PlotUI()
+		{
+			Empty = new DockPanel();
+			var label = Empty.Add(Create.Label("No data"));
+			label.VerticalAlignment = VerticalAlignment.Center;
+			label.HorizontalAlignment = HorizontalAlignment.Center;
+			Empty.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
+		}
 
 		internal static UIElement Make(AppModel app)
 		{
@@ -82,10 +92,10 @@ namespace Xt.Synth0.UI
 			double h = container.ActualHeight;
 			Args.Pixels = w;
 			RequestPlotData?.Invoke(null, Args);
-			container.Content = Plot(w, h);
+			container.Content = Args.Samples.Count > 0 ? Plot(w, h) : Empty;
 			string header = $"{plot.Name} @ {Args.SampleRate}Hz";
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
-			if (Args.Freq != 0.0f) header += $", {Args.Freq.ToString("N1")}Hz";
+			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
 			box.Header = header;
 		}
 

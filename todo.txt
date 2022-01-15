@@ -14,5 +14,4 @@ set enums in native structs
 better pattern edit
 live env pos plot
 active voices monitor
-no data plot
 
