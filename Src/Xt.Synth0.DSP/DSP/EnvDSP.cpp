@@ -7,12 +7,12 @@
 namespace Xts {
 
 void
-EnvDSP::Release()
-{ NextStage(EnvStage::R); }
-
-void
 EnvDSP::Init()
 { NextStage(EnvStage::Dly); }
+
+void
+EnvDSP::Release()
+{ if(_stage < EnvStage::R) NextStage(EnvStage::R); }
 
 void 
 EnvDSP::NextStage(EnvStage stage)
@@ -75,13 +75,14 @@ EnvDSP::Next(EnvModel const& env, float rate, EnvOutput& output)
 {
   const float threshold = 1.0E-5f;
   memset(&output, 0, sizeof(output));
+  if(!env.on) _stage = EnvStage::End;
   output.stage = _stage;
-  if(!env.on || _stage == EnvStage::End) return;
+  if(_stage == EnvStage::End) return;
   EnvParams params = Params(env, rate);
   CycleStage(params);
   float result = Generate(env, params);
   if(_stage != EnvStage::End) _stagePos++;
-  if(_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
+  if(_stage > EnvStage::A && _stage != EnvStage::End && result <= threshold) NextStage(EnvStage::End);
   output.lvl = result;
   output.stage = _stage;
   output.staged = _stage != _prevStage;

@@ -75,6 +75,7 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotOutput& output)
   float ratef = static_cast<float>(rate);
   while (true)
   {
+    if(sustainSamples == holdSamples) _env.Release();
     _env.Next(input.synth->envs[index], ratef, eout);
     if (eout.stage == EnvStage::End) break;
     _samples.push_back(eout.lvl);
