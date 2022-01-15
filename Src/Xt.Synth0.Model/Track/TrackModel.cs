@@ -6,18 +6,18 @@ namespace Xt.Synth0.Model
 	{
 		public event EventHandler ParamChanged;
 		public SynthModel Synth { get; } = new();
-		public SequencerModel Sequencer { get; } = new();
+		public SeqModel Seq { get; } = new();
 
 		public TrackModel()
 		{
 			Synth.ParamChanged += (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
-			Sequencer.ParamChanged += (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
+			Seq.ParamChanged += (s, e) => ParamChanged?.Invoke(this, EventArgs.Empty);
 		}
 
 		public void CopyTo(TrackModel track)
 		{
 			Synth.CopyTo(track.Synth);
-			Sequencer.CopyTo(track.Sequencer);
+			Seq.CopyTo(track.Seq);
 		}
 	}
 }

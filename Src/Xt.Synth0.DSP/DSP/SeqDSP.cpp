@@ -1,10 +1,10 @@
-#include "SequencerDSP.hpp"
+#include "SeqDSP.hpp"
 #include <cassert>
 
 namespace Xts {
 
 void 
-SequencerDSP::Reset()
+SeqDSP::Reset()
 {
   _currentRow = 0;
   _rowFactor = 0.0;
@@ -14,7 +14,7 @@ SequencerDSP::Reset()
 }
 
 bool 
-SequencerDSP::RowUpdated()
+SeqDSP::RowUpdated()
 {
 	bool result = _previousRow != _currentRow;
 	_previousRow = _currentRow;
@@ -22,8 +22,8 @@ SequencerDSP::RowUpdated()
 }
 
 void
-SequencerDSP::ProcessBuffer(
-	SequencerModel const& seq, SynthModel& synth, float rate,
+SeqDSP::ProcessBuffer(
+	SeqModel const& seq, SynthModel& synth, float rate,
 	float* buffer, int32_t frames, int32_t* currentRow, int64_t* streamPosition)
 {
   float l;
@@ -39,7 +39,7 @@ SequencerDSP::ProcessBuffer(
 }
 
 bool 
-SequencerDSP::UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate)
+SeqDSP::UpdateRow(SeqModel const& seq, SynthModel& synth, float rate)
 {
 	int lpb = seq.edit.lpb;
 	int pats = seq.edit.pats;
@@ -61,7 +61,7 @@ SequencerDSP::UpdateRow(SequencerModel const& seq, SynthModel& synth, float rate
 }
 
 void
-SequencerDSP::Next(SequencerModel const& seq, SynthModel& synth, float rate, float* l, float* r)
+SeqDSP::Next(SeqModel const& seq, SynthModel& synth, float rate, float* l, float* r)
 {
 	bool updated = UpdateRow(seq, synth, rate);
 	if (updated) _pattern.Automate(seq.edit, seq.pattern.rows[_currentRow], synth);

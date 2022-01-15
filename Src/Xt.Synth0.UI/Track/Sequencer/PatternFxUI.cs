@@ -53,7 +53,7 @@ namespace Xt.Synth0.UI
 		static FrameworkElement MakeHex(AppModel app,
 			Param param, int minFx, int row, int col)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;

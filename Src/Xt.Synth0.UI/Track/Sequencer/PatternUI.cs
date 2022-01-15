@@ -20,7 +20,7 @@ namespace Xt.Synth0.UI
 		internal const string EditHint = "Click + keyboard to edit";
 		internal const string InterpolateHint = "Ctrl + I to interpolate";
 
-		static void Fill(SequencerModel seq, int pattern, int fx)
+		static void Fill(SeqModel seq, int pattern, int fx)
 		{
 			var rows = seq.Pattern.Rows;
 			int rowCount = TrackConstants.MaxRows;
@@ -30,7 +30,7 @@ namespace Xt.Synth0.UI
 				rows[i].Fx[fx].Target.Value = rows[start].Fx[fx].Target.Value;
 		}
 
-		static void Interpolate(SequencerModel seq,
+		static void Interpolate(SeqModel seq,
 			int pattern, Func<PatternRow, Param> selector)
 		{
 			var rows = seq.Pattern.Rows;
@@ -47,7 +47,7 @@ namespace Xt.Synth0.UI
 
 		internal static UIElement Make(AppModel app)
 		{
-			var pattern = app.Track.Sequencer.Pattern;
+			var pattern = app.Track.Seq.Pattern;
 			var result = Create.ThemedGroup(app.Settings, pattern, MakeContent(app));
 			result.SetBinding(HeaderedContentControl.HeaderProperty, BindHeader(app));
 			return result;
@@ -64,10 +64,10 @@ namespace Xt.Synth0.UI
 
 		static BindingBase BindHeader(AppModel app)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			var pats = Bind.To(edit.Pats);
 			var active = Bind.To(edit.Edit);
-			var header = app.Track.Sequencer.Pattern.Name;
+			var header = app.Track.Seq.Pattern.Name;
 			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
 			var running = Bind.To(app.Stream, nameof(StreamModel.IsStopped), new NegateConverter());
 			return Bind.To(new PatternFormatter(header), running, pats, active, row);
@@ -75,7 +75,7 @@ namespace Xt.Synth0.UI
 
 		static BindingBase BindSelector(AppModel app, UIElement[] patterns)
 		{
-			var active = Bind.To(app.Track.Sequencer.Edit.Edit);
+			var active = Bind.To(app.Track.Seq.Edit.Edit);
 			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
 			var running = Bind.To(app.Stream, nameof(StreamModel.IsStopped), new NegateConverter());
 			return Bind.To(new PatternSelector(patterns), running, active, row);
@@ -92,7 +92,7 @@ namespace Xt.Synth0.UI
 				patterns[p] = pattern.Pattern;
 				highlighters.AddRange(pattern.Highlighters);
 			}
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			var dispatcher = Application.Current?.Dispatcher;
 			var binding = Bind.To(app.Stream, nameof(StreamModel.IsStopped));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
@@ -108,12 +108,12 @@ namespace Xt.Synth0.UI
 
 		static (UIElement Pattern, IList<Border> Highlighters) MakePattern(AppModel app, int pattern)
 		{
+			var seq = app.Track.Seq;
 			var fx = TrackConstants.MaxFxs;
 			var keys = TrackConstants.MaxKeys;
 			var rows = TrackConstants.MaxRows;
 			int cols = keys * 5 + 1 + fx * 3;
 			var highlighters = new List<Border>();
-			var sequencer = app.Track.Sequencer;
 			var offset = pattern * rows;
 			var result = Create.Grid(rows, cols);
 			for (int r = 0; r < rows; r++)
@@ -121,14 +121,14 @@ namespace Xt.Synth0.UI
 				var highlighter = MakeHighlighter(new Cell(r, 0, 1, cols));
 				result.Add(highlighter);
 				highlighters.Add(highlighter);
-				AddRow(result, app, pattern, sequencer.Pattern.Rows[offset + r], r);
+				AddRow(result, app, pattern, seq.Pattern.Rows[offset + r], r);
 			}
 			return (result, highlighters);
 		}
 
 		static void AddRow(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			int divCol = TrackConstants.MaxKeys * 5;
 			AddKeys(grid, app, pattern, row, r);
 			grid.Add(Create.Divider(new(r, divCol), edit.Fxs, 1));
@@ -137,7 +137,7 @@ namespace Xt.Synth0.UI
 
 		static void AddKeys(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
-			var seq = app.Track.Sequencer;
+			var seq = app.Track.Seq;
 			for (int k = 0; k < TrackConstants.MaxKeys; k++)
 			{
 				int kLocal = k;
@@ -149,7 +149,7 @@ namespace Xt.Synth0.UI
 
 		static void AddFx(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
-			var seq = app.Track.Sequencer;
+			var seq = app.Track.Seq;
 			int startCol = TrackConstants.MaxKeys * 5 + 1;
 			for (int f = 0; f < TrackConstants.MaxFxs; f++)
 			{

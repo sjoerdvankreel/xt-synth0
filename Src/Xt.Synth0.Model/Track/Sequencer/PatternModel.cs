@@ -20,7 +20,7 @@ namespace Xt.Synth0.Model
 		public ThemeGroup Group => ThemeGroup.EditPattern;
 		public IReadOnlyList<IModelContainer> SubContainers => Rows;
 		public IReadOnlyList<ISubModel> SubModels => new ISubModel[0];
-		public void* Address(void* parent) => &((SequencerModel.Native*)parent)->pattern;
+		public void* Address(void* parent) => &((SeqModel.Native*)parent)->pattern;
 
 		public IReadOnlyList<PatternRow> Rows = new ReadOnlyCollection<PatternRow>(MakeRows());
 		static IList<PatternRow> MakeRows() => Enumerable.Range(0, TrackConstants.TotalRows).Select(i => new PatternRow(i)).ToList();

@@ -15,7 +15,7 @@ namespace Xt.Synth0.Model
 		public ThemeGroup Group => ThemeGroup.MonitorControl;
 	}
 
-	public sealed class SequencerModel : MainModel
+	public sealed class SeqModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native

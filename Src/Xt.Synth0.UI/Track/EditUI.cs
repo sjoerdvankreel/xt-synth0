@@ -8,7 +8,7 @@ namespace Xt.Synth0.UI
 	{
 		internal static GroupBox Make(AppModel app)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			var result = SubUI.Make(app, edit);
 			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new VisibilityConverter(true, false));
 			result.SetBinding(UIElement.VisibilityProperty, binding);

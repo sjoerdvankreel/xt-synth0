@@ -47,7 +47,7 @@ namespace Xt.Synth0.UI
 		internal static void Add(Grid grid, AppModel app,
 			PatternKey key, int minKeys, int row, int col, Action interpolate)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			grid.Add(MakeNote(app, key.Note, minKeys, row, col));
 			grid.Add(MakeOct(app, key, minKeys, row, col + 1));
 			grid.Add(Create.Divider(new(row, col + 2), edit.Keys, minKeys));
@@ -56,7 +56,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeNote(AppModel app, Param note, int minKeys, int row, int col)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.ToolTip = string.Join("\n", note.Info.Description, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(note));
@@ -68,7 +68,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeOct(AppModel app, PatternKey key, int minKeys, int row, int col)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
 			result.TextInput += (s, e) => OnOctTextInput(key.Oct, e);
 			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
@@ -81,7 +81,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeAmp(AppModel app, PatternKey key, int minKeys, int row, int col, Action interpolate)
 		{
-			var edit = app.Track.Sequencer.Edit;
+			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<AmpBox>(new(row, col));
 			result.Minimum = key.Amp.Info.Min;
 			result.Maximum = key.Amp.Info.Max;

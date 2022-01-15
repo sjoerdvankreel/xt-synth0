@@ -1,8 +1,8 @@
 #ifndef XTS_PATTERN_DSP_HPP
 #define XTS_PATTERN_DSP_HPP
 
+#include "../Model/SeqModel.hpp"
 #include "../Model/SynthModel.hpp"
-#include "../Model/SequencerModel.hpp"
 
 namespace Xts {
 

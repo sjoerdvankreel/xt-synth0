@@ -70,9 +70,9 @@ namespace Xt.Synth0
 		readonly Action<Action> _dispatchToUI;
 
 		IAudioStream _stream;
+		IntPtr _nativeSeqDSP;
+		IntPtr _nativeSeqModel;
 		IntPtr _nativeSynthModel;
-		IntPtr _nativeSequencerDSP;
-		IntPtr _nativeSequencerModel;
 		readonly SynthModel _managedSynthModel = new();
 
 		long _clipPosition = -1;
@@ -116,10 +116,10 @@ namespace Xt.Synth0
 			_dispatchToUI = dispatchToUI;
 			_automationValues = new int[_original.Params.Count];
 
+			_nativeSeqDSP = Native.XtsSeqDSPCreate();
+			_nativeSeqModel = Native.XtsSeqModelCreate();
 			_nativeSynthModel = Native.XtsSynthModelCreate();
 			_managedSynthModel.PrepareNative(_nativeSynthModel);
-			_nativeSequencerDSP = Native.XtsSequencerDSPCreate();
-			_nativeSequencerModel = Native.XtsSequencerModelCreate();
 		}
 
 		internal void OnGCNotification(int generation)
@@ -129,9 +129,9 @@ namespace Xt.Synth0
 		{
 			ResetStream();
 			_platform.Dispose();
+			Native.XtsSeqDSPDestroy(_nativeSeqDSP);
+			Native.XtsSeqModelDestroy(_nativeSeqModel);
 			Native.XtsSynthModelDestroy(_nativeSynthModel);
-			Native.XtsSequencerDSPDestroy(_nativeSequencerDSP);
-			Native.XtsSequencerModelDestroy(_nativeSequencerModel);
 		}
 
 		internal void Stop()
@@ -172,8 +172,8 @@ namespace Xt.Synth0
 				AutomationQueue.Clear();
 				_app.Track.Synth.CopyTo(_original);
 				_app.Track.Synth.CopyTo(_managedSynthModel);
+				_app.Track.Seq.ToNative(_nativeSeqModel.ToPointer());
 				_app.Track.Synth.ToNative(_nativeSynthModel.ToPointer());
-				_app.Track.Sequencer.ToNative(_nativeSequencerModel.ToPointer());
 				_app.Stream.State = StreamState.Running;
 				_stream.Start();
 			}
@@ -224,7 +224,7 @@ namespace Xt.Synth0
 			}
 			finally
 			{
-				Native.XtsSequencerDSPReset(_nativeSequencerDSP);
+				Native.XtsSeqDSPReset(_nativeSeqDSP);
 			}
 		}
 
@@ -247,7 +247,7 @@ namespace Xt.Synth0
 				_cpuUsageFrameCounts = new int[format.mix.rate];
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
 				UpdateStreamInfo(0, format.mix.rate, 0);
-				Native.XtsSequencerDSPReset(_nativeSequencerDSP);
+				Native.XtsSeqDSPReset(_nativeSeqDSP);
 				ResumeStream();
 			}
 			catch
@@ -424,8 +424,8 @@ namespace Xt.Synth0
 			int currentRow;
 			long streamPosition;
 			int rate = format.mix.rate;
-			Native.XtsSequencerDSPProcessBuffer(
-				_nativeSequencerDSP, _nativeSequencerModel, _nativeSynthModel,
+			Native.XtsSeqDSPProcessBuffer(
+				_nativeSeqDSP, _nativeSeqModel, _nativeSynthModel,
 				rate, _buffer, buffer.frames, &currentRow, &streamPosition);
 			EndAutomation();
 			Clip(buffer.frames, streamPosition);

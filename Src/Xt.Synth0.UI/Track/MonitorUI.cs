@@ -8,7 +8,7 @@ namespace Xt.Synth0.UI
 	{
 		internal static UIElement Make(AppModel app)
 		{
-			var monitor = app.Track.Sequencer.Monitor;
+			var monitor = app.Track.Seq.Monitor;
 			var result = Create.ThemedGroup(app.Settings, monitor, MakeBorder(app.Stream));
 			var binding = Bind.To(app.Stream, nameof(app.Stream.IsRunning),
 				new VisibilityConverter(true, true));

@@ -1,8 +1,8 @@
 #ifndef XTS_SIZE_CHECKS_HPP
 #define XTS_SIZE_CHECKS_HPP
 
+#include "SeqModel.hpp"
 #include "SynthModel.hpp"
-#include "SequencerModel.hpp"
 
 #define XTS_COMBINE_(X,Y) X##Y
 #define XTS_COMBINE(X,Y) XTS_COMBINE_(X,Y)
@@ -25,8 +25,8 @@ XTS_CHECK_SIZE(PatternFx, 8);
 XTS_CHECK_SIZE(EditModel, 24);
 XTS_CHECK_SIZE(PatternKey, 16);
 XTS_CHECK_SIZE(PatternRow, 88);
+XTS_CHECK_SIZE(SeqModel, 22552);
 XTS_CHECK_SIZE(PatternModel, 22528);
-XTS_CHECK_SIZE(SequencerModel, 22552);
 
 } // namespace Xts
 #endif // XTS_SIZE_CHECKS_HPP

@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 		public static event EventHandler Start;
 
 		internal static UIElement Make(AppModel app)
-		=> Create.ThemedGroup(app.Settings, app.Track.Sequencer.Control, MakeContent(app.Stream));
+		=> Create.ThemedGroup(app.Settings, app.Track.Seq.Control, MakeContent(app.Stream));
 
 		static Button MakeButton(string content, Action execute)
 		{

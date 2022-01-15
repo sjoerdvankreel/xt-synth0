@@ -1,5 +1,5 @@
-#ifndef XTS_SEQUENCER_MODEL_HPP
-#define XTS_SEQUENCER_MODEL_HPP
+#ifndef XTS_SEQ_MODEL_HPP
+#define XTS_SEQ_MODEL_HPP
 
 #include "TrackConstants.hpp"
 
@@ -22,11 +22,11 @@ struct XTS_ALIGN PatternModel
   PatternRow rows[TrackConstants::TotalRows];
 };
 
-struct XTS_ALIGN SequencerModel
+struct XTS_ALIGN SeqModel
 {
   EditModel edit;
   PatternModel pattern;
 };
 
 } // namespace Xts
-#endif // XTS_SEQUENCER_MODEL_HPP
+#endif // XTS_SEQ_MODEL_HPP
