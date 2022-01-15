@@ -44,7 +44,7 @@ UnitDSP::PwPhase(float phase, int pw) const
 float
 UnitDSP::Frequency(UnitModel const& unit) const
 { 
-  int cent = -50 + static_cast<int>(Mix01Inclusive(unit.dtn) * 100.0f);
+  int cent = -50 + static_cast<int>(Mix0100Inclusive(unit.dtn));
   return FrequencyTable[unit.oct][unit.note][cent + 50]; 
 }
 
@@ -59,7 +59,7 @@ UnitDSP::Next(UnitModel const& unit, float rate, bool plot, float* l, float* r, 
 
 	float amp = Level(unit.amp);
 	float freq = Frequency(unit);
-  float pan = Mix01Exclusive(unit.pan);
+  float pan = Mix01Inclusive(unit.pan);
 	float phase = static_cast<float>(_phase);
 	float sample = Generate(unit, freq, rate, phase);
 	_phase += freq / rate;
@@ -123,7 +123,7 @@ UnitDSP::GenerateAdd(UnitModel const& unit, float freq, float rate, float phase)
 	case AddType::SinSubCos:
     step = unit.addStep;
 		parts = unit.addParts;
-		logRoll = Mix01Inclusive(unit.addRoll) * 2.0f;
+		logRoll = Mix02Inclusive(unit.addRoll);
 		sinCos = type == AddType::SinAddCos || type == AddType::SinSubCos;
 		addSub = type == AddType::SinSubSin || type == AddType::SinSubCos;
     break;
