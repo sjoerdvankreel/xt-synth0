@@ -42,8 +42,8 @@ public:
   void Render(PlotInput const& input, PlotOutput& output);
 
 private:
-  void RenderEnv(PlotInput const& input, int index, PlotOutput& output);
   void RenderUnit(PlotInput const& input, int index, PlotOutput& output);
+  void RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput& output);
 };
 
 } // namespace Xts

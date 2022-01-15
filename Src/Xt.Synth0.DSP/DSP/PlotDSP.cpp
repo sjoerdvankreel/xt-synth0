@@ -11,13 +11,15 @@ PlotDSP::Render(PlotInput const& input, PlotOutput& output)
   _samples.clear();
   output.freq = 0.0f;
   output.bipolar = XtsFalse;
-  switch(static_cast<PlotSource>(input.synth->plot.source))
+  auto const& plot = input.synth->plot;
+  auto fit = static_cast<PlotFit>(plot.fit);
+  switch(static_cast<PlotSource>(plot.source))
   {
-  case PlotSource::Env1: RenderEnv(input, 0, output); break;
-  case PlotSource::Env2: RenderEnv(input, 1, output); break;
   case PlotSource::Unit1: RenderUnit(input, 0, output); break;
   case PlotSource::Unit2: RenderUnit(input, 1, output); break;
   case PlotSource::Unit3: RenderUnit(input, 2, output); break;
+  case PlotSource::Env1: RenderEnv(input, 0, fit, input.rate, output); break;
+  case PlotSource::Env2: RenderEnv(input, 1, fit, input.rate, output); break;
   default: assert(false); break;
   }
   output.splits = _splits.data();
@@ -53,7 +55,7 @@ PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput& output)
 }
 
 void
-PlotDSP::RenderEnv(PlotInput const& input, int index, PlotOutput& output)
+PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput& output)
 {
   const int maxSamples = 96000;
   const int minHoldSamples = 10;
@@ -62,14 +64,23 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotOutput& output)
   _env.Init();
   int sample = 0;
   int sustainSamples = 0;
-  int32_t rate = input.rate;
-  EnvParams params = _env.Params(input.synth->envs[index], input.rate);
-  bool doFit = input.synth->plot.fit != static_cast<int>(PlotFit::Rate);
+  EnvParams params = _env.Params(input.synth->envs[index], rate);
   float length = params.dly + params.a + params.hld + params.d + params.r;
   int holdSamples = std::max(static_cast<int>(length * holdFactor), minHoldSamples);
   float totalSamples = holdSamples + length;
-  if (doFit) rate = static_cast<int32_t>(rate / totalSamples * input.pixels);
-  if (totalSamples > maxSamples) rate = static_cast<int32_t>(rate / totalSamples * maxSamples);
+  
+  if (fit != PlotFit::Rate)
+  {
+    rate = static_cast<int32_t>(rate / totalSamples * input.pixels);
+    RenderEnv(input, index, PlotFit::Rate, rate, output);
+    return;
+  }
+  if (totalSamples > maxSamples) 
+  {
+    rate = static_cast<int32_t>(rate / totalSamples * maxSamples);
+    RenderEnv(input, index, PlotFit::Rate, rate, output);
+    return;
+  }
 
   EnvOutput eout;
   float ratef = static_cast<float>(rate);
