@@ -19,6 +19,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeBorder(StreamModel stream)
 		{
 			var result = new Border();
+			result.Padding = new(2.0);
 			result.Child = MakeContent(stream);
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -29,13 +30,14 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(StreamModel stream)
 		{
 			var result = Create.Grid(3, 2);
-			result.Add(CreateBuffer(stream, new(0, 0)));
-			result.Add(CreateOverload(stream, new(1, 0)));
-			result.Add(CreateClip(stream, new(1, 1)));
-			result.Add(CreateCpuUsage(stream, new(2, 0)));
-			result.Add(CreateGC(stream, new(2, 1)));
+			result.Add(CreateOverload(stream, new(0, 0)));
+			result.Add(CreateClip(stream, new(0, 1)));
+			result.Add(CreateCpuUsage(stream, new(1, 0)));
+			result.Add(CreateGC(stream, new(1, 1)));
+			result.Add(CreateBuffer(stream, new(2, 0)));
+			result.Add(CreateVoices(stream, new(2, 1)));
 			result.VerticalAlignment = VerticalAlignment.Center;
-			result.HorizontalAlignment = HorizontalAlignment.Center;
+			result.HorizontalAlignment = HorizontalAlignment.Left;
 			return result;
 		}
 
@@ -55,6 +57,17 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static UIElement CreateVoices(StreamModel stream, Cell cell)
+		{
+			var result = Create.Element<StackPanel>(cell);
+			result.Orientation = Orientation.Horizontal;
+			result.Add(Create.Text("Voices: "));
+			var text = result.Add(new TextBlock());
+			var binding = Bind.To(stream, nameof(stream.Voices));
+			text.SetBinding(TextBlock.TextProperty, binding);
+			return result;
+		}
+
 		static UIElement CreateBuffer(StreamModel stream, Cell cell)
 		{
 			var result = Create.Element<TextBlock>(cell);
@@ -62,7 +75,6 @@ namespace Xt.Synth0.UI
 			var bufferBinding = Bind.To(stream, nameof(stream.BufferSizeFrames));
 			var binding = Bind.To(new MonitorFormatter(), bufferBinding, latencyBinding);
 			result.SetBinding(TextBlock.TextProperty, binding);
-			result.SetValue(Grid.ColumnSpanProperty, 2);
 			return result;
 		}
 
