@@ -25,7 +25,8 @@ struct EnvParams
 class EnvDSP 
 {
   int _stagePos = 0;
-  EnvStage _stage = EnvStage::Dly; 
+  float _level = 0.0f;
+  EnvStage _stage = EnvStage::Dly;
   EnvStage _prevStage = EnvStage::Dly;
 
 public:

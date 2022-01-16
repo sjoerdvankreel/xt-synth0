@@ -7,14 +7,17 @@
 namespace Xts {
 
 void
-EnvDSP::Init()
-{ NextStage(EnvStage::Dly); }
-
-void
 EnvDSP::Release()
 { if(_stage < EnvStage::R) NextStage(EnvStage::R); }
 
-void 
+void
+EnvDSP::Init()
+{
+  _level = 0.0f;
+  NextStage(EnvStage::Dly);
+}
+
+void
 EnvDSP::NextStage(EnvStage stage)
 {
   _stagePos = 0;
@@ -54,7 +57,7 @@ EnvDSP::Generate(EnvModel const& env, EnvParams const& params) const
   case EnvStage::End: return 0.0f; 
   case EnvStage::S: return params.s;
   case EnvStage::A: return Generate(0.0, 1.0, params.a, env.aSlp);
-  case EnvStage::R: return Generate(params.s, 0.0, params.r, env.rSlp);
+  case EnvStage::R: return Generate(_level, 0.0, params.r, env.rSlp);
   case EnvStage::D: return Generate(1.0, params.s, params.d, env.dSlp);
   default: assert(false); return 0.0f;
   }
@@ -82,6 +85,7 @@ EnvDSP::Next(EnvModel const& env, float rate, EnvOutput& output)
   float result = Generate(env, params);
   if(_stage != EnvStage::End) _stagePos++;
   if(_stage > EnvStage::A && _stage != EnvStage::End && result <= threshold) NextStage(EnvStage::End);
+  if(_stage < EnvStage::R) _level = result;
   output.lvl = result;
   output.stage = _stage;
   output.staged = _stage != _prevStage;

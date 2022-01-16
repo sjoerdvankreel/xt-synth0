@@ -26,16 +26,15 @@ SynthDSP::GlobalAmp(SynthModel const& synth, SynthState const& state) const
 {
   float envAmp;
   float amp = Level(synth.global.amp);
-  float envAmt = Level(synth.global.ampAmt);
-  auto ampSrc = static_cast<AmpEnvSource>(synth.global.ampSrc);
-  switch (ampSrc)
+  auto env = static_cast<AmpEnv>(synth.global.env);
+  switch (env)
   {
-  case AmpEnvSource::Off: envAmp = 0.0f; break;
-  case AmpEnvSource::Env1: envAmp = state.envs[0]; break;
-  case AmpEnvSource::Env2: envAmp = state.envs[1]; break;
+  case AmpEnv::NoAmpEnv: envAmp = 1.0f; break;
+  case AmpEnv::AmpEnv1: envAmp = state.envs[0]; break;
+  case AmpEnv::AmpEnv2: envAmp = state.envs[1]; break;
   default: assert(false); break;
   }
-  return amp + (1.0 - amp) * envAmt * envAmp;
+  return amp * envAmp;
 }
 
 void

@@ -65,7 +65,8 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   _env.Init();
   int sample = 0;
   int sustainSamples = 0;
-  EnvParams params = _env.Params(input.synth->envs[index], rate);
+  float ratef = static_cast<float>(rate);
+  EnvParams params = _env.Params(input.synth->envs[index], ratef);
   float length = params.dly + params.a + params.hld + params.d + params.r;
   int holdSamples = std::max(static_cast<int>(length * holdFactor), minHoldSamples);
   float totalSamples = holdSamples + length;
@@ -84,7 +85,7 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   }
 
   EnvOutput eout;
-  float ratef = static_cast<float>(rate);
+  ratef = static_cast<float>(rate);
   while (input.synth->envs[index].on)
   {
     if(sustainSamples == holdSamples) _env.Release();

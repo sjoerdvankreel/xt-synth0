@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum AmpEnvSource { NoAmpEnv, Env1ToAmp, Env2ToAmp }
+	public enum AmpEnv { NoAmpEnv, AmpEnv1, AmpEnv2 }
 
 	public unsafe sealed class SynthModel : MainModel
 	{
