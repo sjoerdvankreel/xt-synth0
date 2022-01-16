@@ -12,9 +12,9 @@ namespace Xts {
 struct XTS_ALIGN SeqState
 {
   float rate;
+  XtsBool clip;
   int32_t frames;
   int32_t currentRow;
-  int32_t pad__;
   int64_t streamPosition;
   float* buffer;
   SynthModel* synth;

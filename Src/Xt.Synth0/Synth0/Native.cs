@@ -33,9 +33,9 @@ namespace Xt.Synth0
 		internal struct SeqState
 		{
 			internal float rate;
+			internal int clip;
 			internal int frames;
 			internal int currentRow;
-			int pad__; 
 			internal long streamPosition;
 			internal float* buffer; 
 			internal IntPtr synth; 

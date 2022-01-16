@@ -9,7 +9,6 @@ namespace Xt.Synth0
 {
 	unsafe class AudioEngine : IDisposable
 	{
-		const float MaxAmp = 0.9f;
 		const float OverloadLimit = 0.9f;
 		const float WarningDurationSeconds = 0.5f;
 		const float BufferInfoIntervalSeconds = 1.0f;
@@ -242,7 +241,7 @@ namespace Xt.Synth0
 				_cpuUsageFactors = new double[format.mix.rate];
 				_cpuUsageFrameCounts = new int[format.mix.rate];
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
-				UpdateStreamInfo(0, format.mix.rate, 0);
+				UpdateStreamInfo(0, format.mix.rate, false, 0);
 				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqState);
 				ResumeStream();
 			}
@@ -268,10 +267,15 @@ namespace Xt.Synth0
 				_app.Stream.IsOverloaded = false;
 		}
 
-		void UpdateStreamInfo(int frames, int rate, long streamPosition)
+		void UpdateStreamInfo(int frames, int rate, bool clip, long streamPosition)
 		{
 			float bufferSeconds = frames / (float)rate;
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+			if (clip)
+			{
+				_app.Stream.IsClipping = true;
+				_clipPosition = streamPosition;
+			}
 			if (_gcCollecteds[0])
 			{
 				_gcCollecteds[0] = false;
@@ -328,21 +332,6 @@ namespace Xt.Synth0
 			{
 				_app.Stream.CpuUsage = cpuUsage;
 				_cpuUsagePosition = streamPosition;
-			}
-		}
-
-		void Clip(int frames, long streamPosition)
-		{
-			for (int f = 0; f < frames; f++)
-			{
-				if (Math.Abs(_buffer[f * 2]) > MaxAmp
-					|| Math.Abs(_buffer[f * 2 + 1]) > MaxAmp)
-				{
-					_app.Stream.IsClipping = true;
-					_clipPosition = streamPosition;
-				}
-				_buffer[f * 2] = Math.Clamp(_buffer[f * 2], -MaxAmp, MaxAmp);
-				_buffer[f * 2 + 1] = Math.Clamp(_buffer[f * 2 + 1], -MaxAmp, MaxAmp);
 			}
 		}
 
@@ -426,13 +415,12 @@ namespace Xt.Synth0
 			Native.XtsSeqDSPProcessBuffer(_nativeSeqDSP, _nativeSeqState);
 			EndAutomation();
 			long pos = _nativeSeqState->streamPosition;
-			Clip(buffer.frames, pos);
 			CopyBuffer(in buffer, in format);
 			ResetWarnings(rate, pos);
 			_app.Stream.CurrentRow = _nativeSeqState->currentRow;
 			_stopwatch.Stop();
 			UpdateCpuUsage(buffer.frames, rate, pos);
-			UpdateStreamInfo(buffer.frames, rate, pos);
+			UpdateStreamInfo(buffer.frames, rate, _nativeSeqState->clip != 0, pos);
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)

@@ -1,4 +1,5 @@
 #include "SeqDSP.hpp"
+#include "DSP.hpp"
 #include <string>
 #include <cassert>
 
@@ -12,24 +13,28 @@ SeqDSP::Init(SeqState& state)
   memset(&state, 0, sizeof(state));
 }
 
-void
-SeqDSP::ProcessBuffer(SeqState& state)
-{
-  SynthOutput audio;
-	for (int f = 0; f < state.frames; f++)
-	{
-		Next(state, audio);
-		state.buffer[f * 2] = audio.l;
-		state.buffer[f * 2 + 1] = audio.r;
-	}
-}
-
 bool
 SeqDSP::RowUpdated(int currentRow)
 {
 	bool result = _previousRow != currentRow;
 	_previousRow = currentRow;
 	return result;
+}
+
+void
+SeqDSP::ProcessBuffer(SeqState& state)
+{
+	bool clip;
+	SynthOutput audio;
+	state.clip = false;
+	for (int f = 0; f < state.frames; f++)
+	{
+		Next(state, audio);
+		state.buffer[f * 2] = Clip(audio.l, clip);
+		state.clip |= clip;
+		state.buffer[f * 2 + 1] = Clip(audio.r, clip);
+		state.clip |= clip;
+	}
 }
 
 bool 
