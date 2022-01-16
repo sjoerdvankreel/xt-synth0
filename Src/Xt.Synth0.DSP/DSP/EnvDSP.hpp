@@ -38,7 +38,7 @@ public:
 
 private:
   void NextStage(EnvStage stage);
-  void CycleStage(EnvParams const& params);
+  void CycleStage(EnvType type, EnvParams const& params);
   float Generate(float from, float to, float len, int slp) const;
   float Generate(EnvModel const& env, EnvParams const& params) const;
 };

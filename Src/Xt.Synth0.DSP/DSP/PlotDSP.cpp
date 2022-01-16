@@ -70,9 +70,10 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   int sustainSamples = 0;
   float ratef = static_cast<float>(rate);
   EnvParams params = dsp.Params(input.synth->envs[index], ratef);
+  EnvType type = static_cast<EnvType>(input.synth->envs[index].type);
   float length = dsp.Frames(params);
   int holdSamples = std::max(static_cast<int>(length * holdFactor), minHoldSamples);
-  float totalSamples = holdSamples + length;
+  float totalSamples = length + (type == EnvType::DAHDSR? holdSamples: 0);
   
   if (fit != PlotFit::Rate)
   {

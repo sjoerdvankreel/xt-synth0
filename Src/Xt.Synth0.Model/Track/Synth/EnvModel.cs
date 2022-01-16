@@ -18,12 +18,12 @@ namespace Xt.Synth0.Model
 		public Param D { get; } = new(DInfo);
 		public Param S { get; } = new(SInfo);
 		public Param R { get; } = new(RInfo);
-		public Param Type { get; } = new(TypeInfo);
 		public Param Hld { get; } = new(HldInfo);
 		public Param Dly { get; } = new(DlyInfo);
 		public Param ASlp { get; } = new(ASlpInfo);
 		public Param DSlp { get; } = new(DSlpInfo);
 		public Param RSlp { get; } = new(RSlpInfo);
+		public Param Type { get; } = new(TypeInfo);
 
 		readonly int _index;
 		public int ColumnCount => 3;
