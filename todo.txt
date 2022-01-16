@@ -8,11 +8,8 @@ custom color scheme
 sampler
 better serialization
 automation groups
-2 simple envs?
-set enums in native structs
 better pattern edit
-live env pos plot
 active voices monitor
 play note on enter
-fix global plot when resampling
-
+clip in native
+env sync
