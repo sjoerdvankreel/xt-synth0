@@ -5,14 +5,6 @@
 
 namespace Xts {
 
-void 
-SeqDSP::ReleaseVoice(int key, int voice)
-{ 
-  _voicesUsed--;
-  _keysToVoices[key] = -1;
-  _voicesStarted[voice] = -1;
-}
-
 bool
 SeqDSP::RowUpdated(int currentRow)
 {
@@ -27,16 +19,33 @@ SeqDSP::Init(SeqState& state)
   _voicesUsed = 0;
   _rowFactor = 0.0;
   _previousRow = -1;
-  for (int i = 0; i < MaxVoices; i++)
-    _voicesStarted[i] = -1;
   for (int i = 0; i < TrackConstants::MaxKeys; i++)
-    _keysToVoices[i] = -1;
+    _keyVoices[i] = -1;
+  for (int i = 0; i < MaxVoices; i++)
+  {
+    _voiceKeys[i] = -1;
+    _voicesStarted[i] = -1;
+  }
   memset(&state, 0, sizeof(state));
+}
+
+void 
+SeqDSP::ReleaseVoice(int key, int voice)
+{ 
+  assert(0 <= voice && voice < MaxVoices);
+  assert(0 <= key && key < TrackConstants::MaxKeys);
+  _voicesUsed--;
+  _keyVoices[key] = -1;
+  _voiceKeys[voice] = -1;
+  _voicesStarted[voice] = -1;
+  assert(0 <= _voicesUsed && _voicesUsed < MaxVoices);
 }
 
 int
 SeqDSP::TakeVoice(int key, int64_t pos)
 {
+  assert(pos >= 0);
+  assert(0 <= key && key < TrackConstants::MaxKeys);
   int victim = -1;
   int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
   for(int i = 0; i < MaxVoices; i++)
@@ -44,8 +53,10 @@ SeqDSP::TakeVoice(int key, int64_t pos)
     if(_voicesStarted[i] == -1)
     {
       _voicesUsed++;
-      _keysToVoices[key] = i;
+      _keyVoices[key] = i;
+      _voiceKeys[i] = key;
       _voicesStarted[i] = pos;
+      assert(0 <= _voicesUsed && _voicesUsed <= MaxVoices);
       return i;
     }
     if(_voicesStarted[i] < victimStart)
@@ -55,7 +66,9 @@ SeqDSP::TakeVoice(int key, int64_t pos)
     }
   }
   assert(0 <= victim && victim < MaxVoices);
-  _keysToVoices[key] = victim;
+  assert(0 <= _voicesUsed && _voicesUsed <= MaxVoices);
+  _keyVoices[key] = victim;
+  _voiceKeys[victim] = key;
   _voicesStarted[victim] = pos;
   return victim;
 }
@@ -111,20 +124,23 @@ SeqDSP::Next(SeqState& state, SeqOutput& output)
     auto key = row.keys[k];
     auto note = static_cast<PatternNote>(key.note);
     auto unitNote = static_cast<UnitNote>(static_cast<int>(note) - 2);
-    if(updated && note >= PatternNote::C)
+    if (updated && note >= PatternNote::C)
     {
+      if (_keyVoices[k] != -1) 
+        _voices[_keyVoices[k]].Release();
       int voice = TakeVoice(k, state.streamPosition);
       _voices[voice].Init(key.oct, unitNote);
     }
-    if(updated && note == PatternNote::Off)
-      _voices[_keysToVoices[k]].Release();
-    if(_keysToVoices[k] != -1)
-    {
-      _voices[_keysToVoices[k]].Next(*state.synth, state.rate, sout);
-      output.l += sout.l;
-      output.r += sout.r;
-      if(sout.end) ReleaseVoice(k, _keysToVoices[k]);
-    }
+    if (updated && note == PatternNote::Off)
+      _voices[_keyVoices[k]].Release();
+  }
+  for(int v = 0; v < MaxVoices; v++)
+  {
+    if(_voiceKeys[v] == -1) continue;
+    _voices[v].Next(*state.synth, state.rate, sout);
+    output.l += sout.l;
+    output.r += sout.r;
+    if(sout.end) ReleaseVoice(_voiceKeys[v], v);
   }
 	state.streamPosition++;
 }

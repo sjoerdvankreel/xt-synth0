@@ -9,7 +9,7 @@
 
 namespace Xts {
 
-inline const int MaxVoices = 3;
+inline const int MaxVoices = 128;
 
 struct SeqOutput
 {
@@ -38,9 +38,11 @@ class SeqDSP
   int _previousRow = -1;
   double _rowFactor = 0.0;
   PatternDSP const _pattern;
+
+  int _voiceKeys[MaxVoices];
   SynthDSP _voices[MaxVoices];
   int64_t _voicesStarted[MaxVoices];
-  int _keysToVoices[TrackConstants::MaxKeys];
+  int _keyVoices[TrackConstants::MaxKeys];
 
 public:
   void Init(SeqState& state);
