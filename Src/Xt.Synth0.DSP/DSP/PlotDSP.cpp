@@ -1,4 +1,5 @@
 #include "PlotDSP.hpp"
+#include "DSP.hpp"
 #include <cassert>
 #include <cmath>
 
@@ -10,6 +11,7 @@ PlotDSP::Render(PlotInput const& input, PlotOutput& output)
   _splits.clear();
   _samples.clear();
   output.freq = 0.0f;
+  output.clip = XtsFalse;
   output.bipolar = XtsFalse;
   auto const& plot = input.synth->plot;
   auto fit = static_cast<PlotFit>(plot.fit);
@@ -141,6 +143,7 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
     return;
   }
 
+  bool clip;
   SynthOutput sout;
   int sustained = 0;
   int dahdsr = static_cast<int>(EnvType::DAHDSR);
@@ -153,7 +156,9 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   {
     if (index != -1 && sustained == sustainSamples) _dsp._envs[index].Release();
     _dsp.Next(*input.synth, ratef, sout);
-    _samples.push_back(sout.l + sout.r);
+    float sample = Clip(sout.l + sout.r, clip);
+    output.clip |= clip;
+    _samples.push_back(sample);
     if (index != -1 && sout.envs[index].stage == EnvStage::S) sustained++;
   }
   output.rate = rate;

@@ -20,10 +20,10 @@ struct XTS_ALIGN PlotOutput
 {
   float freq;
   int32_t rate;
+  XtsBool clip;
   XtsBool bipolar;
   int32_t splitCount;
   int32_t sampleCount;
-  int32_t pad__;
   float* samples;
   int32_t* splits;
   PlotOutput() = default;

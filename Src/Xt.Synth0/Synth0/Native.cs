@@ -21,10 +21,10 @@ namespace Xt.Synth0
 		{
 			internal float freq;
 			internal int rate;
+			internal int clip;
 			internal int bipolar;
 			internal int splitCount;
 			internal int sampleCount;
-			int pad__;
 			internal float* samples;
 			internal int* splits;
 		}

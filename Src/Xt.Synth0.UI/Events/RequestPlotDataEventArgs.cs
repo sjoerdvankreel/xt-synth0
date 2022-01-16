@@ -5,6 +5,7 @@ namespace Xt.Synth0.UI
 {
 	public class RequestPlotDataEventArgs : EventArgs
 	{
+		public bool Clip { get; set; }
 		public float Freq { get; set; }
 		public int Pixels { get; set; }
 		public bool Bipolar { get; set; }

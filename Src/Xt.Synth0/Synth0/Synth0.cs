@@ -225,6 +225,7 @@ namespace Xt.Synth0
 			Native.XtsPlotDSPRender(_nativePlotDSP, _nativePlotInput, _nativePlotOutput);
 
 			e.Freq = _nativePlotOutput->freq;
+			e.Clip = _nativePlotOutput->clip != 0;
 			e.SampleRate = _nativePlotOutput->rate;
 			e.Bipolar = _nativePlotOutput->bipolar != 0;
 			e.Splits.Clear();
