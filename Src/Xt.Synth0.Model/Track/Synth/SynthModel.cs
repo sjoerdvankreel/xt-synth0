@@ -35,6 +35,18 @@ namespace Xt.Synth0.Model
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, TrackConstants.UnitCount).Select(i => new UnitModel(i)).ToList();
 		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(new ISubModel[] { Plot, Global }).ToArray();
 
+		public SynthModel()
+		{
+			Envs[0].On.Value = 1;
+			Units[0].Type.Value = (int)UnitType.Sin;
+			Global.AmpEnv.Value = (int)AmpEnv.AmpEnv1;
+			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
+				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
+			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
+			if (AutoParams.Count != TrackConstants.AutoParamCount)
+				throw new InvalidOperationException();
+		}
+
 		public void PrepareNative(IntPtr native)
 		{
 			Native* nativePtr = (Native*)native;
@@ -46,17 +58,6 @@ namespace Xt.Synth0.Model
 				var ownerAddress = AutoParams[p].Owner.Address(nativePtr);
 				nativeParams[p].value = AutoParams[p].Param.Info.Address(ownerAddress);
 			}
-		}
-
-		public SynthModel()
-		{
-			Envs[0].On.Value = 1;
-			Units[0].Type.Value = (int)UnitType.Sin;
-			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
-				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
-			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
-			if (AutoParams.Count != TrackConstants.AutoParamCount)
-				throw new InvalidOperationException();
 		}
 	}
 }
