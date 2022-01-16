@@ -41,6 +41,7 @@ inline float Sync(int val, float rate, int bpm)
   auto step = static_cast<SyncStep>(val);
   switch(step)
   {
+  case SyncStep::Step0: return 0.0f;
   case SyncStep::Step1_16: return Sync(1, 16, rate, bpm);
   case SyncStep::Step1_8: return Sync(1, 8, rate, bpm);
   case SyncStep::Step3_16: return Sync(3, 16, rate, bpm);

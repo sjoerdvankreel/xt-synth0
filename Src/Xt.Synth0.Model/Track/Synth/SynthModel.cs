@@ -9,7 +9,7 @@ namespace Xt.Synth0.Model
 	public enum AmpEnv { NoAmpEnv, AmpEnv1, AmpEnv2 }
 	public enum SyncStep
 	{
-		Step1_16, Step1_8, Step3_16, Step1_4, Step1_3, Step3_8,
+		Step0, Step1_16, Step1_8, Step3_16, Step1_4, Step1_3, Step3_8,
 		Step1_2, Step5_8, Step2_3, Step3_4, Step7_8, Step15_16, Step1_1,
 		Step9_8, Step5_4, Step4_3, Step3_2, Step5_3, Step7_4, Step15_8, Step2_1,
 		Step3_1, Step4_1, Step5_1, Step6_1, Step7_1, Step8_1, Step10_1, Step12_1, Step16_1
@@ -50,7 +50,7 @@ namespace Xt.Synth0.Model
 
 		public static readonly string[] SyncStepNames = new[]
 		{
-			"1/16", "1/8", "3/16", "1/4", "1/3", "3/8",
+			"0", "1/16", "1/8", "3/16", "1/4", "1/3", "3/8",
 			"1/2", "5/8", "2/3", "3/4", "7/8", "15/16", "1/1",
 			"9/8", "5/4", "4/3", "3/2", "5/3", "7/4", "15/8", "2/1",
 			"3/1", "4/1", "5/1", "6/1", "7/1", "8/1", "10/1", "12/1", "16/1"
