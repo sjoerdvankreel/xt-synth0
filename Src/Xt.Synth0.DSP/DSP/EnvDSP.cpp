@@ -1,6 +1,7 @@
 #include "EnvDSP.hpp"
 #include "DSP.hpp"
 #include <cmath>
+#include <cassert>
 #include <cstring>
 #include <cassert>
 
@@ -96,6 +97,7 @@ EnvDSP::Next(EnvModel const& env, float rate, EnvOutput& output)
   output.stage = _stage;
   output.staged = _stage != _prevStage;
   _prevStage = _stage;
+  assert(0.0f <= output.lvl && output.lvl <= 1.0f);
 }
 
 } // namespace Xts

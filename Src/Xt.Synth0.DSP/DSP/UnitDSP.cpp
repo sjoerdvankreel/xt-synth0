@@ -63,6 +63,8 @@ UnitDSP::Next(UnitModel const& unit, float rate, UnitOutput& output)
 	if (_phase >= 1.0) _phase = 0.0;
 	output.r = sample * amp * pan;
 	output.l = sample * amp * (1.0f - pan);
+  assert(-1.0f <= output.l && output.l <= 1.0f);
+	assert(-1.0f <= output.r && output.r <= 1.0f);
 }
 
 float 
