@@ -39,20 +39,6 @@ EnvDSP::Generate(float from, float to, float len, int slp) const
   return from + range * (1.0f - powf(1.0f - pos, 2.0f - mix));
 }
 
-EnvParams 
-EnvDSP::Params(EnvModel const& env, float rate, int bpm) const
-{
-  EnvParams result;
-  bool sync = env.sync != 0;
-  result.s = Level(env.s);
-  result.a = sync? Sync(env.a, rate, bpm): Time(env.a, rate);
-  result.d = sync ? Sync(env.d, rate, bpm) : Time(env.d, rate);
-  result.r = sync ? Sync(env.r, rate, bpm) : Time(env.r, rate);
-  result.dly = sync ? Sync(env.dly, rate, bpm) : Time(env.dly, rate);
-  result.hld = sync ? Sync(env.hld, rate, bpm) : Time(env.hld, rate);
-  return result;
-}
-
 float
 EnvDSP::Generate(EnvModel const& env, EnvParams const& params) const
 {
@@ -67,6 +53,20 @@ EnvDSP::Generate(EnvModel const& env, EnvParams const& params) const
   case EnvStage::D: return Generate(1.0, params.s, params.d, env.dSlp);
   default: assert(false); return 0.0f;
   }
+}
+
+EnvParams
+EnvDSP::Params(EnvModel const& env, float rate, int bpm) const
+{
+  EnvParams result;
+  bool sync = env.sync != 0;
+  result.s = Level(env.s);
+  result.a = sync ? Sync(env.aSnc, rate, bpm) : Time(env.a, rate);
+  result.d = sync ? Sync(env.dSnc, rate, bpm) : Time(env.d, rate);
+  result.r = sync ? Sync(env.rSnc, rate, bpm) : Time(env.r, rate);
+  result.dly = sync ? Sync(env.dlySnc, rate, bpm) : Time(env.dly, rate);
+  result.hld = sync ? Sync(env.hldSnc, rate, bpm) : Time(env.hld, rate);
+  return result;
 }
 
 void
