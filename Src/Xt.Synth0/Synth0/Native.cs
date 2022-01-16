@@ -37,7 +37,7 @@ namespace Xt.Synth0
 			internal int clip;
 			internal int frames;
 			internal int currentRow;
-			int pad__;
+			internal int exhausted;
 			internal long streamPosition;
 			internal float* buffer; 
 			internal IntPtr synth; 

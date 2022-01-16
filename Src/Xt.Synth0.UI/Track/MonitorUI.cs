@@ -30,10 +30,10 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(StreamModel stream)
 		{
 			var result = Create.Grid(3, 2);
-			result.Add(CreateOverload(stream, new(0, 0)));
-			result.Add(CreateClip(stream, new(0, 1)));
-			result.Add(CreateCpuUsage(stream, new(1, 0)));
-			result.Add(CreateGC(stream, new(1, 1)));
+			result.Add(CreateCpuUsage(stream, new(0, 0)));
+			result.Add(CreateGC(stream, new(0, 1)));
+			result.Add(CreateClipOverload(stream, new(1, 0)));
+			result.Add(CreateExhausted(stream, new(1, 1)));
 			result.Add(CreateBuffer(stream, new(2, 0)));
 			result.Add(CreateVoices(stream, new(2, 1)));
 			result.VerticalAlignment = VerticalAlignment.Center;
@@ -41,17 +41,34 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement CreateClip(StreamModel stream, Cell cell)
+		static UIElement CreateExhausted(StreamModel stream, Cell cell)
 		{
-			var result = Create.Text("Clip", cell);
+			var result = Create.Text("Exhausted", cell);
+			var binding = Bind.To(stream, nameof(stream.IsExhausted));
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
+			return result;
+		}
+
+		static UIElement CreateClipOverload(StreamModel model, Cell cell)
+		{
+			var result = Create.Element<StackPanel>(cell);
+			result.Orientation = Orientation.Horizontal;
+			result.Add(CreateClip(model));
+			result.Add(CreateOverload(model));
+			return result;
+		}
+
+		static UIElement CreateClip(StreamModel stream)
+		{
+			var result = Create.Text("Clip ");
 			var binding = Bind.To(stream, nameof(stream.IsClipping));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
-		static UIElement CreateOverload(StreamModel stream, Cell cell)
+		static UIElement CreateOverload(StreamModel stream)
 		{
-			var result = Create.Text("Overload", cell);
+			var result = Create.Text("Overload ");
 			var binding = Bind.To(stream, nameof(stream.IsOverloaded));
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;

@@ -24,7 +24,7 @@ struct XTS_ALIGN SeqState
   XtsBool clip;
   int32_t frames;
   int32_t currentRow;
-  int32_t pad__;
+  XtsBool exhausted;
   int64_t streamPosition;
   float* buffer;
   SynthModel* synth;

@@ -25,6 +25,8 @@ namespace Xt.Synth0.Model
 		= new PropertyChangedEventArgs(nameof(CpuUsage));
 		static readonly PropertyChangedEventArgs IsClippingChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(IsClipping));
+		static readonly PropertyChangedEventArgs IsExhaustedChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(IsExhausted));
 		static readonly PropertyChangedEventArgs IsOverloadedChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(IsOverloaded));
 		static readonly PropertyChangedEventArgs GC0CollectedChangedEventArgs
@@ -120,6 +122,18 @@ namespace Xt.Synth0.Model
 				if (_isClipping == value) return;
 				_isClipping = value;
 				PropertyChanged?.Invoke(this, IsClippingChangedEventArgs);
+			}
+		}
+
+		bool _isExhausted;
+		public bool IsExhausted
+		{
+			get => _isExhausted;
+			set
+			{
+				if (_isExhausted == value) return;
+				_isExhausted = value;
+				PropertyChanged?.Invoke(this, IsExhaustedChangedEventArgs);
 			}
 		}
 

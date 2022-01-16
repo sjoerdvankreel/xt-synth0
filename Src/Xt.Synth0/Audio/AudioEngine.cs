@@ -10,9 +10,7 @@ namespace Xt.Synth0
 	unsafe class AudioEngine : IDisposable
 	{
 		const float OverloadLimit = 0.9f;
-		const float WarningDurationSeconds = 0.5f;
-		const float VoiceInfoIntervalSeconds = 0.5f;
-		const float BufferInfoIntervalSeconds = 1.0f;
+		const float InfoDurationSeconds = 0.5f;
 		const float CpuUsageUpdateIntervalSeconds = 0.2f;
 		const float CpuUsageSamplingPeriodSeconds = 0.5f;
 
@@ -80,6 +78,7 @@ namespace Xt.Synth0
 		long _cpuUsagePosition = -1;
 		long _overloadPosition = -1;
 		long _voiceInfoPosition = -1;
+		long _exhaustedPosition = -1;
 		long _bufferInfoPosition = -1;
 		readonly long[] _gcPositions = new long[3];
 		readonly bool[] _gcCollecteds = new bool[3];
@@ -203,6 +202,7 @@ namespace Xt.Synth0
 			_overloadPosition = -1;
 			_cpuUsagePosition = -1;
 			_voiceInfoPosition = -1;
+			_exhaustedPosition = -1;
 			_bufferInfoPosition = -1;
 
 			_cpuUsageIndex = 0;
@@ -214,6 +214,7 @@ namespace Xt.Synth0
 			_app.Stream.CpuUsage = 0.0;
 			_app.Stream.LatencyMs = 0.0;
 			_app.Stream.IsClipping = false;
+			_app.Stream.IsExhausted = false;
 			_app.Stream.IsOverloaded = false;
 			_app.Stream.GC0Collected = false;
 			_app.Stream.GC1Collected = false;
@@ -245,7 +246,7 @@ namespace Xt.Synth0
 				_cpuUsageFactors = new double[format.mix.rate];
 				_cpuUsageFrameCounts = new int[format.mix.rate];
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
-				UpdateStreamInfo(0, format.mix.rate, 0, false, 0);
+				UpdateStreamInfo(0, format.mix.rate, 0, false, false, 0);
 				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqState);
 				ResumeStream();
 			}
@@ -258,20 +259,22 @@ namespace Xt.Synth0
 
 		void ResetWarnings(int rate, long streamPosition)
 		{
-			float warningFrames = WarningDurationSeconds * rate;
-			if (streamPosition > _clipPosition + warningFrames)
+			float infoFrames = InfoDurationSeconds * rate;
+			if (streamPosition > _clipPosition + infoFrames)
 				_app.Stream.IsClipping = false;
-			if (streamPosition > _gcPositions[0] + warningFrames)
+			if (streamPosition > _gcPositions[0] + infoFrames)
 				_app.Stream.GC0Collected = false;
-			if (streamPosition > _gcPositions[1] + warningFrames)
+			if (streamPosition > _gcPositions[1] + infoFrames)
 				_app.Stream.GC1Collected = false;
-			if (streamPosition > _gcPositions[2] + warningFrames)
+			if (streamPosition > _gcPositions[2] + infoFrames)
 				_app.Stream.GC2Collected = false;
-			if (streamPosition > _overloadPosition + warningFrames)
+			if (streamPosition > _overloadPosition + infoFrames)
 				_app.Stream.IsOverloaded = false;
+			if (streamPosition > _exhaustedPosition + infoFrames)
+				_app.Stream.IsExhausted = false;
 		}
 
-		void UpdateStreamInfo(int frames, int rate, int voices, bool clip, long streamPosition)
+		void UpdateStreamInfo(int frames, int rate, int voices, bool clip, bool exhausted, long streamPosition)
 		{
 			float bufferSeconds = frames / (float)rate;
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
@@ -279,6 +282,11 @@ namespace Xt.Synth0
 			{
 				_app.Stream.IsClipping = true;
 				_clipPosition = streamPosition;
+			}
+			if (exhausted)
+			{
+				_app.Stream.IsExhausted = true;
+				_exhaustedPosition = streamPosition;
 			}
 			if (_gcCollecteds[0])
 			{
@@ -304,13 +312,13 @@ namespace Xt.Synth0
 				_app.Stream.IsOverloaded = true;
 			}
 			if (_bufferInfoPosition == -1 || streamPosition >=
-				_bufferInfoPosition + rate * BufferInfoIntervalSeconds)
+				_bufferInfoPosition + rate * InfoDurationSeconds)
 			{
 				_bufferInfoPosition = streamPosition;
 				_app.Stream.LatencyMs = _stream.GetLatencyMs();
 				_app.Stream.BufferSizeFrames = _stream.GetMaxBufferFrames();
 			}
-			if (streamPosition >= _voiceInfoPosition + rate * VoiceInfoIntervalSeconds)
+			if (streamPosition >= _voiceInfoPosition + rate * InfoDurationSeconds)
 			{
 				_voiceInfoPosition = streamPosition;
 				_app.Stream.Voices = voices;
@@ -430,7 +438,9 @@ namespace Xt.Synth0
 			_app.Stream.CurrentRow = _nativeSeqState->currentRow;
 			_stopwatch.Stop();
 			UpdateCpuUsage(buffer.frames, rate, pos);
-			UpdateStreamInfo(buffer.frames, rate, state->voices, state->clip != 0, pos);
+			bool clip = state->clip != 0;
+			bool exhausted = state->exhausted != 0;
+			UpdateStreamInfo(buffer.frames, rate, state->voices, clip, exhausted, pos);
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
