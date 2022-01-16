@@ -20,7 +20,8 @@ struct XTS_ALIGN GlobalModel { int env, amp, bpm, pad__; };
 
 struct XTS_ALIGN EnvModel {
   int a, d, s, r, hld, dly;
-  int type, aSlp, dSlp, rSlp;
+  int type, sync, aSlp, dSlp, rSlp;
+  int hldSnc, dlySnc, aSnc, dSnc, rSnc;
 };
 
 struct XTS_ALIGN UnitModel {
