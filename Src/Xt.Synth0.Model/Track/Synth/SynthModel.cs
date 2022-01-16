@@ -37,8 +37,8 @@ namespace Xt.Synth0.Model
 
 		public SynthModel()
 		{
-			Envs[0].On.Value = 1;
 			Units[0].Type.Value = (int)UnitType.Sin;
+			Envs[0].Type.Value = (int)EnvType.DAHDSR;
 			Global.AmpEnv.Value = (int)AmpEnv.AmpEnv1;
 			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
 				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));

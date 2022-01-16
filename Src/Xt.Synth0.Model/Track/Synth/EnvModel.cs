@@ -3,20 +3,22 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+	public enum EnvType { Off, DAHDR, DAHDSR }
+
 	public unsafe sealed class EnvModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
 			internal int a, d, s, r, hld, dly;
-			internal int on, aSlp, dSlp, rSlp;
+			internal int type, aSlp, dSlp, rSlp;
 		}
 
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);
 		public Param S { get; } = new(SInfo);
 		public Param R { get; } = new(RInfo);
-		public Param On { get; } = new(OnInfo);
+		public Param Type { get; } = new(TypeInfo);
 		public Param Hld { get; } = new(HldInfo);
 		public Param Dly { get; } = new(DlyInfo);
 		public Param ASlp { get; } = new(ASlpInfo);
@@ -32,7 +34,7 @@ namespace Xt.Synth0.Model
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
-			{ On, 0 },
+			{ Type, 0 },
 			{ Dly, 2 },
 			{ ASlp, 3 },
 			{ A, 4 },
@@ -44,15 +46,17 @@ namespace Xt.Synth0.Model
 			{ R, 10 }
 		};
 
+		static readonly IRelevance RelevanceDAHDSR = Relevance.When((EnvModel m) => m.Type, (EnvType t) => t == EnvType.DAHDSR);
+
 		static readonly ParamInfo DSlpInfo = ParamInfo.Mix(p => &((Native*)p)->dSlp, "Slp", "Decay slope", true);
 		static readonly ParamInfo ASlpInfo = ParamInfo.Mix(p => &((Native*)p)->aSlp, "Slp", "Attack slope", true);
 		static readonly ParamInfo RSlpInfo = ParamInfo.Mix(p => &((Native*)p)->rSlp, "Slp", "Release slope", true);
-		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "On/Off", false, false);
-		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), "Sustain level", true, 128);
+		static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, nameof(Type), "Type", false);
 		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), "Decay milliseconds", true, 7);
 		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), "Attack milliseconds", true, 3);
 		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), "Release milliseconds", true, 14);
 		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), "Hold milliseconds", true, 0);
 		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), "Delay milliseconds", true, 0);
+		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), "Sustain level", true, 128, null, RelevanceDAHDSR);
 	}
 }

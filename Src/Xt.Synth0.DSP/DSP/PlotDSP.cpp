@@ -89,7 +89,7 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
 
   EnvOutput eout;
   ratef = static_cast<float>(rate);
-  while (input.synth->envs[index].on)
+  while (input.synth->envs[index].type != static_cast<int>(EnvType::Off))
   {
     if(sustainSamples == holdSamples) dsp.Release();
     dsp.Next(input.synth->envs[index], ratef, eout);
@@ -109,10 +109,11 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   const int minRate = 10000;
   const int maxSamples = 96000;
 
-  EnvParams params;
+  EnvParams params {};
   float samples = 0.0f;
   int sustainSamples = 0;
   _dsp.Init(4, UnitNote::C);
+  const float holdFactor = 1.0f / 3.0f;
   float ratef = static_cast<float>(rate);
   auto env = static_cast<AmpEnv>(input.synth->global.env);
   auto length = [&](int index)

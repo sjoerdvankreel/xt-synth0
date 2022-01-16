@@ -7,6 +7,7 @@ namespace Xts {
 
 enum class PlotFit { Auto, Rate, Fit };
 enum class NaiveType { Saw, Pulse, Tri };
+enum class EnvType { Off, DAHDR, DAHDSR };
 enum class UnitType { Off, Sin, Naive, Add };
 enum class AmpEnv { NoAmpEnv, AmpEnv1, AmpEnv2 };
 enum class PlotSource { Global, Unit1, Unit2, Unit3, Env1, Env2 };
@@ -19,7 +20,7 @@ struct XTS_ALIGN GlobalModel { int env, amp, bpm, pad__; };
 
 struct XTS_ALIGN EnvModel {
   int a, d, s, r, hld, dly;
-  int on, aSlp, dSlp, rSlp;
+  int type, aSlp, dSlp, rSlp;
 };
 
 struct XTS_ALIGN UnitModel {
