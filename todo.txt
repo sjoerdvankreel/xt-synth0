@@ -14,4 +14,5 @@ better pattern edit
 live env pos plot
 active voices monitor
 play note on enter
+fix global plot when resampling
 
