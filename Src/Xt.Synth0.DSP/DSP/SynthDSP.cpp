@@ -22,7 +22,7 @@ SynthDSP::Init(int oct, UnitNote note)
 }
 
 float
-SynthDSP::GlobalAmp(SynthModel const& synth, SynthState const& state) const
+SynthDSP::GlobalAmp(SynthModel const& synth, SynthOutput const& output) const
 {
   float envAmp;
   float amp = Level(synth.global.amp);
@@ -30,8 +30,8 @@ SynthDSP::GlobalAmp(SynthModel const& synth, SynthState const& state) const
   switch (env)
   {
   case AmpEnv::NoAmpEnv: envAmp = 1.0f; break;
-  case AmpEnv::AmpEnv1: envAmp = state.envs[0]; break;
-  case AmpEnv::AmpEnv2: envAmp = state.envs[1]; break;
+  case AmpEnv::AmpEnv1: envAmp = output.envs[0].lvl; break;
+  case AmpEnv::AmpEnv2: envAmp = output.envs[1].lvl; break;
   default: assert(false); break;
   }
   return amp * envAmp;
@@ -40,25 +40,20 @@ SynthDSP::GlobalAmp(SynthModel const& synth, SynthState const& state) const
 void
 SynthDSP::Next(SynthModel const& synth, float rate, SynthOutput& output)
 {
-  EnvOutput eout;
-  UnitOutput uout;
-  SynthState state;
-
   memset(&output, 0, sizeof(output));
   output.end = true;
   for(int e = 0; e < TrackConstants::EnvCount; e++)
   {
-    _envs[e].Next(synth.envs[e], rate, eout);
-    state.envs[e] = eout.lvl;
-    output.end &= eout.stage == EnvStage::End;
+    _envs[e].Next(synth.envs[e], rate, output.envs[e]);
+    output.end &= output.envs[e].stage == EnvStage::End;
   }
  
-  float amp = GlobalAmp(synth, state);
+  float amp = GlobalAmp(synth, output);
   for (int u = 0; u < TrackConstants::UnitCount; u++)
   {
-    _units[u].Next(synth.units[u], rate, uout);
-    output.l += uout.l * amp;
-    output.r += uout.r * amp;
+    _units[u].Next(synth.units[u], rate, output.units[u]);
+    output.l += output.units[u].l * amp;
+    output.r += output.units[u].r * amp;
   }
 }
 

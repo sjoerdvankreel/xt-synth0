@@ -138,12 +138,14 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   }
 
   SynthOutput sout;
-  samples = std::min(maxSamples, static_cast<int>(samples));
+  samples = static_cast<float>(std::min(maxSamples, static_cast<int>(samples)));
   ratef = static_cast<float>(rate);
   for(int i = 0; i < samples; i++)
   {
     _dsp.Next(*input.synth, ratef, sout);
     _samples.push_back(sout.l + sout.r);
+    if(env == AmpEnv::AmpEnv1 && sout.envs[0].stage == EnvStage::S) _dsp.Release();
+    if(env == AmpEnv::AmpEnv2 && sout.envs[1].stage == EnvStage::S) _dsp.Release();
   }
   output.rate = rate;
   output.bipolar = XtsTrue;

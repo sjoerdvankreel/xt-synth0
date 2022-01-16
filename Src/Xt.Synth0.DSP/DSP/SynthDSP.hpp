@@ -9,9 +9,10 @@ namespace Xts {
 
 struct SynthOutput
 {
-  float l;
-  float r;
   bool end;
+  float l, r;
+  EnvOutput envs[TrackConstants::EnvCount];
+  UnitOutput units[TrackConstants::UnitCount];
   SynthOutput() = default;
 };
 
@@ -27,7 +28,7 @@ public:
   void Next(SynthModel const& synth, float rate, SynthOutput& output);
 
 private:
-  float GlobalAmp(SynthModel const& synth, SynthState const& state) const;
+  float GlobalAmp(SynthModel const& synth, SynthOutput const& output) const;
 };
 
 } // namespace Xts
