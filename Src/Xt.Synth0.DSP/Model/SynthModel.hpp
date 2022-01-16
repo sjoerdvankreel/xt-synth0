@@ -5,6 +5,11 @@
 
 namespace Xts {
 
+struct SynthState
+{
+  float envs[TrackConstants::EnvCount];
+};
+
 enum class PlotFit { Auto, Rate, Fit };
 enum class NaiveType { Saw, Pulse, Tri };
 enum class AmpEnvSource { Off, Env1, Env2 };

@@ -11,6 +11,7 @@ struct SynthOutput
 {
   float l;
   float r;
+  bool end;
   SynthOutput() = default;
 };
 
@@ -23,6 +24,9 @@ public:
   void Release();
   void Init(int oct, UnitNote note);
   void Next(SynthModel const& synth, float rate, SynthOutput& output);
+
+private:
+  float GlobalAmp(SynthModel const& synth, SynthState const& state) const;
 };
 
 } // namespace Xts
