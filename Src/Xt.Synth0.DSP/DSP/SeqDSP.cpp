@@ -140,7 +140,8 @@ SeqDSP::Next(SeqState& state, SeqOutput& output)
     _voices[v].Next(*state.synth, state.rate, sout);
     output.l += sout.l;
     output.r += sout.r;
-    if(sout.end) ReleaseVoice(_voiceKeys[v], v);
+    if(sout.end) 
+      ReleaseVoice(_voiceKeys[v], v);
   }
 	state.streamPosition++;
 }
