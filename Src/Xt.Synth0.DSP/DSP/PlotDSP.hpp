@@ -1,8 +1,7 @@
 #ifndef XTS_PLOT_DSP_HPP
 #define XTS_PLOT_DSP_HPP
 
-#include "EnvDSP.hpp"
-#include "UnitDSP.hpp"
+#include "SynthDSP.hpp"
 #include "../Model/SynthModel.hpp"
 #include <vector>
 #include <cstdint>
@@ -33,8 +32,7 @@ struct XTS_ALIGN PlotOutput
 class PlotDSP
 {
 private:
-  EnvDSP _env;
-  UnitDSP _unit;
+  SynthDSP _dsp;
   std::vector<float> _samples;
   std::vector<int32_t> _splits;
 
@@ -43,6 +41,7 @@ public:
 
 private:
   void RenderUnit(PlotInput const& input, int index, PlotOutput& output);
+  void RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOutput& output);
   void RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput& output);
 };
 

@@ -7,10 +7,6 @@
 namespace Xts {
 
 void
-EnvDSP::Release()
-{ if(_stage < EnvStage::R) NextStage(EnvStage::R); }
-
-void
 EnvDSP::Init()
 {
   _level = 0.0f;
@@ -23,6 +19,14 @@ EnvDSP::NextStage(EnvStage stage)
   _stagePos = 0;
   _stage = stage;
 }
+
+void
+EnvDSP::Release()
+{ if(_stage < EnvStage::R) NextStage(EnvStage::R); }
+
+float 
+EnvDSP::Frames(EnvParams const& params)
+{ return params.dly + params.a + params.hld + params.d + params.r; }
 
 EnvParams 
 EnvDSP::Params(EnvModel const& env, float rate) const

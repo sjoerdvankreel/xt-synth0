@@ -32,6 +32,7 @@ class EnvDSP
 public:
   void Init();
   void Release();
+  float Frames(EnvParams const& params);
   EnvParams Params(EnvModel const& env, float rate) const;
   void Next(EnvModel const& env, float rate, EnvOutput& output);
 

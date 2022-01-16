@@ -17,6 +17,7 @@ struct SynthOutput
 
 class SynthDSP
 {
+  friend class PlotDSP;
   EnvDSP _envs[TrackConstants::EnvCount];
   UnitDSP _units[TrackConstants::UnitCount];
 

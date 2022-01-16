@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
 	public enum PlotFit { Auto, Rate, Fit }
-	public enum PlotSource { Unit1, Unit2, Unit3, Env1, Env2 }
+	public enum PlotSource { Global, Unit1, Unit2, Unit3, Env1, Env2 }
 
 	public unsafe sealed class PlotModel : IThemedSubModel
 	{

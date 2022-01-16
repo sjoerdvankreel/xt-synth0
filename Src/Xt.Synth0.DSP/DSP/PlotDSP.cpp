@@ -20,6 +20,7 @@ PlotDSP::Render(PlotInput const& input, PlotOutput& output)
   case PlotSource::Unit3: RenderUnit(input, 2, output); break;
   case PlotSource::Env1: RenderEnv(input, 0, fit, input.rate, output); break;
   case PlotSource::Env2: RenderEnv(input, 1, fit, input.rate, output); break;
+  case PlotSource::Global: RenderGlobal(input, fit, input.rate, output); break;
   default: assert(false); break;
   }
   output.splits = _splits.data();
@@ -35,8 +36,9 @@ PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput& output)
 
   UnitOutput uout;
   int32_t rate = input.rate;
-  _unit.Init(4, UnitNote::C);
-  float freq = _unit.Freq(input.synth->units[index]);
+  auto& dsp = _dsp._units[0];
+  dsp.Init(4, UnitNote::C);
+  float freq = dsp.Freq(input.synth->units[index]);
   bool doFit = input.synth->plot.fit == static_cast<int>(PlotFit::Fit);
   if (doFit) rate = static_cast<int32_t>(ceilf(freq * input.pixels / cycleCount));
 
@@ -46,7 +48,7 @@ PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput& output)
   if(input.synth->units[index].type != static_cast<int>(UnitType::Off))
     for (int i = 0; i <= samples; i++)
     {
-      _unit.Next(input.synth->units[index], ratef, uout);
+      dsp.Next(input.synth->units[index], ratef, uout);
       _samples.push_back(uout.l + uout.r);
       if (uout.cycled) _splits.push_back(i + 1);
     }
@@ -62,12 +64,13 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   const int minHoldSamples = 10;
   const float holdFactor = 1.0f / 3.0f;
 
-  _env.Init();
+  auto& dsp = _dsp._envs[0];
+  dsp.Init();
   int sample = 0;
   int sustainSamples = 0;
   float ratef = static_cast<float>(rate);
-  EnvParams params = _env.Params(input.synth->envs[index], ratef);
-  float length = params.dly + params.a + params.hld + params.d + params.r;
+  EnvParams params = dsp.Params(input.synth->envs[index], ratef);
+  float length = dsp.Frames(params);
   int holdSamples = std::max(static_cast<int>(length * holdFactor), minHoldSamples);
   float totalSamples = holdSamples + length;
   
@@ -88,8 +91,8 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   ratef = static_cast<float>(rate);
   while (input.synth->envs[index].on)
   {
-    if(sustainSamples == holdSamples) _env.Release();
-    _env.Next(input.synth->envs[index], ratef, eout);
+    if(sustainSamples == holdSamples) dsp.Release();
+    dsp.Next(input.synth->envs[index], ratef, eout);
     if (eout.stage == EnvStage::End) break;
     _samples.push_back(eout.lvl);
     if (eout.stage == EnvStage::S) sustainSamples++;
@@ -98,6 +101,54 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   }
   output.rate = rate;
   output.bipolar = XtsFalse;
+}
+
+void
+PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOutput& output)
+{
+  const int maxSamples = 96000;
+
+  float samples;
+  _dsp.Init(4, UnitNote::C);
+  auto& envDsp = _dsp._envs[0];
+  float ratef = static_cast<float>(rate);
+  auto env = static_cast<AmpEnv>(input.synth->global.env);
+  auto length = [&](int index)
+  {
+    auto params = envDsp.Params(input.synth->envs[index], ratef);
+    return envDsp.Frames(params);
+  };
+  switch (env)
+  {
+  case AmpEnv::AmpEnv1: samples = length(0); break;
+  case AmpEnv::AmpEnv2: samples = length(1); break;
+  case AmpEnv::NoAmpEnv: samples = maxSamples; break;
+  default: assert(false); break;
+  }
+
+  if (fit != PlotFit::Rate)
+  {
+    rate = static_cast<int32_t>(rate / samples * input.pixels);
+    RenderGlobal(input, PlotFit::Rate, rate, output);
+    return;
+  }
+  if (samples > maxSamples)
+  {
+    rate = static_cast<int32_t>(rate / samples * maxSamples);
+    RenderGlobal(input, PlotFit::Rate, rate, output);
+    return;
+  }
+
+  SynthOutput sout;
+  ratef = static_cast<float>(rate);
+  for(int i = 0; i < samples; i++)
+  {
+    _dsp.Next(*input.synth, ratef, sout);
+    _samples.push_back(sout.l + sout.r);
+  }
+
+  output.rate = rate;
+  output.bipolar = XtsTrue;
 }
 
 } // namespace Xts
