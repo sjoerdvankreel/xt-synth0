@@ -61,19 +61,18 @@ void
 PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput& output)
 {
   const int maxSamples = 96000;
-  const int minHoldSamples = 10;
-  const float holdFactor = 1.0f / 3.0f;
+  const int minSustainSamples = 10;
+  const float sustainFactor = 1.0f / 3.0f;
 
   auto& dsp = _dsp._envs[0];
   dsp.Init();
   int sample = 0;
-  int sustainSamples = 0;
   float ratef = static_cast<float>(rate);
   EnvParams params = dsp.Params(input.synth->envs[index], ratef);
   EnvType type = static_cast<EnvType>(input.synth->envs[index].type);
   float length = dsp.Frames(params);
-  int holdSamples = std::max(static_cast<int>(length * holdFactor), minHoldSamples);
-  float totalSamples = length + (type == EnvType::DAHDSR? holdSamples: 0);
+  int sustainSamples = std::max(static_cast<int>(length * sustainFactor), minSustainSamples);
+  float totalSamples = length + (type == EnvType::DAHDSR? sustainSamples : 0);
   
   if (fit != PlotFit::Rate)
   {
@@ -89,14 +88,15 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   }
 
   EnvOutput eout;
+  int sustained = 0;
   ratef = static_cast<float>(rate);
   while (input.synth->envs[index].type != static_cast<int>(EnvType::Off))
   {
-    if(sustainSamples == holdSamples) dsp.Release();
+    if(sustained == sustainSamples) dsp.Release();
     dsp.Next(input.synth->envs[index], ratef, eout);
     if (eout.stage == EnvStage::End) break;
     _samples.push_back(eout.lvl);
-    if (eout.stage == EnvStage::S) sustainSamples++;
+    if (eout.stage == EnvStage::S) sustained++;
     if (sample != 0 && eout.staged) _splits.push_back(sample);
     sample++;
   }
@@ -109,26 +109,28 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
 {
   const int minRate = 10000;
   const int maxSamples = 96000;
+  const float sustainFactor = 1.0f / 5.0f;
 
+  int index = -1;
   EnvParams params {};
   float samples = 0.0f;
-  int sustainSamples = 0;
   _dsp.Init(4, UnitNote::C);
-  const float holdFactor = 1.0f / 3.0f;
   float ratef = static_cast<float>(rate);
-  auto env = static_cast<AmpEnv>(input.synth->global.env);
-  auto length = [&](int index)
+  auto source = static_cast<AmpEnv>(input.synth->global.env);
+  switch(source)
+  {
+  case AmpEnv::AmpEnv1: index = 0; break;
+  case AmpEnv::AmpEnv2: index = 1; break;
+  case AmpEnv::NoAmpEnv: index = -1; break;
+  default: assert(false); break;
+  }
+
+  if(source == AmpEnv::NoAmpEnv) samples = maxSamples;
+  else 
   {
     auto& envDsp = _dsp._envs[index];
     auto params = envDsp.Params(input.synth->envs[index], ratef);
-    return envDsp.Frames(params);
-  };
-  switch (env)
-  {
-  case AmpEnv::AmpEnv1: samples = length(0); break;
-  case AmpEnv::AmpEnv2: samples = length(1); break;
-  case AmpEnv::NoAmpEnv: samples = maxSamples; break;
-  default: assert(false); break;
+    samples = envDsp.Frames(params);
   }
 
   if (fit != PlotFit::Rate)
@@ -140,14 +142,19 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   }
 
   SynthOutput sout;
+  int sustained = 0;
+  int dahdsr = static_cast<int>(EnvType::DAHDSR);
+  bool sustain = index != -1 && input.synth->envs[index].type == dahdsr;
+  int sustainSamples = static_cast<int>(samples * sustainFactor);
+  samples += sustain? sustainSamples: 0;
   samples = static_cast<float>(std::min(maxSamples, static_cast<int>(samples)));
   ratef = static_cast<float>(rate);
   for(int i = 0; i < samples; i++)
   {
+    if (index != -1 && sustained == sustainSamples) _dsp._envs[index].Release();
     _dsp.Next(*input.synth, ratef, sout);
     _samples.push_back(sout.l + sout.r);
-    if(env == AmpEnv::AmpEnv1 && sout.envs[0].stage == EnvStage::S) _dsp.Release();
-    if(env == AmpEnv::AmpEnv2 && sout.envs[1].stage == EnvStage::S) _dsp.Release();
+    if (index != -1 && sout.envs[index].stage == EnvStage::S) sustained++;
   }
   output.rate = rate;
   output.bipolar = XtsTrue;
