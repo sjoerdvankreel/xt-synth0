@@ -9,12 +9,22 @@
 
 namespace Xts {
 
+inline const int MaxVoices = 3;
+
+struct SeqOutput
+{
+  float l; 
+  float r;
+};
+
 struct XTS_ALIGN SeqState
 {
   float rate;
+  int32_t voices;
   XtsBool clip;
   int32_t frames;
   int32_t currentRow;
+  int32_t pad__;
   int64_t streamPosition;
   float* buffer;
   SynthModel* synth;
@@ -24,10 +34,13 @@ struct XTS_ALIGN SeqState
 
 class SeqDSP
 {
+  int _voicesUsed = 0;
   int _previousRow = -1;
   double _rowFactor = 0.0;
-  SynthDSP _synth;
   PatternDSP const _pattern;
+  SynthDSP _voices[MaxVoices];
+  int64_t _voicesStarted[MaxVoices];
+  int _keysToVoices[TrackConstants::MaxKeys];
 
 public:
   void Init(SeqState& state);
@@ -36,7 +49,9 @@ public:
 private:
   bool RowUpdated(int currentRow);
   bool UpdateRow(SeqState& state);
-  void Next(SeqState& state, SynthOutput& output);
+  int TakeVoice(int key, int64_t pos);
+  void ReleaseVoice(int key, int voice);
+  void Next(SeqState& state, SeqOutput& output);
 };
 
 } // namespace Xts
