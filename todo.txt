@@ -8,5 +8,5 @@ sampler
 better serialization
 automation groups
 better pattern edit
-active voices monitor
 play note on enter
+monitor voice overload

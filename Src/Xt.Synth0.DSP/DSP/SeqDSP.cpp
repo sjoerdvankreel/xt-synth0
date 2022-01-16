@@ -121,7 +121,7 @@ SeqDSP::Next(SeqState& state, SeqOutput& output)
     auto unitNote = static_cast<UnitNote>(static_cast<int>(note) - 2);
     if (updated && note >= PatternNote::Off)
       for (int v = 0; v < MaxVoices; v++)
-        if (_voiceKeys[v] != -1) _voices[v].Release();
+        if (_voiceKeys[v] == k) _voices[v].Release();
     if (updated && note >= PatternNote::C)
       _voices[TakeVoice(k, state.streamPosition)].Init(key.oct, unitNote);
   }
