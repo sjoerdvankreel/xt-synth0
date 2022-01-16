@@ -45,7 +45,7 @@ SynthDSP::Next(SynthModel const& synth, float rate, SynthOutput& output)
 float
 SynthDSP::GlobalAmp(SynthModel const& synth, SynthOutput const& output) const
 {
-  float envAmp;
+  float envAmp = 0.0f;
   float amp = Level(synth.global.amp);
   auto env = static_cast<AmpEnv>(synth.global.env);
   switch (env)
