@@ -11,6 +11,7 @@ namespace Xt.Synth0
 	{
 		const float OverloadLimit = 0.9f;
 		const float WarningDurationSeconds = 0.5f;
+		const float VoiceInfoIntervalSeconds = 0.5f;
 		const float BufferInfoIntervalSeconds = 1.0f;
 		const float CpuUsageUpdateIntervalSeconds = 0.2f;
 		const float CpuUsageSamplingPeriodSeconds = 0.5f;
@@ -78,6 +79,7 @@ namespace Xt.Synth0
 		long _clipPosition = -1;
 		long _cpuUsagePosition = -1;
 		long _overloadPosition = -1;
+		long _voiceInfoPosition = -1;
 		long _bufferInfoPosition = -1;
 		readonly long[] _gcPositions = new long[3];
 		readonly bool[] _gcCollecteds = new bool[3];
@@ -207,6 +209,7 @@ namespace Xt.Synth0
 			_cpuUsageFrameCounts = null;
 			_cpuUsageTotalFrameCount = 0;
 
+			_app.Stream.Voices = 0;
 			_app.Stream.CpuUsage = 0.0;
 			_app.Stream.LatencyMs = 0.0;
 			_app.Stream.IsClipping = false;
@@ -241,7 +244,7 @@ namespace Xt.Synth0
 				_cpuUsageFactors = new double[format.mix.rate];
 				_cpuUsageFrameCounts = new int[format.mix.rate];
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
-				UpdateStreamInfo(0, format.mix.rate, false, 0);
+				UpdateStreamInfo(0, format.mix.rate, 0, false, 0);
 				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqState);
 				ResumeStream();
 			}
@@ -267,7 +270,7 @@ namespace Xt.Synth0
 				_app.Stream.IsOverloaded = false;
 		}
 
-		void UpdateStreamInfo(int frames, int rate, bool clip, long streamPosition)
+		void UpdateStreamInfo(int frames, int rate, int voices, bool clip, long streamPosition)
 		{
 			float bufferSeconds = frames / (float)rate;
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
@@ -305,6 +308,11 @@ namespace Xt.Synth0
 				_bufferInfoPosition = streamPosition;
 				_app.Stream.LatencyMs = _stream.GetLatencyMs();
 				_app.Stream.BufferSizeFrames = _stream.GetMaxBufferFrames();
+			}
+			if (streamPosition >= _voiceInfoPosition + rate * VoiceInfoIntervalSeconds)
+			{
+				_voiceInfoPosition = streamPosition;
+				_app.Stream.Voices = voices;
 			}
 		}
 
@@ -407,12 +415,13 @@ namespace Xt.Synth0
 			_stopwatch.Restart();
 			BeginAutomation();
 			int rate = format.mix.rate;
-			_nativeSeqState->rate = rate;
-			_nativeSeqState->buffer = _buffer;
-			_nativeSeqState->frames = buffer.frames;
-			_nativeSeqState->seq = _nativeSeqModel;
-			_nativeSeqState->synth = _nativeSynthModel;
-			Native.XtsSeqDSPProcessBuffer(_nativeSeqDSP, _nativeSeqState);
+			var state = _nativeSeqState;
+			state->rate = rate;
+			state->buffer = _buffer;
+			state->frames = buffer.frames;
+			state->seq = _nativeSeqModel;
+			state->synth = _nativeSynthModel;
+			Native.XtsSeqDSPProcessBuffer(_nativeSeqDSP, state);
 			EndAutomation();
 			long pos = _nativeSeqState->streamPosition;
 			CopyBuffer(in buffer, in format);
@@ -420,7 +429,7 @@ namespace Xt.Synth0
 			_app.Stream.CurrentRow = _nativeSeqState->currentRow;
 			_stopwatch.Stop();
 			UpdateCpuUsage(buffer.frames, rate, pos);
-			UpdateStreamInfo(buffer.frames, rate, _nativeSeqState->clip != 0, pos);
+			UpdateStreamInfo(buffer.frames, rate, state->voices, state->clip != 0, pos);
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)

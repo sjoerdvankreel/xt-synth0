@@ -17,6 +17,8 @@ namespace Xt.Synth0.Model
 		static readonly PropertyChangedEventArgs CurrentRowChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(CurrentRow));
 
+		static readonly PropertyChangedEventArgs VoicesChangedEventArgs
+		= new PropertyChangedEventArgs(nameof(Voices));
 		static readonly PropertyChangedEventArgs LatencyMsChangedEventArgs
 		= new PropertyChangedEventArgs(nameof(LatencyMs));
 		static readonly PropertyChangedEventArgs CpuUsageChangedEventArgs
@@ -61,15 +63,15 @@ namespace Xt.Synth0.Model
 			}
 		}
 
-		int _currentRow;
-		public int CurrentRow
+		int _voices;
+		public int Voices
 		{
-			get => _currentRow;
+			get => _voices;
 			set
 			{
-				if (_currentRow == value) return;
-				_currentRow = value;
-				PropertyChanged?.Invoke(this, CurrentRowChangedEventArgs);
+				if (_voices == value) return;
+				_voices = value;
+				PropertyChanged?.Invoke(this, VoicesChangedEventArgs);
 			}
 		}
 
@@ -82,6 +84,18 @@ namespace Xt.Synth0.Model
 				if (_cpuUsage == value) return;
 				_cpuUsage = value;
 				PropertyChanged?.Invoke(this, CpuUsageChangedEventArgs);
+			}
+		}
+
+		int _currentRow;
+		public int CurrentRow
+		{
+			get => _currentRow;
+			set
+			{
+				if (_currentRow == value) return;
+				_currentRow = value;
+				PropertyChanged?.Invoke(this, CurrentRowChangedEventArgs);
 			}
 		}
 
