@@ -10,3 +10,4 @@ automation groups
 better pattern edit
 play note on enter
 monitor voice overload
+make it faster
