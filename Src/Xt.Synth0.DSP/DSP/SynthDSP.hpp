@@ -26,9 +26,6 @@ public:
   void Release();
   void Init(int oct, UnitNote note);
   void Next(SynthModel const& synth, float rate, SynthOutput& output);
-
-private:
-  float GlobalAmp(SynthModel const& synth, SynthOutput const& output) const;
 };
 
 } // namespace Xts

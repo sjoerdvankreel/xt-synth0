@@ -33,29 +33,13 @@ SynthDSP::Next(SynthModel const& synth, float rate, SynthOutput& output)
     output.end &= output.envs[e].stage == EnvStage::End;
   }
  
-  float amp = GlobalAmp(synth, output);
+  float amp = output.envs[0].lvl * Level(synth.global.env1);
   for (int u = 0; u < TrackConstants::UnitCount; u++)
   {
     _units[u].Next(synth.units[u], rate, output.units[u]);
     output.l += output.units[u].l * amp;
     output.r += output.units[u].r * amp;
   }
-}
-
-float
-SynthDSP::GlobalAmp(SynthModel const& synth, SynthOutput const& output) const
-{
-  float envAmp = 0.0f;
-  float amp = Level(synth.global.amp);
-  auto env = static_cast<AmpEnv>(synth.global.env);
-  switch (env)
-  {
-  case AmpEnv::NoAmpEnv: envAmp = 1.0f; break;
-  case AmpEnv::AmpEnv1: envAmp = output.envs[0].lvl; break;
-  case AmpEnv::AmpEnv2: envAmp = output.envs[1].lvl; break;
-  default: assert(false); break;
-  }
-  return amp * envAmp;
 }
 
 } // namespace Xts

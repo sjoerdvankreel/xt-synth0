@@ -9,7 +9,6 @@ enum class PlotFit { Auto, Rate, Fit };
 enum class NaiveType { Saw, Pulse, Tri };
 enum class EnvType { Off, DAHDR, DAHDSR };
 enum class UnitType { Off, Sin, Naive, Add };
-enum class AmpEnv { NoAmpEnv, AmpEnv1, AmpEnv2 };
 enum class PlotSource { Global, Unit1, Unit2, Unit3, Env1, Env2 };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
@@ -22,9 +21,9 @@ enum class SyncStep
   Step3_1, Step4_1, Step5_1, Step6_1, Step7_1, Step8_1, Step10_1, Step12_1, Step16_1
 };
 
+struct XTS_ALIGN GlobalModel { int bpm, env1; };
 struct XTS_ALIGN PlotModel { int source, fit; };
 struct XTS_ALIGN AutoParam { int min, max; int* value; };
-struct XTS_ALIGN GlobalModel { int env, amp, bpm, pad__; };
 
 struct XTS_ALIGN EnvModel {
   int a, d, s, r, hld, dly;

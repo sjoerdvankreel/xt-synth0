@@ -114,28 +114,12 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   const int maxSamples = 96000;
   const float sustainFactor = 1.0f / 5.0f;
 
-  int index = -1;
-  EnvParams params {};
   float samples = 0.0f;
   _dsp.Init(4, UnitNote::C);
   int bpm = input.synth->global.bpm;
   float ratef = static_cast<float>(rate);
-  auto source = static_cast<AmpEnv>(input.synth->global.env);
-  switch(source)
-  {
-  case AmpEnv::AmpEnv1: index = 0; break;
-  case AmpEnv::AmpEnv2: index = 1; break;
-  case AmpEnv::NoAmpEnv: index = -1; break;
-  default: assert(false); break;
-  }
-
-  if(source == AmpEnv::NoAmpEnv) samples = maxSamples;
-  else 
-  {
-    auto& envDsp = _dsp._envs[index];
-    auto params = envDsp.Params(input.synth->envs[index], ratef, bpm);
-    samples = envDsp.Frames(params);
-  }
+  auto params = _dsp._envs[0].Params(input.synth->envs[0], ratef, bpm);
+  samples = _dsp._envs[0].Frames(params);
 
   if (fit != PlotFit::Rate)
   {
@@ -149,19 +133,19 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   SynthOutput sout;
   int sustained = 0;
   int dahdsr = static_cast<int>(EnvType::DAHDSR);
-  bool sustain = index != -1 && input.synth->envs[index].type == dahdsr;
+  bool sustain = input.synth->envs[0].type == dahdsr;
   int sustainSamples = static_cast<int>(samples * sustainFactor);
   samples += sustain? sustainSamples: 0;
   samples = static_cast<float>(std::min(maxSamples, static_cast<int>(samples)));
   ratef = static_cast<float>(rate);
   for(int i = 0; i < samples; i++)
   {
-    if (index != -1 && sustained == sustainSamples) _dsp._envs[index].Release();
+    if (sustained == sustainSamples) _dsp._envs[0].Release();
     _dsp.Next(*input.synth, ratef, sout);
     float sample = Clip((sout.l + sout.r) / 2.0f, clip);
     output.clip |= clip? XtsTrue: XtsFalse;
     _samples.push_back(sample);
-    if (index != -1 && sout.envs[index].stage == EnvStage::S) sustained++;
+    if (sout.envs[0].stage == EnvStage::S) sustained++;
   }
   output.rate = rate;
   output.bipolar = XtsTrue;

@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum AmpEnv { NoAmpEnv, AmpEnv1, AmpEnv2 }
 	public enum SyncStep
 	{
 		Step0, Step1_16, Step1_8, Step3_16, Step1_4, Step1_3, Step3_8,
@@ -60,7 +59,6 @@ namespace Xt.Synth0.Model
 		{
 			Units[0].Type.Value = (int)UnitType.Sin;
 			Envs[0].Type.Value = (int)EnvType.DAHDSR;
-			Global.AmpEnv.Value = (int)AmpEnv.AmpEnv1;
 			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
 				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());

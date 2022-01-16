@@ -13,7 +13,7 @@ namespace Xts { namespace TrackConstants {
 
 constexpr int EnvCount = 2;
 constexpr int UnitCount = 3;
-constexpr int AutoParamCount = 69;
+constexpr int AutoParamCount = 68;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;
