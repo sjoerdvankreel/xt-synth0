@@ -85,9 +85,10 @@ EnvDSP::Next(EnvModel const& env, float rate, int bpm, EnvOutput& output)
 {
   const float threshold = 1.0E-5f;
   memset(&output, 0, sizeof(output));
-  output.stage = _stage;
   auto type = static_cast<EnvType>(env.type);
-  if(type == EnvType::Off || _stage == EnvStage::End) return;
+  if(type == EnvType::Off) _stage = EnvStage::End;
+  output.stage = _stage;
+  if(_stage == EnvStage::End) return;
   EnvParams params = Params(env, rate, bpm);
   CycleStage(type, params);
   float result = Generate(env, params);
