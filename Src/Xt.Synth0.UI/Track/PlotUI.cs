@@ -1,19 +1,27 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
+		static string _name;
+		static GroupBox _box;
+		static ContentControl _container;
+
+		static ulong _plotRequest = 0;
+		static readonly object _lock = new object();
+
 		const double Padding = 2.0;
 		const double MaxLevelBi = 0.975;
 		const double MaxLevelUni = 0.99;
 		static readonly DockPanel Empty;
-		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 
 		static PlotUI()
@@ -23,55 +31,88 @@ namespace Xt.Synth0.UI
 			label.VerticalAlignment = VerticalAlignment.Center;
 			label.HorizontalAlignment = HorizontalAlignment.Center;
 			Empty.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
+
+			var thread = new Thread(PlotLoop);
+			thread.IsBackground = true;
+			thread.Start();
+		}
+
+		static void BeginUpdate(object sender, EventArgs e)
+		{
+			ulong request = _plotRequest;
+			Application.Current?.Dispatcher.BeginInvoke(new Action(() =>
+			{
+				lock (_lock)
+				{
+					if (request == _plotRequest)
+					{
+						_plotRequest++;
+						Monitor.Pulse(_lock);
+					}
+				}
+			}), DispatcherPriority.Background);
+		}
+
+		static void PlotLoop(object arg)
+		{
+			ulong request = 0;
+			while (true)
+			{
+				lock (_lock)
+				{
+					while (request == _plotRequest)
+						Monitor.Wait(_lock);
+					request = _plotRequest;
+				}
+				var args = new RequestPlotDataEventArgs();
+				args.Pixels = (int)_container.ActualWidth;
+				RequestPlotData?.Invoke(null, args);
+				var action = new Action(() => Update(args));
+				Application.Current.Dispatcher.Invoke(action, DispatcherPriority.ApplicationIdle);
+			}
 		}
 
 		internal static UIElement Make(AppModel app)
 		{
 			var plot = app.Track.Synth.Plot;
-			var result = Create.ThemedGroup(app.Settings, plot, null);
-			result.Content = MakeContent(app, result);
-			result.Padding = new(Padding);
-			return result;
+			_name = plot.Name;
+			_box = Create.ThemedGroup(app.Settings, plot, MakeContent(app));
+			_box.Padding = new(Padding);
+			return _box;
 		}
 
-		static UIElement MakeContent(AppModel app, GroupBox box)
+		static UIElement MakeContent(AppModel app)
 		{
 			var synth = app.Track.Synth;
 			var result = new DockPanel();
 			result.Add(SubUI.MakeContent(app, synth.Plot), Dock.Top);
-			var content = new ContentControl();
-			var border = result.Add(SubUI.MakeOuterBorder(content), Dock.Top);
-			synth.ParamChanged += (s, e) => Update(synth.Plot, box, content);
-			content.SizeChanged += (s, e) => Update(synth.Plot, box, content);
-			app.Settings.PropertyChanged += (s, e) => Update(synth.Plot, box, content);
+			_container = new ContentControl();
+			synth.ParamChanged += BeginUpdate;
+			_container.SizeChanged += BeginUpdate;
+			app.Settings.PropertyChanged += BeginUpdate;
+			var border = result.Add(SubUI.MakeOuterBorder(_container), Dock.Top);
 			border.BorderThickness = new(SubUI.BorderThickness, 0, SubUI.BorderThickness, SubUI.BorderThickness);
 			return result;
 		}
 
-		static PointCollection PlotData(int w, double h)
+		static int paint = 0;
+		static void Update(RequestPlotDataEventArgs args)
 		{
-			var result = new PointCollection();
-			for (int i = 0; i < Args.Samples.Count; i++)
-			{
-				var samplePos = (double)i / Args.Samples.Count;
-				var xSample = samplePos * Args.Samples.Count;
-				var weight = xSample - (int)xSample;
-				var x1 = (int)Math.Ceiling(xSample);
-				var y0 = (1.0 - weight) * Args.Samples[(int)xSample];
-				var y1 = weight * Args.Samples[x1];
-				var y = (1.0f - MaxLevelUni) * h + (1.0 - (y0 + y1)) * MaxLevelUni * h;
-				if (Args.Bipolar) y = (-(y0 + y1) * MaxLevelBi / 2.0f + 0.5) * h;
-				var screenPos = i / (Args.Samples.Count - 1.0);
-				result.Add(new Point(screenPos * w, y));
-			}
-			return result;
+			int w = (int)_container.ActualWidth;
+			double h = _container.ActualHeight;
+			_container.Content = args.Samples.Count > 0 ? Plot(w, h, args) : Empty;
+			string header = $"{_name} @ {args.SampleRate}Hz";
+			header += $"{Environment.NewLine}{args.Samples.Count} samples";
+			if (args.Freq != 0.0f) header += $" @ {args.Freq.ToString("N1")}Hz";
+			if (args.Clip) header += " (Clip)";
+			_box.Header = header + " " + paint++;
 		}
 
-		static UIElement PlotLine(int w, double h)
+		static UIElement PlotLine(int w, double h, RequestPlotDataEventArgs args)
 		{
 			var result = new Polyline();
 			result.StrokeThickness = 1.5;
-			result.Points = PlotData(w, h);
+			result.Points = PlotData(w, h, args);
 			result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);
 			return result;
 		}
@@ -88,34 +129,39 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void Update(PlotModel plot, GroupBox box, ContentControl container)
-		{
-			int w = (int)container.ActualWidth;
-			double h = container.ActualHeight;
-			Args.Pixels = w;
-			RequestPlotData?.Invoke(null, Args);
-			container.Content = Args.Samples.Count > 0 ? Plot(w, h) : Empty;
-			string header = $"{plot.Name} @ {Args.SampleRate}Hz";
-			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
-			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
-			if (Args.Clip) header += " (Clip)";
-			box.Header = header;
-		}
-
-		static UIElement Plot(int w, double h)
+		static UIElement Plot(int w, double h, RequestPlotDataEventArgs args)
 		{
 			var result = new Canvas();
-			result.Add(PlotLine(w, h));
-			if (Args.Bipolar)
+			result.Add(PlotLine(w, h, args));
+			if (args.Bipolar)
 				result.Add(Marker(0, w, h / 2.0, h / 2.0));
-			for (int i = 0; i < Args.Splits.Count; i++)
+			for (int i = 0; i < args.Splits.Count; i++)
 			{
-				double pos = Args.Splits[i] / (Args.Samples.Count - 1.0);
+				double pos = args.Splits[i] / (args.Samples.Count - 1.0);
 				result.Add(Marker(pos * w, pos * w, 0, h));
 			}
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
+			return result;
+		}
+
+		static PointCollection PlotData(int w, double h, RequestPlotDataEventArgs args)
+		{
+			var result = new PointCollection();
+			for (int i = 0; i < args.Samples.Count; i++)
+			{
+				var samplePos = (double)i / args.Samples.Count;
+				var xSample = samplePos * args.Samples.Count;
+				var weight = xSample - (int)xSample;
+				var x1 = (int)Math.Ceiling(xSample);
+				var y0 = (1.0 - weight) * args.Samples[(int)xSample];
+				var y1 = weight * args.Samples[x1];
+				var y = (1.0f - MaxLevelUni) * h + (1.0 - (y0 + y1)) * MaxLevelUni * h;
+				if (args.Bipolar) y = (-(y0 + y1) * MaxLevelBi / 2.0f + 0.5) * h;
+				var screenPos = i / (args.Samples.Count - 1.0);
+				result.Add(new Point(screenPos * w, y));
+			}
 			return result;
 		}
 	}
