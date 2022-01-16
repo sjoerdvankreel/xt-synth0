@@ -19,7 +19,7 @@ XTS_CHECK_SIZE(PlotModel, 8);
 XTS_CHECK_SIZE(UnitModel, 56);
 XTS_CHECK_SIZE(AutoParam, 16);
 XTS_CHECK_SIZE(GlobalModel, 16);
-XTS_CHECK_SIZE(SynthModel, 1456);
+XTS_CHECK_SIZE(SynthModel, 1424);
 
 XTS_CHECK_SIZE(PatternFx, 8);
 XTS_CHECK_SIZE(EditModel, 24);

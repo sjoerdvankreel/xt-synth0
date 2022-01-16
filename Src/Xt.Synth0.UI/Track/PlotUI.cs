@@ -31,6 +31,8 @@ namespace Xt.Synth0.UI
 			var result = Create.ThemedGroup(app.Settings, plot, null);
 			result.Content = MakeContent(app, result);
 			result.Padding = new(Padding);
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
+			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
@@ -41,9 +43,9 @@ namespace Xt.Synth0.UI
 			result.Add(SubUI.MakeContent(app, synth.Plot), Dock.Top);
 			var content = new ContentControl();
 			var border = result.Add(SubUI.MakeOuterBorder(content), Dock.Top);
-			synth.ParamChanged += (s, e) => Update(synth.Plot, box, content);
-			content.SizeChanged += (s, e) => Update(synth.Plot, box, content);
-			app.Settings.PropertyChanged += (s, e) => Update(synth.Plot, box, content);
+			synth.ParamChanged += (s, e) => Update(app, box, content);
+			content.SizeChanged += (s, e) => Update(app, box, content);
+			app.Settings.PropertyChanged += (s, e) => Update(app, box, content);
 			border.BorderThickness = new(SubUI.BorderThickness, 0, SubUI.BorderThickness, SubUI.BorderThickness);
 			return result;
 		}
@@ -88,8 +90,10 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void Update(PlotModel plot, GroupBox box, ContentControl container)
+		static void Update(AppModel app, GroupBox box, ContentControl container)
 		{
+			if (app.Stream.IsRunning) return;
+			var plot = app.Track.Synth.Plot;
 			int w = (int)container.ActualWidth;
 			double h = container.ActualHeight;
 			Args.Pixels = w;
