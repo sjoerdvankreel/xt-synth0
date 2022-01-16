@@ -40,8 +40,9 @@ class SeqDSP
   PatternDSP const _pattern;
 
   int _voiceKeys[MaxVoices];
-  SynthDSP _voices[MaxVoices];
+  SynthDSP _voiceDsps[MaxVoices];
   int64_t _voicesStarted[MaxVoices];
+  SynthModel _voiceModels[MaxVoices];
 
 public:
   void Init(SeqState& state);
