@@ -21,6 +21,27 @@ SynthDSP::Init(int oct, UnitNote note)
     _units[u].Init(oct, note);
 }
 
+void
+SynthDSP::Next(SynthModel const& synth, float rate, SynthOutput& output)
+{
+  memset(&output, 0, sizeof(output));
+  output.end = true;
+  int bpm = synth.global.bpm;
+  for(int e = 0; e < TrackConstants::EnvCount; e++)
+  {
+    _envs[e].Next(synth.envs[e], rate, bpm, output.envs[e]);
+    output.end &= output.envs[e].stage == EnvStage::End;
+  }
+ 
+  float amp = GlobalAmp(synth, output);
+  for (int u = 0; u < TrackConstants::UnitCount; u++)
+  {
+    _units[u].Next(synth.units[u], rate, output.units[u]);
+    output.l += output.units[u].l * amp;
+    output.r += output.units[u].r * amp;
+  }
+}
+
 float
 SynthDSP::GlobalAmp(SynthModel const& synth, SynthOutput const& output) const
 {
@@ -35,26 +56,6 @@ SynthDSP::GlobalAmp(SynthModel const& synth, SynthOutput const& output) const
   default: assert(false); break;
   }
   return amp * envAmp;
-}
-
-void
-SynthDSP::Next(SynthModel const& synth, float rate, SynthOutput& output)
-{
-  memset(&output, 0, sizeof(output));
-  output.end = true;
-  for(int e = 0; e < TrackConstants::EnvCount; e++)
-  {
-    _envs[e].Next(synth.envs[e], rate, output.envs[e]);
-    output.end &= output.envs[e].stage == EnvStage::End;
-  }
- 
-  float amp = GlobalAmp(synth, output);
-  for (int u = 0; u < TrackConstants::UnitCount; u++)
-  {
-    _units[u].Next(synth.units[u], rate, output.units[u]);
-    output.l += output.units[u].l * amp;
-    output.r += output.units[u].r * amp;
-  }
 }
 
 } // namespace Xts

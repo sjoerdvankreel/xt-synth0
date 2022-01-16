@@ -69,8 +69,9 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   auto& dsp = _dsp._envs[0];
   dsp.Init();
   int sample = 0;
+  int bpm = input.synth->global.bpm;
   float ratef = static_cast<float>(rate);
-  EnvParams params = dsp.Params(input.synth->envs[index], ratef);
+  EnvParams params = dsp.Params(input.synth->envs[index], ratef, bpm);
   EnvType type = static_cast<EnvType>(input.synth->envs[index].type);
   float length = dsp.Frames(params);
   int sustainSamples = std::max(static_cast<int>(length * sustainFactor), minSustainSamples);
@@ -95,7 +96,7 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
   while (input.synth->envs[index].type != static_cast<int>(EnvType::Off))
   {
     if(sustained == sustainSamples) dsp.Release();
-    dsp.Next(input.synth->envs[index], ratef, eout);
+    dsp.Next(input.synth->envs[index], ratef, bpm, eout);
     if (eout.stage == EnvStage::End) break;
     _samples.push_back(eout.lvl);
     if (eout.stage == EnvStage::S) sustained++;
@@ -117,6 +118,7 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   EnvParams params {};
   float samples = 0.0f;
   _dsp.Init(4, UnitNote::C);
+  int bpm = input.synth->global.bpm;
   float ratef = static_cast<float>(rate);
   auto source = static_cast<AmpEnv>(input.synth->global.env);
   switch(source)
@@ -131,7 +133,7 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   else 
   {
     auto& envDsp = _dsp._envs[index];
-    auto params = envDsp.Params(input.synth->envs[index], ratef);
+    auto params = envDsp.Params(input.synth->envs[index], ratef, bpm);
     samples = envDsp.Frames(params);
   }
 

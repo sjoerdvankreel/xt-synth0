@@ -29,19 +29,6 @@ float
 EnvDSP::Frames(EnvParams const& params)
 { return params.dly + params.a + params.hld + params.d + params.r; }
 
-EnvParams 
-EnvDSP::Params(EnvModel const& env, float rate) const
-{
-  EnvParams result;
-  result.s = Level(env.s);
-  result.a = Time(env.a, rate);
-  result.d = Time(env.d, rate);
-  result.r = Time(env.r, rate);
-  result.dly = Time(env.dly, rate);
-  result.hld = Time(env.hld, rate);
-  return result;
-}
-
 float
 EnvDSP::Generate(float from, float to, float len, int slp) const
 {
@@ -50,6 +37,20 @@ EnvDSP::Generate(float from, float to, float len, int slp) const
   float mix = Mix02Exclusive(slp);
   if (mix <= 1.0f) return from + range * powf(pos, mix);
   return from + range * (1.0f - powf(1.0f - pos, 2.0f - mix));
+}
+
+EnvParams 
+EnvDSP::Params(EnvModel const& env, float rate, int bpm) const
+{
+  EnvParams result;
+  bool sync = env.sync != 0;
+  result.s = Level(env.s);
+  result.a = sync? Sync(env.a, rate, bpm): Time(env.a, rate);
+  result.d = sync ? Sync(env.d, rate, bpm) : Time(env.d, rate);
+  result.r = sync ? Sync(env.r, rate, bpm) : Time(env.r, rate);
+  result.dly = sync ? Sync(env.dly, rate, bpm) : Time(env.dly, rate);
+  result.hld = sync ? Sync(env.hld, rate, bpm) : Time(env.hld, rate);
+  return result;
 }
 
 float
@@ -80,14 +81,14 @@ EnvDSP::CycleStage(EnvType type, EnvParams const& params)
 }
 
 void 
-EnvDSP::Next(EnvModel const& env, float rate, EnvOutput& output)
+EnvDSP::Next(EnvModel const& env, float rate, int bpm, EnvOutput& output)
 {
   const float threshold = 1.0E-5f;
   memset(&output, 0, sizeof(output));
   output.stage = _stage;
   auto type = static_cast<EnvType>(env.type);
   if(type == EnvType::Off || _stage == EnvStage::End) return;
-  EnvParams params = Params(env, rate);
+  EnvParams params = Params(env, rate, bpm);
   CycleStage(type, params);
   float result = Generate(env, params);
   if(_stage != EnvStage::End) _stagePos++;

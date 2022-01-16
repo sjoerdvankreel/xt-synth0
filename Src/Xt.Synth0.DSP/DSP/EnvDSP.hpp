@@ -29,18 +29,17 @@ class EnvDSP
   EnvStage _stage = EnvStage::Dly;
   EnvStage _prevStage = EnvStage::Dly;
 
-public:
-  void Init();
-  void Release();
-  float Frames(EnvParams const& params);
-  EnvParams Params(EnvModel const& env, float rate) const;
-  void Next(EnvModel const& env, float rate, EnvOutput& output);
-
-private:
   void NextStage(EnvStage stage);
   void CycleStage(EnvType type, EnvParams const& params);
   float Generate(float from, float to, float len, int slp) const;
   float Generate(EnvModel const& env, EnvParams const& params) const;
+
+public:
+  void Init();
+  void Release();
+  float Frames(EnvParams const& params);
+  EnvParams Params(EnvModel const& env, float rate, int bpm) const;
+  void Next(EnvModel const& env, float rate, int bpm, EnvOutput& output);
 };
 
 } // namespace Xts
