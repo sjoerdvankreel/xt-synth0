@@ -39,7 +39,7 @@ SeqDSP::ReleaseVoice(int key, int voice)
 }
 
 int
-SeqDSP::TakeVoice(int key, int64_t pos)
+SeqDSP::TakeVoice(SeqState& state, int key, int64_t pos)
 {
   assert(pos >= 0);
   assert(0 <= key && key < TrackConstants::MaxKeys);
@@ -61,6 +61,7 @@ SeqDSP::TakeVoice(int key, int64_t pos)
 			victimStart = _voicesStarted[i];
     }
   }
+  state.exhausted = true;
   assert(0 <= victim && victim < MaxVoices);
   assert(0 <= _voicesUsed && _voicesUsed <= MaxVoices);
   _voiceKeys[victim] = key;
@@ -74,6 +75,7 @@ SeqDSP::ProcessBuffer(SeqState& state)
 	bool clip;
 	SeqOutput output;
 	state.clip = false;
+  state.exhausted = false;
 	for (int f = 0; f < state.frames; f++)
 	{
 		Next(state, output);
@@ -124,7 +126,7 @@ SeqDSP::Next(SeqState& state, SeqOutput& output)
         if (_voiceKeys[v] == k) _voiceDsps[v].Release();
     if (updated && note >= PatternNote::C)
     {
-      int voice = TakeVoice(k, state.streamPosition);
+      int voice = TakeVoice(state, k, state.streamPosition);
       _voiceDsps[voice].Init(key.oct, unitNote);
       memcpy(&_voiceModels[voice], state.synth, sizeof(SynthModel));
     }
