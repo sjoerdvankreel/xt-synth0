@@ -42,7 +42,6 @@ class SeqDSP
   int _voiceKeys[MaxVoices];
   SynthDSP _voices[MaxVoices];
   int64_t _voicesStarted[MaxVoices];
-  int _keyVoices[TrackConstants::MaxKeys];
 
 public:
   void Init(SeqState& state);
