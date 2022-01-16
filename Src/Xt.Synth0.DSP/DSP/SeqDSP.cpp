@@ -31,9 +31,9 @@ SeqDSP::ProcessBuffer(SeqState& state)
 	{
 		Next(state, audio);
 		state.buffer[f * 2] = Clip(audio.l, clip);
-		state.clip |= clip;
+		state.clip |= clip? XtsTrue: XtsFalse;
 		state.buffer[f * 2 + 1] = Clip(audio.r, clip);
-		state.clip |= clip;
+		state.clip |= clip ? XtsTrue : XtsFalse;
 	}
 }
 
