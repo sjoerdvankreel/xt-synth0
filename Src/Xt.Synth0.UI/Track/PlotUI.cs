@@ -10,6 +10,8 @@ namespace Xt.Synth0.UI
 	public static class PlotUI
 	{
 		const double Padding = 2.0;
+		const double MaxLevelBi = 0.975;
+		const double MaxLevelUni = 0.99;
 		static readonly DockPanel Empty;
 		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
@@ -57,8 +59,8 @@ namespace Xt.Synth0.UI
 				var x1 = (int)Math.Ceiling(xSample);
 				var y0 = (1.0 - weight) * Args.Samples[(int)xSample];
 				var y1 = weight * Args.Samples[x1];
-				var y = (1.0 - (y0 + y1)) * h;
-				if (Args.Bipolar) y = (-(y0 + y1) * 0.5 + 0.5) * h;
+				var y = (1.0f - MaxLevelUni) * h + (1.0 - (y0 + y1)) * MaxLevelUni * h;
+				if (Args.Bipolar) y = (-(y0 + y1) * MaxLevelBi / 2.0f + 0.5) * h;
 				var screenPos = i / (Args.Samples.Count - 1.0);
 				result.Add(new Point(screenPos * w, y));
 			}
