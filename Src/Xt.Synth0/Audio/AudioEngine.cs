@@ -202,6 +202,7 @@ namespace Xt.Synth0
 			_clipPosition = -1;
 			_overloadPosition = -1;
 			_cpuUsagePosition = -1;
+			_voiceInfoPosition = -1;
 			_bufferInfoPosition = -1;
 
 			_cpuUsageIndex = 0;

@@ -74,6 +74,7 @@ SeqDSP::ProcessBuffer(SeqState& state)
 		state.buffer[f * 2 + 1] = Clip(output.r, clip);
 		state.clip |= clip ? XtsTrue : XtsFalse;
 	}
+  state.voices = _voicesUsed;
 }
 
 bool 
