@@ -11,5 +11,4 @@ automation groups
 better pattern edit
 active voices monitor
 play note on enter
-clip in native
 env sync

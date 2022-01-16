@@ -156,8 +156,8 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
   {
     if (index != -1 && sustained == sustainSamples) _dsp._envs[index].Release();
     _dsp.Next(*input.synth, ratef, sout);
-    float sample = Clip(sout.l + sout.r, clip);
-    output.clip |= clip;
+    float sample = Clip((sout.l + sout.r) / 2.0f, clip);
+    output.clip |= clip? XtsTrue: XtsFalse;
     _samples.push_back(sample);
     if (index != -1 && sout.envs[index].stage == EnvStage::S) sustained++;
   }
