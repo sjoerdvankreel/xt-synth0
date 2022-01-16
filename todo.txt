@@ -1,8 +1,7 @@
 polyblep
-dont plot too often
+dont plot too often (throttle)
 dont trigger gc from the callback - dispatch all to ui
 hard sync
-throttle plot paint
 integrate blit / PWM triangle
 custom color scheme
 sampler
@@ -11,4 +10,3 @@ automation groups
 better pattern edit
 active voices monitor
 play note on enter
-env sync
