@@ -106,15 +106,18 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
 void
 PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOutput& output)
 {
+  const int minRate = 10000;
   const int maxSamples = 96000;
 
-  float samples;
+  EnvParams params;
+  float samples = 0.0f;
+  int sustainSamples = 0;
   _dsp.Init(4, UnitNote::C);
-  auto& envDsp = _dsp._envs[0];
   float ratef = static_cast<float>(rate);
   auto env = static_cast<AmpEnv>(input.synth->global.env);
   auto length = [&](int index)
   {
+    auto& envDsp = _dsp._envs[index];
     auto params = envDsp.Params(input.synth->envs[index], ratef);
     return envDsp.Frames(params);
   };
@@ -128,25 +131,20 @@ PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOut
 
   if (fit != PlotFit::Rate)
   {
-    rate = static_cast<int32_t>(rate / samples * input.pixels);
-    RenderGlobal(input, PlotFit::Rate, rate, output);
-    return;
-  }
-  if (samples > maxSamples)
-  {
-    rate = static_cast<int32_t>(rate / samples * maxSamples);
+    float newRate = rate / samples * input.pixels;
+    rate = std::max(minRate, static_cast<int32_t>(newRate));
     RenderGlobal(input, PlotFit::Rate, rate, output);
     return;
   }
 
   SynthOutput sout;
+  samples = std::min(maxSamples, static_cast<int>(samples));
   ratef = static_cast<float>(rate);
   for(int i = 0; i < samples; i++)
   {
     _dsp.Next(*input.synth, ratef, sout);
     _samples.push_back(sout.l + sout.r);
   }
-
   output.rate = rate;
   output.bipolar = XtsTrue;
 }
