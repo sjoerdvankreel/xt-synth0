@@ -10,3 +10,5 @@ automation groups
 better pattern edit
 play note on enter
 make it faster
+detach sequencer
+multiple synths + select target in sequencer

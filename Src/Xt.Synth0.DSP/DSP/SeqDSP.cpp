@@ -28,7 +28,7 @@ SeqDSP::Init(SeqState& state)
 }
 
 void 
-SeqDSP::ReleaseVoice(int key, int voice)
+SeqDSP::ReturnVoice(int key, int voice)
 { 
   assert(0 <= voice && voice < MaxVoices);
   assert(0 <= key && key < TrackConstants::MaxKeys);
@@ -138,7 +138,7 @@ SeqDSP::Next(SeqState& state, SeqOutput& output)
     output.l += sout.l;
     output.r += sout.r;
     if(sout.end) 
-      ReleaseVoice(_voiceKeys[v], v);
+      ReturnVoice(_voiceKeys[v], v);
   }
 	state.streamPosition++;
 }

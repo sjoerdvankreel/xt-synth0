@@ -51,7 +51,7 @@ public:
 private:
   bool RowUpdated(int currentRow);
   bool UpdateRow(SeqState& state);
-  void ReleaseVoice(int key, int voice);
+  void ReturnVoice(int key, int voice);
   void Next(SeqState& state, SeqOutput& output);
   int TakeVoice(SeqState& state, int key, int64_t pos);
 };
