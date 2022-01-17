@@ -29,7 +29,6 @@ struct XTS_ALIGN SeqState
   float* buffer;
   SynthModel* synth;
   SeqModel const* seq;
-  SeqState() = default;
 };
 
 class SeqDSP
@@ -38,7 +37,6 @@ class SeqDSP
   int _previousRow = -1;
   double _rowFactor = 0.0;
   PatternDSP const _pattern;
-
   int _voiceKeys[MaxVoices];
   SynthDSP _voiceDsps[MaxVoices];
   int64_t _voicesStarted[MaxVoices];

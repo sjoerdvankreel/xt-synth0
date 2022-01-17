@@ -12,14 +12,12 @@ struct EnvOutput
   float lvl;
   bool staged;
   EnvStage stage;
-  EnvOutput() = default;
 };
 
 struct EnvParams
 {
   float dly, hld;
   float a, d, s, r;
-  EnvParams() = default;
 };
 
 class EnvDSP 
@@ -30,13 +28,13 @@ class EnvDSP
   EnvStage _prevStage = EnvStage::Dly;
 
   void NextStage(EnvStage stage);
-  void CycleStage(EnvType type, EnvParams const& params);
+  void CycleStage(EnvModel const& env, EnvParams const& params);
   float Generate(float from, float to, float len, int slp) const;
   float Generate(EnvModel const& env, EnvParams const& params) const;
 
 public:
-  void Init();
-  void Release();
+  void Init(EnvModel const& env);
+  void Release(EnvModel const& env);
   float Frames(EnvParams const& params);
   EnvParams Params(EnvModel const& env, float rate, int bpm) const;
   void Next(EnvModel const& env, float rate, int bpm, EnvOutput& output);

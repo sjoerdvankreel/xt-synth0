@@ -13,7 +13,6 @@ struct SynthOutput
   float l, r;
   EnvOutput envs[TrackConstants::EnvCount];
   UnitOutput units[TrackConstants::UnitCount];
-  SynthOutput() = default;
 };
 
 class SynthDSP
@@ -23,8 +22,8 @@ class SynthDSP
   UnitDSP _units[TrackConstants::UnitCount];
 
 public:
-  void Release();
-  void Init(int oct, UnitNote note);
+  void Release(SynthModel const& synth);
+  void Init(SynthModel const& synth, int oct, UnitNote note);
   void Next(SynthModel const& synth, float rate, SynthOutput& output);
 };
 

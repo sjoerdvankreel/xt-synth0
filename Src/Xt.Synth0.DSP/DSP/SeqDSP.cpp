@@ -123,11 +123,11 @@ SeqDSP::Next(SeqState& state, SeqOutput& output)
     auto unitNote = static_cast<UnitNote>(static_cast<int>(note) - 2);
     if (updated && note >= PatternNote::Off)
       for (int v = 0; v < MaxVoices; v++)
-        if (_voiceKeys[v] == k) _voiceDsps[v].Release();
+        if (_voiceKeys[v] == k) _voiceDsps[v].Release(_voiceModels[v]);
     if (updated && note >= PatternNote::C)
     {
       int voice = TakeVoice(state, k, state.streamPosition);
-      _voiceDsps[voice].Init(key.oct, unitNote);
+      _voiceDsps[voice].Init(_voiceModels[voice], key.oct, unitNote);
       memcpy(&_voiceModels[voice], state.synth, sizeof(SynthModel));
     }
   }
