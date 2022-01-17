@@ -11,6 +11,7 @@ struct UnitOutput
   float l;
   float r;
   bool cycled;
+  UnitOutput() = default;
 };
 
 struct AddParams

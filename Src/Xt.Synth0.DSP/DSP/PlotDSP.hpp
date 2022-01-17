@@ -13,6 +13,7 @@ struct XTS_ALIGN PlotInput
   int32_t rate;
   int32_t pixels;
   SynthModel const* synth;
+  PlotInput() = default;
 };
 
 struct XTS_ALIGN PlotOutput
@@ -25,10 +26,12 @@ struct XTS_ALIGN PlotOutput
   int32_t sampleCount;
   float* samples;
   int32_t* splits;
+  PlotOutput() = default;
 };
 
 class PlotDSP
 {
+private:
   SynthDSP _dsp;
   std::vector<float> _samples;
   std::vector<int32_t> _splits;

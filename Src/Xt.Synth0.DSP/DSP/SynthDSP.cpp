@@ -6,17 +6,17 @@
 namespace Xts {
 
 void
-SynthDSP::Release(SynthModel const& synth)
+SynthDSP::Release()
 {
   for (int e = 0; e < TrackConstants::EnvCount; e++)
-    _envs[e].Release(synth.envs[e]);
+    _envs[e].Release();
 }
 
 void
-SynthDSP::Init(SynthModel const& synth, int oct, UnitNote note)
+SynthDSP::Init(int oct, UnitNote note)
 {
   for(int e = 0; e < TrackConstants::EnvCount; e++)
-    _envs[e].Init(synth.envs[e]);
+    _envs[e].Init();
   for(int u = 0; u < TrackConstants::UnitCount; u++)
     _units[u].Init(oct, note);
 }

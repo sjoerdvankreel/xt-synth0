@@ -7,9 +7,12 @@
 
 namespace Xts {
 
-float 
-EnvDSP::Frames(EnvParams const& params)
-{ return params.dly + params.a + params.hld + params.d + params.r; }
+void
+EnvDSP::Init()
+{
+  _level = 0.0f;
+  NextStage(EnvStage::Dly);
+}
 
 void
 EnvDSP::NextStage(EnvStage stage)
@@ -19,20 +22,12 @@ EnvDSP::NextStage(EnvStage stage)
 }
 
 void
-EnvDSP::Release(EnvModel const& env)
-{
-  auto type = static_cast<EnvType>(env.type);
-  if (type == EnvType::Off) NextStage(EnvStage::End);
-  else if (_stage < EnvStage::R) NextStage(EnvStage::R);
-}
+EnvDSP::Release()
+{ if(_stage < EnvStage::R) NextStage(EnvStage::R); }
 
-void
-EnvDSP::Init(EnvModel const& env)
-{
-  _level = 0.0f;
-  auto type = static_cast<EnvType>(env.type);
-  NextStage(type == EnvType::Off? EnvStage::S: EnvStage::Dly);
-}
+float 
+EnvDSP::Frames(EnvParams const& params)
+{ return params.dly + params.a + params.hld + params.d + params.r; }
 
 float
 EnvDSP::Generate(float from, float to, float len, int slp) const
@@ -47,8 +42,6 @@ EnvDSP::Generate(float from, float to, float len, int slp) const
 float
 EnvDSP::Generate(EnvModel const& env, EnvParams const& params) const
 {
-  auto type = static_cast<EnvType>(env.type);
-  if(type == EnvType::Off) return 1.0f;
   switch (_stage)
   {
   case EnvStage::Dly: return 0.0f; 
@@ -65,11 +58,9 @@ EnvDSP::Generate(EnvModel const& env, EnvParams const& params) const
 EnvParams
 EnvDSP::Params(EnvModel const& env, float rate, int bpm) const
 {
-  EnvParams result = {};
+  EnvParams result;
   bool sync = env.sync != 0;
-  auto type = static_cast<EnvType>(env.type);
-  if(type == EnvType::Off) return result.s = 1.0f, result;
-  result.s = type == EnvType::DAHDR? 0.0f: Level(env.s);
+  result.s = Level(env.s);
   result.a = sync ? Sync(env.aSnc, rate, bpm) : Time(env.a, rate);
   result.d = sync ? Sync(env.dSnc, rate, bpm) : Time(env.d, rate);
   result.r = sync ? Sync(env.rSnc, rate, bpm) : Time(env.r, rate);
@@ -79,10 +70,8 @@ EnvDSP::Params(EnvModel const& env, float rate, int bpm) const
 }
 
 void
-EnvDSP::CycleStage(EnvModel const& env, EnvParams const& params)
+EnvDSP::CycleStage(EnvType type, EnvParams const& params)
 {
-  auto type = static_cast<EnvType>(env.type);
-  if(type == EnvType::Off) return;
   if (_stage == EnvStage::Dly && _stagePos >= params.dly) NextStage(EnvStage::A);
   if (_stage == EnvStage::A && _stagePos >= params.a) NextStage(EnvStage::Hld);
   if (_stage == EnvStage::Hld && _stagePos >= params.hld) NextStage(EnvStage::D);
@@ -96,10 +85,12 @@ EnvDSP::Next(EnvModel const& env, float rate, int bpm, EnvOutput& output)
 {
   const float threshold = 1.0E-5f;
   memset(&output, 0, sizeof(output));
+  auto type = static_cast<EnvType>(env.type);
+  if(type == EnvType::Off) _stage = EnvStage::End;
   output.stage = _stage;
   if(_stage == EnvStage::End) return;
   EnvParams params = Params(env, rate, bpm);
-  CycleStage(env, params);
+  CycleStage(type, params);
   float result = Generate(env, params);
   if(_stage != EnvStage::End) _stagePos++;
   if(_stage > EnvStage::A && _stage != EnvStage::End && result <= threshold) NextStage(EnvStage::End);
