@@ -14,3 +14,4 @@ detach sequencer
 multiple synths + select target in sequencer
 env off = 1
 pass automation to last active voice
+simplify plot (sample max# at default SR of 1000?)
