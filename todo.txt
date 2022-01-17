@@ -12,3 +12,5 @@ play note on enter
 make it faster
 detach sequencer
 multiple synths + select target in sequencer
+env off = 1
+pass automation to last active voice
