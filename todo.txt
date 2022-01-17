@@ -17,3 +17,4 @@ pass automation to last active voice
 simplify plot (sample max# at default SR of 1000?)
 assert not called on off?
 make stuff more self contained => unit::plot/env::plot/synth::plot(plotoutput&)
+fast log/sin approx?
