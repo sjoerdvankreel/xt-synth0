@@ -1,23 +1,54 @@
 #include "Xts.hpp"
-#include "Model/SizeChecks.hpp"
+#include "DSP/SeqDSP.hpp"
+#include "Model/DSPModel.hpp"
+#include "Model/SeqModel.hpp"
+#include "Model/SynthModel.hpp"
 
-void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* seq) { delete seq; }
-void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth) { delete synth; }
+void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp) { dsp->Init(); }
+void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp) { delete dsp; }
+Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void) { return new Xts::SeqDSP; }
+
+void XTS_CALL XtsSeqStateDestroy(SeqState* state) { delete state; }
+void XTS_CALL XtsPlotStateDestroy(PlotState* state) { delete state; }
+void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model) { delete model; }
+void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
+
+SeqState* XTS_CALL XtsSeqStateCreate(void) { return new SeqState; }
+PlotState* XTS_CALL XtsPlotStateCreate(void) { return new PlotState; }
 Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void) { return new Xts::SeqModel; }
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
 
-void XTS_CALL XtsSeqStateDestroy(Xts::SeqState* state) { delete state; }
-void XTS_CALL XtsPlotInputDestroy(Xts::PlotInput* input) { delete input; }
-void XTS_CALL XtsPlotOutputDestroy(Xts::PlotOutput0* output) { delete output; }
-Xts::SeqState* XTS_CALL XtsSeqStateCreate(void) { return new Xts::SeqState; }
-Xts::PlotInput* XTS_CALL XtsPlotInputCreate(void) { return new Xts::PlotInput; }
-Xts::PlotOutput0* XTS_CALL XtsPlotOutputCreate(void) { return new Xts::PlotOutput0; }
+void XTS_CALL 
+XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state)
+{
+  Xts::SeqInput in;
+  in.seq = state->seq;
+  in.rate = state->rate;
+  in.synth = state->synth;
+  in.buffer = state->buffer;
+  in.frames = state->frames;
 
-void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp) { delete dsp; }
-Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void) { return new Xts::SeqDSP; }
-void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqState* state) { dsp->Init(*state); }
-void XTS_CALL XtsSeqDSPProcessBuffer(Xts::SeqDSP* dsp, Xts::SeqState* state) { dsp->ProcessBuffer(*state); }
+  Xts::SeqOutput out;
+  dsp->Render(in, out);
+  state->pos = out.pos;
+  state->row = out.row;
+  state->clip = out.clip;
+  state->voices = out.voices;
+  state->exhausted = out.exhausted;
+}
 
-XTS_EXPORT void XTS_CALL XtsPlotDSPDestroy(Xts::PlotDSP* dsp) { delete dsp; }
-XTS_EXPORT Xts::PlotDSP* XTS_CALL XtsPlotDSPCreate(void) { return new Xts::PlotDSP; }
-XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, Xts::PlotInput const* input, Xts::PlotOutput0* output) { dsp->Render(*input, *output); }
+void XTS_CALL 
+XtsPlotDSPRender(Xts::PlotDSP* dsp, PlotState* state)
+{
+  Xts::PlotInput in;
+  in.bpm = state->bpm;
+  in.pixels = state->pixels;
+
+  Xts::PlotOutput out;
+  state->splits->clear();
+  state->samples->clear();
+  out.splits = state->splits.get();
+  out.samples = state->samples.get();
+  dsp->Render(in, out);  
+ // out.
+}

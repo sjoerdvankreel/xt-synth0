@@ -15,8 +15,6 @@ struct SeqInput
   int frames;
   float rate;
   float* buffer;
-  SynthModel* synth;
-  SeqModel const* seq;
 public:
   SeqInput() = default;
   SeqInput(SeqInput const&) = delete;
@@ -38,25 +36,28 @@ class SeqDSP
   int _voices = 0;
   int64_t _pos = 0;
   double _fill = 0.0;
+  SeqModel const* _model;
+  SynthModel const* _synth;
+private:
   int _keys[MaxVoices];
   SynthDSP _dsps[MaxVoices];
   int64_t _started[MaxVoices];
   AudioInput _inputs[MaxVoices]; 
-  SynthModel _models[MaxVoices];
+  SynthModel _synths[MaxVoices];
 public:
   SeqDSP() = default;
   SeqDSP(SeqDSP const&) = delete;
-public:
-  void Init();
-  void Render(SeqInput const& input, SeqOutput& output);
 private:
+  void Automate() const;
   int Take(int key, int voice);
   void Return(int key, int voice);
   bool Move(SeqInput const& input);
   int Take(int key, bool& exhausted);
-  void Automate(SeqModel const& seq) const;
   void Trigger(SeqInput const& input, bool& exhausted);
   AudioOutput Next(SeqInput const& input, bool& exhausted);
+public:
+  void Render(SeqInput const& input, SeqOutput& output);
+  void Init(SeqModel const* model, SynthModel const* synth);
 };
 
 } // namespace Xts

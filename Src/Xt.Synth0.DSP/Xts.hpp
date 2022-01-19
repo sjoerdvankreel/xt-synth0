@@ -61,8 +61,8 @@ XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model);
 XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model);
 
 XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
+XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, SeqState* state);
 XTS_EXPORT void XTS_CALL XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state);
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, PlotState* state);
 

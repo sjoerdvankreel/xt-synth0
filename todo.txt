@@ -22,3 +22,4 @@ hide controls when off
 check static_casts
 make sure zero length adr has no plot data
 check synth plot
+init(UnitModel)
