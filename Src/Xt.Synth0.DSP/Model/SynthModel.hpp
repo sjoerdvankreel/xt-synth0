@@ -12,14 +12,6 @@ enum class SyncStep
   S5_4, S4_3, S3_2, S5_3, S7_4, S15_8, S2_1, S3_1, S4_1, S5_1, S6_1, S7_1, S8_1, S10_1, S12_1, S16_1 
 };
 
-struct XTS_ALIGN AutoParam 
-{
-private:
-  int32_t* val;
-  int32_t min, max;
-};
-XTS_CHECK_SIZE(AutoParam, 16);
-
 struct XTS_ALIGN GlobalModel
 {
   friend class SynthDSP;
@@ -87,7 +79,6 @@ private:
   GlobalModel global;
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
-  AutoParam autoParams[AutoParamCount];
 };
 XTS_CHECK_SIZE(SynthModel, 1384);
 

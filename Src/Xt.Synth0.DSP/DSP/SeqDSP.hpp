@@ -2,7 +2,6 @@
 #define XTS_SEQ_DSP_HPP
 
 #include "SynthDSP.hpp"
-#include "PatternDSP.hpp"
 #include "../Model/SeqModel.hpp"
 #include "../Model/SynthModel.hpp"
 #include <cstdint>
@@ -11,49 +10,50 @@ namespace Xts {
 
 inline const int MaxVoices = 128;
 
-struct SeqOutput
+struct SeqInput
 {
-  float l; 
-  float r;
-};
-
-struct XTS_ALIGN SeqState
-{
+  int frames;
   float rate;
-  int32_t voices;
-  XtsBool clip;
-  int32_t frames;
-  int32_t currentRow;
-  XtsBool exhausted;
-  int64_t streamPosition;
+  int64_t pos;
   float* buffer;
   SynthModel* synth;
-  SeqModel const* seq;
-  SeqState() = default;
+public:
+  SeqInput() = default;
+  SeqInput(SeqInput const&) = delete;
+};
+
+struct SeqOutput
+{
+  int row, voices;
+  bool clip, exhausted;
+public:
+  SeqOutput() = default;
+  SeqOutput(SeqOutput const&) = delete;
 };
 
 class SeqDSP
 {
-  int _voicesUsed = 0;
-  int _previousRow = -1;
-  double _rowFactor = 0.0;
-  PatternDSP const _pattern;
-
-  int _voiceKeys[MaxVoices];
-  SynthDSP _voiceDsps[MaxVoices];
-  int64_t _voicesStarted[MaxVoices];
-  SynthModel _voiceModels[MaxVoices];
-
+  int _row = -1;
+  int _voices = 0;
+  double _fill = 0.0;
+  int _keys[MaxVoices];
+  SynthDSP _dsps[MaxVoices];
+  int64_t _started[MaxVoices];
+  SynthModel _models[MaxVoices];
 public:
-  void Init(SeqState& state);
-  void ProcessBuffer(SeqState& state);
-
+  SeqDSP() = default;
+  SeqDSP(SeqDSP const&) = delete;
+public:
+  void Init();
+  void Render(SeqInput const& input, SeqOutput& output);
 private:
-  bool RowUpdated(int currentRow);
-  bool UpdateRow(SeqState& state);
-  void ReturnVoice(int key, int voice);
-  void Next(SeqState& state, SeqOutput& output);
-  int TakeVoice(SeqState& state, int key, int64_t pos);
+  bool Moved(int row);
+  void Return(int key, int voice);
+  bool Move(SeqInput const& input);
+  int Take(int key, int64_t pos, SeqOutput& output);
+  AudioOutput Next(SeqInput const& input, SeqOutput& output);
+  void Automate(PatternFx const& fx, SynthModel& synth) const;
+  void Automate(EditModel const& edit, PatternRow const& row, SynthModel& synth) const;
 };
 
 } // namespace Xts

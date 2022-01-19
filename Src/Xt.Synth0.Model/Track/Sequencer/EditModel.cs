@@ -6,8 +6,9 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class EditModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native { internal int pats, rows, keys, fxs, lpb, edit; }
+		internal struct Native { internal int pats, rows, keys, fxs, lpb, edit, bpm, pad__; }
 
+		public Param Bpm { get; } = new(BpmInfo);
 		public Param Fxs { get; } = new(FxsInfo);
 		public Param Lpb { get; } = new(LpbInfo);
 		public Param Edit { get; } = new(EditInfo);
@@ -19,8 +20,9 @@ namespace Xt.Synth0.Model
 		public string Name => "Edit";
 		public ThemeGroup Group => ThemeGroup.EditPattern;
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
-		public IReadOnlyList<Param> Params => new[] { Pats, Keys, Lpb, Rows, Fxs, Edit };
+		public IReadOnlyList<Param> Params => new[] { Pats, Keys, Lpb, Rows, Fxs, Edit, Bpm };
 
+		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, "BPM", "Beats per minute", false, 1, 255, 120);
 		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, "LPB", "Lines per beat", false, 1, Model.MaxLpb, 4);
 		static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, nameof(Fxs), "Effect count", false, 0, Model.MaxFxs, 1);
 		static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, nameof(Keys), "Key count", false, 1, Model.MaxKeys, 2);

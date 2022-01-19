@@ -23,18 +23,10 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public struct Native
 		{
-			[StructLayout(LayoutKind.Sequential, Pack = 8)]
-			internal struct AutoParam
-			{
-				internal const int Size = 16;
-				internal int* val; internal int min, max;
-			}
-
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
 			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
-			internal fixed byte autoParams[Model.AutoParamCount * AutoParam.Size];
 		}
 
 		public PlotModel Plot { get; } = new();
@@ -57,19 +49,6 @@ namespace Xt.Synth0.Model
 			"3/1", "4/1", "5/1", "6/1", "7/1", "8/1", "10/1", "12/1", "16/1"
 		};
 
-		public void PrepareNative(IntPtr native)
-		{
-			Native* nativePtr = (Native*)native;
-			var nativeParams = (Native.AutoParam*)nativePtr->autoParams;
-			for (int p = 0; p < AutoParams.Count; p++)
-			{
-				nativeParams[p].min = AutoParams[p].Param.Info.Min;
-				nativeParams[p].max = AutoParams[p].Param.Info.Max;
-				var ownerAddress = AutoParams[p].Owner.Address(nativePtr);
-				nativeParams[p].val = AutoParams[p].Param.Info.Address(ownerAddress);
-			}
-		}
-
 		public SynthModel()
 		{
 			Units[0].Type.Value = (int)UnitType.Sin;
@@ -77,7 +56,7 @@ namespace Xt.Synth0.Model
 			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
 				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
-			if (AutoParams.Count != Model.AutoParamCount)
+			if (AutoParams.Count != Model.ParamCount)
 				throw new InvalidOperationException();
 		}
 	}

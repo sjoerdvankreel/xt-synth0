@@ -13,6 +13,9 @@ class EnvDSP
   int _stagePos = 0;
   float _level = 0.0f;
   EnvStage _stage = EnvStage::Dly;
+public:
+  EnvDSP() = default;
+  EnvDSP(EnvDSP const&) = delete;
 private:
   void NextStage(EnvStage stage);
   void CycleStage(EnvType type, struct EnvParams const& params);

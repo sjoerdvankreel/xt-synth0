@@ -8,6 +8,21 @@
 #include <cstdint>
 
 
+struct XTS_ALIGN SeqState
+{
+  float rate;
+  int32_t voices;
+  XtsBool clip;
+  int32_t frames;
+  int32_t currentRow;
+  XtsBool exhausted;
+  int64_t streamPosition;
+  float* buffer;
+  SynthModel* synth;
+  SeqModel const* seq;
+  SeqState() = default;
+};
+
 struct XTS_ALIGN PlotInput
 {
   int32_t rate;

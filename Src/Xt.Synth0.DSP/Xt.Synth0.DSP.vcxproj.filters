@@ -15,9 +15,6 @@
     <ClInclude Include="Model\SynthModel.hpp">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\PatternDSP.hpp">
-      <Filter>DSP</Filter>
-    </ClInclude>
     <ClInclude Include="DSP\SeqDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
@@ -46,9 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
-      <Filter>DSP</Filter>
-    </ClCompile>
-    <ClCompile Include="DSP\PatternDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="DSP\SynthDSP.cpp">
