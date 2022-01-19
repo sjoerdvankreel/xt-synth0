@@ -1,15 +1,19 @@
-#ifndef XTS_TRACK_CONSTANTS_HPP
-#define XTS_TRACK_CONSTANTS_HPP
+#ifndef XTS_MODEL_HPP
+#define XTS_MODEL_HPP
 
 #include <cstdint>
 
 #define XTS_ALIGN alignas(8)
+#define XTS_COMBINE_(X,Y) X##Y
+#define XTS_COMBINE(X,Y) XTS_COMBINE_(X,Y)
+#define XTS_CHECK_SIZE(type, expected) \
+CheckSize<sizeof(type), expected> XTS_COMBINE(Check, __LINE__)
 
 typedef int32_t XtsBool;
 inline constexpr XtsBool XtsTrue = 1;
 inline constexpr XtsBool XtsFalse = 0;
 
-namespace Xts { namespace TrackConstants {
+namespace Xts {
 
 constexpr int EnvCount = 2;
 constexpr int UnitCount = 3;
@@ -22,5 +26,8 @@ constexpr int MaxRows = 32;
 constexpr int MaxPatterns = 8;
 constexpr int TotalRows = MaxPatterns * MaxRows;
 
-} } // namespace Xts::TrackConstants
-#endif // XTS_TRACK_CONSTANTS_HPP
+template<int Actual, int Expected>
+struct CheckSize { static_assert(Actual == Expected); };
+
+} // namespace Xts
+#endif // XTS_MODEL_HPP

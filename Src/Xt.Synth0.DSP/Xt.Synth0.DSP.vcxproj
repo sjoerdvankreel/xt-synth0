@@ -19,10 +19,9 @@
     <ClInclude Include="DSP\SynthDSP.hpp" />
     <ClInclude Include="DSP\UnitDSP.hpp" />
     <ClInclude Include="Model\DSPModel.hpp" />
+    <ClInclude Include="Model\Model.hpp" />
     <ClInclude Include="Model\SeqModel.hpp" />
-    <ClInclude Include="Model\SizeChecks.hpp" />
     <ClInclude Include="Model\SynthModel.hpp" />
-    <ClInclude Include="Model\TrackConstants.hpp" />
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>

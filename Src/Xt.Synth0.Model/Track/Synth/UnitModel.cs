@@ -11,9 +11,10 @@ namespace Xt.Synth0.Model
 
 	public unsafe sealed class UnitModel : IThemedSubModel
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct Native
 		{
+			internal const int Size = 56;
 			internal int type, note, addType, naiveType;
 			internal int amp, pan, oct, dtn, pw;
 			internal int addMaxParts, addParts, addStep, addRoll, pad__;
@@ -37,7 +38,7 @@ namespace Xt.Synth0.Model
 		public string Name => $"Unit {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Units;
 		internal UnitModel(int index) => _index = index;
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * TrackConstants.UnitModelSize];
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Native.Size];
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
@@ -50,8 +51,8 @@ namespace Xt.Synth0.Model
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 		static readonly string[] AddNames = { "Saw", "Sqr", "Pulse", "Tri", "Impulse", "Sin+Sin", "Sin+Cos", "Sin-Sin", "Sin-Cos" };
-		static readonly AddType[] CustomAddTypes = new[] { Model.AddType.SinAddSin, Model.AddType.SinSubSin, Model.AddType.SinAddCos, Model.AddType.SinSubCos };
-		static readonly AddType[] BasicAddTypes = new[] { Model.AddType.Saw, Model.AddType.Sqr, Model.AddType.Pulse, Model.AddType.Tri, Model.AddType.Impulse };
+		static readonly AddType[] CustomAddTypes = new[] { Synth0.Model.AddType.SinAddSin, Synth0.Model.AddType.SinSubSin, Synth0.Model.AddType.SinAddCos, Synth0.Model.AddType.SinSubCos };
+		static readonly AddType[] BasicAddTypes = new[] { Synth0.Model.AddType.Saw, Synth0.Model.AddType.Sqr, Synth0.Model.AddType.Pulse, Synth0.Model.AddType.Tri, Synth0.Model.AddType.Impulse };
 
 		static readonly IRelevance RelevanceNaive = Relevance.When(
 			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive);
@@ -63,9 +64,9 @@ namespace Xt.Synth0.Model
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => CustomAddTypes.Contains(t)));
 		static readonly IRelevance RelevancePw = Relevance.Any(
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive),
-			Relevance.When((UnitModel m) => m.NaiveType, (NaiveType t) => t == Model.NaiveType.Pulse)),
+			Relevance.When((UnitModel m) => m.NaiveType, (NaiveType t) => t == Synth0.Model.NaiveType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add),
-			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Model.AddType.Pulse)));
+			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Synth0.Model.AddType.Pulse)));
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), "Detune", true);
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), "Panning", true);

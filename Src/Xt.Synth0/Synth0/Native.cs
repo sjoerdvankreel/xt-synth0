@@ -8,7 +8,7 @@ namespace Xt.Synth0
 	[SuppressUnmanagedCodeSecurity]
 	internal static unsafe class Native
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct PlotInput
 		{
 			internal int rate;
@@ -16,7 +16,7 @@ namespace Xt.Synth0
 			internal IntPtr synth;
 		}
 
-		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct PlotOutput
 		{
 			internal float freq;
@@ -29,7 +29,7 @@ namespace Xt.Synth0
 			internal int* splits;
 		}
 
-		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct SeqState
 		{
 			internal float rate;

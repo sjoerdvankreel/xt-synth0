@@ -28,12 +28,6 @@
       <Filter>DSP</Filter>
     </ClInclude>
     <ClInclude Include="Xts.hpp" />
-    <ClInclude Include="Model\TrackConstants.hpp">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SizeChecks.hpp">
-      <Filter>Model</Filter>
-    </ClInclude>
     <ClInclude Include="DSP\EnvDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
@@ -44,6 +38,9 @@
       <Filter>DSP</Filter>
     </ClInclude>
     <ClInclude Include="Model\DSPModel.hpp">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Model.hpp">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>

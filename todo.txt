@@ -12,10 +12,8 @@ play note on enter
 make it faster
 detach sequencer
 multiple synths + select target in sequencer
-env off = 1
 pass automation to last active voice
 simplify plot (sample max# at default SR of 1000?)
-assert not called on off?
 make stuff more self contained => unit::plot/env::plot/synth::plot(plotoutput&)
 fast log/sin approx?
 envmodel private to dsp
@@ -26,7 +24,6 @@ param interpolation
 globaldsp
 global=env1->amp+amp
 PlotOutput0
-trackconstants->model
 make plot functions stateless
 hide controls when off
-merge synthmodel/trackconstants/sizechecks
+check static_casts

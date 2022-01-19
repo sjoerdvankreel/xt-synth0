@@ -1,25 +1,34 @@
 #ifndef XTS_SYNTH_MODEL_HPP
 #define XTS_SYNTH_MODEL_HPP
 
-#include "TrackConstants.hpp"
+#include "Model.hpp"
 #include <cstdint>
 
 namespace Xts {
 
-enum class PlotFit { Auto, Rate, Fit };
-enum class PlotSource { Global, Unit1, Unit2, Unit3, Env1, Env2 };
-
-enum class SyncStep
-{
-  Step0, Step1_16, Step1_8, Step3_16, Step1_4, Step1_3, Step3_8,
-  Step1_2, Step5_8, Step2_3, Step3_4, Step7_8, Step15_16, Step1_1,
-  Step9_8, Step5_4, Step4_3, Step3_2, Step5_3, Step7_4, Step15_8, Step2_1,
-  Step3_1, Step4_1, Step5_1, Step6_1, Step7_1, Step8_1, Step10_1, Step12_1, Step16_1
+enum class SyncStep 
+{ 
+  S0, S1_16, S1_8, S3_16, S1_4, S1_3, S3_8, S1_2, S5_8, S2_3, S3_4, S7_8, S15_16, S1_1, S9_8, 
+  S5_4, S4_3, S3_2, S5_3, S7_4, S15_8, S2_1, S3_1, S4_1, S5_1, S6_1, S7_1, S8_1, S10_1, S12_1, S16_1 
 };
 
-struct XTS_ALIGN GlobalModel { int bpm, env1; };
-struct XTS_ALIGN PlotModel { int source, fit; };
-struct XTS_ALIGN AutoParam { int min, max; int* value; };
+struct XTS_ALIGN AutoParam 
+{
+private:
+  int32_t* val;
+  int32_t min, max;
+};
+XTS_CHECK_SIZE(AutoParam, 16);
+
+struct XTS_ALIGN GlobalModel
+{
+  friend class GlobalDSP;
+  GlobalModel() = default;
+  GlobalModel(GlobalModel const&) = delete;
+private:
+  int32_t bpm, env1;
+};
+XTS_CHECK_SIZE(GlobalModel, 8);
 
 enum class EnvType { Off, DAHDR, DAHDSR };
 struct XTS_ALIGN EnvModel 
@@ -30,10 +39,24 @@ struct XTS_ALIGN EnvModel
 private:
   EnvType type;
   XtsBool sync;
-  int aSlp, dSlp, rSlp;
-  int dly, a, hld, d, s, r;
-  int dlySnc, aSnc, hldSnc, dSnc, rSnc;
+  int32_t aSlp, dSlp, rSlp;
+  int32_t dly, a, hld, d, s, r;
+  int32_t dlySnc, aSnc, hldSnc, dSnc, rSnc;
 };
+XTS_CHECK_SIZE(EnvModel, 64);
+
+enum class PlotFit { Auto, Rate, Fit };
+enum class PlotSource { Global, Unit1, Unit2, Unit3, Env1, Env2 };
+struct XTS_ALIGN PlotModel
+{
+  friend class PlotDSP;
+  PlotModel() = default;
+  PlotModel(PlotModel const&) = delete;
+private:
+  PlotFit fit;
+  PlotSource src;
+};
+XTS_CHECK_SIZE(PlotModel, 8);
 
 enum class NaiveType { Saw, Pulse, Tri };
 enum class UnitType { Off, Sin, Naive, Add };
@@ -52,15 +75,21 @@ private:
   int32_t amp, pan, oct, dtn, pw;
   int32_t addMaxParts, addParts, addStep, addRoll, pad__;
 };
+XTS_CHECK_SIZE(UnitModel, 56);
 
 struct XTS_ALIGN SynthModel
 {
+  friend class SynthDSP;
+  SynthModel() = default;
+  SynthModel(SynthModel const&) = delete;
+private:
   PlotModel plot;
   GlobalModel global;
-  EnvModel envs[TrackConstants::EnvCount];
-  UnitModel units[TrackConstants::UnitCount];
-  AutoParam autoParams[TrackConstants::AutoParamCount];
+  EnvModel envs[EnvCount];
+  UnitModel units[UnitCount];
+  AutoParam autoParams[AutoParamCount];
 };
+XTS_CHECK_SIZE(SynthModel, 1400);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

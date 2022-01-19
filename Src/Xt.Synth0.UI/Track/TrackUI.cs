@@ -29,7 +29,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeCenter(AppModel app)
 		{
 			var synth = app.Track.Synth;
-			var envCount = TrackConstants.EnvCount;
+			var envCount = Model.Model.EnvCount;
 			var result = Create.Grid(envCount + 2, 1);
 			for (int i = 0; i < envCount; i++)
 				result.Add(SubUI.Make(app, synth.Envs[i]), new(i, 0));

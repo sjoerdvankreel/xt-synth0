@@ -24,8 +24,8 @@ namespace Xt.Synth0.UI
 		internal static void Add(Grid grid, AppModel app, PatternFx fx,
 			int minFx, int row, int col, Action fill, Action interpolate)
 		{
-			grid.Add(MakeTarget(app, fx.Target, minFx, row, col, fill));
-			grid.Add(MakeValue(app, fx.Value, minFx, row, col + 1, interpolate));
+			grid.Add(MakeTarget(app, fx.Tgt, minFx, row, col, fill));
+			grid.Add(MakeValue(app, fx.Val, minFx, row, col + 1, interpolate));
 		}
 
 		static UIElement MakeValue(AppModel app, Param value,

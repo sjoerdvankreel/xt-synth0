@@ -12,8 +12,11 @@ namespace Xt.Synth0.Model
 			"F-", "F#", "G-", "G#", "A-", "A#", "B-"
 		};
 
-		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int amp, note, oct, pad__; }
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		internal struct Native {
+			internal const int Size = 16;
+			internal int note, amp, oct, pad__; 
+		}
 
 		public Param Amp { get; } = new(AmpInfo);
 		public Param Note { get; } = new(NoteInfo);
@@ -22,7 +25,7 @@ namespace Xt.Synth0.Model
 		readonly int _index;
 		internal PatternKey(int index) => _index = index;
 		public IReadOnlyList<Param> Params => new[] { Note, Oct, Amp };
-		public void* Address(void* parent) => &((PatternRow.Native*)parent)->keys[_index * TrackConstants.PatternKeySize];
+		public void* Address(void* parent) => &((PatternRow.Native*)parent)->keys[_index * Native.Size];
 
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", false, 255);
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), "Octave", false, 0, 9, 4);

@@ -8,18 +8,18 @@ namespace Xt.Synth0.Model
 
 	public unsafe sealed class PlotModel : IThemedSubModel
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
-		internal struct Native { internal int source, fit; }
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		internal struct Native { internal int fit, src; }
 
 		public Param Fit { get; } = new(FitInfo);
-		public Param Source { get; } = new(SourceInfo);
+		public Param Src { get; } = new(SrcInfo);
 
 		public string Name => "Plot";
 		public ThemeGroup Group => ThemeGroup.Plot;
-		public IReadOnlyList<Param> Params => new[] { Source, Fit };
+		public IReadOnlyList<Param> Params => new[] { Src, Fit };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 
 		static readonly ParamInfo FitInfo = ParamInfo.List<PlotFit>(p => &((Native*)p)->fit, nameof(PlotFit), "Fit mode", false);
-		static readonly ParamInfo SourceInfo = ParamInfo.List<PlotSource>(p => &((Native*)p)->source, nameof(PlotSource), "Graph source", false);
+		static readonly ParamInfo SrcInfo = ParamInfo.List<PlotSource>(p => &((Native*)p)->src, nameof(PlotSource), "Graph source", false);
 	}
 }

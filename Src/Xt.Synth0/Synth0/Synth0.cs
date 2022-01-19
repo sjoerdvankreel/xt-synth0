@@ -22,7 +22,7 @@ namespace Xt.Synth0
 		[STAThread]
 		static unsafe void Main()
 		{
-			TrackConstants.SanityChecks();
+			Xt.Synth0.Model.Model.SanityChecks();
 			try
 			{
 				_nativePlotDSP = Native.XtsPlotDSPCreate();

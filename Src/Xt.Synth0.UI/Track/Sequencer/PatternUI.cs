@@ -23,18 +23,18 @@ namespace Xt.Synth0.UI
 		static void Fill(SeqModel seq, int pattern, int fx)
 		{
 			var rows = seq.Pattern.Rows;
-			int rowCount = TrackConstants.MaxRows;
+			int rowCount = Model.Model.MaxRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
 			for (int i = start; i <= end; i++)
-				rows[i].Fx[fx].Target.Value = rows[start].Fx[fx].Target.Value;
+				rows[i].Fx[fx].Tgt.Value = rows[start].Fx[fx].Tgt.Value;
 		}
 
 		static void Interpolate(SeqModel seq,
 			int pattern, Func<PatternRow, Param> selector)
 		{
 			var rows = seq.Pattern.Rows;
-			int rowCount = TrackConstants.MaxRows;
+			int rowCount = Model.Model.MaxRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
 			int endValue = selector(rows[end]).Value;
@@ -85,7 +85,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new ContentControl();
 			var highlighters = new List<Border>();
-			var patterns = new UIElement[TrackConstants.MaxPatterns];
+			var patterns = new UIElement[Model.Model.MaxPatterns];
 			for (int p = 0; p < patterns.Length; p++)
 			{
 				var pattern = MakePattern(app, p);
@@ -109,9 +109,9 @@ namespace Xt.Synth0.UI
 		static (UIElement Pattern, IList<Border> Highlighters) MakePattern(AppModel app, int pattern)
 		{
 			var seq = app.Track.Seq;
-			var fx = TrackConstants.MaxFxs;
-			var keys = TrackConstants.MaxKeys;
-			var rows = TrackConstants.MaxRows;
+			var fx = Model.Model.MaxFxs;
+			var keys = Model.Model.MaxKeys;
+			var rows = Model.Model.MaxRows;
 			int cols = keys * 5 + 1 + fx * 3;
 			var highlighters = new List<Border>();
 			var offset = pattern * rows;
@@ -129,7 +129,7 @@ namespace Xt.Synth0.UI
 		static void AddRow(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
 			var edit = app.Track.Seq.Edit;
-			int divCol = TrackConstants.MaxKeys * 5;
+			int divCol = Model.Model.MaxKeys * 5;
 			AddKeys(grid, app, pattern, row, r);
 			grid.Add(Create.Divider(new(r, divCol), edit.Fxs, 1));
 			AddFx(grid, app, pattern, row, r);
@@ -138,7 +138,7 @@ namespace Xt.Synth0.UI
 		static void AddKeys(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
 			var seq = app.Track.Seq;
-			for (int k = 0; k < TrackConstants.MaxKeys; k++)
+			for (int k = 0; k < Model.Model.MaxKeys; k++)
 			{
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
@@ -150,12 +150,12 @@ namespace Xt.Synth0.UI
 		static void AddFx(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
 			var seq = app.Track.Seq;
-			int startCol = TrackConstants.MaxKeys * 5 + 1;
-			for (int f = 0; f < TrackConstants.MaxFxs; f++)
+			int startCol = Model.Model.MaxKeys * 5 + 1;
+			for (int f = 0; f < Model.Model.MaxFxs; f++)
 			{
 				int fLocal = f;
 				Action fill = () => Fill(seq, pattern, fLocal);
-				Action interpolate = () => Interpolate(seq, pattern, r => r.Fx[fLocal].Value);
+				Action interpolate = () => Interpolate(seq, pattern, r => r.Fx[fLocal].Val);
 				PatternFxUI.Add(grid, app, row.Fx[f], f + 1, r, startCol + f * 3, fill, interpolate);
 				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), seq.Edit.Fxs, f + 2));
 			}
@@ -187,8 +187,8 @@ namespace Xt.Synth0.UI
 					highlighters[row].SetValue(UIElement.OpacityProperty, HighlightedOpacityBoxed);
 				row++;
 				actual++;
-				if (row % TrackConstants.MaxRows == edit.Rows.Value)
-					row += TrackConstants.MaxRows - edit.Rows.Value;
+				if (row % Model.Model.MaxRows == edit.Rows.Value)
+					row += Model.Model.MaxRows - edit.Rows.Value;
 			}
 		}
 	}

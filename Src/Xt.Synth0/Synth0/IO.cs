@@ -49,8 +49,7 @@ namespace Xt.Synth0
 
 		internal static void SaveFile(TrackModel track, string path)
 		{
-			var ints = new[] { TrackConstants.FormatVersion }.Concat(
-				track.Synth.Params.Select(p => p.Value)).Concat(
+			var ints = track.Synth.Params.Select(p => p.Value).Concat(
 				track.Seq.Params.Select(p => p.Value)).ToArray();
 			var bytes = ints.SelectMany(i => BitConverter.GetBytes(i)).ToArray();
 			File.WriteAllBytes(path, bytes);
@@ -61,12 +60,10 @@ namespace Xt.Synth0
 			var bytes = File.ReadAllBytes(path);
 			var range = Enumerable.Range(0, bytes.Length / 4);
 			var ints = range.Select(i => BitConverter.ToInt32(bytes, i * 4)).ToArray();
-			if (ints[0] != TrackConstants.FormatVersion)
-				throw new InvalidOperationException("Wrong file format version.");
 			for (int i = 0; i < track.Synth.Params.Count; i++)
-				track.Synth.Params[i].Value = ints[i + 1];
+				track.Synth.Params[i].Value = ints[i];
 			for (int i = 0; i < track.Seq.Params.Count; i++)
-				track.Seq.Params[i].Value = ints[track.Synth.Params.Count + i + 1];
+				track.Seq.Params[i].Value = ints[track.Synth.Params.Count + i];
 		}
 
 		internal static void LogError(DateTime startTime, string message, string trace)

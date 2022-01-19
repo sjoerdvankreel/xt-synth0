@@ -17,7 +17,7 @@ namespace Xt.Synth0.Model
 
 	public sealed class SeqModel : MainModel
 	{
-		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct Native
 		{
 			internal EditModel.Native edit;
