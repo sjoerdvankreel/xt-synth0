@@ -22,7 +22,7 @@ XTS_CHECK_SIZE(AutoParam, 16);
 
 struct XTS_ALIGN GlobalModel
 {
-  friend class GlobalDSP;
+  friend class SynthDSP;
   GlobalModel() = default;
   GlobalModel(GlobalModel const&) = delete;
 private:

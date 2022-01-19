@@ -30,8 +30,14 @@ struct AudioOutput
   float l;
   float r;
 public:
-  AudioOutput(AudioOutput const&) = delete;
+  AudioOutput(): l(0.0f), r(0.0f) {}
+  AudioOutput(AudioOutput const&) = default;
   AudioOutput(float l, float r) : l(l), r(r) {}
+public:
+  AudioOutput operator*(float f)
+  { return AudioOutput(l * f, r * f); }
+  AudioOutput& operator+=(AudioOutput const& rhs) 
+  { l += rhs.l; r += rhs.r; return *this; }
 };
 
 struct AudioInput

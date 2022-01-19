@@ -1,45 +1,38 @@
-#include "SynthDSP.hpp"
 #include "DSP.hpp"
-#include <cassert>
-#include <cstring>
+#include "SynthDSP.hpp"
 
 namespace Xts {
 
 void
-SynthDSP::Release()
+SynthDSP::Init(SynthModel const& model, AudioInput const& input)
 {
-  for (int e = 0; e < TrackConstants::EnvCount; e++)
-    _envs[e].Release();
+  for (int e = 0; e < EnvCount; e++)
+    _envs[e].Init(model.envs[e], input);
+  for (int u = 0; u < UnitCount; u++)
+    _units[u].Init(model.units[u], input);
 }
 
 void
-SynthDSP::Init(int oct, UnitNote note)
+SynthDSP::Release(SynthModel const& model, AudioInput const& input)
 {
-  for(int e = 0; e < TrackConstants::EnvCount; e++)
-    _envs[e].Init();
-  for(int u = 0; u < TrackConstants::UnitCount; u++)
-    _units[u].Init(oct, note);
+  for (int e = 0; e < EnvCount; e++)
+    _envs[e].Release(model.envs[e], input);
+  for (int u = 0; u < UnitCount; u++)
+    _units[u].Release(model.units[u], input);
 }
 
-void
-SynthDSP::Next(SynthModel const& synth, float rate, SynthOutput& output)
+AudioOutput
+SynthDSP::Next(SynthModel const& model, AudioInput const& input)
 {
-  memset(&output, 0, sizeof(output));
-  output.end = true;
-  int bpm = synth.global.bpm;
-  for(int e = 0; e < TrackConstants::EnvCount; e++)
-  {
-    _envs[e].Next(synth.envs[e], rate, bpm, output.envs[e]);
-    output.end &= output.envs[e].stage == EnvStage::End;
-  }
- 
-  float amp = output.envs[0].lvl * Level(synth.global.env1);
-  for (int u = 0; u < TrackConstants::UnitCount; u++)
-  {
-    _units[u].Next(synth.units[u], rate, output.units[u]);
-    output.l += output.units[u].l * amp;
-    output.r += output.units[u].r * amp;
-  }
+  AudioOutput output;
+  float envs[EnvCount];
+  if (End()) return AudioOutput(0.0f, 0.0f);
+  for(int e = 0; e < EnvCount; e++)
+    envs[e] = _envs[e].Next(model.envs[e], input);
+  float amp = envs[0] * Level(model.global.env1);
+  for (int u = 0; u < UnitCount; u++)
+    output += _units[u].Next(model.units[u], input) * amp;
+  return output;
 }
 
 } // namespace Xts

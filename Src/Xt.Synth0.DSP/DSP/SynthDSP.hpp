@@ -3,30 +3,26 @@
 
 #include "EnvDSP.hpp"
 #include "UnitDSP.hpp"
+#include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
 namespace Xts {
 
-struct SynthOutput
-{
-  bool end;
-  float l, r;
-  EnvOutput envs[TrackConstants::EnvCount];
-  UnitOutput units[TrackConstants::UnitCount];
-  SynthOutput() = default;
-};
-
 class SynthDSP
 {
-  friend class PlotDSP;
-  EnvDSP _envs[TrackConstants::EnvCount];
-  UnitDSP _units[TrackConstants::UnitCount];
-
+  EnvDSP _envs[EnvCount];
+  UnitDSP _units[UnitCount];
 public:
-  void Release();
-  void Init(int oct, UnitNote note);
-  void Next(SynthModel const& synth, float rate, SynthOutput& output);
+  SynthDSP() = default;
+  SynthDSP(SynthDSP const&) = delete;
+public:
+  bool End() const { return _envs[0].End(); }
+  void Init(SynthModel const& model, AudioInput const& input);
+  void Release(SynthModel const& model, AudioInput const& input);
+  AudioOutput Next(SynthModel const& model, AudioInput const& input);
+  void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
+static_assert(Generator<SynthDSP, SynthModel, AudioOutput>);
 
 } // namespace Xts
 #endif // XTS_SYNTH_DSP_HPP
