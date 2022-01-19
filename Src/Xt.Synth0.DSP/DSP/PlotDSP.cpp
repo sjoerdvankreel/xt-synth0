@@ -6,7 +6,7 @@
 namespace Xts {
 
 void 
-PlotDSP::Render(PlotInput const& input, PlotOutput& output)
+PlotDSP::Render(PlotInput const& input, PlotOutput0& output)
 {
   _splits.clear();
   _samples.clear();
@@ -32,7 +32,7 @@ PlotDSP::Render(PlotInput const& input, PlotOutput& output)
 }
 
 void
-PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput& output)
+PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput0& output)
 {
   const float cycleCount = 1.5f;
 
@@ -60,7 +60,7 @@ PlotDSP::RenderUnit(PlotInput const& input, int index, PlotOutput& output)
 }
 
 void
-PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput& output)
+PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput0& output)
 {
   const int maxSamples = 96000;
   const int minSustainSamples = 10;
@@ -108,7 +108,7 @@ PlotDSP::RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate,
 }
 
 void
-PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOutput& output)
+PlotDSP::RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOutput0& output)
 {
   const int minRate = 10000;
   const int maxSamples = 96000;

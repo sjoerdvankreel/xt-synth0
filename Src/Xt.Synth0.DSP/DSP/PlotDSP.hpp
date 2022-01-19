@@ -16,7 +16,7 @@ struct XTS_ALIGN PlotInput
   PlotInput() = default;
 };
 
-struct XTS_ALIGN PlotOutput
+struct XTS_ALIGN PlotOutput0
 {
   float freq;
   int32_t rate;
@@ -26,7 +26,7 @@ struct XTS_ALIGN PlotOutput
   int32_t sampleCount;
   float* samples;
   int32_t* splits;
-  PlotOutput() = default;
+  PlotOutput0() = default;
 };
 
 class PlotDSP
@@ -37,12 +37,12 @@ private:
   std::vector<int32_t> _splits;
 
 public:
-  void Render(PlotInput const& input, PlotOutput& output);
+  void Render(PlotInput const& input, PlotOutput0& output);
 
 private:
-  void RenderUnit(PlotInput const& input, int index, PlotOutput& output);
-  void RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOutput& output);
-  void RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput& output);
+  void RenderUnit(PlotInput const& input, int index, PlotOutput0& output);
+  void RenderGlobal(PlotInput const& input, PlotFit fit, int32_t rate, PlotOutput0& output);
+  void RenderEnv(PlotInput const& input, int index, PlotFit fit, int32_t rate, PlotOutput0& output);
 };
 
 } // namespace Xts

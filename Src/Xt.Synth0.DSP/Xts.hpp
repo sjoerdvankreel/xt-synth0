@@ -17,10 +17,10 @@ XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth);
 
 XTS_EXPORT Xts::SeqState* XTS_CALL XtsSeqStateCreate(void);
 XTS_EXPORT Xts::PlotInput* XTS_CALL XtsPlotInputCreate(void);
-XTS_EXPORT Xts::PlotOutput* XTS_CALL XtsPlotOutputCreate(void);
+XTS_EXPORT Xts::PlotOutput0* XTS_CALL XtsPlotOutputCreate(void);
 XTS_EXPORT void XTS_CALL XtsSeqStateDestroy(Xts::SeqState* state);
 XTS_EXPORT void XTS_CALL XtsPlotInputDestroy(Xts::PlotInput* input);
-XTS_EXPORT void XTS_CALL XtsPlotOutputDestroy(Xts::PlotOutput* output);
+XTS_EXPORT void XTS_CALL XtsPlotOutputDestroy(Xts::PlotOutput0* output);
 
 XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
 XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
@@ -29,6 +29,6 @@ XTS_EXPORT void XTS_CALL XtsSeqDSPProcessBuffer(Xts::SeqDSP* dsp, Xts::SeqState*
 
 XTS_EXPORT Xts::PlotDSP* XTS_CALL XtsPlotDSPCreate(void);
 XTS_EXPORT void XTS_CALL XtsPlotDSPDestroy(Xts::PlotDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, Xts::PlotInput const* input, Xts::PlotOutput* output);
+XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, Xts::PlotInput const* input, Xts::PlotOutput0* output);
 
 #endif // XTS_HPP
