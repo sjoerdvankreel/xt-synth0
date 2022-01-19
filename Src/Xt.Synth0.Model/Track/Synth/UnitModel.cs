@@ -14,8 +14,9 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int type, naiveType, amp, pan, oct, note, dtn, pw;
-			internal int addType, addParts, addMaxParts, addStep, addRoll, pad__;
+			internal int type, note, addType, naiveType;
+			internal int amp, pan, oct, dtn, pw;
+			internal int addMaxParts, addParts, addStep, addRoll, pad__;
 		}
 
 		public Param Pw { get; } = new(PwInfo);
@@ -40,19 +41,11 @@ namespace Xt.Synth0.Model
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
-			{ Type, 0 },
-			{ AddType, 1 },
-			{ NaiveType, 1 },
-			{ Amp, 2 },
-			{ Pan, 3 },
-			{ Oct, 4 },
-			{ Note, 5 },
-			{ Dtn, 6 },
-			{ Pw, 7 },
-			{ AddParts, 7 },
-			{ AddMaxParts, 8 },
-			{ AddStep, 8 },
-			{ AddRoll, 9 }
+			{ Type, 0 }, { AddType, 1 }, { NaiveType, 1 },
+			{ Amp, 2 }, { Pan, 3 },
+			{ Oct, 4 },	{ Note, 5 },
+			{ Dtn, 6 },	{ Pw, 7 }, { AddParts, 7 },
+			{ AddMaxParts, 8 },	{ AddStep, 8 },	{ AddRoll, 9 }
 		};
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };

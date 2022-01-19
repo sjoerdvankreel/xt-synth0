@@ -30,8 +30,8 @@ namespace Xt.Synth0.Model
 
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
-			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitModelSize];
 			internal fixed byte envs[TrackConstants.EnvCount * TrackConstants.EnvModelSize];
+			internal fixed byte units[TrackConstants.UnitCount * TrackConstants.UnitModelSize];
 			internal fixed byte autoParams[TrackConstants.AutoParamCount * TrackConstants.AutoParamSize];
 		}
 

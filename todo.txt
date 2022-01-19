@@ -26,3 +26,7 @@ param interpolation
 globaldsp
 global=env1->amp+amp
 PlotOutput0
+trackconstants->model
+make plot functions stateless
+hide controls when off
+merge synthmodel/trackconstants/sizechecks

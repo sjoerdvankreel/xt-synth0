@@ -1,7 +1,6 @@
 #include "PlotDSP.hpp"
 #include "DSP.hpp"
 #include <cassert>
-#include <cmath>
 
 namespace Xts {
 

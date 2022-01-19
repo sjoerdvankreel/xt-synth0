@@ -1,6 +1,7 @@
 #ifndef XTS_ENV_DSP_HPP
 #define XTS_ENV_DSP_HPP
 
+#include "DSP.hpp"
 #include "../Model/SynthModel.hpp"
 
 namespace Xts {
@@ -9,17 +10,11 @@ enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
 struct EnvOutput
 {
+  bool end;
   float lvl;
-  bool staged;
-  EnvStage stage;
+public:
   EnvOutput() = default;
-};
-
-struct EnvParams
-{
-  float dly, hld;
-  float a, d, s, r;
-  EnvParams() = default;
+  EnvOutput(EnvOutput const&) = delete;
 };
 
 class EnvDSP 
@@ -27,19 +22,17 @@ class EnvDSP
   int _stagePos = 0;
   float _level = 0.0f;
   EnvStage _stage = EnvStage::Dly;
-  EnvStage _prevStage = EnvStage::Dly;
-
+private:
   void NextStage(EnvStage stage);
-  void CycleStage(EnvType type, EnvParams const& params);
+  void CycleStage(EnvType type, struct EnvParams const& params);
   float Generate(float from, float to, float len, int slp) const;
-  float Generate(EnvModel const& env, EnvParams const& params) const;
-
+  float Generate(EnvModel const& model, struct EnvParams const& params) const;
+  void Params(EnvModel const& model, AudioState const& state, struct EnvParams& params) const;
 public:
-  void Init();
-  void Release();
-  float Frames(EnvParams const& params);
-  EnvParams Params(EnvModel const& env, float rate, int bpm) const;
-  void Next(EnvModel const& env, float rate, int bpm, EnvOutput& output);
+  void Init(EnvModel const& model);
+  void Release(EnvModel const& model);
+  void Next(EnvModel const& model, AudioState const& state, EnvOutput& output);
+  void Plot(EnvModel const& model, AudioState const& state, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

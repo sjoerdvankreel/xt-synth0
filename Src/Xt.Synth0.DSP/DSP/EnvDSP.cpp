@@ -1,14 +1,21 @@
-#include "EnvDSP.hpp"
 #include "DSP.hpp"
+#include "EnvDSP.hpp"
+
 #include <cmath>
-#include <cassert>
-#include <cstring>
 #include <cassert>
 
 namespace Xts {
 
+struct EnvParams
+{
+  float dly, a, hld, d, s, r;
+public:
+  EnvParams() = default;
+  EnvParams(EnvParams const&) = delete;
+};
+
 void
-EnvDSP::Init()
+EnvDSP::Init(EnvModel const& model)
 {
   _level = 0.0f;
   NextStage(EnvStage::Dly);

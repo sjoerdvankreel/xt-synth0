@@ -18,6 +18,7 @@
     <ClInclude Include="DSP\SeqDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />
     <ClInclude Include="DSP\UnitDSP.hpp" />
+    <ClInclude Include="Model\DSPModel.hpp" />
     <ClInclude Include="Model\SeqModel.hpp" />
     <ClInclude Include="Model\SizeChecks.hpp" />
     <ClInclude Include="Model\SynthModel.hpp" />
@@ -84,7 +85,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
@@ -103,7 +104,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>

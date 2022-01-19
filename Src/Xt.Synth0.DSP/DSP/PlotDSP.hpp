@@ -1,7 +1,7 @@
 #ifndef XTS_PLOT_DSP_HPP
 #define XTS_PLOT_DSP_HPP
 
-#include "SynthDSP.hpp"
+//#include "SynthDSP.hpp"
 #include "../Model/SynthModel.hpp"
 #include <vector>
 #include <cstdint>
@@ -32,7 +32,7 @@ struct XTS_ALIGN PlotOutput0
 class PlotDSP
 {
 private:
-  SynthDSP _dsp;
+  //SynthDSP _dsp;
   std::vector<float> _samples;
   std::vector<int32_t> _splits;
 

@@ -10,9 +10,10 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = TrackConstants.Alignment)]
 		internal struct Native
 		{
-			internal int a, d, s, r, hld, dly;
-			internal int type, sync, aSlp, dSlp, rSlp;
-			internal int hldSnc, dlySnc, aSnc, dSnc, rSnc;
+			internal int type, sync;
+			internal int aSlp, dSlp, rSlp;
+			internal int dly, a, hld, d, s, r;
+			internal int dlySnc, aSnc, hldSnc, dSnc, rSnc;
 		}
 
 		public Param S { get; } = new(SInfo);
@@ -41,22 +42,10 @@ namespace Xt.Synth0.Model
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
-			{ Type, 0 },
-			{ Sync, 1 },
-			{ Dly, 2 },
-			{ DlySnc, 2 },
-			{ ASlp, 3 },
-			{ A, 4 },
-			{ ASnc, 4 },
-			{ Hld, 5 },
-			{ HldSnc, 5 },
-			{ DSlp, 6 },
-			{ D, 7 },
-			{ DSnc, 7 },
-			{ S, 8 },
-			{ RSlp, 9 },
-			{ R, 10 },
-			{ RSnc, 10 }
+			{ Type, 0 }, { Sync, 1 }, { Dly, 2 }, { DlySnc, 2 },
+			{ ASlp, 3 }, { A, 4 }, { ASnc, 4 },	{ Hld, 5 }, { HldSnc, 5 },
+			{ DSlp, 6 }, { D, 7 }, { DSnc, 7 }, { S, 8 },
+			{ RSlp, 9 }, { R, 10 },	{ RSnc, 10 }
 		};
 
 		static readonly IRelevance RelevanceSync = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 1);

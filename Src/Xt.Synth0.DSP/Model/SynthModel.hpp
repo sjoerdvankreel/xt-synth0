@@ -2,16 +2,12 @@
 #define XTS_SYNTH_MODEL_HPP
 
 #include "TrackConstants.hpp"
+#include <cstdint>
 
 namespace Xts {
 
 enum class PlotFit { Auto, Rate, Fit };
-enum class NaiveType { Saw, Pulse, Tri };
-enum class EnvType { Off, DAHDR, DAHDSR };
-enum class UnitType { Off, Sin, Naive, Add };
 enum class PlotSource { Global, Unit1, Unit2, Unit3, Env1, Env2 };
-enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
-enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
 enum class SyncStep
 {
@@ -25,23 +21,44 @@ struct XTS_ALIGN GlobalModel { int bpm, env1; };
 struct XTS_ALIGN PlotModel { int source, fit; };
 struct XTS_ALIGN AutoParam { int min, max; int* value; };
 
-struct XTS_ALIGN EnvModel {
-  int a, d, s, r, hld, dly;
-  int type, sync, aSlp, dSlp, rSlp;
-  int hldSnc, dlySnc, aSnc, dSnc, rSnc;
+enum class EnvType { Off, DAHDR, DAHDSR };
+struct XTS_ALIGN EnvModel 
+{
+  friend class EnvDSP;
+  EnvModel() = default;
+  EnvModel(EnvModel const&) = delete;
+private:
+  EnvType type;
+  XtsBool sync;
+  int aSlp, dSlp, rSlp;
+  int dly, a, hld, d, s, r;
+  int dlySnc, aSnc, hldSnc, dSnc, rSnc;
 };
 
-struct XTS_ALIGN UnitModel {
-  int type, naiveType, amp, pan, oct, note, dtn, pw;
-  int addType, addParts, addMaxParts, addStep, addRoll, pad__;
+enum class NaiveType { Saw, Pulse, Tri };
+enum class UnitType { Off, Sin, Naive, Add };
+enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
+enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
+struct XTS_ALIGN UnitModel
+{
+  friend class UnitDSP;
+  UnitModel() = default;
+  UnitModel(UnitModel const&) = delete;
+private:
+  UnitType type;
+  UnitNote note;
+  AddType addType;
+  NaiveType naiveType;
+  int32_t amp, pan, oct, dtn, pw;
+  int32_t addMaxParts, addParts, addStep, addRoll, pad__;
 };
 
 struct XTS_ALIGN SynthModel
 {
   PlotModel plot;
   GlobalModel global;
-  UnitModel units[TrackConstants::UnitCount];
   EnvModel envs[TrackConstants::EnvCount];
+  UnitModel units[TrackConstants::UnitCount];
   AutoParam autoParams[TrackConstants::AutoParamCount];
 };
 

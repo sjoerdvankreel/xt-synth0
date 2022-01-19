@@ -1,23 +1,25 @@
-#include "UnitDSP.hpp"
 #include "DSP.hpp"
-#include <cassert>
-#include <cstring>
-#include <immintrin.h>
-#define _USE_MATH_DEFINES 1
+#include "UnitDSP.hpp"
+
 #include <cmath>
+#include <cassert>
+#include <immintrin.h>
 
 namespace Xts {
 
 const int NoteCount = 12;
 
 static inline int
-NoteNum(int oct, int note)
-{ return oct * NoteCount + note; }
+NoteNum(int oct, UnitNote note)
+{ 
+  int n = static_cast<int>(note);
+  return oct * NoteCount + n; 
+}
 
 static inline float
-GetFreq(int note, int cent)
+GetFreq(int noteNum, int cent)
 {
-  float midi = note + cent / 100.0f;
+  float midi = noteNum + cent / 100.0f;
 	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
 
@@ -29,57 +31,63 @@ UnitDSP::PwPhase(int pw) const
 	return result - (int)result;
 }
 
-void
-UnitDSP::Init(int oct, UnitNote note)
-{ 
-	_phase = 0.0;
-	int c = static_cast<int>(UnitNote::C);
-  int index = NoteNum(oct, static_cast<int>(note));
-  _noteOffset = index - NoteNum(4, c);
-}
-
 float
-UnitDSP::Freq(UnitModel const& unit) const
+UnitDSP::Freq(UnitModel const& model) const
 { 
-  int cent = static_cast<int>(Mix0100Inclusive(unit.dtn));
-  int note = NoteNum(unit.oct + 1, unit.note) + _noteOffset;
+  int cent = static_cast<int>(Mix0100Inclusive(model.dtn));
+  int note = NoteNum(model.oct + 1, model.note) + _noteOffset;
   return GetFreq(note, cent);
 }
 
 void
-UnitDSP::Next(UnitModel const& unit, float rate, UnitOutput& output)
+UnitDSP::Init(UnitModel const& model, AudioInput const& input)
 {
-	memset(&output, 0, sizeof(output));
-	auto off = static_cast<int>(UnitType::Off);
-	if (unit.type == off) return;
+	_phase = 0.0;
+	int note = NoteNum(input.oct, input.note);
+  int baseNote = NoteNum(4, UnitNote::C);
+	_noteOffset = note - baseNote;
+}
 
-	float freq = Freq(unit);
-	float amp = Level(unit.amp);
-	float pan = Mix01Inclusive(unit.pan);
-	float sample = Generate(unit, freq, rate);
+void
+UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
+{
+	output.clip = false;
+	output.bipolar = true;
+	output.freq = Freq(model);
+	output.rate = output.freq * input.pixels;
 
-	_phase += freq / rate;
-	output.cycled = _phase >= 1.0;
+	AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
+	Init(model, in);
+	float samples = ceilf(output.rate / output.freq);
+	for (int i = 0; i < static_cast<int>(samples); i++)
+	{
+		UnitOutput out = Next(model, in);
+		output.samples.push_back(out.l + out.r);
+	}
+}
+
+UnitOutput
+UnitDSP::Next(UnitModel const& model, AudioInput const& input)
+{
+	if (model.type == UnitType::Off) return UnitOutput(0.0f, 0.0f);
+	float freq = Freq(model);
+	float amp = Level(model.amp);
+	float pan = Mix01Inclusive(model.pan);
+	float sample = Generate(model, freq, input.rate);
+	_phase += freq / input.rate;
 	if (_phase >= 1.0) _phase = 0.0;
-	output.r = sample * amp * pan;
-	output.l = sample * amp * (1.0f - pan);
-  assert(-1.0f <= output.l && output.l <= 1.0f);
-	assert(-1.0f <= output.r && output.r <= 1.0f);
+  return UnitOutput(sample * amp * pan, sample * amp * (1.0f - pan));
 }
 
 float 
-UnitDSP::Generate(UnitModel const& unit, float freq, float rate) const
+UnitDSP::Generate(UnitModel const& model, float freq, float rate) const
 {
-	auto pi = static_cast<float>(M_PI);
 	auto phase = static_cast<float>(_phase);
-	auto type = static_cast<UnitType>(unit.type);
-  auto naive = static_cast<NaiveType>(unit.naiveType);
-	switch(type)
+	switch(model.type)
   {
-  case UnitType::Off: return 0.0f;
-	case UnitType::Sin: return std::sinf(phase * 2.0f * pi);
-	case UnitType::Add: return GenerateAdd(unit, freq, rate);
-	case UnitType::Naive: return GenerateNaive(naive, unit.pw, phase);
+	case UnitType::Sin: return std::sinf(phase * 2.0f * PI);
+	case UnitType::Add: return GenerateAdd(model, freq, rate);
+	case UnitType::Naive: return GenerateNaive(model.naiveType, model.pw, phase);
 	default: assert(false); return 0.0f;
 	}
 }
@@ -100,38 +108,34 @@ UnitDSP::GenerateNaive(NaiveType type, int pw, float phase) const
 }
 
 float
-UnitDSP::GenerateAdd(UnitModel const& unit, float freq, float rate) const
+UnitDSP::GenerateAdd(UnitModel const& model, float freq, float rate) const
 {
-  AddParams params;
-  int maxParts = Exp(unit.addMaxParts);
+  AddType type = model.addType;
+  int maxParts = Exp(model.addMaxParts);
 	auto phase = static_cast<float>(_phase);
-	auto type = static_cast<AddType>(unit.addType);
 	bool sinCos = type == AddType::SinAddCos || type == AddType::SinSubCos;
 	bool addSub = type == AddType::SinSubSin || type == AddType::SinSubCos;
 	switch(type)
   {
-	case AddType::Pulse:
-  case AddType::Saw: params = AddParams(maxParts, 1, false, false, 1.0f); break;
-	case AddType::Tri: params = AddParams(maxParts, 2, true, false, 2.0f); break;
-	case AddType::Sqr: params = AddParams(maxParts, 2, false, false, 1.0f); break;
-	case AddType::Impulse: params = AddParams(maxParts, 1, false, false, 0.0f); break;
-  default: params = AddParams(unit.addParts, unit.addStep, addSub, sinCos, Mix02Inclusive(unit.addRoll));
+	case AddType::Pulse: break;
+	case AddType::Tri: return GenerateAdd(freq, rate, phase, maxParts, 2, 2.0f, true, false);
+	case AddType::Saw: return GenerateAdd(freq, rate, phase, maxParts, 1, 1.0f, false, false);
+	case AddType::Sqr: return GenerateAdd(freq, rate, phase, maxParts, 2, 1.0f, false, false);
+	case AddType::Impulse: return GenerateAdd(freq, rate, phase, maxParts, 1, 0.0f, false, false);
+  default: return GenerateAdd(freq, rate, phase, model.addParts, model.addStep, addSub, sinCos, Mix02Inclusive(model.addRoll));
 	}
-  float result = GenerateAdd(freq, rate, phase, params);
-  if(type != AddType::Pulse) return result;
-  float saw2 = GenerateAdd(freq, rate, PwPhase(unit.pw), params);
-	return (result - saw2) / 2.0f;
+  float saw1 = GenerateAdd(freq, rate, phase, maxParts, 1, 1.0f, false, false);
+	float saw2 = GenerateAdd(freq, rate, PwPhase(model.pw), maxParts, 1, 1.0f, false, false);
+	return (saw1 - saw2) / 2.0f;
 }
 
 float 
-UnitDSP::GenerateAdd(float freq, float rate, float phase, AddParams const& params) const
+UnitDSP::GenerateAdd(float freq, float rate, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const
 {
 	__m256 cosines;
 	float limit = 0.0;
 	float result = 0.0;
-	int step = params.step;
 	const int selector = 0b01010101;
-	float pi = static_cast<float>(M_PI);
 
   __m256 ones = _mm256_set1_ps(1.0f);
 	__m256 zeros = _mm256_set1_ps(0.0f);
@@ -140,13 +144,13 @@ UnitDSP::GenerateAdd(float freq, float rate, float phase, AddParams const& param
 	__m256 limits = _mm256_set1_ps(0.0f);
 	__m256 results = _mm256_set1_ps(0.0f);
 	__m256 phases = _mm256_set1_ps(phase);
-  __m256 twopis = _mm256_set1_ps(2.0f * pi);
+  __m256 twopis = _mm256_set1_ps(2.0f * PI);
+	__m256 logRolls = _mm256_set1_ps(logRoll);
 	__m256 nyquists = _mm256_set1_ps(rate / 2.0f);
-  __m256 logRolls = _mm256_set1_ps(params.logRoll);
-	__m256 maxPs = _mm256_set1_ps(params.parts * static_cast<float>(step));
-	if(params.addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
+	__m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
+	if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 
-	for (int p = 1; p <= params.parts * step; p += step * 8)
+	for (int p = 1; p <= parts * step; p += step * 8)
 	{
     if(p * freq >= rate / 2.0f) break;
     __m256 allPs = _mm256_set_ps(
@@ -159,12 +163,12 @@ UnitDSP::GenerateAdd(float freq, float rate, float phase, AddParams const& param
     __m256 amps = _mm256_div_ps(ones, rolls);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
     __m256 sines = _mm256_sincos_ps(&cosines, _mm256_mul_ps(psPhases, twopis));
-    __m256 waves = !params.sinCos? sines: _mm256_blend_ps(sines, cosines, selector);
+    __m256 waves = !sinCos? sines: _mm256_blend_ps(sines, cosines, selector);
     __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(waves, amps), signs);
 		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, wantedPs));
 		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, wantedPs));
 	}
-  for(int i = 0; i < params.parts && i < 8; i++)
+  for(int i = 0; i < parts && i < 8; i++)
   {
 		limit += limits.m256_f32[7 - i];
 		result += results.m256_f32[7 - i];
