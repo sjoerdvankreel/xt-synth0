@@ -35,4 +35,17 @@ SynthDSP::Next(SynthModel const& model, AudioInput const& input)
   return output;
 }
 
+void
+SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  output.freq = 0.0f;
+  output.bipolar = true;
+  output.rate = input.pixels;
+  
+  AudioInput in(output.rate, 120, 4, UnitNote::C);
+  Init(model, in);
+  for(int s = 0; s <= static_cast<int>(output.rate); s++)
+    output.samples.push_back(Next(model, in).Mono());
+}
+
 } // namespace Xts

@@ -56,14 +56,11 @@ UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output
 	output.freq = Freq(model);
 	output.rate = output.freq * input.pixels;
 
+	float samples = output.rate / output.freq;
 	AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
 	Init(model, in);
-	float samples = ceilf(output.rate / output.freq);
-	for (int i = 0; i < static_cast<int>(samples); i++)
-	{
-		AudioOutput out = Next(model, in);
-		output.samples.push_back(out.l + out.r);
-	}
+	for (int i = 0; i <= static_cast<int>(samples); i++)
+		output.samples.push_back(Next(model, in).Mono());
 }
 
 AudioOutput
