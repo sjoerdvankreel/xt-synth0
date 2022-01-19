@@ -1,70 +1,69 @@
 #ifndef XTS_HPP
 #define XTS_HPP
 
-#include "DSP/SeqDSP.hpp"
-#include "DSP/PlotDSP.hpp"
-#include "Model/SeqModel.hpp"
-#include "Model/SynthModel.hpp"
+#include "Model/Model.hpp"
+
+#include <vector>
+#include <memory>
 #include <cstdint>
 
+#define XTS_CALL __stdcall
+#define XTS_EXPORT extern "C" __declspec(dllexport)
+
+namespace Xts {
+class SeqDSP;
+class PlotDSP;
+struct SeqModel;
+struct SynthModel;
+} // namespace Xts
 
 struct XTS_ALIGN SeqState
 {
+public:
+  int64_t pos;
+  int32_t row, voices;
+  XtsBool clip, exhausted;
+public:
   float rate;
-  int32_t voices;
-  XtsBool clip;
-  int32_t frames;
-  int32_t currentRow;
-  XtsBool exhausted;
-  int64_t streamPosition;
   float* buffer;
-  SynthModel* synth;
-  SeqModel const* seq;
+  int32_t frames;
+  Xts::SynthModel* synth;
+  Xts::SeqModel const* seq;
+public:
   SeqState() = default;
+  SeqState(SeqState const&) = delete;
 };
 
-struct XTS_ALIGN PlotInput
+struct XTS_ALIGN PlotState
 {
-  int32_t rate;
-  int32_t pixels;
-  SynthModel const* synth;
-  PlotInput() = default;
+public:
+  float bpm, pixels;
+public:
+  float freq, rate;
+  XtsBool clip, bipolar;
+  std::unique_ptr<std::vector<float>> samples;
+  std::unique_ptr<std::vector<int32_t>> splits;
+public:
+  PlotState(PlotState const&) = delete;
+  PlotState():
+  splits(std::make_unique<std::vector<int32_t>>()), 
+  samples(std::make_unique<std::vector<float>>()) {}
 };
 
-struct XTS_ALIGN PlotOutput0
-{
-  float freq;
-  int32_t rate;
-  XtsBool clip;
-  XtsBool bipolar;
-  int32_t splitCount;
-  int32_t sampleCount;
-  float* samples;
-  int32_t* splits;
-  PlotOutput0() = default;
-};
-#define XTS_CALL __stdcall
-#define XTS_EXPORT extern "C" __declspec(dllexport) 
-
+XTS_EXPORT SeqState* XTS_CALL XtsSeqStateCreate(void);
+XTS_EXPORT PlotState* XTS_CALL XtsPlotStateCreate(void);
 XTS_EXPORT Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void);
 XTS_EXPORT Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void);
-XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* seq);
-XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* synth);
 
-XTS_EXPORT Xts::SeqState* XTS_CALL XtsSeqStateCreate(void);
-XTS_EXPORT Xts::PlotInput* XTS_CALL XtsPlotInputCreate(void);
-XTS_EXPORT Xts::PlotOutput0* XTS_CALL XtsPlotOutputCreate(void);
-XTS_EXPORT void XTS_CALL XtsSeqStateDestroy(Xts::SeqState* state);
-XTS_EXPORT void XTS_CALL XtsPlotInputDestroy(Xts::PlotInput* input);
-XTS_EXPORT void XTS_CALL XtsPlotOutputDestroy(Xts::PlotOutput0* output);
+XTS_EXPORT void XTS_CALL XtsSeqStateDestroy(SeqState* state);
+XTS_EXPORT void XTS_CALL XtsPlotStateDestroy(PlotState* state);
+XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model);
+XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model);
 
 XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
 XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqState* state);
-XTS_EXPORT void XTS_CALL XtsSeqDSPProcessBuffer(Xts::SeqDSP* dsp, Xts::SeqState* state);
-
-XTS_EXPORT Xts::PlotDSP* XTS_CALL XtsPlotDSPCreate(void);
-XTS_EXPORT void XTS_CALL XtsPlotDSPDestroy(Xts::PlotDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, Xts::PlotInput const* input, Xts::PlotOutput0* output);
+XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, SeqState* state);
+XTS_EXPORT void XTS_CALL XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state);
+XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, PlotState* state);
 
 #endif // XTS_HPP

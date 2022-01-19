@@ -13,7 +13,7 @@ public:
   PlotDSP() = default;
   PlotDSP(PlotDSP const&) = delete;
 public:
-  void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
+  void Render(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

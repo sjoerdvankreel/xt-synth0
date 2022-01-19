@@ -7,7 +7,7 @@
 namespace Xts {
 
 void
-PlotDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   output.splits->clear();
   output.samples->clear();

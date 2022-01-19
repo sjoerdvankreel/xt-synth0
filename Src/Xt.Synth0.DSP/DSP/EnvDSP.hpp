@@ -6,6 +6,7 @@
 
 namespace Xts {
 
+struct EnvParams;
 enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
 class EnvDSP 
@@ -18,10 +19,10 @@ public:
   EnvDSP(EnvDSP const&) = delete;
 private:
   void NextStage(EnvStage stage);
-  void CycleStage(EnvType type, struct EnvParams const& params);
+  void CycleStage(EnvType type, EnvParams const& params);
   float Generate(float from, float to, float len, int slp) const;
+  float Generate(EnvModel const& model, EnvParams const& params) const;
   EnvParams Params(EnvModel const& model, AudioInput const& input) const;
-  float Generate(EnvModel const& model, struct EnvParams const& params) const;
 public:
   bool End() const { return _stage == EnvStage::End; }
   void Init(EnvModel const& model, AudioInput const& input);
