@@ -25,6 +25,15 @@ public:
   PlotOutput(PlotOutput const&) = delete;
 };
 
+struct AudioOutput
+{
+  float l;
+  float r;
+public:
+  AudioOutput(AudioOutput const&) = delete;
+  AudioOutput(float l, float r) : l(l), r(r) {}
+};
+
 struct AudioInput
 {
   int oct;
@@ -40,10 +49,11 @@ public:
 template <class DSP, class Model, class Output>
 concept Generator = requires(DSP& dsp, PlotOutput& out)
 {
-  { Output(dsp.Next(Model(), AudioInput())) };
-  { dsp.Init(Model(), AudioInput()) } -> std::convertible_to<void>;
-  { dsp.Release(Model(), AudioInput()) } -> std::convertible_to<void>;
-  { dsp.Plot(Model(), PlotInput(), out) } -> std::convertible_to<void>;
+  { dsp.End() } -> std::same_as<bool>;
+  { dsp.Init(Model(), AudioInput()) } -> std::same_as<void>;
+  { dsp.Next(Model(), AudioInput()) } -> std::same_as<Output>;
+  { dsp.Release(Model(), AudioInput()) } -> std::same_as<void>;
+  { dsp.Plot(Model(), PlotInput(), out) } -> std::same_as<void>;
 };
 
 } // namespace Xts

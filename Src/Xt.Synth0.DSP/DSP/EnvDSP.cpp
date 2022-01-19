@@ -11,15 +11,8 @@ struct EnvParams
   float dly, a, hld, d, s, r;
 public:
   EnvParams() = default;
-  EnvParams(EnvParams const&) = delete;
+  EnvParams(EnvParams const&) = default;
 };
-
-void
-EnvDSP::Init(EnvModel const& model)
-{
-  _level = 0.0f;
-  NextStage(EnvStage::Dly);
-}
 
 void
 EnvDSP::NextStage(EnvStage stage)
@@ -29,12 +22,21 @@ EnvDSP::NextStage(EnvStage stage)
 }
 
 void
-EnvDSP::Release()
-{ if(_stage < EnvStage::R) NextStage(EnvStage::R); }
+EnvDSP::Init(EnvModel const& model, AudioInput const& input)
+{
+  _level = 0.0f;
+  bool off = model.type == EnvType::Off;
+  NextStage(off? EnvStage::S: EnvStage::Dly);
+  CycleStage(model.type, Params(model, input));
+}
 
-float 
-EnvDSP::Frames(EnvParams const& params)
-{ return params.dly + params.a + params.hld + params.d + params.r; }
+void
+EnvDSP::Release(EnvModel const& model, AudioInput const& input)
+{ 
+  if(_stage >= EnvStage::R) return;
+  bool off = model.type == EnvType::Off;
+  NextStage(off? EnvStage::End: EnvStage::R);
+}
 
 float
 EnvDSP::Generate(float from, float to, float len, int slp) const
@@ -47,32 +49,31 @@ EnvDSP::Generate(float from, float to, float len, int slp) const
 }
 
 float
-EnvDSP::Generate(EnvModel const& env, EnvParams const& params) const
+EnvDSP::Generate(EnvModel const& model, EnvParams const& params) const
 {
   switch (_stage)
   {
   case EnvStage::Dly: return 0.0f; 
   case EnvStage::Hld: return 1.0f; 
-  case EnvStage::End: return 0.0f; 
   case EnvStage::S: return params.s;
-  case EnvStage::A: return Generate(0.0, 1.0, params.a, env.aSlp);
-  case EnvStage::R: return Generate(_level, 0.0, params.r, env.rSlp);
-  case EnvStage::D: return Generate(1.0, params.s, params.d, env.dSlp);
+  case EnvStage::A: return Generate(0.0, 1.0, params.a, model.aSlp);
+  case EnvStage::R: return Generate(_level, 0.0, params.r, model.rSlp);
+  case EnvStage::D: return Generate(1.0, params.s, params.d, model.dSlp);
   default: assert(false); return 0.0f;
   }
 }
 
 EnvParams
-EnvDSP::Params(EnvModel const& env, float rate, int bpm) const
+EnvDSP::Params(EnvModel const& model, AudioInput const& input) const
 {
   EnvParams result;
-  bool sync = env.sync != 0;
-  result.s = Level(env.s);
-  result.a = sync ? Sync(env.aSnc, rate, bpm) : Time(env.a, rate);
-  result.d = sync ? Sync(env.dSnc, rate, bpm) : Time(env.d, rate);
-  result.r = sync ? Sync(env.rSnc, rate, bpm) : Time(env.r, rate);
-  result.dly = sync ? Sync(env.dlySnc, rate, bpm) : Time(env.dly, rate);
-  result.hld = sync ? Sync(env.hldSnc, rate, bpm) : Time(env.hld, rate);
+  result.s = Level(model.s);
+  bool sync = model.sync != 0;
+  result.a = sync ? Sync(input, model.aSnc) : Time(model.a, input.rate);
+  result.d = sync ? Sync(input, model.dSnc) : Time(model.d, input.rate);
+  result.r = sync ? Sync(input, model.rSnc) : Time(model.r, input.rate);
+  result.dly = sync ? Sync(input, model.dlySnc) : Time(model.dly, input.rate);
+  result.hld = sync ? Sync(input, model.hldSnc) : Time(model.hld, input.rate);
   return result;
 }
 
@@ -87,26 +88,50 @@ EnvDSP::CycleStage(EnvType type, EnvParams const& params)
   if (_stage == EnvStage::R && _stagePos >= params.r) NextStage(EnvStage::End);
 }
 
-void 
-EnvDSP::Next(EnvModel const& env, float rate, int bpm, EnvOutput& output)
+float
+EnvDSP::Next(EnvModel const& model, AudioInput const& input)
 {
   const float threshold = 1.0E-5f;
-  memset(&output, 0, sizeof(output));
-  auto type = static_cast<EnvType>(env.type);
-  if(type == EnvType::Off) _stage = EnvStage::End;
-  output.stage = _stage;
-  if(_stage == EnvStage::End) return;
-  EnvParams params = Params(env, rate, bpm);
-  CycleStage(type, params);
-  float result = Generate(env, params);
-  if(_stage != EnvStage::End) _stagePos++;
-  if(_stage > EnvStage::A && _stage != EnvStage::End && result <= threshold) NextStage(EnvStage::End);
+  if(model.type == EnvType::Off || _stage == EnvStage::End) return 0.0f;
+  EnvParams params = Params(model, input);
+  CycleStage(model.type, params);
+  float result = Generate(model, params);
+  if (_stage != EnvStage::End) _stagePos++;
   if(_stage < EnvStage::R) _level = result;
-  output.lvl = result;
-  output.stage = _stage;
-  output.staged = _stage != _prevStage;
-  _prevStage = _stage;
-  assert(0.0f <= output.lvl && output.lvl <= 1.0f);
+  if(_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
+  return result;
+}
+
+void
+EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  const float testRate = 1000.0f;
+  const float sustainFactor = 0.2f;
+
+  output.freq = 0.0f;
+  output.rate = 0.0f;
+  output.clip = false;
+  output.bipolar = false;
+  if (model.type == EnvType::Off) return;
+
+  auto params = Params(model, AudioInput(testRate, 120, 4, UnitNote::C));
+  auto length = params.dly + params.a + params.hld + params.d + params.r;
+  int sustain = static_cast<int>(length * sustainFactor);
+  output.rate = input.pixels / (length + sustain) * testRate;
+  auto in = AudioInput(output.rate, 120, 4, UnitNote::C);
+
+  int i = 0;
+  int s = 0;
+  Init(model, in);
+  EnvStage prev = EnvStage::Dly;
+  while(!End())
+  {
+    if(s == sustain) Release(model, in);
+    output.samples.push_back(Next(model, in));
+    if(_stage == EnvStage::S) s++;
+    if(prev != _stage) output.splits.push_back(s);
+    prev = _stage; s++; i++;
+  }
 }
 
 } // namespace Xts

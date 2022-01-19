@@ -61,22 +61,22 @@ UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output
 	float samples = ceilf(output.rate / output.freq);
 	for (int i = 0; i < static_cast<int>(samples); i++)
 	{
-		UnitOutput out = Next(model, in);
+		AudioOutput out = Next(model, in);
 		output.samples.push_back(out.l + out.r);
 	}
 }
 
-UnitOutput
+AudioOutput
 UnitDSP::Next(UnitModel const& model, AudioInput const& input)
 {
-	if (model.type == UnitType::Off) return UnitOutput(0.0f, 0.0f);
+	if (model.type == UnitType::Off) return AudioOutput(0.0f, 0.0f);
 	float freq = Freq(model);
 	float amp = Level(model.amp);
 	float pan = Mix01Inclusive(model.pan);
 	float sample = Generate(model, freq, input.rate);
 	_phase += freq / input.rate;
 	if (_phase >= 1.0) _phase = 0.0;
-  return UnitOutput(sample * amp * pan, sample * amp * (1.0f - pan));
+  return AudioOutput(sample * amp * pan, sample * amp * (1.0f - pan));
 }
 
 float 
