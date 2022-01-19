@@ -7,11 +7,11 @@
 #define XTS_COMBINE_(X,Y) X##Y
 #define XTS_COMBINE(X,Y) XTS_COMBINE_(X,Y)
 #define XTS_CHECK_SIZE(type, expected) \
-CheckSize<sizeof(type), expected> XTS_COMBINE(Check, __LINE__)
+CheckSize<sizeof(type), expected> XTS_COMBINE(Check, __COUNTER__)
 
 typedef int32_t XtsBool;
-inline constexpr XtsBool XtsTrue = 1;
-inline constexpr XtsBool XtsFalse = 0;
+constexpr XtsBool XtsTrue = 1;
+constexpr XtsBool XtsFalse = 0;
 
 namespace Xts {
 

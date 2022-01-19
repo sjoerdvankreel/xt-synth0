@@ -80,7 +80,7 @@ private:
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 1384);
+XTS_CHECK_SIZE(SynthModel, 312);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

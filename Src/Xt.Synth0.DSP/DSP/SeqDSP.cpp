@@ -1,165 +1,157 @@
 #include "SeqDSP.hpp"
 #include "DSP.hpp"
+
 #include <cstring>
 #include <cassert>
 
 namespace Xts {
 
-bool
-SeqDSP::RowUpdated(int currentRow)
+void
+SeqDSP::Init()
 {
-	bool result = _previousRow != currentRow;
-	_previousRow = currentRow;
-	return result;
+  _pos = 0;
+  _row = -1;
+  _fill = 0.0;
+  _voices = 0;
+  for (int i = 0; i < MaxVoices; i++)
+    _started[i] = _keys[i] = -1;
 }
 
 void
-SeqDSP::Init(SeqState& state)
+SeqDSP::Return(int key, int voice)
 {
-  _voicesUsed = 0;
-  _rowFactor = 0.0;
-  _previousRow = -1;
-  for (int i = 0; i < MaxVoices; i++)
-  {
-    _voiceKeys[i] = -1;
-    _voicesStarted[i] = -1;
-  }
-  memset(&state, 0, sizeof(state));
-}
-
-void 
-SeqDSP::ReturnVoice(int key, int voice)
-{ 
+  _voices--;
+  _keys[voice] = -1;
+  _started[voice] = -1;
+  assert(0 <= key && key < MaxKeys);
   assert(0 <= voice && voice < MaxVoices);
-  assert(0 <= key && key < TrackConstants::MaxKeys);
-  _voicesUsed--;
-  _voiceKeys[voice] = -1;
-  _voicesStarted[voice] = -1;
-  assert(0 <= _voicesUsed && _voicesUsed < MaxVoices);
+  assert(0 <= _voices && _voices < MaxVoices);
 }
 
 int
-SeqDSP::TakeVoice(SeqState& state, int key, int64_t pos)
+SeqDSP::Take(int key, int voice)
 {
-  assert(pos >= 0);
-  assert(0 <= key && key < TrackConstants::MaxKeys);
-  int victim = -1;
-  int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
-  for(int i = 0; i < MaxVoices; i++)
+  _voices++;
+  _keys[voice] = key;
+  _started[voice] = _pos;
+  assert(0 <= _voices && _voices <= MaxVoices);
+  return voice;
+}
+
+bool
+SeqDSP::Move(SeqInput const& input)
+{
+  int bpm = input.seq->edit.bpm;
+  int lpb = input.seq->edit.lpb;
+  int pats = input.seq->edit.pats;
+  int rows = input.seq->edit.rows;
+  if (_row == -1) return _row = 0, true;
+  _fill += bpm * lpb / (60.0 * input.rate);
+  if (_fill < 1.0) return false;
+  _fill = 0.0f;
+  _row++;
+  if (MaxRows == rows) _row += MaxRows - rows;
+  if (_row == pats * MaxRows) _row = 0;
+  return true;
+}
+
+AudioOutput
+SeqDSP::Next(SeqInput const& input, bool& exhausted)
+{
+  if (Move(input))
   {
-    if(_voicesStarted[i] == -1)
-    {
-      _voicesUsed++;
-      _voiceKeys[i] = key;
-      _voicesStarted[i] = pos;
-      assert(0 <= _voicesUsed && _voicesUsed <= MaxVoices);
-      return i;
-    }
-    if(_voicesStarted[i] < victimStart)
-    {
-			victim = i;
-			victimStart = _voicesStarted[i];
-    }
+    Automate(*input.seq);
+    Trigger(input, exhausted);
   }
-  state.exhausted = true;
+  AudioOutput result;
+  for (int v = 0; v < MaxVoices; v++)
+  {
+    if (_keys[v] == -1) continue;
+    result += _dsps[v].Next(_models[v], _inputs[v]);
+    if (_dsps[v].End()) Return(_keys[v], v);
+  }
+  return result;
+}
+
+void
+SeqDSP::Render(SeqInput const& input, SeqOutput& output)
+{
+  bool clip;
+  bool exhausted;
+  output.clip = false;
+  output.exhausted = false;
+	for (int f = 0; f < input.frames; f++)
+	{
+		auto out = Next(input, exhausted);
+    output.exhausted |= exhausted;
+    input.buffer[f * 2] = Clip(out.l, clip);
+    output.clip |= clip;
+    input.buffer[f * 2 + 1] = Clip(out.r, clip);
+    output.clip |= clip;
+    _pos++;
+	}
+  output.pos = _pos;
+  output.row = _row;
+  output.voices = _voices;
+}
+
+int
+SeqDSP::Take(int key, bool& exhausted)
+{
+  int victim = -1;
+  assert(_pos >= 0);
+  exhausted = false;
+  assert(0 <= key && key < MaxKeys);
+  int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
+  for (int i = 0; i < MaxVoices; i++)
+  {
+    if (_started[i] == -1) return Take(key, i);
+    if (_started[i] < victimStart)	victimStart = _started[victim = i];
+  }
+  exhausted = true;
+  _keys[victim] = key;
+  _started[victim] = _pos;
   assert(0 <= victim && victim < MaxVoices);
-  assert(0 <= _voicesUsed && _voicesUsed <= MaxVoices);
-  _voiceKeys[victim] = key;
-  _voicesStarted[victim] = pos;
+  assert(0 <= _voices && _voices <= MaxVoices);
   return victim;
 }
 
 void
-SeqDSP::ProcessBuffer(SeqState& state)
+SeqDSP::Automate(SeqModel const& seq) const
 {
-	bool clip;
-	SeqOutput output;
-	state.clip = false;
-  state.exhausted = false;
-	for (int f = 0; f < state.frames; f++)
-	{
-		Next(state, output);
-		state.buffer[f * 2] = Clip(output.l, clip);
-		state.clip |= clip? XtsTrue: XtsFalse;
-		state.buffer[f * 2 + 1] = Clip(output.r, clip);
-		state.clip |= clip ? XtsTrue : XtsFalse;
-	}
-  state.voices = _voicesUsed;
-}
-
-bool 
-SeqDSP::UpdateRow(SeqState&  state)
-{
-	int lpb = state.seq->edit.lpb;
-	int pats = state.seq->edit.pats;
-	int rows = state.seq->edit.rows;
-	int bpm = state.synth->global.bpm;
-  int maxRows = TrackConstants::MaxRows;
-	_rowFactor += bpm * lpb / (60.0 * state.rate);
-	if (_rowFactor < 1.0) return RowUpdated(state.currentRow);
-	_rowFactor = 0.0f;
-	state.currentRow++;
-  if(state.currentRow % maxRows == rows)
+  for (int f = 0; f < seq.edit.fxs; f++)
   {
-		state.currentRow += maxRows - rows;
-    assert(state.currentRow % maxRows == 0);
+    auto const& fx = seq.pattern.rows[_row].fx[f];
+    assert(0 <= fx.val && fx.val < 256);
+    assert(0 <= fx.tgt && fx.tgt < 256);
+    if (fx.tgt == 0 || fx.tgt > ParamCount) return;
+    auto const& p = seq.params[fx.tgt - 1];
+    if (fx.val < p.min) *p.val = p.min;
+    else if (fx.val > p.max) *p.val = p.max;
+    else *p.val = fx.val;
   }
-  if(state.currentRow == pats * maxRows) state.currentRow = 0;
-	return RowUpdated(state.currentRow);
 }
 
 void
-SeqDSP::Next(SeqState& state, SeqOutput& output)
+SeqDSP::Trigger(SeqInput const& input, bool& exhausted)
 {
-  SynthOutput sout;
-  memset(&output, 0, sizeof(output));
-	bool updated = UpdateRow(state);
-  auto row = state.seq->pattern.rows[state.currentRow];
-	if (updated) _pattern.Automate(state.seq->edit, row, *state.synth);
-  for(int k = 0; k < state.seq->edit.keys; k++)
+  for (int k = 0; k < input.seq->edit.keys; k++)
   {
-    auto key = row.keys[k];
+    auto const& key = input.seq->pattern.rows[_row].keys[k];
     auto note = static_cast<PatternNote>(key.note);
-    auto unitNote = static_cast<UnitNote>(static_cast<int>(note) - 2);
-    if (updated && note >= PatternNote::Off)
+    if (note >= PatternNote::Off)
       for (int v = 0; v < MaxVoices; v++)
-        if (_voiceKeys[v] == k) _voiceDsps[v].Release();
-    if (updated && note >= PatternNote::C)
+        if (_keys[v] == k) _dsps[v].Release(_models[v], _inputs[v]);
+    if (note >= PatternNote::C)
     {
-      int voice = TakeVoice(state, k, state.streamPosition);
-      _voiceDsps[voice].Init(key.oct, unitNote);
-      memcpy(&_voiceModels[voice], state.synth, sizeof(SynthModel));
+      int voice = Take(k, exhausted);
+      float bpm = static_cast<float>(input.seq->edit.bpm);
+      memcpy(&_models[voice], input.synth, sizeof(SynthModel));
+      auto unote = static_cast<UnitNote>(static_cast<int>(note) - 2);
+      _inputs[voice] = AudioInput(input.rate, bpm, key.oct, unote);
+      _dsps[voice].Init(_models[voice], _inputs[voice]);
     }
   }
-  for(int v = 0; v < MaxVoices; v++)
-  {
-    if(_voiceKeys[v] == -1) continue;
-    _voiceDsps[v].Next(_voiceModels[v], state.rate, sout);
-    output.l += sout.l;
-    output.r += sout.r;
-    if(sout.end) 
-      ReturnVoice(_voiceKeys[v], v);
-  }
-	state.streamPosition++;
 }
 
-
-void
-SeqDSP::Automate(PatternFx const& fx, SynthModel& synth) const
-{
-  assert(fx.val >= 0);
-  assert(fx.tgt >= 0);
-  if (fx.tgt == 0 || fx.tgt > ParamCount) return;
-  auto const& p = synth.autoParams[fx.tgt - 1];
-  if (fx.val < p.min) *p.val = p.min;
-  else if (fx.val > p.max) *p.val = p.max;
-  else *p.val = fx.val;
-}
-
-void
-SeqDSP::Automate(EditModel const& edit, PatternRow const& row, SynthModel& synth) const
-{
-  for (int f = 0; f < edit.fxs; f++)
-    Automate(row.fx[f], synth);
-}
 } // namespace Xts

@@ -68,7 +68,7 @@ struct XTS_ALIGN EditModel
 private:
   int pats, rows, keys, fxs, lpb, edit, bpm, pad__;
 };
-XTS_CHECK_SIZE(EditModel, 24);
+XTS_CHECK_SIZE(EditModel, 32);
 
 struct XTS_ALIGN SeqModel
 {
@@ -80,7 +80,7 @@ private:
   PatternModel pattern;
   Param params[ParamCount];
 };
-XTS_CHECK_SIZE(SeqModel, 22552);
+XTS_CHECK_SIZE(SeqModel, 23632);
 
 } // namespace Xts
 #endif // XTS_SEQ_MODEL_HPP
