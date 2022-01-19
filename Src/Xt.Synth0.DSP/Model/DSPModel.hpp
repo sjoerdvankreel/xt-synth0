@@ -60,7 +60,7 @@ concept Generator = requires(DSP& dsp, PlotOutput& out)
   { dsp.Init(Model(), AudioInput()) } -> std::same_as<void>;
   { dsp.Next(Model(), AudioInput()) } -> std::same_as<Output>;
   { dsp.Release(Model(), AudioInput()) } -> std::same_as<void>;
-  { dsp.Plot(Model(), PlotInput(), out) } -> std::same_as<void>;
+  { DSP::Plot(Model(), PlotInput(), out) } -> std::same_as<void>;
 };
 
 } // namespace Xts
