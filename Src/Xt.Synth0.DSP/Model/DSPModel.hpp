@@ -18,8 +18,8 @@ struct PlotOutput
 {
   float freq, rate;
   bool clip, bipolar;
-  std::vector<int> splits;
-  std::vector<float> samples;
+  std::vector<int>* splits;
+  std::vector<float>* samples;
 public:
   PlotOutput() = default;
   PlotOutput(PlotOutput const&) = delete;

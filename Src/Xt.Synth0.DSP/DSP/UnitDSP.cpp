@@ -60,7 +60,7 @@ UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output
 	AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
 	Init(model, in);
 	for (int i = 0; i <= static_cast<int>(samples); i++)
-		output.samples.push_back(Next(model, in).Mono());
+		output.samples->push_back(Next(model, in).Mono());
 }
 
 AudioOutput

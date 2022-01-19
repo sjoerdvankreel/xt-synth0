@@ -127,9 +127,9 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   while(!End())
   {
     if(s == sustain) Release(model, in);
-    output.samples.push_back(Next(model, in));
+    output.samples->push_back(Next(model, in));
     if(_stage == EnvStage::S) s++;
-    if(prev != _stage) output.splits.push_back(s);
+    if(prev != _stage) output.splits->push_back(s);
     prev = _stage; s++; i++;
   }
 }

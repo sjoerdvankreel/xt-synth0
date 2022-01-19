@@ -26,7 +26,7 @@ struct XTS_ALIGN GlobalModel
   GlobalModel() = default;
   GlobalModel(GlobalModel const&) = delete;
 private:
-  int32_t bpm, env1;
+  int32_t amp, env1;
 };
 XTS_CHECK_SIZE(GlobalModel, 8);
 
@@ -45,16 +45,15 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 64);
 
-enum class PlotFit { Auto, Rate, Fit };
-enum class PlotSource { Global, Unit1, Unit2, Unit3, Env1, Env2 };
+enum class PlotType { Synth, Unit1, Unit2, Unit3, Env1, Env2 };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;
   PlotModel() = default;
   PlotModel(PlotModel const&) = delete;
 private:
-  PlotFit fit;
-  PlotSource src;
+  PlotType type;
+  int pad__;
 };
 XTS_CHECK_SIZE(PlotModel, 8);
 
@@ -79,6 +78,7 @@ XTS_CHECK_SIZE(UnitModel, 56);
 
 struct XTS_ALIGN SynthModel
 {
+  friend class PlotDSP;
   friend class SynthDSP;
   SynthModel() = default;
   SynthModel(SynthModel const&) = delete;
@@ -89,7 +89,7 @@ private:
   UnitModel units[UnitCount];
   AutoParam autoParams[AutoParamCount];
 };
-XTS_CHECK_SIZE(SynthModel, 1400);
+XTS_CHECK_SIZE(SynthModel, 1384);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

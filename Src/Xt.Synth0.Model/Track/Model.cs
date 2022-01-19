@@ -4,7 +4,7 @@
 	{
 		public const int EnvCount = 2;
 		public const int UnitCount = 3;
-		public const int AutoParamCount = 68;
+		public const int AutoParamCount = 67;
 
 		public const int MaxFxs = 3;
 		public const int MaxLpb = 16;

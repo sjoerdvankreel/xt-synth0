@@ -6,13 +6,13 @@ namespace Xts {
 void 
 PatternDSP::Automate(PatternFx const& fx, SynthModel& synth) const
 {
-  assert(fx.value >= 0);
-  assert(fx.target >= 0);
-  if (fx.target == 0 || fx.target > AutoParamCount) return;
-  auto const& p = synth.autoParams[fx.target - 1];
-  if (fx.value < p.min) *p.val = p.min;
-  else if (fx.value > p.max) *p.val = p.max;
-  else *p.val = fx.value;
+  assert(fx.val >= 0);
+  assert(fx.tgt >= 0);
+  if (fx.tgt == 0 || fx.tgt > AutoParamCount) return;
+  auto const& p = synth.autoParams[fx.tgt - 1];
+  if (fx.val < p.min) *p.val = p.min;
+  else if (fx.val > p.max) *p.val = p.max;
+  else *p.val = fx.val;
 }
 
 void

@@ -7,6 +7,27 @@
 #include "Model/SynthModel.hpp"
 #include <cstdint>
 
+
+struct XTS_ALIGN PlotInput
+{
+  int32_t rate;
+  int32_t pixels;
+  SynthModel const* synth;
+  PlotInput() = default;
+};
+
+struct XTS_ALIGN PlotOutput0
+{
+  float freq;
+  int32_t rate;
+  XtsBool clip;
+  XtsBool bipolar;
+  int32_t splitCount;
+  int32_t sampleCount;
+  float* samples;
+  int32_t* splits;
+  PlotOutput0() = default;
+};
 #define XTS_CALL __stdcall
 #define XTS_EXPORT extern "C" __declspec(dllexport) 
 

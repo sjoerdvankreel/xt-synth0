@@ -29,7 +29,8 @@ SynthDSP::Next(SynthModel const& model, AudioInput const& input)
   if (End()) return AudioOutput(0.0f, 0.0f);
   for(int e = 0; e < EnvCount; e++)
     envs[e] = _envs[e].Next(model.envs[e], input);
-  float amp = envs[0] * Level(model.global.env1);
+  float env = envs[0] * Level(model.global.env1);
+  float amp = model.global.amp + (1.0 - model.global.amp) * env;
   for (int u = 0; u < UnitCount; u++)
     output += _units[u].Next(model.units[u], input) * amp;
   return output;
@@ -45,7 +46,7 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   AudioInput in(output.rate, 120, 4, UnitNote::C);
   Init(model, in);
   for(int s = 0; s <= static_cast<int>(output.rate); s++)
-    output.samples.push_back(Next(model, in).Mono());
+    output.samples->push_back(Next(model, in).Mono());
 }
 
 } // namespace Xts
