@@ -53,14 +53,20 @@ public:
     oct(o), note(n), bpm(b), rate(r) {}
 };
 
+template <class DSP, class Model, class Output> concept Generator = 
+requires(DSP& dsp, Model const* model, AudioInput const* input, PlotOutput& out)
+{
+  { DSP(model, input) };
+  { dsp.Next() } -> std::same_as<Output>;
+  { DSP::Plot(Model(), PlotInput(), out) } -> std::same_as<void>;
+};
+
 template <class DSP, class Model, class Output>
-concept Generator = requires(DSP& dsp, PlotOutput& out)
+concept FiniteGenerator = Generator<DSP, Model, Output> &&
+requires(DSP& dsp)
 {
   { dsp.End() } -> std::same_as<bool>;
-  { dsp.Init(Model(), AudioInput()) } -> std::same_as<void>;
-  { dsp.Next(Model(), AudioInput()) } -> std::same_as<Output>;
-  { dsp.Release(Model(), AudioInput()) } -> std::same_as<void>;
-  { DSP::Plot(Model(), PlotInput(), out) } -> std::same_as<void>;
+  { dsp.Release() } -> std::same_as<void>;
 };
 
 } // namespace Xts

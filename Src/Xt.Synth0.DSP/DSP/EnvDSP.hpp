@@ -11,26 +11,28 @@ enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
 class EnvDSP 
 {
-  int _stagePos = 0;
-  float _level = 0.0f;
-  EnvStage _stage = EnvStage::Dly;
+  float _level;
+  int _stagePos;
+  EnvStage _stage;
+  EnvModel const* const _model;
+  AudioInput const* const _input;
 public:
   EnvDSP() = default;
   EnvDSP(EnvDSP const&) = delete;
+  EnvDSP(EnvModel const* model, AudioInput const* input);
 private:
   void NextStage(EnvStage stage);
+  float Generate(EnvParams const& params) const;
   void CycleStage(EnvType type, EnvParams const& params);
   float Generate(float from, float to, float len, int slp) const;
-  float Generate(EnvModel const& model, EnvParams const& params) const;
-  EnvParams Params(EnvModel const& model, AudioInput const& input) const;
+  static EnvParams Params(EnvModel const& model, AudioInput const& input);
 public:
+  float Next();
+  void Release();
   bool End() const { return _stage == EnvStage::End; }
-  void Init(EnvModel const& model, AudioInput const& input);
-  float Next(EnvModel const& model, AudioInput const& input);
-  void Release(EnvModel const& model, AudioInput const& input);
-  void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
+  static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
 };
-static_assert(Generator<EnvDSP, EnvModel, float>);
+static_assert(FiniteGenerator<EnvDSP, EnvModel, float>);
 
 } // namespace Xts
 #endif // XTS_ENV_DSP_HPP

@@ -14,6 +14,15 @@ public:
   EnvParams(EnvParams const&) = default;
 };
 
+EnvDSP::
+EnvDSP(EnvModel const* model, AudioInput const* input) :
+  _level(0.0f), _stagePos(0), _stage(EnvStage::Dly), _model(model), _input(input)
+{
+  bool off = model->type == EnvType::Off;
+  NextStage(off ? EnvStage::S : EnvStage::Dly);
+  CycleStage(model->type, Params(*model, *input));
+}
+
 void
 EnvDSP::NextStage(EnvStage stage)
 {
@@ -22,20 +31,11 @@ EnvDSP::NextStage(EnvStage stage)
 }
 
 void
-EnvDSP::Init(EnvModel const& model, AudioInput const& input)
+EnvDSP::Release()
 {
-  _level = 0.0f;
-  bool off = model.type == EnvType::Off;
-  NextStage(off? EnvStage::S: EnvStage::Dly);
-  CycleStage(model.type, Params(model, input));
-}
-
-void
-EnvDSP::Release(EnvModel const& model, AudioInput const& input)
-{ 
-  if(_stage >= EnvStage::R) return;
-  bool off = model.type == EnvType::Off;
-  NextStage(off? EnvStage::End: EnvStage::R);
+  if (_stage >= EnvStage::R) return;
+  bool off = _model->type == EnvType::Off;
+  NextStage(off ? EnvStage::End : EnvStage::R);
 }
 
 float
@@ -49,22 +49,36 @@ EnvDSP::Generate(float from, float to, float len, int slp) const
 }
 
 float
-EnvDSP::Generate(EnvModel const& model, EnvParams const& params) const
+EnvDSP::Generate(EnvParams const& params) const
 {
   switch (_stage)
   {
   case EnvStage::Dly: return 0.0f; 
   case EnvStage::Hld: return 1.0f; 
   case EnvStage::S: return params.s;
-  case EnvStage::A: return Generate(0.0, 1.0, params.a, model.aSlp);
-  case EnvStage::R: return Generate(_level, 0.0, params.r, model.rSlp);
-  case EnvStage::D: return Generate(1.0, params.s, params.d, model.dSlp);
+  case EnvStage::A: return Generate(0.0, 1.0, params.a, _model->aSlp);
+  case EnvStage::R: return Generate(_level, 0.0, params.r, _model->rSlp);
+  case EnvStage::D: return Generate(1.0, params.s, params.d, _model->dSlp);
   default: assert(false); return 0.0f;
   }
 }
 
+float
+EnvDSP::Next()
+{
+  const float threshold = 1.0E-5f;
+  if (_model->type == EnvType::Off || _stage == EnvStage::End) return 0.0f;
+  EnvParams params = Params(*_model, *_input);
+  CycleStage(_model->type, params);
+  float result = Generate(params);
+  if (_stage != EnvStage::End) _stagePos++;
+  if (_stage < EnvStage::R) _level = result;
+  if (_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
+  return result;
+}
+
 EnvParams
-EnvDSP::Params(EnvModel const& model, AudioInput const& input) const
+EnvDSP::Params(EnvModel const& model, AudioInput const& input)
 {
   EnvParams result;
   result.s = Level(model.s);
@@ -88,20 +102,6 @@ EnvDSP::CycleStage(EnvType type, EnvParams const& params)
   if (_stage == EnvStage::R && _stagePos >= params.r) NextStage(EnvStage::End);
 }
 
-float
-EnvDSP::Next(EnvModel const& model, AudioInput const& input)
-{
-  const float threshold = 1.0E-5f;
-  if(model.type == EnvType::Off || _stage == EnvStage::End) return 0.0f;
-  EnvParams params = Params(model, input);
-  CycleStage(model.type, params);
-  float result = Generate(model, params);
-  if (_stage != EnvStage::End) _stagePos++;
-  if(_stage < EnvStage::R) _level = result;
-  if(_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
-  return result;
-}
-
 void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
@@ -118,19 +118,19 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   auto length = params.dly + params.a + params.hld + params.d + params.r;
   int sustain = static_cast<int>(length * sustainFactor);
   output.rate = input.pixels / (length + sustain) * testRate;
-  auto in = AudioInput(output.rate, 120, 4, UnitNote::C);
 
   int i = 0;
   int s = 0;
-  Init(model, in);
   EnvStage prev = EnvStage::Dly;
-  while(!End())
+  auto in = AudioInput(output.rate, 120, 4, UnitNote::C);
+  EnvDSP dsp(&model, &in);
+  while(!dsp.End())
   {
-    if(s == sustain) Release(model, in);
-    output.samples->push_back(Next(model, in));
-    if(_stage == EnvStage::S) s++;
-    if(prev != _stage) output.splits->push_back(s);
-    prev = _stage; s++; i++;
+    if(s == sustain) dsp.Release();
+    output.samples->push_back(dsp.Next());
+    if(dsp._stage == EnvStage::S) s++;
+    if(prev != dsp._stage) output.splits->push_back(s);
+    prev = dsp._stage; s++; i++;
   }
 }
 

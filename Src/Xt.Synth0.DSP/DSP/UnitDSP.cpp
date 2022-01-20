@@ -15,28 +15,39 @@ UnitDSP::PwPhase() const
 	return result - (int)result;
 }
 
+float
+UnitDSP::Freq(UnitModel const& model, AudioInput const& input)
+{
+  int base = 4 * 12 + static_cast<int>(UnitNote::C);
+	int key = input.oct * 12 + static_cast<int>(input.note);
+	int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
+	int noteNum = unit + key - base;
+	int cent = static_cast<int>(Mix0100Inclusive(model.dtn));
+	float midi = noteNum + cent / 100.0f;
+	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
+}
+
 void
 UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
 {
-/*
+  AudioInput testIn(0.0f, input.bpm, 4, UnitNote::C);
 	output.clip = false;
 	output.bipolar = true;
-	output.freq = Freq(model);
+	output.freq = Freq(model, testIn);
 	output.rate = output.freq * input.pixels;
 
+  AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
+  UnitDSP dsp(&model, &in);
 	float samples = output.rate / output.freq;
-	AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
-	Init(model, in);
 	for (int i = 0; i <= static_cast<int>(samples); i++)
-		output.samples->push_back(Next(model, in).Mono());
-*/
+		output.samples->push_back(dsp.Next().Mono());
 }
 
 AudioOutput
 UnitDSP::Next()
 {
 	if (_model->type == UnitType::Off) return AudioOutput(0.0f, 0.0f);
-	float freq = Freq();
+	float freq = Freq(*_model, *_input);
 	float sample = Generate(freq);
 	float amp = Level(_model->amp);
 	float pan = Mix01Inclusive(_model->pan);
@@ -56,18 +67,6 @@ UnitDSP::Generate(float freq) const
 	case UnitType::Naive: return GenerateNaive(_model->naiveType, phase);
 	default: assert(false); return 0.0f;
 	}
-}
-
-float
-UnitDSP::Freq() const
-{ 
-	int baseNote = 4 * 12 + static_cast<int>(UnitNote::C);
-  int keyNote = _input->oct * 12 + static_cast<int>(_input->note);
-  int thisNote = (_model->oct + 1) * 12 + static_cast<int>(_model->note);
-  int noteNum = thisNote + keyNote - baseNote;
-  int cent = static_cast<int>(Mix0100Inclusive(_model->dtn));
-	float midi = noteNum + cent / 100.0f;
-	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
 
 float 
