@@ -16,7 +16,7 @@ public:
 
 EnvDSP::
 EnvDSP(EnvModel const* model, AudioInput const* input) :
-  _level(0.0f), _stagePos(0), _stage(EnvStage::Dly), _model(model), _input(input)
+GeneratorDSP(model, input), _level(0.0f), _stagePos(0), _stage(EnvStage::Dly)
 {
   bool off = model->type == EnvType::Off;
   NextStage(off ? EnvStage::S : EnvStage::Dly);

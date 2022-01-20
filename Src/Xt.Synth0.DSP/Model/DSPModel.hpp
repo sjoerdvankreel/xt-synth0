@@ -53,7 +53,21 @@ public:
     oct(o), note(n), bpm(b), rate(r) {}
 };
 
-template <class DSP, class Model, class Output> concept Generator = 
+template <class Model>
+class GeneratorDSP
+{
+protected:
+  Model const* const _model;
+  AudioInput const* const _input;
+protected:
+  GeneratorDSP() = default;
+  GeneratorDSP(GeneratorDSP const&) = delete;
+  GeneratorDSP(Model const* model, AudioInput const* input) :
+  _model(model), _input(input) {}
+};
+
+template <class DSP, class Model, class Output> 
+concept Generator = std::is_base_of_v<GeneratorDSP<Model>, DSP> &&
 requires(DSP& dsp, Model const* model, AudioInput const* input, PlotOutput& out)
 {
   { DSP(model, input) };

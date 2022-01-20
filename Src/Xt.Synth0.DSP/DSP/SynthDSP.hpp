@@ -14,7 +14,8 @@ class SynthDSP
   UnitDSP _units[UnitCount];
 public:
   SynthDSP() = default;
-  SynthDSP(SynthDSP const&) = delete;
+  SynthDSP(SynthModel const&) = delete;
+  SynthDSP(SynthModel const* model, AudioInput const* input);
 public:
   bool End() const { return _envs[0].End(); }
   void Init(SynthModel const& model, AudioInput const& input);
@@ -22,7 +23,7 @@ public:
   AudioOutput Next(SynthModel const& model, AudioInput const& input);
   void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
-static_assert(Generator<SynthDSP, SynthModel, AudioOutput>);
+static_assert(FiniteGenerator<SynthDSP, SynthModel, AudioOutput>);
 
 } // namespace Xts
 #endif // XTS_SYNTH_DSP_HPP

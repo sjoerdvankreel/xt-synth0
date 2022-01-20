@@ -6,25 +6,24 @@
 
 namespace Xts {
 
-class UnitDSP 
+class UnitDSP: 
+private GeneratorDSP<UnitModel>
 {
   double _phase;
-  UnitModel const* const _model;
-  AudioInput const* const _input;
 public:
   UnitDSP() = default;
   UnitDSP(UnitDSP const&) = delete;
   UnitDSP(UnitModel const* model, AudioInput const* input):
-  _phase(0.0), _model(model), _input(input) {}
+  GeneratorDSP(model, input), _phase(0.0) {}
 public:
   AudioOutput Next();
   static void Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output);
 private:
-  static float Freq(UnitModel const& model, AudioInput const& input);
   float PwPhase() const;
   float Generate(float freq) const;
   float GenerateAdd(float freq) const;
   float GenerateNaive(NaiveType type, float phase) const;
+  static float Freq(UnitModel const& model, AudioInput const& input);
   float GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const;
 };
 static_assert(Generator<UnitDSP, UnitModel, AudioOutput>);

@@ -9,13 +9,12 @@ namespace Xts {
 struct EnvParams;
 enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
-class EnvDSP 
+class EnvDSP:
+private GeneratorDSP<EnvModel>
 {
   float _level;
   int _stagePos;
   EnvStage _stage;
-  EnvModel const* const _model;
-  AudioInput const* const _input;
 public:
   EnvDSP() = default;
   EnvDSP(EnvDSP const&) = delete;
