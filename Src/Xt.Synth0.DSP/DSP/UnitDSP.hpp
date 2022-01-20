@@ -12,7 +12,7 @@ private GeneratorDSP<UnitModel>
   double _phase;
 public:
   UnitDSP() = default;
-  UnitDSP(UnitDSP const&) = delete;
+  UnitDSP(UnitDSP const&) = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
   GeneratorDSP(model, input), _phase(0.0) {}
 public:

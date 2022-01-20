@@ -14,15 +14,6 @@ public:
   EnvParams(EnvParams const&) = default;
 };
 
-EnvDSP::
-EnvDSP(EnvModel const* model, AudioInput const* input) :
-GeneratorDSP(model, input), _level(0.0f), _stagePos(0), _stage(EnvStage::Dly)
-{
-  bool off = model->type == EnvType::Off;
-  NextStage(off ? EnvStage::S : EnvStage::Dly);
-  CycleStage(model->type, Params(*model, *input));
-}
-
 void
 EnvDSP::NextStage(EnvStage stage)
 {
@@ -75,6 +66,15 @@ EnvDSP::Next()
   if (_stage < EnvStage::R) _level = result;
   if (_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
   return result;
+}
+
+EnvDSP::
+EnvDSP(EnvModel const* model, AudioInput const* input) :
+GeneratorDSP(model, input), _level(0.0f), _stagePos(0), _stage(EnvStage::Dly)
+{
+  bool off = model->type == EnvType::Off;
+  NextStage(off ? EnvStage::S : EnvStage::Dly);
+  CycleStage(model->type, Params(*model, *input));
 }
 
 EnvParams

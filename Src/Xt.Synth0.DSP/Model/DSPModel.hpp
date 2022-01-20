@@ -61,7 +61,7 @@ protected:
   AudioInput const* const _input;
 protected:
   GeneratorDSP() = default;
-  GeneratorDSP(GeneratorDSP const&) = delete;
+  GeneratorDSP(GeneratorDSP const&) = default;
   GeneratorDSP(Model const* model, AudioInput const* input) :
   _model(model), _input(input) {}
 };

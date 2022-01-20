@@ -8,20 +8,20 @@
 
 namespace Xts {
 
-class SynthDSP
+class SynthDSP:
+private GeneratorDSP<SynthModel>
 {
   EnvDSP _envs[EnvCount];
   UnitDSP _units[UnitCount];
 public:
   SynthDSP() = default;
-  SynthDSP(SynthModel const&) = delete;
+  SynthDSP(SynthDSP const&) = delete;
   SynthDSP(SynthModel const* model, AudioInput const* input);
 public:
+  void Release();
+  AudioOutput Next();
   bool End() const { return _envs[0].End(); }
-  void Init(SynthModel const& model, AudioInput const& input);
-  void Release(SynthModel const& model, AudioInput const& input);
-  AudioOutput Next(SynthModel const& model, AudioInput const& input);
-  void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
+  static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(FiniteGenerator<SynthDSP, SynthModel, AudioOutput>);
 

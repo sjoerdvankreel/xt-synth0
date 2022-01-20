@@ -27,22 +27,6 @@ UnitDSP::Freq(UnitModel const& model, AudioInput const& input)
 	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
 
-void
-UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  AudioInput testIn(0.0f, input.bpm, 4, UnitNote::C);
-	output.clip = false;
-	output.bipolar = true;
-	output.freq = Freq(model, testIn);
-	output.rate = output.freq * input.pixels;
-
-  AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
-  UnitDSP dsp(&model, &in);
-	float samples = output.rate / output.freq;
-	for (int i = 0; i <= static_cast<int>(samples); i++)
-		output.samples->push_back(dsp.Next().Mono());
-}
-
 AudioOutput
 UnitDSP::Next()
 {
@@ -81,6 +65,22 @@ UnitDSP::GenerateNaive(NaiveType type, float phase) const
 	}
 	float saw = GenerateNaive(NaiveType::Saw, phase);
 	return (saw - GenerateNaive(NaiveType::Saw, PwPhase())) / 2.0f;
+}
+
+void
+UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
+{
+	AudioInput testIn(0.0f, input.bpm, 4, UnitNote::C);
+	output.clip = false;
+	output.bipolar = true;
+	output.freq = Freq(model, testIn);
+	output.rate = output.freq * input.pixels;
+
+	AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
+	UnitDSP dsp(&model, &in);
+	float samples = output.rate / output.freq;
+	for (int i = 0; i <= static_cast<int>(samples); i++)
+		output.samples->push_back(dsp.Next().Mono());
 }
 
 float
