@@ -15,7 +15,6 @@ private GeneratorDSP<SynthModel>
   UnitDSP _units[UnitCount];
 public:
   SynthDSP() = default;
-  SynthDSP(SynthDSP const&) = delete;
   SynthDSP(SynthModel const* model, AudioInput const* input);
 public:
   void Release();

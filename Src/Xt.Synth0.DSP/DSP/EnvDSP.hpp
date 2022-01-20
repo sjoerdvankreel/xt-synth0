@@ -17,7 +17,6 @@ private GeneratorDSP<EnvModel>
   EnvStage _stage;
 public:
   EnvDSP() = default;
-  EnvDSP(EnvDSP const&) = delete;
   EnvDSP(EnvModel const* model, AudioInput const* input);
 private:
   void NextStage(EnvStage stage);
