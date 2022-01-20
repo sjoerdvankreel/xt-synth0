@@ -24,9 +24,8 @@ public:
   int32_t row, voices;
   XtsBool clip, exhausted;
 public:
-  float rate;
   float* buffer;
-  int32_t frames;
+  int32_t rate, frames;
   Xts::SynthModel* synth;
   Xts::SeqModel const* seq;
 public:
@@ -37,15 +36,19 @@ public:
 struct XTS_ALIGN PlotState
 {
 public:
-  float bpm, pixels;
+  int32_t bpm, pixels;
 public:
   float freq, rate;
   XtsBool clip, bipolar;
+  Xts::SynthModel const* synth;
   std::unique_ptr<std::vector<float>> samples;
   std::unique_ptr<std::vector<int32_t>> splits;
 public:
   PlotState(PlotState const&) = delete;
   PlotState():
+  bpm(0), pixels(0), 
+  freq(0.0f), rate(0.0f),
+  clip(false), bipolar(false), synth(nullptr),
   splits(std::make_unique<std::vector<int32_t>>()), 
   samples(std::make_unique<std::vector<float>>()) {}
 };
@@ -61,9 +64,9 @@ XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model);
 XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model);
 
 XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
-XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state);
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, PlotState* state);
+XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth);
 
 #endif // XTS_HPP
