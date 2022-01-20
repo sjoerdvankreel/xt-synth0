@@ -44,9 +44,6 @@ private:
   int64_t _started[MaxVoices];
   AudioInput _inputs[MaxVoices]; 
   SynthModel _synths[MaxVoices];
-public:
-  SeqDSP() = default;
-  SeqDSP(SeqDSP const&) = delete;
 private:
   void Automate() const;
   int Take(int key, int voice);
