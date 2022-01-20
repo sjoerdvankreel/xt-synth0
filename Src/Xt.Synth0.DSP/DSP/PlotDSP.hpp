@@ -3,17 +3,13 @@
 
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
-#include <vector>
 
 namespace Xts {
 
 class PlotDSP
 {
 public:
-  PlotDSP() = default;
-  PlotDSP(PlotDSP const&) = delete;
-public:
-  void Render(SynthModel const& model, PlotInput const& input, PlotOutput& output);
+  static void Render(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts
