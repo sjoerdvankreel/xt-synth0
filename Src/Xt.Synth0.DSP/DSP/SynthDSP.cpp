@@ -29,7 +29,7 @@ SynthDSP::Next()
   for(int e = 0; e < EnvCount; e++)
     envs[e] = _envs[e].Next();
   float env = envs[0] * Level(_model->global.env1);
-  float amp = _model->global.amp + (1.0 - _model->global.amp) * env;
+  float amp = _model->global.amp + (1.0f - _model->global.amp) * env;
   for (int u = 0; u < UnitCount; u++)
     output += _units[u].Next() * amp;
   return output;
