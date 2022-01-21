@@ -23,9 +23,9 @@ void XTS_CALL
 XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state)
 {
   Xts::SeqInput in;
-  in.rate = state->rate;
   in.buffer = state->buffer;
   in.frames = state->frames;
+  in.rate = static_cast<float>(state->rate);
 
   Xts::SeqOutput out;
   dsp->Render(in, out);
@@ -40,8 +40,8 @@ void XTS_CALL
 XtsPlotDSPRender(Xts::PlotDSP* dsp, PlotState* state)
 {
   Xts::PlotInput in;
-  in.bpm = state->bpm;
-  in.pixels = state->pixels;
+  in.bpm = static_cast<float>(state->bpm);
+  in.pixels = static_cast<float>(state->pixels);
 
   Xts::PlotOutput out;
   state->splits->clear();
