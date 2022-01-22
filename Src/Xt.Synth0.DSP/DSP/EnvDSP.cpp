@@ -34,9 +34,17 @@ EnvDSP::Generate(float from, float to, float len, int slp) const
 {
   float range = to - from;
   float pos = _stagePos / len;
+  assert(0.0f <= pos && pos < 1.0f);
   float mix = Mix02Exclusive(slp);
-  if (mix <= 1.0f) return from + range * powf(pos, mix);
-  return from + range * (1.0f - powf(1.0f - pos, 2.0f - mix));
+  if (mix <= 1.0f) 
+  { 
+    float slope = powf(pos, mix);
+    assert(0.0f <= slope && slope <= 1.0f);
+    return from + range * slope;
+  }
+  float slope = powf(1.0f - pos, 2.0f - mix);
+  assert(0.0f <= slope && slope <= 1.0f);
+  return from + range * (1.0f - slope);
 }
 
 float
