@@ -61,6 +61,7 @@ namespace Xt.Synth0.UI
 			binding = Bind.To(sub.Enabled, nameof(Param.Value), conv);
 			off.SetBinding(UIElement.VisibilityProperty, binding);
 			var label = empty.Add(Create.Label($"{sub.Name} OFF"));
+			label.FontWeight = FontWeights.Bold;
 			label.VerticalAlignment = VerticalAlignment.Center;
 			label.HorizontalAlignment = HorizontalAlignment.Center;
 			label.SetResourceReference(Control.ForegroundProperty, Utility.RowDisabledKey);
