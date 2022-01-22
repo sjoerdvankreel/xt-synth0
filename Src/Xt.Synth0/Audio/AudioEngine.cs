@@ -121,7 +121,7 @@ namespace Xt.Synth0
 			_nativeSeqState = Native.XtsSeqStateCreate();
 			_nativeSeqModel = Native.XtsSeqModelCreate();
 			_nativeSynthModel = Native.XtsSynthModelCreate();
-			_managedSynthModel.PrepareNative(_nativeSynthModel);
+			SeqModel.PrepareNative(_managedSynthModel, _nativeSeqModel, _nativeSynthModel);
 		}
 
 		internal void OnGCNotification(int generation)
@@ -247,7 +247,7 @@ namespace Xt.Synth0
 				_cpuUsageFrameCounts = new int[format.mix.rate];
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
 				UpdateStreamInfo(0, format.mix.rate, 0, false, false, 0);
-				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqState);
+				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqModel, _nativeSynthModel);
 				ResumeStream();
 			}
 			catch
@@ -430,12 +430,12 @@ namespace Xt.Synth0
 			state->frames = buffer.frames;
 			state->seq = _nativeSeqModel;
 			state->synth = _nativeSynthModel;
-			Native.XtsSeqDSPProcessBuffer(_nativeSeqDSP, state);
+			Native.XtsSeqDSPRender(_nativeSeqDSP, state);
 			EndAutomation();
-			long pos = _nativeSeqState->streamPosition;
+			long pos = _nativeSeqState->pos;
 			CopyBuffer(in buffer, in format);
 			ResetWarnings(rate, pos);
-			_app.Stream.CurrentRow = _nativeSeqState->currentRow;
+			_app.Stream.CurrentRow = _nativeSeqState->row;
 			_stopwatch.Stop();
 			UpdateCpuUsage(buffer.frames, rate, pos);
 			bool clip = state->clip != 0;

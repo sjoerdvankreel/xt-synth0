@@ -40,7 +40,7 @@ namespace Xt.Synth0.Model
 		public override IReadOnlyList<ISubModel> SubModels => new[] { Edit };
 		public override IReadOnlyList<IModelContainer> SubContainers => new[] { Pattern };
 
-		public void PrepareNative(SynthModel synth, IntPtr nativeSeq, IntPtr nativeSynth)
+		public static void PrepareNative(SynthModel synth, IntPtr nativeSeq, IntPtr nativeSynth)
 		{
 			Native* seqPtr = (Native*)nativeSeq;
 			var @params = (Param*)seqPtr->@params;
