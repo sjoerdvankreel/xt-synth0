@@ -55,10 +55,15 @@ namespace Xt.Synth0.UI
 			var conv = new VisibilityConverter<int>(true, 1);
 			var binding = Bind.To(sub.Enabled, nameof(Param.Value), conv);
 			grid.SetBinding(UIElement.VisibilityProperty, binding);
-			var off = result.Add(Create.Label("Off"));
+			var empty = ParamUI.MakeEmpty();
+			var off = result.Add(MakeInnerBorder(empty, new(0, 0)));
 			conv = new VisibilityConverter<int>(true, 0);
 			binding = Bind.To(sub.Enabled, nameof(Param.Value), conv);
 			off.SetBinding(UIElement.VisibilityProperty, binding);
+			var label = empty.Add(Create.Label($"{sub.Name} OFF"));
+			label.VerticalAlignment = VerticalAlignment.Center;
+			label.HorizontalAlignment = HorizontalAlignment.Center;
+			label.SetResourceReference(Control.ForegroundProperty, Utility.RowDisabledKey);
 			return result;
 		}
 
