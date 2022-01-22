@@ -127,7 +127,6 @@ namespace Xt.Synth0.UI
 			}
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 	}

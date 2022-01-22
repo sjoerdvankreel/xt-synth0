@@ -11,5 +11,6 @@
     <Brush x:Key="Foreground2Key">#FF6000</Brush>
     <Brush x:Key="Foreground3Key">#804000</Brush>
     <Brush x:Key="Foreground4Key">#402000</Brush>
+    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Orange.png"/>
 
 </ResourceDictionary>

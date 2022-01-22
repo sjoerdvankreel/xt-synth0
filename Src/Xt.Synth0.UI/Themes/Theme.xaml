@@ -9,7 +9,6 @@
     <Brush x:Key="RowDisabledKey">#606060</Brush>
     <Brush x:Key="BackgroundDarkKey">#000000</Brush>
     <Brush x:Key="BackgroundLightKey">#202020</Brush>
-    <Brush x:Key="BackgroundParamKey">#282828</Brush>
 
     <Style TargetType="{x:Type DockPanel}">
         <Setter Property="Background" Value="{StaticResource BackgroundDarkKey}"/>

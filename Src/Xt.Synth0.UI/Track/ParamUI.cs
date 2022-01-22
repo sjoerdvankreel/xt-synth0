@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -28,8 +29,8 @@ namespace Xt.Synth0.UI
 		internal static DockPanel MakeEmpty()
 		{
 			var result = new DockPanel();
+			result.Background = Brushes.Transparent;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 

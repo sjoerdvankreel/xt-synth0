@@ -40,6 +40,7 @@ namespace Xt.Synth0.UI
 			result.Add(MakeCenter(settings));
 			result.Add(MakeLower(settings));
 			result.SetValue(Grid.IsSharedSizeScopeProperty, true);
+			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 

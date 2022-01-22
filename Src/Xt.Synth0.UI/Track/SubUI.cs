@@ -22,7 +22,7 @@ namespace Xt.Synth0.UI
 			var binding = Bind.To(app.Stream, nameof(StreamModel.IsStopped));
 			var enabled = wrap.Add(ParamUI.MakeControl(app, sub, sub.Enabled));
 			enabled.Margin = new(3.0, 0.0, 0.0, 0.0);
-			enabled.SetBinding(Control.IsEnabledProperty, binding);
+			enabled.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Header = wrap;
 			return result;
 		}
@@ -32,8 +32,9 @@ namespace Xt.Synth0.UI
 			var result = new Border();
 			result.Child = child;
 			result.SnapsToDevicePixels = true;
-			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
 			result.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
+			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
+			result.SetResourceReference(Border.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;
 		}
 
@@ -77,7 +78,6 @@ namespace Xt.Synth0.UI
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.RowDefinitions[rows - 1].Height = new GridLength(1.0, GridUnitType.Star);
 			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
-			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			foreach (var p in sub.ParamLayout)
 				if (p.Value >= 0)
 					result.Add(MakeInnerBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));

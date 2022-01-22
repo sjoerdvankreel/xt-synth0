@@ -10,6 +10,5 @@ detach sequencer
 multiple synths + select target in sequencer
 fast log/sin approx?
 notifyparamchange + recalc + param interpolation
-invert colorscheme/perlin noise
 lfos
 env to pitch

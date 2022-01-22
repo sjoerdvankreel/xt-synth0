@@ -123,6 +123,7 @@ namespace Xt.Synth0.UI
 				highlighters.Add(highlighter);
 				AddRow(result, app, pattern, seq.Pattern.Rows[offset + r], r);
 			}
+			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			return (result, highlighters);
 		}
 
