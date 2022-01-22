@@ -47,6 +47,7 @@ private:
   SynthModel _synths[MaxVoices];
 private:
   void Automate();
+  void ApplyActive();
   int Take(int key, int voice);
   void Return(int key, int voice);
   bool Move(SeqInput const& input);

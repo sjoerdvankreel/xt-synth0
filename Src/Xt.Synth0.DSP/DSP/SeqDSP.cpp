@@ -5,6 +5,14 @@
 namespace Xts {
 
 void
+SeqDSP::ApplyActive()
+{
+  for (int k = 0; k < MaxKeys; k++)
+    if (_active[k] != -1)
+      _synths[_active[k]] = *_synth;
+}
+
+void
 SeqDSP::Return(int key, int voice)
 {
   _voices--;
@@ -51,6 +59,7 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
   {
     exhausted = Trigger(input);
     Automate();
+    ApplyActive();
   }
   AudioOutput result;
   for (int v = 0; v < MaxVoices; v++)
@@ -76,14 +85,12 @@ SeqDSP::Automate()
     else if (fx.val > p.max) *p.val = p.max;
     else *p.val = fx.val;
   }
-  for(int k = 0; k < MaxKeys; k++)
-    if(_active[k] != -1) 
-      _synths[_active[k]] = *_synth;      
 }
 
 void
 SeqDSP::Render(SeqInput const& input, SeqOutput& output)
 {
+  ApplyActive();
   bool exhausted;
   output.clip = false;
   output.exhausted = false;
