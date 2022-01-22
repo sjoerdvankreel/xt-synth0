@@ -23,16 +23,22 @@ GeneratorDSP(model, input), _envs(), _units()
 AudioOutput
 SynthDSP::Next()
 {
-  AudioOutput output;
-  float envs[EnvCount];
+  AudioState state;
   if (End()) return AudioOutput(0.0f, 0.0f);
-  for(int e = 0; e < EnvCount; e++)
-    envs[e] = _envs[e].Next();
+  for (int e = 0; e < EnvCount; e++)
+    state.envs[e] = _envs[e].Next();
+  return Next(state);
+}
+
+AudioOutput
+SynthDSP::Next(AudioState const& state)
+{
+  AudioOutput output;
   float global = Level(_model->global.amp);
-  float env = envs[0] * Level(_model->global.env1);
+  float env = state.envs[0] * Level(_model->global.env1);
   float amp = global + (1.0f - global) * env;
   for (int u = 0; u < UnitCount; u++)
-    output += _units[u].Next() * amp;
+    output += _units[u].Next(state) * amp;
   return output;
 }
 

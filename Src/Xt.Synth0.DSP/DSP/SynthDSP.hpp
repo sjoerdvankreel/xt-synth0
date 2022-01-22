@@ -19,10 +19,12 @@ public:
 public:
   void Release();
   AudioOutput Next();
+  AudioOutput Next(AudioState const& state);
   bool End() const { return _envs[0].End(); }
   static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
-static_assert(FiniteGenerator<SynthDSP, SynthModel, AudioOutput>);
+static_assert(FiniteDSP<SynthDSP, SynthModel>);
+static_assert(AudioSource<SynthDSP, SynthModel>);
 
 } // namespace Xts
 #endif // XTS_SYNTH_DSP_HPP

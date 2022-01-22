@@ -30,7 +30,8 @@ public:
   bool End() const { return _stage == EnvStage::End; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
 };
-static_assert(FiniteGenerator<EnvDSP, EnvModel, float>);
+static_assert(FiniteDSP<EnvDSP, EnvModel>);
+static_assert(StateSource<EnvDSP, EnvModel>);
 
 } // namespace Xts
 #endif // XTS_ENV_DSP_HPP

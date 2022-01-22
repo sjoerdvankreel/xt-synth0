@@ -28,7 +28,7 @@ UnitDSP::Freq(UnitModel const& model, AudioInput const& input)
 }
 
 AudioOutput
-UnitDSP::Next()
+UnitDSP::Next(AudioState const& state)
 {
 	if (_model->type == UnitType::Off) return AudioOutput(0.0f, 0.0f);
 	float freq = Freq(*_model, *_input);
@@ -77,11 +77,12 @@ UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output
 	output.freq = Freq(model, testIn);
 	output.rate = output.freq * input.pixels;
 
+  AudioState state;
 	AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
 	UnitDSP dsp(&model, &in);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i <= static_cast<int>(samples); i++)
-		output.samples->push_back(dsp.Next().Mono());
+		output.samples->push_back(dsp.Next(state).Mono());
 }
 
 float

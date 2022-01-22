@@ -15,7 +15,7 @@ public:
   UnitDSP(UnitModel const* model, AudioInput const* input):
   GeneratorDSP(model, input), _phase(0.0) {}
 public:
-  AudioOutput Next();
+  AudioOutput Next(AudioState const& state);
   static void Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output);
 private:
   float PwPhase() const;
@@ -25,7 +25,7 @@ private:
   static float Freq(UnitModel const& model, AudioInput const& input);
   float GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const;
 };
-static_assert(Generator<UnitDSP, UnitModel, AudioOutput>);
+static_assert(AudioSource<UnitDSP, UnitModel>);
 
 } // namespace Xts
 #endif // XTS_UNIT_DSP_HPP
