@@ -52,7 +52,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static Control MakeControl(AppModel app, IThemedSubModel sub, Param param)
+		internal static Control MakeControl(AppModel app, IThemedSubModel sub, Param param)
 		=> param.Info.Type switch
 		{
 			ParamType.List => MakeList(app, param),

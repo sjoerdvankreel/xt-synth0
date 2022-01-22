@@ -10,10 +10,22 @@ namespace Xt.Synth0.UI
 	{
 		internal const double BorderThickness = 1;
 
-		internal static GroupBox Make(AppModel app, IThemedSubModel sub)
-		=> Create.ThemedGroup(app.Settings, sub, MakeContent(app, sub));
 		internal static FrameworkElement MakeContent(AppModel app, IThemedSubModel sub)
 		=> MakeOuterBorder(MakeGrid(app, sub));
+
+		internal static GroupBox Make(AppModel app, IThemedSubModel sub)
+		{
+			var result = Create.ThemedGroup(app.Settings, sub, MakeContent(app, sub));
+			if (sub.Enabled == null) return result;
+			var wrap = new WrapPanel();
+			wrap.Add(Create.Text(sub.Name));
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsStopped));
+			var enabled = wrap.Add(ParamUI.MakeControl(app, sub, sub.Enabled));
+			enabled.Margin = new(3.0, 0.0, 0.0, 0.0);
+			enabled.SetBinding(Control.IsEnabledProperty, binding);
+			result.Header = wrap;
+			return result;
+		}
 
 		internal static Border MakeOuterBorder(UIElement child)
 		{
