@@ -28,25 +28,30 @@ namespace Xt.Synth0.UI
 		internal static UIElement Make(AppModel app)
 		{
 			var plot = app.Track.Synth.Plot;
+			var dock = new DockPanel();
+			var text = dock.Add(new TextBlock(), Dock.Left);
+			text.HorizontalAlignment = HorizontalAlignment.Right;
+			var control = dock.Add(ParamUI.MakeControl(app, plot, plot.Type), Dock.Right);
+			control.HorizontalAlignment = HorizontalAlignment.Right;
+			control.VerticalAlignment = VerticalAlignment.Center;
 			var result = Create.ThemedGroup(app.Settings, plot, null);
-			result.Content = MakeContent(app, result);
+			result.Header = dock;
 			result.Padding = new(Padding);
+			result.Content = MakeContent(app, text);
 			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
 			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeContent(AppModel app, GroupBox box)
+		static UIElement MakeContent(AppModel app, TextBlock text)
 		{
 			var synth = app.Track.Synth;
-			var result = new DockPanel();
-			result.Add(SubUI.MakeContent(app, synth.Plot), Dock.Top);
 			var content = new ContentControl();
-			var border = result.Add(SubUI.MakeOuterBorder(content), Dock.Top);
-			synth.ParamChanged += (s, e) => Update(app, box, content);
-			content.SizeChanged += (s, e) => Update(app, box, content);
-			app.Settings.PropertyChanged += (s, e) => Update(app, box, content);
-			border.BorderThickness = new(SubUI.BorderThickness, 0, SubUI.BorderThickness, SubUI.BorderThickness);
+			var result = SubUI.MakeOuterBorder(content);
+			synth.ParamChanged += (s, e) => Update(app, text, content);
+			content.SizeChanged += (s, e) => Update(app, text, content);
+			app.Settings.PropertyChanged += (s, e) => Update(app, text, content);
+			result.BorderThickness = new(SubUI.BorderThickness, 0, SubUI.BorderThickness, SubUI.BorderThickness);
 			return result;
 		}
 
@@ -90,7 +95,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void Update(AppModel app, GroupBox box, ContentControl container)
+		static void Update(AppModel app, TextBlock text, ContentControl container)
 		{
 			if (app.Stream.IsRunning) return;
 			var plot = app.Track.Synth.Plot;
@@ -103,7 +108,7 @@ namespace Xt.Synth0.UI
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
 			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
 			if (Args.Clip) header += " (Clip)";
-			box.Header = header;
+			text.Text = header;
 		}
 
 		static UIElement Plot(int w, double h)
