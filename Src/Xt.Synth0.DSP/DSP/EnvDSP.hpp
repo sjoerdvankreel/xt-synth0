@@ -12,8 +12,8 @@ enum class EnvStage { Dly, A, Hld, D, S, R, End };
 class EnvDSP:
 private GeneratorDSP<EnvModel>
 {
+  int _pos;
   float _level;
-  int _stagePos;
   EnvStage _stage;
 public:
   EnvDSP() = default;
@@ -22,7 +22,7 @@ private:
   void NextStage(EnvStage stage);
   float Generate(EnvParams const& params) const;
   void CycleStage(EnvType type, EnvParams const& params);
-  float Generate(float from, float to, float len, int slp) const;
+  float Generate(float from, float to, int len, int slp) const;
   static EnvParams Params(EnvModel const& model, AudioInput const& input);
 public:
   float Next();

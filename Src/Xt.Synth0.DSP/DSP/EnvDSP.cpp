@@ -8,7 +8,8 @@ namespace Xts {
 
 struct EnvParams
 {
-  float dly, a, hld, d, s, r;
+  float s;
+  int dly, a, hld, d, r;
 public:
   EnvParams() = default;
   EnvParams(EnvParams const&) = default;
@@ -17,7 +18,7 @@ public:
 void
 EnvDSP::NextStage(EnvStage stage)
 {
-  _stagePos = 0;
+  _pos = 0;
   _stage = stage;
 }
 
@@ -30,11 +31,11 @@ EnvDSP::Release()
 }
 
 float
-EnvDSP::Generate(float from, float to, float len, int slp) const
+EnvDSP::Generate(float from, float to, int len, int slp) const
 {
   float range = to - from;
-  float pos = _stagePos / len;
-  assert(0.0f <= pos && pos < 1.0f);
+  float pos = _pos / static_cast<float>(len);
+  assert(0.0f <= pos && pos <= 1.0f);
   float mix = Mix02Exclusive(slp);
   if (mix <= 1.0f) 
   { 
@@ -69,17 +70,17 @@ EnvDSP::Next()
   if (_model->type == EnvType::Off || _stage == EnvStage::End) return 0.0f;
   EnvParams params = Params(*_model, *_input);
   float result = Generate(params);
-  CycleStage(_model->type, params);
   assert(0.0f <= result && result <= 1.0f);
-  if (_stage != EnvStage::End) _stagePos++;
+  if (_stage != EnvStage::End) _pos++;
   if (_stage < EnvStage::R) _level = result;
   if (_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
+  CycleStage(_model->type, params);
   return result;
 }
 
 EnvDSP::
 EnvDSP(EnvModel const* model, AudioInput const* input) :
-GeneratorDSP(model, input), _level(0.0f), _stagePos(0), _stage(EnvStage::Dly)
+GeneratorDSP(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
 {
   bool off = model->type == EnvType::Off;
   NextStage(off ? EnvStage::S : EnvStage::Dly);
@@ -103,12 +104,12 @@ EnvDSP::Params(EnvModel const& model, AudioInput const& input)
 void
 EnvDSP::CycleStage(EnvType type, EnvParams const& params)
 {
-  if (_stage == EnvStage::Dly && _stagePos >= params.dly) NextStage(EnvStage::A);
-  if (_stage == EnvStage::A && _stagePos >= params.a) NextStage(EnvStage::Hld);
-  if (_stage == EnvStage::Hld && _stagePos >= params.hld) NextStage(EnvStage::D);
-  if (_stage == EnvStage::D && _stagePos >= params.d) NextStage(EnvStage::S);
+  if (_stage == EnvStage::Dly && _pos >= params.dly) NextStage(EnvStage::A);
+  if (_stage == EnvStage::A && _pos >= params.a) NextStage(EnvStage::Hld);
+  if (_stage == EnvStage::Hld && _pos >= params.hld) NextStage(EnvStage::D);
+  if (_stage == EnvStage::D && _pos >= params.d) NextStage(EnvStage::S);
   if (_stage == EnvStage::S && type != EnvType::DAHDSR) NextStage(EnvStage::R);
-  if (_stage == EnvStage::R && _stagePos >= params.r) NextStage(EnvStage::End);
+  if (_stage == EnvStage::R && _pos >= params.r) NextStage(EnvStage::End);
 }
 
 void
@@ -138,8 +139,10 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     if(s == sustain) dsp.Release();
     output.samples->push_back(dsp.Next());
     if(dsp._stage == EnvStage::S) s++;
-    if(prev != dsp._stage) output.splits->push_back(s);
-    prev = dsp._stage; s++; i++;
+    if(prev != dsp._stage && prev != EnvStage::Dly && !dsp.End())
+      output.splits->push_back(i);
+    prev = dsp._stage; 
+    i++;
   }
 }
 

@@ -27,10 +27,10 @@ inline int Exp(int val)
 { return 1 << val; }
 inline float Level(int val)
 { return static_cast<float>(val / 255.0f); }
-inline float Time(int val, float rate)
-{ return static_cast<float>(val * val * rate / 1000.0f); }
-inline float Sync(AudioInput const& input, int num, int denom)
-{ return input.bpm * input.rate * num / (60.0f * denom); }
+inline int Time(int val, float rate)
+{ return static_cast<int>(val * val * rate / 1000.0f); }
+inline int Sync(AudioInput const& input, int num, int denom)
+{ return static_cast<int>(input.bpm * input.rate * num / (60.0f * denom)); }
 
 inline float 
 Clip(float val, bool& clipped)
@@ -41,13 +41,13 @@ Clip(float val, bool& clipped)
   return val * MaxLevel;
 }
 
-inline float 
+inline int 
 Sync(AudioInput const& input, int val)
 {
   auto step = static_cast<SyncStep>(val);
   switch(step)
   {
-  case SyncStep::S0: return 0.0f;
+  case SyncStep::S0: return 0;
   case SyncStep::S1_16: return Sync(input, 1, 16);
   case SyncStep::S1_8: return Sync(input, 1, 8);
   case SyncStep::S3_16: return Sync(input, 3, 16);
@@ -78,7 +78,7 @@ Sync(AudioInput const& input, int val)
   case SyncStep::S10_1: return Sync(input, 10, 1);
   case SyncStep::S12_1: return Sync(input, 12, 1);
   case SyncStep::S16_1: return Sync(input, 16, 1);
-  default: assert(false); return 0.0f;
+  default: assert(false); return 0;
   };
 }
 
