@@ -25,9 +25,8 @@ EnvDSP::NextStage(EnvStage stage)
 void
 EnvDSP::Release()
 {
-  bool off = _model->type == EnvType::Off;
-  if (!off && _stage >= EnvStage::R) return;
-  NextStage(off ? EnvStage::End : EnvStage::R);
+  if (_model->on && _stage >= EnvStage::R) return;
+  NextStage(!_model->on ? EnvStage::End : EnvStage::R);
   CycleStage(_model->type, Params(*_model, *_input));
 }
 
@@ -68,7 +67,7 @@ float
 EnvDSP::Next()
 {
   const float threshold = 1.0E-5f;
-  if (_model->type == EnvType::Off || _stage == EnvStage::End) return 0.0f;
+  if (!_model->on || _stage == EnvStage::End) return 0.0f;
   EnvParams params = Params(*_model, *_input);
   float result = Generate(params);
   assert(0.0f <= result && result <= 1.0f);
@@ -83,8 +82,7 @@ EnvDSP::
 EnvDSP(EnvModel const* model, SynthInput const* input) :
 DSPBase(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
 {
-  bool off = model->type == EnvType::Off;
-  NextStage(off ? EnvStage::S : EnvStage::Dly);
+  NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
   CycleStage(model->type, Params(*model, *input));
 }
 
@@ -124,7 +122,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   output.rate = 0.0f;
   output.clip = false;
   output.bipolar = false;
-  if (model.type == EnvType::Off) return;
+  if (!model.on) return;
 
   bool dahdr = model.type == EnvType::DAHDR;
   auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));

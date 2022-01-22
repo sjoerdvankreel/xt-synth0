@@ -22,20 +22,21 @@ private:
 };
 XTS_CHECK_SIZE(GlobalModel, 8);
 
-enum class EnvType { Off, DAHDR, DAHDSR };
+enum class EnvType { DAHDSR, DAHDR };
 struct XTS_ALIGN EnvModel 
 {
   friend class EnvDSP;
   EnvModel() = default;
   EnvModel(EnvModel const&) = delete;
 private:
+  XtsBool on;
   EnvType type;
   XtsBool sync;
   int32_t aSlp, dSlp, rSlp;
   int32_t dly, a, hld, d, s, r;
-  int32_t dlySnc, aSnc, hldSnc, dSnc, rSnc;
+  int32_t dlySnc, aSnc, hldSnc, dSnc, rSnc, pad__;
 };
-XTS_CHECK_SIZE(EnvModel, 64);
+XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2 };
 struct XTS_ALIGN PlotModel
@@ -81,7 +82,7 @@ private:
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 312);
+XTS_CHECK_SIZE(SynthModel, 328);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

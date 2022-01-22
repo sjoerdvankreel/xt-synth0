@@ -3,24 +3,25 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum EnvType { Off, DAHDR, DAHDSR }
+	public enum EnvType { DAHDSR, DAHDR}
 
 	public unsafe sealed class EnvModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct Native
 		{
-			internal const int Size = 64;
-			internal int type, sync;
+			internal const int Size = 72;
+			internal int on, type, sync;
 			internal int aSlp, dSlp, rSlp;
 			internal int dly, a, hld, d, s, r;
-			internal int dlySnc, aSnc, hldSnc, dSnc, rSnc;
+			internal int dlySnc, aSnc, hldSnc, dSnc, rSnc, pad__;
 		}
 
 		public Param S { get; } = new(SInfo);
 		public Param A { get; } = new(AInfo);
 		public Param D { get; } = new(DInfo);
 		public Param R { get; } = new(RInfo);
+		public Param On { get; } = new(OnInfo);
 		public Param Hld { get; } = new(HldInfo);
 		public Param Dly { get; } = new(DlyInfo);
 		public Param ASlp { get; } = new(ASlpInfo);
@@ -41,12 +42,14 @@ namespace Xt.Synth0.Model
 		internal EnvModel(int index) => _index = index;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[_index * Native.Size];
 
+		public Param Enabled => On;
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
+			{ On, -1 },
 			{ Type, 0 }, { Sync, 1 }, { Dly, 2 }, { DlySnc, 2 },
-			{ ASlp, 3 }, { A, 4 }, { ASnc, 4 },	{ Hld, 5 }, { HldSnc, 5 },
+			{ ASlp, 3 }, { A, 4 }, { ASnc, 4 }, { Hld, 5 }, { HldSnc, 5 },
 			{ DSlp, 6 }, { D, 7 }, { DSnc, 7 }, { S, 8 },
-			{ RSlp, 9 }, { R, 10 },	{ RSnc, 10 }
+			{ RSlp, 9 }, { R, 10 }, { RSnc, 10 }
 		};
 
 		static readonly IRelevance RelevanceSync = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 1);
@@ -56,6 +59,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo DSlpInfo = ParamInfo.Mix(p => &((Native*)p)->dSlp, "Slp", "Decay slope", true);
 		static readonly ParamInfo ASlpInfo = ParamInfo.Mix(p => &((Native*)p)->aSlp, "Slp", "Attack slope", true);
 		static readonly ParamInfo RSlpInfo = ParamInfo.Mix(p => &((Native*)p)->rSlp, "Slp", "Release slope", true);
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false, false);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, nameof(Type), "Type", false);
 		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), "Sync to beat", true, false);
 		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), "Decay milliseconds", true, 7, RelevanceTime);

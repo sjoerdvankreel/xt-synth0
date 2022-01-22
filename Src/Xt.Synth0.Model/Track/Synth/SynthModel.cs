@@ -51,8 +51,8 @@ namespace Xt.Synth0.Model
 
 		public SynthModel()
 		{
+			Envs[0].On.Value = 1;
 			Units[0].On.Value = 1;
-			Envs[0].Type.Value = (int)EnvType.DAHDSR;
 			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
 				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
 			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
