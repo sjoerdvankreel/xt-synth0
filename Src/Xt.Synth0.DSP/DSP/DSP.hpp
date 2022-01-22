@@ -32,13 +32,12 @@ inline int Time(int val, float rate)
 inline int Sync(AudioInput const& input, int num, int denom)
 { return static_cast<int>(input.bpm * input.rate * num / (60.0f * denom)); }
 
-inline float 
-Clip(float val, bool& clipped)
+inline bool 
+Clip(float& val)
 {
-  clipped = val > 1.0f || val < -1.0f;
-  if(val > 1.0f) val = 1.0f;
-  if(val < -1.0f) val = -1.0f;
-  return val * MaxLevel;
+  if(val > MaxLevel) return val = MaxLevel, true;
+  if(val < -MaxLevel) return val = -MaxLevel, true;
+  return false;
 }
 
 inline int 

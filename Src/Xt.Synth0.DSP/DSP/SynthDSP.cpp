@@ -41,7 +41,6 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   const int plotRate = 5000;
   const int plotMaxSamples = 10000;
 
-  bool clip;
   output.freq = 0.0f;
   output.clip = false;
   output.bipolar = true;
@@ -52,12 +51,9 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   for(int s = 0; s < plotMaxSamples; s++)
   {
     if(dsp.End()) break;
-    auto sample = dsp.Next();
-    sample.l = Clip(sample.l, clip);
-    output.clip |= clip;
-    sample.r = Clip(sample.r, clip);
-    output.clip |= clip;
-    output.samples->push_back(Clip(sample.Mono() / 2.0f, clip));
+    float sample = dsp.Next().l;
+    output.clip |= Clip(sample);
+    output.samples->push_back(sample);
   }
 }
 
