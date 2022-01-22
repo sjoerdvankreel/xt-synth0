@@ -49,8 +49,8 @@ private:
 };
 XTS_CHECK_SIZE(PlotModel, 8);
 
+enum class UnitType { Sin, Naive, Add };
 enum class NaiveType { Saw, Pulse, Tri };
-enum class UnitType { Off, Sin, Naive, Add };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 struct XTS_ALIGN UnitModel
@@ -59,12 +59,13 @@ struct XTS_ALIGN UnitModel
   UnitModel() = default;
   UnitModel(UnitModel const&) = delete;
 private:
+  XtsBool on;
   UnitType type;
   UnitNote note;
   AddType addType;
   NaiveType naiveType;
   int32_t amp, pan, oct, dtn, pw;
-  int32_t addMaxParts, addParts, addStep, addRoll, pad__;
+  int32_t addMaxParts, addParts, addStep, addRoll;
 };
 XTS_CHECK_SIZE(UnitModel, 56);
 

@@ -30,7 +30,7 @@ UnitDSP::Freq(UnitModel const& model, SynthInput const& input)
 AudioOutput
 UnitDSP::Next(SynthState const& state)
 {
-	if (_model->type == UnitType::Off) return AudioOutput(0.0f, 0.0f);
+	if (!_model->on) return AudioOutput(0.0f, 0.0f);
 	float freq = Freq(*_model, *_input);
 	float sample = Generate(freq);
 	float amp = Level(_model->amp);

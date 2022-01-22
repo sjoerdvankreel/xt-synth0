@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+	public enum UnitType { Sin, Naive, Add }
 	public enum NaiveType { Saw, Pulse, Tri }
-	public enum UnitType { Off, Sin, Naive, Add }
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 	public enum AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
@@ -15,11 +15,12 @@ namespace Xt.Synth0.Model
 		internal struct Native
 		{
 			internal const int Size = 56;
-			internal int type, note, addType, naiveType;
+			internal int on, type, note, addType, naiveType;
 			internal int amp, pan, oct, dtn, pw;
-			internal int addMaxParts, addParts, addStep, addRoll, pad__;
+			internal int addMaxParts, addParts, addStep, addRoll;
 		}
 
+		public Param On { get; } = new(OnInfo);
 		public Param Pw { get; } = new(PwInfo);
 		public Param Oct { get; } = new(OctInfo);
 		public Param Amp { get; } = new(AmpInfo);
@@ -40,8 +41,10 @@ namespace Xt.Synth0.Model
 		internal UnitModel(int index) => _index = index;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Native.Size];
 
+		public Param Enabled => On;
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
+			{ On, -1 },
 			{ Type, 0 }, { AddType, 1 }, { NaiveType, 1 },
 			{ Amp, 2 }, { Pan, 3 },
 			{ Oct, 4 },	{ Note, 5 },
@@ -70,9 +73,10 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), "Detune", true);
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), "Panning", true);
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false, false);
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", true, 255);
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), "Octave", true, 0, 9, 4);
-		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type", false);
+		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type", true);
 		static readonly ParamInfo PwInfo = ParamInfo.Mix(p => &((Native*)p)->pw, "PW", "Pulse width", true, null, RelevancePw);
 		static readonly ParamInfo NoteInfo = ParamInfo.Select(p => &((Native*)p)->note, nameof(Note), "Note", true, UnitNote.C, Notes);
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, "Type", "Additive type", true, AddNames, RelevanceAdd);

@@ -47,7 +47,8 @@ namespace Xt.Synth0.UI
 			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
 			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 			foreach (var p in sub.ParamLayout)
-				result.Add(MakeInnerBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));
+				if (p.Value >= 0)
+					result.Add(MakeInnerBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));
 			for (int p = 0; p < rows * cols; p++)
 				if (!sub.ParamLayout.Values.Contains(p))
 					result.Add(MakeInnerBorder(null, new Cell(p / cols, p % cols)));
