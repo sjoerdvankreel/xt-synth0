@@ -42,7 +42,7 @@ private:
   int _keys[MaxVoices];
   SynthDSP _dsps[MaxVoices];
   int64_t _started[MaxVoices];
-  AudioInput _inputs[MaxVoices]; 
+  SynthInput _inputs[MaxVoices];
   SynthModel _synths[MaxVoices];
 private:
   void Automate() const;

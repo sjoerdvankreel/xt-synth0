@@ -3,16 +3,9 @@
 
 namespace Xts {
 
-void
-SynthDSP::Release()
-{
-  for (int e = 0; e < EnvCount; e++)
-    _envs[e].Release();
-}
-
 SynthDSP::
-SynthDSP(SynthModel const* model, AudioInput const* input):
-GeneratorDSP(model, input), _envs(), _units()
+SynthDSP(SynthModel const* model, SynthInput const* input):
+DSPBase(model, input), _global(&model->global, input), _envs(), _units()
 {
   for (int e = 0; e < EnvCount; e++)
     _envs[e] = EnvDSP(&model->envs[e], input);
@@ -20,26 +13,30 @@ GeneratorDSP(model, input), _envs(), _units()
     _units[u] = UnitDSP(&model->units[u], input);
 }
 
+void
+SynthDSP::Release()
+{
+  for (int e = 0; e < EnvCount; e++)
+    _envs[e].Release();
+}
+
+AudioOutput
+SynthDSP::Next(SynthState const& state)
+{
+  AudioOutput output;
+  for (int u = 0; u < UnitCount; u++)
+    output += _units[u].Next(state);
+  return output * _global.Amp(state);
+}
+
 AudioOutput
 SynthDSP::Next()
 {
-  AudioState state;
+  SynthState state;
   if (End()) return AudioOutput(0.0f, 0.0f);
   for (int e = 0; e < EnvCount; e++)
     state.envs[e] = _envs[e].Next();
   return Next(state);
-}
-
-AudioOutput
-SynthDSP::Next(AudioState const& state)
-{
-  AudioOutput output;
-  float global = Level(_model->global.amp);
-  float env = state.envs[0] * Level(_model->global.env1);
-  float amp = global + (1.0f - global) * env;
-  for (int u = 0; u < UnitCount; u++)
-    output += _units[u].Next(state) * amp;
-  return output;
 }
 
 void
@@ -54,7 +51,7 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   output.bipolar = true;
   output.rate = static_cast<float>(plotRate); 
   
-  AudioInput in(output.rate, 120, 4, UnitNote::C);
+  SynthInput in(output.rate, 120, 4, UnitNote::C);
   SynthDSP dsp(&model, &in);
   for(int s = 0; s < plotMaxSamples; s++)
   {

@@ -29,7 +29,7 @@ inline float Level(int val)
 { return static_cast<float>(val / 255.0f); }
 inline int Time(int val, float rate)
 { return static_cast<int>(val * val * rate / 1000.0f); }
-inline int Sync(AudioInput const& input, int num, int denom)
+inline int Sync(SynthInput const& input, int num, int denom)
 { return static_cast<int>(input.bpm * input.rate * num / (60.0f * denom)); }
 
 inline bool 
@@ -41,7 +41,7 @@ Clip(float& val)
 }
 
 inline int 
-Sync(AudioInput const& input, int val)
+Sync(SynthInput const& input, int val)
 {
   auto step = static_cast<SyncStep>(val);
   switch(step)

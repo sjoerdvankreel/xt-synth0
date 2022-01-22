@@ -79,7 +79,6 @@ SeqDSP::Automate() const
 void
 SeqDSP::Render(SeqInput const& input, SeqOutput& output)
 {
-  bool clip;
   bool exhausted;
   output.clip = false;
   output.exhausted = false;
@@ -127,7 +126,7 @@ SeqDSP::Trigger(SeqInput const& input, bool& exhausted)
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(note) - 2);
-      _inputs[voice] = AudioInput(input.rate, bpm, key.oct, unote);
+      _inputs[voice] = SynthInput(input.rate, bpm, key.oct, unote);
       _dsps[voice] = SynthDSP(&_synth[voice], &_inputs[voice]);
     }
   }

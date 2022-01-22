@@ -3,28 +3,31 @@
 
 #include "EnvDSP.hpp"
 #include "UnitDSP.hpp"
+#include "GlobalDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
 namespace Xts {
 
 class SynthDSP:
-private GeneratorDSP<SynthModel>
+private DSPBase<SynthModel>
 {
+  GlobalDSP _global;
   EnvDSP _envs[EnvCount];
   UnitDSP _units[UnitCount];
 public:
   SynthDSP() = default;
-  SynthDSP(SynthModel const* model, AudioInput const* input);
+  SynthDSP(SynthModel const* model, SynthInput const* input);
 public:
   void Release();
   AudioOutput Next();
-  AudioOutput Next(AudioState const& state);
+  AudioOutput Next(SynthState const& state);
   bool End() const { return _envs[0].End(); }
   static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(FiniteDSP<SynthDSP, SynthModel>);
-static_assert(AudioSource<SynthDSP, SynthModel>);
+static_assert(PlottableDSP<SynthDSP, SynthModel>);
+static_assert(AudioSourceDSP<SynthDSP, SynthModel>);
 
 } // namespace Xts
 #endif // XTS_SYNTH_DSP_HPP

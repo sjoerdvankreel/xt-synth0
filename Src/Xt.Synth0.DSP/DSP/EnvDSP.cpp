@@ -80,8 +80,8 @@ EnvDSP::Next()
 }
 
 EnvDSP::
-EnvDSP(EnvModel const* model, AudioInput const* input) :
-GeneratorDSP(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
+EnvDSP(EnvModel const* model, SynthInput const* input) :
+DSPBase(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
 {
   bool off = model->type == EnvType::Off;
   NextStage(off ? EnvStage::S : EnvStage::Dly);
@@ -89,7 +89,7 @@ GeneratorDSP(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
 }
 
 EnvParams
-EnvDSP::Params(EnvModel const& model, AudioInput const& input)
+EnvDSP::Params(EnvModel const& model, SynthInput const& input)
 {
   EnvParams result;
   result.s = Level(model.s);
@@ -127,7 +127,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   if (model.type == EnvType::Off) return;
 
   bool dahdr = model.type == EnvType::DAHDR;
-  auto params = Params(model, AudioInput(testRate, 120, 4, UnitNote::C));
+  auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
   auto length = params.dly + params.a + params.hld + params.d + params.r;
   int sustain = dahdr? 0: static_cast<int>(length * sustainFactor);
   output.rate = input.pixels / (length + sustain) * testRate;
@@ -137,7 +137,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   int i = 0;
   int s = 0;
   EnvStage prev = EnvStage::Dly;
-  auto in = AudioInput(output.rate, 120, 4, UnitNote::C);
+  auto in = SynthInput(output.rate, 120, 4, UnitNote::C);
   EnvDSP dsp(&model, &in);
   while(!dsp.End())
   {

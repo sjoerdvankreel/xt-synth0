@@ -16,7 +16,7 @@ UnitDSP::PwPhase() const
 }
 
 float
-UnitDSP::Freq(UnitModel const& model, AudioInput const& input)
+UnitDSP::Freq(UnitModel const& model, SynthInput const& input)
 {
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
 	int key = input.oct * 12 + static_cast<int>(input.note);
@@ -28,7 +28,7 @@ UnitDSP::Freq(UnitModel const& model, AudioInput const& input)
 }
 
 AudioOutput
-UnitDSP::Next(AudioState const& state)
+UnitDSP::Next(SynthState const& state)
 {
 	if (_model->type == UnitType::Off) return AudioOutput(0.0f, 0.0f);
 	float freq = Freq(*_model, *_input);
@@ -71,14 +71,14 @@ UnitDSP::GenerateNaive(NaiveType type, float phase) const
 void
 UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
 {
-	AudioInput testIn(0.0f, input.bpm, 4, UnitNote::C);
+	SynthInput testIn(0.0f, input.bpm, 4, UnitNote::C);
 	output.clip = false;
 	output.bipolar = true;
 	output.freq = Freq(model, testIn);
 	output.rate = output.freq * input.pixels;
 
-  AudioState state;
-	AudioInput in(output.rate, input.bpm, 4, UnitNote::C);
+	SynthState state;
+	SynthInput in(output.rate, input.bpm, 4, UnitNote::C);
 	UnitDSP dsp(&model, &in);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i <= static_cast<int>(samples); i++)

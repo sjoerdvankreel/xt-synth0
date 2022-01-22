@@ -40,6 +40,9 @@
     <ClInclude Include="Model\Model.hpp">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\GlobalDSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -56,6 +59,9 @@
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="DSP\PlotDSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\GlobalDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
   </ItemGroup>

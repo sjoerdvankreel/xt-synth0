@@ -14,7 +14,7 @@ enum class SyncStep
 
 struct XTS_ALIGN GlobalModel
 {
-  friend class SynthDSP;
+  friend class GlobalDSP;
   GlobalModel() = default;
   GlobalModel(GlobalModel const&) = delete;
 private:
