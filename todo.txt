@@ -3,7 +3,6 @@ dont plot too often (throttle)
 dont trigger gc from the callback - dispatch all to ui
 hard sync
 integrate blit / PWM triangle
-custom color scheme
 sampler
 better serialization
 automation groups
@@ -13,19 +12,10 @@ make it faster
 detach sequencer
 multiple synths + select target in sequencer
 pass automation to last active voice
-simplify plot (sample max# at default SR of 1000?)
 fast log/sin approx?
 colspan ui
-param interpolation
-make plot functions stateless
 hide controls when off
-check static_casts
-make sure zero length adr has no plot data
-check synth plot
-init(UnitModel)
-notifyparamchange + recalc
-use unmanaged funptrs
-concept FiniteGenerator
+notifyparamchange + recalc + param interpolation
 invert colorscheme/perlin noise
 sequencer clipping
 edit step

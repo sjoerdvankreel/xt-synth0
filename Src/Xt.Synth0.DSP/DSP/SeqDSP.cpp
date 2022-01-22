@@ -119,17 +119,16 @@ SeqDSP::Trigger(SeqInput const& input)
   for (int k = 0; k < _model->edit.keys; k++)
   {
     auto const& key = _model->pattern.rows[_row].keys[k];
-    auto note = static_cast<PatternNote>(key.note);
-    if (note >= PatternNote::Off)
+    if (key.note >= PatternNote::Off)
       for (int v = 0; v < MaxVoices; v++)
         if (_keys[v] == k) _dsps[v].Release();
-    if (note >= PatternNote::C)
+    if (key.note >= PatternNote::C)
     {
       int voice = Take(k, exhausted);
       result |= exhausted;
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
-      auto unote = static_cast<UnitNote>(static_cast<int>(note) - 2);
+      auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
       _inputs[voice] = SynthInput(input.rate, bpm, key.oct, unote);
       _dsps[voice] = SynthDSP(&_synths[voice], &_inputs[voice]);
     }

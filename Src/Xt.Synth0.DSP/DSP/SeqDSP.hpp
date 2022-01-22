@@ -8,7 +8,7 @@
 
 namespace Xts {
 
-constexpr int MaxVoices = 128;
+constexpr int MaxVoices = 4;
 
 struct SeqInput
 {
