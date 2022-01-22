@@ -36,7 +36,7 @@ UnitDSP::Next(SynthState const& state)
 	float amp = Level(_model->amp);
 	float pan = Mix01Inclusive(_model->pan);
 	_phase += freq / _input->rate;
-	if (_phase >= 1.0) _phase = 0.0;
+	_phase -= floor(_phase);
 	assert(-1.0f <= sample && sample <= 1.0f);
 	return AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
 }

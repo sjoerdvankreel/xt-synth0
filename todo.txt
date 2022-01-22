@@ -17,4 +17,3 @@ hide controls when off
 notifyparamchange + recalc + param interpolation
 invert colorscheme/perlin noise
 edit step
-fix the sine
