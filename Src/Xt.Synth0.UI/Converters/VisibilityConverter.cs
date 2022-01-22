@@ -2,13 +2,13 @@
 
 namespace Xt.Synth0.UI
 {
-	class VisibilityConverter : Converter<bool, Visibility>
+	class VisibilityConverter<T> : Converter<T, Visibility>
 	{
-		readonly bool _value;
+		readonly T _value;
 		readonly bool _hidden;
-		internal VisibilityConverter(bool hidden, bool value)
+		internal VisibilityConverter(bool hidden, T value)
 		=> (_hidden, _value) = (hidden, value);
-		protected override Visibility Convert(bool value)
-		=> value == _value ? Visibility.Visible : _hidden ? Visibility.Hidden : Visibility.Collapsed;
+		protected override Visibility Convert(T value)
+		=> value.Equals(_value) ? Visibility.Visible : _hidden ? Visibility.Hidden : Visibility.Collapsed;
 	}
 }

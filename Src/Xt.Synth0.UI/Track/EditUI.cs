@@ -10,7 +10,8 @@ namespace Xt.Synth0.UI
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = SubUI.Make(app, edit);
-			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new VisibilityConverter(true, false));
+			var conv = new VisibilityConverter<bool>(true, false);
+			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), conv);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}

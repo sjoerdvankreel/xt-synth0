@@ -62,8 +62,8 @@ namespace Xt.Synth0.UI
 			var result = Create.Grid(1, 2, true);
 			result.Add(Create.Label("Output path", new(0, 0)));
 			result.Add(MakeOutputPath(settings, new(0, 1)));
-			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk),
-				new VisibilityConverter(false, true));
+			var conv = new VisibilityConverter<bool>(false, true);
+			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk), conv);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
@@ -80,8 +80,8 @@ namespace Xt.Synth0.UI
 			result.Add(MakeBufferSize(settings, new(2, 1)));
 			result.Add(Create.Label("Format supported", new(3, 0)));
 			result.Add(MakeFormatSupport(settings, new(3, 1)));
-			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk),
-				new VisibilityConverter(false, false));
+			var conv = new VisibilityConverter<bool>(false, false);
+			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk), conv);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
@@ -129,8 +129,8 @@ namespace Xt.Synth0.UI
 			result.Content = "Browse";
 			result.Click += (s, e) => BrowseOutputPath(settings);
 			result.HorizontalAlignment = HorizontalAlignment.Right;
-			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk),
-				new VisibilityConverter(true, true));
+			var conv = new VisibilityConverter<bool>(true, true);
+			var binding = Bind.To(settings, nameof(SettingsModel.WriteToDisk), conv);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
@@ -230,8 +230,8 @@ namespace Xt.Synth0.UI
 			result.SelectedValuePath = nameof(DeviceModel.Id);
 			var binding = Bind.To(settings, path);
 			result.SetBinding(Selector.SelectedValueProperty, binding);
-			binding = Bind.To(settings, nameof(SettingsModel.UseAsio),
-				new VisibilityConverter(false, asio));
+			var conv = new VisibilityConverter<bool>(false, asio);
+			binding = Bind.To(settings, nameof(SettingsModel.UseAsio), conv);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
@@ -241,8 +241,8 @@ namespace Xt.Synth0.UI
 			var result = new Button();
 			result.Content = "Control panel";
 			result.Click += (s, e) => ShowASIOControlPanel?.Invoke(null, EventArgs.Empty);
-			var binding = Bind.To(settings, nameof(SettingsModel.UseAsio),
-				new VisibilityConverter(true, true));
+			var conv = new VisibilityConverter<bool>(true, true);
+			var binding = Bind.To(settings, nameof(SettingsModel.UseAsio), conv);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}

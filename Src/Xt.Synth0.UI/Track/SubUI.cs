@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 		internal const double BorderThickness = 1;
 
 		internal static FrameworkElement MakeContent(AppModel app, IThemedSubModel sub)
-		=> MakeOuterBorder(MakeGrid(app, sub));
+		=> MakeOuterBorder(MakeEnabled(app, sub));
 
 		internal static GroupBox Make(AppModel app, IThemedSubModel sub)
 		{
@@ -44,6 +44,21 @@ namespace Xt.Synth0.UI
 			result.BorderThickness = new(BorderThickness, BorderThickness, 0, 0);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
 			result.Child = child;
+			return result;
+		}
+
+		static UIElement MakeEnabled(AppModel app, IThemedSubModel sub)
+		{
+			var result = Create.Grid(1, 1);
+			var grid = result.Add(MakeGrid(app, sub));
+			if (sub.Enabled == null) return result;
+			var conv = new VisibilityConverter<int>(true, 1);
+			var binding = Bind.To(sub.Enabled, nameof(Param.Value), conv);
+			grid.SetBinding(UIElement.VisibilityProperty, binding);
+			var off = result.Add(Create.Label("Off"));
+			conv = new VisibilityConverter<int>(true, 0);
+			binding = Bind.To(sub.Enabled, nameof(Param.Value), conv);
+			off.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
