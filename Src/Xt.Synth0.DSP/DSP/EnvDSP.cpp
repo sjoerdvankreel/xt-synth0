@@ -25,8 +25,8 @@ EnvDSP::NextStage(EnvStage stage)
 void
 EnvDSP::Release()
 {
-  if (_stage >= EnvStage::R) return;
   bool off = _model->type == EnvType::Off;
+  if (!off && _stage >= EnvStage::R) return;
   NextStage(off ? EnvStage::End : EnvStage::R);
   CycleStage(_model->type, Params(*_model, *_input));
 }
