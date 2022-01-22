@@ -16,6 +16,7 @@ public:
 
 struct PlotOutput
 {
+  int channel;
   float freq, rate;
   bool clip, bipolar;
   std::vector<int>* splits;

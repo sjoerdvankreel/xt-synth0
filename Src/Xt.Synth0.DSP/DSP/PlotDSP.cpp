@@ -9,13 +9,16 @@ namespace Xts {
 void
 PlotDSP::Render(SynthModel const& synth, PlotInput const& input, PlotOutput& output)
 {
-  output.splits->clear();
-  output.samples->clear();
   auto type = synth.plot.type;
   auto index = static_cast<int>(type);
+
+  output.splits->clear();
+  output.samples->clear();
+  output.channel = type == PlotType::SynthR? 1: 0;
+
   switch(synth.plot.type)
   {
-  case PlotType::Synth: {
+  case PlotType::SynthL: case PlotType::SynthR: {
     SynthDSP().Plot(synth, input, output);
     break; }
   case PlotType::Env1: case PlotType::Env2: {

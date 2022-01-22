@@ -37,7 +37,7 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 64);
 
-enum class PlotType { Synth, Unit1, Unit2, Unit3, Env1, Env2 };
+enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2 };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;

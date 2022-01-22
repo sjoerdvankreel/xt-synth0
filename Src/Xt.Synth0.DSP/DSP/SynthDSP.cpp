@@ -40,18 +40,20 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
 {
   const int plotRate = 5000;
   const int plotMaxSamples = 10000;
+  bool l = output.channel == 0;
 
   output.freq = 0.0f;
   output.clip = false;
   output.bipolar = true;
-  output.rate = static_cast<float>(plotRate);
+  output.rate = static_cast<float>(plotRate); 
   
   AudioInput in(output.rate, 120, 4, UnitNote::C);
   SynthDSP dsp(&model, &in);
   for(int s = 0; s < plotMaxSamples; s++)
   {
     if(dsp.End()) break;
-    float sample = dsp.Next().l;
+    auto audio = dsp.Next();
+    float sample = l? audio.l: audio.r;
     output.clip |= Clip(sample);
     output.samples->push_back(sample);
   }
