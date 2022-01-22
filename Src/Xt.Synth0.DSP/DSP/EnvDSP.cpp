@@ -60,8 +60,9 @@ EnvDSP::Next()
   const float threshold = 1.0E-5f;
   if (_model->type == EnvType::Off || _stage == EnvStage::End) return 0.0f;
   EnvParams params = Params(*_model, *_input);
-  CycleStage(_model->type, params);
   float result = Generate(params);
+  CycleStage(_model->type, params);
+  assert(0.0f <= result && result <= 1.0f);
   if (_stage != EnvStage::End) _stagePos++;
   if (_stage < EnvStage::R) _level = result;
   if (_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);

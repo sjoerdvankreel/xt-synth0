@@ -55,15 +55,20 @@ void XTS_CALL
 XtsPlotDSPRender(PlotState* state)
 {
   Xts::PlotInput in;
-  in.bpm = static_cast<float>(state->bpm);
-  in.pixels = static_cast<float>(state->pixels);
-
   Xts::PlotOutput out;
+
   state->splitData->clear();
   state->sampleData->clear();
+  in.bpm = static_cast<float>(state->bpm);
+  in.pixels = static_cast<float>(state->pixels);
   out.splits = state->splitData;
   out.samples = state->sampleData;
   Xts::PlotDSP::Render(*state->synth, in, out);
+
+  state->clip = out.clip;
+  state->freq = out.freq;
+  state->rate = out.rate;
+  state->bipolar = out.bipolar;
   state->splits = state->splitData->data();
   state->samples = state->sampleData->data();
   state->splitCount = static_cast<int32_t>(state->splitData->size());

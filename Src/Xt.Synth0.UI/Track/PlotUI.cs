@@ -99,7 +99,7 @@ namespace Xt.Synth0.UI
 			Args.Pixels = w;
 			RequestPlotData?.Invoke(null, Args);
 			container.Content = Args.Samples.Count > 0 ? Plot(w, h) : Empty;
-			string header = $"{plot.Name} @ {Args.SampleRate}Hz";
+			string header = $"{plot.Name} @ {Args.SampleRate.ToString("N1")}Hz";
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
 			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
 			if (Args.Clip) header += " (Clip)";
