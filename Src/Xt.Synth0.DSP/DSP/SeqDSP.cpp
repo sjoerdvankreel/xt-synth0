@@ -49,8 +49,8 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
   exhausted = false;
   if (Move(input))
   {
-    Automate();
     exhausted = Trigger(input);
+    Automate();
   }
   AudioOutput result;
   for (int v = 0; v < MaxVoices; v++)
