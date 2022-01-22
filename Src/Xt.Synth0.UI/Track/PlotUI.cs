@@ -29,8 +29,9 @@ namespace Xt.Synth0.UI
 		{
 			var plot = app.Track.Synth.Plot;
 			var dock = new DockPanel();
+			dock.Background = Brushes.Transparent;
 			var text = dock.Add(new TextBlock(), Dock.Left);
-			text.HorizontalAlignment = HorizontalAlignment.Right;
+			text.VerticalAlignment = VerticalAlignment.Center;
 			var control = dock.Add(ParamUI.MakeControl(app, plot, plot.Type), Dock.Right);
 			control.HorizontalAlignment = HorizontalAlignment.Right;
 			control.VerticalAlignment = VerticalAlignment.Center;
@@ -51,7 +52,7 @@ namespace Xt.Synth0.UI
 			synth.ParamChanged += (s, e) => Update(app, text, content);
 			content.SizeChanged += (s, e) => Update(app, text, content);
 			app.Settings.PropertyChanged += (s, e) => Update(app, text, content);
-			result.BorderThickness = new(SubUI.BorderThickness, 0, SubUI.BorderThickness, SubUI.BorderThickness);
+			result.BorderThickness = new(SubUI.BorderThickness);
 			return result;
 		}
 
@@ -108,7 +109,7 @@ namespace Xt.Synth0.UI
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
 			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
 			if (Args.Clip) header += " (Clip)";
-			text.Text = header;
+			text.Text = Args.Samples.Count > 0 ? header : $"{plot.Name}{Environment.NewLine}0 samples";
 		}
 
 		static UIElement Plot(int w, double h)

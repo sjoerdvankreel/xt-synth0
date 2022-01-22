@@ -37,7 +37,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static Border MakeInnerBorder(UIElement child, Cell cell)
+		internal static Border MakeInnerBorder(UIElement child, Cell cell)
 		{
 			var result = Create.Element<Border>(cell);
 			result.SnapsToDevicePixels = true;
