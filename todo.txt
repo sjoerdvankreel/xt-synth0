@@ -17,4 +17,4 @@ hide controls when off
 notifyparamchange + recalc + param interpolation
 invert colorscheme/perlin noise
 edit step
-pass automation to last active voice
+fix the sine

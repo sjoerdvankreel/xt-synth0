@@ -8,7 +8,7 @@
 
 namespace Xts {
 
-constexpr int MaxVoices = 4;
+constexpr int MaxVoices = 128;
 
 struct SeqInput
 {
@@ -40,12 +40,13 @@ class SeqDSP
   SynthModel const* _synth;
 private:
   int _keys[MaxVoices];
+  int _active[MaxKeys];
   SynthDSP _dsps[MaxVoices];
   int64_t _started[MaxVoices];
   SynthInput _inputs[MaxVoices];
   SynthModel _synths[MaxVoices];
 private:
-  void Automate() const;
+  void Automate();
   int Take(int key, int voice);
   void Return(int key, int voice);
   bool Move(SeqInput const& input);

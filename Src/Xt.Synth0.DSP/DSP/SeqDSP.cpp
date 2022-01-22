@@ -20,6 +20,7 @@ SeqDSP::Take(int key, int voice)
 {
   _voices++;
   _keys[voice] = key;
+  _active[key] = voice;
   _started[voice] = _pos;
   assert(0 <= _voices && _voices <= MaxVoices);
   return voice;
@@ -62,7 +63,7 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
 }
 
 void
-SeqDSP::Automate() const
+SeqDSP::Automate()
 {
   for (int f = 0; f < _model->edit.fxs; f++)
   {
@@ -75,6 +76,9 @@ SeqDSP::Automate() const
     else if (fx.val > p.max) *p.val = p.max;
     else *p.val = fx.val;
   }
+  for(int k = 0; k < MaxKeys; k++)
+    if(_active[k] != -1) 
+      _synths[_active[k]] = *_synth;      
 }
 
 void
@@ -107,6 +111,8 @@ SeqDSP::Init(SeqModel const* model, SynthModel const* synth)
   _voices = 0;
   _model = model;
   _synth = synth;
+  for(int i = 0; i < MaxKeys; i++)
+    _active[i] = -1;
   for (int i = 0; i < MaxVoices; i++)
     _started[i] = _keys[i] = -1;
 }
@@ -151,6 +157,7 @@ SeqDSP::Take(int key, bool& exhausted)
   }
   exhausted = true;
   _keys[victim] = key;
+  _active[key] = victim;
   _started[victim] = _pos;
   assert(0 <= victim && victim < MaxVoices);
   assert(0 <= _voices && _voices <= MaxVoices);
