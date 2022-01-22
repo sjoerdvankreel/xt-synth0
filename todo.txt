@@ -26,3 +26,4 @@ init(UnitModel)
 notifyparamchange + recalc
 use unmanaged funptrs
 concept FiniteGenerator
+invert colorscheme/perlin noise

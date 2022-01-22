@@ -6,8 +6,10 @@
 #define XTS_ALIGN alignas(8)
 #define XTS_COMBINE_(X,Y) X##Y
 #define XTS_COMBINE(X,Y) XTS_COMBINE_(X,Y)
+
 #define XTS_CHECK_SIZE(type, expected) \
-CheckSize<sizeof(type), expected> XTS_COMBINE(Check, __LINE__)
+CheckSize<sizeof(type), expected> \
+XTS_COMBINE(Check, XTS_COMBINE(type, __LINE__))
 
 typedef int32_t XtsBool;
 constexpr XtsBool XtsTrue = 1;
@@ -26,8 +28,10 @@ constexpr int MaxRows = 32;
 constexpr int MaxPatterns = 8;
 constexpr int TotalRows = MaxPatterns * MaxRows;
 
+namespace {
 template<int Actual, int Expected>
 struct CheckSize { static_assert(Actual == Expected); };
+} // namespace anonymous
 
 } // namespace Xts
 #endif // XTS_MODEL_HPP
