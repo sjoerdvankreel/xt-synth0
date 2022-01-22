@@ -11,11 +11,10 @@ play note on enter
 make it faster
 detach sequencer
 multiple synths + select target in sequencer
-pass automation to last active voice
 fast log/sin approx?
 colspan ui
 hide controls when off
 notifyparamchange + recalc + param interpolation
 invert colorscheme/perlin noise
-sequencer clipping
 edit step
+pass automation to last active voice
