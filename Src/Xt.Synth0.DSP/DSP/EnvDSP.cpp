@@ -28,6 +28,7 @@ EnvDSP::Release()
   if (_stage >= EnvStage::R) return;
   bool off = _model->type == EnvType::Off;
   NextStage(off ? EnvStage::End : EnvStage::R);
+  CycleStage(_model->type, Params(*_model, *_input));
 }
 
 float
@@ -115,6 +116,7 @@ EnvDSP::CycleStage(EnvType type, EnvParams const& params)
 void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
+  const int minSustain = 10;
   const float testRate = 1000.0f;
   const float sustainFactor = 0.2f;
 
@@ -124,10 +126,13 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   output.bipolar = false;
   if (model.type == EnvType::Off) return;
 
+  bool dahdr = model.type == EnvType::DAHDR;
   auto params = Params(model, AudioInput(testRate, 120, 4, UnitNote::C));
   auto length = params.dly + params.a + params.hld + params.d + params.r;
-  int sustain = static_cast<int>(length * sustainFactor);
+  int sustain = dahdr? 0: static_cast<int>(length * sustainFactor);
   output.rate = input.pixels / (length + sustain) * testRate;
+  sustain = static_cast<int>(sustain * output.rate / testRate);
+  sustain = std::max(sustain, minSustain);
 
   int i = 0;
   int s = 0;
@@ -136,8 +141,8 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   EnvDSP dsp(&model, &in);
   while(!dsp.End())
   {
-    if(s == sustain) dsp.Release();
-    output.samples->push_back(dsp.Next());
+    if(s == sustain && !dahdr) dsp.Release();
+    if(!dsp.End()) output.samples->push_back(dsp.Next());
     if(dsp._stage == EnvStage::S) s++;
     if(prev != dsp._stage && prev != EnvStage::Dly && !dsp.End())
       output.splits->push_back(i);
