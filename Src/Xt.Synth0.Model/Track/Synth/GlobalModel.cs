@@ -17,6 +17,6 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", true, 0);
-		static readonly ParamInfo Env1Info = ParamInfo.Level(p => &((Native*)p)->env1, "Env1->Amp", "Env1 to amp", true, 255);
+		static readonly ParamInfo Env1Info = ParamInfo.Level(p => &((Native*)p)->env1, nameof(Env1), "Env1 to amp", true, 255);
 	}
 }
