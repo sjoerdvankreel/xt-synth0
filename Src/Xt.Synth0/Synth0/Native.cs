@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security;
-using Xt.Synth0.Model;
 
 namespace Xt.Synth0
 {
@@ -9,60 +8,45 @@ namespace Xt.Synth0
 	internal static unsafe class Native
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct PlotInput
-		{
-			internal int rate;
-			internal int pixels;
-			internal IntPtr synth;
-		}
-
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct PlotOutput
-		{
-			internal float freq;
-			internal int rate;
-			internal int clip;
-			internal int bipolar;
-			internal int splitCount;
-			internal int sampleCount;
-			internal float* samples;
-			internal int* splits;
-		}
-
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct SeqState
 		{
-			internal float rate;
-			internal int voices;
-			internal int clip;
-			internal int frames;
-			internal int currentRow;
-			internal int exhausted;
-			internal long streamPosition;
-			internal float* buffer; 
-			internal IntPtr synth; 
-			internal IntPtr seq;
-		}
+			internal int row, voices;
+			internal int clip, exhausted;
+			internal int rate, frames;
+			internal long pos;
+			internal float* buffer;
+			internal IntPtr synth, seq;
+		};
 
-		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqModelCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSynthModelCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqModelDestroy(IntPtr seq);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelDestroy(IntPtr synth);
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		internal struct PlotState
+		{
+			internal float freq, rate;
+			internal int bpm, pixels;
+			internal int clip, bipolar;
+			internal int sampleCount, splitCount;
+			internal float* samples;
+			internal int* splits;
+			internal IntPtr synth;
+			internal IntPtr sampleData;
+			internal IntPtr splitData;
+		};
 
-		[DllImport("XT.Synth0.DSP")] internal static extern SeqState* XtsSeqStateCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern PlotInput* XtsPlotInputCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern PlotOutput* XtsPlotOutputCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqStateDestroy(SeqState* state);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotInputDestroy(PlotInput* input);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotOutputDestroy(PlotOutput* output);
 
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPDestroy(IntPtr dsp);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPInit(IntPtr dsp, SeqState* state);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPProcessBuffer(IntPtr dsp, SeqState* state);
+		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqModelCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSynthModelCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern SeqState* XtsSeqStateCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern PlotState* XtsPlotStateCreate();
 
-		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsPlotDSPCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDSPDestroy(IntPtr dsp);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDSPRender(IntPtr dsp, PlotInput* input, PlotOutput* output);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPDestroy(IntPtr dsp);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqModelDestroy(IntPtr model);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelDestroy(IntPtr model);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqStateDestroy(SeqState* state);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotStateDestroy(PlotState* state);
+
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDSPRender(PlotState* state);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPRender(IntPtr dsp, SeqState* state);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPInit(IntPtr dsp, IntPtr model, IntPtr synth);
 	}
 }

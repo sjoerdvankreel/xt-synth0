@@ -10,10 +10,8 @@ namespace Xt.Synth0
 {
 	static class Synth0
 	{
-		static IntPtr _nativePlotDSP;
 		static IntPtr _nativePlotSynthModel;
-		static unsafe Native.PlotInput* _nativePlotInput;
-		static unsafe Native.PlotOutput* _nativePlotOutput;
+		static unsafe Native.PlotState* _nativePlotState;
 
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
@@ -22,21 +20,16 @@ namespace Xt.Synth0
 		[STAThread]
 		static unsafe void Main()
 		{
-			Xt.Synth0.Model.Model.SanityChecks();
 			try
 			{
-				_nativePlotDSP = Native.XtsPlotDSPCreate();
-				_nativePlotInput = Native.XtsPlotInputCreate();
-				_nativePlotOutput = Native.XtsPlotOutputCreate();
+				_nativePlotState = Native.XtsPlotStateCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
-				Native.XtsPlotDSPDestroy(_nativePlotDSP);
-				Native.XtsPlotInputDestroy(_nativePlotInput);
-				Native.XtsPlotOutputDestroy(_nativePlotOutput);
+				Native.XtsPlotStateDestroy(_nativePlotState);
 				Native.XtsSynthModelDestroy(_nativePlotSynthModel);
 			}
 		}
@@ -218,22 +211,21 @@ namespace Xt.Synth0
 
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
-			_nativePlotInput->pixels = e.Pixels;
-			_nativePlotInput->synth = _nativePlotSynthModel;
-			_nativePlotInput->rate = Model.Settings.SampleRate.ToInt();
+			_nativePlotState->pixels = e.Pixels;
+			_nativePlotState->synth = _nativePlotSynthModel;
+			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
 			Model.Track.Synth.ToNative(_nativePlotSynthModel.ToPointer());
-			Native.XtsPlotDSPRender(_nativePlotDSP, _nativePlotInput, _nativePlotOutput);
-
-			e.Freq = _nativePlotOutput->freq;
-			e.Clip = _nativePlotOutput->clip != 0;
-			e.SampleRate = _nativePlotOutput->rate;
-			e.Bipolar = _nativePlotOutput->bipolar != 0;
+			Native.XtsPlotDSPRender(_nativePlotState);
+			e.Freq = _nativePlotState->freq;
+			e.Clip = _nativePlotState->clip != 0;
+			e.SampleRate = _nativePlotState->rate;
+			e.Bipolar = _nativePlotState->bipolar != 0;
 			e.Splits.Clear();
-			for (int i = 0; i < _nativePlotOutput->splitCount; i++)
-				e.Splits.Add(_nativePlotOutput->splits[i]);
+			for (int i = 0; i < _nativePlotState->splitCount; i++)
+				e.Splits.Add(_nativePlotState->splits[i]);
 			e.Samples.Clear();
-			for (int i = 0; i < _nativePlotOutput->sampleCount; i++)
-				e.Samples.Add(_nativePlotOutput->samples[i]);
+			for (int i = 0; i < _nativePlotState->sampleCount; i++)
+				e.Samples.Add(_nativePlotState->samples[i]);
 		}
 	}
 }

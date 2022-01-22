@@ -19,13 +19,11 @@ struct SynthModel;
 
 struct XTS_ALIGN SeqState
 {
-public:
-  int64_t pos;
   int32_t row, voices;
-  XtsBool clip, exhausted;
-public:
-  float* buffer;
+  int32_t clip, exhausted;
   int32_t rate, frames;
+  int64_t pos;
+  float* buffer;
   Xts::SynthModel* synth;
   Xts::SeqModel const* seq;
 public:
@@ -35,38 +33,34 @@ public:
 
 struct XTS_ALIGN PlotState
 {
-public:
-  int32_t bpm, pixels;
-public:
   float freq, rate;
+  int32_t bpm, pixels;
   XtsBool clip, bipolar;
+  int32_t sampleCount, splitCount;
+  float* samples;
+  int32_t* splits;
   Xts::SynthModel const* synth;
-  std::unique_ptr<std::vector<float>> samples;
-  std::unique_ptr<std::vector<int32_t>> splits;
+  std::vector<float>* sampleData;
+  std::vector<int32_t>* splitData;
 public:
+  PlotState() = default;
   PlotState(PlotState const&) = delete;
-  PlotState():
-  bpm(0), pixels(0), 
-  freq(0.0f), rate(0.0f),
-  clip(false), bipolar(false), synth(nullptr),
-  splits(std::make_unique<std::vector<int32_t>>()), 
-  samples(std::make_unique<std::vector<float>>()) {}
 };
 
 XTS_EXPORT SeqState* XTS_CALL XtsSeqStateCreate(void);
+XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
 XTS_EXPORT PlotState* XTS_CALL XtsPlotStateCreate(void);
 XTS_EXPORT Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void);
 XTS_EXPORT Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void);
 
+XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSeqStateDestroy(SeqState* state);
 XTS_EXPORT void XTS_CALL XtsPlotStateDestroy(PlotState* state);
 XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model);
 XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model);
 
-XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
-XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
+XTS_EXPORT void XTS_CALL XtsPlotDSPRender(PlotState* state);
 XTS_EXPORT void XTS_CALL XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state);
-XTS_EXPORT void XTS_CALL XtsPlotDSPRender(Xts::PlotDSP* dsp, PlotState* state);
 XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth);
 
 #endif // XTS_HPP

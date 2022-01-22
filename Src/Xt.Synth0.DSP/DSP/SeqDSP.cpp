@@ -124,8 +124,8 @@ SeqDSP::Trigger(SeqInput const& input, bool& exhausted)
     if (note >= PatternNote::C)
     {
       int voice = Take(k, exhausted);
-      float bpm = static_cast<float>(_model->edit.bpm);
       _synths[voice] = *_synth;
+      float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(note) - 2);
       _inputs[voice] = AudioInput(input.rate, bpm, key.oct, unote);
       _dsps[voice] = SynthDSP(&_synth[voice], &_inputs[voice]);
