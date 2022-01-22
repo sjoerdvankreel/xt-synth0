@@ -45,10 +45,11 @@ SeqDSP::Move(SeqInput const& input)
 AudioOutput
 SeqDSP::Next(SeqInput const& input, bool& exhausted)
 {
+  exhausted = false;
   if (Move(input))
   {
     Automate();
-    Trigger(input, exhausted);
+    exhausted = Trigger(input);
   }
   AudioOutput result;
   for (int v = 0; v < MaxVoices; v++)
@@ -110,9 +111,11 @@ SeqDSP::Init(SeqModel const* model, SynthModel const* synth)
     _started[i] = _keys[i] = -1;
 }
 
-void
-SeqDSP::Trigger(SeqInput const& input, bool& exhausted)
+bool
+SeqDSP::Trigger(SeqInput const& input)
 {
+  bool result = false;
+  bool exhausted = false;
   for (int k = 0; k < _model->edit.keys; k++)
   {
     auto const& key = _model->pattern.rows[_row].keys[k];
@@ -123,6 +126,7 @@ SeqDSP::Trigger(SeqInput const& input, bool& exhausted)
     if (note >= PatternNote::C)
     {
       int voice = Take(k, exhausted);
+      result |= exhausted;
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(note) - 2);
@@ -130,6 +134,7 @@ SeqDSP::Trigger(SeqInput const& input, bool& exhausted)
       _dsps[voice] = SynthDSP(&_synths[voice], &_inputs[voice]);
     }
   }
+  return result;
 }
 
 int

@@ -50,7 +50,7 @@ private:
   void Return(int key, int voice);
   bool Move(SeqInput const& input);
   int Take(int key, bool& exhausted);
-  void Trigger(SeqInput const& input, bool& exhausted);
+  bool Trigger(SeqInput const& input);
   AudioOutput Next(SeqInput const& input, bool& exhausted);
 public:
   void Render(SeqInput const& input, SeqOutput& output);
