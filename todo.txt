@@ -1,19 +1,13 @@
-polyblep
+polyblep, hard sync, integrate blit / PWM triangle
 dont plot too often (throttle)
 dont trigger gc from the callback - dispatch all to ui
-hard sync
-integrate blit / PWM triangle
 sampler
 better serialization
 automation groups
-better pattern edit
-play note on enter
+better pattern edit, play note on enter, edit step
 make it faster
 detach sequencer
 multiple synths + select target in sequencer
 fast log/sin approx?
-colspan ui
-hide controls when off
 notifyparamchange + recalc + param interpolation
 invert colorscheme/perlin noise
-edit step
