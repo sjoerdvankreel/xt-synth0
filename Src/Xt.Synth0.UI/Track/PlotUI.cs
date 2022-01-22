@@ -20,8 +20,10 @@ namespace Xt.Synth0.UI
 		{
 			Empty = new DockPanel();
 			var label = Empty.Add(Create.Label("No data"));
+			label.FontWeight = FontWeights.Bold;
 			label.VerticalAlignment = VerticalAlignment.Center;
 			label.HorizontalAlignment = HorizontalAlignment.Center;
+			label.SetResourceReference(Control.ForegroundProperty, Utility.RowDisabledKey);
 			Empty.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
 		}
 

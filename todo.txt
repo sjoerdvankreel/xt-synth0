@@ -12,5 +12,4 @@ fast log/sin approx?
 notifyparamchange + recalc + param interpolation
 invert colorscheme/perlin noise
 lfos
-large off font
 env to pitch
