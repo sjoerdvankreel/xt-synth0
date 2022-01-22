@@ -28,3 +28,4 @@ use unmanaged funptrs
 concept FiniteGenerator
 invert colorscheme/perlin noise
 sequencer clipping
+edit step
