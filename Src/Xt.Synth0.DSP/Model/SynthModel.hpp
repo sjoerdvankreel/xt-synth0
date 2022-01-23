@@ -12,6 +12,7 @@ enum class SyncStep
   S5_4, S4_3, S3_2, S5_3, S7_4, S15_8, S2_1, S3_1, S4_1, S5_1, S6_1, S7_1, S8_1, S10_1, S12_1, S16_1 
 };
 
+enum class GlobalAmpLfo { LOF1, LFO2 };
 enum class GlobalAmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN GlobalModel
 {
@@ -20,9 +21,10 @@ struct XTS_ALIGN GlobalModel
   GlobalModel(GlobalModel const&) = delete;
 private:
   GlobalAmpEnv ampEnv;
-  int32_t amp, ampEnvAmt, pad__;
+  GlobalAmpLfo ampLfo;
+  int32_t amp, ampEnvAmt, ampLfoAmt, pad__;
 };
-XTS_CHECK_SIZE(GlobalModel, 16);
+XTS_CHECK_SIZE(GlobalModel, 24);
 
 enum class LfoType { Sin, Saw, Sqr, Tri };
 struct XTS_ALIGN LfoModel
@@ -104,7 +106,7 @@ private:
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 544);
+XTS_CHECK_SIZE(SynthModel, 552);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP
