@@ -22,6 +22,22 @@ private:
 };
 XTS_CHECK_SIZE(GlobalModel, 8);
 
+enum class LfoType { Sin, Saw, Sqr, Tri };
+struct XTS_ALIGN LfoModel
+{
+  friend class LfoDSP;
+  LfoModel() = default;
+  LfoModel(LfoModel const&) = delete;
+private:
+  XtsBool on;
+  LfoType type;
+  XtsBool sync;
+  int32_t rate;
+  SyncStep step;
+  int32_t pad__;
+};
+XTS_CHECK_SIZE(LfoModel, 24);
+
 enum class EnvType { DAHDSR, DAHDR };
 struct XTS_ALIGN EnvModel 
 {
@@ -38,7 +54,7 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
-enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2, Env3 };
+enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2, Env3, Lfo1, Lfo2 };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;
@@ -79,10 +95,11 @@ struct XTS_ALIGN SynthModel
 private:
   PlotModel plot;
   GlobalModel global;
+  LfoModel lfos[LfoCount];
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 400);
+XTS_CHECK_SIZE(SynthModel, 448);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

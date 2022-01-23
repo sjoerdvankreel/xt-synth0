@@ -25,21 +25,25 @@ namespace Xt.Synth0.Model
 		{
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
+			internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
 			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
 		}
 
 		public PlotModel Plot { get; } = new();
 		public GlobalModel Global { get; } = new();
+		public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
 		public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
+
+		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, Model.LfoCount).Select(i => new LfoModel(i)).ToList();
+		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
+		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
 
 		public IReadOnlyList<AutoParam> AutoParams { get; }
 		public override IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
 		public AutoParam AutoParam(Param param) => AutoParams.Single(p => ReferenceEquals(param, p.Param));
-		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
-		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
-		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(new ISubModel[] { Plot, Global }).ToArray();
+		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(Lfos).Concat(new ISubModel[] { Plot, Global }).ToArray();
 
 		public static readonly string[] SyncStepNames = new[]
 		{

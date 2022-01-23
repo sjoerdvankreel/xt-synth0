@@ -22,6 +22,7 @@ namespace Xt.Synth0.UI
 
 		static ThemeType GroupType(ThemeGroup group) => group switch
 		{
+			ThemeGroup.Lfos => ThemeType.White,
 			ThemeGroup.Envs => ThemeType.Spring,
 			ThemeGroup.Plot => ThemeType.Yellow,
 			ThemeGroup.Units => ThemeType.Orange,

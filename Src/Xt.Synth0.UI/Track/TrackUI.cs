@@ -29,13 +29,16 @@ namespace Xt.Synth0.UI
 		static UIElement MakeCenter(AppModel app)
 		{
 			var synth = app.Track.Synth;
+			var lfoCount = Model.Model.LfoCount;
 			var envCount = Model.Model.EnvCount;
-			var result = Create.Grid(envCount + 2, 1);
+			var result = Create.Grid(envCount + lfoCount + 2, 1);
 			for (int i = 0; i < envCount; i++)
 				result.Add(SubUI.Make(app, synth.Envs[i]), new(i, 0));
-			result.Add(PlotUI.Make(app), new(envCount + 0, 0));
-			result.Add(EditUI.Make(app), new(envCount + 1, 0));
-			result.Add(MonitorUI.Make(app), new(envCount + 1, 0));
+			for (int i = 0; i < lfoCount; i++)
+				result.Add(SubUI.Make(app, synth.Lfos[i]), new(envCount + i, 0));
+			result.Add(PlotUI.Make(app), new(envCount + lfoCount + 0, 0));
+			result.Add(EditUI.Make(app), new(envCount + lfoCount + 1, 0));
+			result.Add(MonitorUI.Make(app), new(envCount + lfoCount + 1, 0));
 			result.RowDefinitions[envCount].Height = new GridLength(1.0, GridUnitType.Star);
 			return result;
 		}
