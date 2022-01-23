@@ -23,3 +23,4 @@ no zero length lfo
 better global color
 filter lfos
 combobox disabled colors
+lfo NOT key sync
