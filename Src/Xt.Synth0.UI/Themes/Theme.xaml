@@ -115,8 +115,8 @@
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Trigger.Setters>
-                                <Setter TargetName="CheckMark" Property="Stroke" Value="{DynamicResource Foreground3Key}"/>
-                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Foreground4Key}"/>
+                                <Setter TargetName="CheckMark" Property="Stroke" Value="{DynamicResource Foreground2Key}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource Foreground3Key}"/>
                             </Trigger.Setters>
                         </Trigger>
                     </ControlTemplate.Triggers>
