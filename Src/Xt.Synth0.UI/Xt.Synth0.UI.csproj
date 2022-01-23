@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Themes\Cyan.png" />
+    <Resource Include="Themes\Rose.png" />
     <Resource Include="Themes\Azure.png" />
     <Resource Include="Themes\Spring.png" />
     <Resource Include="Themes\White.png" />
