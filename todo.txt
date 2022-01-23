@@ -19,7 +19,6 @@ drag outside screen
 merge lfo/unit plot 
 no zero length lfo
 filter lfos
-combobox disabled colors
 lfo NOT key sync
 fix step len
 paraminfo time0
