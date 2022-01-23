@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum GlobalAmpLfo { LOF1, LFO2 }
+	public enum GlobalAmpLfo { LFO1, LFO2 }
 	public enum GlobalAmpEnv { Env1, Env2, Env3 }
 
 	public unsafe sealed class GlobalModel : IThemedSubModel

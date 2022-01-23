@@ -12,7 +12,7 @@ enum class SyncStep
   S5_4, S4_3, S3_2, S5_3, S7_4, S15_8, S2_1, S3_1, S4_1, S5_1, S6_1, S7_1, S8_1, S10_1, S12_1, S16_1 
 };
 
-enum class GlobalAmpLfo { LOF1, LFO2 };
+enum class GlobalAmpLfo { LFO1, LFO2 };
 enum class GlobalAmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN GlobalModel
 {
@@ -33,7 +33,7 @@ struct XTS_ALIGN LfoModel
   LfoModel() = default;
   LfoModel(LfoModel const&) = delete;
 private:
-  XtsBool on, sync, inv, bi;
+  XtsBool on, sync, inv, key;
   LfoType type;
   int32_t rate;
   SyncStep step;
