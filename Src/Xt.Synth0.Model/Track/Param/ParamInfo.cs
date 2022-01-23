@@ -77,8 +77,8 @@ namespace Xt.Synth0.Model
 		=> new ParamInfo(ParamType.Exp, address, name, description, automatable, 0, max, @default, null, relevance);
 
 		internal static ParamInfo Time(Address address, string name, string description,
-			bool automatable, int @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Time, address, name, description, automatable, 0, 100, @default, null, relevance);
+			bool automatable, int min, int @default, IRelevance relevance = null)
+		=> new ParamInfo(ParamType.Time, address, name, description, automatable, min, 100, @default, null, relevance);
 
 		internal static ParamInfo Toggle(Address address, string name, string description,
 			bool automatable, bool @default, IRelevance relevance = null)
@@ -97,8 +97,8 @@ namespace Xt.Synth0.Model
 		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, min, max, @default, display ?? (x => x.ToString()), relevance);
 
 		internal static ParamInfo Select<TEnum>(Address address, string name, string description,
-			bool automatable, TEnum @default, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
-		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, 0, display.Length - 1, (int)(object)@default, x => display[x], relevance);
+			bool automatable, TEnum min, TEnum @default, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
+		=> new ParamInfo(ParamType.Lin, address, name, description, automatable, (int)(object)min, display.Length - 1, (int)(object)@default, x => display[x], relevance);
 
 		internal static ParamInfo List<TEnum>(Address address, string name, string description,
 			bool automatable, string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum

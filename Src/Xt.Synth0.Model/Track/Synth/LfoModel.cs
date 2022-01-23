@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, nameof(Type), "Type", true);
 		static readonly ParamInfo KeyInfo = ParamInfo.Toggle(p => &((Native*)p)->key, nameof(Key), "Sync to key", true, true);
 		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), "Sync to beat", true, false);
-		static readonly ParamInfo RateInfo = ParamInfo.Time(p => &((Native*)p)->rate, nameof(Rate), "Rate milliseconds", true, 10, RelevanceTime);
-		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, nameof(Step), "Rate steps", true, SyncStep.S1_4, SynthModel.SyncStepNames, RelevanceSync);
+		static readonly ParamInfo RateInfo = ParamInfo.Time(p => &((Native*)p)->rate, nameof(Rate), "Rate milliseconds", true, 1, 10, RelevanceTime);
+		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, nameof(Step), "Rate steps", true, SyncStep.S1_16, SyncStep.S1_4, SynthModel.SyncStepNames, RelevanceSync);
 	}
 }

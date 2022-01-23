@@ -20,5 +20,4 @@ merge lfo/unit plot
 no zero length lfo
 filter lfos
 lfo NOT key sync
-fix step len
-paraminfo time0
+fix step len -> int frames ?
