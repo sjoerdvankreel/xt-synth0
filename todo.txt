@@ -19,3 +19,4 @@ drag outside screen
 lfo to global amp
 lfo bipolar
 merge lfo/unit plot 
+no zero length lfo

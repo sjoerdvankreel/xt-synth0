@@ -51,7 +51,6 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.freq = Freq(model, testIn);
 	output.rate = output.freq * input.pixels;
 
-	SynthState state;
 	SynthInput in(output.rate, input.bpm, 4, UnitNote::C);
 	LfoDSP dsp(&model, &in);
 	float samples = output.rate / output.freq;

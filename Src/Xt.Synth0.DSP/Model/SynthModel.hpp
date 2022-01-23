@@ -31,14 +31,13 @@ struct XTS_ALIGN LfoModel
   LfoModel() = default;
   LfoModel(LfoModel const&) = delete;
 private:
-  XtsBool on;
+  XtsBool on, sync, inv, bi;
   LfoType type;
-  XtsBool sync;
   int32_t rate;
   SyncStep step;
   int32_t pad__;
 };
-XTS_CHECK_SIZE(LfoModel, 24);
+XTS_CHECK_SIZE(LfoModel, 32);
 
 enum class EnvType { DAHDSR, DAHDR };
 struct XTS_ALIGN EnvModel 
@@ -105,7 +104,7 @@ private:
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 528);
+XTS_CHECK_SIZE(SynthModel, 544);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP
