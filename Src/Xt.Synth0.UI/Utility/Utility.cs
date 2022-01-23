@@ -24,14 +24,14 @@ namespace Xt.Synth0.UI
 
 		static ThemeType GroupType(ThemeGroup group) => group switch
 		{
-			ThemeGroup.Lfos => ThemeType.Rose,
+			ThemeGroup.Global => ThemeType.Rose,
+			ThemeGroup.Lfos => ThemeType.Yellow,
 			ThemeGroup.Envs => ThemeType.Spring,
-			ThemeGroup.Plot => ThemeType.Yellow,
 			ThemeGroup.Units => ThemeType.Orange,
-			ThemeGroup.Global => ThemeType.Azure,
 			ThemeGroup.Settings => ThemeType.White,
+			ThemeGroup.Plot => ThemeType.Chartreuse,
 			ThemeGroup.EditPattern => ThemeType.Cyan,
-			ThemeGroup.MonitorControl => ThemeType.Chartreuse,
+			ThemeGroup.MonitorControl => ThemeType.Azure,
 			_ => throw new InvalidOperationException()
 		};
 

@@ -15,4 +15,3 @@ random lfo
 noise generator
 check which params should be automatable
 connect mod sources
-better background

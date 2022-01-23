@@ -80,7 +80,7 @@ namespace Xt.Synth0.UI
 		static UIElement PlotLine(int w, double h)
 		{
 			var result = new Polyline();
-			result.Opacity = 0.8;
+			result.Opacity = 0.67;
 			result.StrokeThickness = 1.5;
 			result.Points = PlotData(w, h);
 			result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);

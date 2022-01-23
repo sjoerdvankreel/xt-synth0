@@ -10,7 +10,7 @@
     <Brush x:Key="Foreground1Key">#40FFFF</Brush>
     <Brush x:Key="Foreground2Key">#00C0C0</Brush>
     <Brush x:Key="Foreground3Key">#008080</Brush>
-    <Brush x:Key="Foreground4Key">#004040</Brush>
-    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Noise.png" Stretch="None" Opacity="0.8" AlignmentX="Left" AlignmentY="Bottom"/>
+    <Brush x:Key="Foreground4Key">#002020</Brush>
+    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Noise.png" Stretch="None" Opacity="0.25" AlignmentX="Left" AlignmentY="Bottom"/>
 
 </ResourceDictionary>
