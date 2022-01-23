@@ -61,7 +61,7 @@ UnitDSP::GenerateNaive(NaiveType type, float phase) const
   {
     case NaiveType::Pulse: break;
     case NaiveType::Saw: return 1.0f - phase * 2.0f;
-		case NaiveType::Tri: return (phase < 0.5f ? phase : 1.0f - phase) * 4.0f - 1.0f;
+		case NaiveType::Tri: return (phase < 0.25f? phase: phase < 0.75f? 0.5f - phase: -0.25f + (phase - 0.75f)) * 4.0f;
 		default: assert(false); return 0.0f;
 	}
 	float saw = GenerateNaive(NaiveType::Saw, phase);
