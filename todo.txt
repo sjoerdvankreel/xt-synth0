@@ -15,3 +15,4 @@ random lfo
 noise generator
 check which params should be automatable
 connect mod sources
+drag outside screen
