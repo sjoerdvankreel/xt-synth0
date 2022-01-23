@@ -38,7 +38,7 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
-enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2 };
+enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2, Env3 };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;
@@ -82,7 +82,7 @@ private:
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 328);
+XTS_CHECK_SIZE(SynthModel, 400);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

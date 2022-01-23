@@ -2,9 +2,9 @@
 {
 	public static class Model
 	{
-		public const int EnvCount = 2;
+		public const int EnvCount = 3;
 		public const int UnitCount = 3;
-		public const int ParamCount = 71;
+		public const int ParamCount = 86;
 
 		public const int MaxFxs = 3;
 		public const int MaxLpb = 16;

@@ -21,7 +21,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput const& input, PlotOutput& out
   case PlotType::SynthL: case PlotType::SynthR: {
     SynthDSP().Plot(synth, input, output);
     break; }
-  case PlotType::Env1: case PlotType::Env2: {
+  case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: {
     auto env = static_cast<int>(PlotType::Env1);
     EnvDSP().Plot(synth.envs[index - env], input, output);
     break; }
