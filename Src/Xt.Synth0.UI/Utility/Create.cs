@@ -131,6 +131,15 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		internal static Border ThemedContent(FrameworkElement content)
+		{
+			var result = new Border();
+			result.Child = content;
+			result.SetResourceReference(Border.BackgroundProperty, Utility.Foreground3Key);
+			content.SetResourceReference(Panel.BackgroundProperty, Utility.BackgroundParamKey);
+			return result;
+		}
+
 		static void OnSettingsPropertyChanged(SettingsModel settings,
 			ThemeGroup group, FrameworkElement element, PropertyChangedEventArgs e)
 		{

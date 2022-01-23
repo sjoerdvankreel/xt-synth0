@@ -8,14 +8,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Themes\Cyan.png" />
-    <Resource Include="Themes\Rose.png" />
-    <Resource Include="Themes\Azure.png" />
-    <Resource Include="Themes\Spring.png" />
-    <Resource Include="Themes\White.png" />
-    <Resource Include="Themes\Orange.png" />
-    <Resource Include="Themes\Yellow.png" />
-    <Resource Include="Themes\Chartreuse.png" />
+    <Resource Include="Themes\Noise.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />

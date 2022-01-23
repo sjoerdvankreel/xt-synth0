@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -34,8 +35,7 @@ namespace Xt.Synth0.UI
 			result.SnapsToDevicePixels = true;
 			result.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
-			result.SetResourceReference(Border.BackgroundProperty, Utility.BackgroundParamKey);
-			return result;
+			return Create.ThemedContent(result);
 		}
 
 		internal static Border MakeInnerBorder(UIElement child, Cell cell)

@@ -16,6 +16,8 @@ namespace Xt.Synth0.UI
 		internal static string ForegroundKey = nameof(ForegroundKey);
 		internal static string Foreground1Key = nameof(Foreground1Key);
 		internal static string Foreground2Key = nameof(Foreground2Key);
+		internal static string Foreground3Key = nameof(Foreground3Key);
+		internal static string Foreground4Key = nameof(Foreground4Key);
 		internal static string RowDisabledKey = nameof(RowDisabledKey);
 		internal static string BorderParamKey = nameof(BorderParamKey);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);

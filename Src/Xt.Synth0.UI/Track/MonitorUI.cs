@@ -16,8 +16,7 @@ namespace Xt.Synth0.UI
 			result.Child = MakeContent(stream);
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
-			return result;
+			return Create.ThemedContent(result);
 		}
 
 		static UIElement MakeContent(StreamModel stream)

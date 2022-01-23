@@ -11,6 +11,6 @@
     <Brush x:Key="Foreground2Key">#FF0060</Brush>
     <Brush x:Key="Foreground3Key">#800040</Brush>
     <Brush x:Key="Foreground4Key">#400020</Brush>
-    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Rose.png"/>
+    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Noise.png" Stretch="None" Opacity="0.8" AlignmentX="Center" AlignmentY="Center"/>
 
 </ResourceDictionary>

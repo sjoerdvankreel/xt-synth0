@@ -123,8 +123,7 @@ namespace Xt.Synth0.UI
 				highlighters.Add(highlighter);
 				AddRow(result, app, pattern, seq.Pattern.Rows[offset + r], r);
 			}
-			result.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
-			return (result, highlighters);
+			return (Create.ThemedContent(result), highlighters);
 		}
 
 		static void AddRow(Grid grid, AppModel app, int pattern, PatternRow row, int r)
@@ -182,7 +181,7 @@ namespace Xt.Synth0.UI
 			int actual = 0;
 			foreach (var highlighter in highlighters)
 				highlighter.SetValue(UIElement.OpacityProperty, NotHighlightedOpacityBoxed);
-			for (int row = 0; row < highlighters.Count; )
+			for (int row = 0; row < highlighters.Count;)
 			{
 				if (actual % edit.Lpb.Value == 0)
 					highlighters[row].SetValue(UIElement.OpacityProperty, HighlightedOpacityBoxed);

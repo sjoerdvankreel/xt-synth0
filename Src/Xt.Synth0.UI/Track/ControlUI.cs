@@ -29,8 +29,7 @@ namespace Xt.Synth0.UI
 			result.Add(MakeStart(stream), Dock.Right);
 			result.VerticalAlignment = VerticalAlignment.Bottom;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
-			result.SetResourceReference(Panel.BackgroundProperty, Utility.BackgroundParamKey);
-			return result;
+			return Create.ThemedContent(result);
 		}
 
 		static UIElement MakeStop(StreamModel stream)

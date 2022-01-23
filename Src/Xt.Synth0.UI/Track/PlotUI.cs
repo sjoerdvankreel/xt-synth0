@@ -12,19 +12,19 @@ namespace Xt.Synth0.UI
 		const double Padding = 2.0;
 		const double MaxLevelBi = 0.975;
 		const double MaxLevelUni = 0.99;
-		static readonly DockPanel Empty;
+		static readonly UIElement Empty;
 		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 
 		static PlotUI()
 		{
-			Empty = new DockPanel();
-			var label = Empty.Add(Create.Label("No data"));
+			var dock = new DockPanel();
+			var label = dock.Add(Create.Label("No data"));
 			label.FontWeight = FontWeights.Bold;
 			label.VerticalAlignment = VerticalAlignment.Center;
 			label.HorizontalAlignment = HorizontalAlignment.Center;
 			label.SetResourceReference(Control.ForegroundProperty, Utility.RowDisabledKey);
-			Empty.SetResourceReference(Control.BackgroundProperty, Utility.BackgroundParamKey);
+			Empty = Create.ThemedContent(dock);
 		}
 
 		internal static UIElement Make(AppModel app)
@@ -80,6 +80,7 @@ namespace Xt.Synth0.UI
 		static UIElement PlotLine(int w, double h)
 		{
 			var result = new Polyline();
+			result.Opacity = 0.8;
 			result.StrokeThickness = 1.5;
 			result.Points = PlotData(w, h);
 			result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);
