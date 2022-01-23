@@ -92,11 +92,11 @@ EnvDSP::Params(EnvModel const& model, SynthInput const& input)
   EnvParams result;
   result.s = Level(model.s);
   bool sync = model.sync != 0;
-  result.a = sync ? Sync(input, model.aSnc) : Time(model.a, input.rate);
-  result.d = sync ? Sync(input, model.dSnc) : Time(model.d, input.rate);
-  result.r = sync ? Sync(input, model.rSnc) : Time(model.r, input.rate);
-  result.dly = sync ? Sync(input, model.dlySnc) : Time(model.dly, input.rate);
-  result.hld = sync ? Sync(input, model.hldSnc) : Time(model.hld, input.rate);
+  result.a = sync ? SyncI(input, model.aSnc) : TimeI(model.a, input.rate);
+  result.d = sync ? SyncI(input, model.dSnc) : TimeI(model.d, input.rate);
+  result.r = sync ? SyncI(input, model.rSnc) : TimeI(model.r, input.rate);
+  result.dly = sync ? SyncI(input, model.dlySnc) : TimeI(model.dly, input.rate);
+  result.hld = sync ? SyncI(input, model.hldSnc) : TimeI(model.hld, input.rate);
   return result;
 }
 
