@@ -16,10 +16,11 @@ namespace Xt.Synth0.Model
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Rows { get; } = new(RowsInfo);
 
+		public int ColumnCount => 2;
 		public string Name => "Edit";
 		public ThemeGroup Group => ThemeGroup.EditPattern;
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
-		public IReadOnlyList<Param> Params => new[] { Pats, Keys, Bpm, Rows, Fxs, Lpb, Edit };
+		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Bpm, Lpb, Edit };
 
 		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, "BPM", "Beats per minute", false, 1, 255, 120);
 		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, "LPB", "Lines per beat", false, 1, Model.MaxLpb, 4);

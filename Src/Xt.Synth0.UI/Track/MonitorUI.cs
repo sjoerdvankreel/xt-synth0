@@ -7,14 +7,7 @@ namespace Xt.Synth0.UI
 	static class MonitorUI
 	{
 		internal static UIElement Make(AppModel app)
-		{
-			var monitor = app.Track.Seq.Monitor;
-			var result = Create.ThemedGroup(app.Settings, monitor, MakeBorder(app.Stream));
-			var conv = new VisibilityConverter<bool>(true, true);
-			var binding = Bind.To(app.Stream, nameof(app.Stream.IsRunning), conv);
-			result.SetBinding(UIElement.VisibilityProperty, binding);
-			return result;
-		}
+		=> Create.ThemedGroup(app.Settings, app.Track.Seq.Monitor, MakeBorder(app.Stream));
 
 		static UIElement MakeBorder(StreamModel stream)
 		{

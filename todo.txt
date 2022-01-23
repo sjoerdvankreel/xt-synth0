@@ -16,3 +16,4 @@ source=env1/2/3/lfo1/2 tgt=amp/pan/dtn/roll/pw/pitch
 random lfo
 noise generator
 check which params should be automatable
+global env select
