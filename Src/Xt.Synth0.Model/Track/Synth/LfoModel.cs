@@ -34,7 +34,7 @@ namespace Xt.Synth0.Model
 		{
 			{ On, -1 },
 			{ Type, 0 }, { Rate, 1 }, { Step, 1 },
-			{ Inv, 3 }, { Sync, 4 }, { Bi, 5 }
+			{ Bi, 3 }, { Sync, 4 }, { Inv, 5 }
 		}; 
 		
 		static readonly IRelevance RelevanceSync = Relevance.When((LfoModel m) => m.Sync, (int s) => s == 1);
