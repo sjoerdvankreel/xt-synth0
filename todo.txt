@@ -22,4 +22,4 @@ merge lfo/unit plot
 no zero length lfo
 better global color
 filter lfos
-do lfo invert bipolar
+combobox disabled colors
