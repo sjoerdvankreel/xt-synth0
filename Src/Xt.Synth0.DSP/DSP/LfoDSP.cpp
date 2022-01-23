@@ -22,10 +22,10 @@ LfoDSP::Generate()
   float phase = static_cast<float>(_phase);
   switch(_model->type)
   {
-    case LfoType::Saw: return phase * 2.0f - 1.0f;
-		case LfoType::Sin: return sinf(phase * 2.0f * PI);
-		case LfoType::Sqr: return phase < 0.5f ? -1.0f : 1.0f;
-		case LfoType::Tri: return (phase < 0.5f ? phase : 1.0f - phase) * 4.0f - 1.0f;
+    case LfoType::Saw: return BasicSaw(phase);
+		case LfoType::Sin: return BasicSin(phase);
+		case LfoType::Sqr: return BasicSqr(phase);
+		case LfoType::Tri: return BasicTri(phase);
 		default: assert(false); return 0.0f;
 	}
 }

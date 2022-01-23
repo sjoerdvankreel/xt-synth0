@@ -47,8 +47,8 @@ UnitDSP::Generate(float freq) const
 	auto phase = static_cast<float>(_phase);
 	switch (_model->type)
 	{
+	case UnitType::Sin: return BasicSin(phase);
 	case UnitType::Add: return GenerateAdd(freq);
-	case UnitType::Sin: return std::sinf(phase * 2.0f * PI);
 	case UnitType::Naive: return GenerateNaive(_model->naiveType, phase);
 	default: assert(false); return 0.0f;
 	}
@@ -60,8 +60,8 @@ UnitDSP::GenerateNaive(NaiveType type, float phase) const
   switch(type)
   {
     case NaiveType::Pulse: break;
-    case NaiveType::Saw: return 1.0f - phase * 2.0f;
-		case NaiveType::Tri: return (phase < 0.25f? phase: phase < 0.75f? 0.5f - phase: -0.25f + (phase - 0.75f)) * 4.0f;
+    case NaiveType::Saw: return BasicSaw(phase);
+		case NaiveType::Tri: return BasicTri(phase);
 		default: assert(false); return 0.0f;
 	}
 	float saw = GenerateNaive(NaiveType::Saw, phase);

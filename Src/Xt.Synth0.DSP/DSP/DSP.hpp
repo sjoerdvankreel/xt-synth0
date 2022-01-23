@@ -4,6 +4,7 @@
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
+#include <cmath>
 #include <cassert>
 
 namespace Xts {
@@ -42,7 +43,20 @@ Clip(float& val)
   if(val > MaxLevel) return val = MaxLevel, true;
   if(val < -MaxLevel) return val = -MaxLevel, true;
   return false;
-}
+} 
+
+inline float
+BasicSaw(float phase)
+{ return 1.0f - phase * 2.0f; }
+inline float
+BasicSin(float phase)
+{ return sinf(phase * 2.0f * PI); }
+inline float
+BasicSqr(float phase)
+{ return phase < 0.5f? 1.0f: -1.0f; }
+inline float
+BasicTri(float phase)
+{ return (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f; }
 
 inline float 
 SyncF(SynthInput const& input, SyncStep val)
