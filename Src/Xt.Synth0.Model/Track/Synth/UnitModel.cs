@@ -6,8 +6,8 @@ namespace Xt.Synth0.Model
 {
 	public enum UnitType { Sin, Naive, Add }
 	public enum NaiveType { Saw, Pulse, Tri }
-	public enum UnitSource { Off, Env1, Env2, Env3, Lfo1, Lfo2 }
-	public enum UnitTarget { Off, Pitch, Amp, Pan, Dtn, Pw, Roll };
+	public enum ModSource { Off, Env1, Env2, Env3, Lfo1, Lfo2 }
+	public enum ModTarget { Off, Pitch, Amp, Pan, Dtn, Pw, Roll };
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 	public enum AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
@@ -90,10 +90,10 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), "Octave", true, 0, 9, 4);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type", true);
 		static readonly ParamInfo PwInfo = ParamInfo.Mix(p => &((Native*)p)->pw, "PW", "Pulse width", true, null, RelevancePw);
-		static readonly ParamInfo Src1Info = ParamInfo.List<UnitSource>(p => &((Native*)p)->src1, "Source", "Mod 1 source", true);
-		static readonly ParamInfo Tgt1Info = ParamInfo.List<UnitTarget>(p => &((Native*)p)->tgt1, "Target", "Mod 1 target", true);
-		static readonly ParamInfo Src2Info = ParamInfo.List<UnitSource>(p => &((Native*)p)->src2, "Source", "Mod 2 source", true);
-		static readonly ParamInfo Tgt2Info = ParamInfo.List<UnitTarget>(p => &((Native*)p)->tgt2, "Target", "Mod 2 target", true);
+		static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, "Source", "Mod 1 source", true);
+		static readonly ParamInfo Tgt1Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt1, "Target", "Mod 1 target", true);
+		static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, "Source", "Mod 2 source", true);
+		static readonly ParamInfo Tgt2Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt2, "Target", "Mod 2 target", true);
 		static readonly ParamInfo NoteInfo = ParamInfo.Select(p => &((Native*)p)->note, nameof(Note), "Note", true, UnitNote.C, Notes);
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, "Type", "Additive type", true, AddNames, RelevanceAdd);
 		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", "Naive type", true, null, RelevanceNaive);
