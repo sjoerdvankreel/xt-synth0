@@ -56,7 +56,7 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
-enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2, Env3, Lfo1, Lfo2 };
+enum class PlotType { SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2 };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;
@@ -70,7 +70,7 @@ XTS_CHECK_SIZE(PlotModel, 8);
 
 enum class UnitType { Sin, Naive, Add };
 enum class NaiveType { Saw, Pulse, Tri };
-enum class ModSource { Off, Env1, Env2, Env3, Lfo1, Lfo2 };
+enum class ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 };
 enum class ModTarget { Off, Pitch, Amp, Pan, Dtn, Pw, Roll };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
