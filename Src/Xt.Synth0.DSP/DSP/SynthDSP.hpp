@@ -22,7 +22,7 @@ public:
   void Release();
   AudioOutput Next();
   AudioOutput Next(SynthState const& state);
-  bool End() const { return _envs[0].End(); }
+  bool End() const { return _envs[static_cast<int>(_global.Src())].End(); }
   static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(FiniteDSP<SynthDSP, SynthModel>);

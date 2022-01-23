@@ -15,6 +15,7 @@ public:
   DSPBase(model, input) {}
 public:
   float Amp(SynthState const& state);
+  AmpSource Src() const { return _model->src; }
 };
 static_assert(DSP<GlobalDSP, GlobalModel>);
 
