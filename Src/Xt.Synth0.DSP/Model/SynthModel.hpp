@@ -12,15 +12,15 @@ enum class SyncStep
   S5_4, S4_3, S3_2, S5_3, S7_4, S15_8, S2_1, S3_1, S4_1, S5_1, S6_1, S7_1, S8_1, S10_1, S12_1, S16_1 
 };
 
-enum class AmpSource { Env1, Env2, Env3 };
+enum class GlobalAmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN GlobalModel
 {
   friend class GlobalDSP;
   GlobalModel() = default;
   GlobalModel(GlobalModel const&) = delete;
 private:
-  AmpSource src;
-  int32_t amp, amt, pad__;
+  GlobalAmpEnv ampEnv;
+  int32_t amp, ampEnvAmt, pad__;
 };
 XTS_CHECK_SIZE(GlobalModel, 16);
 

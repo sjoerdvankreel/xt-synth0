@@ -10,12 +10,12 @@ class GlobalDSP:
 private DSPBase<GlobalModel>
 {
 public:
+  float Amp(SynthState const& state);
+  GlobalAmpEnv AmpEnv() const { return _model->ampEnv; }
+public:
   GlobalDSP() = default;
   GlobalDSP(GlobalModel const* model, SynthInput const* input):
   DSPBase(model, input) {}
-public:
-  float Amp(SynthState const& state);
-  AmpSource Src() const { return _model->src; }
 };
 static_assert(DSP<GlobalDSP, GlobalModel>);
 
