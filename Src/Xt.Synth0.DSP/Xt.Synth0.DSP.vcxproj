@@ -14,6 +14,7 @@
     <ClInclude Include="DSP\DSP.hpp" />
     <ClInclude Include="DSP\EnvDSP.hpp" />
     <ClInclude Include="DSP\GlobalDSP.hpp" />
+    <ClInclude Include="DSP\LfoDSP.hpp" />
     <ClInclude Include="DSP\PlotDSP.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />
@@ -27,6 +28,7 @@
   <ItemGroup>
     <ClCompile Include="DSP\EnvDSP.cpp" />
     <ClCompile Include="DSP\GlobalDSP.cpp" />
+    <ClCompile Include="DSP\LfoDSP.cpp" />
     <ClCompile Include="DSP\PlotDSP.cpp" />
     <ClCompile Include="DSP\SeqDSP.cpp" />
     <ClCompile Include="DSP\SynthDSP.cpp" />

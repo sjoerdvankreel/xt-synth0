@@ -28,6 +28,7 @@ public:
 
 struct SynthState
 {
+  float lfos[LfoCount];
   float envs[EnvCount];
 public:
   SynthState() = default;

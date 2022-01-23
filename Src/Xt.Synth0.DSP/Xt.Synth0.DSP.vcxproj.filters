@@ -43,6 +43,9 @@
     <ClInclude Include="DSP\GlobalDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\LfoDSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -62,6 +65,9 @@
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="DSP\GlobalDSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\LfoDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
   </ItemGroup>

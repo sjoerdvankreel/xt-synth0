@@ -7,6 +7,8 @@ SynthDSP::
 SynthDSP(SynthModel const* model, SynthInput const* input):
 DSPBase(model, input), _global(&model->global, input), _envs(), _units()
 {
+  for (int l = 0; l < LfoCount; l++)
+    _lfos[l] = LfoDSP(&model->lfos[l], input);
   for (int e = 0; e < EnvCount; e++)
     _envs[e] = EnvDSP(&model->envs[e], input);
   for (int u = 0; u < UnitCount; u++)
@@ -34,6 +36,8 @@ SynthDSP::Next()
 {
   SynthState state;
   if (End()) return AudioOutput(0.0f, 0.0f);
+  for (int l = 0; l < LfoCount; l++)
+    state.lfos[l] = _lfos[l].Next();
   for (int e = 0; e < EnvCount; e++)
     state.envs[e] = _envs[e].Next();
   return Next(state);
