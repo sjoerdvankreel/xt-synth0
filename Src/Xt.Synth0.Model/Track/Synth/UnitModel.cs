@@ -6,6 +6,8 @@ namespace Xt.Synth0.Model
 {
 	public enum UnitType { Sin, Naive, Add }
 	public enum NaiveType { Saw, Pulse, Tri }
+	public enum UnitSource { Off, Env1, Env2, Env3, Lfo1, Lfo2 }
+	public enum UnitTarget { Off, Pitch, Amp, Pan, Dtn, Pw, Roll };
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 	public enum AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
@@ -14,9 +16,10 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal struct Native
 		{
-			internal const int Size = 56;
+			internal const int Size = 80;
 			internal int on, type, note, addType, naiveType;
 			internal int amp, pan, oct, dtn, pw;
+			internal int src1, tgt1, amt1, src2, tgt2, amt2;
 			internal int addMaxParts, addParts, addStep, addRoll;
 		}
 
@@ -28,6 +31,12 @@ namespace Xt.Synth0.Model
 		public Param Dtn { get; } = new(DtnInfo);
 		public Param Note { get; } = new(NoteInfo);
 		public Param Type { get; } = new(TypeInfo);
+		public Param Src1 { get; } = new(Src1Info);
+		public Param Tgt1 { get; } = new(Tgt1Info);
+		public Param Amt1 { get; } = new(Amt1Info);
+		public Param Src2 { get; } = new(Src2Info);
+		public Param Tgt2 { get; } = new(Tgt2Info);
+		public Param Amt2 { get; } = new(Amt2Info);
 		public Param NaiveType { get; } = new(NaiveTypeInfo);
 		public Param AddType { get; } = new(AddTypeInfo);
 		public Param AddStep { get; } = new(AddStepInfo);
@@ -46,10 +55,11 @@ namespace Xt.Synth0.Model
 		{
 			{ On, -1 },
 			{ Type, 0 }, { AddType, 1 }, { NaiveType, 1 },
-			{ Amp, 2 }, { Pan, 3 },
-			{ Oct, 4 },	{ Note, 5 },
-			{ Dtn, 6 },	{ Pw, 7 }, { AddParts, 7 },
-			{ AddMaxParts, 8 },	{ AddStep, 8 },	{ AddRoll, 9 }
+			{ Amp, 3 }, { Pan, 4 }, { Pw, 5 },
+			{ Oct, 6 }, { Note, 7 }, { Dtn, 8 },
+			{ AddParts, 9 }, { AddMaxParts, 9 }, { AddStep, 10 }, { AddRoll, 11 },
+			{ Src1, 12 }, { Tgt1, 13 }, {Amt1, 14 },
+			{ Src2, 15 }, { Tgt2, 16}, {Amt2, 17 },
 		};
 
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
@@ -73,11 +83,17 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), "Detune", true);
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), "Panning", true);
+		static readonly ParamInfo Amt1Info = ParamInfo.Level(p => &((Native*)p)->amt1, "Amt", "Mod 1 amount", true, 0);
+		static readonly ParamInfo Amt2Info = ParamInfo.Level(p => &((Native*)p)->amt2, "Amt", "Mod 2 amount", true, 0);
 		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false, false);
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", true, 255);
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), "Octave", true, 0, 9, 4);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type", true);
 		static readonly ParamInfo PwInfo = ParamInfo.Mix(p => &((Native*)p)->pw, "PW", "Pulse width", true, null, RelevancePw);
+		static readonly ParamInfo Src1Info = ParamInfo.List<UnitSource>(p => &((Native*)p)->src1, "Source", "Mod 1 source", true);
+		static readonly ParamInfo Tgt1Info = ParamInfo.List<UnitTarget>(p => &((Native*)p)->tgt1, "Target", "Mod 1 target", true);
+		static readonly ParamInfo Src2Info = ParamInfo.List<UnitSource>(p => &((Native*)p)->src2, "Source", "Mod 2 source", true);
+		static readonly ParamInfo Tgt2Info = ParamInfo.List<UnitTarget>(p => &((Native*)p)->tgt2, "Target", "Mod 2 target", true);
 		static readonly ParamInfo NoteInfo = ParamInfo.Select(p => &((Native*)p)->note, nameof(Note), "Note", true, UnitNote.C, Notes);
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, "Type", "Additive type", true, AddNames, RelevanceAdd);
 		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", "Naive type", true, null, RelevanceNaive);

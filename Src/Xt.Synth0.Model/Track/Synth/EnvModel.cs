@@ -36,7 +36,6 @@ namespace Xt.Synth0.Model
 		public Param DlySnc { get; } = new(DlySncInfo);
 
 		readonly int _index;
-		public int ColumnCount => 3;
 		public string Name => $"Env {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Envs;
 		internal EnvModel(int index) => _index = index;

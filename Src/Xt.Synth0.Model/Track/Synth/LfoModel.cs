@@ -22,7 +22,6 @@ namespace Xt.Synth0.Model
 		public Param Step { get; } = new(StepInfo);
 
 		readonly int _index;
-		public int ColumnCount => 3;
 		public string Name => $"LFO {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Lfos;
 		internal LfoModel(int index) => _index = index;

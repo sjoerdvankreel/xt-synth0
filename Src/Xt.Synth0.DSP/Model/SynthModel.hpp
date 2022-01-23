@@ -68,6 +68,8 @@ XTS_CHECK_SIZE(PlotModel, 8);
 
 enum class UnitType { Sin, Naive, Add };
 enum class NaiveType { Saw, Pulse, Tri };
+enum class UnitSource { Off, Env1, Env2, Env3, Lfo1, Lfo2 };
+enum class UnitTarget { Off, Pitch, Amp, Pan, Dtn, Pw, Roll };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 struct XTS_ALIGN UnitModel
@@ -82,9 +84,10 @@ private:
   AddType addType;
   NaiveType naiveType;
   int32_t amp, pan, oct, dtn, pw;
+  int32_t src1, tgt1, amt1, src2, tgt2, amt2;
   int32_t addMaxParts, addParts, addStep, addRoll;
 };
-XTS_CHECK_SIZE(UnitModel, 56);
+XTS_CHECK_SIZE(UnitModel, 80);
 
 struct XTS_ALIGN SynthModel
 {
@@ -99,7 +102,7 @@ private:
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 448);
+XTS_CHECK_SIZE(SynthModel, 520);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

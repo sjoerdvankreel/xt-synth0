@@ -16,7 +16,6 @@ namespace Xt.Synth0.Model
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Rows { get; } = new(RowsInfo);
 
-		public int ColumnCount => 3;
 		public string Name => "Edit";
 		public ThemeGroup Group => ThemeGroup.EditPattern;
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;

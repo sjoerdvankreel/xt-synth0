@@ -80,7 +80,7 @@ private:
   PatternModel pattern;
   Param params[ParamCount];
 };
-XTS_CHECK_SIZE(SeqModel, 24064);
+XTS_CHECK_SIZE(SeqModel, 24352);
 
 } // namespace Xts
 #endif // XTS_SEQ_MODEL_HPP

@@ -16,7 +16,7 @@ namespace Xt.Synth0.Model
 
 	public interface ISubModel : INativeModel
 	{
-		virtual int ColumnCount => 2;
+		virtual int ColumnCount => 3;
 		virtual Param Enabled => null;
 		virtual IReadOnlyList<Param> Params 
 		=> ParamLayout.Select(ps => ps.Key).ToArray();
