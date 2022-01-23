@@ -18,3 +18,4 @@ connect mod sources
 drag outside screen
 lfo to global amp
 lfo bipolar
+merge lfo/unit plot 

@@ -55,7 +55,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	SynthInput in(output.rate, input.bpm, 4, UnitNote::C);
 	LfoDSP dsp(&model, &in);
 	float samples = output.rate / output.freq;
-	for (int i = 0; i <= static_cast<int>(samples); i++)
+	for (int i = 0; i < static_cast<int>(samples); i++)
 		output.samples->push_back(dsp.Next());
 }
 
