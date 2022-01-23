@@ -14,6 +14,9 @@ public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, SynthInput const* input):
   DSPBase(model, input), _phase(0.0) {}
+private:
+  float Generate();
+  static float Freq(LfoModel const& model, SynthInput const& input);
 public:
   float Next();
   static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);

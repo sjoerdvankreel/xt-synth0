@@ -45,10 +45,9 @@ Clip(float& val)
 }
 
 inline float 
-SyncF(SynthInput const& input, int val)
+SyncF(SynthInput const& input, SyncStep val)
 {
-  auto step = static_cast<SyncStep>(val);
-  switch(step)
+  switch(val)
   {
   case SyncStep::S0: return 0;
   case SyncStep::S1_16: return SyncF(input, 1, 16);
@@ -85,7 +84,7 @@ SyncF(SynthInput const& input, int val)
   };
 }
 inline int
-SyncI(SynthInput const& input, int val)
+SyncI(SynthInput const& input, SyncStep val)
 { return static_cast<int>(SyncF(input, val)); }
 
 } // namespace Xts

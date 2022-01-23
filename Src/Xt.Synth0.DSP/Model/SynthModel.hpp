@@ -52,7 +52,8 @@ private:
   XtsBool sync;
   int32_t aSlp, dSlp, rSlp;
   int32_t dly, a, hld, d, s, r;
-  int32_t dlySnc, aSnc, hldSnc, dSnc, rSnc, pad__;
+  SyncStep dlySnc, aSnc, hldSnc, dSnc, rSnc;
+  int32_t pad__;
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
