@@ -20,8 +20,9 @@ float
 LfoDSP::Generate()
 {
   float base = _model->bi? 0.0f: 0.5f;
-  float factor = _model->bi? 1.0f: 0.5f;
-  float phase = static_cast<float>(_phase);
+	float phase = static_cast<float>(_phase);
+	float inv = _model->inv == XtsFalse ? 1.0f : -1.0f;
+	float factor = inv * (_model->bi? 1.0f: 0.5f);
   switch(_model->type)
   {
     case LfoType::Saw: return base + factor * BasicSaw(phase);
