@@ -31,7 +31,6 @@ namespace Xt.Synth0.UI
 				result.Add(SubUI.Make(app, unit), Dock.Top);
 			foreach (var lfo in synth.Lfos)
 				result.Add(SubUI.Make(app, lfo), Dock.Top);
-			result.Add(SubUI.Make(app, synth.Global), Dock.Top);
 			return result;
 		}
 
@@ -39,12 +38,13 @@ namespace Xt.Synth0.UI
 		{
 			var synth = app.Track.Synth;
 			var envCount = Model.Model.EnvCount;
-			var result = Create.Grid(envCount + 3, 1);
+			var result = Create.Grid(envCount + 4, 1);
 			for (int i = 0; i < envCount; i++)
 				result.Add(SubUI.Make(app, synth.Envs[i]), new(i, 0));
 			result.Add(PlotUI.Make(app), new(envCount + 0, 0));
-			result.Add(MonitorUI.Make(app), new(envCount + 1, 0));
-			result.Add(ControlUI.Make(app), new(envCount + 2, 0));
+			result.Add(SubUI.Make(app, synth.Global), new(envCount + 1, 0));
+			result.Add(MonitorUI.Make(app), new(envCount + 2, 0));
+			result.Add(ControlUI.Make(app), new(envCount + 3, 0));
 			result.RowDefinitions[envCount].Height = new GridLength(1.0, GridUnitType.Star);
 			return result;
 		}
