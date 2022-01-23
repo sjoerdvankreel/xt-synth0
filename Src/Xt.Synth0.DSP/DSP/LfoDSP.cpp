@@ -19,22 +19,17 @@ LfoDSP::Next()
 float
 LfoDSP::Generate()
 {
+  float base = _model->bi? 0.0f: 0.5f;
+  float factor = _model->bi? 1.0f: 0.5f;
   float phase = static_cast<float>(_phase);
   switch(_model->type)
   {
-    case LfoType::Saw: return BasicSaw(phase);
-		case LfoType::Sin: return BasicSin(phase);
-		case LfoType::Sqr: return BasicSqr(phase);
-		case LfoType::Tri: return BasicTri(phase);
+    case LfoType::Saw: return base + factor * BasicSaw(phase);
+		case LfoType::Sin: return base + factor * BasicSin(phase);
+		case LfoType::Sqr: return base + factor * BasicSqr(phase);
+		case LfoType::Tri: return base + factor * BasicTri(phase);
 		default: assert(false); return 0.0f;
 	}
-}
-
-float
-LfoDSP::Freq(LfoModel const& model, SynthInput const& input)
-{
-	float length = model.sync ? SyncF(input, model.step) : TimeF(model.rate, input.rate);
-	return input.rate / length;
 }
 
 void
@@ -45,7 +40,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.freq = 0.0f;
 	output.rate = 0.0f;
 	output.clip = false;
-	output.bipolar = true;
+	output.bipolar = model.bi != XtsFalse;
 
 	if (!model.on) return;
 	output.freq = Freq(model, testIn);
@@ -56,6 +51,13 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	float samples = output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
 		output.samples->push_back(dsp.Next());
+}
+
+float
+LfoDSP::Freq(LfoModel const& model, SynthInput const& input)
+{
+	float length = model.sync ? SyncF(input, model.step) : TimeF(model.rate, input.rate);
+	return input.rate / length;
 }
 
 } // namespace Xts
