@@ -21,10 +21,3 @@ no zero length lfo
 filter lfos
 lfo NOT key sync
 fix step len -> int frames ?
-init with streampos / derive stuff from streampos ?
-split audioinput / stateinput
-do other colors ff4000 etc
-phase modulation
-init/update(Model) -> do logs at start of env
-global (not per-voice) stuff: lfos, filters
-do voices in the synth, not the sequencer

@@ -26,7 +26,7 @@ namespace Xt.Synth0.UI
 		{
 			ThemeGroup.Lfos => ThemeType.Slate,
 			ThemeGroup.Units => ThemeType.Azure,
-			ThemeGroup.Envs => ThemeType.Amber,
+			ThemeGroup.Envs => ThemeType.Yellow,
 			ThemeGroup.Global => ThemeType.Spring,
 			ThemeGroup.Settings => ThemeType.White,
 			ThemeGroup.Plot => ThemeType.Chartreuse,
