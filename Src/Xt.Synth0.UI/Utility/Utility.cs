@@ -42,16 +42,26 @@ namespace Xt.Synth0.UI
 			(Keyboard.FocusedElement as UIElement)?.MoveFocus(request);
 		}
 
+		static Color Multiply(Color color, double factor)
+		{
+			var r = (byte)Math.Min(color.R * factor, 255);
+			var g = (byte)Math.Min(color.G * factor, 255);
+			var b = (byte)Math.Min(color.B * factor, 255);
+			var result =  Color.FromArgb(255, r, g, b);
+			return result;
+		}
+
 		public static ResourceDictionary GetThemeResources(SettingsModel settings, ThemeGroup group)
 		{
 			var result = new ResourceDictionary();
+			var color = (Color)ColorConverter.ConvertFromString(settings.ThemeColor);
 			result.Source = new Uri($"pack://application:,,,/Xt.Synth0.UI;component/Themes/Theme.xaml");
-			result.Add(nameof(RowEnabledKey), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00A0FF")));
-			result.Add(nameof(ForegroundKey), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0080FF")));
-			result.Add(nameof(Foreground1Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00A0FF")));
-			result.Add(nameof(Foreground2Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0060FF")));
-			result.Add(nameof(Foreground3Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#004080")));
-			result.Add(nameof(Foreground4Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#001020")));
+			result.Add(nameof(RowEnabledKey), new SolidColorBrush(Multiply(color, 1.25)));
+			result.Add(nameof(ForegroundKey), new SolidColorBrush(Multiply(color, 1)));
+			result.Add(nameof(Foreground1Key), new SolidColorBrush(Multiply(color, 1.25)));
+			result.Add(nameof(Foreground2Key), new SolidColorBrush(Multiply(color, 0.75)));
+			result.Add(nameof(Foreground3Key), new SolidColorBrush(Multiply(color, 0.5)));
+			result.Add(nameof(Foreground4Key), new SolidColorBrush(Multiply(color, 0.25)));
 
 			var bmi = new BitmapImage();
 			bmi.BeginInit();
@@ -87,5 +97,5 @@ namespace Xt.Synth0.UI
 			return result;
 			*/
 		}
-}
+	}
 }
