@@ -8,7 +8,7 @@ namespace Xt.Synth0.UI
 	{
 		internal static void Show(SettingsModel settings, ThemeGroup group, Param param)
 		{
-			var window = Create.Window(settings, group);
+			var window = Create.Window(settings, group, WindowStartupLocation.CenterOwner);
 			window.Content = MakeGroup(window, param);
 			window.ShowDialog();
 		}

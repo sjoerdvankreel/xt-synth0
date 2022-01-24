@@ -120,20 +120,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Window Window(SettingsModel settings, ThemeGroup group)
-		{
-			var result = Themed<Window>(settings, group);
-			result.ShowInTaskbar = false;
-			result.SnapsToDevicePixels = true;
-			result.WindowStyle = WindowStyle.None;
-			result.ResizeMode = ResizeMode.NoResize;
-			result.Owner = Application.Current.MainWindow;
-			result.SizeToContent = SizeToContent.WidthAndHeight;
-			result.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
-			return result;
-		}
-
 		internal static Border ThemedContent(FrameworkElement content)
 		{
 			var result = new Border();
@@ -150,6 +136,20 @@ namespace Xt.Synth0.UI
 			var result = new T();
 			result.Resources = Utility.GetThemeResources(settings, group);
 			settings.PropertyChanged += (s, e) => result.Resources = Utility.GetThemeResources(settings, group);
+			return result;
+		}
+
+		internal static Window Window(SettingsModel settings, ThemeGroup group, WindowStartupLocation location)
+		{
+			var result = Themed<Window>(settings, group);
+			result.ShowInTaskbar = false;
+			result.SnapsToDevicePixels = true;
+			result.WindowStyle = WindowStyle.None;
+			result.ResizeMode = ResizeMode.NoResize;
+			result.WindowStartupLocation = location;
+			result.Owner = Application.Current.MainWindow;
+			result.SizeToContent = SizeToContent.WidthAndHeight;
+			result.SetValue(TextBlock.FontFamilyProperty, Utility.FontFamily);
 			return result;
 		}
 	}
