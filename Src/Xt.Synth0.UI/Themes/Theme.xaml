@@ -152,7 +152,6 @@
     </Style>
 
     <Style TargetType="{x:Type TextBox}">
-        <Setter Property="Width" Value="50"/>
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Right"/>

@@ -25,6 +25,13 @@ namespace Xt.Synth0.Model
 			set => Set(ref _theme, value);
 		}
 
+		string _themeColor = "#40FF00";
+		public string ThemeColor
+		{
+			get => _themeColor;
+			set => Set(ref _themeColor, value);
+		}
+
 		bool _useAsio;
 		public bool UseAsio
 		{
@@ -90,13 +97,14 @@ namespace Xt.Synth0.Model
 
 		public void CopyTo(SettingsModel settings)
 		{
+			settings.Theme = Theme;
 			settings.UseAsio = UseAsio;
 			settings.BitDepth = BitDepth;
+			settings.ThemeColor = ThemeColor;
 			settings.SampleRate = SampleRate;
 			settings.OutputPath = OutputPath;
 			settings.BufferSize = BufferSize;
 			settings.WriteToDisk = WriteToDisk;
-			settings.Theme = Theme;
 			settings.AsioDeviceId = AsioDeviceId;
 			settings.WasapiDeviceId = WasapiDeviceId;
 			settings.RecentFiles.Clear();

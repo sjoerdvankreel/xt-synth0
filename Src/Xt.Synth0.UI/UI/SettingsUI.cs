@@ -10,7 +10,7 @@ namespace Xt.Synth0.UI
 {
 	public static class SettingsUI
 	{
-		const int ComboWidth = 200;
+		const int ControlWidth = 200;
 		public static event EventHandler ShowASIOControlPanel;
 		public static event EventHandler<QueryFormatSupportEventArgs> QueryFormatSupport;
 
@@ -45,15 +45,17 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeUpper(SettingsModel settings)
 		{
-			var result = Create.Grid(4, 2, true);
+			var result = Create.Grid(5, 2, true);
 			result.Add(Create.Label("Theme", new(0, 0)));
 			result.Add(MakeTheme(settings, new(0, 1)));
-			result.Add(Create.Label("Bit depth", new(1, 0)));
-			result.Add(MakeBitDepth(settings, new(1, 1)));
-			result.Add(Create.Label("Sample rate", new(2, 0)));
-			result.Add(MakeSampleRate(settings, new(2, 1)));
-			result.Add(Create.Label("Write to disk", new(3, 0)));
-			result.Add(MakeWriteToDisk(settings, new(3, 1)));
+			result.Add(Create.Label("Color", new(1, 0)));
+			result.Add(MakeColor(settings, new(1, 1)));
+			result.Add(Create.Label("Bit depth", new(2, 0)));
+			result.Add(MakeBitDepth(settings, new(2, 1)));
+			result.Add(Create.Label("Sample rate", new(3, 0)));
+			result.Add(MakeSampleRate(settings, new(3, 1)));
+			result.Add(Create.Label("Write to disk", new(4, 0)));
+			result.Add(MakeWriteToDisk(settings, new(4, 1)));
 			return result;
 		}
 
@@ -89,9 +91,9 @@ namespace Xt.Synth0.UI
 		static ComboBox MakeCombo(Cell cell)
 		{
 			var result = Create.Element<ComboBox>(cell);
-			result.Width = ComboWidth;
-			result.MinWidth = ComboWidth;
-			result.MaxWidth = ComboWidth;
+			result.Width = ControlWidth;
+			result.MinWidth = ControlWidth;
+			result.MaxWidth = ControlWidth;
 			result.HorizontalAlignment = HorizontalAlignment.Left;
 			return result;
 		}
@@ -157,6 +159,15 @@ namespace Xt.Synth0.UI
 			result.ItemsSource = Enum.GetValues<ThemeType>();
 			var binding = Bind.To(settings, nameof(settings.Theme));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
+			return result;
+		}
+
+		static UIElement MakeColor(SettingsModel settings, Cell cell)
+		{
+			var result = Create.Element<ColorBox>(cell);
+			result.Width = ControlWidth;
+			var binding = Bind.To(settings, nameof(settings.ThemeColor));
+			result.SetBinding(ColorBox.ColorProperty, binding);
 			return result;
 		}
 

@@ -30,6 +30,7 @@ namespace Xt.Synth0.UI
 		static TextBox MakeTextBox(Param param)
 		{
 			var result = new TextBox();
+			result.Width = 50.0;
 			result.Text = param.Value.ToString();
 			return result;
 		}
