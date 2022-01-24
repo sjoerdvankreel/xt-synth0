@@ -41,7 +41,7 @@ namespace Xt.Synth0.UI
 		public static ResourceDictionary GetThemeResources(SettingsModel settings, ThemeGroup group)
 		{
 			if (settings.ThemeType == ThemeType.Generic) return GetGenericResources();
-			string themeColor = settings.ThemeColor;
+			string themeColor = GetThemeColor(settings, group);
 			if (ThemeResources.TryGetValue(themeColor, out var result)) return result;
 			result = new ResourceDictionary();
 			var color = (Color)ColorConverter.ConvertFromString(settings.ThemeColor);
@@ -67,6 +67,29 @@ namespace Xt.Synth0.UI
 			result.AlignmentY = AlignmentY.Top;
 			return result;
 		}
+
+		static string GetThemeColor(SettingsModel settings, ThemeGroup group)
+		=> settings.ThemeType switch
+		{
+			ThemeType.Themed => settings.ThemeColor,
+			ThemeType.Grouped => GetGroupColor(settings, group),
+			_ => throw new InvalidOperationException()
+		};
+
+
+		static string GetGroupColor(SettingsModel settings, ThemeGroup group)
+		=> group switch
+		{
+			ThemeGroup.Lfos => settings.LfoColor,
+			ThemeGroup.Envs => settings.EnvelopeColor,
+			ThemeGroup.Plot => settings.PlotColor,
+			ThemeGroup.Units => settings.UnitColor,
+			ThemeGroup.Global => settings.GlobalColor,
+			ThemeGroup.Control => settings.ControlColor,
+			ThemeGroup.Pattern => settings.PatternColor,
+			ThemeGroup.Settings => settings.SettingsColor,
+			_ => throw new InvalidOperationException()
+		};
 
 		static ImageSource MakeParamBackgroundSource()
 		{

@@ -32,18 +32,18 @@ namespace Xt.Synth0.Model
 			set => Set(ref _themeColor, value);
 		}
 
-		string _envsColor = "#40FF00";
-		public string EnvsColor
+		string _envelopeColor = "#40FF00";
+		public string EnvelopeColor
 		{
-			get => _envsColor;
-			set => Set(ref _envsColor, value);
+			get => _envelopeColor;
+			set => Set(ref _envelopeColor, value);
 		}
 
-		string _lfosColor = "#40FF00";
-		public string LfosColor
+		string _lfoColor = "#40FF00";
+		public string LfoColor
 		{
-			get => _lfosColor;
-			set => Set(ref _lfosColor, value);
+			get => _lfoColor;
+			set => Set(ref _lfoColor, value);
 		}
 
 		string _plotColor = "#40FF00";
@@ -53,11 +53,11 @@ namespace Xt.Synth0.Model
 			set => Set(ref _plotColor, value);
 		}
 
-		string _unitsColor = "#40FF00";
-		public string UnitsColor
+		string _unitColor = "#40FF00";
+		public string UnitColor
 		{
-			get => _unitsColor;
-			set => Set(ref _unitsColor, value);
+			get => _unitColor;
+			set => Set(ref _unitColor, value);
 		}
 
 		string _globalColor = "#40FF00";
@@ -155,14 +155,14 @@ namespace Xt.Synth0.Model
 		{
 			settings.ThemeType = ThemeType;
 			settings.ThemeColor = ThemeColor;
-			settings.EnvsColor = EnvsColor;
-			settings.LfosColor = LfosColor;
+			settings.LfoColor = LfoColor;
 			settings.PlotColor = PlotColor;
-			settings.UnitsColor = UnitsColor;
+			settings.UnitColor = UnitColor;
 			settings.GlobalColor = GlobalColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
 			settings.SettingsColor = SettingsColor;
+			settings.EnvelopeColor = EnvelopeColor;
 
 			settings.UseAsio = UseAsio;
 			settings.BitDepth = BitDepth;

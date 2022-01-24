@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Xt.Synth0.Model;
 
@@ -145,20 +144,12 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static void OnSettingsPropertyChanged(SettingsModel settings,
-			ThemeGroup group, FrameworkElement element, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == nameof(SettingsModel.ThemeType) ||
-				e.PropertyName == nameof(SettingsModel.ThemeColor))
-				element.Resources = Utility.GetThemeResources(settings, group);
-		}
-
 		public static T Themed<T>(SettingsModel settings, ThemeGroup group)
 			where T : FrameworkElement, new()
 		{
 			var result = new T();
 			result.Resources = Utility.GetThemeResources(settings, group);
-			settings.PropertyChanged += (s, e) => OnSettingsPropertyChanged(settings, group, result, e);
+			settings.PropertyChanged += (s, e) => result.Resources = Utility.GetThemeResources(settings, group);
 			return result;
 		}
 	}
