@@ -35,6 +35,64 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(SettingsModel settings)
 		{
 			var result = new StackPanel();
+			result.Orientation = Orientation.Horizontal;
+			result.Add(MakeAudio(settings));
+			result.Add(MakeTheme(settings));
+			return result;
+		}
+
+		static UIElement MakeTheme(SettingsModel settings)
+		{
+			var result = new StackPanel();
+			result.Orientation = Orientation.Vertical;
+			result.Add(MakeThemeType(settings));
+			result.Add(MakeThemeColor(settings));
+			result.Add(MakeGroupColor(settings));
+			result.SetValue(Grid.IsSharedSizeScopeProperty, true);
+			return Create.ThemedContent(result);
+		}
+
+		static UIElement MakeThemeType(SettingsModel settings)
+		{
+			var result = Create.Grid(1, 2, true);
+			result.Add(Create.Label("Theme type", new(0, 0)));
+			result.Add(MakeThemeType(settings, new(0, 1)));
+			return result;
+		}
+
+		static UIElement MakeThemeColor(SettingsModel settings)
+		{
+			var result = Create.Grid(1, 2, true);
+			result.Add(Create.Label("Theme color", new(0, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.ThemeColor), new(0, 1)));
+			return result;
+		}
+
+		static UIElement MakeGroupColor(SettingsModel settings)
+		{
+			var result = Create.Grid(8, 2, true);
+			result.Add(Create.Label("LFO color", new(0, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(0, 1)));
+			result.Add(Create.Label("Plot color", new(1, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(1, 1)));
+			result.Add(Create.Label("Unit color", new(2, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(2, 1)));
+			result.Add(Create.Label("Global color", new(3, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(3, 1)));
+			result.Add(Create.Label("Pattern color", new(4, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(4, 1)));
+			result.Add(Create.Label("Control color", new(5, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(5, 1)));
+			result.Add(Create.Label("Settings color", new(6, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(6, 1)));
+			result.Add(Create.Label("Envelope color", new(7, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(7, 1)));
+			return result;
+		}
+
+		static UIElement MakeAudio(SettingsModel settings)
+		{
+			var result = new StackPanel();
 			result.Orientation = Orientation.Vertical;
 			result.Add(MakeUpper(settings));
 			result.Add(MakeCenter(settings));
@@ -45,17 +103,13 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeUpper(SettingsModel settings)
 		{
-			var result = Create.Grid(5, 2, true);
-			result.Add(Create.Label("Theme type", new(0, 0)));
-			result.Add(MakeThemeType(settings, new(0, 1)));
-			result.Add(Create.Label("Theme color", new(1, 0)));
-			result.Add(MakeThemeColor(settings, new(1, 1)));
-			result.Add(Create.Label("Bit depth", new(2, 0)));
-			result.Add(MakeBitDepth(settings, new(2, 1)));
-			result.Add(Create.Label("Sample rate", new(3, 0)));
-			result.Add(MakeSampleRate(settings, new(3, 1)));
-			result.Add(Create.Label("Write to disk", new(4, 0)));
-			result.Add(MakeWriteToDisk(settings, new(4, 1)));
+			var result = Create.Grid(3, 2, true);
+			result.Add(Create.Label("Bit depth", new(0, 0)));
+			result.Add(MakeBitDepth(settings, new(0, 1)));
+			result.Add(Create.Label("Sample rate", new(1, 0)));
+			result.Add(MakeSampleRate(settings, new(1, 1)));
+			result.Add(Create.Label("Write to disk", new(2, 0)));
+			result.Add(MakeWriteToDisk(settings, new(2, 1)));
 			return result;
 		}
 
@@ -107,6 +161,24 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
+		static UIElement MakeThemeType(SettingsModel settings, Cell cell)
+		{
+			var result = MakeCombo(cell);
+			result.ItemsSource = Enum.GetValues<ThemeType>();
+			var binding = Bind.To(settings, nameof(settings.ThemeType));
+			result.SetBinding(Selector.SelectedValueProperty, binding);
+			return result;
+		}
+
+		static UIElement MakeThemeColor(SettingsModel settings, string property, Cell cell)
+		{
+			var result = Create.Element<ColorBox>(cell);
+			result.Width = ControlWidth;
+			var binding = Bind.To(settings, property);
+			result.SetBinding(ColorBox.ColorProperty, binding);
+			return result;
+		}
+
 		static UIElement MakeWriteToDisk(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<StackPanel>(cell);
@@ -150,24 +222,6 @@ namespace Xt.Synth0.UI
 			var result = Create.Element<Label>(cell);
 			var binding = Bind.To(settings, nameof(SettingsModel.OutputPath));
 			result.SetBinding(ContentControl.ContentProperty, binding);
-			return result;
-		}
-
-		static UIElement MakeThemeType(SettingsModel settings, Cell cell)
-		{
-			var result = MakeCombo(cell);
-			result.ItemsSource = Enum.GetValues<ThemeType>();
-			var binding = Bind.To(settings, nameof(settings.ThemeType));
-			result.SetBinding(Selector.SelectedValueProperty, binding);
-			return result;
-		}
-
-		static UIElement MakeThemeColor(SettingsModel settings, Cell cell)
-		{
-			var result = Create.Element<ColorBox>(cell);
-			result.Width = ControlWidth;
-			var binding = Bind.To(settings, nameof(settings.ThemeColor));
-			result.SetBinding(ColorBox.ColorProperty, binding);
 			return result;
 		}
 

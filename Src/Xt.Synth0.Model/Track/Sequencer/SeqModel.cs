@@ -7,13 +7,13 @@ namespace Xt.Synth0.Model
 	public sealed class ControlModel : IThemedModel
 	{
 		public string Name => "Control";
-		public ThemeGroup Group => ThemeGroup.MonitorControl;
+		public ThemeGroup Group => ThemeGroup.Control;
 	}
 
 	public sealed class MonitorModel : IThemedModel
 	{
 		public string Name => "Monitor";
-		public ThemeGroup Group => ThemeGroup.MonitorControl;
+		public ThemeGroup Group => ThemeGroup.Control;
 	}
 
 	public unsafe sealed class SeqModel : MainModel

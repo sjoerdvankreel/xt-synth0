@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 
 		protected override Brush Convert(ThemeType type, string color, int rows)
 		{
-			var resources = Utility.GetThemeResources(_settings, ThemeGroup.EditPattern);
+			var resources = Utility.GetThemeResources(_settings, ThemeGroup.Pattern);
 			var enabled = (Brush)resources[Utility.RowEnabledKey];
 			var disabled = (Brush)resources[Utility.RowDisabledKey];
 			return _row < rows ? enabled : disabled;

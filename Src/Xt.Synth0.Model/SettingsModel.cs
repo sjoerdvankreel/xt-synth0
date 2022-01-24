@@ -32,6 +32,62 @@ namespace Xt.Synth0.Model
 			set => Set(ref _themeColor, value);
 		}
 
+		string _envsColor = "#40FF00";
+		public string EnvsColor
+		{
+			get => _envsColor;
+			set => Set(ref _envsColor, value);
+		}
+
+		string _lfosColor = "#40FF00";
+		public string LfosColor
+		{
+			get => _lfosColor;
+			set => Set(ref _lfosColor, value);
+		}
+
+		string _plotColor = "#40FF00";
+		public string PlotColor
+		{
+			get => _plotColor;
+			set => Set(ref _plotColor, value);
+		}
+
+		string _unitsColor = "#40FF00";
+		public string UnitsColor
+		{
+			get => _unitsColor;
+			set => Set(ref _unitsColor, value);
+		}
+
+		string _globalColor = "#40FF00";
+		public string GlobalColor
+		{
+			get => _globalColor;
+			set => Set(ref _globalColor, value);
+		}
+
+		string _patternColor = "#40FF00";
+		public string PatternColor
+		{
+			get => _patternColor;
+			set => Set(ref _patternColor, value);
+		}
+
+		string _controlColor = "#40FF00";
+		public string ControlColor
+		{
+			get => _controlColor;
+			set => Set(ref _controlColor, value);
+		}
+
+		string _settingsColor = "#40FF00";
+		public string SettingsColor
+		{
+			get => _settingsColor;
+			set => Set(ref _settingsColor, value);
+		}
+
 		bool _useAsio;
 		public bool UseAsio
 		{
@@ -97,10 +153,19 @@ namespace Xt.Synth0.Model
 
 		public void CopyTo(SettingsModel settings)
 		{
-			settings.UseAsio = UseAsio;
-			settings.BitDepth = BitDepth;
 			settings.ThemeType = ThemeType;
 			settings.ThemeColor = ThemeColor;
+			settings.EnvsColor = EnvsColor;
+			settings.LfosColor = LfosColor;
+			settings.PlotColor = PlotColor;
+			settings.UnitsColor = UnitsColor;
+			settings.GlobalColor = GlobalColor;
+			settings.PatternColor = PatternColor;
+			settings.ControlColor = ControlColor;
+			settings.SettingsColor = SettingsColor;
+
+			settings.UseAsio = UseAsio;
+			settings.BitDepth = BitDepth;
 			settings.SampleRate = SampleRate;
 			settings.OutputPath = OutputPath;
 			settings.BufferSize = BufferSize;

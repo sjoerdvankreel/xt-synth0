@@ -18,7 +18,7 @@ namespace Xt.Synth0.Model
 
 		public int ColumnCount => 2;
 		public string Name => "Edit";
-		public ThemeGroup Group => ThemeGroup.EditPattern;
+		public ThemeGroup Group => ThemeGroup.Pattern;
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
 		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Bpm, Lpb, Edit };
 

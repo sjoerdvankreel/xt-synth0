@@ -17,7 +17,7 @@ namespace Xt.Synth0.Model
 		}
 
 		public string Name => "Pattern";
-		public ThemeGroup Group => ThemeGroup.EditPattern;
+		public ThemeGroup Group => ThemeGroup.Pattern;
 		public IReadOnlyList<IModelContainer> SubContainers => Rows;
 		public IReadOnlyList<ISubModel> SubModels => new ISubModel[0];
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->pattern;
