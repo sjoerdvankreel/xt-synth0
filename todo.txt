@@ -28,3 +28,5 @@ phase modulation
 init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters
 do voices in the synth, not the sequencer
+automate everything (per-voice startup)
+reconsider automating running voices
