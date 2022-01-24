@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Theme.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <Brush x:Key="RowEnabledKey">#00A0FF</Brush>
+    <Brush x:Key="ForegroundKey">#00C0FF</Brush>
+    <Brush x:Key="Foreground1Key">#00E0FF</Brush>
+    <Brush x:Key="Foreground2Key">#00A0FF</Brush>
+    <Brush x:Key="Foreground3Key">#006080</Brush>
+    <Brush x:Key="Foreground4Key">#003040</Brush>
+    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Noise.png" Stretch="None" Opacity="0.25" AlignmentX="Right" AlignmentY="Center"/>
+
+</ResourceDictionary>

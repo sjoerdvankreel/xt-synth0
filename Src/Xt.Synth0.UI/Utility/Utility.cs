@@ -29,7 +29,7 @@ namespace Xt.Synth0.UI
 			ThemeGroup.Envs => ThemeType.Amber,
 			ThemeGroup.Global => ThemeType.Spring,
 			ThemeGroup.Settings => ThemeType.White,
-			ThemeGroup.Plot => ThemeType.Chartreuse,
+			ThemeGroup.Plot => ThemeType.Sky,
 			ThemeGroup.EditPattern => ThemeType.Orange,
 			ThemeGroup.MonitorControl => ThemeType.Cyan,
 			_ => throw new InvalidOperationException()
