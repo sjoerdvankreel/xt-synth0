@@ -46,7 +46,7 @@ namespace Xt.Synth0.UI
 			result = new ResourceDictionary();
 			var color = (Color)ColorConverter.ConvertFromString(themeColor);
 			result.Source = new Uri($"pack://application:,,,/Xt.Synth0.UI;component/Themes/Theme.xaml");
-			result.Add(nameof(BackgroundParamKey), MakeParamBackgroundBrush());
+			result.Add(nameof(BackgroundParamKey), MakeParamBackgroundBrush(group));
 			result.Add(nameof(RowEnabledKey), new SolidColorBrush(Multiply(color, 1.25)));
 			result.Add(nameof(ForegroundKey), new SolidColorBrush(Multiply(color, 1)));
 			result.Add(nameof(Foreground1Key), new SolidColorBrush(Multiply(color, 1.25)));
@@ -57,14 +57,15 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static object MakeParamBackgroundBrush()
+		static object MakeParamBackgroundBrush(ThemeGroup group)
 		{
+			int index = (int)group % 9;
 			var result = new ImageBrush();
 			result.ImageSource = MakeParamBackgroundSource();
 			result.Stretch = Stretch.None;
 			result.Opacity = 0.25;
-			result.AlignmentX = AlignmentX.Left;
-			result.AlignmentY = AlignmentY.Top;
+			result.AlignmentX = (AlignmentX)(index / 3);
+			result.AlignmentY = (AlignmentY)(index % 3);
 			return result;
 		}
 
