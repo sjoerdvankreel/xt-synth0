@@ -25,24 +25,21 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(Window window, SettingsModel settings)
 		{
 			var result = new StackPanel();
-			result.Add(MakeGroup(settings));
+			result.Add(MakeGroups(settings));
 			result.Add(MakeOK(window));
 			return result;
 		}
 
-		static UIElement MakeGroup(SettingsModel settings)
-		=> Create.ThemedGroup(settings, settings, MakeContent(settings));
-
-		static UIElement MakeContent(SettingsModel settings)
+		static UIElement MakeGroups(SettingsModel settings)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
-			result.Add(MakeAudio(settings));
-			result.Add(MakeTheme(settings));
+			result.Add(Create.ThemedGroup(settings, settings, MakeAudioContent(settings), "Audio"));
+			result.Add(Create.ThemedGroup(settings, settings, MakeThemeContent(settings), "Theme"));
 			return result;
 		}
 
-		static UIElement MakeTheme(SettingsModel settings)
+		static UIElement MakeThemeContent(SettingsModel settings)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Vertical;
@@ -64,34 +61,40 @@ namespace Xt.Synth0.UI
 		static UIElement MakeThemeColor(SettingsModel settings)
 		{
 			var result = Create.Grid(1, 2, true);
-			result.Add(Create.Label("Theme color", new(0, 0)));
+			result.Add(Create.Label("Color", new(0, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.ThemeColor), new(0, 1)));
+			var conv = new VisibilityConverter<ThemeType>(false, ThemeType.Themed);
+			var binding = Bind.To(settings, nameof(settings.ThemeType), conv);
+			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
 		static UIElement MakeGroupColor(SettingsModel settings)
 		{
 			var result = Create.Grid(8, 2, true);
-			result.Add(Create.Label("LFO color", new(0, 0)));
+			result.Add(Create.Label("LFO", new(0, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(0, 1)));
-			result.Add(Create.Label("Plot color", new(1, 0)));
+			result.Add(Create.Label("Plot", new(1, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(1, 1)));
-			result.Add(Create.Label("Unit color", new(2, 0)));
+			result.Add(Create.Label("Unit", new(2, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(2, 1)));
-			result.Add(Create.Label("Global color", new(3, 0)));
+			result.Add(Create.Label("Global", new(3, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(3, 1)));
-			result.Add(Create.Label("Pattern color", new(4, 0)));
+			result.Add(Create.Label("Pattern", new(4, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(4, 1)));
-			result.Add(Create.Label("Control color", new(5, 0)));
+			result.Add(Create.Label("Control", new(5, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(5, 1)));
-			result.Add(Create.Label("Settings color", new(6, 0)));
+			result.Add(Create.Label("Settings", new(6, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(6, 1)));
-			result.Add(Create.Label("Envelope color", new(7, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(7, 1)));
+			result.Add(Create.Label("Envelope", new(7, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(7, 1))); 
+			var conv = new VisibilityConverter<ThemeType>(false, ThemeType.Grouped);
+			var binding = Bind.To(settings, nameof(settings.ThemeType), conv);
+			result.SetBinding(UIElement.VisibilityProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeAudio(SettingsModel settings)
+		static UIElement MakeAudioContent(SettingsModel settings)
 		{
 			var result = new StackPanel();
 			result.Orientation = Orientation.Vertical;
