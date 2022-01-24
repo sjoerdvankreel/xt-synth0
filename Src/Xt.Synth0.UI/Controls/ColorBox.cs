@@ -22,20 +22,18 @@ namespace Xt.Synth0.UI
 		}
 
 		readonly TextBox _box = new TextBox();
-		void OnLostFocus(object sender, RoutedEventArgs e) => _box.Text = Color;
 
 		public ColorBox()
 		{
 			Content = _box;
 			Padding = new(0.0);
 			_box.LostFocus += OnLostFocus;
-			_box.TextChanged += OnTextChanged;
 			_box.Margin = new(0.0, 2.0, 0.0, 2.0);
 			_box.TextAlignment = TextAlignment.Left;
 			_box.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
 		}
 
-		void OnTextChanged(object s, TextChangedEventArgs e)
+		void OnLostFocus(object sender, RoutedEventArgs e)
 		{
 			try
 			{
@@ -44,6 +42,7 @@ namespace Xt.Synth0.UI
 			}
 			catch (FormatException)
 			{
+				_box.Text = Color;
 			}
 		}
 	}
