@@ -5,12 +5,12 @@
         <ResourceDictionary Source="Theme.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Brush x:Key="RowEnabledKey">#FFFF40</Brush>
-    <Brush x:Key="ForegroundKey">#FFFF00</Brush>
-    <Brush x:Key="Foreground1Key">#FFFF40</Brush>
-    <Brush x:Key="Foreground2Key">#C0C000</Brush>
-    <Brush x:Key="Foreground3Key">#808000</Brush>
-    <Brush x:Key="Foreground4Key">#202000</Brush>
+    <Brush x:Key="RowEnabledKey">#FFA000</Brush>
+    <Brush x:Key="ForegroundKey">#FFC000</Brush>
+    <Brush x:Key="Foreground1Key">#FFE000</Brush>
+    <Brush x:Key="Foreground2Key">#FFA000</Brush>
+    <Brush x:Key="Foreground3Key">#806000</Brush>
+    <Brush x:Key="Foreground4Key">#403000</Brush>
     <ImageBrush x:Key="BackgroundParamKey" ImageSource="Noise.png" Stretch="None" Opacity="0.25" AlignmentX="Right" AlignmentY="Center"/>
 
 </ResourceDictionary>
