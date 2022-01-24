@@ -44,7 +44,7 @@ namespace Xt.Synth0.UI
 			string themeColor = GetThemeColor(settings, group);
 			if (ThemeResources.TryGetValue(themeColor, out var result)) return result;
 			result = new ResourceDictionary();
-			var color = (Color)ColorConverter.ConvertFromString(settings.ThemeColor);
+			var color = (Color)ColorConverter.ConvertFromString(themeColor);
 			result.Source = new Uri($"pack://application:,,,/Xt.Synth0.UI;component/Themes/Theme.xaml");
 			result.Add(nameof(BackgroundParamKey), MakeParamBackgroundBrush());
 			result.Add(nameof(RowEnabledKey), new SolidColorBrush(Multiply(color, 1.25)));
