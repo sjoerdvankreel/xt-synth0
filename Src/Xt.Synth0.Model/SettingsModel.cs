@@ -25,67 +25,60 @@ namespace Xt.Synth0.Model
 			set => Set(ref _themeType, value);
 		}
 
-		string _themeColor = "#40FF00";
+		string _themeColor = "#E0E0E0";
 		public string ThemeColor
 		{
 			get => _themeColor;
 			set => Set(ref _themeColor, value);
 		}
 
-		string _envelopeColor = "#40FF00";
+		string _envelopeColor = "#40C040";
 		public string EnvelopeColor
 		{
 			get => _envelopeColor;
 			set => Set(ref _envelopeColor, value);
 		}
 
-		string _lfoColor = "#40FF00";
+		string _lfoColor = "#FF80FF";
 		public string LfoColor
 		{
 			get => _lfoColor;
 			set => Set(ref _lfoColor, value);
 		}
 
-		string _plotColor = "#40FF00";
+		string _plotColor = "#00FF80";
 		public string PlotColor
 		{
 			get => _plotColor;
 			set => Set(ref _plotColor, value);
 		}
 
-		string _unitColor = "#40FF00";
+		string _unitColor = "#FF8000";
 		public string UnitColor
 		{
 			get => _unitColor;
 			set => Set(ref _unitColor, value);
 		}
 
-		string _globalColor = "#40FF00";
+		string _globalColor = "#00FFC0";
 		public string GlobalColor
 		{
 			get => _globalColor;
 			set => Set(ref _globalColor, value);
 		}
 
-		string _patternColor = "#40FF00";
+		string _patternColor = "#FFC000";
 		public string PatternColor
 		{
 			get => _patternColor;
 			set => Set(ref _patternColor, value);
 		}
 
-		string _controlColor = "#40FF00";
+		string _controlColor = "#00C0FF";
 		public string ControlColor
 		{
 			get => _controlColor;
 			set => Set(ref _controlColor, value);
-		}
-
-		string _settingsColor = "#40FF00";
-		public string SettingsColor
-		{
-			get => _settingsColor;
-			set => Set(ref _settingsColor, value);
 		}
 
 		bool _useAsio;
@@ -161,7 +154,6 @@ namespace Xt.Synth0.Model
 			settings.GlobalColor = GlobalColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
-			settings.SettingsColor = SettingsColor;
 			settings.EnvelopeColor = EnvelopeColor;
 
 			settings.UseAsio = UseAsio;

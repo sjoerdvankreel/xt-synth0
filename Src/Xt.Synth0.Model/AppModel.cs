@@ -1,6 +1,6 @@
 ﻿namespace Xt.Synth0.Model
 {
-	public enum ThemeGroup { Settings, Units, Envs, Lfos, Plot, Global, Pattern, Control }
+	public enum ThemeGroup { Settings, Unit, Env, Lfo, Plot, Global, Pattern, Control }
 
 	public sealed class AppModel
 	{

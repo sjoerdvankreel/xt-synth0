@@ -37,7 +37,7 @@ namespace Xt.Synth0.Model
 
 		readonly int _index;
 		public string Name => $"Env {_index + 1}";
-		public ThemeGroup Group => ThemeGroup.Envs;
+		public ThemeGroup Group => ThemeGroup.Env;
 		internal EnvModel(int index) => _index = index;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[_index * Native.Size];
 

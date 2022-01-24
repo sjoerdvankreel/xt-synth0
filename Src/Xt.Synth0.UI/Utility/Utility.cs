@@ -80,14 +80,14 @@ namespace Xt.Synth0.UI
 		static string GetGroupColor(SettingsModel settings, ThemeGroup group)
 		=> group switch
 		{
-			ThemeGroup.Lfos => settings.LfoColor,
-			ThemeGroup.Envs => settings.EnvelopeColor,
+			ThemeGroup.Lfo => settings.LfoColor,
 			ThemeGroup.Plot => settings.PlotColor,
-			ThemeGroup.Units => settings.UnitColor,
+			ThemeGroup.Unit => settings.UnitColor,
+			ThemeGroup.Env => settings.EnvelopeColor,
 			ThemeGroup.Global => settings.GlobalColor,
+			ThemeGroup.Settings => settings.ThemeColor,
 			ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
-			ThemeGroup.Settings => settings.SettingsColor,
 			_ => throw new InvalidOperationException()
 		};
 

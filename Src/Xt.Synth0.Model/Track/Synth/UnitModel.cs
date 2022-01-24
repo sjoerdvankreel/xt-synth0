@@ -46,7 +46,7 @@ namespace Xt.Synth0.Model
 
 		readonly int _index;
 		public string Name => $"Unit {_index + 1}";
-		public ThemeGroup Group => ThemeGroup.Units;
+		public ThemeGroup Group => ThemeGroup.Unit;
 		internal UnitModel(int index) => _index = index;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Native.Size];
 

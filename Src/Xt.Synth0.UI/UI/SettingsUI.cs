@@ -71,7 +71,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeGroupColor(SettingsModel settings)
 		{
-			var result = Create.Grid(8, 2, true);
+			var result = Create.Grid(7, 2, true);
 			result.Add(Create.Label("LFO", new(0, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.LfoColor), new(0, 1)));
 			result.Add(Create.Label("Plot", new(1, 0)));
@@ -84,10 +84,8 @@ namespace Xt.Synth0.UI
 			result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(4, 1)));
 			result.Add(Create.Label("Control", new(5, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(5, 1)));
-			result.Add(Create.Label("Settings", new(6, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(6, 1)));
-			result.Add(Create.Label("Envelope", new(7, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.EnvelopeColor), new(7, 1))); 
+			result.Add(Create.Label("Envelope", new(6, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.EnvelopeColor), new(6, 1))); 
 			var conv = new VisibilityConverter<ThemeType>(false, ThemeType.Grouped);
 			var binding = Bind.To(settings, nameof(settings.ThemeType), conv);
 			result.SetBinding(UIElement.VisibilityProperty, binding);

@@ -25,7 +25,7 @@ namespace Xt.Synth0.Model
 
 		readonly int _index;
 		public string Name => $"LFO {_index + 1}";
-		public ThemeGroup Group => ThemeGroup.Lfos;
+		public ThemeGroup Group => ThemeGroup.Lfo;
 		internal LfoModel(int index) => _index = index;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->lfos[_index * Native.Size];
 
