@@ -135,6 +135,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new Border();
 			result.Child = content;
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.SetResourceReference(Border.BackgroundProperty, Utility.Foreground4Key);
 			content.SetResourceReference(Panel.BackgroundProperty, Utility.BackgroundParamKey);
 			return result;

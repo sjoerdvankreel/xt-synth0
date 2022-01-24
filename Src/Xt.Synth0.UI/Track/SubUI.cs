@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -33,6 +32,7 @@ namespace Xt.Synth0.UI
 			var result = new Border();
 			result.Child = child;
 			result.SnapsToDevicePixels = true;
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.BorderThickness = new(0, 0, BorderThickness, BorderThickness);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
 			return Create.ThemedContent(result);
@@ -51,6 +51,8 @@ namespace Xt.Synth0.UI
 		static UIElement MakeEnabled(AppModel app, IThemedSubModel sub)
 		{
 			var result = Create.Grid(1, 1);
+			result.HorizontalAlignment = HorizontalAlignment.Stretch;
+			result.ColumnDefinitions[0].Width = new GridLength(1.0, GridUnitType.Star);
 			var grid = result.Add(MakeGrid(app, sub));
 			var conv = new VisibilityConverter<int>(true, 1);
 			var binding = Bind.To(sub.Enabled, nameof(Param.Value), conv);
