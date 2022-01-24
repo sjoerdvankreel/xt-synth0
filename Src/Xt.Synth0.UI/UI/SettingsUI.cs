@@ -10,7 +10,8 @@ namespace Xt.Synth0.UI
 {
 	public static class SettingsUI
 	{
-		const int ControlWidth = 200;
+		const int LeftControlWidth = 200;
+		const int RightControlWidth = 80;
 		public static event EventHandler ShowASIOControlPanel;
 		public static event EventHandler<QueryFormatSupportEventArgs> QueryFormatSupport;
 
@@ -142,12 +143,12 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static ComboBox MakeCombo(Cell cell)
+		static ComboBox MakeCombo(Cell cell, int width)
 		{
 			var result = Create.Element<ComboBox>(cell);
-			result.Width = ControlWidth;
-			result.MinWidth = ControlWidth;
-			result.MaxWidth = ControlWidth;
+			result.Width = width;
+			result.MinWidth = width;
+			result.MaxWidth = width;
 			result.HorizontalAlignment = HorizontalAlignment.Left;
 			return result;
 		}
@@ -163,7 +164,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeThemeType(SettingsModel settings, Cell cell)
 		{
-			var result = MakeCombo(cell);
+			var result = MakeCombo(cell, RightControlWidth);
 			result.ItemsSource = Enum.GetValues<ThemeType>();
 			var binding = Bind.To(settings, nameof(settings.ThemeType));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
@@ -173,7 +174,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeThemeColor(SettingsModel settings, string property, Cell cell)
 		{
 			var result = Create.Element<ColorBox>(cell);
-			result.Width = ControlWidth;
+			result.Width = RightControlWidth;
 			var binding = Bind.To(settings, property);
 			result.SetBinding(ColorBox.ColorProperty, binding);
 			return result;
@@ -260,7 +261,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeBufferSize(SettingsModel settings, Cell cell)
 		{
-			var result = MakeCombo(cell);
+			var result = MakeCombo(cell, LeftControlWidth);
 			result.ItemsSource = AudioModel.BufferSizes;
 			var binding = Bind.To(settings, nameof(settings.BufferSize));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
@@ -270,7 +271,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeBitDepth(SettingsModel settings, Cell cell)
 		{
-			var result = MakeCombo(cell);
+			var result = MakeCombo(cell, LeftControlWidth);
 			result.ItemsSource = AudioModel.BitDepths;
 			var binding = Bind.To(settings, nameof(settings.BitDepth));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
@@ -280,7 +281,7 @@ namespace Xt.Synth0.UI
 
 		static UIElement MakeSampleRate(SettingsModel settings, Cell cell)
 		{
-			var result = MakeCombo(cell);
+			var result = MakeCombo(cell, LeftControlWidth);
 			result.ItemsSource = AudioModel.SampleRates;
 			var binding = Bind.To(settings, nameof(settings.SampleRate));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
@@ -291,7 +292,7 @@ namespace Xt.Synth0.UI
 		static ComboBox MakeDevice(
 			SettingsModel settings, bool asio, string path, Cell cell)
 		{
-			var result = MakeCombo(cell);
+			var result = MakeCombo(cell, LeftControlWidth);
 			result.SelectedValuePath = nameof(DeviceModel.Id);
 			var binding = Bind.To(settings, path);
 			result.SetBinding(Selector.SelectedValueProperty, binding);
