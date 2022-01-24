@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -41,8 +42,42 @@ namespace Xt.Synth0.UI
 			(Keyboard.FocusedElement as UIElement)?.MoveFocus(request);
 		}
 
-		public static ResourceDictionary GetThemeResources(ThemeType theme, ThemeGroup group)
+		public static ResourceDictionary GetThemeResources(SettingsModel settings, ThemeGroup group)
 		{
+			var result = new ResourceDictionary();
+			result.Source = new Uri($"pack://application:,,,/Xt.Synth0.UI;component/Themes/Theme.xaml");
+			result.Add(nameof(RowEnabledKey), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00A0FF")));
+			result.Add(nameof(ForegroundKey), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0080FF")));
+			result.Add(nameof(Foreground1Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#00A0FF")));
+			result.Add(nameof(Foreground2Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0060FF")));
+			result.Add(nameof(Foreground3Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#004080")));
+			result.Add(nameof(Foreground4Key), new SolidColorBrush((Color)ColorConverter.ConvertFromString("#001020")));
+
+			var bmi = new BitmapImage();
+			bmi.BeginInit();
+			bmi.UriSource = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Noise.png");
+			bmi.EndInit();
+
+			result.Add(nameof(BackgroundParamKey), new ImageBrush
+			{
+				ImageSource = bmi,
+				Stretch = Stretch.None,
+				Opacity = 0.25,
+				AlignmentX = AlignmentX.Left,
+				AlignmentY = AlignmentY.Top
+			});
+			return result;
+			/*
+			 * 
+			 * 		 <Brush x:Key="RowEnabledKey">#00A0FF</Brush>
+    <Brush x:Key="ForegroundKey">#0080FF</Brush>
+    <Brush x:Key="Foreground1Key">#00A0FF</Brush>
+    <Brush x:Key="Foreground2Key">#0060FF</Brush>
+    <Brush x:Key="Foreground3Key">#004080</Brush>
+    <Brush x:Key="Foreground4Key">#001020</Brush>
+    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Noise.png" Stretch="None" Opacity="0.25" AlignmentX="Left" AlignmentY="Top"/>
+
+
 			var effectiveTheme = theme != ThemeType.Grouped ? theme : GroupType(group);
 			if (ThemeResources.TryGetValue(effectiveTheme, out var result)) return result;
 			var location = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{effectiveTheme}.xaml";
@@ -50,6 +85,7 @@ namespace Xt.Synth0.UI
 			result.Source = new Uri(location);
 			ThemeResources.Add(effectiveTheme, result);
 			return result;
+			*/
 		}
-	}
+}
 }

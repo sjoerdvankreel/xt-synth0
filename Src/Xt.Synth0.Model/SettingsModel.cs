@@ -18,11 +18,11 @@ namespace Xt.Synth0.Model
 		public ThemeGroup Group => ThemeGroup.Settings;
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		ThemeType _theme;
-		public ThemeType Theme
+		ThemeType _themeType;
+		public ThemeType ThemeType
 		{
-			get => _theme;
-			set => Set(ref _theme, value);
+			get => _themeType;
+			set => Set(ref _themeType, value);
 		}
 
 		string _themeColor = "#40FF00";
@@ -97,9 +97,9 @@ namespace Xt.Synth0.Model
 
 		public void CopyTo(SettingsModel settings)
 		{
-			settings.Theme = Theme;
 			settings.UseAsio = UseAsio;
 			settings.BitDepth = BitDepth;
+			settings.ThemeType = ThemeType;
 			settings.ThemeColor = ThemeColor;
 			settings.SampleRate = SampleRate;
 			settings.OutputPath = OutputPath;

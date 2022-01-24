@@ -46,10 +46,10 @@ namespace Xt.Synth0.UI
 		static UIElement MakeUpper(SettingsModel settings)
 		{
 			var result = Create.Grid(5, 2, true);
-			result.Add(Create.Label("Theme", new(0, 0)));
-			result.Add(MakeTheme(settings, new(0, 1)));
-			result.Add(Create.Label("Color", new(1, 0)));
-			result.Add(MakeColor(settings, new(1, 1)));
+			result.Add(Create.Label("Theme type", new(0, 0)));
+			result.Add(MakeThemeType(settings, new(0, 1)));
+			result.Add(Create.Label("Theme color", new(1, 0)));
+			result.Add(MakeThemeColor(settings, new(1, 1)));
 			result.Add(Create.Label("Bit depth", new(2, 0)));
 			result.Add(MakeBitDepth(settings, new(2, 1)));
 			result.Add(Create.Label("Sample rate", new(3, 0)));
@@ -153,16 +153,16 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeTheme(SettingsModel settings, Cell cell)
+		static UIElement MakeThemeType(SettingsModel settings, Cell cell)
 		{
 			var result = MakeCombo(cell);
 			result.ItemsSource = Enum.GetValues<ThemeType>();
-			var binding = Bind.To(settings, nameof(settings.Theme));
+			var binding = Bind.To(settings, nameof(settings.ThemeType));
 			result.SetBinding(Selector.SelectedValueProperty, binding);
 			return result;
 		}
 
-		static UIElement MakeColor(SettingsModel settings, Cell cell)
+		static UIElement MakeThemeColor(SettingsModel settings, Cell cell)
 		{
 			var result = Create.Element<ColorBox>(cell);
 			result.Width = ControlWidth;
