@@ -12,6 +12,7 @@
     <Brush x:Key="Foreground1Key">LightGray</Brush>
     <Brush x:Key="Foreground2Key">Gray</Brush>
     <Brush x:Key="Foreground3Key">LightGray</Brush>
+    <Brush x:Key="Foreground4Key">DarkGray</Brush>
     <Brush x:Key="BorderParamKey">#EEEEEE</Brush>
     <Brush x:Key="RowDisabledKey">LightGray</Brush>
     <Brush x:Key="BackgroundParamKey">White</Brush>

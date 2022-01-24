@@ -10,7 +10,8 @@ namespace Xt.Synth0.UI
 {
 	public static class Utility
 	{
-		static readonly Dictionary<ThemeType, ResourceDictionary> ThemeResources = new();
+		static ResourceDictionary _genericResources;
+		static readonly Dictionary<string, ResourceDictionary> ThemeResources = new();
 
 		public static readonly FontFamily FontFamily = new("Consolas");
 		internal static string RowEnabledKey = nameof(RowEnabledKey);
@@ -23,19 +24,6 @@ namespace Xt.Synth0.UI
 		internal static string BorderParamKey = nameof(BorderParamKey);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
 
-		static ThemeType GroupType(ThemeGroup group) => group switch
-		{
-			ThemeGroup.Lfos => ThemeType.Slate,
-			ThemeGroup.Units => ThemeType.Azure,
-			ThemeGroup.Envs => ThemeType.Yellow,
-			ThemeGroup.Global => ThemeType.Spring,
-			ThemeGroup.Settings => ThemeType.White,
-			ThemeGroup.Plot => ThemeType.Chartreuse,
-			ThemeGroup.EditPattern => ThemeType.Orange,
-			ThemeGroup.MonitorControl => ThemeType.Cyan,
-			_ => throw new InvalidOperationException()
-		};
-
 		internal static void FocusDown()
 		{
 			var request = new TraversalRequest(FocusNavigationDirection.Down);
@@ -47,55 +35,54 @@ namespace Xt.Synth0.UI
 			var r = (byte)Math.Min(color.R * factor, 255);
 			var g = (byte)Math.Min(color.G * factor, 255);
 			var b = (byte)Math.Min(color.B * factor, 255);
-			var result =  Color.FromArgb(255, r, g, b);
-			return result;
+			return Color.FromArgb(255, r, g, b);
 		}
 
 		public static ResourceDictionary GetThemeResources(SettingsModel settings, ThemeGroup group)
 		{
-			var result = new ResourceDictionary();
+			if (settings.ThemeType == ThemeType.Generic) return GetGenericResources();
+			string themeColor = settings.ThemeColor;
+			if (ThemeResources.TryGetValue(themeColor, out var result)) return result;
+			result = new ResourceDictionary();
 			var color = (Color)ColorConverter.ConvertFromString(settings.ThemeColor);
 			result.Source = new Uri($"pack://application:,,,/Xt.Synth0.UI;component/Themes/Theme.xaml");
+			result.Add(nameof(BackgroundParamKey), MakeParamBackgroundBrush());
 			result.Add(nameof(RowEnabledKey), new SolidColorBrush(Multiply(color, 1.25)));
 			result.Add(nameof(ForegroundKey), new SolidColorBrush(Multiply(color, 1)));
 			result.Add(nameof(Foreground1Key), new SolidColorBrush(Multiply(color, 1.25)));
 			result.Add(nameof(Foreground2Key), new SolidColorBrush(Multiply(color, 0.75)));
 			result.Add(nameof(Foreground3Key), new SolidColorBrush(Multiply(color, 0.5)));
 			result.Add(nameof(Foreground4Key), new SolidColorBrush(Multiply(color, 0.25)));
-
-			var bmi = new BitmapImage();
-			bmi.BeginInit();
-			bmi.UriSource = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Noise.png");
-			bmi.EndInit();
-
-			result.Add(nameof(BackgroundParamKey), new ImageBrush
-			{
-				ImageSource = bmi,
-				Stretch = Stretch.None,
-				Opacity = 0.25,
-				AlignmentX = AlignmentX.Left,
-				AlignmentY = AlignmentY.Top
-			});
+			ThemeResources.Add(themeColor, result);
 			return result;
-			/*
-			 * 
-			 * 		 <Brush x:Key="RowEnabledKey">#00A0FF</Brush>
-    <Brush x:Key="ForegroundKey">#0080FF</Brush>
-    <Brush x:Key="Foreground1Key">#00A0FF</Brush>
-    <Brush x:Key="Foreground2Key">#0060FF</Brush>
-    <Brush x:Key="Foreground3Key">#004080</Brush>
-    <Brush x:Key="Foreground4Key">#001020</Brush>
-    <ImageBrush x:Key="BackgroundParamKey" ImageSource="Noise.png" Stretch="None" Opacity="0.25" AlignmentX="Left" AlignmentY="Top"/>
+		}
 
-
-			var effectiveTheme = theme != ThemeType.Grouped ? theme : GroupType(group);
-			if (ThemeResources.TryGetValue(effectiveTheme, out var result)) return result;
-			var location = $"pack://application:,,,/Xt.Synth0.UI;component/Themes/{effectiveTheme}.xaml";
-			result = new ResourceDictionary();
-			result.Source = new Uri(location);
-			ThemeResources.Add(effectiveTheme, result);
+		static object MakeParamBackgroundBrush()
+		{
+			var result = new ImageBrush();
+			result.ImageSource = MakeParamBackgroundSource();
+			result.Stretch = Stretch.None;
+			result.Opacity = 0.25;
+			result.AlignmentX = AlignmentX.Left;
+			result.AlignmentY = AlignmentY.Top;
 			return result;
-			*/
+		}
+
+		static ImageSource MakeParamBackgroundSource()
+		{
+			var result = new BitmapImage();
+			result.BeginInit();
+			result.UriSource = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Noise.png");
+			result.EndInit();
+			return result;
+		}
+
+		static ResourceDictionary GetGenericResources()
+		{
+			if (_genericResources != null) return _genericResources;
+			_genericResources = new ResourceDictionary();
+			_genericResources.Source = new Uri($"pack://application:,,,/Xt.Synth0.UI;component/Themes/Generic.xaml");
+			return _genericResources;
 		}
 	}
 }
