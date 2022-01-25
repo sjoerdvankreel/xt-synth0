@@ -90,8 +90,8 @@ EnvParams
 EnvDSP::Params(EnvModel const& model, SynthInput const& input)
 {
   EnvParams result;
-  result.s = Level(model.s);
   bool sync = model.sync != 0;
+  result.s = Level(model.s);
   result.a = sync ? SyncI(input, model.aSnc) : TimeI(model.a, input.rate);
   result.d = sync ? SyncI(input, model.dSnc) : TimeI(model.d, input.rate);
   result.r = sync ? SyncI(input, model.rSnc) : TimeI(model.r, input.rate);

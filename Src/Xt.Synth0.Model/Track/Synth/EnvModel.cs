@@ -53,20 +53,19 @@ namespace Xt.Synth0.Model
 
 		static readonly IRelevance RelevanceSync = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 1);
 		static readonly IRelevance RelevanceTime = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 0);
-		static readonly IRelevance RelevanceDAHDSR = Relevance.When((EnvModel m) => m.Type, (EnvType t) => t == EnvType.DAHDSR);
 
 		static readonly ParamInfo DSlpInfo = ParamInfo.Mix(p => &((Native*)p)->dSlp, "Slp", "Decay slope");
 		static readonly ParamInfo ASlpInfo = ParamInfo.Mix(p => &((Native*)p)->aSlp, "Slp", "Attack slope");
 		static readonly ParamInfo RSlpInfo = ParamInfo.Mix(p => &((Native*)p)->rSlp, "Slp", "Release slope");
 		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, nameof(Type), "Type");
+		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), "Sustain level", 128, null);
 		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), "Sync to beat", false);
 		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), "Decay milliseconds", 0, 7, RelevanceTime);
 		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), "Attack milliseconds", 0, 3, RelevanceTime);
 		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), "Release milliseconds", 0, 14, RelevanceTime);
 		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), "Hold milliseconds", 0, 0, RelevanceTime);
 		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), "Delay milliseconds", 0, 0, RelevanceTime);
-		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), "Sustain level", 128, null, RelevanceDAHDSR);
 		static readonly ParamInfo DSncInfo = ParamInfo.Select(p => &((Native*)p)->dSnc, "D", "Decay steps", SyncStep.S0, SyncStep.S1_4, SynthModel.SyncStepNames, RelevanceSync);
 		static readonly ParamInfo ASncInfo = ParamInfo.Select(p => &((Native*)p)->aSnc, "A", "Attack steps", SyncStep.S0, SyncStep.S1_16, SynthModel.SyncStepNames, RelevanceSync);
 		static readonly ParamInfo RSncInfo = ParamInfo.Select(p => &((Native*)p)->rSnc, "R", "Release steps", SyncStep.S0, SyncStep.S1_1, SynthModel.SyncStepNames, RelevanceSync);
