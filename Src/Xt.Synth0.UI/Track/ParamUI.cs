@@ -15,12 +15,11 @@ namespace Xt.Synth0.UI
 		{
 			var result = new StringBuilder();
 			result.AppendLine(param.Info.Description);
-			if (param.Info.Automatable || param.Info.Control == ParamControl.Knob)
+			var synthParam = synth.SynthParams.SingleOrDefault(p => p.Param == param);
+			if (synthParam != null || param.Info.Control == ParamControl.Knob)
 				result.AppendLine($"Range: {param.Info.Range(false)}");
-			if (param.Info.Automatable)
-				result.AppendLine($"Automation target: {synth.AutoParam(param).Index.ToString("X2")}");
-			else
-				result.AppendLine("Not automatable");
+			if (synthParam != null)
+				result.AppendLine($"Automation target: {synthParam.Index.ToString("X2")}");
 			if (param.Info.Control == ParamControl.Knob)
 				result.AppendLine("Right-click to set exact value");
 			return result.ToString(0, result.Length - Environment.NewLine.Length);
@@ -40,16 +39,12 @@ namespace Xt.Synth0.UI
 			var result = MakeEmpty();
 			bool conditional = param.Info.Relevance != null;
 			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(sub, param));
-			var binding = Bind.To(app.Stream, nameof(StreamModel.IsStopped));
-			var control = result.Add(MakeControl(app, sub, param), Dock.Left);			
-			if (!param.Info.Automatable) control.SetBinding(UIElement.IsEnabledProperty, binding); 
+			result.Add(MakeControl(app, sub, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
 			var name = result.Add(Create.Text($"{param.Info.Name} "), Dock.Left);
 			name.VerticalAlignment = VerticalAlignment.Center;
-			if (!param.Info.Automatable) name.SetBinding(UIElement.IsEnabledProperty, binding);
 			if (param.Info.Type == ParamType.Toggle) return result;
-			var value = result.Add(MakeValue(param), Dock.Left);
-			if (!param.Info.Automatable) value.SetBinding(UIElement.IsEnabledProperty, binding);
+			result.Add(MakeValue(param), Dock.Left);
 			return result;
 		}
 

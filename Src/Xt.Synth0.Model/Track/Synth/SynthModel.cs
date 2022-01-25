@@ -40,9 +40,8 @@ namespace Xt.Synth0.Model
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
 
-		public IReadOnlyList<AutoParam> AutoParams { get; }
+		public IReadOnlyList<SynthParam> SynthParams { get; }
 		public override IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
-		public AutoParam AutoParam(Param param) => AutoParams.Single(p => ReferenceEquals(param, p.Param));
 		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(Lfos).Concat(new ISubModel[] { Plot, Global }).ToArray();
 
 		public static readonly string[] SyncStepNames = new[]
@@ -57,10 +56,9 @@ namespace Xt.Synth0.Model
 		{
 			Envs[0].On.Value = 1;
 			Units[0].On.Value = 1;
-			var @params = ListParams(this).Where(p => p.Param.Info.Automatable)
-				.Select((p, i) => new AutoParam((IThemedSubModel)p.Sub, i + 1, p.Param));
-			AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
-			if (AutoParams.Count != Model.ParamCount)
+			var @params = ListParams(this).Select((p, i) => new SynthParam((IThemedSubModel)p.Sub, i + 1, p.Param));
+			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
+			if (SynthParams.Count != Model.ParamCount)
 				throw new InvalidOperationException();
 		}
 	}

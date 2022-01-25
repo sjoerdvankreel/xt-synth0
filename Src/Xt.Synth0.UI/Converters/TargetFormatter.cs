@@ -14,12 +14,11 @@ namespace Xt.Synth0.UI
 		protected override string Convert(int target)
 		{
 			var result = new StringBuilder();
-			var auto = _synth.AutoParams.SingleOrDefault(p => p.Index == target);
-			var targetDetail = $"{auto?.Owner.Name} {auto?.Param.Info.Description}";
-			result.AppendLine($"{_param.Info.Description}: {(auto != null ? targetDetail: "None")}");
+			var param = _synth.SynthParams.SingleOrDefault(p => p.Index == target);
+			var targetDetail = $"{param?.Owner.Name} {param?.Param.Info.Description}";
+			result.AppendLine($"{_param.Info.Description}: {(param != null ? targetDetail : "None")}");
 			result.AppendLine("Ctrl + F to fill");
-			if (auto != null)
-				result.AppendLine($"Range: {auto.Param.Info.Range(true)}");
+			if (param != null) result.AppendLine($"Range: {param.Param.Info.Range(true)}");
 			result.Append(PatternUI.EditHint);
 			return result.ToString();
 		}

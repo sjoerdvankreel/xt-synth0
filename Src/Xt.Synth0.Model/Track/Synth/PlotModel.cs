@@ -16,6 +16,6 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 
 		public Param Type { get; } = new(TypeInfo);
-		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), "Source", false);
+		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), "Source");
 	}
 }

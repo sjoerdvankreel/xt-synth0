@@ -20,7 +20,7 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { Tgt, Val };
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[_index * Native.Size];
 
-		static readonly ParamInfo ValInfo = ParamInfo.Level(p => &((Native*)p)->val, nameof(Val), "Automation value", false, 0);
-		static readonly ParamInfo TgtInfo = ParamInfo.Level(p => &((Native*)p)->tgt, nameof(Tgt), "Automation target", false, 0);
+		static readonly ParamInfo ValInfo = ParamInfo.Level(p => &((Native*)p)->val, nameof(Val), "Automation value", 0);
+		static readonly ParamInfo TgtInfo = ParamInfo.Level(p => &((Native*)p)->tgt, nameof(Tgt), "Automation target", 0);
 	}
 }

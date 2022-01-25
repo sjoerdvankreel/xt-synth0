@@ -18,7 +18,9 @@ namespace Xt.Synth0.UI
 		static UIElement MakeRight(AppModel app)
 		{
 			var result = new DockPanel();
-			result.Add(SubUI.Make(app, app.Track.Seq.Edit), Dock.Bottom);
+			var edit = result.Add(SubUI.Make(app, app.Track.Seq.Edit), Dock.Bottom);
+			var binding = Bind.To(app.Stream, nameof(app.Stream.IsStopped));
+			edit.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Add(PatternUI.Make(app), Dock.Bottom);
 			return result;
 		}

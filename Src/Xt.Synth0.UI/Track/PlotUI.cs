@@ -41,8 +41,6 @@ namespace Xt.Synth0.UI
 			result.Header = dock;
 			result.Padding = new(Padding);
 			result.Content = MakeContent(app, text);
-			var binding = Bind.To(app.Stream, nameof(StreamModel.IsRunning), new NegateConverter());
-			result.SetBinding(UIElement.IsEnabledProperty, binding);
 			return result;
 		}
 
@@ -101,7 +99,6 @@ namespace Xt.Synth0.UI
 
 		static void Update(AppModel app, TextBlock text, ContentControl container)
 		{
-			if (app.Stream.IsRunning) return;
 			var plot = app.Track.Synth.Plot;
 			int w = (int)container.ActualWidth;
 			double h = container.ActualHeight;

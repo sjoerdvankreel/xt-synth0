@@ -45,12 +45,12 @@ namespace Xt.Synth0.Model
 			Native* seqPtr = (Native*)nativeSeq;
 			var @params = (Param*)seqPtr->@params;
 			SynthModel.Native* synthPtr = (SynthModel.Native*)nativeSynth;
-			for (int p = 0; p < synth.AutoParams.Count; p++)
+			for (int p = 0; p < synth.SynthParams.Count; p++)
 			{
-				@params[p].min = synth.AutoParams[p].Param.Info.Min;
-				@params[p].max = synth.AutoParams[p].Param.Info.Max;
-				var addr = synth.AutoParams[p].Owner.Address(synthPtr);
-				@params[p].val = synth.AutoParams[p].Param.Info.Address(addr);
+				@params[p].min = synth.SynthParams[p].Param.Info.Min;
+				@params[p].max = synth.SynthParams[p].Param.Info.Max;
+				var addr = synth.SynthParams[p].Owner.Address(synthPtr);
+				@params[p].val = synth.SynthParams[p].Param.Info.Address(addr);
 			}
 		}
 	}

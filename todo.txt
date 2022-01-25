@@ -16,16 +16,14 @@ noise generator
 check which params should be automatable
 connect mod sources
 drag outside screen
-merge lfo/unit plot 
-no zero length lfo
 filter lfos
 lfo NOT key sync
-fix step len -> int frames ?
 init with streampos / derive stuff from streampos ?
 split audioinput / stateinput
 phase modulation
 init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters
 do voices in the synth, not the sequencer
-automate everything (per-voice startup)
 reconsider automating running voices
+plotsource none
+bip lfo

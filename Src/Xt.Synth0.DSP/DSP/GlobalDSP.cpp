@@ -8,7 +8,7 @@ GlobalDSP::Amp(SynthState const& state)
 {
   float lfoAmt = Level(_model->ampLfoAmt);
   float lfoVal = state.lfos[static_cast<int>(_model->ampLfo)];
-  float lfo = (1.0 - lfoAmt) + lfoAmt * lfoVal;
+  float lfo = (1.0f - lfoAmt) + lfoAmt * lfoVal;
   float amp = Level(_model->amp);
   float envAmt = Level(_model->ampEnvAmt);
   float env = state.envs[static_cast<int>(_model->ampEnv)];
