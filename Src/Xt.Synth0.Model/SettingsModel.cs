@@ -39,7 +39,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _envelopeColor, value);
 		}
 
-		string _lfoColor = "#FF80FF";
+		string _lfoColor = "#FF8080";
 		public string LfoColor
 		{
 			get => _lfoColor;
