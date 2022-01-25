@@ -33,7 +33,7 @@ struct XTS_ALIGN LfoModel
   LfoModel() = default;
   LfoModel(LfoModel const&) = delete;
 private:
-  XtsBool on, sync, inv, key;
+  XtsBool on, sync, inv, bi;
   LfoType type;
   int32_t rate;
   SyncStep step;

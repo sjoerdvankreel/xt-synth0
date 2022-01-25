@@ -30,3 +30,4 @@ bip lfo
 inv env?
 fix dahdr without decay
 plot hold/release
+bipolar lfo
