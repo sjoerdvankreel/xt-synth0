@@ -18,6 +18,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput const& input, PlotOutput& out
 
   switch(synth.plot.type)
   {
+  case PlotType::Off: break;
   case PlotType::SynthL: case PlotType::SynthR: {
     SynthDSP().Plot(synth, input, output);
     break; }

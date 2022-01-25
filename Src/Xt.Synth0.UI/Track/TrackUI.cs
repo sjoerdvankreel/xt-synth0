@@ -15,16 +15,6 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeRight(AppModel app)
-		{
-			var result = new DockPanel();
-			var edit = result.Add(SubUI.Make(app, app.Track.Seq.Edit), Dock.Bottom);
-			var binding = Bind.To(app.Stream, nameof(app.Stream.IsStopped));
-			edit.SetBinding(UIElement.IsEnabledProperty, binding);
-			result.Add(PatternUI.Make(app), Dock.Bottom);
-			return result;
-		}
-
 		static UIElement MakeLeft(AppModel app)
 		{
 			var synth = app.Track.Synth;
@@ -33,6 +23,16 @@ namespace Xt.Synth0.UI
 				result.Add(SubUI.Make(app, unit), Dock.Top);
 			foreach (var lfo in synth.Lfos)
 				result.Add(SubUI.Make(app, lfo), Dock.Top);
+			return result;
+		}
+
+		static UIElement MakeRight(AppModel app)
+		{
+			var result = new DockPanel();
+			var edit = result.Add(SubUI.Make(app, app.Track.Seq.Edit), Dock.Bottom);
+			var binding = Bind.To(app.Stream, nameof(app.Stream.IsStopped));
+			edit.SetBinding(UIElement.IsEnabledProperty, binding);
+			result.Add(PatternUI.Make(app), Dock.Bottom);
 			return result;
 		}
 

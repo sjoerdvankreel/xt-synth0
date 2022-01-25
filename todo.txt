@@ -27,3 +27,5 @@ do voices in the synth, not the sequencer
 reconsider automating running voices
 plotsource none
 bip lfo
+dahdr should have a sustain level
+inv env?

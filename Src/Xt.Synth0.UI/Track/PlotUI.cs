@@ -12,19 +12,19 @@ namespace Xt.Synth0.UI
 		const double Padding = 2.0;
 		const double MaxLevelBi = 0.975;
 		const double MaxLevelUni = 0.99;
-		static readonly UIElement Empty;
+		static readonly UIElement Off;
 		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 
 		static PlotUI()
 		{
 			var dock = new DockPanel();
-			var label = dock.Add(Create.Label("No data"));
+			var label = dock.Add(Create.Label("Plot OFF"));
 			label.FontWeight = FontWeights.Bold;
 			label.VerticalAlignment = VerticalAlignment.Center;
 			label.HorizontalAlignment = HorizontalAlignment.Center;
 			label.SetResourceReference(Control.ForegroundProperty, Utility.RowDisabledKey);
-			Empty = Create.ThemedContent(dock);
+			Off = Create.ThemedContent(dock);
 		}
 
 		internal static UIElement Make(AppModel app)
@@ -104,12 +104,12 @@ namespace Xt.Synth0.UI
 			double h = container.ActualHeight;
 			Args.Pixels = w;
 			RequestPlotData?.Invoke(null, Args);
-			container.Content = Args.Samples.Count > 0 ? Plot(w, h) : Empty;
+			container.Content = Args.Samples.Count > 0 ? Plot(w, h) : Off;
 			string header = $"{plot.Name} @ {Args.SampleRate.ToString("N1")}Hz";
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
 			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
 			if (Args.Clip) header += " (Clip)";
-			text.Text = Args.Samples.Count > 0 ? header : $"{plot.Name}{Environment.NewLine}0 samples";
+			text.Text = Args.Samples.Count > 0 ? header : $"{plot.Name}{Environment.NewLine}No data";
 		}
 
 		static UIElement Plot(int w, double h)
