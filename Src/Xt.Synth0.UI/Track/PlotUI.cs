@@ -45,12 +45,14 @@ namespace Xt.Synth0.UI
 		static UIElement MakePlotContent(AppModel app, TextBlock text)
 		{
 			var synth = app.Track.Synth;
-			var content = new ContentControl();
-			var result = SubUI.MakeOuterBorder(content);
+			var dock = new DockPanel();
+			var content = dock.Add(new ContentControl());
+			var result = Create.ThemedContent(dock);
 			synth.ParamChanged += (s, e) => Update(app, text, content);
 			content.SizeChanged += (s, e) => Update(app, text, content);
 			app.Settings.PropertyChanged += (s, e) => Update(app, text, content);
-			result.BorderThickness = new(SubUI.BorderThickness);
+			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
+			result.BorderThickness = new(SubUI.BorderThickness, 0.0, SubUI.BorderThickness, SubUI.BorderThickness);
 			return result;
 		}
 
