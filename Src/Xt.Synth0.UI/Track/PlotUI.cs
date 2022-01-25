@@ -9,7 +9,6 @@ namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
-		const double Padding = 2.0;
 		const double MaxLevelBi = 0.975;
 		const double MaxLevelUni = 0.99;
 		static readonly UIElement Off;
@@ -29,22 +28,21 @@ namespace Xt.Synth0.UI
 
 		internal static UIElement Make(AppModel app)
 		{
+			var text = new TextBlock();
 			var plot = app.Track.Synth.Plot;
-			var dock = new DockPanel();
-			dock.Background = Brushes.Transparent;
-			var text = dock.Add(new TextBlock(), Dock.Left);
 			text.VerticalAlignment = VerticalAlignment.Center;
-			var control = dock.Add(ParamUI.MakeControl(app, plot, plot.Type), Dock.Right);
-			control.HorizontalAlignment = HorizontalAlignment.Right;
-			control.VerticalAlignment = VerticalAlignment.Center;
-			var result = Create.ThemedGroup(app.Settings, plot, null);
-			result.Header = dock;
-			result.Padding = new(Padding);
-			result.Content = MakeContent(app, text);
-			return result;
+			return Create.ThemedGroup(app.Settings, plot, MakeContent(app, text), text);
 		}
 
 		static UIElement MakeContent(AppModel app, TextBlock text)
+		{
+			var result = new DockPanel();
+			result.Add(SubUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
+			result.Add(MakePlotContent(app, text), Dock.Top);
+			return result;
+		}
+
+		static UIElement MakePlotContent(AppModel app, TextBlock text)
 		{
 			var synth = app.Track.Synth;
 			var content = new ContentControl();

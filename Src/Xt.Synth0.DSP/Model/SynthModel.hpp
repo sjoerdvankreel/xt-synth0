@@ -58,6 +58,7 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
+enum class PlotHold { Hold, Touch, Hold1Ms, Hold10Ms, Hold100Ms, Hold1S, Hold10S };
 enum class PlotType { Off, SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2 };
 struct XTS_ALIGN PlotModel
 {
@@ -66,7 +67,7 @@ struct XTS_ALIGN PlotModel
   PlotModel(PlotModel const&) = delete;
 private:
   PlotType type;
-  int pad__;
+  PlotHold hold;
 };
 XTS_CHECK_SIZE(PlotModel, 8);
 

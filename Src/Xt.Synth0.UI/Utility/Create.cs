@@ -34,7 +34,7 @@ namespace Xt.Synth0.UI
 		=> ThemedGroup(settings, themed, content, themed.Name);
 
 		internal static GroupBox ThemedGroup(
-			SettingsModel settings, IThemedModel themed, object content, string header)
+			SettingsModel settings, IThemedModel themed, object content, object header)
 		{
 			var result = Themed<GroupBox>(settings, themed.Group);
 			result.Content = content;
