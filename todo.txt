@@ -28,3 +28,4 @@ reconsider automating running voices
 plotsource none
 bip lfo
 inv env?
+fix dahdr without decay
