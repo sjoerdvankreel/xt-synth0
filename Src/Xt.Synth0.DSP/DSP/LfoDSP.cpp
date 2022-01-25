@@ -19,15 +19,16 @@ LfoDSP::Next()
 float
 LfoDSP::Generate()
 {
+  float base = _model->bi? 0.0f: 0.5f;
+	float inv = _model->inv ? -1.0f : 1.0f;
 	float phase = static_cast<float>(_phase);
-	float inv = _model->inv == XtsFalse ? 1.0f : -1.0f;
-	float factor = inv * 0.5f;
+	float factor = inv * (_model->bi ? 1.0f: 0.5f);
   switch(_model->type)
   {
-    case LfoType::Saw: return 0.5f + factor * BasicSaw(phase);
-		case LfoType::Sin: return 0.5f + factor * BasicSin(phase);
-		case LfoType::Sqr: return 0.5f + factor * BasicSqr(phase);
-		case LfoType::Tri: return 0.5f + factor * BasicTri(phase);
+    case LfoType::Saw: return base + factor * BasicSaw(phase);
+		case LfoType::Sin: return base + factor * BasicSin(phase);
+		case LfoType::Sqr: return base + factor * BasicSqr(phase);
+		case LfoType::Tri: return base + factor * BasicTri(phase);
 		default: assert(false); return 0.0f;
 	}
 }
@@ -40,7 +41,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.freq = 0.0f;
 	output.rate = 0.0f;
 	output.clip = false;
-	output.bipolar = false;
+	output.bipolar = model.bi;
 
 	if (!model.on) return;
 	output.freq = Freq(model, testIn);

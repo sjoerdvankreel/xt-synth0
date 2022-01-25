@@ -25,9 +25,6 @@ init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters
 do voices in the synth, not the sequencer
 reconsider automating running voices
-plotsource none
-bip lfo
-inv env?
 fix dahdr without decay
 plot hold/release
-bipolar lfo
+step 1/12 1/6
