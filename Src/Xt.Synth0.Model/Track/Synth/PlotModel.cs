@@ -19,7 +19,8 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { Type, Hold };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 
-		static readonly ParamInfo HoldInfo = ParamInfo.List<PlotHold>(p => &((Native*)p)->hold, nameof(Hold), "Hold");
+		static readonly string[] Holds = new[] { "Hold", "Touch", "1m", "10m", "100m", "1s", "10s" };
 		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), "Source");
+		static readonly ParamInfo HoldInfo = ParamInfo.List<PlotHold>(p => &((Native*)p)->hold, nameof(Hold), "Hold", Holds);
 	}
 }
