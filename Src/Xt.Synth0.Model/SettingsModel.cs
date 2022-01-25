@@ -32,21 +32,21 @@ namespace Xt.Synth0.Model
 			set => Set(ref _themeColor, value);
 		}
 
-		string _envelopeColor = "#40C040";
+		string _envelopeColor = "#80C0FF";
 		public string EnvelopeColor
 		{
 			get => _envelopeColor;
 			set => Set(ref _envelopeColor, value);
 		}
 
-		string _lfoColor = "#FF8080";
+		string _lfoColor = "#FFC000";
 		public string LfoColor
 		{
 			get => _lfoColor;
 			set => Set(ref _lfoColor, value);
 		}
 
-		string _plotColor = "#00FF80";
+		string _plotColor = "#40E0E0";
 		public string PlotColor
 		{
 			get => _plotColor;
@@ -60,21 +60,21 @@ namespace Xt.Synth0.Model
 			set => Set(ref _unitColor, value);
 		}
 
-		string _globalColor = "#00FFC0";
+		string _globalColor = "#FF8080";
 		public string GlobalColor
 		{
 			get => _globalColor;
 			set => Set(ref _globalColor, value);
 		}
 
-		string _patternColor = "#FFC000";
+		string _patternColor = "#FFC080";
 		public string PatternColor
 		{
 			get => _patternColor;
 			set => Set(ref _patternColor, value);
 		}
 
-		string _controlColor = "#00C0FF";
+		string _controlColor = "#40E080";
 		public string ControlColor
 		{
 			get => _controlColor;

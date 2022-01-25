@@ -56,6 +56,7 @@ namespace Xt.Synth0.Model
 		{
 			Envs[0].On.Value = 1;
 			Units[0].On.Value = 1;
+			Plot.Type.Value = (int)PlotType.Unit1;
 			var @params = ListParams(this).Select((p, i) => new SynthParam((IThemedSubModel)p.Sub, i + 1, p.Param));
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
 			if (SynthParams.Count != Model.ParamCount)

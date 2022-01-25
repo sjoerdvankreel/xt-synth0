@@ -59,7 +59,7 @@ private:
 XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class PlotHold { Hold, Touch, Hold1Ms, Hold10Ms, Hold100Ms, Hold1S, Hold10S };
-enum class PlotType { Off, SynthL, SynthR, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2 };
+enum class PlotType { Off, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;
