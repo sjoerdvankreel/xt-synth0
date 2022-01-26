@@ -6,17 +6,16 @@
 
 namespace Xts {
 
-class GlobalDSP: 
-private DSPBase<GlobalModel>
+class GlobalDSP
 {
+private:
+  GlobalModel const* _model;
 public:
   float Amp(SynthState const& state);
 public:
   GlobalDSP() = default;
-  GlobalDSP(GlobalModel const* model, SynthInput const* input):
-  DSPBase(model, input) {}
+  GlobalDSP(GlobalModel const* model): _model(model) {}
 };
-static_assert(DSP<GlobalDSP, GlobalModel>);
 
 } // namespace Xts
 #endif // XTS_GLOBAL_DSP_HPP

@@ -11,15 +11,15 @@ SynthDSP::Release()
 }
 
 SynthDSP::
-SynthDSP(SynthModel const* model, SynthInput const* input):
-DSPBase(model, input), _global(&model->global, input), _envs(), _units()
+SynthDSP(SynthModel const* model, AudioInput const* input):
+DSPBase(model, input), _global(&model->global), _envs(), _units()
 {
-  for (int l = 0; l < LfoCount; l++)
-    _lfos[l] = LfoDSP(&model->lfos[l], input);
-  for (int e = 0; e < EnvCount; e++)
-    _envs[e] = EnvDSP(&model->envs[e], input);
   for (int u = 0; u < UnitCount; u++)
     _units[u] = UnitDSP(&model->units[u], input);
+  for (int l = 0; l < LfoCount; l++)
+    _lfos[l] = LfoDSP(&model->lfos[l], &input->source);
+  for (int e = 0; e < EnvCount; e++)
+    _envs[e] = EnvDSP(&model->envs[e], &input->source);
 }
 
 AudioOutput
@@ -58,8 +58,10 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   
   output.bipolar = true;
   output.rate = plotRate;
-  SynthInput in(plotRate, input.bpm, 4, UnitNote::C);
-  SynthDSP dsp(&model, &in);
+  KeyInput key(4, UnitNote::C);
+  SourceInput source(plotRate, input.bpm);
+  AudioInput audio(source, key);
+  SynthDSP dsp(&model, &audio);
   while (i++ < maxSamples)
   {
     if (h++ == hold) dsp.Release();

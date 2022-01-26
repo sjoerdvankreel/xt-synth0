@@ -51,14 +51,14 @@ Clip(float& val)
 }
 
 inline float 
-SyncF(SynthInput const& input, int val)
+SyncF(SourceInput const& input, int val)
 {
   auto const& step = SyncSteps()[val];
   float fpb = input.rate * 60.0f / input.bpm;
   return fpb * step.num / step.den;
 }
 
-inline int SyncI(SynthInput const& input, int val)
+inline int SyncI(SourceInput const& input, int val)
 { return static_cast<int>(SyncF(input, val)); }
 
 } // namespace Xts

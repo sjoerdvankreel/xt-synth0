@@ -16,7 +16,7 @@ UnitDSP::PwPhase() const
 }
 
 float
-UnitDSP::Freq(UnitModel const& model, SynthInput const& input)
+UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
 	int key = input.oct * 12 + static_cast<int>(input.note);
@@ -31,11 +31,11 @@ AudioOutput
 UnitDSP::Next(SynthState const& state)
 {
 	if (!_model->on) return AudioOutput(0.0f, 0.0f);
-	float freq = Freq(*_model, *_input);
+	float freq = Freq(*_model, _input->key);
 	float sample = Generate(freq);
 	float amp = Level(_model->amp);
 	float pan = Mix01Inclusive(_model->pan);
-	_phase += freq / _input->rate;
+	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
 	assert(-1.0f <= sample && sample <= 1.0f);
 	return AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
@@ -72,14 +72,15 @@ void
 UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
 {
 	if (!model.on) return;
-	SynthInput testIn(0.0f, input.bpm, 4, UnitNote::C);
+	KeyInput key(4, UnitNote::C);
 	output.bipolar = true;
-	output.freq = Freq(model, testIn);
+	output.freq = Freq(model, key);
 	output.rate = output.freq * input.pixels;
 
 	SynthState state;
-	SynthInput in(output.rate, input.bpm, 4, UnitNote::C);
-	UnitDSP dsp(&model, &in);
+	SourceInput source(output.rate, input.bpm);
+	AudioInput audio(source, key);
+	UnitDSP dsp(&model, &audio);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
 		output.samples->push_back(dsp.Next(state).Mono());
@@ -127,13 +128,13 @@ UnitDSP::GenerateAdd(float freq, float phase, int parts, int step, float logRoll
 	__m256 phases = _mm256_set1_ps(phase);
   __m256 twopis = _mm256_set1_ps(2.0f * PI);
 	__m256 logRolls = _mm256_set1_ps(logRoll);
-	__m256 nyquists = _mm256_set1_ps(_input->rate / 2.0f);
+	__m256 nyquists = _mm256_set1_ps(_input->source.rate / 2.0f);
 	__m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
 	if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 
 	for (int p = 1; p <= parts * step; p += step * 8)
 	{
-    if(p * freq >= _input->rate / 2.0f) break;
+    if(p * freq >= _input->source.rate / 2.0f) break;
     __m256 allPs = _mm256_set_ps(
       p + 0.0f * step, p + 1.0f * step, p + 2.0f * step, p + 3.0f * step,
 			p + 4.0f * step, p + 5.0f * step,	p + 6.0f * step, p + 7.0f * step);

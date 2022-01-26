@@ -16,11 +16,11 @@ connect mod sources
 drag outside screen
 filter lfos
 lfo NOT key sync
-init with streampos / derive stuff from streampos ?
-split audioinput / stateinput
 phase modulation
 init/update(Model) -> do logs at start of env
-global (not per-voice) stuff: lfos, filters
+global (not per-voice) stuff: lfos, filters, envelopes
 do voices in the synth, not the sequencer
 reconsider automating running voices
 plot spectrum
+merge unit/lfo plot
+init with streampos / derive stuff from streampos ?

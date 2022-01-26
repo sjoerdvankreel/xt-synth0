@@ -39,12 +39,12 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	const float testRate = 1000.0f;
 	if (!model.on) return;
 
-	SynthInput testIn(testRate, input.bpm, 4, UnitNote::C);
+	SourceInput testIn(testRate, input.bpm);
 	output.bipolar = model.bi;
 	output.freq = Freq(model, testIn);
 	output.rate = output.freq * input.pixels;
 
-	SynthInput in(output.rate, input.bpm, 4, UnitNote::C);
+	SourceInput in(output.rate, input.bpm);
 	LfoDSP dsp(&model, &in);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
@@ -52,7 +52,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 }
 
 float
-LfoDSP::Freq(LfoModel const& model, SynthInput const& input)
+LfoDSP::Freq(LfoModel const& model, SourceInput const& input)
 {
 	float length = model.sync ? SyncF(input, model.step) : TimeF(model.rate, input.rate);
 	return input.rate / length;

@@ -124,31 +124,6 @@ SeqDSP::Init(SeqModel const* model, SynthModel const* synth)
     _started[i] = _keys[i] = -1;
 }
 
-bool
-SeqDSP::Trigger(SeqInput const& input)
-{
-  bool result = false;
-  bool exhausted = false;
-  for (int k = 0; k < _model->edit.keys; k++)
-  {
-    auto const& key = _model->pattern.rows[_row].keys[k];
-    if (key.note >= PatternNote::Off)
-      for (int v = 0; v < MaxVoices; v++)
-        if (_keys[v] == k) _dsps[v].Release();
-    if (key.note >= PatternNote::C)
-    {
-      int voice = Take(k, exhausted);
-      result |= exhausted;
-      _synths[voice] = *_synth;
-      float bpm = static_cast<float>(_model->edit.bpm);
-      auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-      _inputs[voice] = SynthInput(input.rate, bpm, key.oct, unote);
-      _dsps[voice] = SynthDSP(&_synths[voice], &_inputs[voice]);
-    }
-  }
-  return result;
-}
-
 int
 SeqDSP::Take(int key, bool& exhausted)
 {
@@ -169,6 +144,33 @@ SeqDSP::Take(int key, bool& exhausted)
   assert(0 <= victim && victim < MaxVoices);
   assert(0 <= _voices && _voices <= MaxVoices);
   return victim;
+}
+
+bool
+SeqDSP::Trigger(SeqInput const& input)
+{
+  bool result = false;
+  bool exhausted = false;
+  for (int k = 0; k < _model->edit.keys; k++)
+  {
+    auto const& key = _model->pattern.rows[_row].keys[k];
+    if (key.note >= PatternNote::Off)
+      for (int v = 0; v < MaxVoices; v++)
+        if (_keys[v] == k) _dsps[v].Release();
+    if (key.note >= PatternNote::C)
+    {
+      int voice = Take(k, exhausted);
+      result |= exhausted;
+      _synths[voice] = *_synth;
+      float bpm = static_cast<float>(_model->edit.bpm);
+      auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
+      KeyInput keyInput(key.oct, unote);
+      SourceInput sourceInput(input.rate, bpm);
+      _inputs[voice] = AudioInput(sourceInput, keyInput);
+      _dsps[voice] = SynthDSP(&_synths[voice], &_inputs[voice]);
+    }
+  }
+  return result;
 }
 
 } // namespace Xts

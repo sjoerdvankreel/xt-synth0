@@ -31,7 +31,7 @@ EnvDSP::Release()
 }
 
 EnvDSP::
-EnvDSP(EnvModel const* model, SynthInput const* input) :
+EnvDSP(EnvModel const* model, SourceInput const* input) :
 DSPBase(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
 {
   NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
@@ -87,7 +87,7 @@ EnvDSP::Next()
 }
 
 EnvParams
-EnvDSP::Params(EnvModel const& model, SynthInput const& input)
+EnvDSP::Params(EnvModel const& model, SourceInput const& input)
 {
   EnvParams result;
   bool sync = model.sync != 0;
@@ -122,14 +122,14 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 
   if (!model.on) return;
   bool dahdsr = model.type == EnvType::DAHDSR;
-  auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
+  auto params = Params(model, SourceInput(testRate, input.bpm));
   int hold = TimeI(input.hold, testRate);
   int fixed = params.dly + params.a + params.hld + params.d;
   int release = dahdsr ? hold : std::min(hold, fixed);
   output.rate = input.pixels * testRate / (release + params.r);
   hold = static_cast<int>(hold * output.rate / testRate);
 
-  auto in = SynthInput(output.rate, input.bpm, 4, UnitNote::C);
+  auto in = SourceInput(output.rate, input.bpm);
   EnvDSP dsp(&model, &in);
   while(true)
   {
