@@ -31,6 +31,7 @@ namespace Xt.Synth0.Model
 			public fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
 			public fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			public fixed byte units[Model.UnitCount * UnitModel.Native.Size];
+			public Native(in Stored stored) : this() { }
 		}
 
 		[MessagePackObject(keyAsPropertyName: true)]
@@ -41,6 +42,7 @@ namespace Xt.Synth0.Model
 			public LfoModel.Native[] lfos = new LfoModel.Native[Model.LfoCount];
 			public EnvModel.Native[] envs = new EnvModel.Native[Model.EnvCount];
 			public UnitModel.Native[] units = new UnitModel.Native[Model.UnitCount];
+			public Stored(in Native native) : this() { plot = new(); global = new(); }
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -60,6 +62,8 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
 		public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
+		public override void Load(in Stored stored, out Native native) => native = new(in stored);
+		public override void Store(in Native native, out Stored stored) => stored = new(in native);
 
 		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, Model.LfoCount).Select(i => new LfoModel(i)).ToList();
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
@@ -78,36 +82,6 @@ namespace Xt.Synth0.Model
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
 			if (SynthParams.Count != Model.ParamCount)
 				throw new InvalidOperationException();
-		}
-
-		public override void Store(ref Native native, ref Stored stored)
-		{
-			stored.plot = native.plot;
-			stored.global = native.global;
-			fixed (byte* lfos = native.lfos)
-				for (int i = 0; i < Model.LfoCount; i++)
-					Lfos[i].Store(ref ((LfoModel.Native*)lfos)[i], ref stored.lfos[i]);
-			fixed (byte* envs = native.envs)
-				for (int i = 0; i < Model.EnvCount; i++)
-					Envs[i].Store(ref ((EnvModel.Native*)envs)[i], ref stored.envs[i]);
-			fixed (byte* units = native.units)
-				for (int i = 0; i < Model.UnitCount; i++)
-					Units[i].Store(ref ((UnitModel.Native*)units)[i], ref stored.units[i]);
-		}
-
-		public override void Load(ref Stored stored, ref Native native)
-		{
-			native.plot = stored.plot;
-			native.global = stored.global;
-			fixed (byte* lfos = native.lfos)
-				for (int i = 0; i < Model.LfoCount && i < stored.lfos.Length; i++)
-					Lfos[i].Load(ref stored.lfos[i], ref ((LfoModel.Native*)lfos)[i]);
-			fixed (byte* envs = native.envs)
-				for (int i = 0; i < Model.EnvCount && i < stored.envs.Length; i++)
-					Envs[i].Load(ref stored.envs[i], ref ((EnvModel.Native*)envs)[i]);
-			fixed (byte* units = native.units)
-				for (int i = 0; i < Model.UnitCount && i < stored.units.Length; i++)
-					Units[i].Load(ref stored.units[i], ref ((UnitModel.Native*)units)[i]);
 		}
 	}
 }

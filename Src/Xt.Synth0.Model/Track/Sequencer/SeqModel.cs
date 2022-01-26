@@ -24,8 +24,9 @@ namespace Xt.Synth0.Model
 		{
 			public EditModel.Native edit;
 			public PatternModel.Stored pattern;
+			public Stored(in Native native) : this() { }
 		}
-	
+
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		struct Param
 		{
@@ -39,6 +40,7 @@ namespace Xt.Synth0.Model
 			public EditModel.Native edit;
 			public PatternModel.Native pattern;
 			public fixed byte @params[Model.ParamCount * Param.Size];
+			public Native(in Stored stored) : this() { }
 		}
 
 		public EditModel Edit { get; } = new();
@@ -47,18 +49,8 @@ namespace Xt.Synth0.Model
 		public MonitorModel Monitor { get; } = new();
 		public override IReadOnlyList<ISubModel> SubModels => new[] { Edit };
 		public override IReadOnlyList<IModelContainer> SubContainers => new[] { Pattern };
-
-		public override void Store(ref Native native, ref Stored stored)
-		{
-			stored.edit = native.edit;
-			Pattern.Store(ref native.pattern, ref stored.pattern);
-		}
-
-		public override void Load(ref Stored stored, ref Native native)
-		{
-			native.edit = stored.edit;
-			Pattern.Load(ref stored.pattern, ref native.pattern);
-		}
+		public override void Load(in Stored stored, out Native native) => native = new(in stored);
+		public override void Store(in Native native, out Stored stored) => stored = new(in native);
 
 		public static void PrepareNative(SynthModel synth, IntPtr nativeSeq, IntPtr nativeSynth)
 		{

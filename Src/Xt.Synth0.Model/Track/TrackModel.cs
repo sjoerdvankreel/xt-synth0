@@ -11,6 +11,7 @@ namespace Xt.Synth0.Model
 		{
 			public SeqModel.Stored seq;
 			public SynthModel.Stored synth;
+			public Stored(in Native native): this() { }
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -18,6 +19,7 @@ namespace Xt.Synth0.Model
 		{
 			public SeqModel.Native seq;
 			public SynthModel.Native synth;
+			public Native(in Stored stored) : this() { }
 		}
 
 		public SeqModel Seq { get; } = new();
@@ -25,6 +27,8 @@ namespace Xt.Synth0.Model
 
 		public event EventHandler ParamChanged;
 		public unsafe void* Address(void* parent) => throw new NotSupportedException();
+		public void Load(in Stored stored, out Native native) => native = new(in stored);
+		public void Store(in Native native, out Stored stored) => stored = new(in native);
 
 		public TrackModel()
 		{
@@ -36,18 +40,6 @@ namespace Xt.Synth0.Model
 		{
 			Synth.CopyTo(track.Synth);
 			Seq.CopyTo(track.Seq);
-		}
-
-		public void Load(ref Stored stored, ref Native native)
-		{
-			Seq.Load(ref stored.seq, ref native.seq);
-			Synth.Load(ref stored.synth, ref native.synth);
-		}
-
-		public void Store(ref Native native, ref Stored stored)
-		{
-			Seq.Store(ref native.seq, ref stored.seq);
-			Synth.Store(ref native.synth, ref stored.synth);
 		}
 	}
 }

@@ -25,8 +25,8 @@ namespace Xt.Synth0.Model
 
 		public string Name => "Global";
 		public ThemeGroup Group => ThemeGroup.Global;
-		public void Load(ref Native stored, ref Native native) => native = stored;
-		public void Store(ref Native native, ref Native stored) => stored = native;
+		public void Load(in Native stored, out Native native) => native = stored;
+		public void Store(in Native native, out Native stored) => stored = native;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>

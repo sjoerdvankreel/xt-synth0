@@ -41,8 +41,8 @@ namespace Xt.Synth0.Model
 		public string Name => $"Env {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Env;
 		internal EnvModel(int index) => _index = index;
-		public void Load(ref Native stored, ref Native native) => native = stored;
-		public void Store(ref Native native, ref Native stored) => stored = native;
+		public void Load(in Native stored, out Native native) => native = stored;
+		public void Store(in Native native, out Native stored) => stored = native;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[_index * Native.Size];
 
 		public Param Enabled => On;
