@@ -23,5 +23,4 @@ init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters
 do voices in the synth, not the sequencer
 reconsider automating running voices
-plot hold/release
 plot spectrum

@@ -47,7 +47,6 @@ void
 SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   int hold;
-  int i = 0;
   int h = 0;
   bool l = output.channel == 0;
   auto env = static_cast<int>(model.global.ampEnv);
@@ -59,7 +58,7 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   SynthDSP dsp(&model, &in);
   while (true)
   {
-    if (h == hold) dsp.Release();
+    if (h++ == hold) dsp.Release();
     if (dsp.End()) break;
     auto audio = dsp.Next();
     float sample = l ? audio.l : audio.r;

@@ -137,13 +137,15 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   PlotParams(model, input, output.rate, hold);
   auto in = SynthInput(output.rate, input.bpm, 4, UnitNote::C);
   EnvDSP dsp(&model, &in);
-  while(!dsp.End())
+  while(true)
   {
-    if(h == hold) dsp.Release();
-    if(!dsp.End()) output.samples->push_back(dsp.Next());
+    if(h++ == hold) dsp.Release();
+    if(dsp.End()) break;
+     output.samples->push_back(dsp.Next());
     if(prev != dsp._stage && prev != EnvStage::Dly && !dsp.End())
       output.splits->push_back(i);
-    prev = dsp._stage; i++; h++;
+    prev = dsp._stage; 
+    i++;
   }
 }
 
