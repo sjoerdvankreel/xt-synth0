@@ -6,18 +6,32 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum SyncStep
-	{
-		S0, S1_16, S1_8, S3_16, S1_4, S1_3, S3_8, S1_2, S5_8, S2_3, S3_4, S7_8, S15_16, S1_1, S9_8,
-		S5_4, S4_3, S3_2, S5_3, S7_4, S15_8, S2_1, S3_1, S4_1, S5_1, S6_1, S7_1, S8_1, S10_1, S12_1, S16_1
-	};
-
 	public unsafe sealed class SynthModel : MainModel
 	{
-		static SynthModel()
+		static int GCD(int a, int b)
 		{
-			if (Enum.GetValues<SyncStep>().Length != SyncStepNames.Length)
-				throw new InvalidOperationException();
+			while (b > 0) { int rem = a % b; a = b; b = rem; }
+			return a;
+		}
+
+		static readonly int[] BaseSteps = { 1, 2, 3, 4, 6, 9, 16 };
+		static IEnumerable<SyncStep> Cartesian()
+		=> BaseSteps.SelectMany(n => BaseSteps.Select(d => new SyncStep { num = n, den = d }));
+		static IEnumerable<SyncStep> AllSteps() => Cartesian()
+		.Concat(new[] { new SyncStep { num = 0, den = 1 } })
+		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new SyncStep { num = s.num + s.den, den = s.den }));
+		public static readonly SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
+
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		public struct SyncStep
+		{
+			internal int num, den;
+			internal float val => num / (float)den;
+
+			public override string ToString() => $"{num}/{den}";
+			public override int GetHashCode() => num + 37 * den;
+			public override bool Equals(object obj) => ((SyncStep)obj).num == num && ((SyncStep)obj).den == den;
+			internal SyncStep Simplify() => new SyncStep { num = num / GCD(num, den), den = den / GCD(num, den) };
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -43,14 +57,6 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<SynthParam> SynthParams { get; }
 		public override IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
 		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(Lfos).Concat(new ISubModel[] { Plot, Global }).ToArray();
-
-		public static readonly string[] SyncStepNames = new[]
-		{
-			"0", "1/16", "1/8", "3/16", "1/4", "1/3", "3/8",
-			"1/2", "5/8", "2/3", "3/4", "7/8", "15/16", "1/1",
-			"9/8", "5/4", "4/3", "3/2", "5/3", "7/4", "15/8", "2/1",
-			"3/1", "4/1", "5/1", "6/1", "7/1", "8/1", "10/1", "12/1", "16/1"
-		};
 
 		public SynthModel()
 		{

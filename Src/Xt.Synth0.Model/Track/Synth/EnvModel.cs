@@ -14,7 +14,7 @@ namespace Xt.Synth0.Model
 			internal int on, type, sync;
 			internal int aSlp, dSlp, rSlp;
 			internal int dly, a, hld, d, s, r;
-			internal int dlySnc, aSnc, hldSnc, dSnc, rSnc, pad__;
+			internal int dlyStp, aStp, hldStp, dStp, rStp, pad__;
 		}
 
 		public Param S { get; } = new(SInfo);
@@ -29,11 +29,11 @@ namespace Xt.Synth0.Model
 		public Param RSlp { get; } = new(RSlpInfo);
 		public Param Type { get; } = new(TypeInfo);
 		public Param Sync { get; } = new(SyncInfo);
-		public Param ASnc { get; } = new(ASncInfo);
-		public Param DSnc { get; } = new(DSncInfo);
-		public Param RSnc { get; } = new(RSncInfo);
-		public Param HldSnc { get; } = new(HldSncInfo);
-		public Param DlySnc { get; } = new(DlySncInfo);
+		public Param AStp { get; } = new(AStpInfo);
+		public Param DStp { get; } = new(DStpInfo);
+		public Param RStp { get; } = new(RStpInfo);
+		public Param HldStp { get; } = new(HldStpInfo);
+		public Param DlyStp { get; } = new(DlyStpInfo);
 
 		readonly int _index;
 		public string Name => $"Env {_index + 1}";
@@ -45,10 +45,10 @@ namespace Xt.Synth0.Model
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
-			{ Type, 0 }, { Sync, 1 }, { Dly, 2 }, { DlySnc, 2 },
-			{ ASlp, 3 }, { A, 4 }, { ASnc, 4 }, { Hld, 5 }, { HldSnc, 5 },
-			{ DSlp, 6 }, { D, 7 }, { DSnc, 7 }, { S, 8 },
-			{ RSlp, 9 }, { R, 10 }, { RSnc, 10 }
+			{ Type, 0 }, { Sync, 1 }, { Dly, 2 }, { DlyStp, 2 },
+			{ ASlp, 3 }, { A, 4 }, { AStp, 4 }, { Hld, 5 }, { HldStp, 5 },
+			{ DSlp, 6 }, { D, 7 }, { DStp, 7 }, { S, 8 },
+			{ RSlp, 9 }, { R, 10 }, { RStp, 10 }
 		};
 
 		static readonly IRelevance RelevanceSync = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 1);
@@ -61,15 +61,15 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, nameof(Type), "Type");
 		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), "Sustain level", 128, null);
 		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), "Sync to beat", false);
+		static readonly ParamInfo DStpInfo = ParamInfo.Step(p => &((Native*)p)->dStp, "D", "Decay steps", 0, 11, RelevanceSync);
+		static readonly ParamInfo AStpInfo = ParamInfo.Step(p => &((Native*)p)->aStp, "A", "Attack steps", 0, 1, RelevanceSync);
+		static readonly ParamInfo RStpInfo = ParamInfo.Step(p => &((Native*)p)->rStp, "R", "Release steps", 0, 15, RelevanceSync);
+		static readonly ParamInfo HldStpInfo = ParamInfo.Step(p => &((Native*)p)->hldStp, "Hld", "Hold steps", 0, 0, RelevanceSync);
+		static readonly ParamInfo DlyStpInfo = ParamInfo.Step(p => &((Native*)p)->dlyStp, "Dly", "Delay steps", 0, 0, RelevanceSync);
 		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), "Decay milliseconds", 0, 7, RelevanceTime);
 		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), "Attack milliseconds", 0, 3, RelevanceTime);
 		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), "Release milliseconds", 0, 14, RelevanceTime);
 		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), "Hold milliseconds", 0, 0, RelevanceTime);
 		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), "Delay milliseconds", 0, 0, RelevanceTime);
-		static readonly ParamInfo DSncInfo = ParamInfo.Select(p => &((Native*)p)->dSnc, "D", "Decay steps", SyncStep.S0, SyncStep.S1_4, SynthModel.SyncStepNames, RelevanceSync);
-		static readonly ParamInfo ASncInfo = ParamInfo.Select(p => &((Native*)p)->aSnc, "A", "Attack steps", SyncStep.S0, SyncStep.S1_16, SynthModel.SyncStepNames, RelevanceSync);
-		static readonly ParamInfo RSncInfo = ParamInfo.Select(p => &((Native*)p)->rSnc, "R", "Release steps", SyncStep.S0, SyncStep.S1_1, SynthModel.SyncStepNames, RelevanceSync);
-		static readonly ParamInfo HldSncInfo = ParamInfo.Select(p => &((Native*)p)->hldSnc, "Hld", "Hold steps", SyncStep.S0, SyncStep.S0, SynthModel.SyncStepNames, RelevanceSync);
-		static readonly ParamInfo DlySncInfo = ParamInfo.Select(p => &((Native*)p)->dlySnc, "Dly", "Delay steps", SyncStep.S0, SyncStep.S0, SynthModel.SyncStepNames, RelevanceSync);
 	}
 }

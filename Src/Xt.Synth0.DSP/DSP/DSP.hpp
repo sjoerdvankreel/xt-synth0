@@ -32,18 +32,24 @@ inline float TimeF(int val, float rate)
 { return static_cast<float>(val * val * rate / 1000.0f); }
 inline int TimeI(int val, float rate)
 { return static_cast<int>(TimeF(val, rate)); }
-inline float SyncF(SynthInput const& input, int num, int denom)
-{ return static_cast<float>(input.bpm * input.rate * num / (60.0f * denom)); }
-inline int SyncI(SynthInput const& input, int num, int denom)
-{ return static_cast<int>(SyncF(input, num, denom)); }
 
-inline bool 
+inline bool
 Clip(float& val)
 {
-  if(val > MaxLevel) return val = MaxLevel, true;
-  if(val < -MaxLevel) return val = -MaxLevel, true;
+  if (val > MaxLevel) return val = MaxLevel, true;
+  if (val < -MaxLevel) return val = -MaxLevel, true;
   return false;
-} 
+}
+
+inline float SyncF(SynthInput const& input, int val)
+{
+  auto const& step = SyncSteps()[val];
+  float fpb = input.rate * 60.0f / input.bpm;
+  return fpb * step.num / step.den;
+}
+
+inline int SyncI(SynthInput const& input, int val)
+{ return static_cast<int>(SyncF(input, val)); }
 
 inline float
 BasicSaw(float phase)
@@ -57,49 +63,6 @@ BasicSqr(float phase)
 inline float
 BasicTri(float phase)
 { return (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f; }
-
-inline float 
-SyncF(SynthInput const& input, SyncStep val)
-{
-  switch(val)
-  {
-  case SyncStep::S0: return 0;
-  case SyncStep::S1_16: return SyncF(input, 1, 16);
-  case SyncStep::S1_8: return SyncF(input, 1, 8);
-  case SyncStep::S3_16: return SyncF(input, 3, 16);
-  case SyncStep::S1_4: return SyncF(input, 1, 4);
-  case SyncStep::S1_3: return SyncF(input, 1, 3);
-  case SyncStep::S3_8: return SyncF(input, 3, 8);
-  case SyncStep::S1_2: return SyncF(input, 1, 2);
-  case SyncStep::S5_8: return SyncF(input, 5, 8);
-  case SyncStep::S2_3: return SyncF(input, 2, 3);
-  case SyncStep::S3_4: return SyncF(input, 3, 4);
-  case SyncStep::S7_8: return SyncF(input, 7, 8);
-  case SyncStep::S15_16: return SyncF(input, 15, 16);
-  case SyncStep::S1_1: return SyncF(input, 1, 1);
-  case SyncStep::S9_8: return SyncF(input, 9, 8);
-  case SyncStep::S5_4: return SyncF(input, 5, 4);
-  case SyncStep::S4_3: return SyncF(input, 4, 3);
-  case SyncStep::S3_2: return SyncF(input, 3, 2);
-  case SyncStep::S5_3: return SyncF(input, 5, 3);
-  case SyncStep::S7_4: return SyncF(input, 7, 4);
-  case SyncStep::S15_8: return SyncF(input, 15, 8);
-  case SyncStep::S2_1: return SyncF(input, 2, 1);
-  case SyncStep::S3_1: return SyncF(input, 3, 1);
-  case SyncStep::S4_1: return SyncF(input, 4, 1);
-  case SyncStep::S5_1: return SyncF(input, 5, 1);
-  case SyncStep::S6_1: return SyncF(input, 6, 1);
-  case SyncStep::S7_1: return SyncF(input, 7, 1);
-  case SyncStep::S8_1: return SyncF(input, 8, 1);
-  case SyncStep::S10_1: return SyncF(input, 10, 1);
-  case SyncStep::S12_1: return SyncF(input, 12, 1);
-  case SyncStep::S16_1: return SyncF(input, 16, 1);
-  default: assert(false); return 0;
-  };
-}
-inline int
-SyncI(SynthInput const& input, SyncStep val)
-{ return static_cast<int>(SyncF(input, val)); }
 
 } // namespace Xts
 #endif // XTS_DSP_HPP

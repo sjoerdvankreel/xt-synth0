@@ -10,10 +10,8 @@ detach sequencer
 multiple synths + select target in sequencer
 fast log/sin approx?
 notifyparamchange + recalc + param interpolation
-env to pitch
 random lfo
 noise generator
-check which params should be automatable
 connect mod sources
 drag outside screen
 filter lfos
@@ -27,4 +25,3 @@ do voices in the synth, not the sequencer
 reconsider automating running voices
 fix dahdr without decay
 plot hold/release
-step 1/12 1/6

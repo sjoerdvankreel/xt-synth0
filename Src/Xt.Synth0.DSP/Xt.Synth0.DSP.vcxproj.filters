@@ -70,5 +70,8 @@
     <ClCompile Include="DSP\LfoDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
+    <ClCompile Include="Model\SynthModel.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -33,6 +33,7 @@
     <ClCompile Include="DSP\SeqDSP.cpp" />
     <ClCompile Include="DSP\SynthDSP.cpp" />
     <ClCompile Include="DSP\UnitDSP.cpp" />
+    <ClCompile Include="Model\SynthModel.cpp" />
     <ClCompile Include="Xts.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

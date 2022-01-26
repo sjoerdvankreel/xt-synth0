@@ -6,11 +6,12 @@
 
 namespace Xts {
 
-enum class SyncStep 
-{ 
-  S0, S1_16, S1_8, S3_16, S1_4, S1_3, S3_8, S1_2, S5_8, S2_3, S3_4, S7_8, S15_16, S1_1, S9_8, 
-  S5_4, S4_3, S3_2, S5_3, S7_4, S15_8, S2_1, S3_1, S4_1, S5_1, S6_1, S7_1, S8_1, S10_1, S12_1, S16_1 
-};
+struct SyncStep* SyncSteps();
+void SynthModelInit(struct SyncStep* steps, int32_t count);
+
+struct XTS_ALIGN
+SyncStep { int32_t num, den; };
+XTS_CHECK_SIZE(SyncStep, 8);
 
 enum class GlobalAmpLfo { LFO1, LFO2 };
 enum class GlobalAmpEnv { Env1, Env2, Env3 };
@@ -33,11 +34,9 @@ struct XTS_ALIGN LfoModel
   LfoModel() = default;
   LfoModel(LfoModel const&) = delete;
 private:
-  XtsBool on, sync, inv, bi;
   LfoType type;
-  int32_t rate;
-  SyncStep step;
-  int32_t pad__;
+  XtsBool on, sync, inv, bi;
+  int32_t rate, step, pad__;
 };
 XTS_CHECK_SIZE(LfoModel, 32);
 
@@ -53,7 +52,7 @@ private:
   XtsBool sync;
   int32_t aSlp, dSlp, rSlp;
   int32_t dly, a, hld, d, s, r;
-  SyncStep dlySnc, aSnc, hldSnc, dSnc, rSnc;
+  int32_t dlyStp, aStp, hldStp, dStp, rStp;
   int32_t pad__;
 };
 XTS_CHECK_SIZE(EnvModel, 72);

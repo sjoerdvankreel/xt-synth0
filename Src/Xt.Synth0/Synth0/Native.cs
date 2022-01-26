@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Security;
+using Xt.Synth0.Model;
 
 namespace Xt.Synth0
 {
@@ -32,7 +33,6 @@ namespace Xt.Synth0
 			internal IntPtr splitData;
 		};
 
-
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqModelCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSynthModelCreate();
@@ -48,5 +48,6 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDSPRender(PlotState* state);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPRender(IntPtr dsp, SeqState* state);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPInit(IntPtr dsp, IntPtr model, IntPtr synth);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(SynthModel.SyncStep* steps, int count);
 	}
 }

@@ -11,8 +11,8 @@ namespace Xt.Synth0.Model
 		internal struct Native
 		{
 			internal const int Size = 32;
-			internal int on, sync, inv, bi;
-			internal int type, rate, step, pad__;
+			internal int type, on, sync, inv, bi;
+			internal int rate, step, pad__;
 		};
 
 		public Param On { get; } = new(OnInfo);
@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, nameof(Type), "Type");
 		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), "Sync to beat", false);
+		static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, nameof(Step), "Rate steps", 1, 7, RelevanceSync);
 		static readonly ParamInfo RateInfo = ParamInfo.Time(p => &((Native*)p)->rate, nameof(Rate), "Rate milliseconds", 1, 10, RelevanceTime);
-		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, nameof(Step), "Rate steps", SyncStep.S1_16, SyncStep.S1_4, SynthModel.SyncStepNames, RelevanceSync);
 	}
 }

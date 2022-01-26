@@ -71,32 +71,36 @@ namespace Xt.Synth0.Model
 				throw new InvalidOperationException();
 		}
 
-		internal static ParamInfo Exp(Address address, string name, 
+		internal static ParamInfo Exp(Address address, string name,
 			string description, int max, int @default, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Exp, address, name, description, 0, max, @default, null, relevance);
 
-		internal static ParamInfo Time(Address address, string name, 
+		internal static ParamInfo Time(Address address, string name,
 			string description, int min, int @default, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Time, address, name, description, min, 100, @default, null, relevance);
 
-		internal static ParamInfo Toggle(Address address, string name, 
+		internal static ParamInfo Toggle(Address address, string name,
 			string description, bool @default, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Toggle, address, name, description, 0, 1, @default ? 1 : 0, null, relevance);
 
-		internal static ParamInfo Mix(Address address, string name, 
+		internal static ParamInfo Mix(Address address, string name,
 			string description, Func<int, string> display = null, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, name, description, 1, 255, 128, display ?? (x => x.ToString()), relevance);
 
-		internal static ParamInfo Level(Address address, string name, 
+		internal static ParamInfo Level(Address address, string name,
 			string description, int @default, Func<int, string> display = null, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, name, description, 0, 255, @default, display ?? (x => x.ToString()), relevance);
 
-		internal static ParamInfo Select(Address address, string name, 
+		internal static ParamInfo Select(Address address, string name,
 			string description, int min, int max, int @default, Func<int, string> display = null, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, name, description, min, max, @default, display ?? (x => x.ToString()), relevance);
 
-		internal static ParamInfo Select<TEnum>(Address address, string name, 
-			string description, TEnum min, TEnum @default, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
+		internal static unsafe ParamInfo Step(Address address, string name, string description, int min, int @default, IRelevance relevance = null)
+		=> new ParamInfo(ParamType.Lin, address, name, description, min, SynthModel.SyncSteps.Length - 1, 
+			@default, val => SynthModel.SyncSteps[val].ToString(), relevance);
+
+		internal static ParamInfo Select<TEnum>(Address address, string name, string description, TEnum min,
+			TEnum @default, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
 		=> new ParamInfo(ParamType.Lin, address, name, description, (int)(object)min, display.Length - 1, (int)(object)@default, x => display[x], relevance);
 
 		internal static ParamInfo List<TEnum>(Address address, string name,

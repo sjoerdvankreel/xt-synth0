@@ -22,6 +22,8 @@ namespace Xt.Synth0
 		{
 			try
 			{
+				fixed (SynthModel.SyncStep* steps = SynthModel.SyncSteps)
+					Native.XtsSynthModelInit(steps, SynthModel.SyncSteps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
 				Run();

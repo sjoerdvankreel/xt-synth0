@@ -15,6 +15,13 @@ Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void) { return new Xts::SeqDSP; }
 Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void) { return new Xts::SeqModel; }
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
 
+void XTS_CALL 
+XtsSynthModelInit(Xts::SyncStep* steps, int32_t count) 
+{ Xts::SynthModelInit(steps, count); }
+void XTS_CALL
+XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth)
+{ dsp->Init(model, synth); }
+
 PlotState* XTS_CALL 
 XtsPlotStateCreate(void)
 {
@@ -73,10 +80,4 @@ XtsPlotDSPRender(PlotState* state)
   state->samples = state->sampleData->data();
   state->splitCount = static_cast<int32_t>(state->splitData->size());
   state->sampleCount = static_cast<int32_t>(state->sampleData->size());
-}
-
-void XTS_CALL
-XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth)
-{
-  dsp->Init(model, synth);
 }
