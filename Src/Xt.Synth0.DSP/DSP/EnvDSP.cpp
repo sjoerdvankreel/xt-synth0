@@ -122,9 +122,12 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   output.bipolar = false;
   if (!model.on) return;
 
+  bool dahdsr = model.type == EnvType::DAHDSR;
   auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
   int hold = TimeI(input.hold, testRate);
-  output.rate = input.pixels * testRate / (hold + params.r);
+  int releasePos = dahdsr? hold : std::min(hold, params.dly + params.a + params.hld + params.d);
+  int length = releasePos + params.s;
+  output.rate = input.pixels * testRate / length;
   hold = static_cast<int>(hold * output.rate / testRate);
 
   int i = 0;
