@@ -23,3 +23,4 @@ do voices in the synth, not the sequencer
 reconsider automating running voices
 plot spectrum
 init with streampos / derive stuff from streampos ?
+tri = integrate pulse
