@@ -113,6 +113,7 @@ float
 UnitDSP::GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const
 {
 	__m256 cosines;
+  bool any = false;
 	float limit = 0.0;
 	float result = 0.0;
 	const int selector = 0b01010101;
@@ -147,13 +148,17 @@ UnitDSP::GenerateAdd(float freq, float phase, int parts, int step, float logRoll
     __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(waves, amps), signs);
 		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, wantedPs));
 		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, wantedPs));
+		any = true;
 	}
   for(int i = 0; i < parts && i < 8; i++)
   {
 		limit += limits.m256_f32[7 - i];
 		result += results.m256_f32[7 - i];
   }
-	return result / limit;
+  if(!any) return 0.0f;
+	result /= limit;
+	assert(-1.0f <= result && result <= 1.0f);
+  return result;
 }
 
 } // namespace Xts
