@@ -112,29 +112,30 @@ EnvDSP::CycleStage(EnvType type, EnvParams const& params)
   if (_stage == EnvStage::R && _pos >= params.r) NextStage(EnvStage::End);
 }
 
+void 
+EnvDSP::PlotParams(EnvModel const& model, PlotInput const& input, float& rate, int& hold)
+{
+  const float testRate = 1000.0f;
+  bool dahdsr = model.type == EnvType::DAHDSR;
+  auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
+  hold = TimeI(input.hold, testRate);
+  int fixed = params.dly + params.a + params.hld + params.d;
+  int release = dahdsr ? hold : std::min(hold, fixed);
+  rate = input.pixels * testRate / (release + params.r);
+  hold = static_cast<int>(hold * rate / testRate);
+}
+
 void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  const float testRate = 1000.0f;
-
-  output.freq = 0.0f;
-  output.rate = 0.0f;
-  output.clip = false;
-  output.bipolar = false;
   if (!model.on) return;
 
-  bool dahdsr = model.type == EnvType::DAHDSR;
-  auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
-  int hold = TimeI(input.hold, testRate);
-  int releasePos = dahdsr? hold : std::min(hold, params.dly + params.a + params.hld + params.d);
-  int length = releasePos + params.r;
-  output.rate = input.pixels * testRate / length;
-  hold = static_cast<int>(hold * output.rate / testRate);
-
+  int hold;
   int i = 0;
   int h = 0;
   EnvStage prev = EnvStage::Dly;
-  auto in = SynthInput(output.rate, 120, 4, UnitNote::C);
+  PlotParams(model, input, output.rate, hold);
+  auto in = SynthInput(output.rate, input.bpm, 4, UnitNote::C);
   EnvDSP dsp(&model, &in);
   while(!dsp.End())
   {

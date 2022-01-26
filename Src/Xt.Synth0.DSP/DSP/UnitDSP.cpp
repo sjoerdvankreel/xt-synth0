@@ -71,13 +71,9 @@ UnitDSP::GenerateNaive(NaiveType type, float phase) const
 void
 UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
 {
+	if (!model.on) return;
 	SynthInput testIn(0.0f, input.bpm, 4, UnitNote::C);
-  output.freq = 0.0f;
-  output.rate = 0.0f;
-	output.clip = false;
 	output.bipolar = true;
-	
-  if (!model.on) return;
 	output.freq = Freq(model, testIn);
 	output.rate = output.freq * input.pixels;
 

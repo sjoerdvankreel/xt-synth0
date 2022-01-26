@@ -36,14 +36,11 @@ LfoDSP::Generate()
 void
 LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  float testRate = 1000.0f;
-	SynthInput testIn(testRate, input.bpm, 4, UnitNote::C);
-	output.freq = 0.0f;
-	output.rate = 0.0f;
-	output.clip = false;
-	output.bipolar = model.bi;
-
+	const float testRate = 1000.0f;
 	if (!model.on) return;
+
+	SynthInput testIn(testRate, input.bpm, 4, UnitNote::C);
+	output.bipolar = model.bi;
 	output.freq = Freq(model, testIn);
 	output.rate = output.freq * input.pixels;
 

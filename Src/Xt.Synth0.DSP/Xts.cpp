@@ -61,8 +61,8 @@ XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state)
 void XTS_CALL 
 XtsPlotDSPRender(PlotState* state)
 {
-  Xts::PlotInput in;
-  Xts::PlotOutput out;
+  Xts::PlotInput in = {};
+  Xts::PlotOutput out = {};
 
   state->splitData->clear();
   state->sampleData->clear();
