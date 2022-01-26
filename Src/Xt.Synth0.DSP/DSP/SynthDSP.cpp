@@ -46,17 +46,21 @@ SynthDSP::Next()
 void
 SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  int hold;
+  const int plotRate = 5000;
+  const int maxSamples = 5 * plotRate;
+
+  int i = 0;
   int h = 0;
   bool l = output.channel == 0;
+  int hold = TimeI(input.hold, plotRate);
   auto env = static_cast<int>(model.global.ampEnv);
   env -= static_cast<int>(GlobalAmpEnv::Env1);
-
+  
   output.bipolar = true;
-  EnvDSP::PlotParams(model.envs[env], input, output.rate, hold);
-  SynthInput in(output.rate, input.bpm, 4, UnitNote::C);
+  output.rate = plotRate;
+  SynthInput in(plotRate, input.bpm, 4, UnitNote::C);
   SynthDSP dsp(&model, &in);
-  while (true)
+  while (i++ < maxSamples)
   {
     if (h++ == hold) dsp.Release();
     if (dsp.End()) break;

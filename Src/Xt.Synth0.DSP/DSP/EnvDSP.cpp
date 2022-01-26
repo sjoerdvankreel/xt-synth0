@@ -30,6 +30,14 @@ EnvDSP::Release()
   CycleStage(_model->type, Params(*_model, *_input));
 }
 
+EnvDSP::
+EnvDSP(EnvModel const* model, SynthInput const* input) :
+DSPBase(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
+{
+  NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
+  CycleStage(model->type, Params(*model, *input));
+}
+
 float
 EnvDSP::Generate(float from, float to, int len, int slp) const
 {
@@ -78,14 +86,6 @@ EnvDSP::Next()
   return result;
 }
 
-EnvDSP::
-EnvDSP(EnvModel const* model, SynthInput const* input) :
-DSPBase(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
-{
-  NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
-  CycleStage(model->type, Params(*model, *input));
-}
-
 EnvParams
 EnvDSP::Params(EnvModel const& model, SynthInput const& input)
 {
@@ -112,29 +112,23 @@ EnvDSP::CycleStage(EnvType type, EnvParams const& params)
   if (_stage == EnvStage::R && _pos >= params.r) NextStage(EnvStage::End);
 }
 
-void 
-EnvDSP::PlotParams(EnvModel const& model, PlotInput const& input, float& rate, int& hold)
-{
-  const float testRate = 1000.0f;
-  bool dahdsr = model.type == EnvType::DAHDSR;
-  auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
-  hold = TimeI(input.hold, testRate);
-  int fixed = params.dly + params.a + params.hld + params.d;
-  int release = dahdsr ? hold : std::min(hold, fixed);
-  rate = input.pixels * testRate / (release + params.r);
-  hold = static_cast<int>(hold * rate / testRate);
-}
-
 void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  int hold;
   int i = 0;
   int h = 0;
+  auto prev = EnvStage::Dly;
+  const float testRate = 1000.0f;
 
   if (!model.on) return;
-  EnvStage prev = EnvStage::Dly;
-  PlotParams(model, input, output.rate, hold);
+  bool dahdsr = model.type == EnvType::DAHDSR;
+  auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
+  int hold = TimeI(input.hold, testRate);
+  int fixed = params.dly + params.a + params.hld + params.d;
+  int release = dahdsr ? hold : std::min(hold, fixed);
+  output.rate = input.pixels * testRate / (release + params.r);
+  hold = static_cast<int>(hold * output.rate / testRate);
+
   auto in = SynthInput(output.rate, input.bpm, 4, UnitNote::C);
   EnvDSP dsp(&model, &in);
   while(true)

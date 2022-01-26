@@ -29,7 +29,6 @@ public:
   void Release();
   bool End() const { return _stage == EnvStage::End; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
-  static void PlotParams(EnvModel const& model, PlotInput const& input, float& rate, int& hold);
 };
 static_assert(FiniteDSP<EnvDSP, EnvModel>);
 static_assert(PlottableDSP<EnvDSP, EnvModel>);
