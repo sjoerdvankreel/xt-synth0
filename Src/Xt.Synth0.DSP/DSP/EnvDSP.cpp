@@ -107,7 +107,8 @@ EnvDSP::CycleStage(EnvType type, EnvParams const& params)
   if (_stage == EnvStage::A && _pos >= params.a) NextStage(EnvStage::Hld);
   if (_stage == EnvStage::Hld && _pos >= params.hld) NextStage(EnvStage::D);
   if (_stage == EnvStage::D && _pos >= params.d) NextStage(EnvStage::S);
-  if (_stage == EnvStage::S && type != EnvType::DAHDSR) NextStage(EnvStage::R);
+  if (_stage == EnvStage::S && type == EnvType::DAHDR) _level = std::max(_level, params.s);
+  if (_stage == EnvStage::S && type == EnvType::DAHDR) NextStage(EnvStage::R);
   if (_stage == EnvStage::R && _pos >= params.r) NextStage(EnvStage::End);
 }
 
@@ -126,7 +127,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   auto params = Params(model, SynthInput(testRate, 120, 4, UnitNote::C));
   int hold = TimeI(input.hold, testRate);
   int releasePos = dahdsr? hold : std::min(hold, params.dly + params.a + params.hld + params.d);
-  int length = releasePos + params.s;
+  int length = releasePos + params.r;
   output.rate = input.pixels * testRate / length;
   hold = static_cast<int>(hold * output.rate / testRate);
 
