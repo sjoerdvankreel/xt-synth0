@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using MessagePack;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,18 +9,7 @@ namespace Xt.Synth0
 	static class IO
 	{
 		static string GetSettingsPath()
-		=> Path.Combine(GetAppDataFolder(), "settings.json");
-
-		static JsonSerializerSettings MakeSettings()
-		{
-			var result = new JsonSerializerSettings();
-			result.Formatting = Formatting.Indented;
-			result.MissingMemberHandling = MissingMemberHandling.Error;
-			var enumConverter = new StringEnumConverter();
-			enumConverter.AllowIntegerValues = false;
-			result.Converters.Add(enumConverter);
-			return result;
-		}
+		=> Path.Combine(GetAppDataFolder(), "settings.x0s");
 
 		static string GetAppDataFolder()
 		{
@@ -33,18 +21,18 @@ namespace Xt.Synth0
 			return result;
 		}
 
-		internal static void LoadSetting(SettingsModel settings)
+		internal static SettingsModel LoadSettings()
 		{
 			var path = GetSettingsPath();
-			if (!File.Exists(path)) return;
-			var json = File.ReadAllText(path);
-			JsonConvert.PopulateObject(json, settings, MakeSettings());
+			if (!File.Exists(path)) return null;
+			using var stream = File.OpenRead(path);
+			return MessagePackSerializer.Deserialize<SettingsModel>(stream);
 		}
 
 		internal static void SaveSettings(SettingsModel settings)
 		{
-			var json = JsonConvert.SerializeObject(settings, MakeSettings());
-			File.WriteAllText(GetSettingsPath(), json);
+			using var stream = File.Create(GetSettingsPath());
+			MessagePackSerializer.Serialize(stream, settings);
 		}
 
 		internal static void SaveFile(TrackModel track, string path)

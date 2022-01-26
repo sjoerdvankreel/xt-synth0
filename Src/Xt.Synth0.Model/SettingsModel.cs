@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using MessagePack;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -9,16 +10,20 @@ namespace Xt.Synth0.Model
 	public enum SampleRate { Rate44100, Rate48000, Rate96000, Rate192000 }
 	public enum BufferSize { Size1, Size2, Size3, Size5, Size10, Size20, Size30, Size50, Size100 }
 
+	[MessagePackObject]
 	public sealed class SettingsModel : IThemedModel, INotifyPropertyChanged
 	{
 		public const int MaxRecentFiles = 10;
 		const string DefaultOutputPath = "synth0.raw";
-
-		public string Name => "Settings";
-		public ThemeGroup Group => ThemeGroup.Settings;
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		ThemeType _themeType;
+		[IgnoreMember]
+		public string Name => "Settings";
+		[IgnoreMember]
+		public ThemeGroup Group => ThemeGroup.Settings;
+
+		ThemeType _themeType = ThemeType.Grouped;
+		[Key(nameof(ThemeType))]
 		public ThemeType ThemeType
 		{
 			get => _themeType;
@@ -26,6 +31,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _themeColor = "#E0E0E0";
+		[Key(nameof(ThemeColor))]
 		public string ThemeColor
 		{
 			get => _themeColor;
@@ -33,6 +39,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _envelopeColor = "#80C0FF";
+		[Key(nameof(EnvelopeColor))]
 		public string EnvelopeColor
 		{
 			get => _envelopeColor;
@@ -40,6 +47,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _lfoColor = "#FFC000";
+		[Key(nameof(LfoColor))]
 		public string LfoColor
 		{
 			get => _lfoColor;
@@ -47,6 +55,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _plotColor = "#40E0E0";
+		[Key(nameof(PlotColor))]
 		public string PlotColor
 		{
 			get => _plotColor;
@@ -54,6 +63,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _unitColor = "#FF8000";
+		[Key(nameof(UnitColor))]
 		public string UnitColor
 		{
 			get => _unitColor;
@@ -61,6 +71,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _globalColor = "#FF8080";
+		[Key(nameof(GlobalColor))]
 		public string GlobalColor
 		{
 			get => _globalColor;
@@ -68,6 +79,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _patternColor = "#FFC080";
+		[Key(nameof(PatternColor))]
 		public string PatternColor
 		{
 			get => _patternColor;
@@ -75,6 +87,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _controlColor = "#40E080";
+		[Key(nameof(ControlColor))]
 		public string ControlColor
 		{
 			get => _controlColor;
@@ -82,6 +95,7 @@ namespace Xt.Synth0.Model
 		}
 
 		bool _useAsio;
+		[Key(nameof(UseAsio))]
 		public bool UseAsio
 		{
 			get => _useAsio;
@@ -89,6 +103,7 @@ namespace Xt.Synth0.Model
 		}
 
 		BitDepth _bitDepth;
+		[Key(nameof(BitDepth))]
 		public BitDepth BitDepth
 		{
 			get => _bitDepth;
@@ -96,6 +111,7 @@ namespace Xt.Synth0.Model
 		}
 
 		SampleRate _sampleRate;
+		[Key(nameof(SampleRate))]
 		public SampleRate SampleRate
 		{
 			get => _sampleRate;
@@ -103,6 +119,7 @@ namespace Xt.Synth0.Model
 		}
 
 		BufferSize _bufferSize;
+		[Key(nameof(BufferSize))]
 		public BufferSize BufferSize
 		{
 			get => _bufferSize;
@@ -110,6 +127,7 @@ namespace Xt.Synth0.Model
 		}
 
 		bool _writeToDisk;
+		[Key(nameof(WriteToDisk))]
 		public bool WriteToDisk
 		{
 			get => _writeToDisk;
@@ -117,6 +135,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _outputPath = DefaultOutputPath;
+		[Key(nameof(OutputPath))]
 		public string OutputPath
 		{
 			get => _outputPath;
@@ -124,6 +143,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _asioDeviceId;
+		[Key(nameof(AsioDeviceId))]
 		public string AsioDeviceId
 		{
 			get => _asioDeviceId;
@@ -131,6 +151,7 @@ namespace Xt.Synth0.Model
 		}
 
 		string _wasapiDeviceId;
+		[Key(nameof(WasapiDeviceId))]
 		public string WasapiDeviceId
 		{
 			get => _wasapiDeviceId;
@@ -138,6 +159,7 @@ namespace Xt.Synth0.Model
 		}
 
 		ObservableCollection<string> _recentFiles = new();
+		[Key(nameof(RecentFiles))]
 		public ObservableCollection<string> RecentFiles
 		{
 			get => _recentFiles;

@@ -66,13 +66,13 @@ namespace Xt.Synth0
 			result.WasapiDeviceId = engine.WasapiDefaultDeviceId;
 			try
 			{
-				IO.LoadSetting(result);
+				return IO.LoadSettings() ?? result;
 			}
 			catch (Exception e)
 			{
 				OnError(e);
+				return result;
 			}
-			return result;
 		}
 
 		static void ShowSettings()

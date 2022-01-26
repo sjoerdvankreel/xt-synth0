@@ -6,4 +6,7 @@
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MessagePack" PrivateAssets="all" />
+  </ItemGroup>
 </Project>
