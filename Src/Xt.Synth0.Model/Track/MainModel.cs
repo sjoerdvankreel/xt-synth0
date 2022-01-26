@@ -5,14 +5,19 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe abstract class MainModel : IModelContainer
+	public unsafe abstract class MainModel<TNative, TStored> : IModelContainer, IStoredModel<TNative, TStored>
+	where TNative : struct
+	where TStored : struct
 	{
-		public IReadOnlyList<Param> Params { get; }
 		public abstract IReadOnlyList<ISubModel> SubModels { get; }
 		public abstract IReadOnlyList<IModelContainer> SubContainers { get; }
+		public abstract void Load(ref TStored stored, ref TNative native);
+		public abstract void Store(ref TNative native, ref TStored stored);
+
+		public IReadOnlyList<Param> Params { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
 		public void* Address(void* parent) => throw new NotSupportedException();
-		
+
 		protected MainModel()
 		{
 			Params = new ReadOnlyCollection<Param>(ListParams(this).Select(p => p.Param).ToArray());
@@ -23,24 +28,13 @@ namespace Xt.Synth0.Model
 			}
 		}
 
-		public void CopyTo(MainModel main)
+		public void CopyTo(MainModel<TNative, TStored> main)
 		{
 			for (int p = 0; p < Params.Count; p++)
 				main.Params[p].Value = Params[p].Value;
 		}
 
-		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer containers)
-		{
-			var result = new List<(ISubModel, Param)>();
-			foreach (var model in containers.SubModels)
-				foreach (var param in model.Params)
-					result.Add((model, param));
-			foreach (var child in containers.SubContainers)
-				result.AddRange(ListParams(child));
-			return result;
-		}
-
-		public void ToNative(void* native) => ToNative(this, native);		
+		public void ToNative(void* native) => ToNative(this, native);
 		void ToNative(IModelContainer container, void* native)
 		{
 			foreach (var model in container.SubModels)
@@ -64,6 +58,17 @@ namespace Xt.Synth0.Model
 			}
 			foreach (var child in container.SubContainers)
 				FromNative(child, child.Address(native));
+		}
+
+		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer containers)
+		{
+			var result = new List<(ISubModel, Param)>();
+			foreach (var model in containers.SubModels)
+				foreach (var param in model.Params)
+					result.Add((model, param));
+			foreach (var child in containers.SubContainers)
+				result.AddRange(ListParams(child));
+			return result;
 		}
 	}
 }

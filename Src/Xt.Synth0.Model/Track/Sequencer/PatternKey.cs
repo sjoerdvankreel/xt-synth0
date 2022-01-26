@@ -1,21 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using MessagePack;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
 	public enum PatternNote { None, Off, C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 
-	public unsafe sealed class PatternKey : ISubModel
+	public unsafe sealed class PatternKey : ISubModel, IStoredModel<PatternKey.Native, PatternKey.Native>
 	{
 		public static readonly string[] Notes = new[] {
 			"..", "==", "C-", "C#", "D-", "D#", "E-",
 			"F-", "F#", "G-", "G#", "A-", "A#", "B-"
 		};
 
+		[MessagePackObject(keyAsPropertyName: true)]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native {
-			internal const int Size = 16;
-			internal int note, amp, oct, pad__; 
+		public struct Native
+		{
+			public const int Size = 16;
+			public int note, amp, oct, pad__;
 		}
 
 		public Param Amp { get; } = new(AmpInfo);
@@ -25,6 +28,8 @@ namespace Xt.Synth0.Model
 		readonly int _index;
 		internal PatternKey(int index) => _index = index;
 		public IReadOnlyList<Param> Params => new[] { Note, Oct, Amp };
+		public void Load(ref Native stored, ref Native native) => native = stored;
+		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->keys[_index * Native.Size];
 
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", 255);

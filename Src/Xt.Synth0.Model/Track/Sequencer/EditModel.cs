@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using MessagePack;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class EditModel : IThemedSubModel
+	public unsafe sealed class EditModel : IThemedSubModel, IStoredModel<EditModel.Native, EditModel.Native>
 	{
+		[MessagePackObject(keyAsPropertyName: true)]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native { internal int pats, rows, keys, fxs, lpb, edit, bpm, pad__; }
+		public struct Native { public int pats, rows, keys, fxs, lpb, edit, bpm, pad__; }
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Fxs { get; } = new(FxsInfo);
@@ -20,6 +22,8 @@ namespace Xt.Synth0.Model
 		public string Name => "Edit";
 		public ThemeGroup Group => ThemeGroup.Pattern;
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
+		public void Load(ref Native stored, ref Native native) => native = stored;
+		public void Store(ref Native native, ref Native stored) => stored = native;
 		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Bpm, Lpb, Edit };
 
 		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, "BPM", "Beats per minute", 1, 255, 120);

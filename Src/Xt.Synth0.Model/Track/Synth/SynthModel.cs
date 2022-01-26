@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessagePack;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class SynthModel : MainModel
+	public unsafe sealed class SynthModel : MainModel<SynthModel.Native, SynthModel.Stored>
 	{
 		static int GCD(int a, int b)
 		{
@@ -23,6 +24,26 @@ namespace Xt.Synth0.Model
 		public static readonly SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		public struct Native
+		{
+			public PlotModel.Native plot;
+			public GlobalModel.Native global;
+			public fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
+			public fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
+			public fixed byte units[Model.UnitCount * UnitModel.Native.Size];
+		}
+
+		[MessagePackObject(keyAsPropertyName: true)]
+		public struct Stored
+		{
+			public PlotModel.Native plot;
+			public GlobalModel.Native global;
+			public LfoModel.Native[] lfos = new LfoModel.Native[Model.LfoCount];
+			public EnvModel.Native[] envs = new EnvModel.Native[Model.EnvCount];
+			public UnitModel.Native[] units = new UnitModel.Native[Model.UnitCount];
+		}
+
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public struct SyncStep
 		{
 			internal int num, den;
@@ -32,16 +53,6 @@ namespace Xt.Synth0.Model
 			public override int GetHashCode() => num + 37 * den;
 			public override bool Equals(object obj) => ((SyncStep)obj).num == num && ((SyncStep)obj).den == den;
 			internal SyncStep Simplify() => new SyncStep { num = num / GCD(num, den), den = den / GCD(num, den) };
-		}
-
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public struct Native
-		{
-			internal PlotModel.Native plot;
-			internal GlobalModel.Native global;
-			internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
-			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
-			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
 		}
 
 		public PlotModel Plot { get; } = new();
@@ -67,6 +78,36 @@ namespace Xt.Synth0.Model
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
 			if (SynthParams.Count != Model.ParamCount)
 				throw new InvalidOperationException();
+		}
+
+		public override void Store(ref Native native, ref Stored stored)
+		{
+			stored.plot = native.plot;
+			stored.global = native.global;
+			fixed (byte* lfos = native.lfos)
+				for (int i = 0; i < Model.LfoCount; i++)
+					Lfos[i].Store(ref ((LfoModel.Native*)lfos)[i], ref stored.lfos[i]);
+			fixed (byte* envs = native.envs)
+				for (int i = 0; i < Model.EnvCount; i++)
+					Envs[i].Store(ref ((EnvModel.Native*)envs)[i], ref stored.envs[i]);
+			fixed (byte* units = native.units)
+				for (int i = 0; i < Model.UnitCount; i++)
+					Units[i].Store(ref ((UnitModel.Native*)units)[i], ref stored.units[i]);
+		}
+
+		public override void Load(ref Stored stored, ref Native native)
+		{
+			native.plot = stored.plot;
+			native.global = stored.global;
+			fixed (byte* lfos = native.lfos)
+				for (int i = 0; i < Model.LfoCount && i < stored.lfos.Length; i++)
+					Lfos[i].Load(ref stored.lfos[i], ref ((LfoModel.Native*)lfos)[i]);
+			fixed (byte* envs = native.envs)
+				for (int i = 0; i < Model.EnvCount && i < stored.envs.Length; i++)
+					Envs[i].Load(ref stored.envs[i], ref ((EnvModel.Native*)envs)[i]);
+			fixed (byte* units = native.units)
+				for (int i = 0; i < Model.UnitCount && i < stored.units.Length; i++)
+					Units[i].Load(ref stored.units[i], ref ((UnitModel.Native*)units)[i]);
 		}
 	}
 }

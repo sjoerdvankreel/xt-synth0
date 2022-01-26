@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MessagePack;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
@@ -6,13 +7,14 @@ namespace Xt.Synth0.Model
 	public enum GlobalAmpLfo { LFO1, LFO2 }
 	public enum GlobalAmpEnv { Env1, Env2, Env3 }
 
-	public unsafe sealed class GlobalModel : IThemedSubModel
+	public unsafe sealed class GlobalModel : IThemedSubModel, IStoredModel<GlobalModel.Native, GlobalModel.Native>
 	{
+		[MessagePackObject(keyAsPropertyName: true)]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native
+		public struct Native
 		{
-			internal int ampEnv, ampLfo;
-			internal int amp, ampEnvAmt, ampLfoAmt, pad__;
+			public int ampEnv, ampLfo;
+			public int amp, ampEnvAmt, ampLfoAmt, pad__;
 		}
 
 		public Param Amp { get; } = new(AmpInfo);
@@ -23,6 +25,8 @@ namespace Xt.Synth0.Model
 
 		public string Name => "Global";
 		public ThemeGroup Group => ThemeGroup.Global;
+		public void Load(ref Native stored, ref Native native) => native = stored;
+		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 
 		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>

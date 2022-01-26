@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MessagePack;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -11,16 +12,17 @@ namespace Xt.Synth0.Model
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 	public enum AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
-	public unsafe sealed class UnitModel : IThemedSubModel
+	public unsafe sealed class UnitModel : IThemedSubModel, IStoredModel<UnitModel.Native, UnitModel.Native>
 	{
+		[MessagePackObject(keyAsPropertyName: true)]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native
+		public struct Native
 		{
-			internal const int Size = 80;
-			internal int on, type, note, addType, naiveType;
-			internal int amp, pan, oct, dtn, pw;
-			internal int src1, tgt1, amt1, src2, tgt2, amt2;
-			internal int addMaxParts, addParts, addStep, addRoll;
+			public const int Size = 80;
+			public int on, type, note, addType, naiveType;
+			public int amp, pan, oct, dtn, pw;
+			public int src1, tgt1, amt1, src2, tgt2, amt2;
+			public int addMaxParts, addParts, addStep, addRoll;
 		}
 
 		public Param On { get; } = new(OnInfo);
@@ -48,6 +50,8 @@ namespace Xt.Synth0.Model
 		public string Name => $"Unit {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Unit;
 		internal UnitModel(int index) => _index = index;
+		public void Load(ref Native stored, ref Native native) => native = stored;
+		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Native.Size];
 
 		public Param Enabled => On;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MessagePack;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -16,8 +17,15 @@ namespace Xt.Synth0.Model
 		public ThemeGroup Group => ThemeGroup.Control;
 	}
 
-	public unsafe sealed class SeqModel : MainModel
+	public unsafe sealed class SeqModel : MainModel<SeqModel.Native, SeqModel.Stored>
 	{
+		[MessagePackObject(keyAsPropertyName: true)]
+		public struct Stored
+		{
+			public EditModel.Native edit;
+			public PatternModel.Stored pattern;
+		}
+	
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		struct Param
 		{
@@ -26,11 +34,11 @@ namespace Xt.Synth0.Model
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native
+		public struct Native
 		{
-			internal EditModel.Native edit;
-			internal PatternModel.Native pattern;
-			internal fixed byte @params[Model.ParamCount * Param.Size];
+			public EditModel.Native edit;
+			public PatternModel.Native pattern;
+			public fixed byte @params[Model.ParamCount * Param.Size];
 		}
 
 		public EditModel Edit { get; } = new();
@@ -39,6 +47,18 @@ namespace Xt.Synth0.Model
 		public MonitorModel Monitor { get; } = new();
 		public override IReadOnlyList<ISubModel> SubModels => new[] { Edit };
 		public override IReadOnlyList<IModelContainer> SubContainers => new[] { Pattern };
+
+		public override void Store(ref Native native, ref Stored stored)
+		{
+			stored.edit = native.edit;
+			Pattern.Store(ref native.pattern, ref stored.pattern);
+		}
+
+		public override void Load(ref Stored stored, ref Native native)
+		{
+			native.edit = stored.edit;
+			Pattern.Load(ref stored.pattern, ref native.pattern);
+		}
 
 		public static void PrepareNative(SynthModel synth, IntPtr nativeSeq, IntPtr nativeSynth)
 		{
