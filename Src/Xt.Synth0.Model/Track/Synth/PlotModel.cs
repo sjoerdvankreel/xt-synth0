@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum PlotHold { Hold, Touch, Hold1Ms, Hold10Ms, Hold100Ms, Hold1S, Hold10S }
 	public enum PlotType { Off, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2, SynthL, SynthR }
 
 	public unsafe sealed class PlotModel : IThemedSubModel
@@ -19,8 +18,7 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params => new[] { Type, Hold };
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 
-		static readonly string[] Holds = new[] { "Hold", "Touch", "1m", "10m", "100m", "1s", "10s" };
 		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), "Source");
-		static readonly ParamInfo HoldInfo = ParamInfo.List<PlotHold>(p => &((Native*)p)->hold, nameof(Hold), "Hold", Holds);
+		static readonly ParamInfo HoldInfo = ParamInfo.Time(p => &((Native*)p)->hold, nameof(Hold), "Hold key time", 0, 10);
 	}
 }

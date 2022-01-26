@@ -8,6 +8,7 @@ namespace Xts {
 
 struct PlotInput
 {
+  int32_t hold;
   float bpm, pixels;
 public:
   PlotInput() = default;

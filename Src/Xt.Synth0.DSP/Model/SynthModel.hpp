@@ -13,6 +13,18 @@ struct XTS_ALIGN
 SyncStep { int32_t num, den; };
 XTS_CHECK_SIZE(SyncStep, 8);
 
+enum class PlotType { Off, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2, SynthL, SynthR };
+struct XTS_ALIGN PlotModel
+{
+  friend class PlotDSP;
+  PlotModel() = default;
+  PlotModel(PlotModel const&) = delete;
+private:
+  PlotType type;
+  int32_t hold;
+};
+XTS_CHECK_SIZE(PlotModel, 8);
+
 enum class GlobalAmpLfo { LFO1, LFO2 };
 enum class GlobalAmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN GlobalModel
@@ -56,19 +68,6 @@ private:
   int32_t pad__;
 };
 XTS_CHECK_SIZE(EnvModel, 72);
-
-enum class PlotHold { Hold, Touch, Hold1Ms, Hold10Ms, Hold100Ms, Hold1S, Hold10S };
-enum class PlotType { Off, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2, SynthL, SynthR };
-struct XTS_ALIGN PlotModel
-{
-  friend class PlotDSP;
-  PlotModel() = default;
-  PlotModel(PlotModel const&) = delete;
-private:
-  PlotType type;
-  PlotHold hold;
-};
-XTS_CHECK_SIZE(PlotModel, 8);
 
 enum class UnitType { Sin, Naive, Add };
 enum class NaiveType { Saw, Pulse, Tri };

@@ -25,3 +25,4 @@ do voices in the synth, not the sequencer
 reconsider automating running voices
 fix dahdr without decay
 plot hold/release
+plot spectrum

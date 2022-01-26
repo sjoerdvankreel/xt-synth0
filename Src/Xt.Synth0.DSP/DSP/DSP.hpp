@@ -33,6 +33,15 @@ inline float TimeF(int val, float rate)
 inline int TimeI(int val, float rate)
 { return static_cast<int>(TimeF(val, rate)); }
 
+inline float BasicSaw(float phase)
+{ return 1.0f - phase * 2.0f; }
+inline float BasicSin(float phase)
+{ return sinf(phase * 2.0f * PI); }
+inline float BasicSqr(float phase)
+{ return phase < 0.5f? 1.0f: -1.0f; }
+inline float BasicTri(float phase)
+{ return (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f; }
+
 inline bool
 Clip(float& val)
 {
@@ -41,7 +50,8 @@ Clip(float& val)
   return false;
 }
 
-inline float SyncF(SynthInput const& input, int val)
+inline float 
+SyncF(SynthInput const& input, int val)
 {
   auto const& step = SyncSteps()[val];
   float fpb = input.rate * 60.0f / input.bpm;
@@ -50,19 +60,6 @@ inline float SyncF(SynthInput const& input, int val)
 
 inline int SyncI(SynthInput const& input, int val)
 { return static_cast<int>(SyncF(input, val)); }
-
-inline float
-BasicSaw(float phase)
-{ return 1.0f - phase * 2.0f; }
-inline float
-BasicSin(float phase)
-{ return sinf(phase * 2.0f * PI); }
-inline float
-BasicSqr(float phase)
-{ return phase < 0.5f? 1.0f: -1.0f; }
-inline float
-BasicTri(float phase)
-{ return (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f; }
 
 } // namespace Xts
 #endif // XTS_DSP_HPP

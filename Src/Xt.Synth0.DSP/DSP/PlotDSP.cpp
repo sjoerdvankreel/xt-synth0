@@ -7,7 +7,7 @@
 namespace Xts {
 
 void
-PlotDSP::Render(SynthModel const& synth, PlotInput const& input, PlotOutput& output)
+PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
 {
   auto type = synth.plot.type;
   auto index = static_cast<int>(type);
@@ -15,6 +15,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput const& input, PlotOutput& out
   output.splits->clear();
   output.samples->clear();
   output.channel = type == PlotType::SynthR? 1: 0;
+  input.hold = synth.plot.hold;
 
   switch(synth.plot.type)
   {
