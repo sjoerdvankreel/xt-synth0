@@ -22,5 +22,4 @@ global (not per-voice) stuff: lfos, filters, envelopes
 do voices in the synth, not the sequencer
 reconsider automating running voices
 plot spectrum
-merge unit/lfo plot
 init with streampos / derive stuff from streampos ?
