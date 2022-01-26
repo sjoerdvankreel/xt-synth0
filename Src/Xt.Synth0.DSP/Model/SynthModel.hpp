@@ -29,6 +29,7 @@ enum class GlobalAmpLfo { LFO1, LFO2 };
 enum class GlobalAmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN GlobalModel
 {
+  friend class SynthDSP;
   friend class GlobalDSP;
   GlobalModel() = default;
   GlobalModel(GlobalModel const&) = delete;

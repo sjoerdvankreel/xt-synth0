@@ -128,11 +128,11 @@ EnvDSP::PlotParams(EnvModel const& model, PlotInput const& input, float& rate, i
 void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  if (!model.on) return;
-
   int hold;
   int i = 0;
   int h = 0;
+
+  if (!model.on) return;
   EnvStage prev = EnvStage::Dly;
   PlotParams(model, input, output.rate, hold);
   auto in = SynthInput(output.rate, input.bpm, 4, UnitNote::C);

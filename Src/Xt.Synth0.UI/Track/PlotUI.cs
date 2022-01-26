@@ -51,6 +51,7 @@ namespace Xt.Synth0.UI
 			synth.ParamChanged += (s, e) => Update(app, text, content);
 			content.SizeChanged += (s, e) => Update(app, text, content);
 			app.Settings.PropertyChanged += (s, e) => Update(app, text, content);
+			app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => Update(app, text, content);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
 			result.BorderThickness = new(SubUI.BorderThickness, 0.0, SubUI.BorderThickness, SubUI.BorderThickness);
 			return result;

@@ -3,6 +3,13 @@
 
 namespace Xts {
 
+void
+SynthDSP::Release()
+{
+  for (int e = 0; e < EnvCount; e++)
+    _envs[e].Release();
+}
+
 SynthDSP::
 SynthDSP(SynthModel const* model, SynthInput const* input):
 DSPBase(model, input), _global(&model->global, input), _envs(), _units()
@@ -13,13 +20,6 @@ DSPBase(model, input), _global(&model->global, input), _envs(), _units()
     _envs[e] = EnvDSP(&model->envs[e], input);
   for (int u = 0; u < UnitCount; u++)
     _units[u] = UnitDSP(&model->units[u], input);
-}
-
-void
-SynthDSP::Release()
-{
-  for (int e = 0; e < EnvCount; e++)
-    _envs[e].Release();
 }
 
 AudioOutput
@@ -46,22 +46,23 @@ SynthDSP::Next()
 void
 SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  const int plotRate = 5000;
-  const int plotMaxSamples = 10000;
+  int hold;
+  int i = 0;
+  int h = 0;
   bool l = output.channel == 0;
+  auto env = static_cast<int>(model.global.ampEnv);
+  env -= static_cast<int>(GlobalAmpEnv::Env1);
 
-  output.freq = 0.0f;
-  output.clip = false;
   output.bipolar = true;
-  output.rate = static_cast<float>(plotRate); 
-  
-  SynthInput in(output.rate, 120, 4, UnitNote::C);
+  EnvDSP::PlotParams(model.envs[env], input, output.rate, hold);
+  SynthInput in(output.rate, input.bpm, 4, UnitNote::C);
   SynthDSP dsp(&model, &in);
-  for(int s = 0; s < plotMaxSamples; s++)
+  while (true)
   {
-    if(dsp.End()) break;
+    if (h == hold) dsp.Release();
+    if (dsp.End()) break;
     auto audio = dsp.Next();
-    float sample = l? audio.l: audio.r;
+    float sample = l ? audio.l : audio.r;
     output.clip |= Clip(sample);
     output.samples->push_back(sample);
   }
