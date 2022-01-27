@@ -21,23 +21,16 @@ namespace Xt.Synth0.Model
 		.Concat(new[] { new SyncStep { num = 0, den = 1 } })
 		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new SyncStep { num = s.num + s.den, den = s.den }));
 		public static readonly SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
-		
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		ref struct Param
-		{
-			internal const int Size = 16;
-			internal int* val; internal int min, max;
-		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
 		{
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
-			internal fixed byte @params[Model.ParamCount * Param.Size];
 			internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
 			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
+			internal fixed byte @params[Model.ParamCount * 8];
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -80,13 +73,9 @@ namespace Xt.Synth0.Model
 		public void PrepareNative(IntPtr native)
 		{
 			Native* ptr = (Native*)native;
-			var @params = (Param*)ptr->@params;
+			var @params = (int**)ptr->@params;
 			for (int p = 0; p < Params.Count; p++)
-			{
-				@params[p].min = Params[p].Info.Min;
-				@params[p].max = Params[p].Info.Max;
-				@params[p].val = Params[p].Info.Address(SynthParams[p].Owner.Address(ptr));
-			}
+				@params[p] = Params[p].Info.Address(SynthParams[p].Owner.Address(ptr));
 		}
 	}
 }

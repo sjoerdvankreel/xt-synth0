@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
@@ -9,6 +10,9 @@ namespace Xt.Synth0.Model
 
 	public sealed class ParamInfo
 	{
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		public ref struct Native { public int min, max; }
+
 		int? _maxDisplayLength;
 		readonly Address _address;
 		readonly Func<int, string> _display;
@@ -96,7 +100,7 @@ namespace Xt.Synth0.Model
 		=> new ParamInfo(ParamType.Lin, address, name, description, min, max, @default, display ?? (x => x.ToString()), relevance);
 
 		internal static unsafe ParamInfo Step(Address address, string name, string description, int min, int @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Lin, address, name, description, min, SynthModel.SyncSteps.Length - 1, 
+		=> new ParamInfo(ParamType.Lin, address, name, description, min, SynthModel.SyncSteps.Length - 1,
 			@default, val => SynthModel.SyncSteps[val].ToString(), relevance);
 
 		internal static ParamInfo Select<TEnum>(Address address, string name, string description, TEnum min,

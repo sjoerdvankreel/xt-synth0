@@ -1,6 +1,7 @@
 #include "SeqDSP.hpp"
 #include "DSP.hpp"
 #include <cassert>
+#include <algorithm>
 
 namespace Xts {
 
@@ -80,10 +81,9 @@ SeqDSP::Automate()
     assert(0 <= fx.val && fx.val < 256);
     assert(0 <= fx.tgt && fx.tgt < 256);
     if (fx.tgt == 0 || fx.tgt > ParamCount) return;
-    auto const& p = _synth->params[fx.tgt - 1];
-    if (fx.val < p.min) *p.val = p.min;
-    else if (fx.val > p.max) *p.val = p.max;
-    else *p.val = fx.val;
+    int32_t* param = _synth->params[fx.tgt - 1];
+    ParamInfo const& info = ParamInfos()[fx.tgt - 1];
+    *param = std::clamp(fx.val, info.min, info.max);
   }
 }
 

@@ -15,12 +15,12 @@ Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void) { return new Xts::SeqDSP; }
 Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void) { return new Xts::SeqModel; }
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
 
-void XTS_CALL 
-XtsSynthModelInit(Xts::SyncStep* steps, int32_t count) 
-{ Xts::SynthModelInit(steps, count); }
 void XTS_CALL
 XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth)
 { dsp->Init(model, synth); }
+void XTS_CALL 
+XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStep* steps, int32_t stepCount)
+{ Xts::SynthModelInit(infos, infoCount, steps, stepCount); }
 
 PlotState* XTS_CALL 
 XtsPlotStateCreate(void)

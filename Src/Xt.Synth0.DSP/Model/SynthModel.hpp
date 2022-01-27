@@ -7,22 +7,16 @@
 namespace Xts {
 
 struct SyncStep* SyncSteps();
-void SynthModelInit(struct SyncStep* steps, int32_t count);
+struct ParamInfo* ParamInfos();
 
-struct XTS_ALIGN
-SyncStep { int32_t num, den; };
+void SynthModelInit(
+  struct ParamInfo* infos, int32_t infoCount,
+  struct SyncStep* steps, int32_t stepCount);
+
+struct XTS_ALIGN SyncStep { int32_t num, den; };
 XTS_CHECK_SIZE(SyncStep, 8);
-
-struct XTS_ALIGN Param
-{
-  friend class SeqDSP;
-  Param() = default;
-  Param(Param const&) = delete;
-private:
-  int32_t* val;
-  int32_t min, max;
-};
-XTS_CHECK_SIZE(Param, 16);
+struct XTS_ALIGN ParamInfo { int32_t min, max; };
+XTS_CHECK_SIZE(ParamInfo, 8);
 
 enum class PlotType { Off, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -114,12 +108,12 @@ struct XTS_ALIGN SynthModel
 private:
   PlotModel plot;
   GlobalModel global;
-  Param params[ParamCount];
   LfoModel lfos[LfoCount];
   EnvModel envs[EnvCount];
   UnitModel units[UnitCount];
+  int32_t* params[ParamCount];
 };
-XTS_CHECK_SIZE(SynthModel, 2664);
+XTS_CHECK_SIZE(SynthModel, 1608);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP
