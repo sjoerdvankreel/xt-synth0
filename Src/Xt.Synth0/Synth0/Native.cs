@@ -9,7 +9,7 @@ namespace Xt.Synth0
 	internal static unsafe class Native
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct SeqState
+		internal ref struct SeqState
 		{
 			internal int row, voices;
 			internal int clip, exhausted;
@@ -20,7 +20,7 @@ namespace Xt.Synth0
 		};
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct PlotState
+		internal ref struct PlotState
 		{
 			internal float freq, rate;
 			internal int bpm, pixels;

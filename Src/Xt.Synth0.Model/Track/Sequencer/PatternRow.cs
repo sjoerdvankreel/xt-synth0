@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class PatternRow : IModelContainer
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native
+		internal ref struct Native
 		{
 			internal const int Size = 88;
 			internal fixed byte fx[Model. MaxFxs * PatternFx.Native.Size];
