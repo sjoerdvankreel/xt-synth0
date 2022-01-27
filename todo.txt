@@ -24,3 +24,6 @@ reconsider automating running voices
 plot spectrum
 init with streampos / derive stuff from streampos ?
 tri = integrate pulse
+do uisubmodel/container
+move params to synth (per voice)
+do synthparam native 1 int only, metadata accessed by index (metadata global)
