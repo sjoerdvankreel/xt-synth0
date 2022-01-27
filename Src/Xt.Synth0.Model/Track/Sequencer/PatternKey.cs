@@ -13,7 +13,8 @@ namespace Xt.Synth0.Model
 		};
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal ref struct Native {
+		internal ref struct Native 
+		{
 			internal const int Size = 16;
 			internal int note, amp, oct, pad__; 
 		}

@@ -21,6 +21,24 @@ namespace Xt.Synth0.Model
 		.Concat(new[] { new SyncStep { num = 0, den = 1 } })
 		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new SyncStep { num = s.num + s.den, den = s.den }));
 		public static readonly SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
+		
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		ref struct Param
+		{
+			internal const int Size = 16;
+			internal int* val; internal int min, max;
+		}
+
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		internal ref struct Native
+		{
+			internal PlotModel.Native plot;
+			internal GlobalModel.Native global;
+			internal fixed byte @params[Model.ParamCount * Param.Size];
+			internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
+			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
+			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
+		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public struct SyncStep
@@ -32,16 +50,6 @@ namespace Xt.Synth0.Model
 			public override int GetHashCode() => num + 37 * den;
 			public override bool Equals(object obj) => ((SyncStep)obj).num == num && ((SyncStep)obj).den == den;
 			internal SyncStep Simplify() => new SyncStep { num = num / GCD(num, den), den = den / GCD(num, den) };
-		}
-
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public ref struct Native
-		{
-			internal PlotModel.Native plot;
-			internal GlobalModel.Native global;
-			internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
-			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
-			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
 		}
 
 		public PlotModel Plot { get; } = new();
@@ -67,6 +75,18 @@ namespace Xt.Synth0.Model
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
 			if (SynthParams.Count != Model.ParamCount)
 				throw new InvalidOperationException();
+		}
+
+		public void PrepareNative(IntPtr native)
+		{
+			Native* ptr = (Native*)native;
+			var @params = (Param*)ptr->@params;
+			for (int p = 0; p < Params.Count; p++)
+			{
+				@params[p].min = Params[p].Info.Min;
+				@params[p].max = Params[p].Info.Max;
+				@params[p].val = Params[p].Info.Address(SynthParams[p].Owner.Address(ptr));
+			}
 		}
 	}
 }

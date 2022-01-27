@@ -121,7 +121,7 @@ namespace Xt.Synth0
 			_nativeSeqState = Native.XtsSeqStateCreate();
 			_nativeSeqModel = Native.XtsSeqModelCreate();
 			_nativeSynthModel = Native.XtsSynthModelCreate();
-			SeqModel.PrepareNative(_managedSynthModel, _nativeSeqModel, _nativeSynthModel);
+			_managedSynthModel.PrepareNative(_nativeSynthModel);
 		}
 
 		internal void OnGCNotification(int generation)

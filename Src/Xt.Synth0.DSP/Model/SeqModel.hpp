@@ -6,17 +6,6 @@
 
 namespace Xts {
 
-struct XTS_ALIGN Param 
-{
-  friend class SeqDSP;
-  Param() = default;
-  Param(Param const&) = delete;
-private:
-  int32_t* val;
-  int32_t min, max;
-};
-XTS_CHECK_SIZE(Param, 16);
-
 struct XTS_ALIGN PatternFx 
 {
   friend class SeqDSP;
@@ -78,9 +67,8 @@ struct XTS_ALIGN SeqModel
 private:
   EditModel edit;
   PatternModel pattern;
-  Param params[ParamCount];
 };
-XTS_CHECK_SIZE(SeqModel, 24672);
+XTS_CHECK_SIZE(SeqModel, 22560);
 
 } // namespace Xts
 #endif // XTS_SEQ_MODEL_HPP
