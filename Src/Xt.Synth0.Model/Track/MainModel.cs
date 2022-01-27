@@ -12,7 +12,7 @@ namespace Xt.Synth0.Model
 		public abstract IReadOnlyList<IModelContainer> SubContainers { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
 		public void* Address(void* parent) => throw new NotSupportedException();
-		
+
 		protected MainModel()
 		{
 			Params = new ReadOnlyCollection<Param>(ListParams(this).Select(p => p.Param).ToArray());
@@ -29,30 +29,44 @@ namespace Xt.Synth0.Model
 				main.Params[p].Value = Params[p].Value;
 		}
 
-		public void ToNative(void* native) => ToNative(this, native);		
+		public void ToNative(void* native) => ToNative(this, native);
 		void ToNative(IModelContainer container, void* native)
 		{
-			foreach (var model in container.SubModels)
+			for (int i = 0; i < container.SubContainers.Count; i++)
 			{
-				var nativeSub = model.Address(native);
-				foreach (var param in model.Params)
-					*param.Info.Address(nativeSub) = param.Value;
-			}
-			foreach (var child in container.SubContainers)
+				var child = container.SubContainers[i];
 				ToNative(child, child.Address(native));
+			}
+			for (int i = 0; i < container.SubModels.Count; i++)
+			{
+				var child = container.SubModels[i];
+				var nativeSub = child.Address(native);
+				for (int j = 0; j < child.Params.Count; j++)
+				{
+					var childParam = child.Params[j];
+					*childParam.Info.Address(nativeSub) = childParam.Value;
+				}
+			}
 		}
 
 		public void FromNative(void* native) => FromNative(this, native);
 		void FromNative(IModelContainer container, void* native)
 		{
-			foreach (var model in container.SubModels)
+			for (int i = 0; i < container.SubContainers.Count; i++)
 			{
-				var nativeSub = model.Address(native);
-				foreach (var param in model.Params)
-					param.Value = *param.Info.Address(nativeSub);
-			}
-			foreach (var child in container.SubContainers)
+				var child = container.SubContainers[i];
 				FromNative(child, child.Address(native));
+			}
+			for (int i = 0; i < container.SubModels.Count; i++)
+			{
+				var child = container.SubModels[i];
+				var nativeSub = child.Address(native);
+				for (int j = 0; j < child.Params.Count; j++)
+				{
+					var childParam = child.Params[j];
+					childParam.Value = *childParam.Info.Address(nativeSub);
+				}
+			}
 		}
 
 		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer container)
