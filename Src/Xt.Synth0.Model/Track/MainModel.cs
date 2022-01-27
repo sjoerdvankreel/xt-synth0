@@ -11,8 +11,8 @@ namespace Xt.Synth0.Model
 	{
 		public abstract IReadOnlyList<ISubModel> SubModels { get; }
 		public abstract IReadOnlyList<IModelContainer> SubContainers { get; }
-		public abstract void Load(in TStored stored, out TNative native);
-		public abstract void Store(in TNative native, out TStored stored);
+		public abstract void Load(ref TStored stored, ref TNative native);
+		public abstract void Store(ref TNative native, ref TStored stored);
 
 		public IReadOnlyList<Param> Params { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;

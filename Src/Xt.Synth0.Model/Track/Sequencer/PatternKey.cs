@@ -28,8 +28,8 @@ namespace Xt.Synth0.Model
 		readonly int _index;
 		internal PatternKey(int index) => _index = index;
 		public IReadOnlyList<Param> Params => new[] { Note, Oct, Amp };
-		public void Load(in Native stored, out Native native) => native = stored;
-		public void Store(in Native native, out Native stored) => stored = native;
+		public void Load(ref Native stored, ref Native native) => native = stored;
+		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->keys[_index * Native.Size];
 
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", 255);

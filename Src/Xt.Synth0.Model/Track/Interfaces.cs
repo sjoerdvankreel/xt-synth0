@@ -12,8 +12,8 @@ namespace Xt.Synth0.Model
 	where TNative : struct
 	where TStored : struct
 	{
-		void Load(in TStored stored, out TNative native);
-		void Store(in TNative native, out TStored stored);
+		void Load(ref TStored stored, ref TNative native);
+		void Store(ref TNative native, ref TStored stored);
 	}
 
 	public interface IModelContainer : INativeModel

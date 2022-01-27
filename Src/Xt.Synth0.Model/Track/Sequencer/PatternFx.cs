@@ -20,8 +20,8 @@ namespace Xt.Synth0.Model
 		readonly int _index;
 		internal PatternFx(int index) => _index = index;
 		public IReadOnlyList<Param> Params => new[] { Tgt, Val };
-		public void Load(in Native stored, out Native native) => native = stored;
-		public void Store(in Native native, out Native stored) => stored = native;
+		public void Load(ref Native stored, ref Native native) => native = stored;
+		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[_index * Native.Size];
 
 		static readonly ParamInfo ValInfo = ParamInfo.Level(p => &((Native*)p)->val, nameof(Val), "Automation value", 0);

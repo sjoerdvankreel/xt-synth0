@@ -18,8 +18,8 @@ namespace Xt.Synth0.Model
 		public string Name => "Plot";
 		public ThemeGroup Group => ThemeGroup.Plot;
 		public IReadOnlyList<Param> Params => new[] { Type, Hold };
-		public void Load(in Native stored, out Native native) => native = stored;
-		public void Store(in Native native, out Native stored) => stored = native;
+		public void Load(ref Native stored, ref Native native) => native = stored;
+		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 
 		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), "Source");
