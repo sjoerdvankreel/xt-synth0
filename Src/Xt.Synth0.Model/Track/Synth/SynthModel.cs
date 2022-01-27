@@ -21,6 +21,9 @@ namespace Xt.Synth0.Model
 		.Concat(new[] { new SyncStep { num = 0, den = 1 } })
 		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new SyncStep { num = s.num + s.den, den = s.den }));
 		public static readonly SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
+		
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		public struct ParamInfo { public int min, max; }
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
@@ -68,6 +71,17 @@ namespace Xt.Synth0.Model
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
 			if (SynthParams.Count != Model.ParamCount)
 				throw new InvalidOperationException();
+		}
+
+		public ParamInfo[] ParamInfos()
+		{
+			var result = new ParamInfo[Model.ParamCount];
+			for(int i = 0; i < Model.ParamCount; i++)
+			{
+				result[i].min = Params[i].Info.Min;
+				result[i].max = Params[i].Info.Max;
+			}
+			return result;
 		}
 
 		public void PrepareNative(IntPtr native)

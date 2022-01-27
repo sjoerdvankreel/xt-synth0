@@ -22,8 +22,10 @@ namespace Xt.Synth0
 		{
 			try
 			{
+				var infos = Model.Track.Synth.ParamInfos();
 				fixed (SynthModel.SyncStep* steps = SynthModel.SyncSteps)
-					Native.XtsSynthModelInit(steps, SynthModel.SyncSteps.Length);
+				fixed (SynthModel.ParamInfo* pis = infos)
+					Native.XtsSynthModelInit(pis, infos.Length, steps, SynthModel.SyncSteps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
 				Run();
