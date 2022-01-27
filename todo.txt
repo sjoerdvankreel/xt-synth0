@@ -26,3 +26,4 @@ init with streampos / derive stuff from streampos ?
 tri = integrate pulse
 do uisubmodel/container
 show automation range error in UI
+fix model iface structure
