@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class EditModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native { internal int pats, rows, keys, fxs, lpb, edit, bpm, pad__; }
+		internal ref struct Native { internal int pats, rows, keys, fxs, lpb, edit, bpm, pad__; }
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Fxs { get; } = new(FxsInfo);

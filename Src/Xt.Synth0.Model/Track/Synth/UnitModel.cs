@@ -14,7 +14,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class UnitModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native
+		internal ref struct Native
 		{
 			internal const int Size = 80;
 			internal int on, type, note, addType, naiveType;

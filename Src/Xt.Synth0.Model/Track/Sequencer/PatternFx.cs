@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class PatternFx : ISubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native
+		internal ref struct Native
 		{
 			internal const int Size = 8;
 			internal int tgt, val;

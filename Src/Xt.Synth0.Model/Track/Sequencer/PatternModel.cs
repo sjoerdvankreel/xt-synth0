@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class PatternModel : IThemedContainer
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native { internal fixed byte rows[Model.TotalRows * PatternRow.Native.Size]; }
+		internal ref struct Native { internal fixed byte rows[Model.TotalRows * PatternRow.Native.Size]; }
 
 		internal PatternModel()
 		{

@@ -9,7 +9,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class GlobalModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal struct Native
+		internal ref struct Native
 		{
 			internal int ampEnv, ampLfo;
 			internal int amp, ampEnvAmt, ampLfoAmt, pad__;
