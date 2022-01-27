@@ -55,13 +55,13 @@ namespace Xt.Synth0.Model
 				FromNative(child, child.Address(native));
 		}
 
-		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer containers)
+		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer container)
 		{
 			var result = new List<(ISubModel, Param)>();
-			foreach (var model in containers.SubModels)
+			foreach (var model in container.SubModels)
 				foreach (var param in model.Params)
 					result.Add((model, param));
-			foreach (var child in containers.SubContainers)
+			foreach (var child in container.SubContainers)
 				result.AddRange(ListParams(child));
 			return result;
 		}
