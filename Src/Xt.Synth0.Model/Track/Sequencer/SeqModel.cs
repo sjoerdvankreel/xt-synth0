@@ -19,14 +19,14 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class SeqModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		ref struct Param
+		struct Param
 		{
 			internal const int Size = 16;
 			internal int* val; internal int min, max;
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal ref struct Native
+		internal struct Native
 		{
 			internal EditModel.Native edit;
 			internal PatternModel.Native pattern;

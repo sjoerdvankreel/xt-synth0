@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class PlotModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal ref struct Native { internal int type, hold; }
+		internal struct Native { internal int type, hold; }
 
 		public Param Type { get; } = new(TypeInfo);
 		public Param Hold { get; } = new(HoldInfo);

@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class EnvModel : IThemedSubModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal ref struct Native
+		internal struct Native
 		{
 			internal const int Size = 72;
 			internal int on, type, sync;

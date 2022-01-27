@@ -35,7 +35,7 @@ namespace Xt.Synth0.Model
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public ref struct Native
+		public struct Native
 		{
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
