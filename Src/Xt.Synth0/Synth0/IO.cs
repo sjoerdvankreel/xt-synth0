@@ -8,8 +8,10 @@ namespace Xt.Synth0
 {
 	static class IO
 	{
-		static string GetSettingsPath()
+		static string GetSettingsPath() 
 		=> Path.Combine(GetAppDataFolder(), "settings.x0s");
+		static MessagePackSerializerOptions GetSerializerOptions() 
+		=> MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
 
 		static string GetAppDataFolder()
 		{
@@ -21,18 +23,18 @@ namespace Xt.Synth0
 			return result;
 		}
 
+		internal static void SaveSettings(SettingsModel settings)
+		{
+			using var stream = File.Create(GetSettingsPath());
+			MessagePackSerializer.Serialize(stream, settings, GetSerializerOptions());
+		}
+
 		internal static SettingsModel LoadSettings()
 		{
 			var path = GetSettingsPath();
 			if (!File.Exists(path)) return null;
 			using var stream = File.OpenRead(path);
-			return MessagePackSerializer.Deserialize<SettingsModel>(stream);
-		}
-
-		internal static void SaveSettings(SettingsModel settings)
-		{
-			using var stream = File.Create(GetSettingsPath());
-			MessagePackSerializer.Serialize(stream, settings);
+			return MessagePackSerializer.Deserialize<SettingsModel>(stream, GetSerializerOptions());
 		}
 
 		internal static void SaveFile(TrackModel track, string path)
