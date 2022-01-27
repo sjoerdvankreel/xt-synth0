@@ -1,17 +1,15 @@
-﻿using MessagePack;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class PatternFx : ISubModel, IStoredModel<PatternFx.Native, PatternFx.Native>
+	public unsafe sealed class PatternFx : ISubModel
 	{
-		[MessagePackObject(keyAsPropertyName: true)]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public struct Native
+		internal struct Native
 		{
-			public const int Size = 8;
-			public int tgt, val;
+			internal const int Size = 8;
+			internal int tgt, val;
 		}
 
 		public Param Val { get; } = new(ValInfo);
@@ -20,8 +18,6 @@ namespace Xt.Synth0.Model
 		readonly int _index;
 		internal PatternFx(int index) => _index = index;
 		public IReadOnlyList<Param> Params => new[] { Tgt, Val };
-		public void Load(ref Native stored, ref Native native) => native = stored;
-		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[_index * Native.Size];
 
 		static readonly ParamInfo ValInfo = ParamInfo.Level(p => &((Native*)p)->val, nameof(Val), "Automation value", 0);

@@ -1,20 +1,18 @@
-﻿using MessagePack;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
 	public enum LfoType { Sin, Saw, Sqr, Tri }
 
-	public unsafe sealed class LfoModel : IThemedSubModel, IStoredModel<LfoModel.Native, LfoModel.Native>
+	public unsafe sealed class LfoModel : IThemedSubModel
 	{
-		[MessagePackObject(keyAsPropertyName: true)]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public struct Native
+		internal struct Native
 		{
-			public const int Size = 32;
-			public int type, on, sync, inv, bi;
-			public int rate, step, pad__;
+			internal const int Size = 32;
+			internal int type, on, sync, inv, bi;
+			internal int rate, step, pad__;
 		};
 
 		public Param On { get; } = new(OnInfo);
@@ -29,8 +27,6 @@ namespace Xt.Synth0.Model
 		public string Name => $"LFO {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Lfo;
 		internal LfoModel(int index) => _index = index;
-		public void Load(ref Native stored, ref Native native) => native = stored;
-		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->lfos[_index * Native.Size];
 
 		public Param Enabled => On;

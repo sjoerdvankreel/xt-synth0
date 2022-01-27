@@ -1,22 +1,20 @@
-﻿using MessagePack;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
 	public enum EnvType { DAHDSR, DAHDR}
 
-	public unsafe sealed class EnvModel : IThemedSubModel, IStoredModel<EnvModel.Native, EnvModel.Native>
+	public unsafe sealed class EnvModel : IThemedSubModel
 	{
-		[MessagePackObject(keyAsPropertyName: true)]
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public struct Native
+		internal struct Native
 		{
-			public const int Size = 72;
-			public int on, type, sync;
-			public int aSlp, dSlp, rSlp;
-			public int dly, a, hld, d, s, r;
-			public int dlyStp, aStp, hldStp, dStp, rStp, pad__;
+			internal const int Size = 72;
+			internal int on, type, sync;
+			internal int aSlp, dSlp, rSlp;
+			internal int dly, a, hld, d, s, r;
+			internal int dlyStp, aStp, hldStp, dStp, rStp, pad__;
 		}
 
 		public Param S { get; } = new(SInfo);
@@ -41,8 +39,6 @@ namespace Xt.Synth0.Model
 		public string Name => $"Env {_index + 1}";
 		public ThemeGroup Group => ThemeGroup.Env;
 		internal EnvModel(int index) => _index = index;
-		public void Load(ref Native stored, ref Native native) => native = stored;
-		public void Store(ref Native native, ref Native stored) => stored = native;
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[_index * Native.Size];
 
 		public Param Enabled => On;
