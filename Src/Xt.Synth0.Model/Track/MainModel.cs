@@ -29,17 +29,6 @@ namespace Xt.Synth0.Model
 				main.Params[p].Value = Params[p].Value;
 		}
 
-		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer containers)
-		{
-			var result = new List<(ISubModel, Param)>();
-			foreach (var model in containers.SubModels)
-				foreach (var param in model.Params)
-					result.Add((model, param));
-			foreach (var child in containers.SubContainers)
-				result.AddRange(ListParams(child));
-			return result;
-		}
-
 		public void ToNative(void* native) => ToNative(this, native);		
 		void ToNative(IModelContainer container, void* native)
 		{
@@ -64,6 +53,17 @@ namespace Xt.Synth0.Model
 			}
 			foreach (var child in container.SubContainers)
 				FromNative(child, child.Address(native));
+		}
+
+		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer containers)
+		{
+			var result = new List<(ISubModel, Param)>();
+			foreach (var model in containers.SubModels)
+				foreach (var param in model.Params)
+					result.Add((model, param));
+			foreach (var child in containers.SubContainers)
+				result.AddRange(ListParams(child));
+			return result;
 		}
 	}
 }
