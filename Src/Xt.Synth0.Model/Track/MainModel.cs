@@ -7,9 +7,6 @@ namespace Xt.Synth0.Model
 {
 	public unsafe abstract class MainModel : IGroupContainerModel
 	{
-		public abstract void ToNative(void* native);
-		public abstract void FromNative(void* native);
-
 		public IReadOnlyList<Param> Params { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
 

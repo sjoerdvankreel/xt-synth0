@@ -69,9 +69,10 @@ namespace Xt.Synth0
 
 		IAudioStream _stream;
 		IntPtr _nativeSeqDSP;
-		IntPtr _nativeSeqModel;
-		IntPtr _nativeSynthModel;
 		Native.SeqState* _nativeSeqState;
+		SeqModel.Native* _nativeSeqModel;
+		SynthModel.Native* _nativeSynthModel;
+		SynthModel.Native.VoiceBinding* _nativeBinding;
 		readonly SynthModel _managedSynthModel = new();
 
 		long _clipPosition = -1;
@@ -120,8 +121,9 @@ namespace Xt.Synth0
 			_nativeSeqDSP = Native.XtsSeqDSPCreate();
 			_nativeSeqState = Native.XtsSeqStateCreate();
 			_nativeSeqModel = Native.XtsSeqModelCreate();
+			_nativeBinding = Native.XtsVoiceBindingCreate();
 			_nativeSynthModel = Native.XtsSynthModelCreate();
-			_managedSynthModel.PairNative(_nativeSynthModel);
+			_app.Track.Synth.BindVoice(_nativeSynthModel, _nativeBinding);
 		}
 
 		internal void OnGCNotification(int generation)
@@ -134,6 +136,7 @@ namespace Xt.Synth0
 			Native.XtsSeqDSPDestroy(_nativeSeqDSP);
 			Native.XtsSeqStateDestroy(_nativeSeqState);
 			Native.XtsSeqModelDestroy(_nativeSeqModel);
+			Native.XtsVoiceBindingDestroy(_nativeBinding);
 			Native.XtsSynthModelDestroy(_nativeSynthModel);
 		}
 
@@ -174,9 +177,9 @@ namespace Xt.Synth0
 			{
 				AutomationQueue.Clear();
 				_app.Track.Synth.CopyTo(_original);
+				_app.Track.Seq.ToNative(_nativeSeqModel);
+				_app.Track.Synth.ToNative(_nativeBinding);
 				_app.Track.Synth.CopyTo(_managedSynthModel);
-				_app.Track.Seq.ToNative(_nativeSeqModel.ToPointer());
-				_app.Track.Synth.ToNative(_nativeSynthModel.ToPointer());
 				_app.Stream.State = StreamState.Running;
 				_stream.Start();
 			}
@@ -247,7 +250,7 @@ namespace Xt.Synth0
 				_cpuUsageFrameCounts = new int[format.mix.rate];
 				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
 				UpdateStreamInfo(0, format.mix.rate, 0, false, false, 0);
-				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqModel, _nativeSynthModel);
+				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqModel, _nativeSynthModel, _nativeBinding);
 				ResumeStream();
 			}
 			catch
@@ -407,12 +410,12 @@ namespace Xt.Synth0
 				@params[actions[i].Param].Value = @actions[i].Value;
 			for (int i = 0; i < @params.Count; i++)
 				_automationValues[i] = @params[i].Value;
-			_managedSynthModel.ToNative(_nativeSynthModel.ToPointer());
+			_managedSynthModel.ToNative(_nativeBinding);
 		}
 
 		void EndAutomation()
 		{
-			_managedSynthModel.FromNative(_nativeSynthModel.ToPointer());
+			_managedSynthModel.FromNative(_nativeBinding);
 			var @params = _managedSynthModel.Params;
 			for (int i = 0; i < @params.Count; i++)
 				if (@params[i].Value != _automationValues[i])

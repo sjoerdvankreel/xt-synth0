@@ -38,6 +38,7 @@ class SeqDSP
   double _fill = 0.0;
   SeqModel const* _model;
   SynthModel const* _synth;
+  VoiceBinding const* _binding;
 private:
   int _keys[MaxVoices];
   int _active[MaxKeys];
@@ -56,7 +57,7 @@ private:
   AudioOutput Next(SeqInput const& input, bool& exhausted);
 public:
   void Render(SeqInput const& input, SeqOutput& output);
-  void Init(SeqModel const* model, SynthModel const* synth);
+  void Init(SeqModel const* model, SynthModel const* synth, VoiceBinding const* binding);
 };
 
 } // namespace Xts

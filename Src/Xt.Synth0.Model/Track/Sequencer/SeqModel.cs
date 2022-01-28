@@ -18,7 +18,7 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class SeqModel : MainModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal ref struct Native
+		public ref struct Native
 		{
 			internal EditModel.Native edit;
 			internal PatternModel.Native pattern;
@@ -32,7 +32,7 @@ namespace Xt.Synth0.Model
 		public override IReadOnlyList<IParamGroupModel> Groups => new[] { Edit };
 		public override IReadOnlyList<IGroupContainerModel> Children => new[] { Pattern };
 
-		public override void ToNative(void* native) => ToNative(this, native);
+		public void ToNative(Native* native) => ToNative(this, native);
 		void ToNative(IGroupContainerModel container, void* native)
 		{
 			for (int i = 0; i < container.Children.Count; i++)
@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
 				}
 		}
 
-		public override void FromNative(void* native) => FromNative(this, native);
+		public void FromNative(Native* native) => FromNative(this, native);
 		void FromNative(IGroupContainerModel container, void* native)
 		{
 			for (int i = 0; i < container.Children.Count; i++)

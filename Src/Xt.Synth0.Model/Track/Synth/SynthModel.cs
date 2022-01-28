@@ -30,10 +30,12 @@ namespace Xt.Synth0.Model
 			internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
 			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
-			internal fixed byte @params[Model.ParamCount * 8];
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct ParamInfo { public int min, max; }
+
+			[StructLayout(LayoutKind.Sequential, Pack = 8)]
+			public ref struct VoiceBinding { internal fixed byte @params[Model.ParamCount * 8]; }
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct SyncStep
@@ -58,9 +60,7 @@ namespace Xt.Synth0.Model
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
 
-		Native* _paired;
 		public IReadOnlyList<SynthParam> SynthParams { get; }
-
 		public override IReadOnlyList<IGroupContainerModel> Children => new IGroupContainerModel[0];
 		public override IReadOnlyList<IParamGroupModel> Groups => Units.Concat<IParamGroupModel>(Envs).Concat(Lfos).Concat(new IParamGroupModel[] { Plot, Global }).ToArray();
 
@@ -86,26 +86,23 @@ namespace Xt.Synth0.Model
 			return result;
 		}
 
-		public override void ToNative(void* native)
+		public void ToNative(Native.VoiceBinding* binding)
 		{
-			if (_paired != native) throw new InvalidOperationException();
 			for (int i = 0; i < Params.Count; i++)
-				*((int**)_paired->@params)[i] = Params[i].Value;
+				*((int**)binding->@params)[i] = Params[i].Value;
 		}
 
-		public override void FromNative(void* native)
+		public void FromNative(Native.VoiceBinding* binding)
 		{
-			if (_paired != native) throw new InvalidOperationException();
 			for (int i = 0; i < Params.Count; i++)
-				Params[i].Value = *((int**)_paired->@params)[i];
+				Params[i].Value = *((int**)binding->@params)[i];
 		}
 
-		public void PairNative(IntPtr native)
+		public void BindVoice(Native* native, Native.VoiceBinding* binding)
 		{
-			_paired = (Native*)native;
-			var @params = (int**)_paired->@params;
+			var @params = (int**)binding->@params;
 			for (int p = 0; p < Params.Count; p++)
-				@params[p] = Params[p].Info.Address(SynthParams[p].Group.Address(_paired));
+				@params[p] = Params[p].Info.Address(SynthParams[p].Group.Address(native));
 		}
 	}
 }

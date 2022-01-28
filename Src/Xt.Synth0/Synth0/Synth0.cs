@@ -10,12 +10,13 @@ namespace Xt.Synth0
 {
 	static class Synth0
 	{
-		static IntPtr _nativePlotSynthModel;
-		static unsafe Native.PlotState* _nativePlotState;
-
 		static AudioEngine _engine;
 		static readonly AppModel Model = new AppModel();
 		static readonly DateTime StartTime = DateTime.Now;
+
+		static unsafe Native.PlotState* _nativePlotState;
+		static unsafe SynthModel.Native* _nativePlotSynthModel;
+		static unsafe SynthModel.Native.VoiceBinding* _nativePlotBinding;
 
 		[STAThread]
 		static unsafe void Main()
@@ -27,13 +28,16 @@ namespace Xt.Synth0
 				fixed (SynthModel.Native.ParamInfo* pis = infos)
 					Native.XtsSynthModelInit(pis, infos.Length, steps, SynthModel.SyncSteps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
+				_nativePlotBinding = Native.XtsVoiceBindingCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
+				Model.Track.Synth.BindVoice(_nativePlotSynthModel, _nativePlotBinding);
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
 				Native.XtsPlotStateDestroy(_nativePlotState);
+				Native.XtsVoiceBindingDestroy(_nativePlotBinding);
 				Native.XtsSynthModelDestroy(_nativePlotSynthModel);
 			}
 		}
@@ -218,7 +222,7 @@ namespace Xt.Synth0
 			_nativePlotState->pixels = e.Pixels;
 			_nativePlotState->synth = _nativePlotSynthModel;
 			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
-			Model.Track.Synth.ToNative(_nativePlotSynthModel.ToPointer());
+			Model.Track.Synth.ToNative(_nativePlotBinding);
 			Native.XtsPlotDSPRender(_nativePlotState);
 			e.Freq = _nativePlotState->freq;
 			e.Clip = _nativePlotState->clip != 0;

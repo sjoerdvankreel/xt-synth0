@@ -81,7 +81,7 @@ SeqDSP::Automate()
     assert(0 <= fx.val && fx.val < 256);
     assert(0 <= fx.tgt && fx.tgt < 256);
     if (fx.tgt == 0 || fx.tgt > ParamCount) return;
-    int32_t* param = _synth->params[fx.tgt - 1];
+    int32_t* param = _binding->params[fx.tgt - 1];
     ParamInfo const& info = ParamInfos()[fx.tgt - 1];
     *param = std::clamp(fx.val, info.min, info.max);
   }
@@ -110,7 +110,7 @@ SeqDSP::Render(SeqInput const& input, SeqOutput& output)
 }
 
 void
-SeqDSP::Init(SeqModel const* model, SynthModel const* synth)
+SeqDSP::Init(SeqModel const* model, SynthModel const* synth, VoiceBinding const* binding)
 {
   _pos = 0;
   _row = -1;
@@ -118,6 +118,7 @@ SeqDSP::Init(SeqModel const* model, SynthModel const* synth)
   _voices = 0;
   _model = model;
   _synth = synth;
+  _binding = binding;
   for(int i = 0; i < MaxKeys; i++)
     _active[i] = -1;
   for (int i = 0; i < MaxVoices; i++)

@@ -16,7 +16,8 @@ namespace Xt.Synth0
 			internal int rate, frames;
 			internal long pos;
 			internal float* buffer;
-			internal IntPtr synth, seq;
+			internal SynthModel.Native* synth;
+			internal SeqModel.Native* seq;
 		};
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -28,27 +29,30 @@ namespace Xt.Synth0
 			internal int sampleCount, splitCount;
 			internal float* samples;
 			internal int* splits;
-			internal IntPtr synth;
+			internal SynthModel.Native* synth;
 			internal IntPtr sampleData;
 			internal IntPtr splitData;
 		};
 
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqModelCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSynthModelCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern SeqState* XtsSeqStateCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern PlotState* XtsPlotStateCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern SeqModel.Native* XtsSeqModelCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern SynthModel.Native* XtsSynthModelCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern SynthModel.Native.VoiceBinding* XtsVoiceBindingCreate();
 
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPDestroy(IntPtr dsp);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqModelDestroy(IntPtr model);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelDestroy(IntPtr model);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqStateDestroy(SeqState* state);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotStateDestroy(PlotState* state);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqModelDestroy(SeqModel.Native* model);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelDestroy(SynthModel.Native* model);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsVoiceBindingDestroy(SynthModel.Native.VoiceBinding* binding);
 
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDSPRender(PlotState* state);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPRender(IntPtr dsp, SeqState* state);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPInit(IntPtr dsp, IntPtr model, IntPtr synth);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(
 			SynthModel.Native.ParamInfo* infos, int infoCount, SynthModel.Native.SyncStep* steps, int stepCount);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPInit(
+			IntPtr dsp, SeqModel.Native* model, SynthModel.Native* synth, SynthModel.Native.VoiceBinding* binding);
 	}
 }
