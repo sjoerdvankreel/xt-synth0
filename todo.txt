@@ -24,5 +24,5 @@ plot spectrum
 init with streampos / derive stuff from streampos ?
 tri = integrate pulse
 show automation range error in UI
-make voice model explicit
+make voice model explicit / no interior ptrs
 serialize as map with msgpack
