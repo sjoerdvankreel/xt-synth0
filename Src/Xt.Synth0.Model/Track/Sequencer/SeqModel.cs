@@ -31,5 +31,31 @@ namespace Xt.Synth0.Model
 
 		public override IReadOnlyList<IParamGroupModel> Groups => new[] { Edit };
 		public override IReadOnlyList<IGroupContainerModel> Children => new[] { Pattern };
+
+		public override void ToNative(void* native) => ToNative(this, native);
+		void ToNative(IGroupContainerModel container, void* native)
+		{
+			for (int i = 0; i < container.Children.Count; i++)
+				ToNative(container.Children[i], container.Children[i].Address(native));
+			for (int i = 0; i < container.Groups.Count; i++)
+				for (int j = 0; j < container.Groups[i].Params.Count; j++)
+				{
+					var param = container.Groups[i].Params[j];
+					*param.Info.Address(container.Groups[i].Address(native)) = param.Value;
+				}
+		}
+
+		public override void FromNative(void* native) => FromNative(this, native);
+		void FromNative(IGroupContainerModel container, void* native)
+		{
+			for (int i = 0; i < container.Children.Count; i++)
+				FromNative(container.Children[i], container.Children[i].Address(native));
+			for (int i = 0; i < container.Groups.Count; i++)
+				for (int j = 0; j < container.Groups[i].Params.Count; j++)
+				{
+					var param = container.Groups[i].Params[j];
+					param.Value = *param.Info.Address(container.Groups[i].Address(native));
+				}
+		}
 	}
 }

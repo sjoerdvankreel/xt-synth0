@@ -21,7 +21,7 @@ namespace Xt.Synth0.Model
 		.Concat(new[] { new SyncStep { num = 0, den = 1 } })
 		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new SyncStep { num = s.num + s.den, den = s.den }));
 		public static readonly SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
-		
+
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public struct ParamInfo { public int min, max; }
 
@@ -58,7 +58,9 @@ namespace Xt.Synth0.Model
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
 
+		Native* _paired;
 		public IReadOnlyList<SynthParam> SynthParams { get; }
+
 		public override IReadOnlyList<IGroupContainerModel> Children => new IGroupContainerModel[0];
 		public override IReadOnlyList<IParamGroupModel> Groups => Units.Concat<IParamGroupModel>(Envs).Concat(Lfos).Concat(new IParamGroupModel[] { Plot, Global }).ToArray();
 
@@ -76,7 +78,7 @@ namespace Xt.Synth0.Model
 		public ParamInfo[] ParamInfos()
 		{
 			var result = new ParamInfo[Model.ParamCount];
-			for(int i = 0; i < Model.ParamCount; i++)
+			for (int i = 0; i < Model.ParamCount; i++)
 			{
 				result[i].min = Params[i].Info.Min;
 				result[i].max = Params[i].Info.Max;
@@ -84,12 +86,26 @@ namespace Xt.Synth0.Model
 			return result;
 		}
 
-		public void PrepareNative(IntPtr native)
+		public override void ToNative(void* native)
 		{
-			Native* ptr = (Native*)native;
-			var @params = (int**)ptr->@params;
+			if (_paired != native) throw new InvalidOperationException();
+			for (int i = 0; i < Params.Count; i++)
+				*((int**)_paired->@params)[i] = Params[i].Value;
+		}
+
+		public override void FromNative(void* native)
+		{
+			if (_paired != native) throw new InvalidOperationException();
+			for (int i = 0; i < Params.Count; i++)
+				Params[i].Value = *((int**)_paired->@params)[i];
+		}
+
+		public void PairNative(IntPtr native)
+		{
+			_paired = (Native*)native;
+			var @params = (int**)_paired->@params;
 			for (int p = 0; p < Params.Count; p++)
-				@params[p] = Params[p].Info.Address(SynthParams[p].Group.Address(ptr));
+				@params[p] = Params[p].Info.Address(SynthParams[p].Group.Address(_paired));
 		}
 	}
 }
