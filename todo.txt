@@ -19,11 +19,10 @@ lfo NOT key sync
 phase modulation
 init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters, envelopes
-do voices in the synth, not the sequencer
 reconsider automating running voices
 plot spectrum
 init with streampos / derive stuff from streampos ?
 tri = integrate pulse
-do uisubmodel/container
 show automation range error in UI
-fix model iface structure
+make voice model explicit
+serialize as map with msgpack
