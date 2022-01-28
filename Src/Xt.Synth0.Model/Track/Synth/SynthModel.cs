@@ -15,18 +15,15 @@ namespace Xt.Synth0.Model
 		}
 
 		static readonly int[] BaseSteps = { 1, 2, 3, 4, 6, 9, 16 };
-		static IEnumerable<SyncStep> Cartesian()
-		=> BaseSteps.SelectMany(n => BaseSteps.Select(d => new SyncStep { num = n, den = d }));
-		static IEnumerable<SyncStep> AllSteps() => Cartesian()
-		.Concat(new[] { new SyncStep { num = 0, den = 1 } })
-		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new SyncStep { num = s.num + s.den, den = s.den }));
-		public static readonly SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
+		static IEnumerable<Native.SyncStep> Cartesian()
+		=> BaseSteps.SelectMany(n => BaseSteps.Select(d => new Native.SyncStep { num = n, den = d }));
+		static IEnumerable<Native.SyncStep> AllSteps() => Cartesian()
+		.Concat(new[] { new Native.SyncStep { num = 0, den = 1 } })
+		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new Native.SyncStep { num = s.num + s.den, den = s.den }));
+		public static readonly Native.SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public struct ParamInfo { public int min, max; }
-
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal ref struct Native
+		public ref struct Native
 		{
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
@@ -34,18 +31,21 @@ namespace Xt.Synth0.Model
 			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
 			internal fixed byte @params[Model.ParamCount * 8];
-		}
 
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		public struct SyncStep
-		{
-			internal int num, den;
-			internal float val => num / (float)den;
+			[StructLayout(LayoutKind.Sequential, Pack = 8)]
+			public struct ParamInfo { public int min, max; }
 
-			public override string ToString() => $"{num}/{den}";
-			public override int GetHashCode() => num + 37 * den;
-			public override bool Equals(object obj) => ((SyncStep)obj).num == num && ((SyncStep)obj).den == den;
-			internal SyncStep Simplify() => new SyncStep { num = num / GCD(num, den), den = den / GCD(num, den) };
+			[StructLayout(LayoutKind.Sequential, Pack = 8)]
+			public struct SyncStep
+			{
+				internal int num, den;
+				internal float val => num / (float)den;
+
+				public override string ToString() => $"{num}/{den}";
+				public override int GetHashCode() => num + 37 * den;
+				public override bool Equals(object obj) => ((SyncStep)obj).num == num && ((SyncStep)obj).den == den;
+				internal SyncStep Simplify() => new SyncStep { num = num / GCD(num, den), den = den / GCD(num, den) };
+			}
 		}
 
 		public PlotModel Plot { get; } = new();
@@ -75,9 +75,9 @@ namespace Xt.Synth0.Model
 				throw new InvalidOperationException();
 		}
 
-		public ParamInfo[] ParamInfos()
+		public Native.ParamInfo[] ParamInfos()
 		{
-			var result = new ParamInfo[Model.ParamCount];
+			var result = new Native.ParamInfo[Model.ParamCount];
 			for (int i = 0; i < Model.ParamCount; i++)
 			{
 				result[i].min = Params[i].Info.Min;
