@@ -27,6 +27,7 @@ namespace Xt.Synth0.Model
 		readonly int _index;
 		internal LfoModel(int index) => _index = index;
 
+		public int Columns => 3;
 		public Param Enabled => On;
 		public string Name => $"LFO {_index + 1}";
 		public ThemeGroup ThemeGroup => ThemeGroup.Lfo;

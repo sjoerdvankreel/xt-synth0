@@ -22,6 +22,7 @@ namespace Xt.Synth0.Model
 		public Param AmpEnvAmt { get; } = new(AmpEnvAmtInfo);
 		public Param AmpLfoAmt { get; } = new(AmpLfoAmtInfo);
 
+		public int Columns => 3;
 		public Param Enabled => null;
 		public string Name => "Global";
 		public ThemeGroup ThemeGroup => ThemeGroup.Global;

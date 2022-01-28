@@ -14,6 +14,7 @@ namespace Xt.Synth0.Model
 		public Param Type { get; } = new(TypeInfo);
 		public Param Hold { get; } = new(HoldInfo);
 
+		public int Columns => 3;
 		public Param Enabled => null;
 		public string Name => "Plot";
 		public ThemeGroup ThemeGroup => ThemeGroup.Plot;

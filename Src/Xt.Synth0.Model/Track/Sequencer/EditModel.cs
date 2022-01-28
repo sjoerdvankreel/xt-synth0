@@ -17,6 +17,7 @@ namespace Xt.Synth0.Model
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Rows { get; } = new(RowsInfo);
 
+		public int Columns => 2;
 		public Param Enabled => null;
 		public string Name => "Edit";
 		public ThemeGroup ThemeGroup => ThemeGroup.Pattern;

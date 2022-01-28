@@ -34,12 +34,12 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static UIElement Make(
-			AppModel app, IThemedSubModel sub, Param param)
+			AppModel app, IUIParamGroupModel group, Param param)
 		{
 			var result = MakeEmpty();
 			bool conditional = param.Info.Relevance != null;
-			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(sub, param));
-			result.Add(MakeControl(app, sub, param), Dock.Left);
+			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(group, param));
+			result.Add(MakeControl(app, group.ThemeGroup, param), Dock.Left);
 			if (param.Info.Type == ParamType.List) return result;
 			var name = result.Add(Create.Text($"{param.Info.Name} "), Dock.Left);
 			name.VerticalAlignment = VerticalAlignment.Center;
@@ -48,14 +48,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Control MakeControl(AppModel app, IThemedSubModel sub, Param param)
+		internal static Control MakeControl(AppModel app, ThemeGroup group, Param param)
 		=> param.Info.Type switch
 		{
 			ParamType.List => MakeList(app, param),
 			ParamType.Toggle => MakeToggle(app, param),
-			ParamType.Lin => MakeKnob(app, sub, param),
-			ParamType.Exp => MakeKnob(app, sub, param),
-			ParamType.Time => MakeKnob(app, sub, param),
+			ParamType.Lin => MakeKnob(app, group, param),
+			ParamType.Exp => MakeKnob(app, group, param),
+			ParamType.Time => MakeKnob(app, group, param),
 			_ => throw new InvalidOperationException()
 		};
 
@@ -89,14 +89,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static Control MakeKnob(AppModel app, IThemedSubModel sub, Param param)
+		static Control MakeKnob(AppModel app, ThemeGroup group, Param param)
 		{
 			var result = new Knob();
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.ToolTip = Tooltip(app.Track.Synth, param);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.MouseRightButtonUp += (s, e) => ExactUI.Show(app.Settings, sub.Group, param);
+			result.MouseRightButtonUp += (s, e) => ExactUI.Show(app.Settings, group, param);
 			result.Sensitivity = Math.Max(Knob.DefaultSensitivity, param.Info.Max - param.Info.Min);
 			return result;
 		}

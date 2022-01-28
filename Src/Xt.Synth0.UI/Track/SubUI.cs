@@ -68,21 +68,21 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static Grid MakeGrid(AppModel app, IThemedSubModel sub)
+		static Grid MakeGrid(AppModel app, IUIParamGroupModel group)
 		{
-			int cols = sub.ColumnCount;
-			var positions = sub.ParamLayout.Max(p => p.Value) + 1;
+			int cols = group.ColumnCount;
+			var positions = group.ParamLayout.Max(p => p.Value) + 1;
 			int rows = (int)Math.Ceiling(positions / (double)cols);
 			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.RowDefinitions[rows - 1].Height = new GridLength(1.0, GridUnitType.Star);
 			result.ColumnDefinitions[cols - 1].Width = new GridLength(1.0, GridUnitType.Star);
-			foreach (var p in sub.ParamLayout)
+			foreach (var p in group.ParamLayout)
 				if (p.Value >= 0)
-					result.Add(MakeInnerBorder(ParamUI.Make(app, sub, p.Key), new(p.Value / cols, p.Value % cols)));
+					result.Add(MakeInnerBorder(ParamUI.Make(app, group, p.Key), new(p.Value / cols, p.Value % cols)));
 			for (int p = 0; p < rows * cols; p++)
-				if (!sub.ParamLayout.Values.Contains(p))
+				if (!group.ParamLayout.Values.Contains(p))
 					result.Add(MakeInnerBorder(null, new Cell(p / cols, p % cols)));
 			return result;
 		}
