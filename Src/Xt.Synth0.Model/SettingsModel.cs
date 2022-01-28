@@ -11,7 +11,7 @@ namespace Xt.Synth0.Model
 	public enum BufferSize { Size1, Size2, Size3, Size5, Size10, Size20, Size30, Size50, Size100 }
 
 	[MessagePackObject]
-	public sealed class SettingsModel : IThemedModel, INotifyPropertyChanged
+	public sealed class SettingsModel : IUIModel, INotifyPropertyChanged
 	{
 		public const int MaxRecentFiles = 10;
 		const string DefaultOutputPath = "synth0.raw";
@@ -20,7 +20,7 @@ namespace Xt.Synth0.Model
 		[IgnoreMember]
 		public string Name => "Settings";
 		[IgnoreMember]
-		public ThemeGroup Group => ThemeGroup.Settings;
+		public ThemeGroup ThemeGroup => ThemeGroup.Settings;
 
 		ThemeType _themeType = ThemeType.Grouped;
 		[Key(nameof(ThemeType))]

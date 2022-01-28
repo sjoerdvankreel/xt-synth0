@@ -5,12 +5,13 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe abstract class MainModel : IModelContainer
+	public unsafe abstract class MainModel : IGroupContainerModel
 	{
 		public IReadOnlyList<Param> Params { get; }
-		public abstract IReadOnlyList<ISubModel> SubModels { get; }
-		public abstract IReadOnlyList<IModelContainer> SubContainers { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
+
+		public abstract IReadOnlyList<IParamGroupModel> Groups { get; }
+		public abstract IReadOnlyList<IGroupContainerModel> Children { get; }
 		public void* Address(void* parent) => throw new NotSupportedException();
 
 		protected MainModel()
@@ -30,53 +31,39 @@ namespace Xt.Synth0.Model
 		}
 
 		public void ToNative(void* native) => ToNative(this, native);
-		void ToNative(IModelContainer container, void* native)
+		void ToNative(IGroupContainerModel container, void* native)
 		{
-			for (int i = 0; i < container.SubContainers.Count; i++)
-			{
-				var child = container.SubContainers[i];
-				ToNative(child, child.Address(native));
-			}
-			for (int i = 0; i < container.SubModels.Count; i++)
-			{
-				var child = container.SubModels[i];
-				var nativeSub = child.Address(native);
-				for (int j = 0; j < child.Params.Count; j++)
+			for (int i = 0; i < container.Children.Count; i++)
+				ToNative(container.Children[i], container.Children[i].Address(native));
+			for (int i = 0; i < container.Groups.Count; i++)
+				for (int j = 0; j < container.Groups[i].Params.Count; j++)
 				{
-					var childParam = child.Params[j];
-					*childParam.Info.Address(nativeSub) = childParam.Value;
+					var param = container.Groups[i].Params[j];
+					*param.Info.Address(container.Groups[i].Address(native)) = param.Value;
 				}
-			}
 		}
 
 		public void FromNative(void* native) => FromNative(this, native);
-		void FromNative(IModelContainer container, void* native)
+		void FromNative(IGroupContainerModel container, void* native)
 		{
-			for (int i = 0; i < container.SubContainers.Count; i++)
-			{
-				var child = container.SubContainers[i];
-				FromNative(child, child.Address(native));
-			}
-			for (int i = 0; i < container.SubModels.Count; i++)
-			{
-				var child = container.SubModels[i];
-				var nativeSub = child.Address(native);
-				for (int j = 0; j < child.Params.Count; j++)
+			for (int i = 0; i < container.Children.Count; i++)
+				FromNative(container.Children[i], container.Children[i].Address(native));
+			for (int i = 0; i < container.Groups.Count; i++)
+				for (int j = 0; j < container.Groups[i].Params.Count; j++)
 				{
-					var childParam = child.Params[j];
-					childParam.Value = *childParam.Info.Address(nativeSub);
+					var param = container.Groups[i].Params[j];
+					param.Value = *param.Info.Address(container.Groups[i].Address(native));
 				}
-			}
 		}
 
-		protected IList<(ISubModel Sub, Param Param)> ListParams(IModelContainer container)
+		protected IList<(IParamGroupModel Group, Param Param)> ListParams(IGroupContainerModel container)
 		{
-			var result = new List<(ISubModel, Param)>();
-			foreach (var model in container.SubModels)
-				foreach (var param in model.Params)
-					result.Add((model, param));
-			foreach (var child in container.SubContainers)
-				result.AddRange(ListParams(child));
+			var result = new List<(IParamGroupModel, Param)>();
+			for (int i = 0; i < container.Groups.Count; i++)
+				for (int j = 0; j < container.Groups[i].Params.Count; j++)
+					result.Add((container.Groups[i], container.Groups[i].Params[j]));
+			for (int i = 0; i < container.Children.Count; i++)
+				result.AddRange(ListParams(container.Children[i]));
 			return result;
 		}
 	}

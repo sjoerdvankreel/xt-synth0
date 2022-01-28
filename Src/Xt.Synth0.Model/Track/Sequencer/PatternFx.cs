@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class PatternFx : ISubModel
+	public unsafe sealed class PatternFx : IParamGroupModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
@@ -17,6 +17,7 @@ namespace Xt.Synth0.Model
 
 		readonly int _index;
 		internal PatternFx(int index) => _index = index;
+
 		public IReadOnlyList<Param> Params => new[] { Tgt, Val };
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[_index * Native.Size];
 

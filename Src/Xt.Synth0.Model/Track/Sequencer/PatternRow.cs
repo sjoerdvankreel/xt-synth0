@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class PatternRow : IModelContainer
+	public unsafe sealed class PatternRow : IGroupContainerModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
@@ -17,8 +17,9 @@ namespace Xt.Synth0.Model
 
 		readonly int _index;
 		internal PatternRow(int index) => _index = index;
-		public IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
-		public IReadOnlyList<ISubModel> SubModels => Fx.Concat<ISubModel>(Keys).ToArray();
+
+		public IReadOnlyList<IGroupContainerModel> Children => new IGroupContainerModel[0];
+		public IReadOnlyList<IParamGroupModel> Groups => Fx.Concat<IParamGroupModel>(Keys).ToArray();
 		public void* Address(void* parent) => &((PatternModel.Native*)parent)->rows[_index * Native.Size];
 
 		public IReadOnlyList<PatternFx> Fx = new ReadOnlyCollection<PatternFx>(MakeFx());

@@ -15,7 +15,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = new StringBuilder();
 			var param = _synth.SynthParams.SingleOrDefault(p => p.Index == target);
-			var targetDetail = $"{param?.Owner.Name} {param?.Param.Info.Description}";
+			var targetDetail = $"{param?.Group.Name} {param?.Param.Info.Description}";
 			result.AppendLine($"{_param.Info.Description}: {(param != null ? targetDetail : "None")}");
 			result.AppendLine("Ctrl + F to fill");
 			if (param != null) result.AppendLine($"Range: {param.Param.Info.Range(true)}");

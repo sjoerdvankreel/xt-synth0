@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
 	public enum LfoType { Sin, Saw, Sqr, Tri }
 
-	public unsafe sealed class LfoModel : IThemedSubModel
+	public unsafe sealed class LfoModel : IUIParamGroupModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
@@ -24,13 +25,14 @@ namespace Xt.Synth0.Model
 		public Param Step { get; } = new(StepInfo);
 
 		readonly int _index;
-		public string Name => $"LFO {_index + 1}";
-		public ThemeGroup Group => ThemeGroup.Lfo;
 		internal LfoModel(int index) => _index = index;
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->lfos[_index * Native.Size];
 
 		public Param Enabled => On;
-		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
+		public string Name => $"LFO {_index + 1}";
+		public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
+		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->lfos[_index * Native.Size];
+		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
 			{ Type, 0 }, { Sync, 1 } ,{ Rate, 2 }, { Step, 2 },

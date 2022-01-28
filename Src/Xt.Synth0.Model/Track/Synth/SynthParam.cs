@@ -4,8 +4,8 @@
 	{
 		public int Index { get; }
 		public Param Param { get; }
-		public IThemedSubModel Owner { get; }
-		internal SynthParam(IThemedSubModel owner, int index, Param param) 
-		=> (Owner, Index, Param) = (owner, index, param);
+		public IUIParamGroupModel Group { get; }
+		internal SynthParam(IUIParamGroupModel owner, int index, Param param) 
+		=> (Group, Index, Param) = (owner, index, param);
 	}
 }

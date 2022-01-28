@@ -3,16 +3,16 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class ControlModel : IThemedModel
+	public sealed class ControlModel : IUIModel
 	{
 		public string Name => "Control";
-		public ThemeGroup Group => ThemeGroup.Control;
+		public ThemeGroup ThemeGroup => ThemeGroup.Control;
 	}
 
-	public sealed class MonitorModel : IThemedModel
+	public sealed class MonitorModel : IUIModel
 	{
 		public string Name => "Monitor";
-		public ThemeGroup Group => ThemeGroup.Control;
+		public ThemeGroup ThemeGroup => ThemeGroup.Control;
 	}
 
 	public unsafe sealed class SeqModel : MainModel
@@ -28,7 +28,8 @@ namespace Xt.Synth0.Model
 		public PatternModel Pattern { get; } = new();
 		public ControlModel Control { get; } = new();
 		public MonitorModel Monitor { get; } = new();
-		public override IReadOnlyList<ISubModel> SubModels => new[] { Edit };
-		public override IReadOnlyList<IModelContainer> SubContainers => new[] { Pattern };
+
+		public override IReadOnlyList<IParamGroupModel> Groups => new[] { Edit };
+		public override IReadOnlyList<IGroupContainerModel> Children => new[] { Pattern };
 	}
 }

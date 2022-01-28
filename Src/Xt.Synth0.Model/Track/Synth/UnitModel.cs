@@ -11,7 +11,7 @@ namespace Xt.Synth0.Model
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 	public enum AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
-	public unsafe sealed class UnitModel : IThemedSubModel
+	public unsafe sealed class UnitModel : IUIParamGroupModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
@@ -45,13 +45,14 @@ namespace Xt.Synth0.Model
 		public Param AddMaxParts { get; } = new(AddMaxPartsInfo);
 
 		readonly int _index;
-		public string Name => $"Unit {_index + 1}";
-		public ThemeGroup Group => ThemeGroup.Unit;
 		internal UnitModel(int index) => _index = index;
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Native.Size];
 
 		public Param Enabled => On;
-		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
+		public string Name => $"Unit {_index + 1}";
+		public ThemeGroup ThemeGroup => ThemeGroup.Unit;
+		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Native.Size];
+		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
 			{ Type, 0 }, { AddType, 1 }, { NaiveType, 1 },

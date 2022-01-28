@@ -59,15 +59,15 @@ namespace Xt.Synth0.Model
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }
-		public override IReadOnlyList<IModelContainer> SubContainers => new IModelContainer[0];
-		public override IReadOnlyList<ISubModel> SubModels => Units.Concat<ISubModel>(Envs).Concat(Lfos).Concat(new ISubModel[] { Plot, Global }).ToArray();
+		public override IReadOnlyList<IGroupContainerModel> Children => new IGroupContainerModel[0];
+		public override IReadOnlyList<IParamGroupModel> Groups => Units.Concat<IParamGroupModel>(Envs).Concat(Lfos).Concat(new IParamGroupModel[] { Plot, Global }).ToArray();
 
 		public SynthModel()
 		{
 			Envs[0].On.Value = 1;
 			Units[0].On.Value = 1;
 			Plot.Type.Value = (int)PlotType.Unit1;
-			var @params = ListParams(this).Select((p, i) => new SynthParam((IThemedSubModel)p.Sub, i + 1, p.Param));
+			var @params = ListParams(this).Select((p, i) => new SynthParam((IUIParamGroupModel)p.Group, i + 1, p.Param));
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
 			if (SynthParams.Count != Model.ParamCount)
 				throw new InvalidOperationException();
@@ -89,7 +89,7 @@ namespace Xt.Synth0.Model
 			Native* ptr = (Native*)native;
 			var @params = (int**)ptr->@params;
 			for (int p = 0; p < Params.Count; p++)
-				@params[p] = Params[p].Info.Address(SynthParams[p].Owner.Address(ptr));
+				@params[p] = Params[p].Info.Address(SynthParams[p].Group.Address(ptr));
 		}
 	}
 }

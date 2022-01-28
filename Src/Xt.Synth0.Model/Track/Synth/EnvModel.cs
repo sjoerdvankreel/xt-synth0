@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
 	public enum EnvType { DAHDSR, DAHDR}
 
-	public unsafe sealed class EnvModel : IThemedSubModel
+	public unsafe sealed class EnvModel : IUIParamGroupModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
@@ -36,13 +37,14 @@ namespace Xt.Synth0.Model
 		public Param DlyStp { get; } = new(DlyStpInfo);
 
 		readonly int _index;
-		public string Name => $"Env {_index + 1}";
-		public ThemeGroup Group => ThemeGroup.Env;
 		internal EnvModel(int index) => _index = index;
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[_index * Native.Size];
 
 		public Param Enabled => On;
-		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
+		public string Name => $"Env {_index + 1}";
+		public ThemeGroup ThemeGroup => ThemeGroup.Env;
+		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[_index * Native.Size];
+		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
 			{ Type, 0 }, { Sync, 1 }, { Dly, 2 }, { DlyStp, 2 },

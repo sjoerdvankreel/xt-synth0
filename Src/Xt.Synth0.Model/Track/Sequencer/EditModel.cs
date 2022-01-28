@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class EditModel : IThemedSubModel
+	public unsafe sealed class EditModel : IUIParamGroupModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native { internal int pats, rows, keys, fxs, lpb, edit, bpm, pad__; }
@@ -16,11 +17,18 @@ namespace Xt.Synth0.Model
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Rows { get; } = new(RowsInfo);
 
-		public int ColumnCount => 2;
+		public Param Enabled => null;
 		public string Name => "Edit";
-		public ThemeGroup Group => ThemeGroup.Pattern;
+		public ThemeGroup ThemeGroup => ThemeGroup.Pattern;
+		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
-		public IReadOnlyList<Param> Params => new[] { Pats, Rows, Keys, Fxs, Bpm, Lpb, Edit };
+		public IDictionary<Param, int> Layout => new Dictionary<Param, int>()
+		{
+			{ Pats, 0 }, { Rows, 1 },
+			{ Keys, 2 }, { Fxs, 3 },
+			{ Bpm, 4 }, { Lpb, 5 },
+			{ Edit, 6 }
+		};
 
 		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, "BPM", "Beats per minute", 1, 255, 120);
 		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, "LPB", "Lines per beat", 1, Model.MaxLpb, 4);

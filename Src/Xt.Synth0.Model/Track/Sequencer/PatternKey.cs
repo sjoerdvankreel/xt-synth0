@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	public enum PatternNote { None, Off, C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 
-	public unsafe sealed class PatternKey : ISubModel
+	public unsafe sealed class PatternKey : IParamGroupModel
 	{
 		public static readonly string[] Notes = new[] {
 			"..", "==", "C-", "C#", "D-", "D#", "E-",
@@ -25,6 +25,7 @@ namespace Xt.Synth0.Model
 
 		readonly int _index;
 		internal PatternKey(int index) => _index = index;
+
 		public IReadOnlyList<Param> Params => new[] { Note, Oct, Amp };
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->keys[_index * Native.Size];
 

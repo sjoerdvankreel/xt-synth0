@@ -17,7 +17,7 @@ namespace Xt.Synth0.UI
 
 		public static void Show(SettingsModel settings)
 		{
-			var window = Create.Window(settings, settings.Group, WindowStartupLocation.CenterScreen);
+			var window = Create.Window(settings, settings.ThemeGroup, WindowStartupLocation.CenterScreen);
 			window.Content = MakeContent(window, settings);
 			window.ShowDialog();
 		}

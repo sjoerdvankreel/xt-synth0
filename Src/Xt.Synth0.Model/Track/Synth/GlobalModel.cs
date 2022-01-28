@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
@@ -6,7 +7,7 @@ namespace Xt.Synth0.Model
 	public enum GlobalAmpLfo { LFO1, LFO2 }
 	public enum GlobalAmpEnv { Env1, Env2, Env3 }
 
-	public unsafe sealed class GlobalModel : IThemedSubModel
+	public unsafe sealed class GlobalModel : IUIParamGroupModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
@@ -21,11 +22,12 @@ namespace Xt.Synth0.Model
 		public Param AmpEnvAmt { get; } = new(AmpEnvAmtInfo);
 		public Param AmpLfoAmt { get; } = new(AmpLfoAmtInfo);
 
+		public Param Enabled => null;
 		public string Name => "Global";
-		public ThemeGroup Group => ThemeGroup.Global;
+		public ThemeGroup ThemeGroup => ThemeGroup.Global;
+		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
-
-		public IDictionary<Param, int> ParamLayout => new Dictionary<Param, int>
+		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ Amp, 0 }, { AmpEnv, 1 }, { AmpEnvAmt, 2 },
 			{ AmpLfo, 4 }, { AmpLfoAmt, 5 }
