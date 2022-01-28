@@ -52,10 +52,10 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static MultiBinding Relevance(IParamGroupModel part, Param param)
+		internal static MultiBinding Relevance(IParamGroupModel group, Param param)
 		{
-			var bindings = param.Info.Relevance.Params(part).Select(To);
-			return To(new RelevanceConverter(part, param), bindings.ToArray());
+			var bindings = param.Info.Relevance.Params(group).Select(To);
+			return To(new RelevanceConverter(group, param), bindings.ToArray());
 		}
 
 		internal static MultiBinding EnableRow(AppModel app, int row)

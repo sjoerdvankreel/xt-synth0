@@ -37,7 +37,7 @@ namespace Xt.Synth0.UI
 		static UIElement MakeContent(AppModel app, TextBlock text)
 		{
 			var result = new DockPanel();
-			result.Add(SubUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
+			result.Add(GroupUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
 			result.Add(MakePlotContent(app, text), Dock.Top);
 			return result;
 		}
@@ -53,7 +53,7 @@ namespace Xt.Synth0.UI
 			app.Settings.PropertyChanged += (s, e) => Update(app, text, content);
 			app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => Update(app, text, content);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
-			result.BorderThickness = new(SubUI.BorderThickness, 0.0, SubUI.BorderThickness, SubUI.BorderThickness);
+			result.BorderThickness = new(GroupUI.BorderThickness, 0.0, GroupUI.BorderThickness, GroupUI.BorderThickness);
 			return result;
 		}
 

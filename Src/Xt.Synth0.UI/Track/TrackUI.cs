@@ -20,17 +20,17 @@ namespace Xt.Synth0.UI
 			var synth = app.Track.Synth;
 			var result = new DockPanel();
 			foreach (var unit in synth.Units)
-				result.Add(SubUI.Make(app, unit), Dock.Top);
+				result.Add(GroupUI.Make(app, unit), Dock.Top);
 			foreach (var lfo in synth.Lfos)
-				result.Add(SubUI.Make(app, lfo), Dock.Top);
-			result.Add(SubUI.Make(app, app.Track.Synth.Global), Dock.Top);
+				result.Add(GroupUI.Make(app, lfo), Dock.Top);
+			result.Add(GroupUI.Make(app, app.Track.Synth.Global), Dock.Top);
 			return result;
 		}
 
 		static UIElement MakeRight(AppModel app)
 		{
 			var result = new DockPanel();
-			var edit = result.Add(SubUI.Make(app, app.Track.Seq.Edit), Dock.Bottom);
+			var edit = result.Add(GroupUI.Make(app, app.Track.Seq.Edit), Dock.Bottom);
 			var binding = Bind.To(app.Stream, nameof(app.Stream.IsStopped));
 			edit.SetBinding(UIElement.IsEnabledProperty, binding);
 			result.Add(PatternUI.Make(app), Dock.Bottom);
@@ -43,7 +43,7 @@ namespace Xt.Synth0.UI
 			var envCount = Model.Model.EnvCount;
 			var result = Create.Grid(envCount + 3, 1);
 			for (int i = 0; i < envCount; i++)
-				result.Add(SubUI.Make(app, synth.Envs[i]), new(i, 0));
+				result.Add(GroupUI.Make(app, synth.Envs[i]), new(i, 0));
 			result.Add(PlotUI.Make(app), new(envCount + 0, 0));
 			result.Add(MonitorUI.Make(app), new(envCount + 1, 0));
 			result.Add(ControlUI.Make(app), new(envCount + 2, 0));
