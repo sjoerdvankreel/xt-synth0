@@ -24,9 +24,15 @@ namespace Xt.Synth0.UI
 		internal static string BorderParamKey = nameof(BorderParamKey);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
 
-		internal static void FocusDownLeft()
+		internal static void FocusDown(int count)
 		{
-			FocusDown();
+			for (int i = 0; i < count; i++)
+				Focus(FocusNavigationDirection.Down);
+		}
+
+		internal static void FocusDownLeft(int count)
+		{
+			FocusDown(count);
 			FocusLeft();
 		}
 
@@ -36,7 +42,6 @@ namespace Xt.Synth0.UI
 			(Keyboard.FocusedElement as UIElement)?.MoveFocus(request);
 		}
 
-		internal static void FocusDown() => Focus(FocusNavigationDirection.Down);
 		internal static void FocusLeft() => Focus(FocusNavigationDirection.Left);
 		internal static void FocusRight() => Focus(FocusNavigationDirection.Right);
 

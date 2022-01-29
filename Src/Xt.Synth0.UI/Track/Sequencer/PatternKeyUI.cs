@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
 	{
 		const string NoteEditHint = $"Click + ./space/Z-M/Q-E to edit";
 
-		static (int Oct, PatternNote Note) KeyToNoteEdit(Key key) => key switch
+		static (int Oct, PatternNote Note) KeyToAction(Key key) => key switch
 		{
 			Key.OemPeriod => (-1, PatternNote.None),
 			Key.Space => (-1, PatternNote.Off),
@@ -48,12 +48,12 @@ namespace Xt.Synth0.UI
 			_ => (-2, PatternNote.None)
 		};
 
-		static void OnOctTextInput(Param param, TextCompositionEventArgs e)
+		static void OnOctTextInput(Param step, Param param, TextCompositionEventArgs e)
 		{
 			int value = e.Text.FirstOrDefault() - '0';
 			if (value < param.Info.Min || value > param.Info.Max) return;
 			param.Value = value;
-			Utility.FocusDown();
+			Utility.FocusDown(step.Value);
 			e.Handled = true;
 		}
 
@@ -63,16 +63,16 @@ namespace Xt.Synth0.UI
 				interpolate();
 		}
 
-		static void OnNoteKeyDown(Param editOct, Param keyNote, Param keyOct, KeyEventArgs e)
+		static void OnNoteKeyDown(EditModel edit, Param keyNote, Param keyOct, KeyEventArgs e)
 		{
-			var edit = KeyToNoteEdit(e.Key);
-			if (edit.Oct == -2) return;
+			var action = KeyToAction(e.Key);
+			if (action.Oct == -2) return;
 			e.Handled = true;
-			if (edit.Note == PatternNote.Off) keyNote.Value = (int)PatternNote.Off;
-			if (edit.Note == PatternNote.None) keyNote.Value = (int)PatternNote.None;
-			keyNote.Value = (int)edit.Note;
-			keyOct.Value = Math.Min(9, editOct.Value + edit.Oct);
-			Utility.FocusDown();
+			if (action.Note == PatternNote.Off) keyNote.Value = (int)PatternNote.Off;
+			if (action.Note == PatternNote.None) keyNote.Value = (int)PatternNote.None;
+			keyNote.Value = (int)action.Note;
+			keyOct.Value = Math.Min(9, edit.Oct.Value + action.Oct);
+			Utility.FocusDown(edit.Step.Value);
 		}
 
 		internal static void Add(Grid grid, AppModel app,
@@ -94,7 +94,7 @@ namespace Xt.Synth0.UI
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(keyNote));
 			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.KeyDown += (s, e) => OnNoteKeyDown(edit.Oct, keyNote, keyOct, e);
+			result.KeyDown += (s, e) => OnNoteKeyDown(edit, keyNote, keyOct, e);
 			return result;
 		}
 
@@ -102,7 +102,7 @@ namespace Xt.Synth0.UI
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.TextInput += (s, e) => OnOctTextInput(key.Oct, e);
+			result.TextInput += (s, e) => OnOctTextInput(edit.Step, key.Oct, e);
 			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.ToolTip = string.Join("\n", key.Oct.Info.Description, PatternUI.EditHint);
@@ -117,8 +117,8 @@ namespace Xt.Synth0.UI
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = key.Amp.Info.Min;
 			result.Maximum = key.Amp.Info.Max;
-			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
+			result.OnParsed += (s, e) => Utility.FocusDown(edit.Step.Value);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));

@@ -60,7 +60,7 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, Action interpolate)
 		{
 			var result = MakeHex(app, value, minFx, row, col);
-			result.OnParsed += (s, e) => Utility.FocusDownLeft();
+			result.OnParsed += (s, e) => Utility.FocusDownLeft(app.Track.Seq.Edit.Step.Value);
 			result.ToolTip = string.Join("\n", value.Info.Description,
 				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e); 
