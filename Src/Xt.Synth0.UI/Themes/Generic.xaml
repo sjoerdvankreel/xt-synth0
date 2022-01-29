@@ -62,37 +62,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="{x:Type local:HexBox}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:HexBox}">
-                    <Border x:Name="border" Background="{TemplateBinding Background}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock x:Name="text1" Grid.Column="0" Text="{TemplateBinding HexValue1}" Opacity="1"/>
-                            <TextBlock x:Name="text2" Grid.Column="1" Text="{TemplateBinding HexValue2}" Opacity="1"/>
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
-                        </Trigger>
-                        <Trigger Property="FocusedIndex" Value="1">
-                            <Setter TargetName="text1" Property="Background" Value="{DynamicResource Foreground3Key}"/>
-                        </Trigger>
-                        <Trigger Property="FocusedIndex" Value="2">
-                            <Setter TargetName="text2" Property="Background" Value="{DynamicResource Foreground3Key}"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style TargetType="{x:Type local:Knob}">
         <Setter Property="Margin" Value="{StaticResource Margin}"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
@@ -110,6 +79,51 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:HexBox}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:HexBox}">
+                    <Border x:Name="border" Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="text1" Visibility="Hidden" Grid.Column="0" Text="{TemplateBinding HexValue1}"/>
+                            <TextBlock x:Name="text2" Visibility="Hidden" Grid.Column="1" Text="{TemplateBinding HexValue2}"/>
+                            <TextBlock x:Name="placeholder1" Visibility="Visible" Grid.Column="0" Text="{TemplateBinding Placeholder}"/>
+                            <TextBlock x:Name="placeholder2" Visibility="Visible" Grid.Column="1" Text="{TemplateBinding Placeholder}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="true">
+                            <Setter TargetName="text1" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="text2" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="placeholder1" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="placeholder2" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="ShowPlaceholder" Value="false">
+                            <Setter TargetName="text1" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="text2" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="placeholder1" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="placeholder2" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="FocusedIndex" Value="1">
+                            <Setter TargetName="text1" Property="Background" Value="{DynamicResource Foreground3Key}"/>
+                        </Trigger>
+                        <Trigger Property="FocusedIndex" Value="2">
+                            <Setter TargetName="text2" Property="Background" Value="{DynamicResource Foreground3Key}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

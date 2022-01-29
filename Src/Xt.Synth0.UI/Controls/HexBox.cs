@@ -32,6 +32,16 @@ namespace Xt.Synth0.UI
 		public static string GetHexValue2(DependencyObject obj) => (string)obj.GetValue(HexValue2Property);
 		static void SetHexValue2(DependencyObject obj, string value) => obj.SetValue(HexValue2PropertyKey, value);
 
+		public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(
+			nameof(Placeholder), typeof(string), typeof(HexBox), new PropertyMetadata("."));
+		public static string GetPlaceholder(DependencyObject obj) => (string)obj.GetValue(PlaceholderProperty);
+		public static void SetPlaceholder(DependencyObject obj, string value) => obj.SetValue(PlaceholderProperty, value); 
+		
+		public static readonly DependencyProperty ShowPlaceholderProperty = DependencyProperty.Register(
+			 nameof(ShowPlaceholder), typeof(bool), typeof(HexBox), new PropertyMetadata(true));
+		public static bool GetShowPlaceholder(DependencyObject obj) => (bool)obj.GetValue(ShowPlaceholderProperty);
+		public static void SetShowPlaceholder(DependencyObject obj, bool value) => obj.SetValue(ShowPlaceholderProperty, value);
+
 		public static readonly RoutedEvent OnParsedEvent = EventManager.RegisterRoutedEvent(
 			   nameof(OnParsed), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(HexBox));
 		static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) => ((HexBox)obj).Reformat();
@@ -70,6 +80,18 @@ namespace Xt.Synth0.UI
 		{
 			get => GetHexValue2(this);
 			set => SetHexValue2(this, value);
+		}
+
+		public string Placeholder
+		{
+			get => GetPlaceholder(this);
+			set => SetPlaceholder(this, value);
+		}
+
+		public bool ShowPlaceholder
+		{
+			get => GetShowPlaceholder(this);
+			set => SetShowPlaceholder(this, value);
 		}
 
 		int FocusedIndex
