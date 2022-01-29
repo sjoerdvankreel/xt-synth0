@@ -6,7 +6,7 @@
 
     <Thickness x:Key="Margin">3</Thickness>
     <sys:Double x:Key="Opacity">0.75</sys:Double>
-
+    
     <Brush x:Key="RowEnabledKey">Black</Brush>
     <Brush x:Key="ForegroundKey">#888888</Brush>
     <Brush x:Key="Foreground1Key">LightGray</Brush>
@@ -67,25 +67,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:HexBox}">
-                    <Border Focusable="true" x:Name="border" Background="{TemplateBinding Background}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock x:Name="text1" Grid.Column="0" Focusable="true" Text="{TemplateBinding HexValue1}" Opacity="1"/>
-                            <TextBlock x:Name="text2" Grid.Column="1" Focusable="true" Text="{TemplateBinding HexValue2}" Opacity="1"/>
-                        </Grid>
+                    <Border x:Name="border" Background="{TemplateBinding Background}">
+                        <TextBlock Text="{TemplateBinding HexValue}" Opacity="1"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="{StaticResource Opacity}"/>
                         </Trigger>
-                        <Trigger Property="FocusedIndex" Value="1">
-                            <Setter TargetName="text1" Property="Background" Value="{DynamicResource Foreground3Key}"/>
-                        </Trigger>
-                        <Trigger Property="FocusedIndex" Value="2">
-                            <Setter TargetName="text2" Property="Background" Value="{DynamicResource Foreground3Key}"/>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="border" Property="Background" 
+                                    Value="{DynamicResource Foreground3Key}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
