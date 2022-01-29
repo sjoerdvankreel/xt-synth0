@@ -16,7 +16,9 @@ namespace Xt.Synth0
 
 		static unsafe Native.PlotState* _nativePlotState;
 		static unsafe SynthModel.Native* _nativePlotSynthModel;
+		static unsafe SynthModel.Native* _nativePlaySynthModel;
 		static unsafe SynthModel.Native.VoiceBinding* _nativePlotBinding;
+		static unsafe SynthModel.Native.VoiceBinding* _nativePlayBinding;
 
 		[STAThread]
 		static unsafe void Main()
@@ -29,15 +31,20 @@ namespace Xt.Synth0
 					Native.XtsSynthModelInit(pis, infos.Length, steps, SynthModel.SyncSteps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
 				_nativePlotBinding = Native.XtsVoiceBindingCreate();
+				_nativePlayBinding = Native.XtsVoiceBindingCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
+				_nativePlaySynthModel = Native.XtsSynthModelCreate();
 				Model.Track.Synth.BindVoice(_nativePlotSynthModel, _nativePlotBinding);
+				Model.Track.Synth.BindVoice(_nativePlaySynthModel, _nativePlayBinding);
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
 				Native.XtsPlotStateDestroy(_nativePlotState);
+				Native.XtsVoiceBindingDestroy(_nativePlayBinding);
 				Native.XtsVoiceBindingDestroy(_nativePlotBinding);
+				Native.XtsSynthModelDestroy(_nativePlaySynthModel);
 				Native.XtsSynthModelDestroy(_nativePlotSynthModel);
 			}
 		}
@@ -52,6 +59,7 @@ namespace Xt.Synth0
 			var app = new Application();
 			app.Startup += OnAppStartup;
 			PlotUI.RequestPlotData += OnRequestPlotData;
+			PatternKeyUI.RequestPlayNote += OnRequestPlayNote;
 			app.Dispatcher.Hooks.DispatcherInactive += OnDispatcherInactive;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
 			Model.Track.Synth.ParamChanged += OnSynthParamChanged;
@@ -234,6 +242,10 @@ namespace Xt.Synth0
 			e.Samples.Clear();
 			for (int i = 0; i < _nativePlotState->sampleCount; i++)
 				e.Samples.Add(_nativePlotState->samples[i]);
+		}
+
+		static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
+		{
 		}
 	}
 }

@@ -8,9 +8,10 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	static class PatternKeyUI
+	public static class PatternKeyUI
 	{
 		const string NoteEditHint = $"Click + ./space/Z-M/Q-E to edit";
+		public static event EventHandler<RequestPlayNoteEventArgs> RequestPlayNote;
 
 		static (int Oct, PatternNote Note) KeyToAction(Key key) => key switch
 		{
@@ -79,6 +80,8 @@ namespace Xt.Synth0.UI
 			keyNote.Value = (int)action.Note;
 			keyOct.Value = Math.Min(9, edit.Oct.Value + action.Oct);
 			Utility.FocusDown(edit.Step.Value);
+			var unitNote = (UnitNote)((int)action.Note - 2);
+			RequestPlayNote?.Invoke(null, new RequestPlayNoteEventArgs(unitNote, keyOct.Value));
 		}
 
 		internal static void Add(Grid grid, AppModel app,
