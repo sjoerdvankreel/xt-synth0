@@ -23,7 +23,7 @@ namespace Xt.Synth0.UI
 			if (Note >= (int)PatternNote.C)
 				base.Reformat();
 			else
-				HexValue = PatternKey.Notes[Note];
+				HexValue1 = HexValue2 = PatternKey.Notes[Note][0].ToString();
 		}
 	}
 }
