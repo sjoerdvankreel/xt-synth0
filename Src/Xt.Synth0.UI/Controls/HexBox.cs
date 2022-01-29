@@ -69,10 +69,30 @@ namespace Xt.Synth0.UI
 			HexValue2 = ((((int)Value) & 0X000000F0) >> 4).ToString("X1");
 		}
 
+		protected override void OnGotFocus(RoutedEventArgs e) => SetFocus(Text1);
 		protected override void OnMouseDown(MouseButtonEventArgs e) => SetFocus(e.OriginalSource);
 		protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e) => SetFocus(Text1);
 		protected override void OnLostKeyboardFocus(KeyboardFocusChangedEventArgs e) => SetFocus(null);
-		void SetFocus(object focused) => FocusedIndex = focused == Text1 ? 1 : focused == Text2 ? 2 : 0;
+
+		void SetFocus(object focused)
+		{
+			if (focused == Text1)
+			{
+				FocusedIndex = 1;
+				Keyboard.Focus(Text1);
+				FocusManager.SetFocusedElement(this, Text1);
+			}
+			else if (focused == Text2)
+			{
+				FocusedIndex = 1;
+				Keyboard.Focus(Text2);
+				FocusManager.SetFocusedElement(this, Text2);
+			}
+			else
+			{
+				FocusedIndex = 0;
+			}
+		}
 
 		protected override void OnTextInput(TextCompositionEventArgs e)
 		{
