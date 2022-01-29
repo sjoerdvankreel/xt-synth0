@@ -10,7 +10,7 @@ namespace Xt.Synth0.UI
 		public static int GetNote(DependencyObject obj) => (int)obj.GetValue(NoteProperty);
 		public static void SetNote(DependencyObject obj, int value) => obj.SetValue(NoteProperty, value);
 
-		static void OnNoteChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) => ((AmpBox)obj).Reformat();
+		static void OnNoteChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e) { }// => ((AmpBox)obj).Reformat();
 
 		public int Note
 		{
@@ -18,12 +18,12 @@ namespace Xt.Synth0.UI
 			set => SetNote(this, value);
 		}
 
-		protected override void Reformat()
-		{
-			if (Note >= (int)PatternNote.C)
-				base.Reformat();
-			else
-				HexValue1 = HexValue2 = PatternKey.Notes[Note][0].ToString();
-		}
+		//protected override void Reformat()
+		//{
+			//if (Note >= (int)PatternNote.C)
+				//base.Reformat();
+			//else
+				//HexValue1 = HexValue2 = PatternKey.Notes[Note][0].ToString();
+		//}
 	}
 }
