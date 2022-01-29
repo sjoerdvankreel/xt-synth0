@@ -82,16 +82,19 @@ namespace Xt.Synth0.UI
 		static UIElement MakeAmp(AppModel app, PatternKey key, int minKeys, int row, int col, Action interpolate)
 		{
 			var edit = app.Track.Seq.Edit;
-			var result = Create.PatternCell<AmpBox>(new(row, col));
+			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = key.Amp.Info.Min;
 			result.Maximum = key.Amp.Info.Max;
 			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
-			result.SetBinding(AmpBox.NoteProperty, Bind.To(key.Note));
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
 			result.ToolTip = string.Join("\n", key.Amp.Info.Description, PatternUI.InterpolateHint, PatternUI.EditHint);
+			var binding = Bind.To(key.Note, nameof(key.Note.Value), new Formatter<int>(v => v == (int)PatternNote.Off ? "=" : "."));
+			result.SetBinding(HexBox.PlaceholderProperty, binding);
+			binding = Bind.To(key.Note, nameof(key.Note.Value), new PlaceholderConverter((int)PatternNote.None, (int)PatternNote.Off));
+			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			return result;
 		}
 	}

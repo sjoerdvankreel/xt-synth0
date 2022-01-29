@@ -25,17 +25,19 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, Action fill, Action interpolate)
 		{
 			grid.Add(MakeTarget(app, fx.Tgt, minFx, row, col, fill));
-			grid.Add(MakeValue(app, fx.Val, minFx, row, col + 1, interpolate));
+			grid.Add(MakeValue(app, fx.Tgt, fx.Val, minFx, row, col + 1, interpolate));
 		}
 
-		static UIElement MakeValue(AppModel app, Param value,
-			int minFx, int row, int col, Action interpolate)
+		static HexBox MakeHex(AppModel app,
+			Param param, int minFx, int row, int col)
 		{
-			var result = MakeHex(app, value, minFx, row, col);
-			result.OnParsed += (s, e) => Utility.FocusDownLeft();
-			result.ToolTip = string.Join("\n", value.Info.Description,
-				PatternUI.InterpolateHint, PatternUI.EditHint);
-			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
+			var edit = app.Track.Seq.Edit;
+			var result = Create.PatternCell<HexBox>(new(row, col));
+			result.Minimum = param.Info.Min;
+			result.Maximum = param.Info.Max;
+			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
+			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
+			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Fxs, minFx));
 			return result;
 		}
 
@@ -49,19 +51,21 @@ namespace Xt.Synth0.UI
 			var binding = Bind.To(target, nameof(Param.Value), formatter);
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
 			result.KeyDown += (s, e) => OnTargetKeyDown(fill, e);
+			binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
+			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			return result;
 		}
 
-		static HexBox MakeHex(AppModel app,
-			Param param, int minFx, int row, int col)
+		static UIElement MakeValue(AppModel app, Param target, Param value,
+			int minFx, int row, int col, Action interpolate)
 		{
-			var edit = app.Track.Seq.Edit;
-			var result = Create.PatternCell<HexBox>(new(row, col));
-			result.Minimum = param.Info.Min;
-			result.Maximum = param.Info.Max;
-			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
-			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
-			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Fxs, minFx));
+			var result = MakeHex(app, value, minFx, row, col);
+			result.OnParsed += (s, e) => Utility.FocusDownLeft();
+			result.ToolTip = string.Join("\n", value.Info.Description,
+				PatternUI.InterpolateHint, PatternUI.EditHint);
+			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e); 
+			var binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
+			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			return result;
 		}
 	}

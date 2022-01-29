@@ -267,7 +267,6 @@
     </Style>
 
     <Style TargetType="{x:Type Label}" BasedOn="{StaticResource TextControl}"/>
-    <Style TargetType="{x:Type local:AmpBox}" BasedOn="{StaticResource TextControl}"/>
     <Style TargetType="{x:Type local:HexBox}" BasedOn="{StaticResource TextControl}"/>
 
 </ResourceDictionary>
