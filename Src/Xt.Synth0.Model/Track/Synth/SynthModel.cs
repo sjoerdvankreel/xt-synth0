@@ -50,6 +50,8 @@ namespace Xt.Synth0.Model
 			}
 		}
 
+		public IReadOnlyList<SynthParam> SynthParams { get; }
+
 		public PlotModel Plot { get; } = new();
 		public GlobalModel Global { get; } = new();
 		public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
@@ -59,8 +61,6 @@ namespace Xt.Synth0.Model
 		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, Model.LfoCount).Select(i => new LfoModel(i)).ToList();
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
-
-		public IReadOnlyList<SynthParam> SynthParams { get; }
 
 		public override int Index => 0;
 		public override string Id => "8D6AB9FB-19DB-4F77-B56C-9E72AB67341F";
