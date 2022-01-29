@@ -39,6 +39,7 @@ namespace Xt.Synth0.UI
 		internal static Border MakeInnerBorder(UIElement child, Cell cell)
 		{
 			var result = Create.Element<Border>(cell);
+			result.Padding = new(0, 0, 2, 0);
 			result.SnapsToDevicePixels = true;
 			result.BorderThickness = new(BorderThickness, BorderThickness, 0, 0);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
