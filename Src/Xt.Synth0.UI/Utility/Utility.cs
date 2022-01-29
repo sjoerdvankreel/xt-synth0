@@ -24,11 +24,21 @@ namespace Xt.Synth0.UI
 		internal static string BorderParamKey = nameof(BorderParamKey);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
 
-		internal static void FocusDown()
+		internal static void FocusDownLeft()
 		{
-			var request = new TraversalRequest(FocusNavigationDirection.Down);
+			FocusDown();
+			FocusLeft();
+		}
+
+		static void Focus(FocusNavigationDirection direction)
+		{
+			var request = new TraversalRequest(direction);
 			(Keyboard.FocusedElement as UIElement)?.MoveFocus(request);
 		}
+
+		internal static void FocusDown() => Focus(FocusNavigationDirection.Down);
+		internal static void FocusLeft() => Focus(FocusNavigationDirection.Left);
+		internal static void FocusRight() => Focus(FocusNavigationDirection.Right);
 
 		static Color Multiply(Color color, double factor)
 		{

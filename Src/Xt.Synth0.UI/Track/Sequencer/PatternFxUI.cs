@@ -32,6 +32,7 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, Action interpolate)
 		{
 			var result = MakeHex(app, value, minFx, row, col);
+			result.OnParsed += (s, e) => Utility.FocusDownLeft();
 			result.ToolTip = string.Join("\n", value.Info.Description,
 				PatternUI.InterpolateHint, PatternUI.EditHint);
 			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
@@ -43,6 +44,7 @@ namespace Xt.Synth0.UI
 		{
 			var synth = app.Track.Synth;
 			var result = MakeHex(app, target, minFx, row, col);
+			result.OnParsed += (s, e) => Utility.FocusRight();
 			var formatter = new TargetFormatter(synth, target);
 			var binding = Bind.To(target, nameof(Param.Value), formatter);
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
@@ -50,14 +52,13 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static FrameworkElement MakeHex(AppModel app,
+		static HexBox MakeHex(AppModel app,
 			Param param, int minFx, int row, int col)
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
-			result.OnParsed += (s, e) => Utility.FocusDown();
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Fxs, minFx));
