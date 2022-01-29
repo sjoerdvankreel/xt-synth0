@@ -14,6 +14,7 @@ namespace Xt.Synth0.UI
 
 		static (int Oct, PatternNote Note) KeyToAction(Key key) => key switch
 		{
+			Key.Delete => (-1, PatternNote.None),
 			Key.OemPeriod => (-1, PatternNote.None),
 			Key.Space => (-1, PatternNote.Off),
 			Key.Z => (0, PatternNote.C),
@@ -57,8 +58,13 @@ namespace Xt.Synth0.UI
 			e.Handled = true;
 		}
 
-		static void OnAmpKeyDown(Action interpolate, KeyEventArgs e)
+		static void OnAmpKeyDown(Param step, Param amp, Action interpolate, KeyEventArgs e)
 		{
+			if (e.Key == Key.Delete || e.Key == Key.OemPeriod)
+			{
+				amp.Value = amp.Info.Max;
+				Utility.FocusDown(step.Value);
+			}
 			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
 				interpolate();
 		}
@@ -117,8 +123,8 @@ namespace Xt.Synth0.UI
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = key.Amp.Info.Min;
 			result.Maximum = key.Amp.Info.Max;
-			result.KeyDown += (s, e) => OnAmpKeyDown(interpolate, e);
 			result.OnParsed += (s, e) => Utility.FocusDown(edit.Step.Value);
+			result.KeyDown += (s, e) => OnAmpKeyDown(edit.Step, key.Amp, interpolate, e);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
