@@ -109,7 +109,7 @@ namespace Xt.Synth0
 		static void Load(MainWindow window, string path)
 		{
 			if (path == null) return;
-			IO.LoadFile(path, Model.Track);
+			IO.LoadFile(path).CopyTo(Model.Track);
 			window.SetClean(path);
 			Model.Settings.AddRecentFile(path);
 			IO.SaveSettings(Model.Settings);

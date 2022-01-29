@@ -8,9 +8,9 @@ namespace Xt.Synth0
 {
 	static class IO
 	{
-		static string GetSettingsPath() 
+		static string GetSettingsPath()
 		=> Path.Combine(GetAppDataFolder(), "settings.x0s");
-		static MessagePackSerializerOptions GetSerializerOptions() 
+		static MessagePackSerializerOptions GetSerializerOptions()
 		=> MessagePackSerializerOptions.Standard.WithCompression(MessagePackCompression.Lz4BlockArray);
 
 		static string GetAppDataFolder()
@@ -29,6 +29,12 @@ namespace Xt.Synth0
 			MessagePackSerializer.Serialize(stream, settings, GetSerializerOptions());
 		}
 
+		internal static void SaveFile(TrackModel track, string path)
+		{
+			using var stream = File.Create(path);
+			MessagePackSerializer.Serialize(stream, track.Store(), GetSerializerOptions());
+		}
+
 		internal static SettingsModel LoadSettings()
 		{
 			var path = GetSettingsPath();
@@ -37,23 +43,11 @@ namespace Xt.Synth0
 			return MessagePackSerializer.Deserialize<SettingsModel>(stream, GetSerializerOptions());
 		}
 
-		internal static void SaveFile(TrackModel track, string path)
+		internal static TrackModel LoadFile(string path)
 		{
-			var ints = track.Synth.Params.Select(p => p.Value).Concat(
-				track.Seq.Params.Select(p => p.Value)).ToArray();
-			var bytes = ints.SelectMany(i => BitConverter.GetBytes(i)).ToArray();
-			File.WriteAllBytes(path, bytes);
-		}
-
-		internal static void LoadFile(string path, TrackModel track)
-		{
-			var bytes = File.ReadAllBytes(path);
-			var range = Enumerable.Range(0, bytes.Length / 4);
-			var ints = range.Select(i => BitConverter.ToInt32(bytes, i * 4)).ToArray();
-			for (int i = 0; i < track.Synth.Params.Count; i++)
-				track.Synth.Params[i].Value = ints[i];
-			for (int i = 0; i < track.Seq.Params.Count; i++)
-				track.Seq.Params[i].Value = ints[track.Synth.Params.Count + i];
+			using var stream = File.OpenRead(path);
+			var store = MessagePackSerializer.Deserialize<StoreModel>(stream, GetSerializerOptions());
+			return TrackModel.Load(store);
 		}
 
 		internal static void LogError(DateTime startTime, string message, string trace)
