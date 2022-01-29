@@ -9,16 +9,21 @@ namespace Xt.Synth0.UI
 {
 	static class PatternFxUI
 	{
-		static void OnTargetKeyDown(Action fill, KeyEventArgs e)
-		{
-			if (e.Key == Key.F && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-				fill();
-		}
-
 		static void OnValueKeyDown(Action interpolate, KeyEventArgs e)
 		{
 			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
 				interpolate();
+		}
+
+		static void OnTargetKeyDown(Param step, Param target, Action fill, KeyEventArgs e)
+		{
+			if (e.Key == Key.Delete || e.Key == Key.OemPeriod)
+			{
+				target.Value = target.Info.Min;
+				Utility.FocusDown(step.Value);
+			}
+			if (e.Key == Key.F && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+				fill();
 		}
 
 		internal static void Add(Grid grid, AppModel app, PatternFx fx,
@@ -44,13 +49,14 @@ namespace Xt.Synth0.UI
 		static UIElement MakeTarget(AppModel app, Param target,
 			int minFx, int row, int col, Action fill)
 		{
+			var seq = app.Track.Seq;
 			var synth = app.Track.Synth;
 			var result = MakeHex(app, target, minFx, row, col);
 			result.OnParsed += (s, e) => Utility.FocusRight();
 			var formatter = new TargetFormatter(synth, target);
 			var binding = Bind.To(target, nameof(Param.Value), formatter);
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
-			result.KeyDown += (s, e) => OnTargetKeyDown(fill, e);
+			result.KeyDown += (s, e) => OnTargetKeyDown(seq.Edit.Step, target, fill, e);
 			binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			return result;
@@ -63,7 +69,7 @@ namespace Xt.Synth0.UI
 			result.OnParsed += (s, e) => Utility.FocusDownLeft(app.Track.Seq.Edit.Step.Value);
 			result.ToolTip = string.Join("\n", value.Info.Description,
 				PatternUI.InterpolateHint, PatternUI.EditHint);
-			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e); 
+			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
 			var binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			return result;
