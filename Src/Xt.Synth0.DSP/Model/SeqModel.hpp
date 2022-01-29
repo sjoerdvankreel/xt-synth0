@@ -55,7 +55,7 @@ struct XTS_ALIGN EditModel
   EditModel() = default;
   EditModel(EditModel const&) = delete;
 private:
-  int pats, rows, keys, fxs, lpb, edit, bpm, pad__;
+  int pats, rows, keys, fxs, edit, step, bpm, lpb;
 };
 XTS_CHECK_SIZE(EditModel, 32);
 

@@ -7,12 +7,13 @@ namespace Xt.Synth0.Model
 	public unsafe sealed class EditModel : IUIParamGroupModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
-		internal ref struct Native { internal int pats, rows, keys, fxs, lpb, edit, bpm, pad__; }
+		internal ref struct Native { internal int pats, rows, keys, fxs, edit, step, bpm, lpb; }
 
 		public Param Bpm { get; } = new(BpmInfo);
 		public Param Fxs { get; } = new(FxsInfo);
 		public Param Lpb { get; } = new(LpbInfo);
 		public Param Edit { get; } = new(EditInfo);
+		public Param Step { get; } = new(StepInfo);
 		public Param Keys { get; } = new(KeysInfo);
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Rows { get; } = new(RowsInfo);
@@ -29,10 +30,11 @@ namespace Xt.Synth0.Model
 		{
 			{ Pats, 0 }, { Rows, 1 },
 			{ Keys, 2 }, { Fxs, 3 },
-			{ Bpm, 4 }, { Lpb, 5 },
-			{ Edit, 6 }
+			{ Edit, 4 }, {Step, 5} ,
+			{ Bpm, 6 }, { Lpb, 7 }
 		};
 
+		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, nameof(Step), nameof(Step), "Edit step", 1, 8, 1);
 		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, nameof(Bpm), "BPM", "Beats per minute", 1, 255, 120);
 		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, nameof(Lpb), "LPB", "Lines per beat", 1, Model.MaxLpb, 4);
 		static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, nameof(Fxs), nameof(Fxs), "Effect count", 0, Model.MaxFxs, 1);
