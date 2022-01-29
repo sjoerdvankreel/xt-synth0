@@ -24,7 +24,7 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>() { { Type, 0 }, { Hold, 1 } };
 
-		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), "Source");
-		static readonly ParamInfo HoldInfo = ParamInfo.Time(p => &((Native*)p)->hold, nameof(Hold), "Hold key time", 1, 10);
+		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Source");
+		static readonly ParamInfo HoldInfo = ParamInfo.Time(p => &((Native*)p)->hold, nameof(Hold), nameof(Hold), "Hold key time", 1, 10);
 	}
 }

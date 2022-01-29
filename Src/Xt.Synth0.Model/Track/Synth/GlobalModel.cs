@@ -36,10 +36,10 @@ namespace Xt.Synth0.Model
 			{ AmpLfo, 4 }, { AmpLfoAmt, 5 }
 		};
 
-		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", 0);
-		static readonly ParamInfo AmpLfoAmtInfo = ParamInfo.Level(p => &((Native*)p)->ampLfoAmt, "Amt", "Amp lfo amount", 0);
-		static readonly ParamInfo AmpLfoInfo = ParamInfo.List<GlobalAmpLfo>(p => &((Native*)p)->ampLfo, "LFO", "Amp lfo source");
-		static readonly ParamInfo AmpEnvAmtInfo = ParamInfo.Level(p => &((Native*)p)->ampEnvAmt, "Amt", "Amp env amount", 255);
-		static readonly ParamInfo AmpEnvInfo = ParamInfo.List<GlobalAmpEnv>(p => &((Native*)p)->ampEnv, "Env", "Amp env source");
+		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 0);
+		static readonly ParamInfo AmpLfoAmtInfo = ParamInfo.Level(p => &((Native*)p)->ampLfoAmt, nameof(AmpLfoAmt), "Amt", "Amp lfo amount", 0);
+		static readonly ParamInfo AmpLfoInfo = ParamInfo.List<GlobalAmpLfo>(p => &((Native*)p)->ampLfo, nameof(AmpLfo), "LFO", "Amp lfo source");
+		static readonly ParamInfo AmpEnvInfo = ParamInfo.List<GlobalAmpEnv>(p => &((Native*)p)->ampEnv, nameof(AmpEnv), "Env", "Amp env source");
+		static readonly ParamInfo AmpEnvAmtInfo = ParamInfo.Level(p => &((Native*)p)->ampEnvAmt, "Amt", nameof(AmpEnvAmt), "Amp env amount", 255);
 	}
 }

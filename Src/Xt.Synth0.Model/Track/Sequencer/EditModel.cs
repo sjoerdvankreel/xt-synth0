@@ -33,12 +33,12 @@ namespace Xt.Synth0.Model
 			{ Edit, 6 }
 		};
 
-		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, "BPM", "Beats per minute", 1, 255, 120);
-		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, "LPB", "Lines per beat", 1, Model.MaxLpb, 4);
-		static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, nameof(Fxs), "Effect count", 0, Model.MaxFxs, 1);
-		static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, nameof(Keys), "Key count", 1, Model.MaxKeys, 2);
-		static readonly ParamInfo PatsInfo = ParamInfo.Select(p => &((Native*)p)->pats, nameof(Pats), "Pattern count", 1, Model.MaxPatterns, 1);
-		static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, nameof(Edit), "Active pattern", 1, Model.MaxPatterns, 1);
-		static readonly ParamInfo RowsInfo = ParamInfo.Select(p => &((Native*)p)->rows, nameof(Rows), "Rows per pattern", 1, Model.MaxRows, Model.MaxRows);
+		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, nameof(Bpm), "BPM", "Beats per minute", 1, 255, 120);
+		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, nameof(Lpb), "LPB", "Lines per beat", 1, Model.MaxLpb, 4);
+		static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, nameof(Fxs), nameof(Fxs), "Effect count", 0, Model.MaxFxs, 1);
+		static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, nameof(Keys), nameof(Keys), "Key count", 1, Model.MaxKeys, 2);
+		static readonly ParamInfo PatsInfo = ParamInfo.Select(p => &((Native*)p)->pats, nameof(Pats), nameof(Pats), "Pattern count", 1, Model.MaxPatterns, 1);
+		static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, nameof(Edit), nameof(Edit), "Active pattern", 1, Model.MaxPatterns, 1);
+		static readonly ParamInfo RowsInfo = ParamInfo.Select(p => &((Native*)p)->rows, nameof(Rows), nameof(Rows), "Rows per pattern", 1, Model.MaxRows, Model.MaxRows);
 	}
 }

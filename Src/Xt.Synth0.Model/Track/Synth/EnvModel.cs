@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum EnvType { DAHDSR, DAHDR}
+	public enum EnvType { DAHDSR, DAHDR }
 
 	public unsafe sealed class EnvModel : IUIParamGroupModel
 	{
@@ -57,22 +57,22 @@ namespace Xt.Synth0.Model
 		static readonly IRelevance RelevanceSync = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 1);
 		static readonly IRelevance RelevanceTime = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 0);
 
-		static readonly ParamInfo DSlpInfo = ParamInfo.Mix(p => &((Native*)p)->dSlp, "Slp", "Decay slope");
-		static readonly ParamInfo ASlpInfo = ParamInfo.Mix(p => &((Native*)p)->aSlp, "Slp", "Attack slope");
-		static readonly ParamInfo RSlpInfo = ParamInfo.Mix(p => &((Native*)p)->rSlp, "Slp", "Release slope");
-		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false);
-		static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, nameof(Type), "Type");
-		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), "Sustain level", 128, null);
-		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), "Sync to beat", false);
-		static readonly ParamInfo DStpInfo = ParamInfo.Step(p => &((Native*)p)->dStp, "D", "Decay steps", 0, 11, RelevanceSync);
-		static readonly ParamInfo AStpInfo = ParamInfo.Step(p => &((Native*)p)->aStp, "A", "Attack steps", 0, 1, RelevanceSync);
-		static readonly ParamInfo RStpInfo = ParamInfo.Step(p => &((Native*)p)->rStp, "R", "Release steps", 0, 15, RelevanceSync);
-		static readonly ParamInfo HldStpInfo = ParamInfo.Step(p => &((Native*)p)->hldStp, "Hld", "Hold steps", 0, 0, RelevanceSync);
-		static readonly ParamInfo DlyStpInfo = ParamInfo.Step(p => &((Native*)p)->dlyStp, "Dly", "Delay steps", 0, 0, RelevanceSync);
-		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), "Decay milliseconds", 0, 7, RelevanceTime);
-		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), "Attack milliseconds", 0, 3, RelevanceTime);
-		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), "Release milliseconds", 0, 14, RelevanceTime);
-		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), "Hold milliseconds", 0, 0, RelevanceTime);
-		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), "Delay milliseconds", 0, 0, RelevanceTime);
+		static readonly ParamInfo DSlpInfo = ParamInfo.Mix(p => &((Native*)p)->dSlp, nameof(DSlp), "Slp", "Decay slope");
+		static readonly ParamInfo ASlpInfo = ParamInfo.Mix(p => &((Native*)p)->aSlp, nameof(ASlp), "Slp", "Attack slope");
+		static readonly ParamInfo RSlpInfo = ParamInfo.Mix(p => &((Native*)p)->rSlp, nameof(RSlp), "Slp", "Release slope");
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
+		static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
+		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), nameof(S), "Sustain level", 128, null);
+		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), nameof(Sync), "Sync to beat", false);
+		static readonly ParamInfo DStpInfo = ParamInfo.Step(p => &((Native*)p)->dStp, nameof(DStp), "D", "Decay steps", 0, 11, RelevanceSync);
+		static readonly ParamInfo AStpInfo = ParamInfo.Step(p => &((Native*)p)->aStp, nameof(AStp), "A", "Attack steps", 0, 1, RelevanceSync);
+		static readonly ParamInfo RStpInfo = ParamInfo.Step(p => &((Native*)p)->rStp, nameof(RStp), "R", "Release steps", 0, 15, RelevanceSync);
+		static readonly ParamInfo HldStpInfo = ParamInfo.Step(p => &((Native*)p)->hldStp, nameof(HldStp), "Hld", "Hold steps", 0, 0, RelevanceSync);
+		static readonly ParamInfo DlyStpInfo = ParamInfo.Step(p => &((Native*)p)->dlyStp, nameof(DlyStp), "Dly", "Delay steps", 0, 0, RelevanceSync);
+		static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), nameof(D), "Decay milliseconds", 0, 7, RelevanceTime);
+		static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), nameof(A), "Attack milliseconds", 0, 3, RelevanceTime);
+		static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), nameof(R), "Release milliseconds", 0, 14, RelevanceTime);
+		static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), nameof(Hld), "Hold milliseconds", 0, 0, RelevanceTime);
+		static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), nameof(Dly), "Delay milliseconds", 0, 0, RelevanceTime);
 	}
 }

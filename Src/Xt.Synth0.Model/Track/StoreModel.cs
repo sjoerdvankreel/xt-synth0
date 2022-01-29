@@ -7,6 +7,7 @@ namespace Xt.Synth0.Model
 	[MessagePackObject(keyAsPropertyName: true)]
 	public class StoreModel
 	{
+		public int Version { get; set; } = 1;
 		public Dictionary<string, int> Params { get; set; } = new();
 		public Dictionary<StoreKey, StoreModel> Children { get; set; } = new();
 	}

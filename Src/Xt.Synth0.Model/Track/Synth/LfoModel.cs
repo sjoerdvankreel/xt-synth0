@@ -43,12 +43,12 @@ namespace Xt.Synth0.Model
 		static readonly IRelevance RelevanceSync = Relevance.When((LfoModel m) => m.Sync, (int s) => s == 1);
 		static readonly IRelevance RelevanceTime = Relevance.When((LfoModel m) => m.Sync, (int s) => s == 0);
 
-		static readonly ParamInfo InvInfo = ParamInfo.Toggle(p => &((Native*)p)->inv, "Invert", "Invert", false);
-		static readonly ParamInfo BiInfo = ParamInfo.Toggle(p => &((Native*)p)->bi, "Bipolar", "Bipolar", false);
-		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false);
-		static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, nameof(Type), "Type");
-		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), "Sync to beat", false);
-		static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, nameof(Step), "Rate steps", 1, 7, RelevanceSync);
-		static readonly ParamInfo RateInfo = ParamInfo.Time(p => &((Native*)p)->rate, nameof(Rate), "Rate milliseconds", 1, 10, RelevanceTime);
+		static readonly ParamInfo InvInfo = ParamInfo.Toggle(p => &((Native*)p)->inv, nameof(Inv), "Invert", "Invert", false);
+		static readonly ParamInfo BiInfo = ParamInfo.Toggle(p => &((Native*)p)->bi, nameof(Bi), "Bipolar", "Bipolar", false);
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
+		static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
+		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), nameof(Sync), "Sync to beat", false);
+		static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, nameof(Step), nameof(Step), "Rate steps", 1, 7, RelevanceSync);
+		static readonly ParamInfo RateInfo = ParamInfo.Time(p => &((Native*)p)->rate, nameof(Rate), nameof(Rate), "Rate milliseconds", 1, 10, RelevanceTime);
 	}
 }

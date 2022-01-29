@@ -83,25 +83,25 @@ namespace Xt.Synth0.Model
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add),
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Synth0.Model.AddType.Pulse)));
 
-		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), "Detune");
-		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), "Panning");
-		static readonly ParamInfo Amt1Info = ParamInfo.Level(p => &((Native*)p)->amt1, "Amt", "Mod 1 amount", 0);
-		static readonly ParamInfo Amt2Info = ParamInfo.Level(p => &((Native*)p)->amt2, "Amt", "Mod 2 amount", 0);
-		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), "Enabled", false);
-		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), "Amplitude", 255);
-		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), "Octave", 0, 9, 4);
-		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), "Type");
-		static readonly ParamInfo PwInfo = ParamInfo.Mix(p => &((Native*)p)->pw, "PW", "Pulse width", null, RelevancePw);
-		static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, "Source", "Mod 1 source");
-		static readonly ParamInfo Tgt1Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt1, "Target", "Mod 1 target");
-		static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, "Source", "Mod 2 source");
-		static readonly ParamInfo Tgt2Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt2, "Target", "Mod 2 target");
-		static readonly ParamInfo NoteInfo = ParamInfo.Select(p => &((Native*)p)->note, nameof(Note), "Note", UnitNote.C, UnitNote.C, Notes);
-		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, "Type", "Additive type", AddNames, RelevanceAdd);
-		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, "Type", "Naive type", null, RelevanceNaive);
-		static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, "Roll", "Additive custom rolloff", null, RelevanceAddCustom);
-		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, "Hms", "Additive basic partials", 12, 4, RelevanceAddBasic);
-		static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, "Step", "Additive custom step", 1, 32, 1, null, RelevanceAddCustom);
-		static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, "Hms", "Additive custom partials", 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), nameof(Dtn), "Detune");
+		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), nameof(Pan), "Panning");
+		static readonly ParamInfo Amt1Info = ParamInfo.Level(p => &((Native*)p)->amt1, nameof(Amt1), "Amt", "Mod 1 amount", 0);
+		static readonly ParamInfo Amt2Info = ParamInfo.Level(p => &((Native*)p)->amt2, nameof(Amt2), "Amt", "Mod 2 amount", 0);
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
+		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 255);
+		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
+		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
+		static readonly ParamInfo PwInfo = ParamInfo.Mix(p => &((Native*)p)->pw, nameof(Pw), "PW", "Pulse width", null, RelevancePw);
+		static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, nameof(Src1), "Source", "Mod 1 source");
+		static readonly ParamInfo Tgt1Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt1, nameof(Tgt1), "Target", "Mod 1 target");
+		static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, nameof(Src2), "Source", "Mod 2 source");
+		static readonly ParamInfo Tgt2Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt2, nameof(Tgt2), "Target", "Mod 2 target");
+		static readonly ParamInfo NoteInfo = ParamInfo.Select(p => &((Native*)p)->note, nameof(Note), nameof(Note), "Note", UnitNote.C, UnitNote.C, Notes);
+		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, nameof(AddType), "Type", "Additive type", AddNames, RelevanceAdd);
+		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, nameof(NaiveType), "Type", "Naive type", null, RelevanceNaive);
+		static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, nameof(AddRoll), "Roll", "Additive custom rolloff", null, RelevanceAddCustom);
+		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, nameof(AddMaxParts), "Hms", "Additive basic partials", 12, 4, RelevanceAddBasic);
+		static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, nameof(AddStep), "Step", "Additive custom step", 1, 32, 1, null, RelevanceAddCustom);
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, nameof(AddParts), "Hms", "Additive custom partials", 1, 32, 1, null, RelevanceAddCustom);
 	}
 }
