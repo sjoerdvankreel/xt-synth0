@@ -2,7 +2,6 @@ polyblep, hard sync, integrate blit / PWM triangle
 dont plot too often (throttle)
 dont trigger gc from the callback - dispatch all to ui
 sampler
-better serialization
 automation groups
 better pattern edit, play note on enter, edit step
 make it faster
@@ -24,5 +23,3 @@ plot spectrum
 init with streampos / derive stuff from streampos ?
 tri = integrate pulse
 show automation range error in UI
-make voice model explicit / no interior ptrs
-serialize as map with msgpack
