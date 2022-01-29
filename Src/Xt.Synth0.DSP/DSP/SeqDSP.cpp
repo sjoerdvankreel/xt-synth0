@@ -19,6 +19,7 @@ SeqDSP::Return(int key, int voice)
   _voices--;
   _keys[voice] = -1;
   _started[voice] = -1;
+  _endAudio = _voices == 0 && _endPattern;
   assert(0 <= key && key < MaxKeys);
   assert(0 <= voice && voice < MaxVoices);
   assert(0 <= _voices && _voices < MaxVoices);
@@ -35,32 +36,21 @@ SeqDSP::Take(int key, int voice)
   return voice;
 }
 
-bool
-SeqDSP::Move(SeqInput const& input)
-{
-  int bpm = _model->edit.bpm;
-  int lpb = _model->edit.lpb;
-  int pats = _model->edit.pats;
-  int rows = _model->edit.rows;
-  if (_row == -1) return _row = 0, true;
-  _fill += bpm * lpb / (60.0 * input.rate);
-  if (_fill < 1.0) return false;
-  _fill = 0.0f;
-  _row++;
-  if (MaxRows == rows) _row += MaxRows - rows;
-  if (_row == pats * MaxRows) _row = 0;
-  return true;
-}
-
 AudioOutput
 SeqDSP::Next(SeqInput const& input, bool& exhausted)
 {
   exhausted = false;
-  if (Move(input))
+  MoveType type = Move(input);
+  if (type == MoveType::Next)
   {
     exhausted = Trigger(input);
     Automate();
     ApplyActive();
+  } else if(type == MoveType::End)
+  {
+    for(int k = 0; k < MaxKeys; k++)
+      if (_active[k] != -1)
+        _dsps[_active[k]].Release();
   }
   AudioOutput result;
   for (int v = 0; v < MaxVoices; v++)
@@ -109,6 +99,28 @@ SeqDSP::Render(SeqInput const& input, SeqOutput& output)
   output.voices = _voices;
 }
 
+MoveType
+SeqDSP::Move(SeqInput const& input)
+{
+  if (_endPattern) return MoveType::None;
+  int current = _row;
+  int bpm = _model->edit.bpm;
+  int lpb = _model->edit.lpb;
+  int pats = _model->edit.pats;
+  int rows = _model->edit.rows;
+  int loop = _model->edit.loop;
+  if (_row == -1) return _row = 0, MoveType::Next;
+  _fill += bpm * lpb / (60.0 * input.rate);
+  if (_fill < 1.0) return MoveType::None;
+  _fill = 0.0f;
+  _row++;
+  if (MaxRows == rows) _row += MaxRows - rows;
+  if (_row == pats * MaxRows)
+    if (loop) _row = 0;
+    else return _row = current, _endPattern = true, MoveType::End;
+  return MoveType::Next;
+}
+
 void
 SeqDSP::Init(SeqModel const* model, SynthModel const* synth, VoiceBinding const* binding)
 {
@@ -119,6 +131,8 @@ SeqDSP::Init(SeqModel const* model, SynthModel const* synth, VoiceBinding const*
   _model = model;
   _synth = synth;
   _binding = binding;
+  _endAudio = false;
+  _endPattern = false;
   for(int i = 0; i < MaxKeys; i++)
     _active[i] = -1;
   for (int i = 0; i < MaxVoices; i++)

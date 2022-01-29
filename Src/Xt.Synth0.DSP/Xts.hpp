@@ -25,6 +25,7 @@ struct XTS_ALIGN SeqState
   int32_t row, voices;
   int32_t clip, exhausted;
   int32_t rate, frames;
+  int32_t end, pad__;
   int64_t pos;
   float* buffer;
   Xts::SynthModel* synth;

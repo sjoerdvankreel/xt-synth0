@@ -9,6 +9,7 @@
 namespace Xts {
 
 constexpr int MaxVoices = 128;
+enum class MoveType { None, Next, End };
 
 struct SeqInput
 {
@@ -36,6 +37,8 @@ class SeqDSP
   int _voices = 0;
   int64_t _pos = 0;
   double _fill = 0.0;
+  bool _endAudio = false;
+  bool _endPattern = false;
   SeqModel const* _model;
   SynthModel const* _synth;
   VoiceBinding const* _binding;
@@ -51,11 +54,12 @@ private:
   void ApplyActive();
   int Take(int key, int voice);
   void Return(int key, int voice);
-  bool Move(SeqInput const& input);
   int Take(int key, bool& exhausted);
   bool Trigger(SeqInput const& input);
+  MoveType Move(SeqInput const& input);
   AudioOutput Next(SeqInput const& input, bool& exhausted);
 public:
+  bool End() const { return _endAudio; }
   void Render(SeqInput const& input, SeqOutput& output);
   void Init(SeqModel const* model, SynthModel const* synth, VoiceBinding const* binding);
 };

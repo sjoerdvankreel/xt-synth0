@@ -53,6 +53,7 @@ XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state)
 
   Xts::SeqOutput out;
   dsp->Render(in, out);
+  state->end = dsp->End();
   state->pos = out.pos;
   state->row = out.row;
   state->clip = out.clip;

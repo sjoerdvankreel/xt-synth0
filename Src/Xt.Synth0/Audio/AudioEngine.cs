@@ -22,14 +22,14 @@ namespace Xt.Synth0
 			_ => throw new InvalidOperationException()
 		};
 
-		internal static AudioEngine Create(AppModel app,
-			IntPtr mainWindow, Action<string> log, Action<Action> dispatchToUI)
+		internal static AudioEngine Create(AppModel app, IntPtr mainWindow,
+			Action<string> log, Action asyncStop, Action<Action> dispatchToUI)
 		{
 			XtAudio.SetOnError(msg => log(msg));
 			var platform = XtAudio.Init(nameof(Synth0), mainWindow);
 			try
 			{
-				return Create(app, platform, dispatchToUI);
+				return Create(app, platform, asyncStop, dispatchToUI);
 			}
 			catch
 			{
@@ -38,12 +38,12 @@ namespace Xt.Synth0
 			}
 		}
 
-		static AudioEngine Create(AppModel app,
-			XtPlatform platform, Action<Action> dispatchToUI)
+		static AudioEngine Create(AppModel app, XtPlatform platform,
+			Action asyncStop, Action<Action> dispatchToUI)
 		{
 			var asio = platform.GetService(XtSystem.ASIO);
 			var wasapi = platform.GetService(XtSystem.WASAPI);
-			return new AudioEngine(app, platform, dispatchToUI,
+			return new AudioEngine(app, platform, asyncStop, dispatchToUI,
 				asio.GetDefaultDeviceId(true),
 				wasapi.GetDefaultDeviceId(true),
 				GetDevices(asio), GetDevices(wasapi));
@@ -64,6 +64,7 @@ namespace Xt.Synth0
 		readonly AppModel _app;
 		readonly SynthModel _original = new();
 
+		readonly Action _asyncStop;
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
 
@@ -100,6 +101,7 @@ namespace Xt.Synth0
 		AudioEngine(
 			AppModel app,
 			XtPlatform platform,
+			Action asyncStop,
 			Action<Action> dispatchToUI,
 			string asioDefaultDeviceId,
 			string wasapiDefaultDeviceId,
@@ -115,6 +117,7 @@ namespace Xt.Synth0
 
 			_app = app;
 			_platform = platform;
+			_asyncStop = asyncStop;
 			_dispatchToUI = dispatchToUI;
 			_automationValues = new int[_original.Params.Count];
 
@@ -444,6 +447,7 @@ namespace Xt.Synth0
 			bool clip = state->clip != 0;
 			bool exhausted = state->exhausted != 0;
 			UpdateStreamInfo(buffer.frames, rate, state->voices, clip, exhausted, pos);
+			if (state->end != 0) _asyncStop();
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)

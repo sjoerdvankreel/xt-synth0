@@ -14,6 +14,7 @@ namespace Xt.Synth0
 			internal int row, voices;
 			internal int clip, exhausted;
 			internal int rate, frames;
+			internal int end, pad__;
 			internal long pos;
 			internal float* buffer;
 			internal SynthModel.Native* synth;
