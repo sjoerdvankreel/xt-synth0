@@ -55,9 +55,9 @@ struct XTS_ALIGN EditModel
   EditModel() = default;
   EditModel(EditModel const&) = delete;
 private:
-  int pats, rows, keys, fxs, edit, step, bpm, lpb;
+  int pats, rows, keys, fxs, bpm, lpb, step, oct, edit, pad__;
 };
-XTS_CHECK_SIZE(EditModel, 32);
+XTS_CHECK_SIZE(EditModel, 40);
 
 struct XTS_ALIGN SeqModel
 {
@@ -68,7 +68,7 @@ private:
   EditModel edit;
   PatternModel pattern;
 };
-XTS_CHECK_SIZE(SeqModel, 22560);
+XTS_CHECK_SIZE(SeqModel, 22568);
 
 } // namespace Xts
 #endif // XTS_SEQ_MODEL_HPP
