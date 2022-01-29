@@ -16,8 +16,10 @@ namespace Xt.Synth0.Model
 				Rows[r].Keys[0].Note.Value = (int)PatternNote.C;
 		}
 
+		public int Index => 0;
 		public string Name => "Pattern";
 		public ThemeGroup ThemeGroup => ThemeGroup.Pattern;
+		public string Id => "038215F4-C1AD-49EB-AE35-042956A834F6";
 		public IReadOnlyList<IGroupContainerModel> Children => Rows;
 		public IReadOnlyList<IParamGroupModel> Groups => new IParamGroupModel[0];
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->pattern;

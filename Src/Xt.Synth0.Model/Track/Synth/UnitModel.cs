@@ -44,15 +44,14 @@ namespace Xt.Synth0.Model
 		public Param AddParts { get; } = new(AddPartsInfo);
 		public Param AddMaxParts { get; } = new(AddMaxPartsInfo);
 
-		readonly int _index;
-		internal UnitModel(int index) => _index = index;
-
 		public int Columns => 3;
+		public int Index { get; }
 		public Param Enabled => On;
-		public string Name => $"Unit {_index + 1}";
+		public string Name => $"Unit {Index + 1}";
 		public ThemeGroup ThemeGroup => ThemeGroup.Unit;
+		public string Id => "3DACD0A4-9688-4FA9-9CA3-B8A0E49A45E5";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[_index * Native.Size];
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[Index * Native.Size];
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
@@ -64,6 +63,7 @@ namespace Xt.Synth0.Model
 			{ Src2, 15 }, { Tgt2, 16}, {Amt2, 17 },
 		};
 
+		internal UnitModel(int index) => Index = index;
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 		static readonly string[] AddNames = { "Saw", "Sqr", "Pulse", "Tri", "Impulse", "Sin+Sin", "Sin+Cos", "Sin-Sin", "Sin-Cos" };
 		static readonly AddType[] CustomAddTypes = new[] { Synth0.Model.AddType.SinAddSin, Synth0.Model.AddType.SinSubSin, Synth0.Model.AddType.SinAddCos, Synth0.Model.AddType.SinSubCos };

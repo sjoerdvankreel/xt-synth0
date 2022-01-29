@@ -14,12 +14,12 @@ namespace Xt.Synth0.Model
 
 		public Param Val { get; } = new(ValInfo);
 		public Param Tgt { get; } = new(TgtInfo);
+		internal PatternFx(int index) => Index = index;
 
-		readonly int _index;
-		internal PatternFx(int index) => _index = index;
-
+		public int Index { get; }
 		public IReadOnlyList<Param> Params => new[] { Tgt, Val };
-		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[_index * Native.Size];
+		public string Id => "ABD763E7-8A06-4582-8D24-88214BB04A3A";
+		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[Index * Native.Size];
 
 		static readonly ParamInfo ValInfo = ParamInfo.Level(p => &((Native*)p)->val, nameof(Val), "Automation value", 0);
 		static readonly ParamInfo TgtInfo = ParamInfo.Level(p => &((Native*)p)->tgt, nameof(Tgt), "Automation target", 0);

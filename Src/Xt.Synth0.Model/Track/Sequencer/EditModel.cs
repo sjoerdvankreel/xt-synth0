@@ -17,10 +17,12 @@ namespace Xt.Synth0.Model
 		public Param Pats { get; } = new(PatsInfo);
 		public Param Rows { get; } = new(RowsInfo);
 
+		public int Index => 0;
 		public int Columns => 2;
 		public Param Enabled => null;
 		public string Name => "Edit";
 		public ThemeGroup ThemeGroup => ThemeGroup.Pattern;
+		public string Id => "01ECE266-D442-4FF0-B7BE-341DED3CD55B";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>()

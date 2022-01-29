@@ -36,15 +36,14 @@ namespace Xt.Synth0.Model
 		public Param HldStp { get; } = new(HldStpInfo);
 		public Param DlyStp { get; } = new(DlyStpInfo);
 
-		readonly int _index;
-		internal EnvModel(int index) => _index = index;
-
 		public int Columns => 3;
+		public int Index { get; }
 		public Param Enabled => On;
-		public string Name => $"Env {_index + 1}";
+		public string Name => $"Env {Index + 1}";
 		public ThemeGroup ThemeGroup => ThemeGroup.Env;
+		public string Id => "A7FF2DD9-62D5-4426-8530-02C60710237D";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[_index * Native.Size];
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->envs[Index * Native.Size];
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
@@ -54,6 +53,7 @@ namespace Xt.Synth0.Model
 			{ RSlp, 9 }, { R, 10 }, { RStp, 10 }
 		};
 
+		internal EnvModel(int index) => Index = index;
 		static readonly IRelevance RelevanceSync = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 1);
 		static readonly IRelevance RelevanceTime = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 0);
 

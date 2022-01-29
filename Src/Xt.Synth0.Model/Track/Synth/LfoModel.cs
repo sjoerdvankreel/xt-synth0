@@ -24,15 +24,14 @@ namespace Xt.Synth0.Model
 		public Param Rate { get; } = new(RateInfo);
 		public Param Step { get; } = new(StepInfo);
 
-		readonly int _index;
-		internal LfoModel(int index) => _index = index;
-
 		public int Columns => 3;
+		public int Index { get; }
 		public Param Enabled => On;
-		public string Name => $"LFO {_index + 1}";
+		public string Name => $"LFO {Index + 1}";
 		public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
+		public string Id => "E2E5D904-8652-450B-A293-7CDFF05892BF";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-		public void* Address(void* parent) => &((SynthModel.Native*)parent)->lfos[_index * Native.Size];
+		public void* Address(void* parent) => &((SynthModel.Native*)parent)->lfos[Index * Native.Size];
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
@@ -40,6 +39,7 @@ namespace Xt.Synth0.Model
 			{ Inv, 3 }, { Bi, 4 }
 		};
 
+		internal LfoModel(int index) => Index = index;
 		static readonly IRelevance RelevanceSync = Relevance.When((LfoModel m) => m.Sync, (int s) => s == 1);
 		static readonly IRelevance RelevanceTime = Relevance.When((LfoModel m) => m.Sync, (int s) => s == 0);
 

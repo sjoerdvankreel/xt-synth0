@@ -10,6 +10,8 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<Param> Params { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
 
+		public abstract int Index { get; }
+		public abstract string Id { get; }
 		public abstract IReadOnlyList<IParamGroupModel> Groups { get; }
 		public abstract IReadOnlyList<IGroupContainerModel> Children { get; }
 		public void* Address(void* parent) => throw new NotSupportedException();

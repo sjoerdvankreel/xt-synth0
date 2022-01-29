@@ -4,11 +4,18 @@ namespace Xt.Synth0.Model
 {
 	public interface IUIModel
 	{
-		public string Name { get; }
-		public ThemeGroup ThemeGroup { get; }
+		string Name { get; }
+		ThemeGroup ThemeGroup { get; }
 	}
 
-	public interface IGroupContainerModel : INativeModel
+	public interface IStoredModel
+	{
+		int Index { get; }
+		string Id { get; }
+		unsafe void* Address(void* parent);
+	}
+
+	public interface IGroupContainerModel : IStoredModel
 	{
 		IReadOnlyList<IParamGroupModel> Groups { get; }
 		IReadOnlyList<IGroupContainerModel> Children { get; }
@@ -16,12 +23,11 @@ namespace Xt.Synth0.Model
 
 	public interface IUIParamGroupModel : IParamGroupModel, IUIModel
 	{
-		public int Columns { get; }
-		public abstract Param Enabled { get; }
-		public abstract IDictionary<Param, int> Layout { get; }
+		int Columns { get; }
+		Param Enabled { get; }
+		IDictionary<Param, int> Layout { get; }
 	}
 
-	public interface INativeModel { unsafe void* Address(void* parent); }
 	public interface IUIGroupContainerModel : IGroupContainerModel, IUIModel { }
-	public interface IParamGroupModel : INativeModel { IReadOnlyList<Param> Params { get; } }
+	public interface IParamGroupModel : IStoredModel { IReadOnlyList<Param> Params { get; } }
 }

@@ -29,6 +29,8 @@ namespace Xt.Synth0.Model
 		public ControlModel Control { get; } = new();
 		public MonitorModel Monitor { get; } = new();
 
+		public override int Index => 0;
+		public override string Id => "2468A725-5A55-4305-A438-C3A70DD3054F";
 		public override IReadOnlyList<IParamGroupModel> Groups => new[] { Edit };
 		public override IReadOnlyList<IGroupContainerModel> Children => new[] { Pattern };
 

@@ -22,10 +22,12 @@ namespace Xt.Synth0.Model
 		public Param AmpEnvAmt { get; } = new(AmpEnvAmtInfo);
 		public Param AmpLfoAmt { get; } = new(AmpLfoAmtInfo);
 
+		public int Index => 0;
 		public int Columns => 3;
 		public Param Enabled => null;
 		public string Name => "Global";
 		public ThemeGroup ThemeGroup => ThemeGroup.Global;
+		public string Id => "F7791FBA-3693-4D71-8EC9-AB507A03FE9A";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>

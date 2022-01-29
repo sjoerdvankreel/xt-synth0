@@ -61,6 +61,9 @@ namespace Xt.Synth0.Model
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }
+
+		public override int Index => 0;
+		public override string Id => "8D6AB9FB-19DB-4F77-B56C-9E72AB67341F";
 		public override IReadOnlyList<IGroupContainerModel> Children => new IGroupContainerModel[0];
 		public override IReadOnlyList<IParamGroupModel> Groups => Units.Concat<IParamGroupModel>(Envs).Concat(Lfos).Concat(new IParamGroupModel[] { Plot, Global }).ToArray();
 
