@@ -73,8 +73,8 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock x:Name="text1" Grid.Column="0" Focusable="true" Text="{TemplateBinding HexValue1}" Opacity="1"/>
-                            <TextBlock x:Name="text2" Grid.Column="1" Focusable="true" Text="{TemplateBinding HexValue2}" Opacity="1"/>
+                            <TextBlock x:Name="text1" Grid.Column="0" Text="{TemplateBinding HexValue1}" Opacity="1"/>
+                            <TextBlock x:Name="text2" Grid.Column="1" Text="{TemplateBinding HexValue2}" Opacity="1"/>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
