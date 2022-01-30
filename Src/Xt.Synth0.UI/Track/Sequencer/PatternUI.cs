@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Xt.Synth0.Model;
@@ -116,49 +117,58 @@ namespace Xt.Synth0.UI
 			var highlighters = new List<Border>();
 			var offset = pattern * rows;
 			var result = Create.Grid(rows, cols);
+			var allElements = new List<PatternRowElements>();
 			for (int r = 0; r < rows; r++)
 			{
 				var highlighter = MakeHighlighter(new Cell(r, 0, 1, cols));
 				result.Add(highlighter);
 				highlighters.Add(highlighter);
-				AddRow(result, app, pattern, seq.Pattern.Rows[offset + r], r);
+				var rowElements = AddRow(result, app, pattern, seq.Pattern.Rows[offset + r], r);
+				allElements.Add(rowElements);
+				ConnectFocusHandlers(seq.Edit, allElements, rowElements, r);
 			}
 			return (Create.ThemedContent(result), highlighters);
 		}
 
-		static void AddRow(Grid grid, AppModel app, int pattern, PatternRow row, int r)
+		static PatternRowElements AddRow(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
 			var edit = app.Track.Seq.Edit;
 			int divCol = Model.Model.MaxKeys * 5;
-			AddKeys(grid, app, pattern, row, r);
+			var result = new PatternRowElements();
+			result.Keys = AddKeys(grid, app, pattern, row, r);
 			grid.Add(Create.Divider(new(r, divCol), edit.Fxs, 1));
-			AddFx(grid, app, pattern, row, r);
+			result.Fx = AddFx(grid, app, pattern, row, r);
+			return result;
 		}
 
-		static void AddKeys(Grid grid, AppModel app, int pattern, PatternRow row, int r)
+		static IList<PatternKeyElements> AddKeys(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
 			var seq = app.Track.Seq;
+			var result = new List<PatternKeyElements>();
 			for (int k = 0; k < Model.Model.MaxKeys; k++)
 			{
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
-				PatternKeyUI.Add(grid, app, row.Keys[k], k + 1, r, k * 5, interpolate);
+				result.Add(PatternKeyUI.Add(grid, app, row.Keys[k], k + 1, r, k * 5, interpolate));
 				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
 			}
+			return result;
 		}
 
-		static void AddFx(Grid grid, AppModel app, int pattern, PatternRow row, int r)
+		static IList<PatternFxElements> AddFx(Grid grid, AppModel app, int pattern, PatternRow row, int r)
 		{
 			var seq = app.Track.Seq;
+			var result = new List<PatternFxElements>();
 			int startCol = Model.Model.MaxKeys * 5 + 1;
 			for (int f = 0; f < Model.Model.MaxFxs; f++)
 			{
 				int fLocal = f;
 				Action fill = () => Fill(seq, pattern, fLocal);
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Fx[fLocal].Val);
-				PatternFxUI.Add(grid, app, row.Fx[f], f + 1, r, startCol + f * 3, fill, interpolate);
+				result.Add(PatternFxUI.Add(grid, app, row.Fx[f], f + 1, r, startCol + f * 3, fill, interpolate));
 				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), seq.Edit.Fxs, f + 2));
 			}
+			return result;
 		}
 
 		static void OnStreamPropertyChanged(
@@ -189,6 +199,26 @@ namespace Xt.Synth0.UI
 				actual++;
 				if (row % Model.Model.MaxRows == edit.Rows.Value)
 					row += Model.Model.MaxRows - edit.Rows.Value;
+			}
+		}
+
+		static void ConnectFocusHandlers(EditModel edit,
+			IList<PatternRowElements> allElements, PatternRowElements rowElements, int row)
+		{
+			for (int i = 0; i < rowElements.Fx.Count; i++)
+			{
+				int iLocal = i;
+				Func<int, PatternFxElements> cycle = r => allElements[(row + edit.Step.Value) % edit.Rows.Value].Fx[iLocal];
+				rowElements.Fx[i].MoveValueFocus += (s, e) => Keyboard.Focus(cycle(row).Target);
+				rowElements.Fx[i].MoveTargetFocus += (s, e) => Keyboard.Focus(allElements[row].Fx[iLocal].Value);
+			}
+			for (int i = 0; i < rowElements.Keys.Count; i++)
+			{
+				int iLocal = i;
+				Func<int, PatternKeyElements> cycle = r => allElements[(r + edit.Step.Value) % edit.Rows.Value].Keys[iLocal];
+				rowElements.Keys[i].MoveOctFocus += (s, e) => Keyboard.Focus(cycle(row).Oct);
+				rowElements.Keys[i].MoveAmpFocus += (s, e) => Keyboard.Focus(cycle(row).Amp);
+				rowElements.Keys[i].MoveNoteFocus += (s, e) => Keyboard.Focus(cycle(row).Note);
 			}
 		}
 	}
