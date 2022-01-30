@@ -192,7 +192,7 @@ namespace Xt.Synth0
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
 			ControlUI.Stop += (s, e) => _engine.Stop();
-			ControlUI.Start += (s, e) => _engine.Start(Model.Track.Seq);
+			ControlUI.Start += (s, e) => _engine.Start(Model.Track.Seq, Model.Stream);
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.QueryFormatSupport += OnQueryFormatSupport;
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
@@ -233,7 +233,7 @@ namespace Xt.Synth0
 			seq.Edit.Rows.Value = 1;
 			seq.Pattern.Rows[0].Keys[0].Oct.Value = e.Oct;
 			seq.Pattern.Rows[0].Keys[0].Note.Value = (int)e.Note;
-			_engine.Start(seq);
+			_engine.Start(seq, new StreamModel());
 		}
 
 		static AudioEngine SetupEngine(Window mainWindow)
@@ -242,7 +242,7 @@ namespace Xt.Synth0
 			var logger = (string msg) => IO.LogError(StartTime, msg, null);
 			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
 			Action asyncStop = () => Application.Current.Dispatcher.BeginInvoke(_engine.Stop);
-			var result = AudioEngine.Create(helper.Handle, Model.Settings, Model.Stream, Model.Track.Synth, logger, asyncStop, dispatchToUI);
+			var result = AudioEngine.Create(helper.Handle, Model.Settings, Model.Track.Synth, logger, asyncStop, dispatchToUI);
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
 			return result;
