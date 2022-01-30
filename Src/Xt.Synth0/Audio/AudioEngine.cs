@@ -153,7 +153,7 @@ namespace Xt.Synth0
 
 		internal void Stop()
 		{
-			if (_streamUI.IsRunning)
+			if (_streamUI?.IsRunning == true)
 				PauseStream();
 			else
 				StopStream();
