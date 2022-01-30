@@ -6,8 +6,8 @@ namespace Xt.Synth0.UI
 	public class RequestPlayNoteEventArgs : EventArgs
 	{
 		public int Oct { get; }
-		public UnitNote Note { get; }
-		internal RequestPlayNoteEventArgs(UnitNote note, int oct)
+		public PatternNote Note { get; }
+		internal RequestPlayNoteEventArgs(PatternNote note, int oct)
 		=> (Note, Oct) = (note, oct);
 	}
 }

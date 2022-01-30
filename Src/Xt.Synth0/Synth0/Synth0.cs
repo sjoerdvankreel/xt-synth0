@@ -226,6 +226,16 @@ namespace Xt.Synth0
 				e.Samples.Add(_nativePlotState->samples[i]);
 		}
 
+		static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
+		{
+			var seq = new SeqModel();
+			seq.Edit.Loop.Value = 0;
+			seq.Edit.Rows.Value = 1;
+			seq.Pattern.Rows[0].Keys[0].Oct.Value = e.Oct;
+			seq.Pattern.Rows[0].Keys[0].Note.Value = (int)e.Note;
+			_engine.Start(seq);
+		}
+
 		static AudioEngine SetupEngine(Window mainWindow)
 		{
 			var helper = new WindowInteropHelper(mainWindow);
@@ -236,10 +246,6 @@ namespace Xt.Synth0
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
 			return result;
-		}
-
-		static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
-		{
 		}
 	}
 }

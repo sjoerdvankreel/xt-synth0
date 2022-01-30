@@ -80,8 +80,7 @@ namespace Xt.Synth0.UI
 			keyNote.Value = (int)action.Note;
 			keyOct.Value = Math.Min(9, edit.Oct.Value + action.Oct);
 			Utility.FocusDown(edit.Step.Value);
-			var unitNote = (UnitNote)((int)action.Note - 2);
-			RequestPlayNote?.Invoke(null, new RequestPlayNoteEventArgs(unitNote, keyOct.Value));
+			RequestPlayNote?.Invoke(null, new RequestPlayNoteEventArgs(action.Note, keyOct.Value));
 		}
 
 		internal static void Add(Grid grid, AppModel app,
