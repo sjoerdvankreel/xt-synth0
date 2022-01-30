@@ -114,7 +114,11 @@ SeqDSP::Move(SeqInput const& input)
   if (_fill < 1.0) return MoveType::None;
   _fill = 0.0f;
   _row++;
-  if (MaxRows == rows) _row += MaxRows - rows;
+  if (_row % MaxRows == rows) 
+  {
+    _row += MaxRows - rows;
+    assert(_row % MaxRows == 0);
+  }
   if (_row == pats * MaxRows)
     if (loop) _row = 0;
     else return _row = current, _endPattern = true, MoveType::End;
