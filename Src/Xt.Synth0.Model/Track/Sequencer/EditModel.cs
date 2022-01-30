@@ -39,7 +39,7 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
 		static readonly ParamInfo LoopInfo = ParamInfo.Toggle(p => &((Native*)p)->loop, nameof(Loop), nameof(Loop), nameof(Loop), true);
-		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, nameof(Step), nameof(Step), "Edit step", 1, 8, 1);
+		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, nameof(Step), nameof(Step), "Edit step", 0, 8, 1);
 		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, nameof(Bpm), "BPM", "Beats per minute", 1, 255, 120);
 		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, nameof(Lpb), "LPB", "Lines per beat", 1, Model.MaxLpb, 4);
 		static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, nameof(Fxs), nameof(Fxs), "Effect count", 0, Model.MaxFxs, 1);
