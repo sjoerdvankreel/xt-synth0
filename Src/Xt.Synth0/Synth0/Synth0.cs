@@ -86,6 +86,7 @@ namespace Xt.Synth0
 		{
 			SettingsUI.Show(Model.Settings);
 			IO.SaveSettings(Model.Settings);
+			_engine.Reset();
 		}
 
 		static void New(MainWindow window)
@@ -241,8 +242,7 @@ namespace Xt.Synth0
 			var helper = new WindowInteropHelper(mainWindow);
 			var logger = (string msg) => IO.LogError(StartTime, msg, null);
 			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
-			Action asyncStop = () => Application.Current.Dispatcher.BeginInvoke(_engine.Stop);
-			var result = AudioEngine.Create(helper.Handle, Model.Settings, Model.Track.Synth, logger, asyncStop, dispatchToUI);
+			var result = AudioEngine.Create(helper.Handle, Model.Settings, Model.Track.Synth, logger, dispatchToUI);
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
 			return result;

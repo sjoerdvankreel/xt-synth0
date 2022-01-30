@@ -22,14 +22,14 @@ namespace Xt.Synth0
 			_ => throw new InvalidOperationException()
 		};
 
-		internal static AudioEngine Create(IntPtr mainWindow, SettingsModel settings, 
-			SynthModel synth, Action<string> log, Action asyncStop, Action<Action> dispatchToUI)
+		internal static AudioEngine Create(IntPtr mainWindow, SettingsModel settings,
+			SynthModel synth, Action<string> log, Action<Action> dispatchToUI)
 		{
 			XtAudio.SetOnError(msg => log(msg));
 			var platform = XtAudio.Init(nameof(Synth0), mainWindow);
 			try
 			{
-				return Create(platform, settings, synth, asyncStop, dispatchToUI);
+				return Create(platform, settings, synth, dispatchToUI);
 			}
 			catch
 			{
@@ -39,11 +39,11 @@ namespace Xt.Synth0
 		}
 
 		static AudioEngine Create(XtPlatform platform, SettingsModel settings,
-			SynthModel synth, Action asyncStop, Action<Action> dispatchToUI)
+			SynthModel synth, Action<Action> dispatchToUI)
 		{
 			var asio = platform.GetService(XtSystem.ASIO);
 			var wasapi = platform.GetService(XtSystem.WASAPI);
-			return new AudioEngine(platform, settings, synth, asyncStop, dispatchToUI,
+			return new AudioEngine(platform, settings, synth, dispatchToUI,
 				asio.GetDefaultDeviceId(true),
 				wasapi.GetDefaultDeviceId(true),
 				GetDevices(asio), GetDevices(wasapi));
@@ -68,7 +68,7 @@ namespace Xt.Synth0
 		int _cpuUsageTotalFrameCount;
 		readonly int[] _automationValues;
 
-		readonly Action _asyncStop;
+		readonly Action _stopStream;
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
 
@@ -104,7 +104,6 @@ namespace Xt.Synth0
 			XtPlatform platform,
 			SettingsModel settings,
 			SynthModel synth,
-			Action asyncStop,
 			Action<Action> dispatchToUI,
 			string asioDefaultDeviceId,
 			string wasapiDefaultDeviceId,
@@ -121,7 +120,7 @@ namespace Xt.Synth0
 			_synth = synth;
 			_settings = settings;
 			_platform = platform;
-			_asyncStop = asyncStop;
+			_stopStream = StopStream;
 			_dispatchToUI = dispatchToUI;
 			_automationValues = new int[_originalSynth.Params.Count];
 
@@ -137,7 +136,7 @@ namespace Xt.Synth0
 
 		public void Dispose()
 		{
-			ResetStream();
+			Reset();
 			_platform.Dispose();
 			Native.XtsSeqDSPDestroy(_nativeDSP);
 			Native.XtsSeqStateDestroy(_nativeState);
@@ -145,12 +144,19 @@ namespace Xt.Synth0
 			Native.XtsSynthModelDestroy(_nativeSynth);
 		}
 
+		internal void Reset()
+		{
+			Stop();
+			_audioStream?.Dispose();
+			_audioStream = null;
+		}
+
 		internal void Stop()
 		{
 			if (_streamUI.IsRunning)
 				PauseStream();
 			else
-				ResetStream();
+				StopStream();
 		}
 
 		internal void Start(SeqModel seq, StreamModel stream)
@@ -174,7 +180,7 @@ namespace Xt.Synth0
 			}
 			catch
 			{
-				ResetStream();
+				StopStream();
 				throw;
 			}
 		}
@@ -192,19 +198,19 @@ namespace Xt.Synth0
 			}
 			catch
 			{
-				ResetStream();
+				StopStream();
 				throw;
 			}
 		}
 
-		void ResetStream()
+		void StopStream()
 		{
+			if (_streamUI == null) return;
+
 			PauseStream();
 
 			Native.XtsSeqModelDestroy(_nativeSeq);
 			_nativeSeq = null;
-			_audioStream?.Dispose();
-			_audioStream = null;
 			_stopwatch.Reset();
 
 			Marshal.FreeHGlobal(new IntPtr(_buffer));
@@ -249,10 +255,11 @@ namespace Xt.Synth0
 				var bufferSize = _settings.BufferSize.ToInt();
 				var streamParams = new XtStreamParams(true, OnXtBuffer, null, OnXtRunning);
 				var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
-				if (_settings.WriteToDisk)
-					_audioStream = new DiskStream(this, in format, bufferSize, _settings.OutputPath);
-				else
-					_audioStream = OpenDeviceStream(in deviceParams);
+				if (_audioStream == null)
+					if (_settings.WriteToDisk)
+						_audioStream = new DiskStream(this, in format, bufferSize, _settings.OutputPath);
+					else
+						_audioStream = OpenDeviceStream(in deviceParams);
 				_cpuUsageIndex = 0;
 				_cpuUsageTotalFrameCount = 0;
 				_cpuUsageFactors = new double[format.mix.rate];
@@ -266,7 +273,7 @@ namespace Xt.Synth0
 			}
 			catch
 			{
-				ResetStream();
+				StopStream();
 				throw;
 			}
 		}
@@ -455,13 +462,13 @@ namespace Xt.Synth0
 			bool clip = state->clip != 0;
 			bool exhausted = state->exhausted != 0;
 			UpdateStreamInfo(buffer.frames, rate, state->voices, clip, exhausted, pos);
-			if (state->end != 0) _asyncStop();
+			if (state->end != 0) _dispatchToUI(_stopStream);
 		}
 
 		internal void OnRunning(bool running, ulong error)
 		{
 			if (!running && error != 0)
-				_dispatchToUI(ResetStream);
+				_dispatchToUI(StopStream);
 		}
 
 		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
