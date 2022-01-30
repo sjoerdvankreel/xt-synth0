@@ -9,21 +9,25 @@ namespace Xt.Synth0.UI
 {
 	static class PatternFxUI
 	{
-		static void OnValueKeyDown(Action interpolate, KeyEventArgs e)
+		static void OnValueKeyDown(PatternFxElements elems, Action interpolate, KeyEventArgs e)
 		{
-			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-				interpolate();
+			e.Handled = true;
+			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control) interpolate();
+			else if (e.Key == Key.Down || e.Key == Key.Up) elems.RequestMoveValueFocus(false, e.Key == Key.Up);
+			else e.Handled = false;
 		}
 
 		static void OnTargetKeyDown(Param target, PatternFxElements elems, Action fill, KeyEventArgs e)
 		{
-			if (e.Key == Key.Delete || e.Key == Key.OemPeriod)
+			e.Handled = true;
+			if (e.Key == Key.F && e.KeyboardDevice.Modifiers == ModifierKeys.Control) fill();
+			else if (e.Key == Key.Down || e.Key == Key.Up) elems.RequestMoveTargetFocus(false, e.Key == Key.Up);
+			else if (e.Key == Key.Delete || e.Key == Key.OemPeriod)
 			{
 				target.Value = target.Info.Min;
-				elems.RequestMoveTargetFocus();
+				elems.RequestMoveTargetFocus(false, false);
 			}
-			if (e.Key == Key.F && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-				fill();
+			else e.Handled = false;
 		}
 
 		internal static PatternFxElements Add(Grid grid, AppModel app,
@@ -54,7 +58,7 @@ namespace Xt.Synth0.UI
 			var seq = app.Track.Seq;
 			var synth = app.Track.Synth;
 			var result = MakeHex(app, target, minFx, row, col);
-			result.OnParsed += (s, e) => elems.RequestMoveTargetFocus();
+			result.OnParsed += (s, e) => elems.RequestMoveTargetFocus(true, false);
 			var formatter = new TargetFormatter(synth, target);
 			var binding = Bind.To(target, nameof(Param.Value), formatter);
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
@@ -68,10 +72,10 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, PatternFxElements elems, Action interpolate)
 		{
 			var result = MakeHex(app, value, minFx, row, col);
-			result.OnParsed += (s, e) => elems.RequestMoveValueFocus();
+			result.OnParsed += (s, e) => elems.RequestMoveValueFocus(true, false);
 			result.ToolTip = string.Join("\n", value.Info.Description,
 				PatternUI.InterpolateHint, PatternUI.EditHint);
-			result.KeyDown += (s, e) => OnValueKeyDown(interpolate, e);
+			result.KeyDown += (s, e) => OnValueKeyDown(elems, interpolate, e);
 			var binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			return result;

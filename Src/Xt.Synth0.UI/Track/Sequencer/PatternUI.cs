@@ -208,17 +208,27 @@ namespace Xt.Synth0.UI
 			for (int i = 0; i < rowElements.Fx.Count; i++)
 			{
 				int iLocal = i;
-				Func<int, PatternFxElements> cycle = r => allElements[(row + edit.Step.Value) % edit.Rows.Value].Fx[iLocal];
-				rowElements.Fx[i].MoveValueFocus += (s, e) => Keyboard.Focus(cycle(row).Target);
-				rowElements.Fx[i].MoveTargetFocus += (s, e) => Keyboard.Focus(allElements[row].Fx[iLocal].Value);
+				Func<int, int, PatternFxElements> cycle = (r, d)
+				=> allElements[(row + d * edit.Step.Value) % edit.Rows.Value].Fx[iLocal];
+				rowElements.Fx[i].MoveValueFocus += (s, e) =>
+				{
+					if (e.Parsed) Keyboard.Focus(cycle(row, e.Up ? -1 : 1).Target);
+					else Keyboard.Focus(cycle(row, e.Up ? -1 : 1).Value);
+				};
+				rowElements.Fx[i].MoveTargetFocus += (s, e) =>
+				{
+					if (e.Parsed) Keyboard.Focus(allElements[row].Fx[iLocal].Value);
+					else Keyboard.Focus(cycle(row, e.Up ? -1 : 1).Target);
+				};
 			}
 			for (int i = 0; i < rowElements.Keys.Count; i++)
 			{
 				int iLocal = i;
-				Func<int, PatternKeyElements> cycle = r => allElements[(r + edit.Step.Value) % edit.Rows.Value].Keys[iLocal];
-				rowElements.Keys[i].MoveOctFocus += (s, e) => Keyboard.Focus(cycle(row).Oct);
-				rowElements.Keys[i].MoveAmpFocus += (s, e) => Keyboard.Focus(cycle(row).Amp);
-				rowElements.Keys[i].MoveNoteFocus += (s, e) => Keyboard.Focus(cycle(row).Note);
+				Func<int, int, PatternKeyElements> cycle = (r, d)
+				=> allElements[(r + d * edit.Step.Value) % edit.Rows.Value].Keys[iLocal];
+				rowElements.Keys[i].MoveOctFocus += (s, e) => Keyboard.Focus(cycle(row, e.Up ? -1 : 1).Oct);
+				rowElements.Keys[i].MoveAmpFocus += (s, e) => Keyboard.Focus(cycle(row, e.Up ? -1 : 1).Amp);
+				rowElements.Keys[i].MoveNoteFocus += (s, e) => Keyboard.Focus(cycle(row, e.Up ? -1 : 1).Note);
 			}
 		}
 	}

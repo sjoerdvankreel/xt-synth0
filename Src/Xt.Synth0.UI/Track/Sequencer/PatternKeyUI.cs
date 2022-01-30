@@ -56,33 +56,48 @@ namespace Xt.Synth0.UI
 			int value = e.Text.FirstOrDefault() - '0';
 			if (value < param.Info.Min || value > param.Info.Max) return;
 			param.Value = value;
-			elems.RequestMoveOctFocus();
+			elems.RequestMoveOctFocus(false);
 			e.Handled = true;
+		}
+
+		static void OnOctKeyDown(PatternKeyElements elems, KeyEventArgs e)
+		{
+			e.Handled = true;
+			if (e.Key == Key.Down || e.Key == Key.Up) elems.RequestMoveOctFocus(e.Key == Key.Up);
+			else e.Handled = false;
 		}
 
 		static void OnAmpKeyDown(Param amp, PatternKeyElements elems,
 			Action interpolate, KeyEventArgs e)
 		{
-			if (e.Key == Key.Delete || e.Key == Key.OemPeriod)
+			e.Handled = true;
+			if (e.Key == Key.Down || e.Key == Key.Up) elems.RequestMoveAmpFocus(e.Key == Key.Up);
+			else if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control) interpolate();
+			else if (e.Key == Key.Delete || e.Key == Key.OemPeriod)
 			{
 				amp.Value = amp.Info.Max;
-				elems.RequestMoveAmpFocus();
+				elems.RequestMoveAmpFocus(false);
 			}
-			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-				interpolate();
+			else e.Handled = false;
 		}
 
 		static void OnNoteKeyDown(EditModel edit, Param keyNote, Param keyOct,
 			PatternKeyElements elems, KeyEventArgs e)
 		{
+			if (e.Key == Key.Down || e.Key == Key.Up)
+			{
+				elems.RequestMoveNoteFocus(e.Key == Key.Up);
+				e.Handled = true;
+				return;
+			}
 			var action = KeyToAction(e.Key);
 			if (action.Oct == -2) return;
 			e.Handled = true;
 			if (action.Note == PatternNote.Off) keyNote.Value = (int)PatternNote.Off;
-			if (action.Note == PatternNote.None) keyNote.Value = (int)PatternNote.None;
+			else if (action.Note == PatternNote.None) keyNote.Value = (int)PatternNote.None;
 			keyNote.Value = (int)action.Note;
 			keyOct.Value = Math.Min(9, edit.Oct.Value + action.Oct);
-			elems.RequestMoveNoteFocus();
+			elems.RequestMoveNoteFocus(false);
 			RequestPlayNote?.Invoke(null, new RequestPlayNoteEventArgs(action.Note, keyOct.Value));
 		}
 
@@ -116,6 +131,7 @@ namespace Xt.Synth0.UI
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
+			result.KeyDown += (s, e) => OnOctKeyDown(elems, e);
 			result.TextInput += (s, e) => OnOctTextInput(key.Oct, elems, e);
 			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
 			result.SetBinding(TextBlock.TextProperty, binding);
@@ -132,7 +148,7 @@ namespace Xt.Synth0.UI
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = key.Amp.Info.Min;
 			result.Maximum = key.Amp.Info.Max;
-			result.OnParsed += (s, e) => elems.RequestMoveAmpFocus();
+			result.OnParsed += (s, e) => elems.RequestMoveAmpFocus(false);
 			result.KeyDown += (s, e) => OnAmpKeyDown(key.Amp, elems, interpolate, e);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
