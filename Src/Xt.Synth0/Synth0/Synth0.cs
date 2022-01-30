@@ -16,9 +16,7 @@ namespace Xt.Synth0
 
 		static unsafe Native.PlotState* _nativePlotState;
 		static unsafe SynthModel.Native* _nativePlotSynthModel;
-		static unsafe SynthModel.Native* _nativePlaySynthModel;
 		static unsafe SynthModel.Native.VoiceBinding* _nativePlotBinding;
-		static unsafe SynthModel.Native.VoiceBinding* _nativePlayBinding;
 
 		[STAThread]
 		static unsafe void Main()
@@ -31,20 +29,15 @@ namespace Xt.Synth0
 					Native.XtsSynthModelInit(pis, infos.Length, steps, SynthModel.SyncSteps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
 				_nativePlotBinding = Native.XtsVoiceBindingCreate();
-				_nativePlayBinding = Native.XtsVoiceBindingCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
-				_nativePlaySynthModel = Native.XtsSynthModelCreate();
 				Model.Track.Synth.BindVoice(_nativePlotSynthModel, _nativePlotBinding);
-				Model.Track.Synth.BindVoice(_nativePlaySynthModel, _nativePlayBinding);
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
 				Native.XtsPlotStateDestroy(_nativePlotState);
-				Native.XtsVoiceBindingDestroy(_nativePlayBinding);
 				Native.XtsVoiceBindingDestroy(_nativePlotBinding);
-				Native.XtsSynthModelDestroy(_nativePlaySynthModel);
 				Native.XtsSynthModelDestroy(_nativePlotSynthModel);
 			}
 		}
@@ -199,7 +192,7 @@ namespace Xt.Synth0
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
 			ControlUI.Stop += (s, e) => _engine.Stop();
-			ControlUI.Start += (s, e) => _engine.Start();
+			ControlUI.Start += (s, e) => _engine.Start(Model.Track.Seq);
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.QueryFormatSupport += OnQueryFormatSupport;
 			SettingsUI.ShowASIOControlPanel += (s, e) => showPanel();
@@ -212,18 +205,6 @@ namespace Xt.Synth0
 			e.MinBuffer = support?.min ?? 0.0;
 			e.MaxBuffer = support?.max ?? 0.0;
 			e.DefaultBuffer = support?.current ?? 0.0;
-		}
-
-		static AudioEngine SetupEngine(Window mainWindow)
-		{
-			var helper = new WindowInteropHelper(mainWindow);
-			var logger = (string msg) => IO.LogError(StartTime, msg, null);
-			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
-			Action asyncStop = () => Application.Current.Dispatcher.BeginInvoke(_engine.Stop);
-			var result = AudioEngine.Create(Model, helper.Handle, logger, asyncStop, dispatchToUI);
-			AudioModel.AddAsioDevices(result.AsioDevices);
-			AudioModel.AddWasapiDevices(result.WasapiDevices);
-			return result;
 		}
 
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
@@ -243,6 +224,18 @@ namespace Xt.Synth0
 			e.Samples.Clear();
 			for (int i = 0; i < _nativePlotState->sampleCount; i++)
 				e.Samples.Add(_nativePlotState->samples[i]);
+		}
+
+		static AudioEngine SetupEngine(Window mainWindow)
+		{
+			var helper = new WindowInteropHelper(mainWindow);
+			var logger = (string msg) => IO.LogError(StartTime, msg, null);
+			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
+			Action asyncStop = () => Application.Current.Dispatcher.BeginInvoke(_engine.Stop);
+			var result = AudioEngine.Create(helper.Handle, Model.Settings, Model.Stream, Model.Track.Synth, logger, asyncStop, dispatchToUI);
+			AudioModel.AddAsioDevices(result.AsioDevices);
+			AudioModel.AddWasapiDevices(result.WasapiDevices);
+			return result;
 		}
 
 		static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
