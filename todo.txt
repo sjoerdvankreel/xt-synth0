@@ -3,7 +3,6 @@ dont plot too often (throttle)
 dont trigger gc from the callback - dispatch all to ui
 sampler
 automation groups
-play note on enter
 make it faster
 detach sequencer
 multiple synths + select target in sequencer
