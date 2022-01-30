@@ -50,27 +50,30 @@ namespace Xt.Synth0.UI
 			_ => (-2, PatternNote.None)
 		};
 
-		static void OnOctTextInput(Param step, Param param, TextCompositionEventArgs e)
+		static void OnOctTextInput(Param param,
+			PatternKeyElements elems, TextCompositionEventArgs e)
 		{
 			int value = e.Text.FirstOrDefault() - '0';
 			if (value < param.Info.Min || value > param.Info.Max) return;
 			param.Value = value;
-			Utility.FocusDown(step.Value);
+			elems.RequestMoveOctFocus();
 			e.Handled = true;
 		}
 
-		static void OnAmpKeyDown(Param step, Param amp, Action interpolate, KeyEventArgs e)
+		static void OnAmpKeyDown(Param amp, PatternKeyElements elems,
+			Action interpolate, KeyEventArgs e)
 		{
 			if (e.Key == Key.Delete || e.Key == Key.OemPeriod)
 			{
 				amp.Value = amp.Info.Max;
-				Utility.FocusDown(step.Value);
+				elems.RequestMoveAmpFocus();
 			}
 			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
 				interpolate();
 		}
 
-		static void OnNoteKeyDown(EditModel edit, Param keyNote, Param keyOct, KeyEventArgs e)
+		static void OnNoteKeyDown(EditModel edit, Param keyNote, Param keyOct,
+			PatternKeyElements elems, KeyEventArgs e)
 		{
 			var action = KeyToAction(e.Key);
 			if (action.Oct == -2) return;
@@ -79,22 +82,24 @@ namespace Xt.Synth0.UI
 			if (action.Note == PatternNote.None) keyNote.Value = (int)PatternNote.None;
 			keyNote.Value = (int)action.Note;
 			keyOct.Value = Math.Min(9, edit.Oct.Value + action.Oct);
-			Utility.FocusDown(edit.Step.Value);
+			elems.RequestMoveNoteFocus();
 			RequestPlayNote?.Invoke(null, new RequestPlayNoteEventArgs(action.Note, keyOct.Value));
 		}
 
-		internal static void Add(Grid grid, AppModel app,
+		internal static PatternKeyElements Add(Grid grid, AppModel app,
 			PatternKey key, int minKeys, int row, int col, Action interpolate)
 		{
 			var edit = app.Track.Seq.Edit;
-			grid.Add(MakeNote(app, key.Note, key.Oct, minKeys, row, col));
-			grid.Add(MakeOct(app, key, minKeys, row, col + 1));
+			var result = new PatternKeyElements();
+			result.Note = grid.Add(MakeNote(app, key.Note, key.Oct, minKeys, row, col, result));
+			result.Oct = grid.Add(MakeOct(app, key, minKeys, row, col + 1, result));
 			grid.Add(Create.Divider(new(row, col + 2), edit.Keys, minKeys));
-			grid.Add(MakeAmp(app, key, minKeys, row, col + 3, interpolate));
+			result.Amp = grid.Add(MakeAmp(app, key, minKeys, row, col + 3, result, interpolate));
+			return result;
 		}
 
 		static UIElement MakeNote(AppModel app, Param keyNote,
-			Param keyOct, int minKeys, int row, int col)
+			Param keyOct, int minKeys, int row, int col, PatternKeyElements elems)
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
@@ -102,15 +107,16 @@ namespace Xt.Synth0.UI
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(keyNote));
 			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.KeyDown += (s, e) => OnNoteKeyDown(edit, keyNote, keyOct, e);
+			result.KeyDown += (s, e) => OnNoteKeyDown(edit, keyNote, keyOct, elems, e);
 			return result;
 		}
 
-		static UIElement MakeOct(AppModel app, PatternKey key, int minKeys, int row, int col)
+		static UIElement MakeOct(AppModel app, PatternKey key,
+			int minKeys, int row, int col, PatternKeyElements elems)
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.TextInput += (s, e) => OnOctTextInput(edit.Step, key.Oct, e);
+			result.TextInput += (s, e) => OnOctTextInput(key.Oct, elems, e);
 			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
 			result.SetBinding(TextBlock.TextProperty, binding);
 			result.ToolTip = string.Join("\n", key.Oct.Info.Description, PatternUI.EditHint);
@@ -119,14 +125,15 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeAmp(AppModel app, PatternKey key, int minKeys, int row, int col, Action interpolate)
+		static UIElement MakeAmp(AppModel app, PatternKey key,
+			int minKeys, int row, int col, PatternKeyElements elems, Action interpolate)
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<HexBox>(new(row, col));
 			result.Minimum = key.Amp.Info.Min;
 			result.Maximum = key.Amp.Info.Max;
-			result.OnParsed += (s, e) => Utility.FocusDown(edit.Step.Value);
-			result.KeyDown += (s, e) => OnAmpKeyDown(edit.Step, key.Amp, interpolate, e);
+			result.OnParsed += (s, e) => elems.RequestMoveAmpFocus();
+			result.KeyDown += (s, e) => OnAmpKeyDown(key.Amp, elems, interpolate, e);
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Amp));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));

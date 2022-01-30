@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Xt.Synth0.Model;
@@ -23,27 +22,6 @@ namespace Xt.Synth0.UI
 		internal static string RowDisabledKey = nameof(RowDisabledKey);
 		internal static string BorderParamKey = nameof(BorderParamKey);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
-
-		internal static void FocusDown(int count)
-		{
-			for (int i = 0; i < count; i++)
-				Focus(FocusNavigationDirection.Down);
-		}
-
-		internal static void FocusDownLeft(int count)
-		{
-			FocusDown(count);
-			FocusLeft();
-		}
-
-		static void Focus(FocusNavigationDirection direction)
-		{
-			var request = new TraversalRequest(direction);
-			(Keyboard.FocusedElement as UIElement)?.MoveFocus(request);
-		}
-
-		internal static void FocusLeft() => Focus(FocusNavigationDirection.Left);
-		internal static void FocusRight() => Focus(FocusNavigationDirection.Right);
 
 		static Color Multiply(Color color, double factor)
 		{
