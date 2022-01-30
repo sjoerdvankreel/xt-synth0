@@ -192,7 +192,7 @@ namespace Xt.Synth0
 			MenuUI.SaveAs += (s, e) => SaveAs(window);
 			MenuUI.ShowSettings += (s, e) => ShowSettings();
 			MenuUI.OpenRecent += (s, e) => LoadRecent(window, e.Path);
-			ControlUI.Stop += (s, e) => _engine.Stop();
+			ControlUI.Stop += (s, e) => _engine.Stop(true);
 			ControlUI.Start += (s, e) => _engine.Start(Model.Track.Seq, Model.Stream);
 			Action showPanel = () => _engine.ShowASIOControlPanel(Model.Settings.AsioDeviceId);
 			SettingsUI.QueryFormatSupport += OnQueryFormatSupport;
@@ -234,6 +234,7 @@ namespace Xt.Synth0
 			seq.Edit.Rows.Value = 1;
 			seq.Pattern.Rows[0].Keys[0].Oct.Value = e.Oct;
 			seq.Pattern.Rows[0].Keys[0].Note.Value = (int)e.Note;
+			_engine.Stop(false);
 			_engine.Start(seq, new StreamModel());
 		}
 

@@ -146,14 +146,14 @@ namespace Xt.Synth0
 
 		internal void Reset()
 		{
-			Stop();
+			StopStream();
 			_audioStream?.Dispose();
 			_audioStream = null;
 		}
 
-		internal void Stop()
+		internal void Stop(bool pause)
 		{
-			if (_streamUI?.IsRunning == true)
+			if (pause && _streamUI?.IsRunning == true)
 				PauseStream();
 			else
 				StopStream();
