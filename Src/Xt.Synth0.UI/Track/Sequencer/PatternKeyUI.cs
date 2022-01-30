@@ -118,11 +118,13 @@ namespace Xt.Synth0.UI
 		{
 			var edit = app.Track.Seq.Edit;
 			var result = Create.PatternCell<TextBlock>(new(row, col));
-			result.ToolTip = string.Join("\n", keyNote.Info.Description, NoteEditHint);
 			result.SetBinding(TextBlock.TextProperty, Bind.Format(keyNote));
 			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
 			result.KeyDown += (s, e) => OnNoteKeyDown(edit, keyNote, keyOct, elems, e);
+			result.ToolTip = string.Join("\n", keyNote.Info.Description, NoteEditHint);
+			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
+			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
 			return result;
 		}
 
@@ -135,9 +137,11 @@ namespace Xt.Synth0.UI
 			result.TextInput += (s, e) => OnOctTextInput(key.Oct, elems, e);
 			var binding = Bind.To(key.Note, key.Oct, new OctFormatter(key));
 			result.SetBinding(TextBlock.TextProperty, binding);
-			result.ToolTip = string.Join("\n", key.Oct.Info.Description, PatternUI.EditHint);
 			result.SetBinding(TextBlock.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
+			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
+			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
+			result.ToolTip = string.Join("\n", key.Oct.Info.Description, PatternUI.EditHint);
 			return result;
 		}
 
@@ -158,6 +162,8 @@ namespace Xt.Synth0.UI
 			result.SetBinding(HexBox.PlaceholderProperty, binding);
 			binding = Bind.To(key.Note, nameof(key.Note.Value), new PlaceholderConverter((int)PatternNote.None, (int)PatternNote.Off));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
+			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
+			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
 			return result;
 		}
 	}

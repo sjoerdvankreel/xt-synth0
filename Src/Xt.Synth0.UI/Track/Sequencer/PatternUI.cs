@@ -13,6 +13,9 @@ namespace Xt.Synth0.UI
 {
 	static class PatternUI
 	{
+		internal const int TooltipDelay = 1000;
+		internal const int BetweenTooltipDelay = 0;
+
 		const double HighlightedOpacity = 0.25;
 		const double NotHighlightedOpacity = 0.0;
 		static readonly object HighlightedOpacityBoxed = HighlightedOpacity;

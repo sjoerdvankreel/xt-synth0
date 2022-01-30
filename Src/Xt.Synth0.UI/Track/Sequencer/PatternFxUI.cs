@@ -65,6 +65,8 @@ namespace Xt.Synth0.UI
 			result.KeyDown += (s, e) => OnTargetKeyDown(target, elems, fill, e);
 			binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
+			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
+			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
 			return result;
 		}
 
@@ -72,12 +74,13 @@ namespace Xt.Synth0.UI
 			int minFx, int row, int col, PatternFxElements elems, Action interpolate)
 		{
 			var result = MakeHex(app, value, minFx, row, col);
-			result.OnParsed += (s, e) => elems.RequestMoveValueFocus(true, false);
-			result.ToolTip = string.Join("\n", value.Info.Description,
-				PatternUI.InterpolateHint, PatternUI.EditHint);
-			result.KeyDown += (s, e) => OnValueKeyDown(elems, interpolate, e);
 			var binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
+			result.KeyDown += (s, e) => OnValueKeyDown(elems, interpolate, e);
+			result.OnParsed += (s, e) => elems.RequestMoveValueFocus(true, false);
+			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
+			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
+			result.ToolTip = string.Join("\n", value.Info.Description, PatternUI.InterpolateHint, PatternUI.EditHint);
 			return result;
 		}
 	}
