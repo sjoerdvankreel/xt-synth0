@@ -61,22 +61,29 @@ namespace Xt.Synth0
 			return new ReadOnlyCollection<DeviceModel>(result);
 		}
 
+		float* _buffer;
+		int _cpuUsageIndex;
+		double[] _cpuUsageFactors;
+		int[] _cpuUsageFrameCounts;
+		int _cpuUsageTotalFrameCount;
+		readonly int[] _automationValues;
+
 		readonly Action _asyncStop;
 		readonly XtPlatform _platform;
 		readonly Action<Action> _dispatchToUI;
 
-		readonly SynthModel _synthModel;
-		readonly StreamModel _streamModel;
-		readonly SettingsModel _settingsModel;
-		readonly SynthModel _originalSynthModel = new();
+		readonly SynthModel _synth;
+		readonly StreamModel _stream;
+		readonly SettingsModel _settings;
+		readonly SynthModel _localSynth = new();
+		readonly SynthModel _originalSynth = new();
 
-		IAudioStream _stream;
-		IntPtr _nativeSeqDSP;
-		Native.SeqState* _nativeSeqState;
-		SeqModel.Native* _nativeSeqModel;
-		SynthModel.Native* _nativeSynthModel;
+		IntPtr _nativeDSP;
+		IAudioStream _audioStream;
+		SeqModel.Native* _nativeSeq;
+		Native.SeqState* _nativeState;
+		SynthModel.Native* _nativeSynth;
 		SynthModel.Native.VoiceBinding* _nativeBinding;
-		readonly SynthModel _managedSynthModel = new();
 
 		long _clipPosition = -1;
 		long _cpuUsagePosition = -1;
@@ -87,13 +94,6 @@ namespace Xt.Synth0
 		readonly long[] _gcPositions = new long[3];
 		readonly bool[] _gcCollecteds = new bool[3];
 		readonly Stopwatch _stopwatch = new Stopwatch();
-
-		float* _buffer;
-		int _cpuUsageIndex;
-		double[] _cpuUsageFactors;
-		int[] _cpuUsageFrameCounts;
-		int _cpuUsageTotalFrameCount;
-		readonly int[] _automationValues;
 
 		public string AsioDefaultDeviceId { get; }
 		public string WasapiDefaultDeviceId { get; }
@@ -119,19 +119,19 @@ namespace Xt.Synth0
 			AsioDefaultDeviceId = asioDefaultDeviceId;
 			WasapiDefaultDeviceId = wasapiDefaultDeviceId;
 
+			_synth = synth;
+			_stream = stream;
+			_settings = settings;
 			_platform = platform;
-			_synthModel = synth;
-			_streamModel = stream;
-			_settingsModel = settings;
 			_asyncStop = asyncStop;
 			_dispatchToUI = dispatchToUI;
-			_automationValues = new int[_originalSynthModel.Params.Count];
+			_automationValues = new int[_originalSynth.Params.Count];
 
-			_nativeSeqDSP = Native.XtsSeqDSPCreate();
-			_nativeSeqState = Native.XtsSeqStateCreate();
+			_nativeDSP = Native.XtsSeqDSPCreate();
+			_nativeState = Native.XtsSeqStateCreate();
+			_nativeSynth = Native.XtsSynthModelCreate();
 			_nativeBinding = Native.XtsVoiceBindingCreate();
-			_nativeSynthModel = Native.XtsSynthModelCreate();
-			_synthModel.BindVoice(_nativeSynthModel, _nativeBinding);
+			_synth.BindVoice(_nativeSynth, _nativeBinding);
 		}
 
 		internal void OnGCNotification(int generation)
@@ -141,15 +141,15 @@ namespace Xt.Synth0
 		{
 			ResetStream();
 			_platform.Dispose();
-			Native.XtsSeqDSPDestroy(_nativeSeqDSP);
-			Native.XtsSeqStateDestroy(_nativeSeqState);
+			Native.XtsSeqDSPDestroy(_nativeDSP);
+			Native.XtsSeqStateDestroy(_nativeState);
 			Native.XtsVoiceBindingDestroy(_nativeBinding);
-			Native.XtsSynthModelDestroy(_nativeSynthModel);
+			Native.XtsSynthModelDestroy(_nativeSynth);
 		}
 
 		internal void Stop()
 		{
-			if (_streamModel.IsRunning)
+			if (_stream.IsRunning)
 				PauseStream();
 			else
 				ResetStream();
@@ -157,7 +157,7 @@ namespace Xt.Synth0
 
 		internal void Start(SeqModel seq)
 		{
-			if (_streamModel.IsPaused)
+			if (_stream.IsPaused)
 				ResumeStream();
 			else
 				StartStream(seq);
@@ -167,9 +167,9 @@ namespace Xt.Synth0
 		{
 			try
 			{
-				_stream?.Stop();
-				_originalSynthModel.CopyTo(_synthModel);
-				_streamModel.State = StreamState.Paused;
+				_audioStream?.Stop();
+				_originalSynth.CopyTo(_synth);
+				_stream.State = StreamState.Paused;
 			}
 			catch
 			{
@@ -183,11 +183,11 @@ namespace Xt.Synth0
 			try
 			{
 				AutomationQueue.Clear();
-				_synthModel.CopyTo(_originalSynthModel);
-				_synthModel.ToNative(_nativeBinding);
-				_synthModel.CopyTo(_managedSynthModel);
-				_streamModel.State = StreamState.Running;
-				_stream.Start();
+				_synth.CopyTo(_localSynth);
+				_synth.CopyTo(_originalSynth);
+				_synth.ToNative(_nativeBinding);
+				_stream.State = StreamState.Running;
+				_audioStream.Start();
 			}
 			catch
 			{
@@ -200,11 +200,11 @@ namespace Xt.Synth0
 		{
 			PauseStream();
 
-			Native.XtsSeqModelDestroy(_nativeSeqModel);
-			_nativeSeqModel = null;
-			_streamModel.State = StreamState.Stopped;
-			_stream?.Dispose();
-			_stream = null;
+			Native.XtsSeqModelDestroy(_nativeSeq);
+			_nativeSeq = null;
+			_stream.State = StreamState.Stopped;
+			_audioStream?.Dispose();
+			_audioStream = null;
 			_stopwatch.Reset();
 
 			Marshal.FreeHGlobal(new IntPtr(_buffer));
@@ -221,16 +221,16 @@ namespace Xt.Synth0
 			_cpuUsageFrameCounts = null;
 			_cpuUsageTotalFrameCount = 0;
 
-			_streamModel.Voices = 0;
-			_streamModel.CpuUsage = 0.0;
-			_streamModel.LatencyMs = 0.0;
-			_streamModel.IsClipping = false;
-			_streamModel.IsExhausted = false;
-			_streamModel.IsOverloaded = false;
-			_streamModel.GC0Collected = false;
-			_streamModel.GC1Collected = false;
-			_streamModel.GC2Collected = false;
-			_streamModel.BufferSizeFrames = 0;
+			_stream.Voices = 0;
+			_stream.CpuUsage = 0.0;
+			_stream.LatencyMs = 0.0;
+			_stream.IsClipping = false;
+			_stream.IsExhausted = false;
+			_stream.IsOverloaded = false;
+			_stream.GC0Collected = false;
+			_stream.GC1Collected = false;
+			_stream.GC2Collected = false;
+			_stream.BufferSizeFrames = 0;
 
 			for (int i = 0; i < _gcPositions.Length; i++)
 			{
@@ -244,22 +244,22 @@ namespace Xt.Synth0
 			try
 			{
 				var format = GetFormat();
-				var bufferSize = _settingsModel.BufferSize.ToInt();
+				var bufferSize = _settings.BufferSize.ToInt();
 				var streamParams = new XtStreamParams(true, OnXtBuffer, null, OnXtRunning);
 				var deviceParams = new XtDeviceStreamParams(in streamParams, in format, bufferSize);
-				if (_settingsModel.WriteToDisk)
-					_stream = new DiskStream(this, in format, bufferSize, _settingsModel.OutputPath);
+				if (_settings.WriteToDisk)
+					_audioStream = new DiskStream(this, in format, bufferSize, _settings.OutputPath);
 				else
-					_stream = OpenDeviceStream(in deviceParams);
+					_audioStream = OpenDeviceStream(in deviceParams);
 				_cpuUsageIndex = 0;
 				_cpuUsageTotalFrameCount = 0;
 				_cpuUsageFactors = new double[format.mix.rate];
 				_cpuUsageFrameCounts = new int[format.mix.rate];
-				_buffer = (float*)Marshal.AllocHGlobal(_stream.GetMaxBufferFrames() * sizeof(float) * 2);
+				_buffer = (float*)Marshal.AllocHGlobal(_audioStream.GetMaxBufferFrames() * sizeof(float) * 2);
 				UpdateStreamInfo(0, format.mix.rate, 0, false, false, 0);
-				_nativeSeqModel = Native.XtsSeqModelCreate();
-				seq.ToNative(_nativeSeqModel);
-				Native.XtsSeqDSPInit(_nativeSeqDSP, _nativeSeqModel, _nativeSynthModel, _nativeBinding);
+				_nativeSeq = Native.XtsSeqModelCreate();
+				seq.ToNative(_nativeSeq);
+				Native.XtsSeqDSPInit(_nativeDSP, _nativeSeq, _nativeSynth, _nativeBinding);
 				ResumeStream();
 			}
 			catch
@@ -273,17 +273,17 @@ namespace Xt.Synth0
 		{
 			float infoFrames = InfoDurationSeconds * rate;
 			if (streamPosition > _clipPosition + infoFrames)
-				_streamModel.IsClipping = false;
+				_stream.IsClipping = false;
 			if (streamPosition > _gcPositions[0] + infoFrames)
-				_streamModel.GC0Collected = false;
+				_stream.GC0Collected = false;
 			if (streamPosition > _gcPositions[1] + infoFrames)
-				_streamModel.GC1Collected = false;
+				_stream.GC1Collected = false;
 			if (streamPosition > _gcPositions[2] + infoFrames)
-				_streamModel.GC2Collected = false;
+				_stream.GC2Collected = false;
 			if (streamPosition > _overloadPosition + infoFrames)
-				_streamModel.IsOverloaded = false;
+				_stream.IsOverloaded = false;
 			if (streamPosition > _exhaustedPosition + infoFrames)
-				_streamModel.IsExhausted = false;
+				_stream.IsExhausted = false;
 		}
 
 		void UpdateStreamInfo(int frames, int rate, int voices, bool clip, bool exhausted, long streamPosition)
@@ -292,48 +292,48 @@ namespace Xt.Synth0
 			var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
 			if (clip)
 			{
-				_streamModel.IsClipping = true;
+				_stream.IsClipping = true;
 				_clipPosition = streamPosition;
 			}
 			if (exhausted)
 			{
-				_streamModel.IsExhausted = true;
+				_stream.IsExhausted = true;
 				_exhaustedPosition = streamPosition;
 			}
 			if (_gcCollecteds[0])
 			{
 				_gcCollecteds[0] = false;
-				_streamModel.GC0Collected = true;
+				_stream.GC0Collected = true;
 				_gcPositions[0] = streamPosition;
 			}
 			if (_gcCollecteds[1])
 			{
 				_gcCollecteds[1] = false;
-				_streamModel.GC1Collected = true;
+				_stream.GC1Collected = true;
 				_gcPositions[1] = streamPosition;
 			}
 			if (_gcCollecteds[2])
 			{
 				_gcCollecteds[2] = false;
-				_streamModel.GC2Collected = true;
+				_stream.GC2Collected = true;
 				_gcPositions[2] = streamPosition;
 			}
 			if (processedSeconds > bufferSeconds * OverloadLimit)
 			{
 				_overloadPosition = streamPosition;
-				_streamModel.IsOverloaded = true;
+				_stream.IsOverloaded = true;
 			}
 			if (_bufferInfoPosition == -1 || streamPosition >=
 				_bufferInfoPosition + rate * InfoDurationSeconds)
 			{
 				_bufferInfoPosition = streamPosition;
-				_streamModel.LatencyMs = _stream.GetLatencyMs();
-				_streamModel.BufferSizeFrames = _stream.GetMaxBufferFrames();
+				_stream.LatencyMs = _audioStream.GetLatencyMs();
+				_stream.BufferSizeFrames = _audioStream.GetMaxBufferFrames();
 			}
 			if (streamPosition >= _voiceInfoPosition + rate * InfoDurationSeconds)
 			{
 				_voiceInfoPosition = streamPosition;
-				_streamModel.Voices = voices;
+				_stream.Voices = voices;
 			}
 		}
 
@@ -359,7 +359,7 @@ namespace Xt.Synth0
 			_cpuUsageIndex++;
 			if (streamPosition > _cpuUsagePosition + CpuUsageUpdateIntervalSeconds * rate)
 			{
-				_streamModel.CpuUsage = cpuUsage;
+				_stream.CpuUsage = cpuUsage;
 				_cpuUsagePosition = streamPosition;
 			}
 		}
@@ -413,19 +413,19 @@ namespace Xt.Synth0
 
 		void BeginAutomation()
 		{
-			var @params = _managedSynthModel.Params;
+			var @params = _localSynth.Params;
 			var actions = AutomationQueue.DequeueUI(out var count);
 			for (int i = 0; i < count; i++)
 				@params[actions[i].Param].Value = @actions[i].Value;
 			for (int i = 0; i < @params.Count; i++)
 				_automationValues[i] = @params[i].Value;
-			_managedSynthModel.ToNative(_nativeBinding);
+			_localSynth.ToNative(_nativeBinding);
 		}
 
 		void EndAutomation()
 		{
-			_managedSynthModel.FromNative(_nativeBinding);
-			var @params = _managedSynthModel.Params;
+			_localSynth.FromNative(_nativeBinding);
+			var @params = _localSynth.Params;
 			for (int i = 0; i < @params.Count; i++)
 				if (@params[i].Value != _automationValues[i])
 					AutomationQueue.EnqueueAudio(i, @params[i].Value);
@@ -436,18 +436,18 @@ namespace Xt.Synth0
 			_stopwatch.Restart();
 			BeginAutomation();
 			int rate = format.mix.rate;
-			var state = _nativeSeqState;
+			var state = _nativeState;
 			state->rate = rate;
 			state->buffer = _buffer;
 			state->frames = buffer.frames;
-			state->seq = _nativeSeqModel;
-			state->synth = _nativeSynthModel;
-			Native.XtsSeqDSPRender(_nativeSeqDSP, state);
+			state->seq = _nativeSeq;
+			state->synth = _nativeSynth;
+			Native.XtsSeqDSPRender(_nativeDSP, state);
 			EndAutomation();
-			long pos = _nativeSeqState->pos;
+			long pos = _nativeState->pos;
 			CopyBuffer(in buffer, in format);
 			ResetWarnings(rate, pos);
-			_streamModel.CurrentRow = _nativeSeqState->row;
+			_stream.CurrentRow = _nativeState->row;
 			_stopwatch.Stop();
 			UpdateCpuUsage(buffer.frames, rate, pos);
 			bool clip = state->clip != 0;
@@ -456,16 +456,16 @@ namespace Xt.Synth0
 			if (state->end != 0) _asyncStop();
 		}
 
-		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
-		{
-			OnBuffer(buffer, stream.GetFormat());
-			return 0;
-		}
-
 		internal void OnRunning(bool running, ulong error)
 		{
 			if (!running && error != 0)
 				_dispatchToUI(ResetStream);
+		}
+
+		int OnXtBuffer(XtStream stream, in XtBuffer buffer, object user)
+		{
+			OnBuffer(buffer, stream.GetFormat());
+			return 0;
 		}
 
 		void OnXtRunning(XtStream stream, bool running, ulong error, object user)
@@ -483,8 +483,8 @@ namespace Xt.Synth0
 
 		XtFormat GetFormat()
 		{
-			var depth = _settingsModel.BitDepth.ToInt();
-			var rate = _settingsModel.SampleRate.ToInt();
+			var depth = _settings.BitDepth.ToInt();
+			var rate = _settings.SampleRate.ToInt();
 			var sample = DepthToSample(depth);
 			var mix = new XtMix(rate, sample);
 			var channels = new XtChannels(0, 0, 2, 0);
@@ -500,9 +500,9 @@ namespace Xt.Synth0
 
 		XtDevice OpenDevice()
 		{
-			var system = _settingsModel.UseAsio ? XtSystem.ASIO : XtSystem.WASAPI;
-			var selectedId = _settingsModel.UseAsio ? _settingsModel.AsioDeviceId : _settingsModel.WasapiDeviceId;
-			var defaultId = _settingsModel.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
+			var system = _settings.UseAsio ? XtSystem.ASIO : XtSystem.WASAPI;
+			var selectedId = _settings.UseAsio ? _settings.AsioDeviceId : _settings.WasapiDeviceId;
+			var defaultId = _settings.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
 			return OpenDevice(system, selectedId, defaultId);
 		}
 
