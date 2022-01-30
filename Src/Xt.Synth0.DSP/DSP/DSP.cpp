@@ -7,12 +7,12 @@ namespace Xts {
 static void
 FftCombine(std::vector<std::complex<float>>& xs, size_t stride)
 {
-  for (size_t i = 0; i < xs.size(); i+= stride)
+  for (size_t i = 0; i < xs.size() / stride; i += stride)
   {
-    auto polar = std::polar(1.0f, -2.0f * PI * i / xs.size());
+    auto polar = std::polar(1.0f, -2.0f * PI * i / (xs.size() / stride));
     std::complex<float> t = polar * xs[i + 1];
     xs[i] = xs[i] + t;
-    xs[i + xs.size() / 2] = xs[i] - t;
+    xs[i + xs.size() / stride] = xs[i] - t;
   }
 }
 
@@ -22,7 +22,7 @@ Fft(std::vector<std::complex<float>>& x, size_t start, size_t stride)
   if(stride >= x.size()) return;
   Fft(x, 0, stride * 2);
   Fft(x, 1, stride * 2);
-  FftCombine(x, stride);
+  FftCombine(x, stride * 2);
 }
 
 void 
