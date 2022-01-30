@@ -162,7 +162,7 @@ namespace Xt.Synth0
 		internal void Start(SeqModel seq, StreamModel stream)
 		{
 			if (_streamUI != null && _streamUI != stream)
-				throw new InvalidOperationException();
+				StopStream();
 			_streamUI = stream;
 			if (_streamUI.IsPaused)
 				ResumeStream();
