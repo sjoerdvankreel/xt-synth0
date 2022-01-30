@@ -13,7 +13,7 @@ namespace Xts {
 
 inline float MaxLevel = 0.95f;
 inline float PI = static_cast<float>(3.14159265358979323846);
-void Fft(std::vector<float>& x, std::vector<std::complex<float>>& scratch);
+void InplacePaddedFft(std::vector<float>& x, std::vector<std::complex<float>>& scratch);
 
 inline float Mix01Exclusive(int val)
 { return static_cast<float>(val / 256.0f); }

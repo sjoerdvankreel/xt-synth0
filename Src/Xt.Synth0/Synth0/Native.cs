@@ -31,8 +31,7 @@ namespace Xt.Synth0
 			internal float* samples;
 			internal int* splits;
 			internal SynthModel.Native* synth;
-			internal IntPtr sampleData;
-			internal IntPtr splitData;
+			internal IntPtr sampleData, splitData, fftData;
 		};
 
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();

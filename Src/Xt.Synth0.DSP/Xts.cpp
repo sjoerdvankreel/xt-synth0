@@ -29,15 +29,18 @@ XtsPlotStateCreate(void)
 {
   auto result = new PlotState;
   result->sampleData = new std::vector<float>;
-  result->splitData = new std::vector<int32_t>;
+  result->splitData = new std::vector<int32_t>; 
+  result->fftData = new std::vector<std::complex<float>>();
   return result;
 }
 
 void XTS_CALL 
 XtsPlotStateDestroy(PlotState* state)
 {
+  delete state->fftData;
   delete state->splitData;
   delete state->sampleData;
+  state->fftData = nullptr;
   state->splitData = nullptr;
   state->sampleData = nullptr;
   delete state;
@@ -67,12 +70,14 @@ XtsPlotDSPRender(PlotState* state)
   Xts::PlotInput in = {};
   Xts::PlotOutput out = {};
 
+  state->fftData->clear();
   state->splitData->clear();
   state->sampleData->clear();
-  in.bpm = static_cast<float>(state->bpm);
-  in.pixels = static_cast<float>(state->pixels);
+  out.fft = state->fftData;
   out.splits = state->splitData;
   out.samples = state->sampleData;
+  in.bpm = static_cast<float>(state->bpm);
+  in.pixels = static_cast<float>(state->pixels);
   Xts::PlotDSP::Render(*state->synth, in, out);
 
   state->clip = out.clip;

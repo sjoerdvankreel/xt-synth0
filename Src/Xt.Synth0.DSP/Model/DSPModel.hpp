@@ -3,6 +3,7 @@
 
 #include "SynthModel.hpp"
 #include <vector>
+#include <complex>
 
 namespace Xts {
 
@@ -22,6 +23,7 @@ struct PlotOutput
   bool clip, bipolar;
   std::vector<int>* splits;
   std::vector<float>* samples;
+  std::vector<std::complex<float>>* fft;
 public:
   PlotOutput() = default;
   PlotOutput(PlotOutput const&) = delete;

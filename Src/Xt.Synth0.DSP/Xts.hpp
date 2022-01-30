@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <cstdint>
+#include <complex>
 
 #define XTS_CALL __stdcall
 #define XTS_EXPORT extern "C" __declspec(dllexport)
@@ -46,6 +47,7 @@ struct XTS_ALIGN PlotState
   Xts::SynthModel const* synth;
   std::vector<float>* sampleData;
   std::vector<int32_t>* splitData;
+  std::vector<std::complex<float>>* fftData;
 public:
   PlotState() = default;
   PlotState(PlotState const&) = delete;
