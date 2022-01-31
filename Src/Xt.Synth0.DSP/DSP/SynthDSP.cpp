@@ -4,10 +4,22 @@
 namespace Xts {
 
 void
-SynthDSP::Release(EnvDSP* envs)
+SynthDSP::Release()
 {
   for (int e = 0; e < EnvCount; e++)
-    envs[e].Release(envs);
+    _envs[e].Release();
+}
+
+SynthDSP::
+SynthDSP(SynthModel const* model, AudioInput const* input):
+DSPBase(model, input), _global(&model->global), _envs(), _units()
+{
+  for (int u = 0; u < UnitCount; u++)
+    _units[u] = UnitDSP(&model->units[u], input);
+  for (int l = 0; l < LfoCount; l++)
+    _lfos[l] = LfoDSP(&model->lfos[l], &input->source);
+  for (int e = 0; e < EnvCount; e++)
+    _envs[e] = EnvDSP(&model->envs[e], &input->source);
 }
 
 AudioOutput
@@ -16,7 +28,7 @@ SynthDSP::Next(SynthState const& state)
   AudioOutput output;
   for (int u = 0; u < UnitCount; u++)
     output += _units[u].Next(state);
-  return output * _global.Next(state);
+  return output * _global.Amp(state);
 }
 
 AudioOutput
@@ -31,20 +43,6 @@ SynthDSP::Next()
   return Next(state);
 }
 
-SynthDSP::
-SynthDSP(SynthModel const* model, AudioInput const* input) :
-  DSPBase(model, input),
-  _global(&model->global, &input->source),
-  _envs(), _units()
-{
-  for (int u = 0; u < UnitCount; u++)
-    _units[u] = UnitDSP(&model->units[u], input);
-  for (int l = 0; l < LfoCount; l++)
-    _lfos[l] = LfoDSP(&model->lfos[l], &input->source);
-  for (int e = 0; e < EnvCount; e++)
-    _envs[e] = EnvDSP(&model->envs[e], &input->source);
-}
-
 void
 SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
@@ -55,6 +53,8 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   int h = 0;
   bool l = output.channel == 0;
   int hold = TimeI(input.hold, plotRate);
+  auto env = static_cast<int>(model.global.ampEnv);
+  env -= static_cast<int>(GlobalAmpEnv::Env1);
   
   output.bipolar = true;
   output.rate = plotRate;

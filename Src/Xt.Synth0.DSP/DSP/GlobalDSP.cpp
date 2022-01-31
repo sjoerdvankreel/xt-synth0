@@ -4,7 +4,7 @@
 namespace Xts {
 
 float
-GlobalDSP::Next(SynthState const& state)
+GlobalDSP::Amp(SynthState const& state)
 {
   float lfoAmt = Level(_model->ampLfoAmt);
   float lfoVal = state.lfos[static_cast<int>(_model->ampLfo)];

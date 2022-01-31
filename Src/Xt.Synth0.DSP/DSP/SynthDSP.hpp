@@ -21,17 +21,15 @@ public:
   SynthDSP() = default;
   SynthDSP(SynthModel const* model, AudioInput const* input);
 public:
+  void Release();
   AudioOutput Next();
-  void Release() { Release(_envs); }
-  bool End() const { return End(_envs); }
-public:
-  void Release(EnvDSP* envs);
   AudioOutput Next(SynthState const& state);
-  bool End(EnvDSP const* envs) const { return _global.End(envs); }
+  bool End() const { return _envs[static_cast<int>(_model->global.ampEnv)].End(); }
   static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(AudioSourceDSP<SynthDSP, SynthModel>);
-static_assert(ReleaseableDSP<SynthDSP, SynthModel, AudioInput>);
+static_assert(FiniteDSP<SynthDSP, SynthModel, AudioInput>);
+static_assert(PlottableDSP<SynthDSP, SynthModel, AudioInput>);
 
 } // namespace Xts
 #endif // XTS_SYNTH_DSP_HPP

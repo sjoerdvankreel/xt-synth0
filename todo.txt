@@ -25,4 +25,3 @@ show automation range error in UI
 connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 global=statesourcedsp
-endable->finite

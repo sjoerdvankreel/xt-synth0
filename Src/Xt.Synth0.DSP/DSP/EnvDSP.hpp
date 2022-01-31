@@ -26,12 +26,13 @@ private:
   static EnvParams Params(EnvModel const& model, SourceInput const& input);
 public:
   float Next();
-  void Release(EnvDSP* envs);
-  bool End(EnvDSP const* envs) const { return _stage == EnvStage::End; }
+  void Release();
+  bool End() const { return _stage == EnvStage::End; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(StateSourceDSP<EnvDSP, EnvModel>);
-static_assert(ReleaseableDSP<EnvDSP, EnvModel, SourceInput>);
+static_assert(FiniteDSP<EnvDSP, EnvModel, SourceInput>);
+static_assert(PlottableDSP<EnvDSP, EnvModel, SourceInput>);
 
 } // namespace Xts
 #endif // XTS_ENV_DSP_HPP
