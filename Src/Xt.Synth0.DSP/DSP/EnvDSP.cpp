@@ -23,7 +23,7 @@ EnvDSP::NextStage(EnvStage stage)
 }
 
 void
-EnvDSP::Release()
+EnvDSP::Release(EnvDSP* envs)
 {
   if (_model->on && _stage >= EnvStage::R) return;
   NextStage(!_model->on ? EnvStage::End : EnvStage::R);
@@ -133,10 +133,10 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   EnvDSP dsp(&model, &in);
   while(true)
   {
-    if(h++ == hold) dsp.Release();
-    if(dsp.End()) break;
+    if(h++ == hold) dsp.Release(nullptr);
+    if(dsp.End(nullptr)) break;
     output.samples->push_back(dsp.Next());
-    if(prev != dsp._stage && prev != EnvStage::Dly && !dsp.End())
+    if(prev != dsp._stage && prev != EnvStage::Dly)
       output.splits->push_back(i);
     prev = dsp._stage; 
     i++;

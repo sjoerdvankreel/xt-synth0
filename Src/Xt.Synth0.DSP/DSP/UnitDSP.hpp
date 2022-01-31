@@ -26,7 +26,6 @@ private:
   float GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const;
 };
 static_assert(AudioSourceDSP<UnitDSP, UnitModel>);
-static_assert(PlottableDSP<UnitDSP, UnitModel, AudioInput>);
 
 } // namespace Xts
 #endif // XTS_UNIT_DSP_HPP

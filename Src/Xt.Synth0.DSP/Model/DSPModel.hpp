@@ -101,30 +101,35 @@ protected:
 template <class T, class Model, class Input>
 concept DSP = std::is_base_of<DSPBase<Model, Input>, T>::value &&
 requires(T& dsp, Model const* model, Input const* input, PlotOutput& out)
-{ { T(model, input) }; };
+{ 
+  { T(model, input) }; 
+  { T::Plot(Model(), PlotInput(), out) } -> std::same_as<void>;
+};
 
 template <class T, class Model, class Input>
-concept PlottableDSP = DSP<T, Model, Input> &&
-requires(T& dsp, Model const* model, PlotOutput& out)
-{ { T::Plot(Model(), PlotInput(), out) } -> std::same_as<void>; };
+concept EndableDSP = DSP<T, Model, Input> &&
+requires(T const& dsp, class EnvDSP const* envs)
+{ { dsp.End(envs) } -> std::same_as<bool>; };
+
+template <class T, class Model, class Input>
+concept ReleaseableDSP = EndableDSP<T, Model, Input> &&
+requires(T& dsp, class EnvDSP* envs)
+{ { dsp.Release(envs) } -> std::same_as<void>; };
 
 template <class T, class Model> 
-concept StateSourceDSP = PlottableDSP<T, Model, SourceInput> &&
+concept StatePipeDSP = DSP<T, Model, SourceInput> &&
+requires(T& dsp)
+{ { dsp.Next(SynthState()) } -> std::same_as<float>; };
+
+template <class T, class Model> 
+concept StateSourceDSP = DSP<T, Model, SourceInput> &&
 requires(T& dsp)
 { { dsp.Next() } -> std::same_as<float>; };
 
 template <class T, class Model>
-concept AudioSourceDSP = PlottableDSP<T, Model, AudioInput> &&
+concept AudioSourceDSP = DSP<T, Model, AudioInput> &&
 requires(T & dsp)
 { { dsp.Next(SynthState()) } -> std::same_as<AudioOutput>; };
-
-template <class T, class Model, class Input>
-concept FiniteDSP = PlottableDSP<T, Model, Input> &&
-requires(T& dsp)
-{
-  { dsp.End() } -> std::same_as<bool>;
-  { dsp.Release() } -> std::same_as<void>;
-};
 
 } // namespace Xts
 #endif // XTS_DSP_MODEL_HPP
