@@ -19,6 +19,28 @@ GlobalDSP::Next(SourceDSP const& source)
 void
 GlobalDSP::Plot(GlobalModel const& model, PlotInput const& input, PlotOutput& output)
 {
+  const int plotRate = 5000;
+  const int maxSamples = 5 * plotRate;
+
+  int i = 0;
+  int h = 0;
+  bool l = output.channel == 0;
+  int hold = TimeI(input.hold, plotRate);
+
+  output.bipolar = true;
+  output.rate = plotRate;
+  SourceModel sourceModel = SourceModel();
+  SourceInput sourceInput(plotRate, input.bpm);
+  SourceDSP sourceDSP(&sourceModel, &sourceInput);
+  GlobalDSP dsp(&model, &sourceInput);
+  while (i++ < maxSamples)
+  {
+    if (h++ == hold) sourceDSP.Release();
+    if (dsp.End(sourceDSP)) break;
+    sourceDSP.Next();
+    dsp.Next(sourceDSP);
+    output.samples->push_back(dsp.Value());
+  }
 }
 
 } // namespace Xts
