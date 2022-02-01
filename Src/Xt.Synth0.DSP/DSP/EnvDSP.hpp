@@ -31,7 +31,8 @@ public:
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(StateSourceDSP<EnvDSP, EnvModel>);
-static_assert(FiniteDSP<EnvDSP, EnvModel, SourceInput, float>);
+static_assert(ReleaseableDSP<EnvDSP, EnvModel, SourceInput, float>);
+static_assert(FiniteSourceDSP<EnvDSP, EnvModel, SourceInput, float>);
 
 } // namespace Xts
 #endif // XTS_ENV_DSP_HPP

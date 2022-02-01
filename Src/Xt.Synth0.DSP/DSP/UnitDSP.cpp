@@ -28,7 +28,7 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 }
 
 void
-UnitDSP::Next(SynthState const& state)
+UnitDSP::Next(SourceDSP const& source)
 {
   _value = AudioOutput();
 	if (!_model->on) return;
@@ -78,14 +78,14 @@ UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output
 	output.freq = Freq(model, key);
 	output.rate = output.freq * input.pixels;
 
-	SynthState state;
-	SourceInput source(output.rate, input.bpm);
-	AudioInput audio(source, key);
+	SourceDSP sourceDsp;
+	SourceInput sourceInput(output.rate, input.bpm);
+	AudioInput audio(sourceInput, key);
 	UnitDSP dsp(&model, &audio);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
   {
-    dsp.Next(state);
+    dsp.Next(sourceDsp);
 		output.samples->push_back(dsp.Value().Mono());
   }
 }

@@ -1,5 +1,6 @@
 #include "DSP.hpp"
 #include "EnvDSP.hpp"
+#include "SourceDSP.hpp"
 
 #include <cmath>
 #include <cassert>
@@ -129,6 +130,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   output.rate = input.pixels * testRate / (release + params.r);
   hold = static_cast<int>(hold * output.rate / testRate);
 
+  SourceDSP source;
   auto in = SourceInput(output.rate, input.bpm);
   EnvDSP dsp(&model, &in);
   while(true)

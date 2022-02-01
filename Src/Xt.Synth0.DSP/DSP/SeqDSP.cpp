@@ -56,7 +56,8 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
   for (int v = 0; v < MaxVoices; v++)
   {
     if (_keys[v] == -1) continue;
-    result += _dsps[v].Next();
+    _dsps[v].Next();
+    result += _dsps[v].Value();
     if (_dsps[v].End()) Return(_keys[v], v);
   }
   return result;

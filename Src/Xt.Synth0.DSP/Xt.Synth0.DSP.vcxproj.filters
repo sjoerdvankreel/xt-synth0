@@ -46,6 +46,9 @@
     <ClInclude Include="DSP\LfoDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\SourceDSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -74,6 +77,9 @@
       <Filter>Model</Filter>
     </ClCompile>
     <ClCompile Include="DSP\DSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\SourceDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
   </ItemGroup>

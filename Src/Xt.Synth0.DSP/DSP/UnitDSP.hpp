@@ -1,6 +1,7 @@
 #ifndef XTS_UNIT_DSP_HPP
 #define XTS_UNIT_DSP_HPP
 
+#include "SourceDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -15,7 +16,7 @@ public:
   UnitDSP(UnitModel const* model, AudioInput const* input):
   DSPBase(model, input), _phase(0.0) {}
 public:
-  void Next(SynthState const& state);
+  void Next(SourceDSP const& source);
   static void Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output);
 private:
   float PwPhase() const;

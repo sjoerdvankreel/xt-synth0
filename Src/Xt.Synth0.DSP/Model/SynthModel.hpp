@@ -37,7 +37,6 @@ enum class GlobalAmpLfo { LFO1, LFO2 };
 enum class GlobalAmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN GlobalModel
 {
-  friend class SynthDSP;
   friend class GlobalDSP;
   GlobalModel() = default;
   GlobalModel(GlobalModel const&) = delete;
@@ -101,6 +100,18 @@ private:
 };
 XTS_CHECK_SIZE(UnitModel, 80);
 
+struct XTS_ALIGN SourceModel
+{
+  friend class PlotDSP;
+  friend class SourceDSP;
+  SourceModel() = default;
+  SourceModel(SourceModel const&) = delete;
+private:
+  LfoModel lfos[LfoCount];
+  EnvModel envs[EnvCount];
+};
+XTS_CHECK_SIZE(SourceModel, 280);
+
 struct XTS_ALIGN SynthModel
 {
   friend class SeqDSP;
@@ -111,8 +122,7 @@ struct XTS_ALIGN SynthModel
 private:
   PlotModel plot;
   GlobalModel global;
-  LfoModel lfos[LfoCount];
-  EnvModel envs[EnvCount];
+  SourceModel source;
   UnitModel units[UnitCount];
 };
 XTS_CHECK_SIZE(SynthModel, 560);
