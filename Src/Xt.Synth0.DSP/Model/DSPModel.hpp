@@ -86,8 +86,6 @@ protected:
   Output _value;
   Model const* _model;
   Input const* _input;
-public:
-  Output const& Value() const { return _value; }
 protected:
   DSPBase() = default;
   DSPBase(Model const* model, Input const* input) :
@@ -96,8 +94,11 @@ protected:
 
 template <class T, class Model, class Input, class Output>
 concept DSP = std::derived_from<T, DSPBase<Model, Input, Output>> &&
-requires(Model const* model, Input const* input)
-{ { T(model, input) }; };
+requires(T const& dsp, Model const* model, Input const* input)
+{
+  { T(model, input) }; 
+  { dsp.Value() } -> std::same_as<Output>;
+};
 
 template <class T, class Model, class Input, class Output>
 concept ReleaseableDSP = DSP<T, Model, Input, Output> &&

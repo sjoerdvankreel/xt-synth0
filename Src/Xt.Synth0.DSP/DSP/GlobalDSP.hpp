@@ -17,6 +17,7 @@ public:
   DSPBase(model, input) {}
 public:
   void Next(SourceDSP const& source);
+  float Value() const { return _value; }
   bool End(SourceDSP const& source) const { return source.Envs()[static_cast<int>(_model->ampEnv)].End(); }
   static void Plot(GlobalModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
 };

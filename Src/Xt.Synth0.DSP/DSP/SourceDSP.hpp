@@ -8,7 +8,7 @@
 namespace Xts {
 
 class SourceDSP:
-public DSPBase<SourceModel, SourceInput, SourceDSP*>
+public DSPBase<SourceModel, SourceInput, SourceDSP const*>
 {
   LfoDSP _lfos[LfoCount];
   EnvDSP _envs[EnvCount];
@@ -19,9 +19,10 @@ public:
   EnvDSP const* Envs() const { return _envs; }
 public:
   SourceDSP() = default;
+  SourceDSP const* Value() const { return this; }
   SourceDSP(SourceModel const* model, SourceInput const* input);
 };
-static_assert(ReleaseableDSP<SourceDSP, SourceModel, SourceInput, SourceDSP*>);
+static_assert(ReleaseableDSP<SourceDSP, SourceModel, SourceInput, SourceDSP const*>);
 
 } // namespace Xts
 #endif // XTS_SOURCE_DSP_HPP

@@ -25,3 +25,4 @@ show automation range error in UI
 connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 autoselect plotsource
+niet zomaar het model eroverheen kopieren zonder de state te updaten (krakpot)

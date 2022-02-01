@@ -22,6 +22,7 @@ public:
   void Next(SourceDSP const& source);
   void Release() { _source.Release(); }
   bool End() const { return End(_source); }
+  AudioOutput Value() const { return _value; }
   void Next() { _source.Next(); return Next(_source); };
   bool End(SourceDSP const& source) const { return _global.End(source); }
   static void Plot(SynthModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
