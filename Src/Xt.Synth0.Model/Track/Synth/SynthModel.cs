@@ -27,8 +27,7 @@ namespace Xt.Synth0.Model
 		{
 			internal PlotModel.Native plot;
 			internal GlobalModel.Native global;
-			internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
-			internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
+			internal SourceModel source;
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -36,6 +35,13 @@ namespace Xt.Synth0.Model
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public ref struct VoiceBinding { internal fixed byte @params[Model.ParamCount * 8]; }
+
+			[StructLayout(LayoutKind.Sequential, Pack = 8)]
+			public ref struct SourceModel 
+			{
+				internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
+				internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
+			}
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct SyncStep
