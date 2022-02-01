@@ -12,10 +12,11 @@ namespace Xt.Synth0.Model
 		internal ref struct Native
 		{
 			internal const int Size = 72;
-			internal int on, type, sync;
+			internal int type;
+			internal int on, sync, inv;
 			internal int aSlp, dSlp, rSlp;
 			internal int dly, a, hld, d, s, r;
-			internal int dlyStp, aStp, hldStp, dStp, rStp, pad__;
+			internal int dlyStp, aStp, hldStp, dStp, rStp;
 		}
 
 		public Param S { get; } = new(SInfo);
@@ -23,6 +24,7 @@ namespace Xt.Synth0.Model
 		public Param D { get; } = new(DInfo);
 		public Param R { get; } = new(RInfo);
 		public Param On { get; } = new(OnInfo);
+		public Param Inv { get; } = new(InvInfo);
 		public Param Hld { get; } = new(HldInfo);
 		public Param Dly { get; } = new(DlyInfo);
 		public Param ASlp { get; } = new(ASlpInfo);
@@ -47,10 +49,10 @@ namespace Xt.Synth0.Model
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
-			{ Type, 0 }, { Sync, 1 }, { Dly, 2 }, { DlyStp, 2 },
-			{ ASlp, 3 }, { A, 4 }, { AStp, 4 }, { Hld, 5 }, { HldStp, 5 },
-			{ DSlp, 6 }, { D, 7 }, { DStp, 7 }, { S, 8 },
-			{ RSlp, 9 }, { R, 10 }, { RStp, 10 }
+			{ Type, 0 }, { Sync, 1 }, { Inv, 2 },
+			{ Dly, 3 }, { DlyStp, 3 }, { A, 4 }, { AStp, 4 }, { ASlp, 5 },
+			{ Hld, 6 }, { HldStp, 6 }, { D, 7 }, { DStp, 7 }, { DSlp, 8 },
+			{ S, 9 }, { R, 10 }, { RStp, 10 }, { RSlp, 11 }
 		};
 
 		internal EnvModel(int index) => Index = index;
@@ -61,6 +63,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo ASlpInfo = ParamInfo.Mix(p => &((Native*)p)->aSlp, nameof(ASlp), "Slp", "Attack slope");
 		static readonly ParamInfo RSlpInfo = ParamInfo.Mix(p => &((Native*)p)->rSlp, nameof(RSlp), "Slp", "Release slope");
 		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
+		static readonly ParamInfo InvInfo = ParamInfo.Toggle(p => &((Native*)p)->inv, nameof(Inv), "Invert", "Invert", false);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
 		static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, nameof(S), nameof(S), "Sustain level", 128, null);
 		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), nameof(Sync), "Sync to beat", false);

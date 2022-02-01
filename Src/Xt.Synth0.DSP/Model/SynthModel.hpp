@@ -18,7 +18,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1064);
+XTS_CHECK_SIZE(VoiceBinding, 1088);
 
 enum class PlotType { Off, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, Global, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -68,13 +68,11 @@ struct XTS_ALIGN EnvModel
   EnvModel() = default;
   EnvModel(EnvModel const&) = delete;
 private:
-  XtsBool on;
   EnvType type;
-  XtsBool sync;
+  XtsBool on, sync, inv;
   int32_t aSlp, dSlp, rSlp;
   int32_t dly, a, hld, d, s, r;
   int32_t dlyStp, aStp, hldStp, dStp, rStp;
-  int32_t pad__;
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
