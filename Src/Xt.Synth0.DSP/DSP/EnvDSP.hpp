@@ -28,8 +28,8 @@ public:
   void Next();
   void Release();
   bool End() const { return _stage == EnvStage::End; }
-  float Value() const { return _model->inv ? 1.0f - _value : _value; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
+  float Value() const { return (_model->on && _model->inv) ? 1.0f - _value : _value; }
 };
 static_assert(StateSourceDSP<EnvDSP, EnvModel>);
 static_assert(ReleaseableDSP<EnvDSP, EnvModel, SourceInput, float>);
