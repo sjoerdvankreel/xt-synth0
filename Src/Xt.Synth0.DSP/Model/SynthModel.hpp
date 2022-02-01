@@ -20,7 +20,7 @@ XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
 XTS_CHECK_SIZE(VoiceBinding, 1064);
 
-enum class PlotType { Off, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2, SynthL, SynthR };
+enum class PlotType { Off, Global, Unit1, Unit2, Unit3, Env1, Env2, Env3, LFO1, LFO2, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;

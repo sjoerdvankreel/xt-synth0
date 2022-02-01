@@ -114,6 +114,11 @@ concept StateSourceDSP = DSP<T, Model, SourceInput, float> &&
 requires(T& dsp)
 { { dsp.Next() } -> std::same_as<void>; };
 
+template <class T, class Model> 
+concept StatePipeDSP = DSP<T, Model, SourceInput, float> &&
+requires(T& dsp)
+{ { dsp.Next(SynthState()) } -> std::same_as<void>; };
+
 template <class T, class Model>
 concept AudioSourceDSP = DSP<T, Model, AudioInput, AudioOutput> &&
 requires(T & dsp)

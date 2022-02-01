@@ -3,8 +3,8 @@
 
 namespace Xts {
 
-float
-GlobalDSP::Amp(SynthState const& state)
+void
+GlobalDSP::Next(SynthState const& state)
 {
   float lfoAmt = Level(_model->ampLfoAmt);
   float lfoVal = state.lfos[static_cast<int>(_model->ampLfo)];
@@ -12,7 +12,7 @@ GlobalDSP::Amp(SynthState const& state)
   float amp = Level(_model->amp);
   float envAmt = Level(_model->ampEnvAmt);
   float env = state.envs[static_cast<int>(_model->ampEnv)];
-  return (amp * lfo) + (1.0f - amp) * env * envAmt * lfo;
+  _value = (amp * lfo) + (1.0f - amp) * env * envAmt * lfo;
 }
 
 } // namespace Xts

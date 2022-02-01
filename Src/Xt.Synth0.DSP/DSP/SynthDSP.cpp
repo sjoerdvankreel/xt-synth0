@@ -19,7 +19,8 @@ SynthDSP::Next(SynthState const& state)
     _units[u].Next(state);
     output += _units[u].Value();
   }
-  _value = output * _global.Amp(state);
+  _global.Next(state);
+  _value = output * _global.Value();
 }
 
 AudioOutput
@@ -43,7 +44,7 @@ SynthDSP::Next()
 
 SynthDSP::
 SynthDSP(SynthModel const* model, AudioInput const* input):
-DSPBase(model, input), _global(&model->global), _envs(), _units()
+DSPBase(model, input), _global(&model->global, &input->source), _envs(), _units()
 {
   for (int u = 0; u < UnitCount; u++)
     _units[u] = UnitDSP(&model->units[u], input);
