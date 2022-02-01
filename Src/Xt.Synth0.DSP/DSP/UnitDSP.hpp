@@ -7,7 +7,7 @@
 namespace Xts {
 
 class UnitDSP: 
-private DSPBase<UnitModel, AudioInput>
+public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
   double _phase;
 public:
@@ -15,7 +15,7 @@ public:
   UnitDSP(UnitModel const* model, AudioInput const* input):
   DSPBase(model, input), _phase(0.0) {}
 public:
-  AudioOutput Next(SynthState const& state);
+  void Next(SynthState const& state);
   static void Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output);
 private:
   float PwPhase() const;
@@ -26,7 +26,6 @@ private:
   float GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const;
 };
 static_assert(AudioSourceDSP<UnitDSP, UnitModel>);
-static_assert(PlottableDSP<UnitDSP, UnitModel, AudioInput>);
 
 } // namespace Xts
 #endif // XTS_UNIT_DSP_HPP

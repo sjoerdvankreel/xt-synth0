@@ -86,40 +86,41 @@ public:
   source(source), key(key) {}
 };
 
-template <class Model, class Input>
+template <class Model, class Input, class Output>
 class DSPBase
 {
 protected:
+  Output _value;
   Model const* _model;
   Input const* _input;
+public:
+  Output const& Value() const { return _value; }
 protected:
   DSPBase() = default;
   DSPBase(Model const* model, Input const* input) :
-  _model(model), _input(input) {}
+  _model(model), _input(input), _value() {}
 };
 
-template <class T, class Model, class Input>
-concept DSP = std::is_base_of<DSPBase<Model, Input>, T>::value &&
+template <class T, class Model, class Input, class Output>
+concept DSP = std::derived_from<T, DSPBase<Model, Input, Output>> &&
 requires(T& dsp, Model const* model, Input const* input, PlotOutput& out)
-{ { T(model, input) }; };
-
-template <class T, class Model, class Input>
-concept PlottableDSP = DSP<T, Model, Input> &&
-requires(T& dsp, Model const* model, PlotOutput& out)
-{ { T::Plot(Model(), PlotInput(), out) } -> std::same_as<void>; };
+{ 
+  { T(model, input) }; 
+  { T::Plot(Model(), PlotInput(), out) } -> std::same_as<void>;
+};
 
 template <class T, class Model> 
-concept StateSourceDSP = PlottableDSP<T, Model, SourceInput> &&
+concept StateSourceDSP = DSP<T, Model, SourceInput, float> &&
 requires(T& dsp)
-{ { dsp.Next() } -> std::same_as<float>; };
+{ { dsp.Next() } -> std::same_as<void>; };
 
 template <class T, class Model>
-concept AudioSourceDSP = PlottableDSP<T, Model, AudioInput> &&
+concept AudioSourceDSP = DSP<T, Model, AudioInput, AudioOutput> &&
 requires(T & dsp)
-{ { dsp.Next(SynthState()) } -> std::same_as<AudioOutput>; };
+{ { dsp.Next(SynthState()) } -> std::same_as<void>; };
 
-template <class T, class Model, class Input>
-concept FiniteDSP = PlottableDSP<T, Model, Input> &&
+template <class T, class Model, class Input, class Output>
+concept FiniteDSP = DSP<T, Model, Input, Output> &&
 requires(T& dsp)
 {
   { dsp.End() } -> std::same_as<bool>;

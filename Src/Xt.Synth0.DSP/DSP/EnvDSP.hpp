@@ -10,7 +10,7 @@ struct EnvParams;
 enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
 class EnvDSP:
-private DSPBase<EnvModel, SourceInput>
+public DSPBase<EnvModel, SourceInput, float>
 {
   int _pos;
   float _level;
@@ -25,14 +25,13 @@ private:
   float Generate(float from, float to, int len, int slp) const;
   static EnvParams Params(EnvModel const& model, SourceInput const& input);
 public:
-  float Next();
+  void Next();
   void Release();
   bool End() const { return _stage == EnvStage::End; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(StateSourceDSP<EnvDSP, EnvModel>);
-static_assert(FiniteDSP<EnvDSP, EnvModel, SourceInput>);
-static_assert(PlottableDSP<EnvDSP, EnvModel, SourceInput>);
+static_assert(FiniteDSP<EnvDSP, EnvModel, SourceInput, float>);
 
 } // namespace Xts
 #endif // XTS_ENV_DSP_HPP

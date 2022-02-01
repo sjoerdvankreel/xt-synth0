@@ -71,19 +71,19 @@ EnvDSP::Generate(EnvParams const& params) const
   }
 }
 
-float
+void
 EnvDSP::Next()
 {
+  _value = 0.0f;
   const float threshold = 1.0E-5f;
-  if (!_model->on || _stage == EnvStage::End) return 0.0f;
+  if (!_model->on || _stage == EnvStage::End) return;
   EnvParams params = Params(*_model, *_input);
-  float result = Generate(params);
-  assert(0.0f <= result && result <= 1.0f);
+  _value = Generate(params);
+  assert(0.0f <= _value && _value <= 1.0f);
   if (_stage != EnvStage::End) _pos++;
-  if (_stage < EnvStage::R) _level = result;
-  if (_stage > EnvStage::A && result <= threshold) NextStage(EnvStage::End);
+  if (_stage < EnvStage::R) _level = _value;
+  if (_stage > EnvStage::A && _value <= threshold) NextStage(EnvStage::End);
   CycleStage(_model->type, params);
-  return result;
 }
 
 EnvParams
@@ -135,7 +135,8 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   {
     if(h++ == hold) dsp.Release();
     if(dsp.End()) break;
-    output.samples->push_back(dsp.Next());
+    dsp.Next();
+    output.samples->push_back(dsp.Value());
     if(prev != dsp._stage && prev != EnvStage::Dly && !dsp.End())
       output.splits->push_back(i);
     prev = dsp._stage; 

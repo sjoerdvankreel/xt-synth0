@@ -11,7 +11,7 @@
 namespace Xts {
 
 class SynthDSP:
-private DSPBase<SynthModel, AudioInput>
+public DSPBase<SynthModel, AudioInput, AudioOutput>
 {
   GlobalDSP _global;
   LfoDSP _lfos[LfoCount];
@@ -23,13 +23,12 @@ public:
 public:
   void Release();
   AudioOutput Next();
-  AudioOutput Next(SynthState const& state);
+  void Next(SynthState const& state);
   bool End() const { return _envs[static_cast<int>(_model->global.ampEnv)].End(); }
   static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(AudioSourceDSP<SynthDSP, SynthModel>);
-static_assert(FiniteDSP<SynthDSP, SynthModel, AudioInput>);
-static_assert(PlottableDSP<SynthDSP, SynthModel, AudioInput>);
+static_assert(FiniteDSP<SynthDSP, SynthModel, AudioInput, AudioOutput>);
 
 } // namespace Xts
 #endif // XTS_SYNTH_DSP_HPP

@@ -27,10 +27,11 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
 }
 
-AudioOutput
+void
 UnitDSP::Next(SynthState const& state)
 {
-	if (!_model->on) return AudioOutput(0.0f, 0.0f);
+  _value = AudioOutput();
+	if (!_model->on) return;
 	float freq = Freq(*_model, _input->key);
 	float sample = Generate(freq);
 	float amp = Level(_model->amp);
@@ -38,7 +39,7 @@ UnitDSP::Next(SynthState const& state)
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
 	assert(-1.0f <= sample && sample <= 1.0f);
-	return AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
+	_value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
 }
 
 float
@@ -83,7 +84,10 @@ UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output
 	UnitDSP dsp(&model, &audio);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
-		output.samples->push_back(dsp.Next(state).Mono());
+  {
+    dsp.Next(state);
+		output.samples->push_back(dsp.Value().Mono());
+  }
 }
 
 float

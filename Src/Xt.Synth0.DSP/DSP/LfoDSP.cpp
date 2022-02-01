@@ -5,15 +5,15 @@
 
 namespace Xts {
 
-float
+void
 LfoDSP::Next()
 {
-	if (!_model->on) return 1.0f;
-	float sample = Generate();
+  _value = 0.0f;
+	if (!_model->on) return;
+	_value = Generate();
+	assert(-1.0f <= _value && _value <= 1.0f);
 	_phase += Freq(*_model, *_input) / _input->rate;
 	_phase -= floor(_phase);
-	assert(-1.0f <= sample && sample <= 1.0f);
-  return sample;
 }
 
 float
@@ -48,7 +48,10 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	LfoDSP dsp(&model, &in);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
-		output.samples->push_back(dsp.Next());
+  {
+    dsp.Next();
+		output.samples->push_back(dsp.Value());
+  }
 }
 
 float

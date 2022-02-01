@@ -10,6 +10,37 @@ SynthDSP::Release()
     _envs[e].Release();
 }
 
+void
+SynthDSP::Next(SynthState const& state)
+{
+  AudioOutput output;
+  for (int u = 0; u < UnitCount; u++)
+  {
+    _units[u].Next(state);
+    output += _units[u].Value();
+  }
+  _value = output * _global.Amp(state);
+}
+
+AudioOutput
+SynthDSP::Next()
+{
+  SynthState state;
+  if (End()) return AudioOutput(0.0f, 0.0f);
+  for (int l = 0; l < LfoCount; l++)
+  {
+    _lfos[l].Next();
+    state.lfos[l] = _lfos[l].Value();
+  }
+  for (int e = 0; e < EnvCount; e++)
+  {
+    _envs[e].Next();
+    state.envs[e] = _envs[e].Value();
+  }
+  Next(state);
+  return Value();
+}
+
 SynthDSP::
 SynthDSP(SynthModel const* model, AudioInput const* input):
 DSPBase(model, input), _global(&model->global), _envs(), _units()
@@ -20,27 +51,6 @@ DSPBase(model, input), _global(&model->global), _envs(), _units()
     _lfos[l] = LfoDSP(&model->lfos[l], &input->source);
   for (int e = 0; e < EnvCount; e++)
     _envs[e] = EnvDSP(&model->envs[e], &input->source);
-}
-
-AudioOutput
-SynthDSP::Next(SynthState const& state)
-{
-  AudioOutput output;
-  for (int u = 0; u < UnitCount; u++)
-    output += _units[u].Next(state);
-  return output * _global.Amp(state);
-}
-
-AudioOutput
-SynthDSP::Next()
-{
-  SynthState state;
-  if (End()) return AudioOutput(0.0f, 0.0f);
-  for (int l = 0; l < LfoCount; l++)
-    state.lfos[l] = _lfos[l].Next();
-  for (int e = 0; e < EnvCount; e++)
-    state.envs[e] = _envs[e].Next();
-  return Next(state);
 }
 
 void

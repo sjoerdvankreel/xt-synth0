@@ -7,7 +7,7 @@
 namespace Xts {
 
 class LfoDSP: 
-private DSPBase<LfoModel, SourceInput>
+public DSPBase<LfoModel, SourceInput, float>
 {
   double _phase;
 public:
@@ -18,11 +18,10 @@ private:
   float Generate();
   static float Freq(LfoModel const& model, SourceInput const& input);
 public:
-  float Next();
+  void Next();
   static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(StateSourceDSP<LfoDSP, LfoModel>);
-static_assert(PlottableDSP<LfoDSP, LfoModel, SourceInput>);
 
 } // namespace Xts
 #endif // XTS_LFO_DSP_HPP
