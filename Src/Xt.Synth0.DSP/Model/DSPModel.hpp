@@ -115,22 +115,27 @@ requires(T const& dsp, SourceDSP const& source)
 { { dsp.End(source) } -> std::same_as<bool>; };
 
 template <class T, class Model, class Input, class Output>
-concept PlottableDSP = DSP<T, Model, Input, Output> &&
+concept PlottableSourceDSP = DSP<T, Model, Input, Output> &&
 requires(PlotOutput& out)
 { { T::Plot(Model(), PlotInput(), out) } -> std::same_as<void>; };
 
-template <class T, class Model> 
-concept StatePipeDSP = PlottableDSP<T, Model, SourceInput, float> &&
-requires(T& dsp, SourceDSP const& source)
-{ { dsp.Next(source) } -> std::same_as<void>; };
+template <class T, class Model, class Input, class Output>
+concept PlottableDependentDSP = DSP<T, Model, Input, Output> &&
+requires(SourceModel const& source, PlotOutput& out)
+{ { T::Plot(Model(), source, PlotInput(), out) } -> std::same_as<void>; };
 
 template <class T, class Model> 
-concept StateSourceDSP = PlottableDSP<T, Model, SourceInput, float> &&
+concept StateSourceDSP = PlottableSourceDSP<T, Model, SourceInput, float> &&
 requires(T& dsp)
 { { dsp.Next() } -> std::same_as<void>; };
 
+template <class T, class Model> 
+concept StatePipeDSP = PlottableDependentDSP<T, Model, SourceInput, float> &&
+requires(T& dsp, SourceDSP const& source)
+{ { dsp.Next(source) } -> std::same_as<void>; };
+
 template <class T, class Model>
-concept AudioSourceDSP = PlottableDSP<T, Model, AudioInput, AudioOutput> &&
+concept AudioSourceDSP = PlottableDependentDSP<T, Model, AudioInput, AudioOutput> &&
 requires(T & dsp, SourceDSP const& source)
 { { dsp.Next(source) } -> std::same_as<void>; };
 

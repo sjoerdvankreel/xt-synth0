@@ -17,7 +17,7 @@ GlobalDSP::Next(SourceDSP const& source)
 }
 
 void
-GlobalDSP::Plot(GlobalModel const& model, PlotInput const& input, PlotOutput& output)
+GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
 {
   const int plotRate = 5000;
   const int maxSamples = 5 * plotRate;
@@ -26,19 +26,18 @@ GlobalDSP::Plot(GlobalModel const& model, PlotInput const& input, PlotOutput& ou
   int h = 0;
   bool l = output.channel == 0;
   int hold = TimeI(input.hold, plotRate);
-
-  output.bipolar = true;
   output.rate = plotRate;
-  SourceModel sourceModel = SourceModel();
+  output.bipolar = source.lfos[static_cast<int>(model.ampLfo)].bi != XtsFalse;
+
   SourceInput sourceInput(plotRate, input.bpm);
-  SourceDSP sourceDSP(&sourceModel, &sourceInput);
   GlobalDSP dsp(&model, &sourceInput);
+  SourceDSP sourceDsp(&source, &sourceInput);
   while (i++ < maxSamples)
   {
-    if (h++ == hold) sourceDSP.Release();
-    if (dsp.End(sourceDSP)) break;
-    sourceDSP.Next();
-    dsp.Next(sourceDSP);
+    if (h++ == hold) sourceDsp.Release();
+    if (dsp.End(sourceDsp)) break;
+    sourceDsp.Next();
+    dsp.Next(sourceDsp);
     output.samples->push_back(dsp.Value());
   }
 }

@@ -15,9 +15,6 @@ public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
   DSPBase(model, input), _phase(0.0) {}
-public:
-  void Next(SourceDSP const& source);
-  static void Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output);
 private:
   float PwPhase() const;
   float Generate(float freq) const;
@@ -25,6 +22,9 @@ private:
   float GenerateNaive(NaiveType type, float phase) const;
   static float Freq(UnitModel const& model, KeyInput const& input);
   float GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const;
+public:
+  void Next(SourceDSP const& source);
+  static void Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
 };
 static_assert(AudioSourceDSP<UnitDSP, UnitModel>);
 

@@ -70,7 +70,7 @@ UnitDSP::GenerateNaive(NaiveType type, float phase) const
 }
 
 void
-UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output)
+UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
 {
 	if (!model.on) return;
 	KeyInput key(4, UnitNote::C);
@@ -78,13 +78,14 @@ UnitDSP::Plot(UnitModel const& model, PlotInput const& input, PlotOutput& output
 	output.freq = Freq(model, key);
 	output.rate = output.freq * input.pixels;
 
-	SourceDSP sourceDsp;
 	SourceInput sourceInput(output.rate, input.bpm);
 	AudioInput audio(sourceInput, key);
 	UnitDSP dsp(&model, &audio);
+  SourceDSP sourceDsp(&source, &sourceInput);
 	float samples = output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
   {
+		sourceDsp.Next();
     dsp.Next(sourceDsp);
 		output.samples->push_back(dsp.Value().Mono());
   }

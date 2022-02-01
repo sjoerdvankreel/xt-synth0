@@ -18,11 +18,11 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   switch(synth.plot.type)
   {
   case PlotType::Off: break;
-  case PlotType::Global: {
-    GlobalDSP().Plot(synth.global, input, output);
-    break; }
   case PlotType::SynthL: case PlotType::SynthR: {
-    SynthDSP().Plot(synth, input, output);
+    SynthDSP().Plot(synth, synth.source, input, output);
+    break; }
+  case PlotType::Global: {
+    GlobalDSP().Plot(synth.global, synth.source, input, output);
     break; }
   case PlotType::LFO1: case PlotType::LFO2: {
     auto lfo = static_cast<int>(PlotType::LFO1);
@@ -34,7 +34,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
     break; }
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: {
     auto unit = static_cast<int>(PlotType::Unit1);
-    UnitDSP().Plot(synth.units[index - unit], input, output);
+    UnitDSP().Plot(synth.units[index - unit], synth.source, input, output);
     break; }
   default: {
     assert(false);

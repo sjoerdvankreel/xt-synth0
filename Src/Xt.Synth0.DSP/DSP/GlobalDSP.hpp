@@ -17,8 +17,8 @@ public:
   DSPBase(model, input) {}
 public:
   void Next(SourceDSP const& source);
-  static void Plot(GlobalModel const& model, PlotInput const& input, PlotOutput& output);
   bool End(SourceDSP const& source) const { return source.Envs()[static_cast<int>(_model->ampEnv)].End(); }
+  static void Plot(GlobalModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
 };
 static_assert(StatePipeDSP<GlobalDSP, GlobalModel>);
 static_assert(FiniteDependentDSP<GlobalDSP, GlobalModel, SourceInput, float>);

@@ -26,7 +26,7 @@ _global(&model->global, &input->source), _units()
 }
 
 void
-SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
 {
   const int plotRate = 5000;
   const int maxSamples = 5 * plotRate;
@@ -39,14 +39,16 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
   output.bipolar = true;
   output.rate = plotRate;
   KeyInput key(4, UnitNote::C);
-  SourceInput source(plotRate, input.bpm);
-  AudioInput audio(source, key);
+  SourceInput sourceInput(plotRate, input.bpm);
+  AudioInput audio(sourceInput, key);
   SynthDSP dsp(&model, &audio);
+  SourceDSP sourceDsp(&source, &sourceInput);
   while (i++ < maxSamples)
   {
-    if (h++ == hold) dsp.Release();
-    if (dsp.End()) break;
-    dsp.Next();
+    if (h++ == hold) sourceDsp.Release();
+    if (dsp.End(sourceDsp)) break;
+    sourceDsp.Next();
+    dsp.Next(sourceDsp);
     auto audio = dsp.Value();
     float sample = l ? audio.l : audio.r;
     output.clip |= Clip(sample);

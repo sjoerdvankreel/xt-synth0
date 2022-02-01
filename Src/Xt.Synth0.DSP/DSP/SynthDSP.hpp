@@ -24,7 +24,7 @@ public:
   bool End() const { return End(_source); }
   void Next() { _source.Next(); return Next(_source); };
   bool End(SourceDSP const& source) const { return _global.End(source); }
-  static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
+  static void Plot(SynthModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
 };
 static_assert(AudioSourceDSP<SynthDSP, SynthModel>);
 static_assert(ReleaseableDSP<SynthDSP, SynthModel, AudioInput, AudioOutput>);

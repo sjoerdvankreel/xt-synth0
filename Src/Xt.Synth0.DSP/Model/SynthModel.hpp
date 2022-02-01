@@ -51,6 +51,7 @@ enum class LfoType { Sin, Saw, Sqr, Tri };
 struct XTS_ALIGN LfoModel
 {
   friend class LfoDSP;
+  friend class GlobalDSP;
   LfoModel() = default;
   LfoModel(LfoModel const&) = delete;
 private:
@@ -103,6 +104,7 @@ XTS_CHECK_SIZE(UnitModel, 80);
 struct XTS_ALIGN SourceModel
 {
   friend class PlotDSP;
+  friend class GlobalDSP;
   friend class SourceDSP;
   SourceModel() = default;
   SourceModel(SourceModel const&) = delete;
