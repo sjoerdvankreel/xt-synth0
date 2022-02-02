@@ -25,7 +25,6 @@ Power(std::vector<std::complex<float>>& fft, int oct, int note)
 static void
 Spectrum(
   std::vector<float>& x, 
-  std::vector<float>& specScratch0,
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch)
 {
@@ -81,7 +80,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   output.splits->clear();
   output.samples->resize(NextPow2(output.samples->size()));
   if(output.samples->empty()) return;
-  Spectrum(*output.samples, *output.specScratch, *output.fftData, *output.fftScratch);
+  Spectrum(*output.samples, *output.fftData, *output.fftScratch);
 }
 
 } // namespace Xts
