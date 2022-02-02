@@ -39,9 +39,8 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   default: {
     assert(false);
     break; }
-  }  
-  if(synth.plot.spec != XtsFalse) 
-    InplacePaddedFft(*output.samples, *output.fft);
+  }
+  if(synth.plot.spec) Fft(*output.samples, *output.fft);
 }
 
 } // namespace Xts

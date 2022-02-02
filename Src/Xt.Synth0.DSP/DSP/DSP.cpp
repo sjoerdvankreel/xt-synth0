@@ -4,40 +4,23 @@
 
 namespace Xts {
 
-static void
-FftCombine(std::vector<std::complex<float>>& xs, size_t stride)
+// TODO fft not dft
+void
+Fft(std::vector<float>& x, std::vector<std::complex<float>>& scratch)
 {
-  for (size_t i = 0; i < xs.size() / stride; i += stride)
+  int N = x.size();
+  std::vector<std::complex<float>> X((size_t)N, std::complex<float>());
+  for (int k = 0; k < N; k++)
   {
-    auto polar = std::polar(1.0f, -2.0f * PI * i / (xs.size() / stride));
-    std::complex<float> t = polar * xs[i + 1];
-    xs[i] = xs[i] + t;
-    xs[i + xs.size() / stride] = xs[i] - t;
+    X[k] = std::complex<float>(0.0f, 0.0f);
+    for (int n = 0; n < N; n++)
+    {
+      std::complex<float> temp = std::polar<float>(1, -2 * PI * n * k / N);
+      temp *= x[n];
+      X[k] += temp;
+    }
   }
-}
-
-static void
-Fft(std::vector<std::complex<float>>& x, size_t start, size_t stride)
-{
-  if(stride >= x.size()) return;
-  Fft(x, 0, stride * 2);
-  Fft(x, 1, stride * 2);
-  FftCombine(x, stride * 2);
-}
-
-void 
-InplacePaddedFft(std::vector<float>& x, std::vector<std::complex<float>>& scratch)
-{
-  for(size_t i = x.size(); i < NextPow2(x.size()); i++)
-    x.emplace_back(0.0f);
-  scratch.clear();
-  for(size_t i = 0; i < x.size(); i++)
-    scratch.emplace_back(std::complex<float>(x[i], 0.0f));
-  Fft(scratch, 0, 2);
-  Fft(scratch, 1, 2);
-  FftCombine(scratch, 2);
-  for(size_t i = 0; i < x.size(); i++)
-    x[i] = scratch[i].real();
+  for(int i = 0; i < N; i++) x[i]=X[i].real();
 }
 
 } // namespace Xts
