@@ -49,23 +49,23 @@ UnitDSP::Generate(float freq) const
 	{
 	case UnitType::Sin: return BasicSin(phase);
 	case UnitType::Add: return GenerateAdd(freq);
-	case UnitType::Naive: return GenerateNaive(_model->naiveType, phase);
+	case UnitType::Naive: return GenerateNaive(_model->waveType, phase);
 	default: assert(false); return 0.0f;
 	}
 }
 
 float 
-UnitDSP::GenerateNaive(NaiveType type, float phase) const
+UnitDSP::GenerateNaive(WaveType type, float phase) const
 {
   switch(type)
   {
-    case NaiveType::Pulse: break;
-    case NaiveType::Saw: return BasicSaw(phase);
-		case NaiveType::Tri: return BasicTri(phase);
+    case WaveType::Pulse: break;
+    case WaveType::Saw: return BasicSaw(phase);
+		case WaveType::Tri: return BasicTri(phase);
 		default: assert(false); return 0.0f;
 	}
-	float saw = GenerateNaive(NaiveType::Saw, phase);
-	return (saw - GenerateNaive(NaiveType::Saw, PwPhase())) / 2.0f;
+	float saw = GenerateNaive(WaveType::Saw, phase);
+	return (saw - GenerateNaive(WaveType::Saw, PwPhase())) / 2.0f;
 }
 
 void

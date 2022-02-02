@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
 	public enum UnitType { Sin, Naive, Add }
-	public enum NaiveType { Saw, Pulse, Tri }
+	public enum WaveType { Saw, Pulse, Tri }
 	public enum ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 }
 	public enum ModTarget { Off, Pw, Amp, Pan, Dtn, Roll, Pitch, Phase };
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
@@ -17,7 +17,7 @@ namespace Xt.Synth0.Model
 		internal ref struct Native
 		{
 			internal const int Size = 80;
-			internal int on, type, note, addType, naiveType;
+			internal int on, type, note, addType, waveType;
 			internal int amp, pan, oct, dtn, pw;
 			internal int src1, tgt1, amt1, src2, tgt2, amt2;
 			internal int addMaxParts, addParts, addStep, addRoll;
@@ -37,7 +37,7 @@ namespace Xt.Synth0.Model
 		public Param Src2 { get; } = new(Src2Info);
 		public Param Tgt2 { get; } = new(Tgt2Info);
 		public Param Amt2 { get; } = new(Amt2Info);
-		public Param NaiveType { get; } = new(NaiveTypeInfo);
+		public Param WaveType { get; } = new(WaveTypeInfo);
 		public Param AddType { get; } = new(AddTypeInfo);
 		public Param AddStep { get; } = new(AddStepInfo);
 		public Param AddRoll { get; } = new(AddRollInfo);
@@ -55,7 +55,7 @@ namespace Xt.Synth0.Model
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
-			{ Type, 0 }, { AddType, 1 }, { NaiveType, 1 },
+			{ Type, 0 }, { AddType, 1 }, { WaveType, 1 },
 			{ Amp, 3 }, { Pan, 4 }, { Pw, 5 },
 			{ Oct, 6 }, { Note, 7 }, { Dtn, 8 },
 			{ AddParts, 9 }, { AddMaxParts, 9 }, { AddStep, 10 }, { AddRoll, 11 },
@@ -69,7 +69,7 @@ namespace Xt.Synth0.Model
 		static readonly AddType[] CustomAddTypes = new[] { Synth0.Model.AddType.SinAddSin, Synth0.Model.AddType.SinSubSin, Synth0.Model.AddType.SinAddCos, Synth0.Model.AddType.SinSubCos };
 		static readonly AddType[] BasicAddTypes = new[] { Synth0.Model.AddType.Saw, Synth0.Model.AddType.Sqr, Synth0.Model.AddType.Pulse, Synth0.Model.AddType.Tri, Synth0.Model.AddType.Impulse };
 
-		static readonly IRelevance RelevanceNaive = Relevance.When(
+		static readonly IRelevance RelevanceWave = Relevance.When(
 			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive);
 		static readonly IRelevance RelevanceAdd = Relevance.When(
 			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add);
@@ -79,7 +79,7 @@ namespace Xt.Synth0.Model
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => CustomAddTypes.Contains(t)));
 		static readonly IRelevance RelevancePw = Relevance.Any(
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive),
-			Relevance.When((UnitModel m) => m.NaiveType, (NaiveType t) => t == Synth0.Model.NaiveType.Pulse)),
+			Relevance.When((UnitModel m) => m.WaveType, (WaveType t) => t == Synth0.Model.WaveType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add),
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Synth0.Model.AddType.Pulse)));
 
@@ -97,8 +97,8 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, nameof(Src2), "Source", "Mod 2 source");
 		static readonly ParamInfo Tgt2Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt2, nameof(Tgt2), "Target", "Mod 2 target");
 		static readonly ParamInfo NoteInfo = ParamInfo.Select(p => &((Native*)p)->note, nameof(Note), nameof(Note), "Note", UnitNote.C, UnitNote.C, Notes);
+		static readonly ParamInfo WaveTypeInfo = ParamInfo.List<WaveType>(p => &((Native*)p)->waveType, nameof(WaveType), "Type", "Wave type", null, RelevanceWave);
 		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, nameof(AddType), "Type", "Additive type", AddNames, RelevanceAdd);
-		static readonly ParamInfo NaiveTypeInfo = ParamInfo.List<NaiveType>(p => &((Native*)p)->naiveType, nameof(NaiveType), "Type", "Naive type", null, RelevanceNaive);
 		static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, nameof(AddRoll), "Roll", "Additive custom rolloff", null, RelevanceAddCustom);
 		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, nameof(AddMaxParts), "Hms", "Additive basic partials", 12, 4, RelevanceAddBasic);
 		static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, nameof(AddStep), "Step", "Additive custom step", 1, 32, 1, null, RelevanceAddCustom);
