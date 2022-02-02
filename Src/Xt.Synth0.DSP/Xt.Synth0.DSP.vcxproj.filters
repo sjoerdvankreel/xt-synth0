@@ -79,5 +79,8 @@
     <ClCompile Include="DSP\SourceDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
+    <ClCompile Include="DSP\DSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
