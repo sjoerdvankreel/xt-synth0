@@ -69,8 +69,9 @@ namespace Xt.Synth0.Model
 		static readonly AddType[] CustomAddTypes = new[] { Synth0.Model.AddType.SinAddSin, Synth0.Model.AddType.SinSubSin, Synth0.Model.AddType.SinAddCos, Synth0.Model.AddType.SinSubCos };
 		static readonly AddType[] BasicAddTypes = new[] { Synth0.Model.AddType.Saw, Synth0.Model.AddType.Sqr, Synth0.Model.AddType.Pulse, Synth0.Model.AddType.Tri, Synth0.Model.AddType.Impulse };
 
-		static readonly IRelevance RelevanceWave = Relevance.When(
-			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive);
+		static readonly IRelevance RelevanceWave = Relevance.Any(
+			Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
+			Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive));
 		static readonly IRelevance RelevanceAdd = Relevance.When(
 			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add);
 		static readonly IRelevance RelevanceAddBasic = Relevance.All(RelevanceAdd,
@@ -78,6 +79,8 @@ namespace Xt.Synth0.Model
 		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdd,
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => CustomAddTypes.Contains(t)));
 		static readonly IRelevance RelevancePw = Relevance.Any(
+			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
+			Relevance.When((UnitModel m) => m.WaveType, (WaveType t) => t == Synth0.Model.WaveType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive),
 			Relevance.When((UnitModel m) => m.WaveType, (WaveType t) => t == Synth0.Model.WaveType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add),
