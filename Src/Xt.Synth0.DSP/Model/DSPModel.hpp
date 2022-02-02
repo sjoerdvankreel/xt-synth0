@@ -12,7 +12,8 @@ class SourceDSP;
 struct PlotInput
 {
   int32_t hold;
-  float bpm, pixels;
+  XtsBool spec;
+  float bpm, rate, pixels;
 public:
   PlotInput() = default;
   PlotInput(PlotInput const&) = delete;

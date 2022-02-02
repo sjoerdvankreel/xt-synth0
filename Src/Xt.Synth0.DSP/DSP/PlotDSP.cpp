@@ -34,8 +34,9 @@ void
 PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
 {
   auto type = synth.plot.type;
-  auto index = static_cast<int>(type);
   input.hold = synth.plot.hold;
+  input.spec = synth.plot.spec;
+  auto index = static_cast<int>(type);
   output.channel = type == PlotType::SynthR? 1: 0;
 
   switch(synth.plot.type)

@@ -213,6 +213,7 @@ namespace Xt.Synth0
 			_nativePlotState->pixels = e.Pixels;
 			_nativePlotState->synth = _nativePlotSynthModel;
 			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
+			_nativePlotState->rate = Model.Settings.SampleRate.ToInt();
 			Model.Track.Synth.ToNative(_nativePlotBinding);
 			Native.XtsPlotDSPRender(_nativePlotState);
 			e.Freq = _nativePlotState->freq;
