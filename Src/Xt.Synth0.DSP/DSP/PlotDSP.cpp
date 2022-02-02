@@ -13,12 +13,13 @@ namespace Xts {
 static void
 Spectrum(
   std::vector<float>& x, 
+  std::vector<float>& specScratch,
   std::vector<std::complex<float>>& fft, 
-  std::vector<std::complex<float>>& scratch)
+  std::vector<std::complex<float>>& fftScratch)
 {
   float max = 0;
   assert(x.size() == NextPow2(x.size()));
-  Fft(x, fft, scratch);
+  Fft(x, fft, fftScratch);
   x.erase(x.begin() + x.size() / 2, x.end());
   for(size_t i = 0; i < x.size(); i++)
   {
@@ -28,6 +29,19 @@ Spectrum(
     max = std::max(max, x[i]);
   }
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
+  specScratch.clear();
+  size_t count = 1;
+  for(size_t i = 0; i < x.size() - 1; )
+  {
+    float val = 0.0f;
+    for(size_t j = i; j < i + count; j++)
+      val += x[j] * x[j];
+    specScratch.push_back(sqrtf(val));
+    i += count;
+    count *= 2;
+  }
+  assert((1ULL << specScratch.size()) == x.size());
+  x = specScratch;
 }
 
 void
@@ -67,7 +81,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   
   if(!synth.plot.spec) return;
   output.samples->resize(NextPow2(output.samples->size()));
-  Spectrum(*output.samples, *output.fftData, *output.fftScratch);
+  Spectrum(*output.samples, *output.specScratch, *output.fftData, *output.fftScratch);
 }
 
 } // namespace Xts

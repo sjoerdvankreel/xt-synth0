@@ -31,10 +31,12 @@ XtsPlotStateDestroy(PlotState* state)
   delete state->splitData;
   delete state->sampleData;
   delete state->fftScratch;
+  delete state->specScratch;
   state->fftData = nullptr;
   state->splitData = nullptr;
   state->sampleData = nullptr;
   state->fftScratch = nullptr;
+  state->specScratch = nullptr;
   delete state;
 }
 
@@ -44,6 +46,7 @@ XtsPlotStateCreate(void)
   auto result = new PlotState;
   result->sampleData = new std::vector<float>;
   result->splitData = new std::vector<int32_t>; 
+  result->specScratch = new std::vector<float>();
   result->fftData = new std::vector<std::complex<float>>();
   result->fftScratch = new std::vector<std::complex<float>>();
   return result;
@@ -77,11 +80,13 @@ XtsPlotDSPRender(PlotState* state)
   state->splitData->clear();
   state->sampleData->clear();
   state->fftScratch->clear();
+  state->specScratch->clear();
 
   out.fftData = state->fftData;
   out.splits = state->splitData;
   out.samples = state->sampleData;
   out.fftScratch = state->fftScratch;
+  out.specScratch = state->specScratch;
   in.rate = state->rate;
   in.bpm = static_cast<float>(state->bpm);
   in.pixels = static_cast<float>(state->pixels);

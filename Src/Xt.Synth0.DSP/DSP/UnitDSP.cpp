@@ -76,14 +76,14 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	KeyInput key(4, UnitNote::C);
 	output.bipolar = true;
 	output.freq = Freq(model, key);
-	output.rate = output.freq * input.pixels;
+	output.rate = input.spec? input.rate: output.freq * input.pixels;
 
 	SourceInput sourceInput(output.rate, input.bpm);
 	AudioInput audio(sourceInput, key);
 	UnitDSP dsp(&model, &audio);
   SourceDSP sourceDsp(&source, &sourceInput);
-	float samples = output.rate / output.freq;
-	for (int i = 0; i <= static_cast<int>(samples); i++)
+	float samples = input.spec? input.rate: output.rate / output.freq;
+	for (int i = 0; i < static_cast<int>(samples); i++)
   {
 		sourceDsp.Next();
     dsp.Next(sourceDsp);
