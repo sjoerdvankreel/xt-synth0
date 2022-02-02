@@ -77,7 +77,6 @@ XtsPlotDSPRender(PlotState* state)
   state->splitData->clear();
   state->sampleData->clear();
   state->fftScratch->clear();
-  state->specScratch->clear();
 
   out.fftData = state->fftData;
   out.splits = state->splitData;
