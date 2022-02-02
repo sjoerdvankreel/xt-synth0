@@ -7,7 +7,7 @@ namespace Xt.Synth0.Model
 	public enum UnitType { Sin, Naive, Add }
 	public enum NaiveType { Saw, Pulse, Tri }
 	public enum ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 }
-	public enum ModTarget { Off, Pitch, Amp, Pan, Dtn, Pw, Roll };
+	public enum ModTarget { Off, Pw, Amp, Pan, Dtn, Roll, Pitch, Phase };
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 	public enum AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
