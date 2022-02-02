@@ -18,7 +18,6 @@ phase modulation
 init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters, envelopes
 reconsider automating running voices
-plot spectrum
 init with streampos / derive stuff from streampos ?
 tri = integrate pulse
 show automation range error in UI
@@ -26,4 +25,3 @@ connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 autoselect plotsource
 niet zomaar het model eroverheen kopieren zonder de state te updaten (krakpot)
-plot -> sample actual SR

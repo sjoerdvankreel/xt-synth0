@@ -28,13 +28,12 @@ _global(&model->global, &input->source), _units()
 void
 SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
 {
-  const int plotRate = 5000;
-  const int maxSamples = 5 * plotRate;
-
   int i = 0;
   int h = 0;
   bool l = output.channel == 0;
+  float plotRate = input.spec ? input.rate : 5000;
   int hold = TimeI(input.hold, plotRate);
+  int maxSamples = static_cast<int>(input.spec ? input.rate : 5 * plotRate);
   
   output.bipolar = true;
   output.rate = plotRate;

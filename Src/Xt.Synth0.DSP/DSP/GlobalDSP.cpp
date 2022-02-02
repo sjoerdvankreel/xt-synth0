@@ -23,8 +23,8 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
   int h = 0;
   bool l = output.channel == 0;
   float plotRate = input.spec? input.rate: 5000;
-  int maxSamples = static_cast<int>(input.spec? input.rate: 5 * plotRate);
   int hold = TimeI(input.hold, plotRate);
+  int maxSamples = static_cast<int>(input.spec? input.rate: 5 * plotRate);
 
   output.rate = plotRate;
   output.bipolar = source.lfos[static_cast<int>(model.ampLfo)].bi != XtsFalse;
