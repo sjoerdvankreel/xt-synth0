@@ -29,7 +29,7 @@ Spectrum(
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch)
 {
-  size_t i = 0;
+  int i = 0;
   float max = 0;
   assert(x.size() > 0 && x.size() == NextPow2(x.size()));
   Fft(x, fft, fftScratch);
@@ -37,14 +37,11 @@ Spectrum(
   splits.clear();
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
-  {
-    if(i != 0) splits.push_back(i);
-    for(int note = 0; note < 12; note++)
+    for(int note = 0; note < 12; note++, i++)
     {
+      if (note == 5) splits.push_back(i);
       x.push_back(Power(fft, oct, note));
-      i++;     
     }    
-  }
   for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }
