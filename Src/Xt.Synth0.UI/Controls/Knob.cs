@@ -96,6 +96,7 @@ namespace Xt.Synth0.UI
 
 		static void OnWindowMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
+			ActiveKnob?.ReleaseMouseCapture();
 			ActiveKnob = null;
 			ActivePosition = null;
 			ActiveBaseValue = null;
@@ -108,6 +109,7 @@ namespace Xt.Synth0.UI
 			ActiveKnob = knob;
 			ActiveBaseValue = knob.Value;
 			ActivePosition = e.GetPosition(Application.Current.MainWindow);
+			if (!ActiveKnob.CaptureMouse()) throw new InvalidOperationException();
 		}
 
 		static void OnMarkerPositionChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
