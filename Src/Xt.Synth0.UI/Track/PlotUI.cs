@@ -82,14 +82,14 @@ namespace Xt.Synth0.UI
 			shape.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);
 		}
 
-		static UIElement PlotBar(Point p, double h)
+		static UIElement PlotBar(Point p, double w, double h)
 		{
 			var result = new Line();
 			result.Y1 = h;
 			result.Y2 = p.Y;
 			result.X1 = p.X;
 			result.X2 = p.X;
-			result.StrokeThickness = 1.0;
+			result.StrokeThickness = w;
 			PlotProperties(result);
 			return result;
 		}
@@ -134,13 +134,13 @@ namespace Xt.Synth0.UI
 		{
 			var result = new Canvas();
 			var data = PlotData(w, h);
+			if (Args.Bipolar)
+				result.Add(Marker(0, w, h / 2.0, h / 2.0));
 			if (!Args.Spectrum)
 				result.Add(PlotLine(data));
 			else
 				for (int i = 0; i < data.Count; i++)
-					result.Add(PlotBar(data[i], h));
-			if (Args.Bipolar)
-				result.Add(Marker(0, w, h / 2.0, h / 2.0));
+					result.Add(PlotBar(data[i], (float)w / data.Count, h));
 			for (int i = 0; i < Args.Splits.Count; i++)
 			{
 				double pos = Args.Splits[i] / (Args.Samples.Count - 1.0);
