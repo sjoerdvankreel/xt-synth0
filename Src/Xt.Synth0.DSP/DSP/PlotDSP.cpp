@@ -26,9 +26,7 @@ Spectrum(
     float real2 = fft[i].real() * fft[i].real();
     float imag2 = fft[i].imag() * fft[i].imag();
     x[i] = sqrtf(real2 + imag2);
-    max = std::max(max, x[i]);
   }
-  for(size_t i = 0; i < x.size(); i++) x[i] /= max;
   specScratch.clear();
   size_t count = 1;
   for(size_t i = 0; i < x.size() - 1; )
@@ -36,12 +34,15 @@ Spectrum(
     float val = 0.0f;
     for(size_t j = i; j < i + count; j++)
       val += x[j] * x[j];
-    specScratch.push_back(sqrtf(val));
+    val = sqrtf(val);
+    specScratch.push_back(val);
+    max = std::max(max, val);
     i += count;
     count *= 2;
   }
   assert((1ULL << specScratch.size()) == x.size());
   x = specScratch;
+  for (size_t i = 0; i < x.size(); i++) x[i] /= max;
 }
 
 void
