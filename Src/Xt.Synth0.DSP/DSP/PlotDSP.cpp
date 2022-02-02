@@ -81,6 +81,8 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   }
   
   if(!synth.plot.spec) return;
+  output.bipolar = false;
+  output.splits->clear();
   output.samples->resize(NextPow2(output.samples->size()));
   Spectrum(*output.samples, *output.specScratch, *output.fftData, *output.fftScratch);
 }

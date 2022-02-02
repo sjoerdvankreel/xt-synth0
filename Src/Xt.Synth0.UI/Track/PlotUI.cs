@@ -76,13 +76,30 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement PlotLine(int w, double h)
+		static void PlotProperties(Shape shape)
+		{
+			shape.Opacity = 0.67;
+			shape.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);
+		}
+
+		static UIElement PlotBar(Point p, double h)
+		{
+			var result = new Line();
+			result.Y1 = h;
+			result.Y2 = p.Y;
+			result.X1 = p.X;
+			result.X2 = p.X;
+			result.StrokeThickness = 5.0;
+			PlotProperties(result);
+			return result;
+		}
+
+		static UIElement PlotLine(PointCollection data)
 		{
 			var result = new Polyline();
-			result.Opacity = 0.67;
+			result.Points = data;
 			result.StrokeThickness = 1.5;
-			result.Points = PlotData(w, h);
-			result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);
+			PlotProperties(result);
 			return result;
 		}
 
@@ -116,7 +133,12 @@ namespace Xt.Synth0.UI
 		static UIElement Plot(int w, double h)
 		{
 			var result = new Canvas();
-			result.Add(PlotLine(w, h));
+			var data = PlotData(w, h);
+			if (!Args.Spectrum)
+				result.Add(PlotLine(data));
+			else
+				for (int i = 0; i < data.Count; i++)
+					result.Add(PlotBar(data[i], h));
 			if (Args.Bipolar)
 				result.Add(Marker(0, w, h / 2.0, h / 2.0));
 			for (int i = 0; i < Args.Splits.Count; i++)
