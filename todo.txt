@@ -26,4 +26,4 @@ connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 autoselect plotsource
 niet zomaar het model eroverheen kopieren zonder de state te updaten (krakpot)
-plot -> freq bins to log scale, plot bars not lines, sample actual SR, not bipolar, line markers, no spec line markers, fill spec plot to pixel width
+plot -> sample actual SR

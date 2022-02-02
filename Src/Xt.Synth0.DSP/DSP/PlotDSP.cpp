@@ -10,39 +10,35 @@
 
 namespace Xts {
 
+static float
+Power(std::vector<std::complex<float>>& fft, int oct, int note)
+{
+  float result = 0.0f;
+  float midi = oct * 12 + note;
+  size_t freq1 = static_cast<size_t>(Freq(midi));
+  size_t freq2 = static_cast<size_t>(Freq(midi + 1));
+  for (size_t i = freq1; i < freq2 && i < fft.size(); i++)
+    result += fft[i].real() * fft[i].real() + fft[i].imag() * fft[i].imag();
+  return sqrtf(result);
+}
+
 static void
 Spectrum(
   std::vector<float>& x, 
-  std::vector<float>& specScratch,
+  std::vector<float>& specScratch0,
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch)
 {
   float max = 0;
   assert(x.size() == NextPow2(x.size()));
   Fft(x, fft, fftScratch);
-  x.erase(x.begin() + x.size() / 2, x.end());
-  for(size_t i = 0; i < x.size(); i++)
-  {
-    float real2 = fft[i].real() * fft[i].real();
-    float imag2 = fft[i].imag() * fft[i].imag();
-    x[i] = sqrtf(real2 + imag2);
-  }
-  specScratch.clear();
+  x.clear();
+  fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
     for(int note = 0; note < 12; note++)
-    {
-      float val = 0.0f;
-      float midi = oct * 12 + note;
-      size_t freq1 = static_cast<size_t>(Freq(midi));
-      size_t freq2 = static_cast<size_t>(Freq(midi + 1));
-      if(freq2 >= x.size()) break;
-      for(size_t i = freq1; i < freq2; i++) val += x[i] * x[i];
-      val = sqrtf(val);
-      specScratch.push_back(val);
-      max = std::max(max, val);
-    }
-  x = specScratch;
-  for (size_t i = 0; i < x.size(); i++) x[i] /= max;
+      x.push_back(Power(fft, oct, note));
+  for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
+  for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }
 
 void
