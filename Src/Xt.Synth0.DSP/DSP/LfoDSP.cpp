@@ -42,11 +42,11 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	SourceInput testIn(testRate, input.bpm);
 	output.bipolar = model.bi;
 	output.freq = Freq(model, testIn);
-	output.rate = output.freq * input.pixels;
+	output.rate = input.spec? input.rate: output.freq * input.pixels;
 
 	SourceInput in(output.rate, input.bpm);
 	LfoDSP dsp(&model, &in);
-	float samples = output.rate / output.freq;
+	float samples = input.spec? output.rate: output.rate / output.freq;
 	for (int i = 0; i < static_cast<int>(samples); i++)
   {
     dsp.Next();
