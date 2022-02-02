@@ -48,6 +48,7 @@ struct XTS_ALIGN PlotState
   std::vector<float>* sampleData;
   std::vector<int32_t>* splitData;
   std::vector<std::complex<float>>* fftData;
+  std::vector<std::complex<float>>* fftScratch;
 public:
   PlotState() = default;
   PlotState(PlotState const&) = delete;

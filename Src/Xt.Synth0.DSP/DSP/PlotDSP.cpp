@@ -10,9 +10,75 @@
 
 namespace Xts {
 
+static uint64_t
+NextPow2(uint64_t x)
+{
+  uint64_t result = 0;
+  if (x && !(x & (x - 1))) return x;
+  while (x != 0) x >>= 1, result++;
+  return 1ULL << result;
+}
+
+static void
+Fft(
+  std::complex<float>* x, 
+  std::complex<float>* scratch, 
+  size_t count)
+{
+  assert(count == NextPow2(count));
+  if(count < 2) return;  
+  std::complex<float>* even = scratch;
+  std::complex<float>* odd = scratch + count / 2;
+  for(size_t i = 0; i < count / 2; i++) even[i] = x[i * 2];
+  for(size_t i = 0; i < count / 2; i++) odd[i] = x[i * 2 + 1];
+  Fft(odd, x, count / 2);
+  Fft(even, x, count / 2);
+  for (size_t i = 0; i < count / 2; i++)
+  {
+    float im = -2.0f * PI * i / count;
+    std::complex<float> t = std::polar(1.0f, im) * odd[i];
+    x[i] = even[i] + t;
+    x[i + count/2] = even[i] - t;
+  }
+}
+
+static void
+Fft(
+  std::vector<float>& x, 
+  std::vector<std::complex<float>>& fft, 
+  std::vector<std::complex<float>>& scratch)
+{
+  assert(x.size() == NextPow2(x.size()));
+  fft.resize(x.size());
+  scratch.resize(x.size());
+  for(size_t i = 0; i < x.size(); i++)
+    fft[i] = std::complex<float>(x[i], 0.0f);
+  Fft(fft.data(), scratch.data(), x.size());
+}
+
+static void
+Spectrum(
+  std::vector<float>& x, 
+  std::vector<std::complex<float>>& fft, 
+  std::vector<std::complex<float>>& scratch)
+{
+  float max = 0;
+  assert(x.size() == NextPow2(x.size()));
+  Fft(x, fft, scratch);
+  x.erase(x.begin() + x.size() / 2, x.end());
+  for(size_t i = 0; i < x.size(); i++)
+  {
+    float real2 = fft[i].real() * fft[i].real();
+    float imag2 = fft[i].imag() * fft[i].imag();
+    x[i] = sqrtf(real2 + imag2);
+    max = std::max(max, x[i]);
+  }
+  for(size_t i = 0; i < x.size(); i++) x[i] /= max;
+}
+
 // TODO fft not dft
 void
-Fft(std::vector<float>& yn, std::vector<std::complex<float>>& scratch)
+Dft(std::vector<float>& yn, std::vector<std::complex<float>>& scratch)
 {
   int N = yn.size();
   std::vector<float> xn = yn;
@@ -55,8 +121,8 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
 {
   auto type = synth.plot.type;
   auto index = static_cast<int>(type);
-  output.channel = type == PlotType::SynthR? 1: 0;
   input.hold = synth.plot.hold;
+  output.channel = type == PlotType::SynthR? 1: 0;
 
   switch(synth.plot.type)
   {
@@ -83,7 +149,11 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
     assert(false);
     break; }
   }
-  if(synth.plot.spec) Fft(*output.samples, *output.fft);
+  
+  if(!synth.plot.spec) return;
+//if(synth.plot.spec) Dft(*output.samples, *output.fft);
+  output.samples->resize(NextPow2(output.samples->size()));
+  Spectrum(*output.samples, *output.fftData, *output.fftScratch);
 }
 
 } // namespace Xts

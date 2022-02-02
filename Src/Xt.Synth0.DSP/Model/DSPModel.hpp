@@ -25,7 +25,8 @@ struct PlotOutput
   bool clip, bipolar;
   std::vector<int>* splits;
   std::vector<float>* samples;
-  std::vector<std::complex<float>>* fft;
+  std::vector<std::complex<float>>* fftData;
+  std::vector<std::complex<float>>* fftScratch;
 public:
   PlotOutput() = default;
   PlotOutput(PlotOutput const&) = delete;

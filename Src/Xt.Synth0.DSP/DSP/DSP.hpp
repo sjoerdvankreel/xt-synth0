@@ -11,7 +11,6 @@ namespace Xts {
 
 inline float MaxLevel = 0.95f;
 inline float PI = static_cast<float>(3.14159265358979323846);
-void Fft(std::vector<float>& x, std::vector<std::complex<float>>& scratch);
 
 inline float Mix01Exclusive(int val)
 { return static_cast<float>(val / 256.0f); }
@@ -42,15 +41,6 @@ inline float BasicSqr(float phase)
 { return phase < 0.5f? 1.0f: -1.0f; }
 inline float BasicTri(float phase)
 { return (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f; }
-
-inline uint64_t
-NextPow2(uint64_t x)
-{
-  uint64_t result = 0;
-  if (x && !(x & (x - 1))) return x;
-  while (x != 0) x >>= 1, result++;
-  return 1ULL << result;
-}
 
 inline bool
 Clip(float& val)

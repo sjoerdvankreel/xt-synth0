@@ -24,6 +24,20 @@ void XTS_CALL
 XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth, Xts::VoiceBinding const* binding)
 { dsp->Init(model, synth, binding); }
 
+void XTS_CALL 
+XtsPlotStateDestroy(PlotState* state)
+{
+  delete state->fftData;
+  delete state->splitData;
+  delete state->sampleData;
+  delete state->fftScratch;
+  state->fftData = nullptr;
+  state->splitData = nullptr;
+  state->sampleData = nullptr;
+  state->fftScratch = nullptr;
+  delete state;
+}
+
 PlotState* XTS_CALL 
 XtsPlotStateCreate(void)
 {
@@ -31,19 +45,8 @@ XtsPlotStateCreate(void)
   result->sampleData = new std::vector<float>;
   result->splitData = new std::vector<int32_t>; 
   result->fftData = new std::vector<std::complex<float>>();
+  result->fftScratch = new std::vector<std::complex<float>>();
   return result;
-}
-
-void XTS_CALL 
-XtsPlotStateDestroy(PlotState* state)
-{
-  delete state->fftData;
-  delete state->splitData;
-  delete state->sampleData;
-  state->fftData = nullptr;
-  state->splitData = nullptr;
-  state->sampleData = nullptr;
-  delete state;
 }
 
 void XTS_CALL
@@ -73,9 +76,12 @@ XtsPlotDSPRender(PlotState* state)
   state->fftData->clear();
   state->splitData->clear();
   state->sampleData->clear();
-  out.fft = state->fftData;
+  state->fftScratch->clear();
+
+  out.fftData = state->fftData;
   out.splits = state->splitData;
   out.samples = state->sampleData;
+  out.fftScratch = state->fftScratch;
   in.bpm = static_cast<float>(state->bpm);
   in.pixels = static_cast<float>(state->pixels);
   Xts::PlotDSP::Render(*state->synth, in, out);
