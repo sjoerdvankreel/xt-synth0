@@ -119,7 +119,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   int i = 0;
   int h = 0;
   auto prev = EnvStage::Dly;
-  const float testRate = 1000.0f;
+  const float testRate = input.spec? input.rate: 1000.0f;
 
   if (!model.on) return;
   bool dahdsr = model.type == EnvType::DAHDSR;
@@ -127,7 +127,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   int hold = TimeI(input.hold, testRate);
   int fixed = params.dly + params.a + params.hld + params.d;
   int release = dahdsr ? hold : std::min(hold, fixed);
-  output.rate = input.pixels * testRate / (release + params.r);
+  output.rate = input.spec? input.rate: input.pixels * testRate / (release + params.r);
   hold = static_cast<int>(hold * output.rate / testRate);
 
   auto in = SourceInput(output.rate, input.bpm);
