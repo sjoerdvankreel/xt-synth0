@@ -28,19 +28,19 @@ Spectrum(
     x[i] = sqrtf(real2 + imag2);
   }
   specScratch.clear();
-  size_t count = 1;
-  for(size_t i = 0; i < x.size() - 1; )
-  {
-    float val = 0.0f;
-    for(size_t j = i; j < i + count; j++)
-      val += x[j] * x[j];
-    val = sqrtf(val);
-    specScratch.push_back(val);
-    max = std::max(max, val);
-    i += count;
-    count *= 2;
-  }
-  assert((1ULL << specScratch.size()) == x.size());
+  for(int oct = 0; oct < 12; oct++)
+    for(int note = 0; note < 12; note++)
+    {
+      float val = 0.0f;
+      float midi = oct * 12 + note;
+      size_t freq1 = static_cast<size_t>(Freq(midi));
+      size_t freq2 = static_cast<size_t>(Freq(midi + 1));
+      if(freq2 >= x.size()) break;
+      for(size_t i = freq1; i < freq2; i++) val += x[i] * x[i];
+      val = sqrtf(val);
+      specScratch.push_back(val);
+      max = std::max(max, val);
+    }
   x = specScratch;
   for (size_t i = 0; i < x.size(); i++) x[i] /= max;
 }

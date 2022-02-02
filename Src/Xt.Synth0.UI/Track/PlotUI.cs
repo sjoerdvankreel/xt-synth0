@@ -89,7 +89,7 @@ namespace Xt.Synth0.UI
 			result.Y2 = p.Y;
 			result.X1 = p.X;
 			result.X2 = p.X;
-			result.StrokeThickness = 5.0;
+			result.StrokeThickness = 1.0;
 			PlotProperties(result);
 			return result;
 		}
