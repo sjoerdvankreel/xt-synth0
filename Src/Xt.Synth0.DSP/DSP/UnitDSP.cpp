@@ -83,7 +83,7 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	UnitDSP dsp(&model, &audio);
   SourceDSP sourceDsp(&source, &sourceInput);
 	float samples = output.rate / output.freq;
-	for (int i = 0; i < static_cast<int>(samples); i++)
+	for (int i = 0; i <= static_cast<int>(samples); i++)
   {
 		sourceDsp.Next();
     dsp.Next(sourceDsp);
