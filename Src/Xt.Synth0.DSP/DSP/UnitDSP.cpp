@@ -130,8 +130,8 @@ UnitDSP::GenerateAdd(float freq, float phase, int parts, int step, float logRoll
 	__m256 limits = _mm256_set1_ps(0.0f);
 	__m256 results = _mm256_set1_ps(0.0f);
 	__m256 phases = _mm256_set1_ps(phase);
-  __m256 twopis = _mm256_set1_ps(2.0f * PI);
 	__m256 logRolls = _mm256_set1_ps(logRoll);
+	__m256 twopis = _mm256_set1_ps(2.0f * PIF);
 	__m256 nyquists = _mm256_set1_ps(_input->source.rate / 2.0f);
 	__m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
 	if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);

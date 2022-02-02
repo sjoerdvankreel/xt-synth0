@@ -46,10 +46,9 @@ struct XTS_ALIGN PlotState
   int32_t* splits;
   Xts::SynthModel const* synth;
   std::vector<float>* sampleData;
-  std::vector<float>* specScratch;
   std::vector<int32_t>* splitData;
-  std::vector<std::complex<float>>* fftData;
-  std::vector<std::complex<float>>* fftScratch;
+  std::vector<std::complex<double>>* fftData;
+  std::vector<std::complex<double>>* fftScratch;
 public:
   PlotState() = default;
   PlotState(PlotState const&) = delete;

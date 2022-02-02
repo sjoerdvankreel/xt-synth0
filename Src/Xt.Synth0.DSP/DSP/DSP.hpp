@@ -13,12 +13,13 @@
 namespace Xts {
 
 inline float MaxLevel = 0.95f;
-inline float PI = static_cast<float>(3.14159265358979323846);
+inline float PIF = static_cast<float>(3.14159265358979323846);
+inline double PID = static_cast<double>(3.14159265358979323846);
 
 void Fft(
   std::vector<float> const& x,
-  std::vector<std::complex<float>>& fft,
-  std::vector<std::complex<float>>& scratch);
+  std::vector<std::complex<double>>& fft,
+  std::vector<std::complex<double>>& scratch);
 
 inline float Mix01Exclusive(int val)
 { return static_cast<float>(val / 256.0f); }
@@ -44,7 +45,7 @@ inline int TimeI(int val, float rate)
 inline float BasicSaw(float phase)
 { return 1.0f - phase * 2.0f; }
 inline float BasicSin(float phase)
-{ return sinf(phase * 2.0f * PI); }
+{ return sinf(phase * 2.0f * PIF); }
 inline float BasicSqr(float phase)
 { return phase < 0.5f? 1.0f: -1.0f; }
 inline float BasicTri(float phase)
