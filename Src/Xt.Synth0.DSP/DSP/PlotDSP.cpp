@@ -14,7 +14,7 @@ static float
 Power(std::vector<std::complex<float>>& fft, int oct, int note)
 {
   float result = 0.0f;
-  float midi = oct * 12 + note;
+  float midi = static_cast<float>(oct * 12 + note);
   size_t freq1 = static_cast<size_t>(Freq(midi));
   size_t freq2 = static_cast<size_t>(Freq(midi + 1));
   for (size_t i = freq1; i < freq2 && i < fft.size(); i++)
