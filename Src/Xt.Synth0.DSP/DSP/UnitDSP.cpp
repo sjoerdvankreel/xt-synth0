@@ -49,9 +49,51 @@ UnitDSP::Generate(float freq) const
 	{
 	case UnitType::Sin: return BasicSin(phase);
 	case UnitType::Add: return GenerateAdd(freq);
+  case UnitType::BLEP: return GenerateBLEP(freq, phase);
 	case UnitType::Naive: return GenerateNaive(_model->waveType, phase);
 	default: assert(false); return 0.0f;
 	}
+}
+
+double poly_blep(double t, double dt)
+{
+	// 0 <= t < 1
+	if (t < dt)
+	{
+		t /= dt;
+		// 2 * (t - t^2/2 - 0.5)
+		return t + t - t * t - 1.;
+	}
+
+	// -1 < t < 0
+	else if (t > 1. - dt)
+	{
+		t = (t - 1.) / dt;
+		// 2 * (t^2/2 + t + 0.5)
+		return t * t + t + t + 1.;
+	}
+
+	// 0 otherwise
+	else
+	{
+		return 0.;
+	}
+}
+
+double poly_saw(double t, double dt)
+{
+	// Correct phase, so it would be in line with sin(2.*M_PI * t)
+	t += 0.5;
+	if (t >= 1.) t -= 1.;
+
+	double naive_saw = 2. * t - 1.;
+	return naive_saw - poly_blep(t, dt);
+}
+
+float
+UnitDSP::GenerateBLEP(float freq, float phase) const
+{
+  return poly_saw(phase, freq / _input->source.rate);
 }
 
 float 

@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum UnitType { Sin, Naive, Add }
 	public enum WaveType { Saw, Pulse, Tri }
+	public enum UnitType { Sin, Naive, BLEP, Add }
 	public enum ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 }
 	public enum ModTarget { Off, Pw, Amp, Pan, Dtn, Roll, Pitch, Phase };
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
