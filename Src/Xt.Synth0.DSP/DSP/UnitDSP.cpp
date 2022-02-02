@@ -7,6 +7,14 @@
 
 namespace Xts {
 
+static float 
+PolyBlep(float p, float d)
+{
+	if (p < d) return p /= d, p + p - p * p - 1.0f;
+	else if (p > 1.0f - d) return p = (p - 1.0f) / d, p * p + p + p + 1.0f;
+	else return 0.0f;
+}
+
 float
 UnitDSP::PwPhase() const
 {
@@ -44,56 +52,16 @@ UnitDSP::Next(SourceDSP const& source)
 float
 UnitDSP::Generate(float freq) const
 {
+  auto wave = _model->waveType;
 	auto phase = static_cast<float>(_phase);
 	switch (_model->type)
 	{
 	case UnitType::Sin: return BasicSin(phase);
 	case UnitType::Add: return GenerateAdd(freq);
-  case UnitType::BLEP: return GenerateBLEP(freq, phase);
-	case UnitType::Naive: return GenerateNaive(_model->waveType, phase);
+	case UnitType::Naive: return GenerateNaive(wave, phase);
+	case UnitType::Blep: return GenerateBlep(wave, freq, phase);
 	default: assert(false); return 0.0f;
 	}
-}
-
-double poly_blep(double t, double dt)
-{
-	// 0 <= t < 1
-	if (t < dt)
-	{
-		t /= dt;
-		// 2 * (t - t^2/2 - 0.5)
-		return t + t - t * t - 1.;
-	}
-
-	// -1 < t < 0
-	else if (t > 1. - dt)
-	{
-		t = (t - 1.) / dt;
-		// 2 * (t^2/2 + t + 0.5)
-		return t * t + t + t + 1.;
-	}
-
-	// 0 otherwise
-	else
-	{
-		return 0.;
-	}
-}
-
-double poly_saw(double t, double dt)
-{
-	// Correct phase, so it would be in line with sin(2.*M_PI * t)
-	t += 0.5;
-	if (t >= 1.) t -= 1.;
-
-	double naive_saw = 2. * t - 1.;
-	return naive_saw - poly_blep(t, dt);
-}
-
-float
-UnitDSP::GenerateBLEP(float freq, float phase) const
-{
-  return poly_saw(phase, freq / _input->source.rate);
 }
 
 float 
@@ -108,6 +76,21 @@ UnitDSP::GenerateNaive(WaveType type, float phase) const
 	}
 	float saw = GenerateNaive(WaveType::Saw, phase);
 	return (saw - GenerateNaive(WaveType::Saw, PwPhase())) / 2.0f;
+}
+
+float
+UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
+{
+	float d = freq / _input->source.rate;
+	float naive = BasicSaw(phase);
+	switch (type)
+	{
+	case WaveType::Pulse: break;
+	case WaveType::Saw: return BasicSaw(phase) - PolyBlep(phase, d);
+	default: assert(false); return 0.0f;
+	}
+	float saw = GenerateBlep(WaveType::Saw, freq, phase);
+	return (saw - GenerateBlep(WaveType::Saw, freq, PwPhase())) / 2.0f;
 }
 
 void

@@ -24,4 +24,5 @@ connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 autoselect plotsource
 niet zomaar het model eroverheen kopieren zonder de state te updaten (krakpot)
-store enums as names
+store enums as names (param value tostored)
+polyblep triangle

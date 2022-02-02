@@ -77,7 +77,7 @@ private:
 XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class WaveType { Saw, Pulse, Tri };
-enum class UnitType { Sin, Naive, BLEP, Add };
+enum class UnitType { Sin, Add, Blep, Naive };
 enum class ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 };
 enum class ModTarget { Off, Pw, Amp, Pan, Dtn, Roll, Pitch, Phase };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
