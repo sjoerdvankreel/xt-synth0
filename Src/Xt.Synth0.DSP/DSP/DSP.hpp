@@ -57,6 +57,7 @@ inline uint64_t
 NextPow2(uint64_t x)
 {
   uint64_t result = 0;
+  if(x == 0) return 0;
   if (x && !(x & (x - 1))) return x;
   while (x != 0) x >>= 1, result++;
   return 1ULL << result;

@@ -30,7 +30,7 @@ Spectrum(
   std::vector<std::complex<float>>& fftScratch)
 {
   float max = 0;
-  assert(x.size() == NextPow2(x.size()));
+  assert(x.size() > 0 && x.size() == NextPow2(x.size()));
   Fft(x, fft, fftScratch);
   x.clear();
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
@@ -80,6 +80,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   output.bipolar = false;
   output.splits->clear();
   output.samples->resize(NextPow2(output.samples->size()));
+  if(output.samples->empty()) return;
   Spectrum(*output.samples, *output.specScratch, *output.fftData, *output.fftScratch);
 }
 

@@ -19,16 +19,15 @@ GlobalDSP::Next(SourceDSP const& source)
 void
 GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
 {
-  const int plotRate = 5000;
-  const int maxSamples = 5 * plotRate;
-
   int i = 0;
   int h = 0;
   bool l = output.channel == 0;
+  float plotRate = input.spec? input.rate: 5000;
+  int maxSamples = static_cast<int>(input.spec? input.rate: 5 * plotRate);
   int hold = TimeI(input.hold, plotRate);
+
   output.rate = plotRate;
   output.bipolar = source.lfos[static_cast<int>(model.ampLfo)].bi != XtsFalse;
-
   SourceInput sourceInput(plotRate, input.bpm);
   GlobalDSP dsp(&model, &sourceInput);
   SourceDSP sourceDsp(&source, &sourceInput);
