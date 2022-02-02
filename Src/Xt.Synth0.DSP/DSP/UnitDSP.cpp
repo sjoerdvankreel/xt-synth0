@@ -23,8 +23,7 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 	int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
 	int noteNum = unit + key - base;
 	int cent = Mix0100Inclusive(model.dtn);
-	float midi = noteNum + cent / 100.0f;
-	return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f);
+	return Xts::Freq(noteNum + cent / 100.0f);
 }
 
 void
