@@ -27,7 +27,6 @@
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DSP\DSP.cpp" />
     <ClCompile Include="DSP\EnvDSP.cpp" />
     <ClCompile Include="DSP\GlobalDSP.cpp" />
     <ClCompile Include="DSP\LfoDSP.cpp" />

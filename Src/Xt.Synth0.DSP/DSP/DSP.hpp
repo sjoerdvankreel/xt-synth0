@@ -5,9 +5,7 @@
 #include "../Model/SynthModel.hpp"
 
 #include <cmath>
-#include <vector>
 #include <cassert>
-#include <complex>
 
 namespace Xts {
 
