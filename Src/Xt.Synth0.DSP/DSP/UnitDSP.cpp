@@ -78,6 +78,42 @@ UnitDSP::GenerateNaive(WaveType type, float phase) const
 	return (saw - GenerateNaive(WaveType::Saw, PwPhase())) / 2.0f;
 }
 
+float poly_blep(float t, float dt)
+{
+	// 0 <= t < 1
+	if (t < dt)
+	{
+		t /= dt;
+		// 2 * (t - t^2/2 - 0.5)
+		return t + t - t * t - 1.;
+	}
+
+	// -1 < t < 0
+	else if (t > 1. - dt)
+	{
+		t = (t - 1.) / dt;
+		// 2 * (t^2/2 + t + 0.5)
+		return t * t + t + t + 1.;
+	}
+
+	// 0 otherwise
+	else
+	{
+		return 0.;
+	}
+}
+
+double poly_saw(double t, double dt)
+{
+	// Correct phase, so it would be in line with sin(2.*M_PI * t)
+	t += 0.5;
+	if (t >= 1.) t -= 1.;
+
+	double naive_saw = 2. * t - 1.;
+	return naive_saw - poly_blep(t, dt);
+}
+
+
 float
 UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 {
@@ -85,7 +121,7 @@ UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 	switch (type)
 	{
 	case WaveType::Pulse: break;
-	case WaveType::Saw: return BasicSaw(phase) - PolyBlep(phase, d);
+	case WaveType::Saw: return poly_saw(phase, d);
 	default: assert(false); return 0.0f;
 	}
 	float saw = GenerateBlep(WaveType::Saw, freq, phase);
