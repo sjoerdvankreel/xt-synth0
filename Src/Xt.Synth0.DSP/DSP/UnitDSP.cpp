@@ -82,7 +82,6 @@ float
 UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 {
 	float d = freq / _input->source.rate;
-	float naive = BasicSaw(phase);
 	switch (type)
 	{
 	case WaveType::Pulse: break;
