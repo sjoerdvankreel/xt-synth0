@@ -16,11 +16,10 @@ static float
 Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 {
   float result = 0.0f;
+  float freq2Bin = rate / (fft.size() * 2.0f);
   float midi = static_cast<float>(oct * 12 + note);
-  float freq1 = static_cast<size_t>(Freq(midi));
-  float freq2 = static_cast<size_t>(Freq(midi + 1));
-  size_t bin1 = static_cast<size_t>(freq1 * rate / (fft.size() * 2.0f));
-  size_t bin2 = static_cast<size_t>(freq2 * rate / (fft.size() * 2.0f));
+  size_t bin1 = static_cast<size_t>(Freq(midi) * freq2Bin);
+  size_t bin2 = static_cast<size_t>(Freq(midi + 1) * freq2Bin);
   for (size_t i = bin1; i < bin2 && i < fft.size(); i++)
     result += fft[i].real() * fft[i].real() + fft[i].imag() * fft[i].imag();
   return sqrtf(result);
