@@ -12,10 +12,8 @@ namespace Xt.Synth0.UI
 		public int Pixels { get; set; }
 		public bool Spectrum { get; set; }
 		public float SampleRate { get; set; }
+		public List<int> HSplits { get; } = new();
+		public List<float> VSplits { get; } = new();
 		public List<float> Samples { get; } = new();
-		public List<int> HSplitVals { get; } = new();
-		public List<float> VSplitVals { get; } = new();
-		public List<string> HSplitMarkers { get; set; } = new();
-		public List<string> VSplitMarkers { get; set; } = new();
 	}
 }

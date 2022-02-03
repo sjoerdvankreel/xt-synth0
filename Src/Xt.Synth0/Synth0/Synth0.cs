@@ -222,18 +222,12 @@ namespace Xt.Synth0
 			e.Min = _nativePlotState->min;
 			e.Max = _nativePlotState->max;
 			e.Spectrum = Model.Track.Synth.Plot.Spec.Value != 0;
-			e.HSplitVals.Clear();
+			e.HSplits.Clear();
 			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
-				e.HSplitVals.Add(_nativePlotState->hSplitVals[i]);
-			e.HSplitMarkers.Clear();
-			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
-				e.HSplitMarkers.Add(new string(_nativePlotState->hSplitMarkers[i]));
-			e.VSplitVals.Clear();
+				e.HSplits.Add(_nativePlotState->hSplits[i]);
+			e.VSplits.Clear();
 			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
-				e.VSplitVals.Add(_nativePlotState->vSplitVals[i]);
-			e.VSplitMarkers.Clear();
-			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
-				e.VSplitMarkers.Add(new string(_nativePlotState->vSplitMarkers[i]));
+				e.VSplits.Add(_nativePlotState->vSplits[i]);
 			e.Samples.Clear();
 			for (int i = 0; i < _nativePlotState->sampleCount; i++)
 				e.Samples.Add(_nativePlotState->samples[i]);
