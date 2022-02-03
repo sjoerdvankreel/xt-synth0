@@ -11,13 +11,15 @@
 namespace Xts {
 
 static float
-Power(std::vector<std::complex<float>>& fft, int oct, int note)
+Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 {
   float result = 0.0f;
   float midi = static_cast<float>(oct * 12 + note);
-  size_t freq1 = static_cast<size_t>(Freq(midi));
-  size_t freq2 = static_cast<size_t>(Freq(midi + 1));
-  for (size_t i = freq1; i < freq2 && i < fft.size(); i++)
+  float freq1 = static_cast<size_t>(Freq(midi));
+  float freq2 = static_cast<size_t>(Freq(midi + 1));
+  size_t bin1 = static_cast<size_t>(freq1 * rate / (fft.size() * 2.0f));
+  size_t bin2 = static_cast<size_t>(freq2 * rate / (fft.size() * 2.0f));
+  for (size_t i = bin1; i < bin2 && i < fft.size(); i++)
     result += fft[i].real() * fft[i].real() + fft[i].imag() * fft[i].imag();
   return sqrtf(result);
 }
@@ -27,7 +29,8 @@ Spectrum(
   std::vector<float>& x, 
   std::vector<int>& splits,
   std::vector<std::complex<float>>& fft, 
-  std::vector<std::complex<float>>& fftScratch)
+  std::vector<std::complex<float>>& fftScratch,
+  float rate)
 {
   int i = 0;
   float max = 0;
@@ -40,7 +43,7 @@ Spectrum(
   {
     if(oct > 0) splits.push_back(i);
     for(int note = 0; note < 12; note++, i++)
-      x.push_back(Power(fft, oct, note));
+      x.push_back(Power(fft, rate, oct, note));
   }    
   for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
@@ -85,7 +88,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   output.bipolar = false;
   output.samples->resize(NextPow2(output.samples->size()));
   if(output.samples->empty()) return;
-  Spectrum(*output.samples, *output.splits, *output.fftData, *output.fftScratch);
+  Spectrum(*output.samples, *output.splits, *output.fftData, *output.fftScratch, output.rate);
 }
 
 } // namespace Xts
