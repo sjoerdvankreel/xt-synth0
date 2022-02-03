@@ -12,6 +12,7 @@ namespace Xt.Synth0.UI
 		public bool Spectrum { get; set; }
 		public float SampleRate { get; set; }
 		public List<int> HSplits { get; } = new();
+		public List<int> VSplits { get; } = new();
 		public List<float> Samples { get; } = new();
 	}
 }

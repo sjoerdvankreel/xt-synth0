@@ -224,6 +224,9 @@ namespace Xt.Synth0
 			e.HSplits.Clear();
 			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
 				e.HSplits.Add(_nativePlotState->hSplits[i]);
+			e.VSplits.Clear();
+			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
+				e.VSplits.Add(_nativePlotState->vSplits[i]);
 			e.Samples.Clear();
 			for (int i = 0; i < _nativePlotState->sampleCount; i++)
 				e.Samples.Add(_nativePlotState->samples[i]);

@@ -41,12 +41,14 @@ struct XTS_ALIGN PlotState
   float freq, rate;
   int32_t bpm, pixels;
   XtsBool clip, bipolar;
-  int32_t sampleCount, hSplitCount;
+  int32_t sampleCount, hSplitCount, vSplitCount;
   float* samples;
   int32_t* hSplits;
+  int32_t* vSplits;
   Xts::SynthModel const* synth;
   std::vector<float>* sampleData;
   std::vector<int32_t>* hSplitData;
+  std::vector<int32_t>* vSplitData;
   std::vector<std::complex<float>>* fftData;
   std::vector<std::complex<float>>* fftScratch;
 public:

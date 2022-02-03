@@ -25,6 +25,7 @@ struct PlotOutput
   float freq, rate;
   bool clip, bipolar;
   std::vector<int>* hSplits;
+  std::vector<int>* vSplits;
   std::vector<float>* samples;
   std::vector<std::complex<float>>* fftData;
   std::vector<std::complex<float>>* fftScratch;

@@ -27,11 +27,11 @@ namespace Xt.Synth0
 			internal float freq, rate;
 			internal int bpm, pixels;
 			internal int clip, bipolar;
-			internal int sampleCount, hSplitCount;
+			internal int sampleCount, hSplitCount, vSplitCount;
 			internal float* samples;
-			internal int* hSplits;
+			internal int* hSplits, vSplits;
 			internal SynthModel.Native* synth;
-			internal IntPtr sampleData, hSplitData, fftData, fftScratch;
+			internal IntPtr sampleData, hSplitData, vSplitData, fftData, fftScratch;
 		};
 
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();
