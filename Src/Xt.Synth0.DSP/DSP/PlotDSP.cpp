@@ -28,7 +28,7 @@ Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 static void
 Spectrum(
   std::vector<float>& x, 
-  std::vector<int>& splits,
+  std::vector<int>& hSplits,
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch,
   float rate)
@@ -38,11 +38,11 @@ Spectrum(
   assert(x.size() > 0 && x.size() == NextPow2(x.size()));
   Fft(x, fft, fftScratch);
   x.clear();
-  splits.clear();
+  hSplits.clear();
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
   {
-    if(oct > 0) splits.push_back(i);
+    if(oct > 0) hSplits.push_back(i);
     for(int note = 0; note < 12; note++, i++)
       x.push_back(Power(fft, rate, oct, note));
   }    
@@ -89,7 +89,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   output.bipolar = false;
   output.samples->resize(NextPow2(output.samples->size()));
   if(output.samples->empty()) return;
-  Spectrum(*output.samples, *output.splits, *output.fftData, *output.fftScratch, output.rate);
+  Spectrum(*output.samples, *output.hSplits, *output.fftData, *output.fftScratch, output.rate);
 }
 
 } // namespace Xts

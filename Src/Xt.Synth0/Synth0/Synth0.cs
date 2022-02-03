@@ -221,9 +221,9 @@ namespace Xt.Synth0
 			e.SampleRate = _nativePlotState->rate;
 			e.Bipolar = _nativePlotState->bipolar != 0;
 			e.Spectrum = Model.Track.Synth.Plot.Spec.Value != 0;
-			e.Splits.Clear();
-			for (int i = 0; i < _nativePlotState->splitCount; i++)
-				e.Splits.Add(_nativePlotState->splits[i]);
+			e.HSplits.Clear();
+			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
+				e.HSplits.Add(_nativePlotState->hSplits[i]);
 			e.Samples.Clear();
 			for (int i = 0; i < _nativePlotState->sampleCount; i++)
 				e.Samples.Add(_nativePlotState->samples[i]);

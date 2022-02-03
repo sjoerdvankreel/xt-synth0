@@ -28,11 +28,11 @@ void XTS_CALL
 XtsPlotStateDestroy(PlotState* state)
 {
   delete state->fftData;
-  delete state->splitData;
+  delete state->hSplitData;
   delete state->sampleData;
   delete state->fftScratch;
   state->fftData = nullptr;
-  state->splitData = nullptr;
+  state->hSplitData = nullptr;
   state->sampleData = nullptr;
   state->fftScratch = nullptr;
   delete state;
@@ -43,7 +43,7 @@ XtsPlotStateCreate(void)
 {
   auto result = new PlotState;
   result->sampleData = new std::vector<float>;
-  result->splitData = new std::vector<int32_t>; 
+  result->hSplitData = new std::vector<int32_t>; 
   result->fftData = new std::vector<std::complex<float>>();
   result->fftScratch = new std::vector<std::complex<float>>();
   return result;
@@ -74,12 +74,12 @@ XtsPlotDSPRender(PlotState* state)
   Xts::PlotOutput out = {};
 
   state->fftData->clear();
-  state->splitData->clear();
+  state->hSplitData->clear();
   state->sampleData->clear();
   state->fftScratch->clear();
 
   out.fftData = state->fftData;
-  out.splits = state->splitData;
+  out.hSplits = state->hSplitData;
   out.samples = state->sampleData;
   out.fftScratch = state->fftScratch;
   in.rate = state->rate;
@@ -91,8 +91,8 @@ XtsPlotDSPRender(PlotState* state)
   state->freq = out.freq;
   state->rate = out.rate;
   state->bipolar = out.bipolar;
-  state->splits = state->splitData->data();
+  state->hSplits = state->hSplitData->data();
   state->samples = state->sampleData->data();
-  state->splitCount = static_cast<int32_t>(state->splitData->size());
+  state->hSplitCount = static_cast<int32_t>(state->hSplitData->size());
   state->sampleCount = static_cast<int32_t>(state->sampleData->size());
 }
