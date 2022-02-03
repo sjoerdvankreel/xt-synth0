@@ -10,6 +10,8 @@
 
 namespace Xts {
 
+// https://stackoverflow.com/questions/604453/analyze-audio-using-fast-fourier-transform
+// https://dsp.stackexchange.com/questions/46692/calculating-1-3-octave-spectrum-from-fft-dft
 static float
 Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 {
