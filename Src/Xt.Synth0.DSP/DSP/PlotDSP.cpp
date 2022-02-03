@@ -37,11 +37,11 @@ Spectrum(
   splits.clear();
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
+  {
+    if(oct > 0) splits.push_back(i);
     for(int note = 0; note < 12; note++, i++)
-    {
-      if (note == 5) splits.push_back(i);
       x.push_back(Power(fft, oct, note));
-    }    
+  }    
   for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }
