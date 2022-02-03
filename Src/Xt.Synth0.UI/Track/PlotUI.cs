@@ -110,6 +110,7 @@ namespace Xt.Synth0.UI
 			result.X2 = x2;
 			result.Y1 = y1;
 			result.Y2 = y2;
+			result.Opacity = 0.5f;
 			result.StrokeDashArray = new DoubleCollection(new[] { 4.0, 2.0 });
 			result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground2Key);
 			return result;
