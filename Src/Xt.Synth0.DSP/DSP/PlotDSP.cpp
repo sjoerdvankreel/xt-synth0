@@ -28,8 +28,8 @@ Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 static void
 Spectrum(
   std::vector<float>& x, 
-  std::vector<int>& hSplits,
-  std::vector<float>& vSplits,
+  std::vector<HSplit>& hSplits,
+  std::vector<VSplit>& vSplits,
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch,
   float rate)

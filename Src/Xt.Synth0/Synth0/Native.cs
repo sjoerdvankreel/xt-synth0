@@ -26,15 +26,19 @@ namespace Xt.Synth0
 		{
 			internal int clip;
 			internal float* samples;
-			internal float* vSplits;
-			internal int* hSplits;
+			internal float* vSplitVals;
+			internal int* hSplitVals;
+			internal sbyte** vSplitMarkers;
+			internal sbyte** hSplitMarkers;
 			internal int bpm, pixels;
 			internal float freq, rate, min, max;
 			internal int sampleCount, hSplitCount, vSplitCount;
 			internal SynthModel.Native* synth;
 			internal IntPtr sampleData;
-			internal IntPtr hSplitData;
 			internal IntPtr vSplitData;
+			internal IntPtr hSplitData;
+			internal IntPtr vSplitMarkerData;
+			internal IntPtr hSplitMarkerData;
 			internal IntPtr fftData;
 			internal IntPtr fftScratch;
 		};
