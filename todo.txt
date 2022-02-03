@@ -26,7 +26,4 @@ autoselect plotsource
 niet zomaar het model eroverheen kopieren zonder de state te updaten (krakpot)
 store enums as names (param value tostored)
 polyblep triangle
-correct waveform phases to regular fit for type
-plot decibel in spectrum
-plot horizontal db lines in spectrum
 make hmarker/vmarker implicit in dsp
