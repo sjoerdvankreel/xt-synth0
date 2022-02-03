@@ -35,8 +35,11 @@ SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput con
   int hold = TimeI(input.hold, plotRate);
   int maxSamples = static_cast<int>(input.spec ? input.rate : 5 * plotRate);
   
-  output.bipolar = true;
+  output.max = 1.0f;
+  output.min = -1.0f;
   output.rate = plotRate;
+  output.vSplits->emplace_back(0.0f);
+
   KeyInput key(4, UnitNote::C);
   SourceInput sourceInput(plotRate, input.bpm);
   AudioInput audio(sourceInput, key);

@@ -23,11 +23,15 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
   int h = 0;
   bool l = output.channel == 0;
   float plotRate = input.spec? input.rate: 5000;
-  int hold = TimeI(input.hold, plotRate);
+  int hold = TimeI(input.hold, plotRate);  
   int maxSamples = static_cast<int>(input.spec? input.rate: 5 * plotRate);
+  bool bipolar = source.lfos[static_cast<int>(model.ampLfo)].bi != XtsFalse;
 
+  output.max = 1.0f;
   output.rate = plotRate;
-  output.bipolar = source.lfos[static_cast<int>(model.ampLfo)].bi != XtsFalse;
+  output.min = bipolar ? -1.0f: 0.0f;
+  if (bipolar) output.vSplits->emplace_back(0.0f);
+
   SourceInput sourceInput(plotRate, input.bpm);
   GlobalDSP dsp(&model, &sourceInput);
   SourceDSP sourceDsp(&source, &sourceInput);

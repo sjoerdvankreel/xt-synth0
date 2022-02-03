@@ -133,8 +133,10 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 {
 	if (!model.on) return;
 	KeyInput key(4, UnitNote::C);
-	output.bipolar = true;
+	output.max = 1.0f;
+	output.min = -1.0f;
 	output.freq = Freq(model, key);
+	output.vSplits->emplace_back(0.0f);
 	output.rate = input.spec? input.rate: output.freq * input.pixels;
 
 	SourceInput sourceInput(output.rate, input.bpm);

@@ -219,7 +219,8 @@ namespace Xt.Synth0
 			e.Freq = _nativePlotState->freq;
 			e.Clip = _nativePlotState->clip != 0;
 			e.SampleRate = _nativePlotState->rate;
-			e.Bipolar = _nativePlotState->bipolar != 0;
+			e.Min = _nativePlotState->min;
+			e.Max = _nativePlotState->max;
 			e.Spectrum = Model.Track.Synth.Plot.Spec.Value != 0;
 			e.HSplits.Clear();
 			for (int i = 0; i < _nativePlotState->hSplitCount; i++)

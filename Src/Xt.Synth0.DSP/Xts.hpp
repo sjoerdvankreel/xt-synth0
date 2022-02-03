@@ -38,9 +38,9 @@ public:
 
 struct XTS_ALIGN PlotState
 {
-  float freq, rate;
+  float freq, rate, min, max;
   int32_t bpm, pixels;
-  XtsBool clip, bipolar;
+  XtsBool clip;
   int32_t sampleCount, hSplitCount, vSplitCount;
   float* samples;
   int32_t* hSplits;

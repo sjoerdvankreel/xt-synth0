@@ -127,6 +127,9 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   int hold = TimeI(input.hold, testRate);
   int fixed = params.dly + params.a + params.hld + params.d;
   int release = dahdsr ? hold : std::min(hold, fixed);
+  
+  output.min = 0.0;
+  output.max = 1.0;
   output.rate = input.spec? input.rate: input.pixels * testRate / (release + params.r);
   hold = static_cast<int>(hold * output.rate / testRate);
 

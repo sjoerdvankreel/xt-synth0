@@ -24,9 +24,9 @@ namespace Xt.Synth0
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct PlotState
 		{
-			internal float freq, rate;
+			internal float freq, rate, min, max;
 			internal int bpm, pixels;
-			internal int clip, bipolar;
+			internal int clip;
 			internal int sampleCount, hSplitCount, vSplitCount;
 			internal float* samples;
 			internal int* hSplits;

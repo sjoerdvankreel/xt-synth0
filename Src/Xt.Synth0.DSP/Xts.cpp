@@ -92,10 +92,11 @@ XtsPlotDSPRender(PlotState* state)
   in.pixels = static_cast<float>(state->pixels);
   Xts::PlotDSP::Render(*state->synth, in, out);
 
+  state->min = out.min;
+  state->max = out.max;
   state->clip = out.clip;
   state->freq = out.freq;
   state->rate = out.rate;
-  state->bipolar = out.bipolar;
   state->hSplits = state->hSplitData->data();
   state->vSplits = state->vSplitData->data();
   state->samples = state->sampleData->data();

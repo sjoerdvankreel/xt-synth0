@@ -9,8 +9,7 @@ namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
-		const double MaxLevelBi = 0.975;
-		const double MaxLevelUni = 0.99;
+		const double MaxLevel = 0.99;
 		static readonly UIElement Off;
 		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
@@ -57,7 +56,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static PointCollection PlotData(int w, double h)
+		static PointCollection PlotData(int w, double h, float min, float max)
 		{
 			var result = new PointCollection();
 			for (int i = 0; i < Args.Samples.Count; i++)
@@ -68,10 +67,9 @@ namespace Xt.Synth0.UI
 				var x1 = (int)Math.Ceiling(xSample);
 				var y0 = (1.0 - weight) * Args.Samples[(int)xSample];
 				var y1 = weight * Args.Samples[x1];
-				var y = (1.0f - MaxLevelUni) * h + (1.0 - (y0 + y1)) * MaxLevelUni * h;
-				if (Args.Bipolar) y = (-(y0 + y1) * MaxLevelBi / 2.0f + 0.5) * h;
+				var y = (1.0f - MaxLevel) * h + (1.0 - (y0 + y1)) * MaxLevel * h;
 				var screenPos = i / (Args.Samples.Count - 1.0);
-				result.Add(new Point(screenPos * w, y));
+				result.Add(new Point(screenPos * w, y / (max - min)));
 			}
 			return result;
 		}
@@ -123,7 +121,7 @@ namespace Xt.Synth0.UI
 			double h = container.ActualHeight;
 			Args.Pixels = w;
 			RequestPlotData?.Invoke(null, Args);
-			container.Content = Args.Samples.Count > 0 ? Plot(w, h) : Off;
+			container.Content = Args.Samples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : Off;
 			string header = $"{plot.Name} @ {Args.SampleRate.ToString("N1")}Hz";
 			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
 			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
@@ -131,12 +129,10 @@ namespace Xt.Synth0.UI
 			text.Text = Args.Samples.Count > 0 ? header : $"{plot.Name}{Environment.NewLine}No data";
 		}
 
-		static UIElement Plot(int w, double h)
+		static UIElement Plot(int w, double h, float min, float max)
 		{
 			var result = new Canvas();
-			var data = PlotData(w, h);
-			if (Args.Bipolar)
-				result.Add(Marker(0, w, h / 2.0, h / 2.0));
+			var data = PlotData(w, h, min, max);
 			if (!Args.Spectrum)
 				result.Add(PlotLine(data));
 			else
@@ -144,7 +140,7 @@ namespace Xt.Synth0.UI
 					result.Add(PlotBar(data[i], (float)w / data.Count, h));
 			for (int i = 0; i < Args.VSplits.Count; i++)
 			{
-				double pos = Args.VSplits[i];
+				double pos = (Args.VSplits[i] - min) / (max - min);
 				result.Add(Marker(0, w, pos * h, pos * h));
 			}
 			for (int i = 0; i < Args.HSplits.Count; i++)

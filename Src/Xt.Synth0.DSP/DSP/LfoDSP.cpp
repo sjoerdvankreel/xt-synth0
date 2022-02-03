@@ -40,9 +40,11 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	if (!model.on) return;
 
 	SourceInput testIn(testRate, input.bpm);
-	output.bipolar = model.bi;
+	output.max = 1.0f;
+  output.min = model.bi? -1.0f: 0.0f;
 	output.freq = Freq(model, testIn);
 	output.rate = input.spec? input.rate: output.freq * input.pixels;
+  if(model.bi) output.vSplits->emplace_back(0.0f);
 
 	SourceInput in(output.rate, input.bpm);
 	LfoDSP dsp(&model, &in);

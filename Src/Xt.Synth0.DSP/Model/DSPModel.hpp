@@ -23,7 +23,8 @@ struct PlotOutput
 {
   int channel;
   float freq, rate;
-  bool clip, bipolar;
+  bool clip;
+  float min, max;
   std::vector<int>* hSplits;
   std::vector<float>* vSplits;
   std::vector<float>* samples;
