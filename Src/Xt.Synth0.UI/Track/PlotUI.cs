@@ -141,6 +141,11 @@ namespace Xt.Synth0.UI
 			else
 				for (int i = 0; i < data.Count; i++)
 					result.Add(PlotBar(data[i], (float)w / data.Count, h));
+			for (int i = 0; i < Args.VSplits.Count; i++)
+			{
+				double pos = Args.VSplits[i];
+				result.Add(Marker(0, w, pos * h, pos * h));
+			}
 			for (int i = 0; i < Args.HSplits.Count; i++)
 			{
 				double pos = Args.HSplits[i] / (Args.Samples.Count - 1.0);

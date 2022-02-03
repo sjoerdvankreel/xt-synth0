@@ -29,6 +29,7 @@ static void
 Spectrum(
   std::vector<float>& x, 
   std::vector<int>& hSplits,
+  std::vector<float>& vSplits,
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch,
   float rate)
@@ -42,10 +43,13 @@ Spectrum(
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
   {
-    if(oct > 0) hSplits.push_back(i);
+    if(oct > 0) hSplits.push_back(i - 1);
     for(int note = 0; note < 12; note++, i++)
       x.push_back(Power(fft, rate, oct, note));
   }    
+  vSplits.clear();
+  for(int i = 1; i < 7; i++)
+    vSplits.emplace_back(1.0f - (1.0f / (1 << i)));
   for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }
@@ -89,7 +93,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   output.bipolar = false;
   output.samples->resize(NextPow2(output.samples->size()));
   if(output.samples->empty()) return;
-  Spectrum(*output.samples, *output.hSplits, *output.fftData, *output.fftScratch, output.rate);
+  Spectrum(*output.samples, *output.hSplits, *output.vSplits, *output.fftData, *output.fftScratch, output.rate);
 }
 
 } // namespace Xts

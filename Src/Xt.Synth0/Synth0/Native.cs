@@ -29,7 +29,8 @@ namespace Xt.Synth0
 			internal int clip, bipolar;
 			internal int sampleCount, hSplitCount, vSplitCount;
 			internal float* samples;
-			internal int* hSplits, vSplits;
+			internal int* hSplits;
+			internal float* vSplits;
 			internal SynthModel.Native* synth;
 			internal IntPtr sampleData, hSplitData, vSplitData, fftData, fftScratch;
 		};

@@ -27,3 +27,4 @@ niet zomaar het model eroverheen kopieren zonder de state te updaten (krakpot)
 store enums as names (param value tostored)
 polyblep triangle
 make hsplit/vsplit implicit in dsp, remove bipolar, make hmarker/vmarker, no spec in reqargs->bars
+marker lines other color
