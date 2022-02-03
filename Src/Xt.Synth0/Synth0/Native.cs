@@ -24,15 +24,19 @@ namespace Xt.Synth0
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct PlotState
 		{
-			internal float freq, rate, min, max;
-			internal int bpm, pixels;
 			internal int clip;
-			internal int sampleCount, hSplitCount, vSplitCount;
 			internal float* samples;
-			internal int* hSplits;
 			internal float* vSplits;
+			internal int* hSplits;
+			internal int bpm, pixels;
+			internal float freq, rate, min, max;
+			internal int sampleCount, hSplitCount, vSplitCount;
 			internal SynthModel.Native* synth;
-			internal IntPtr sampleData, hSplitData, vSplitData, fftData, fftScratch;
+			internal IntPtr sampleData;
+			internal IntPtr hSplitData;
+			internal IntPtr vSplitData;
+			internal IntPtr fftData;
+			internal IntPtr fftScratch;
 		};
 
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();

@@ -38,13 +38,13 @@ public:
 
 struct XTS_ALIGN PlotState
 {
-  float freq, rate, min, max;
-  int32_t bpm, pixels;
   XtsBool clip;
-  int32_t sampleCount, hSplitCount, vSplitCount;
   float* samples;
-  int32_t* hSplits;
   float* vSplits;
+  int32_t* hSplits;
+  int32_t bpm, pixels;
+  float freq, rate, min, max;
+  int32_t sampleCount, hSplitCount, vSplitCount;
   Xts::SynthModel const* synth;
   std::vector<float>* sampleData;
   std::vector<int32_t>* hSplitData;
