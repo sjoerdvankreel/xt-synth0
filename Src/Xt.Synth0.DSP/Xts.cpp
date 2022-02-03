@@ -45,8 +45,8 @@ XtsPlotStateCreate(void)
 {
   auto result = new PlotState;
   result->sampleData = new std::vector<float>;
-  result->vSplitData = new std::vector<float>;
-  result->hSplitData = new std::vector<int32_t>;
+  result->vSplitData = new std::vector<Xts::VSplit>;
+  result->hSplitData = new std::vector<Xts::HSplit>;
   result->fftData = new std::vector<std::complex<float>>();
   result->fftScratch = new std::vector<std::complex<float>>();
   return result;
@@ -79,6 +79,7 @@ XtsPlotDSPRender(PlotState* state)
   state->fftData->clear();
   state->hSplitData->clear();
   state->vSplitData->clear();
+  state->hSplitMarkerData
   state->sampleData->clear();
   state->fftScratch->clear();
 
