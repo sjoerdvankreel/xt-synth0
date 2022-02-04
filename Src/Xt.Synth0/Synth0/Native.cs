@@ -26,17 +26,23 @@ namespace Xt.Synth0
 		{
 			internal int clip;
 			internal float* samples;
-			internal float* vSplits;
-			internal int* hSplits;
+			internal float* vSplitVals;
+			internal int* hSplitVals;
 			internal int bpm, pixels;
 			internal float freq, rate, min, max;
+			internal sbyte** vSplitMarkers;
+			internal sbyte** hSplitMarkers;
 			internal int sampleCount, hSplitCount, vSplitCount;
 			internal SynthModel.Native* synth;
-			internal IntPtr sampleData;
-			internal IntPtr hSplitData;
-			internal IntPtr vSplitData;
-			internal IntPtr fftData;
-			internal IntPtr fftScratch;
+			IntPtr sampleData;
+			IntPtr vSplitValData;
+			IntPtr hSplitValData;
+			IntPtr vSplitData;
+			IntPtr hSplitData;
+			IntPtr vSplitMarkerData;
+			IntPtr hSplitMarkerData;
+			IntPtr fftData;
+			IntPtr fftScratch;
 		};
 
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();

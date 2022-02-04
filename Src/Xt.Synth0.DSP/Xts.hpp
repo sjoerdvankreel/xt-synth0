@@ -2,6 +2,7 @@
 #define XTS_HPP
 
 #include "Model/Model.hpp"
+#include "Model/DSPModel.hpp"
 
 #include <vector>
 #include <memory>
@@ -40,15 +41,21 @@ struct XTS_ALIGN PlotState
 {
   XtsBool clip;
   float* samples;
-  float* vSplits;
-  int32_t* hSplits;
+  float* vSplitVals;
+  int32_t* hSplitVals;
   int32_t bpm, pixels;
   float freq, rate, min, max;
+  char const** vSplitMarkers;
+  char const** hSplitMarkers;
   int32_t sampleCount, hSplitCount, vSplitCount;
   Xts::SynthModel const* synth;
   std::vector<float>* sampleData;
-  std::vector<int32_t>* hSplitData;
-  std::vector<float>* vSplitData;
+  std::vector<float>* vSplitValData;
+  std::vector<int32_t>* hSplitValData;
+  std::vector<Xts::VSplit>* vSplitData;
+  std::vector<Xts::HSplit>* hSplitData;
+  std::vector<char const*>* vSplitMarkerData;
+  std::vector<char const*>* hSplitMarkerData;
   std::vector<std::complex<float>>* fftData;
   std::vector<std::complex<float>>* fftScratch;
 public:

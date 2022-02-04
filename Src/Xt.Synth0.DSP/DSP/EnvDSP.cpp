@@ -142,7 +142,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     dsp.Next();
     output.samples->push_back(dsp.Value());
     if(prev != dsp._stage && prev != EnvStage::Dly && !dsp.End())
-      output.hSplits->push_back(i);
+      output.hSplits->push_back(HSplit(i, ""));
     prev = dsp._stage; 
     i++;
   }

@@ -38,7 +38,7 @@ SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput con
   output.max = 1.0f;
   output.min = -1.0f;
   output.rate = plotRate;
-  output.vSplits->emplace_back(0.0f);
+  output.vSplits->emplace_back(VSplit(0.0f, ""));
 
   KeyInput key(4, UnitNote::C);
   SourceInput sourceInput(plotRate, input.bpm);

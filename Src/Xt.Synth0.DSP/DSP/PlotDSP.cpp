@@ -28,8 +28,8 @@ Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 static void
 Spectrum(
   std::vector<float>& x, 
-  std::vector<int>& hSplits,
-  std::vector<float>& vSplits,
+  std::vector<HSplit>& hSplits,
+  std::vector<VSplit>& vSplits,
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch,
   float rate)
@@ -43,13 +43,13 @@ Spectrum(
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
   {
-    if(oct > 0) hSplits.push_back(i - 1);
+    if(oct > 0) hSplits.push_back(HSplit(i - 1, ""));
     for(int note = 0; note < 12; note++, i++)
       x.push_back(Power(fft, rate, oct, note));
   }    
   vSplits.clear();
   for(int i = 1; i < 7; i++)
-    vSplits.emplace_back(1.0f - (1.0f / (1 << i)));
+    vSplits.emplace_back(VSplit(1.0f - (1.0f / (1 << i)), ""));
   for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }

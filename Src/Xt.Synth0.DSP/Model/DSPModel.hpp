@@ -3,11 +3,28 @@
 
 #include "SynthModel.hpp"
 #include <vector>
+#include <string>
 #include <complex>
 
 namespace Xts {
 
 class SourceDSP;
+
+struct HSplit
+{
+  int pos;
+  std::string marker;
+  HSplit(int p, std::string const& m):
+  pos(p), marker(m) {}
+};
+
+struct VSplit
+{
+  float pos;
+  std::string marker;
+  VSplit(float p, std::string const& m):
+    pos(p), marker(m) {}
+};
 
 struct PlotInput
 {
@@ -24,9 +41,9 @@ struct PlotOutput
   bool clip;
   int channel;
   float freq, rate, min, max;
-  std::vector<int>* hSplits;
-  std::vector<float>* vSplits;
   std::vector<float>* samples;
+  std::vector<HSplit>* hSplits;
+  std::vector<VSplit>* vSplits;
   std::vector<std::complex<float>>* fftData;
   std::vector<std::complex<float>>* fftScratch;
 public:
