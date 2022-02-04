@@ -101,7 +101,15 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement Marker(double x1, double x2, double y1, double y2)
+		static UIElement Marker(double x, double y, string text)
+		{
+			var result = Create.Text(text);
+			Canvas.SetLeft(result, x);
+			Canvas.SetTop(result, y);
+			return result;
+		}
+
+		static UIElement Split(double x1, double x2, double y1, double y2)
 		{
 			var result = new Line();
 			result.X1 = x1;
@@ -141,12 +149,14 @@ namespace Xt.Synth0.UI
 			for (int i = 0; i < Args.VSplitVals.Count; i++)
 			{
 				double pos = (Args.VSplitVals[i] - min) / (max - min);
-				result.Add(Marker(0, w, pos * h, pos * h));
+				result.Add(Split(0, w, pos * h, pos * h));
+				result.Add(Marker(0, pos * h, Args.VSplitMarkers[i]));
 			}
 			for (int i = 0; i < Args.HSplitVals.Count; i++)
 			{
 				double pos = Args.HSplitVals[i] / (Args.Samples.Count - 1.0);
-				result.Add(Marker(pos * w, pos * w, 0, h));
+				result.Add(Split(pos * w, pos * w, 0, h));
+				result.Add(Marker(pos * w, h, Args.HSplitMarkers[i]));
 			}
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
