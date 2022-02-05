@@ -3,6 +3,7 @@
 #include "UnitDSP.hpp"
 #include "PlotDSP.hpp"
 #include "SynthDSP.hpp"
+#include "../Utility/Utility.hpp"
 
 #include <vector>
 #include <complex>
@@ -43,13 +44,16 @@ Spectrum(
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
   {
-    if(oct > 0) hSplits.push_back(HSplit(i - 1, ""));
+    if(oct > 0) hSplits.push_back(HSplit(i - 1, std::to_string(oct - 2)));
     for(int note = 0; note < 12; note++, i++)
       x.push_back(Power(fft, rate, oct, note));
   }    
   vSplits.clear();
   for(int i = 1; i < 7; i++)
-    vSplits.emplace_back(VSplit(1.0f - (1.0f / (1 << i)), ""));
+  {
+    float split = 1.0f - 1.0f / (1 << i);    
+    vSplits.emplace_back(VSplit(split, ""));
+  }
   for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }

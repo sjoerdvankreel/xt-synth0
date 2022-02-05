@@ -44,7 +44,17 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
   output.min = model.bi? -1.0f: 0.0f;
 	output.freq = Freq(model, testIn);
 	output.rate = input.spec? input.rate: output.freq * input.pixels;
-  if(model.bi) output.vSplits->emplace_back(VSplit(0.0f, ""));
+  if(model.bi)
+  {
+		output.vSplits->emplace_back(VSplit(0.0f, std::to_string(0)));
+		output.vSplits->emplace_back(VSplit(1.0f, std::to_string(1)));
+		output.vSplits->emplace_back(VSplit(-1.0f, std::to_string(-1)));
+	}
+  else
+  {
+		output.vSplits->emplace_back(VSplit(0.0f, std::to_string(0)));
+		output.vSplits->emplace_back(VSplit(1.0f, std::to_string(1)));
+	}
 
 	SourceInput in(output.rate, input.bpm);
 	LfoDSP dsp(&model, &in);
