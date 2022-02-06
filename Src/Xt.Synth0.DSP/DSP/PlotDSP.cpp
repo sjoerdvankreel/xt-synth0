@@ -58,7 +58,10 @@ Spectrum(
   for(int i = 0; i < 7; i++)
   {
     float split = 1.0f - 1.0f / (1 << i);
-    std::string marker = i < 3? ToString(1.0f - split): "";
+    std::string marker = "";
+    if(i == 0) marker = "1";
+    if(i == 1) marker = "\u00BD";
+    if(i == 2) marker = "\u00BC";
     vSplits.emplace_back(VSplit(split, marker));
   }
   vSplits.emplace_back(VSplit(1.0f, std::to_string(0)));
