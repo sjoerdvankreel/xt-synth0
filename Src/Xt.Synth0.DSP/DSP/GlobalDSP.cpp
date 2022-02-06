@@ -30,7 +30,18 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
   output.max = 1.0f;
   output.rate = plotRate;
   output.min = bipolar ? -1.0f: 0.0f;
-  if (bipolar) output.vSplits->emplace_back(VSplit(0.0f, L""));
+  if (bipolar)
+  {
+    output.vSplits->emplace_back(VSplit(0.0f, L"0"));
+    output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
+    output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
+  }
+  else
+  {
+    output.vSplits->emplace_back(VSplit(0.0f, L"1"));
+    output.vSplits->emplace_back(VSplit(1.0f, L"0"));
+    output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
+  }
 
   SourceInput sourceInput(plotRate, input.bpm);
   GlobalDSP dsp(&model, &sourceInput);
@@ -43,6 +54,8 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
     dsp.Next(sourceDsp);
     output.samples->push_back(dsp.Value());
   }
+  output.hSplits->emplace_back(HSplit(0, L""));
+  output.hSplits->emplace_back(HSplit(i - 1, L""));
 }
 
 } // namespace Xts

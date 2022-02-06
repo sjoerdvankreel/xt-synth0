@@ -38,7 +38,6 @@ SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput con
   output.max = 1.0f;
   output.min = -1.0f;
   output.rate = plotRate;
-  output.vSplits->emplace_back(VSplit(0.0f, L""));
 
   KeyInput key(4, UnitNote::C);
   SourceInput sourceInput(plotRate, input.bpm);
@@ -56,6 +55,11 @@ SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput con
     output.clip |= Clip(sample);
     output.samples->push_back(sample);
   }
+  output.hSplits->emplace_back(HSplit(0, L""));
+  output.hSplits->emplace_back(HSplit(i - 1, L""));
+  output.vSplits->emplace_back(VSplit(0.0f, L"0"));
+  output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
+  output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
 }
 
 } // namespace Xts
