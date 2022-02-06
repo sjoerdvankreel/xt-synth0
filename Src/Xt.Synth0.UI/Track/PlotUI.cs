@@ -9,7 +9,8 @@ namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
-		const int PadText = 7;
+		const int VPadText = 7;
+		const int HPadText = 3;
 		const int PadLeft = 28;
 		const int PadBottom = 20;
 		const double MaxLevel = 0.99;
@@ -75,7 +76,7 @@ namespace Xt.Synth0.UI
 				var y = (1.0f - MaxLevel) * hPad + (1.0 - (y0 + y1)) * MaxLevel * hPad;
 				var screenPos = i / (Args.Samples.Count - 1.0);
 				var l = PadLeft + screenPos * (w - PadLeft);
-				result.Add(new Point(l, PadText + y / (max - min)));
+				result.Add(new Point(l, VPadText + y / (max - min)));
 			}
 			return result;
 		}
@@ -109,7 +110,7 @@ namespace Xt.Synth0.UI
 			result.X1 = p.X;
 			result.X2 = p.X;
 			result.Y2 = p.Y;
-			result.Y1 = h + PadText - PadBottom;
+			result.Y1 = h + VPadText - PadBottom;
 			result.StrokeThickness = stroke;
 			PlotProperties(result);
 			return result;
@@ -156,15 +157,16 @@ namespace Xt.Synth0.UI
 			for (int i = 0; i < Args.VSplitVals.Count; i++)
 			{
 				double pos = (Args.VSplitVals[i] - min) / (max - min);
-				result.Add(Split(PadLeft, w, PadText + pos * hPad, PadText + pos * hPad));
-				result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i]));
+				double y = VPadText + pos * hPad;
+				result.Add(Split(PadLeft, w, y, y));
+				result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i].PadLeft(4)));
 			}
 			for (int i = 0; i < Args.HSplitVals.Count; i++)
 			{
 				double pos = Args.HSplitVals[i] / (Args.Samples.Count - 1.0);
 				double l = PadLeft + pos * (w - PadLeft);
-				result.Add(Split(l, l, PadText, PadText + h - PadBottom));
-				result.Add(Marker(pos * w, h, Args.HSplitMarkers[i]));
+				result.Add(Split(l, l, VPadText, VPadText + h - PadBottom));
+				result.Add(Marker(l - HPadText, h - PadBottom + VPadText, Args.HSplitMarkers[i]));
 			}
 			result.VerticalAlignment = VerticalAlignment.Stretch;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
