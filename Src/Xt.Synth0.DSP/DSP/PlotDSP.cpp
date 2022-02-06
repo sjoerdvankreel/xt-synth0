@@ -46,7 +46,7 @@ Spectrum(
   for(int oct = 0; oct < 12; oct++)
   {
     std::wstring marker = oct >= 2? std::to_wstring(oct - 2): L"";
-    hSplits.emplace_back(HSplit(i - 1, marker));
+    hSplits.emplace_back(HSplit(i, marker));
     for(int note = 0; note < 12; note++, i++)
       x.push_back(Power(fft, rate, oct, note));
   }    

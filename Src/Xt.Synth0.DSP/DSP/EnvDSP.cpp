@@ -118,6 +118,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
   int i = 0;
   int h = 0;
+  bool firstMarker = true;
   auto prev = EnvStage::Dly;
   const float testRate = input.spec? input.rate: 1000.0f;
 
@@ -130,6 +131,8 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   
   output.min = 0.0;
   output.max = 1.0;
+  output.vSplits->emplace_back(VSplit(0.0f, L"1"));
+  output.vSplits->emplace_back(VSplit(1.0f, L"0"));
   output.rate = input.spec? input.rate: input.pixels * testRate / (release + params.r);
   hold = static_cast<int>(hold * output.rate / testRate);
 
@@ -141,11 +144,22 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     if(dsp.End()) break;
     dsp.Next();
     output.samples->push_back(dsp.Value());
-    if(prev != dsp._stage && prev != EnvStage::Dly && !dsp.End())
-      output.hSplits->push_back(HSplit(i, L""));
+    if((firstMarker || prev != dsp._stage) && !dsp.End())
+    {
+      firstMarker = false;
+      std::wstring marker = L"";
+      if(dsp._stage == EnvStage::A) marker = L"A";
+      if(dsp._stage == EnvStage::D) marker = L"D";
+      if(dsp._stage == EnvStage::S) marker = L"S";
+      if(dsp._stage == EnvStage::R) marker = L"R";
+      if(dsp._stage == EnvStage::Dly) marker = L"D";
+      if(dsp._stage == EnvStage::Hld) marker = L"H";
+      output.hSplits->push_back(HSplit(i, marker));
+    }
     prev = dsp._stage; 
     i++;
   }
+  output.hSplits->push_back(HSplit(i - 1, L""));
 }
 
 } // namespace Xts
