@@ -39,16 +39,21 @@ Spectrum(
   float max = 0;
   assert(x.size() > 0 && x.size() == NextPow2(x.size()));
   Fft(x, fft, fftScratch);
+
   x.clear();
   hSplits.clear();
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
   {
     std::string marker = oct >= 2? std::to_string(oct - 2): "";
-    if(oct > 0) hSplits.push_back(HSplit(i - 1, marker));
+    hSplits.emplace_back(HSplit(i - 1, marker));
     for(int note = 0; note < 12; note++, i++)
       x.push_back(Power(fft, rate, oct, note));
   }    
+  hSplits.emplace_back(HSplit(143, ""));
+  for (size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
+  for (size_t i = 0; i < x.size(); i++) x[i] /= max;
+
   vSplits.clear();
   for(int i = 0; i < 7; i++)
   {
@@ -57,8 +62,6 @@ Spectrum(
     vSplits.emplace_back(VSplit(split, marker));
   }
   vSplits.emplace_back(VSplit(1.0f, std::to_string(0)));
-  for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
-  for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }
 
 void

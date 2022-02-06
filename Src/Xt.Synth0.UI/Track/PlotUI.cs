@@ -11,7 +11,7 @@ namespace Xt.Synth0.UI
 	{
 		const int VPadText = 7;
 		const int HPadText = 3;
-		const int PadLeft = 28;
+		const int PadLeft = 30;
 		const int PadBottom = 20;
 		const double MaxLevel = 0.99;
 
