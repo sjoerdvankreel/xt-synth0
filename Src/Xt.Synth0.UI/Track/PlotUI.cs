@@ -9,8 +9,8 @@ namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
-		const int PadText = 5;
-		const int PadLeft = 20;
+		const int PadText = 7;
+		const int PadLeft = 28;
 		const int PadBottom = 20;
 		const double MaxLevel = 0.99;
 
@@ -109,7 +109,7 @@ namespace Xt.Synth0.UI
 			result.X1 = p.X;
 			result.X2 = p.X;
 			result.Y2 = p.Y;
-			result.Y1 = h - PadBottom;
+			result.Y1 = h + PadText - PadBottom;
 			result.StrokeThickness = stroke;
 			PlotProperties(result);
 			return result;
@@ -156,14 +156,14 @@ namespace Xt.Synth0.UI
 			for (int i = 0; i < Args.VSplitVals.Count; i++)
 			{
 				double pos = (Args.VSplitVals[i] - min) / (max - min);
-				result.Add(Split(PadLeft, w, pos * hPad, pos * hPad));
-				result.Add(Marker(0, pos * h, Args.VSplitMarkers[i]));
+				result.Add(Split(PadLeft, w, PadText + pos * hPad, PadText + pos * hPad));
+				result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i]));
 			}
 			for (int i = 0; i < Args.HSplitVals.Count; i++)
 			{
 				double pos = Args.HSplitVals[i] / (Args.Samples.Count - 1.0);
 				double l = PadLeft + pos * (w - PadLeft);
-				result.Add(Split(l, l, 0, h - PadBottom));
+				result.Add(Split(l, l, PadText, PadText + h - PadBottom));
 				result.Add(Marker(pos * w, h, Args.HSplitMarkers[i]));
 			}
 			result.VerticalAlignment = VerticalAlignment.Stretch;

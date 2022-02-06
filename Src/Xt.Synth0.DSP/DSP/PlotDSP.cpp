@@ -50,12 +50,13 @@ Spectrum(
       x.push_back(Power(fft, rate, oct, note));
   }    
   vSplits.clear();
-  for(int i = 0; i < 8; i++)
+  for(int i = 0; i < 7; i++)
   {
     float split = 1.0f - 1.0f / (1 << i);
-    std::string marker = i < 4? ToString(1.0f - split): "";
+    std::string marker = i < 3? ToString(1.0f - split): "";
     vSplits.emplace_back(VSplit(split, marker));
   }
+  vSplits.emplace_back(VSplit(1.0f, std::to_string(0)));
   for(size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for(size_t i = 0; i < x.size(); i++) x[i] /= max;
 }
