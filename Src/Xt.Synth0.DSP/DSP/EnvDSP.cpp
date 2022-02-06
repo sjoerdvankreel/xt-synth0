@@ -133,6 +133,9 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   output.max = 1.0;
   output.vSplits->emplace_back(VSplit(0.0f, L"1"));
   output.vSplits->emplace_back(VSplit(1.0f, L"0"));
+  output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
+  output.vSplits->emplace_back(VSplit(0.25f, L"\u00BE"));
+  output.vSplits->emplace_back(VSplit(0.75f, L"\u00BC"));
   output.rate = input.spec? input.rate: input.pixels * testRate / (release + params.r);
   hold = static_cast<int>(hold * output.rate / testRate);
 
