@@ -136,9 +136,9 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	output.max = 1.0f;
 	output.min = -1.0f;
 	output.freq = Freq(model, key);
-	output.vSplits->emplace_back(VSplit(0.0f, "0"));
-	output.vSplits->emplace_back(VSplit(1.0f, "-1"));
-	output.vSplits->emplace_back(VSplit(-1.0f, "1"));
+	output.vSplits->emplace_back(VSplit(0.0f, L"0"));
+	output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
+	output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
 	output.rate = input.spec? input.rate: output.freq * input.pixels;
 
 	SourceInput sourceInput(output.rate, input.bpm);
@@ -146,9 +146,9 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	UnitDSP dsp(&model, &audio);
   SourceDSP sourceDsp(&source, &sourceInput);
 	float samples = input.spec? input.rate: output.rate / output.freq;
-	output.hSplits->emplace_back(HSplit(0, "0")); 
-	output.hSplits->emplace_back(HSplit(samples, ""));
-	output.hSplits->emplace_back(HSplit(samples / 2, "pi"));
+	output.hSplits->emplace_back(HSplit(0, L"0"));
+	output.hSplits->emplace_back(HSplit(samples, L""));
+	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
 	for (int i = 0; i < static_cast<int>(samples); i++)
   {
 		sourceDsp.Next();

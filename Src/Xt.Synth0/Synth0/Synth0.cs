@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -208,6 +209,13 @@ namespace Xt.Synth0
 			e.DefaultBuffer = support?.current ?? 0.0;
 		}
 
+		static unsafe string FromWideChar(ushort* text)
+		{
+			int i = 0;
+			while (text[i] != 0) i++;
+			return Encoding.Unicode.GetString((byte*)text, i * 2);
+		}
+
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
 			_nativePlotState->pixels = e.Pixels;
@@ -227,13 +235,13 @@ namespace Xt.Synth0
 				e.HSplitVals.Add(_nativePlotState->hSplitVals[i]);
 			e.HSplitMarkers.Clear();
 			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
-				e.HSplitMarkers.Add(new string(_nativePlotState->hSplitMarkers[i]));
+				e.HSplitMarkers.Add(FromWideChar(_nativePlotState->hSplitMarkers[i]));
 			e.VSplitVals.Clear();
 			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
 				e.VSplitVals.Add(_nativePlotState->vSplitVals[i]);
 			e.VSplitMarkers.Clear();
 			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
-				e.VSplitMarkers.Add(new string(_nativePlotState->vSplitMarkers[i]));
+				e.VSplitMarkers.Add(FromWideChar(_nativePlotState->vSplitMarkers[i]));
 			e.Samples.Clear();
 			for (int i = 0; i < _nativePlotState->sampleCount; i++)
 				e.Samples.Add(_nativePlotState->samples[i]);

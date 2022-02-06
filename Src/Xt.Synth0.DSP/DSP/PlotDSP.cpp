@@ -45,12 +45,12 @@ Spectrum(
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
   {
-    std::string marker = oct >= 2? std::to_string(oct - 2): "";
+    std::wstring marker = oct >= 2? std::to_wstring(oct - 2): L"";
     hSplits.emplace_back(HSplit(i - 1, marker));
     for(int note = 0; note < 12; note++, i++)
       x.push_back(Power(fft, rate, oct, note));
   }    
-  hSplits.emplace_back(HSplit(143, ""));
+  hSplits.emplace_back(HSplit(143, L""));
   for (size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for (size_t i = 0; i < x.size(); i++) x[i] /= max;
 
@@ -58,13 +58,14 @@ Spectrum(
   for(int i = 0; i < 7; i++)
   {
     float split = 1.0f - 1.0f / (1 << i);
-    std::string marker = "";
-    if(i == 0) marker = "1";
-    if(i == 1) marker = "\u00BD";
-    if(i == 2) marker = "\u00BC";
+    std::wstring marker = L"";
+    if(i == 0) marker = L"1";
+    if(i == 1) marker = L"\u00BD";
+    if(i == 2) marker = L"\u00BC";
+    if(i == 3) marker = L"\u215B";
     vSplits.emplace_back(VSplit(split, marker));
   }
-  vSplits.emplace_back(VSplit(1.0f, std::to_string(0)));
+  vSplits.emplace_back(VSplit(1.0f, L"0"));
 }
 
 void

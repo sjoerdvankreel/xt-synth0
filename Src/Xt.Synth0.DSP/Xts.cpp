@@ -52,15 +52,15 @@ PlotState* XTS_CALL
 XtsPlotStateCreate(void)
 {
   auto result = new PlotState;
-  result->sampleData = new std::vector<float>;
-  result->vSplitValData = new std::vector<float>;
-  result->hSplitValData = new std::vector<int32_t>;
-  result->vSplitData = new std::vector<Xts::VSplit>;
-  result->hSplitData = new std::vector<Xts::HSplit>;
-  result->vSplitMarkerData = new std::vector<char const*>;
-  result->hSplitMarkerData = new std::vector<char const*>;
+  result->sampleData = new std::vector<float>();
+  result->vSplitValData = new std::vector<float>();
+  result->hSplitValData = new std::vector<int32_t>();
+  result->vSplitData = new std::vector<Xts::VSplit>();
+  result->hSplitData = new std::vector<Xts::HSplit>();
   result->fftData = new std::vector<std::complex<float>>();
   result->fftScratch = new std::vector<std::complex<float>>();
+  result->vSplitMarkerData = new std::vector<wchar_t const*>();
+  result->hSplitMarkerData = new std::vector<wchar_t const*>();
   return result;
 }
 

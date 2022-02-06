@@ -13,16 +13,16 @@ class SourceDSP;
 struct HSplit
 {
   int pos;
-  std::string marker;
-  HSplit(int p, std::string const& m):
+  std::wstring marker;
+  HSplit(int p, std::wstring const& m):
   pos(p), marker(m) {}
 };
 
 struct VSplit
 {
   float pos;
-  std::string marker;
-  VSplit(float p, std::string const& m):
+  std::wstring marker;
+  VSplit(float p, std::wstring const& m):
     pos(p), marker(m) {}
 };
 

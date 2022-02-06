@@ -30,7 +30,7 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
   output.max = 1.0f;
   output.rate = plotRate;
   output.min = bipolar ? -1.0f: 0.0f;
-  if (bipolar) output.vSplits->emplace_back(VSplit(0.0f, ""));
+  if (bipolar) output.vSplits->emplace_back(VSplit(0.0f, L""));
 
   SourceInput sourceInput(plotRate, input.bpm);
   GlobalDSP dsp(&model, &sourceInput);

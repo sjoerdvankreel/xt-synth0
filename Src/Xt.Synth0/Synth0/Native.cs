@@ -30,8 +30,8 @@ namespace Xt.Synth0
 			internal int* hSplitVals;
 			internal int bpm, pixels;
 			internal float freq, rate, min, max;
-			internal sbyte** vSplitMarkers;
-			internal sbyte** hSplitMarkers;
+			internal ushort** vSplitMarkers;
+			internal ushort** hSplitMarkers;
 			internal int sampleCount, hSplitCount, vSplitCount;
 			internal SynthModel.Native* synth;
 			IntPtr sampleData;

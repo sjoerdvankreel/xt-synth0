@@ -45,8 +45,8 @@ struct XTS_ALIGN PlotState
   int32_t* hSplitVals;
   int32_t bpm, pixels;
   float freq, rate, min, max;
-  char const** vSplitMarkers;
-  char const** hSplitMarkers;
+  wchar_t const** vSplitMarkers;
+  wchar_t const** hSplitMarkers;
   int32_t sampleCount, hSplitCount, vSplitCount;
   Xts::SynthModel const* synth;
   std::vector<float>* sampleData;
@@ -54,8 +54,8 @@ struct XTS_ALIGN PlotState
   std::vector<int32_t>* hSplitValData;
   std::vector<Xts::VSplit>* vSplitData;
   std::vector<Xts::HSplit>* hSplitData;
-  std::vector<char const*>* vSplitMarkerData;
-  std::vector<char const*>* hSplitMarkerData;
+  std::vector<wchar_t const*>* vSplitMarkerData;
+  std::vector<wchar_t const*>* hSplitMarkerData;
   std::vector<std::complex<float>>* fftData;
   std::vector<std::complex<float>>* fftScratch;
 public:
