@@ -26,10 +26,23 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
   int hold = TimeI(input.hold, plotRate);  
   int maxSamples = static_cast<int>(input.spec? input.rate: 5 * plotRate);
   bool bipolar = source.lfos[static_cast<int>(model.ampLfo)].bi != XtsFalse;
-
   output.max = 1.0f;
   output.rate = plotRate;
   output.min = bipolar ? -1.0f: 0.0f;
+  SourceInput sourceInput(plotRate, input.bpm);
+  GlobalDSP dsp(&model, &sourceInput);
+  SourceDSP sourceDsp(&source, &sourceInput);
+  while (i++ < maxSamples)
+  {
+    if (h++ == hold) sourceDsp.Release();
+    if (dsp.End(sourceDsp)) break;
+    sourceDsp.Next();
+    dsp.Next(sourceDsp);
+    output.samples->push_back(dsp.Value());
+  }
+
+  output.hSplits->emplace_back(HSplit(0, L""));
+  output.hSplits->emplace_back(HSplit(i - 1, L""));
   if (bipolar)
   {
     output.vSplits->emplace_back(VSplit(0.0f, L"0"));
@@ -42,20 +55,6 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
     output.vSplits->emplace_back(VSplit(1.0f, L"0"));
     output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
   }
-
-  SourceInput sourceInput(plotRate, input.bpm);
-  GlobalDSP dsp(&model, &sourceInput);
-  SourceDSP sourceDsp(&source, &sourceInput);
-  while (i++ < maxSamples)
-  {
-    if (h++ == hold) sourceDsp.Release();
-    if (dsp.End(sourceDsp)) break;
-    sourceDsp.Next();
-    dsp.Next(sourceDsp);
-    output.samples->push_back(dsp.Value());
-  }
-  output.hSplits->emplace_back(HSplit(0, L""));
-  output.hSplits->emplace_back(HSplit(i - 1, L""));
 }
 
 } // namespace Xts

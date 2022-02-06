@@ -38,35 +38,35 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 {
 	const float testRate = 1000.0f;
 	if (!model.on) return;
-
 	SourceInput testIn(testRate, input.bpm);
 	output.max = 1.0f;
   output.min = model.bi? -1.0f: 0.0f;
 	output.freq = Freq(model, testIn);
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
-	if(model.bi)
-  {
-		output.vSplits->emplace_back(VSplit(0.0f, L"0"));
-		output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
-	  output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
-  } else
-  {
-		output.vSplits->emplace_back(VSplit(0.0f, L"1"));
-		output.vSplits->emplace_back(VSplit(1.0f, L"0"));
-		output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
-	}
-
 	SourceInput in(output.rate, input.bpm);
 	LfoDSP dsp(&model, &in);
 	float samples = input.spec? output.rate: output.rate / output.freq;
-	output.hSplits->emplace_back(HSplit(0, L"0"));
-	output.hSplits->emplace_back(HSplit(samples, L""));
-	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
 	for (int i = 0; i < static_cast<int>(samples); i++)
   {
     dsp.Next();
 		output.samples->push_back(dsp.Value());
   }
+
+	output.hSplits->emplace_back(HSplit(0, L"0"));
+	output.hSplits->emplace_back(HSplit(samples, L""));
+	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
+	if (model.bi)
+	{
+		output.vSplits->emplace_back(VSplit(0.0f, L"0"));
+		output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
+		output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
+	}
+	else
+	{
+		output.vSplits->emplace_back(VSplit(0.0f, L"1"));
+		output.vSplits->emplace_back(VSplit(1.0f, L"0"));
+		output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
+	}
 }
 
 float
