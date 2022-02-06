@@ -9,7 +9,11 @@ namespace Xt.Synth0.UI
 {
 	public static class PlotUI
 	{
+		const int PadText = 5;
+		const int PadLeft = 20;
+		const int PadBottom = 20;
 		const double MaxLevel = 0.99;
+
 		static readonly UIElement Off;
 		static readonly RequestPlotDataEventArgs Args = new();
 		public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
@@ -58,6 +62,7 @@ namespace Xt.Synth0.UI
 
 		static PointCollection PlotData(int w, double h, float min, float max)
 		{
+			double hPad = h - PadBottom;
 			var result = new PointCollection();
 			for (int i = 0; i < Args.Samples.Count; i++)
 			{
@@ -67,9 +72,10 @@ namespace Xt.Synth0.UI
 				var x1 = (int)Math.Ceiling(xSample);
 				var y0 = (1.0 - weight) * Args.Samples[(int)xSample];
 				var y1 = weight * Args.Samples[x1];
-				var y = (1.0f - MaxLevel) * h + (1.0 - (y0 + y1)) * MaxLevel * h;
+				var y = (1.0f - MaxLevel) * hPad + (1.0 - (y0 + y1)) * MaxLevel * hPad;
 				var screenPos = i / (Args.Samples.Count - 1.0);
-				result.Add(new Point(screenPos * w, y / (max - min)));
+				var l = PadLeft + screenPos * (w - PadLeft);
+				result.Add(new Point(l, PadText + y / (max - min)));
 			}
 			return result;
 		}
@@ -78,18 +84,6 @@ namespace Xt.Synth0.UI
 		{
 			shape.Opacity = 0.67;
 			shape.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);
-		}
-
-		static UIElement PlotBar(Point p, double w, double h)
-		{
-			var result = new Line();
-			result.Y1 = h;
-			result.Y2 = p.Y;
-			result.X1 = p.X;
-			result.X2 = p.X;
-			result.StrokeThickness = w;
-			PlotProperties(result);
-			return result;
 		}
 
 		static UIElement PlotLine(PointCollection data)
@@ -106,6 +100,18 @@ namespace Xt.Synth0.UI
 			var result = Create.Text(text);
 			Canvas.SetLeft(result, x);
 			Canvas.SetTop(result, y);
+			return result;
+		}
+
+		static UIElement PlotBar(Point p, double h, double stroke)
+		{
+			var result = new Line();
+			result.X1 = p.X;
+			result.X2 = p.X;
+			result.Y2 = p.Y;
+			result.Y1 = h - PadBottom;
+			result.StrokeThickness = stroke;
+			PlotProperties(result);
 			return result;
 		}
 
@@ -140,22 +146,24 @@ namespace Xt.Synth0.UI
 		static UIElement Plot(int w, double h, float min, float max)
 		{
 			var result = new Canvas();
+			double hPad = h - PadBottom;
 			var data = PlotData(w, h, min, max);
 			if (!Args.Spectrum)
 				result.Add(PlotLine(data));
 			else
 				for (int i = 0; i < data.Count; i++)
-					result.Add(PlotBar(data[i], (float)w / data.Count, h));
+					result.Add(PlotBar(data[i], h, (double)w / data.Count));
 			for (int i = 0; i < Args.VSplitVals.Count; i++)
 			{
 				double pos = (Args.VSplitVals[i] - min) / (max - min);
-				result.Add(Split(0, w, pos * h, pos * h));
+				result.Add(Split(PadLeft, w, pos * hPad, pos * hPad));
 				result.Add(Marker(0, pos * h, Args.VSplitMarkers[i]));
 			}
 			for (int i = 0; i < Args.HSplitVals.Count; i++)
 			{
 				double pos = Args.HSplitVals[i] / (Args.Samples.Count - 1.0);
-				result.Add(Split(pos * w, pos * w, 0, h));
+				double l = PadLeft + pos * (w - PadLeft);
+				result.Add(Split(l, l, 0, h - PadBottom));
 				result.Add(Marker(pos * w, h, Args.HSplitMarkers[i]));
 			}
 			result.VerticalAlignment = VerticalAlignment.Stretch;
