@@ -29,14 +29,6 @@ GenerateBlepSaw(float phase, float inc)
 }
 
 float
-UnitDSP::PwPhase() const
-{
-	float phase = static_cast<float>(_phase);
-	float result = phase + 0.5f - Level(_model->pw) * MaxPw * 0.5f;
-	return result - (int)result;
-}
-
-float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
@@ -45,6 +37,22 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 	int noteNum = unit + key - base;
 	int cent = Mix0100Inclusive(model.dtn);
 	return Xts::Freq(noteNum + cent / 100.0f);
+}
+
+float
+UnitDSP::PwPhase() const
+{
+	float phase = static_cast<float>(_phase);
+	float result = phase + 0.5f - Level(_model->pw) * MaxPw * 0.5f;
+	return result - (int)result;
+}
+
+AudioOutput
+UnitDSP::Value() const
+{
+	if (_model->type == UnitType::Blep && _model->waveType == WaveType::Tri)
+		return _value;
+	return _value;
 }
 
 void

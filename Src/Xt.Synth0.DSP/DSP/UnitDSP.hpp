@@ -25,8 +25,8 @@ private:
   static float Freq(UnitModel const& model, KeyInput const& input);
   float GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const;
 public:
+  AudioOutput Value() const;
   void Next(SourceDSP const& source);
-  AudioOutput Value() const { return _value; }
   static void Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
 };
 static_assert(AudioSourceDSP<UnitDSP, UnitModel>);

@@ -95,6 +95,8 @@ public:
   float Mono() const { return l + r; } 
   AudioOutput operator*(float f) const
   { return AudioOutput(l * f, r * f); }
+  AudioOutput operator/(float f) const
+  { return AudioOutput(l / f, r / f); }
   AudioOutput& operator+=(AudioOutput const& rhs) 
   { l += rhs.l; r += rhs.r; return *this; }
 };
