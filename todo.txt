@@ -27,4 +27,5 @@ niet zomaar het model eroverheen kopieren zonder de state te updaten
 store enums as names (param value tostored)
 polyblep triangle
 fix waveforms start at 0
-remove additive basic waveforms
+remove additive basic waveforms and remove cos
+remove naive
