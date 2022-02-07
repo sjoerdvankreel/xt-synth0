@@ -34,8 +34,10 @@ inline float Mix02Inclusive(int val)
 
 inline int Exp(int val)
 { return 1 << val; }
-inline float Level(int val)
+inline float LevelInc(int val)
 { return static_cast<float>(val / 255.0f); }
+inline float LevelExc(int val)
+{ return static_cast<float>(val / 256.0f); }
 inline float TimeF(int val, float rate)
 { return static_cast<float>(val * val * rate / 1000.0f); }
 inline int TimeI(int val, float rate)

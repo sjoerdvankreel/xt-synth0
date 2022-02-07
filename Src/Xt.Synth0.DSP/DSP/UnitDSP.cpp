@@ -42,7 +42,7 @@ float
 UnitDSP::PwPhase() const
 {
 	float phase = static_cast<float>(_phase);
-	float result = phase + 0.5f - Level(_model->pw) * 0.5f;
+	float result = phase + 0.5f - LevelExc(_model->pw) * 0.5f;
 	return result - (int)result;
 }
 
@@ -50,7 +50,7 @@ AudioOutput
 UnitDSP::Value() const
 {
 	if (_model->type == UnitType::Blep && _model->waveType == WaveType::Tri)
-		return _value / (1.0f - Level(_model->pw));
+		return _value / (1.0f - LevelExc(_model->pw));
 	return _value;
 }
 
@@ -61,7 +61,7 @@ UnitDSP::Next(SourceDSP const& source)
 	if (!_model->on) return;
 	float freq = Freq(*_model, _input->key);
 	_last = Generate(freq);
-	float amp = Level(_model->amp);
+	float amp = LevelInc(_model->amp);
 	float pan = Mix01Inclusive(_model->pan);
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
