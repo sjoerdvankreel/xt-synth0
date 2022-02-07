@@ -51,7 +51,7 @@ AudioOutput
 UnitDSP::Value() const
 {
 	if (_model->type == UnitType::Blep && _model->waveType == WaveType::Tri)
-		return _value;
+		return _value / (1.0f - Level(_model->pw));
 	return _value;
 }
 
