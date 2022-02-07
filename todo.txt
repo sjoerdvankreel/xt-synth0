@@ -26,3 +26,4 @@ autoselect plotsource
 niet zomaar het model eroverheen kopieren zonder de state te updaten
 store enums as names (param value tostored)
 polyblep triangle
+fix waveforms start at 0

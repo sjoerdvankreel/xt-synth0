@@ -7,12 +7,22 @@
 
 namespace Xts {
 
+// http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float 
-PolyBlep(float p, float d)
+GenerateBlep(float p, float d)
 {
 	if (p < d) return p /= d, p + p - p * p - 1.0f;
 	else if (p > 1.0f - d) return p = (p - 1.0f) / d, p * p + p + p + 1.0f;
 	else return 0.0f;
+}
+
+static float
+GenerateBlepSaw(float phase, float inc)
+{
+	phase += 0.5;
+	if (phase >= 1.0f) phase -= 1.0f;
+	float saw = 2.0f * phase - 1.0f;
+	return saw - GenerateBlep(phase, inc);
 }
 
 float
@@ -78,50 +88,14 @@ UnitDSP::GenerateNaive(WaveType type, float phase) const
 	return (saw - GenerateNaive(WaveType::Saw, PwPhase())) / 2.0f;
 }
 
-float poly_blep(float t, float dt)
-{
-	// 0 <= t < 1
-	if (t < dt)
-	{
-		t /= dt;
-		// 2 * (t - t^2/2 - 0.5)
-		return t + t - t * t - 1.;
-	}
-
-	// -1 < t < 0
-	else if (t > 1. - dt)
-	{
-		t = (t - 1.) / dt;
-		// 2 * (t^2/2 + t + 0.5)
-		return t * t + t + t + 1.;
-	}
-
-	// 0 otherwise
-	else
-	{
-		return 0.;
-	}
-}
-
-double poly_saw(double t, double dt)
-{
-	// Correct phase, so it would be in line with sin(2.*M_PI * t)
-	t += 0.5;
-	if (t >= 1.) t -= 1.;
-
-	double naive_saw = 2. * t - 1.;
-	return naive_saw - poly_blep(t, dt);
-}
-
-
 float
 UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 {
-	float d = freq / _input->source.rate;
+	float inc = freq / _input->source.rate;
 	switch (type)
 	{
 	case WaveType::Pulse: break;
-	case WaveType::Saw: return poly_saw(phase, d);
+	case WaveType::Saw: return GenerateBlepSaw(phase, inc);
 	default: assert(false); return 0.0f;
 	}
 	float saw = GenerateBlep(WaveType::Saw, freq, phase);
@@ -142,8 +116,8 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	AudioInput audio(sourceInput, key);
 	UnitDSP dsp(&model, &audio);
   SourceDSP sourceDsp(&source, &sourceInput);
-	float samples = input.spec? input.rate: output.rate / output.freq;
-	for (int i = 0; i < static_cast<int>(samples); i++)
+	int samples = static_cast<int>(input.spec? input.rate: output.rate / output.freq);
+	for (int i = 0; i < samples; i++)
   {
 		sourceDsp.Next();
     dsp.Next(sourceDsp);
