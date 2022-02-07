@@ -8,9 +8,12 @@ namespace Xts {
 void
 SeqDSP::ApplyActive()
 {
+  // TODO cant copy over running voices, screws up internal state
+  /*
   for (int k = 0; k < MaxKeys; k++)
     if (_active[k] != -1)
       _synths[_active[k]] = *_synth;
+  */
 }
 
 void
