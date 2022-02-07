@@ -8,6 +8,7 @@
 namespace Xts {
 
 static float const MaxPw = 0.95f;
+static const float BlepLeaky = 1.0e-4f;
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float 
@@ -57,7 +58,7 @@ UnitDSP::Next(SourceDSP const& source)
 	float pan = Mix01Inclusive(_model->pan);
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
-	assert(-1.0f <= _last && _last <= 1.0f);
+	//assert(-1.0f <= _last && _last <= 1.0f);
 	_value = AudioOutput(_last * amp * (1.0f - pan), _last * amp * pan);
 }
 
@@ -104,7 +105,7 @@ UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 	float saw = GenerateBlep(WaveType::Saw, freq, phase);
 	float pulse = (saw - GenerateBlep(WaveType::Saw, freq, PwPhase())) / 2.0f;
   if(type == WaveType::Pulse) return pulse;
-  return _last + pulse * inc * 4.0f;
+	return (1.0f - BlepLeaky) * _last + inc * pulse * 4.0f;
 }
 
 void
