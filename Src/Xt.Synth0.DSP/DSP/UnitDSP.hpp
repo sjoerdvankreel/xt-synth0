@@ -10,12 +10,12 @@ namespace Xts {
 class UnitDSP: 
 public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
-  float _last;
+  double _last;
   double _phase;
 public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
-  DSPBase(model, input), _last(0.0f), _phase(0.0) {}
+  DSPBase(model, input), _last(0.0), _phase(0.0) {}
 private:
   float PwPhase() const;
   float Generate(float freq) const;
