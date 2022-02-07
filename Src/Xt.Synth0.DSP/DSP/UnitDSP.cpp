@@ -7,6 +7,8 @@
 
 namespace Xts {
 
+static float const MaxPw = 0.95;
+
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float 
 GenerateBlep(float p, float d)
@@ -29,7 +31,7 @@ float
 UnitDSP::PwPhase() const
 {
 	float phase = static_cast<float>(_phase);
-	float result = phase + Mix01Exclusive(_model->pw);
+	float result = phase + 0.5f - Level(_model->pw) * MaxPw * 0.5f;
 	return result - (int)result;
 }
 
