@@ -113,7 +113,7 @@ UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 	float saw = GenerateBlep(WaveType::Saw, freq, phase);
 	float pulse = (saw - GenerateBlep(WaveType::Saw, freq, PwPhase())) / 2.0f;
   if(type == WaveType::Pulse) return pulse;
-	return (1.0f - BlepLeaky) * _last + inc * pulse * 4.0f;
+	return (1.0f - BlepLeaky) * _last + inc * pulse;
 }
 
 void
