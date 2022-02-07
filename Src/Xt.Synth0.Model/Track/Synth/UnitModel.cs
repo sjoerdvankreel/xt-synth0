@@ -79,12 +79,12 @@ namespace Xt.Synth0.Model
 		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdd,
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => CustomAddTypes.Contains(t)));
 		static readonly IRelevance RelevancePw = Relevance.Any(
-			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
-			Relevance.When((UnitModel m) => m.WaveType, (WaveType t) => t == Synth0.Model.WaveType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive),
 			Relevance.When((UnitModel m) => m.WaveType, (WaveType t) => t == Synth0.Model.WaveType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add),
-			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Synth0.Model.AddType.Pulse)));
+			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Synth0.Model.AddType.Pulse)),
+			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
+			Relevance.When((UnitModel m) => m.WaveType, (WaveType t) => t == Synth0.Model.WaveType.Pulse || t == Synth0.Model.WaveType.Tri)));
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), nameof(Dtn), "Detune");
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), nameof(Pan), "Panning");
