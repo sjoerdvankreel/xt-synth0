@@ -30,3 +30,4 @@ fix waveforms start at 0
 remove additive basic waveforms and remove cos
 remove naive
 wavetype->wave
+blep sine shaper
