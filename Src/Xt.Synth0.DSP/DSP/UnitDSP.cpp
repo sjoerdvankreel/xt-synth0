@@ -10,21 +10,22 @@ namespace Xts {
 static const float BlepLeaky = 1.0e-4f;
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
-static float 
-GenerateBlep(float p, float d)
-{
-	if (p < d) return p /= d, p + p - p * p - 1.0f;
-	else if (p > 1.0f - d) return p = (p - 1.0f) / d, p * p + p + p + 1.0f;
-	else return 0.0f;
-}
-
 static float
 GenerateBlepSaw(float phase, float inc)
 {
-	phase += 0.5;
 	if (phase >= 1.0f) phase -= 1.0f;
 	float saw = 2.0f * phase - 1.0f;
-	return saw - GenerateBlep(phase, inc);
+	if(phase < inc) 
+  {
+    float blep = phase / inc;
+    return saw - ((2.0f - blep) * blep - 1.0f);
+  }
+  if(phase >= 1.0f - inc)
+  {
+    float blep = (phase - 1.0f) / inc;
+    return saw - ((blep + 2.0f) * blep + 1.0f);
+  }
+  return saw;
 }
 
 float
@@ -50,7 +51,7 @@ AudioOutput
 UnitDSP::Value() const
 {
 	if (_model->type == UnitType::Blep && _model->waveType == WaveType::Tri)
-		return _value / (1.0f - LevelExc(_model->pw));
+		return _value;// / (1.0f - LevelExc(_model->pw));
 	return _value;
 }
 
@@ -103,17 +104,12 @@ float
 UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 {
 	float inc = freq / _input->source.rate;
-	switch (type)
-	{
-	case WaveType::Tri: break;
-	case WaveType::Pulse: break;
-	case WaveType::Saw: return GenerateBlepSaw(phase, inc);
-	default: assert(false); return 0.0f;
-	}
-	float saw = GenerateBlep(WaveType::Saw, freq, phase);
-	float pulse = (saw - GenerateBlep(WaveType::Saw, freq, PwPhase())) / 2.0f;
-  if(type == WaveType::Pulse) return pulse;
-	return (1.0f - BlepLeaky) * static_cast<float>(_last) + inc * pulse;
+	float saw = GenerateBlepSaw(phase + 0.5f, inc);
+  if(type == WaveType::Saw) return saw;
+  return 0.0f;
+	//float pulse = (saw - GenerateBlep(WaveType::Saw, freq, PwPhase())) / 2.0f;
+  //if(type == WaveType::Pulse) return pulse;
+	//return (1.0f - BlepLeaky) * static_cast<float>(_last) + inc * pulse;
 }
 
 void
