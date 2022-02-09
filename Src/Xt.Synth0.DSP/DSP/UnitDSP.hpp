@@ -12,7 +12,7 @@ class UnitDSP:
 public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
   double _phase, _blepTri;
-  float _amt1, _amt2, _amp, _pan;
+  float _amt1, _amt2, _amp, _pan, _roll;
 public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
@@ -21,13 +21,14 @@ public:
   _amt1(LevelInc(_model->amt1)), 
   _amt2(LevelInc(_model->amt2)), 
   _amp(LevelInc(_model->amp)), 
-  _pan(Mix01Inclusive(_model->pan)) {}
+  _pan(Mix01Inclusive(_model->pan)),
+  _roll(Mix01Inclusive(_model->addRoll)) {}
 private:
   float PwPhase() const;
-  float Generate(float freq);
   float GenerateBlep(float freq);
-  float GenerateAdd(float freq) const;
+  float Generate(float freq, float mod1, float mod2);
   float Mod(SourceDSP const& source, ModSource mod) const;
+  float GenerateAdd(float freq, float mod1, float mod2) const;
   float Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) const;
   static float Freq(UnitModel const& model, KeyInput const& input);
 public:

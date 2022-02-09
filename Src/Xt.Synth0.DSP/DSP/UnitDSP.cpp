@@ -37,12 +37,12 @@ GenerateBlepSaw(float phase, float inc)
 }
 
 float
-UnitDSP::Generate(float freq)
+UnitDSP::Generate(float freq, float mod1, float mod2)
 {
 	switch (_model->type)
 	{
-	case UnitType::Add: return GenerateAdd(freq);
 	case UnitType::Blep: return GenerateBlep(freq);
+	case UnitType::Add: return GenerateAdd(freq, mod1, mod2);
 	default: assert(false); return 0.0f;
 	}
 }
@@ -90,7 +90,7 @@ UnitDSP::Next(SourceDSP const& source)
 	float mod1 = Mod(source, _model->src1);
 	float mod2 = Mod(source, _model->src2);
 	float freq = Freq(*_model, _input->key);
-	float sample = Generate(freq);
+	float sample = Generate(freq, mod1, mod2);
 	float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2, true);
 	float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2, false);
 	_phase += freq / _input->source.rate;
@@ -139,7 +139,7 @@ UnitDSP::GenerateBlep(float freq)
 }
 
 float 
-UnitDSP::GenerateAdd(float freq) const
+UnitDSP::GenerateAdd(float freq, float mod1, float mod2) const
 {
   bool any = false;
 	float limit = 0.0;
@@ -149,7 +149,7 @@ UnitDSP::GenerateAdd(float freq) const
 	int parts = _model->addParts;
   bool addSub = _model->addSub;
 	auto phase = static_cast<float>(_phase);
-	float logRoll = Mix02Inclusive(_model->addRoll);
+	float logRoll = Modulate(ModTarget::Roll, _roll, mod1, mod2, true) * 2.0f;
 
   __m256 ones = _mm256_set1_ps(1.0f);
 	__m256 zeros = _mm256_set1_ps(0.0f);
