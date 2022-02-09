@@ -22,7 +22,7 @@ namespace Xt.Synth0.Model
 		public Param Rate { get; } = new(RateInfo);
 		public Param Step { get; } = new(StepInfo);
 
-		public int Columns => 3;
+		public int Columns => 2;
 		public int Index { get; }
 		public Param Enabled => On;
 		public string Name => $"LFO {Index + 1}";
