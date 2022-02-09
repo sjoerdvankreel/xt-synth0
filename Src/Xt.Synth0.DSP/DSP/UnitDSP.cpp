@@ -59,7 +59,7 @@ float
 UnitDSP::PwPhase(float mod1, float mod2) const
 {
 	float phase = static_cast<float>(_phase);
-  float modpw = Modulate(ModTarget::Pw, _pw, mod1, mod2, true);
+  float modpw = Modulate(ModTarget::Pw, _pw, mod1, mod2, false);
 	float result = phase + 0.5f - modpw * 0.5f;
 	return result - (int)result;
 }
