@@ -40,6 +40,25 @@ UnitDSP::Generate(float freq)
 	}
 }
 
+float 
+UnitDSP::Amp(float mod1, float mod2) const
+{
+  float result = _amp;
+  if(_model->tgt1 == ModTarget::Amp) 
+    result = (1.0f - _amt1) * result + _amt1 * result * mod1;
+  if(_model->tgt2 == ModTarget::Amp) 
+    result = (1.0f - _amt2) * result + _amt2 * result * mod2;
+  return result;
+}
+
+float
+UnitDSP::PwPhase() const
+{
+	float phase = static_cast<float>(_phase);
+	float result = phase + 0.5f - LevelExc(_model->pw) * MaxPw * 0.5f;
+	return result - (int)result;
+}
+
 float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
@@ -52,11 +71,19 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 }
 
 float
-UnitDSP::PwPhase() const
+UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
 {
-	float phase = static_cast<float>(_phase);
-	float result = phase + 0.5f - LevelExc(_model->pw) * MaxPw * 0.5f;
-	return result - (int)result;
+  int env = static_cast<int>(ModSource::Env1);
+  int lfo = static_cast<int>(ModSource::LFO1);
+  switch(mod)
+  {
+  case ModSource::Off: return 1.0f;
+	case ModSource::LFO1: case ModSource::LFO2:
+	return source.Lfos()[static_cast<int>(mod) - lfo].Value();
+	case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
+  return source.Envs()[static_cast<int>(mod) - env].Value();
+  default: assert(false); return 0.0f;
+  }
 }
 
 void
@@ -64,9 +91,11 @@ UnitDSP::Next(SourceDSP const& source)
 {
   _value = AudioOutput();
 	if (!_model->on) return;
+	float mod1 = Mod(source, _model->src1);
+	float mod2 = Mod(source, _model->src2);
 	float freq = Freq(*_model, _input->key);
 	float sample = Generate(freq);
-	float amp = LevelInc(_model->amp);
+	float amp = Amp(mod1, mod2);
 	float pan = Mix01Inclusive(_model->pan);
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
