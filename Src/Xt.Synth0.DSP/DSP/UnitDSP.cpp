@@ -50,9 +50,12 @@ UnitDSP::PwPhase() const
 AudioOutput
 UnitDSP::Value() const
 {
-	if (_model->type == UnitType::Blep && _model->waveType == WaveType::Tri)
-		return _value;// * 4.0f - 2.0f;
-	return _value;
+	if (_model->type != UnitType::Blep) return _value;
+	if (_model->waveType != WaveType::Tri) return _value;
+	auto result = (_value * (1.0f + LevelExc(_model->pw))) * 4.0f - 2.0f;
+  assert(-1.0f <= result.l && result.l <= 1.0f);
+	assert(-1.0f <= result.r && result.r <= 1.0f);
+	return result;
 }
 
 void
