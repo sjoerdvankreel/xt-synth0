@@ -66,29 +66,28 @@ UnitDSP::Next(SourceDSP const& source)
 float
 UnitDSP::Generate(float freq)
 {
-	auto wave = _model->waveType;
-	auto phase = static_cast<float>(_phase);
 	switch (_model->type)
 	{
-	case UnitType::Sin: return BasicSin(phase);
 	case UnitType::Add: return GenerateAdd(freq);
-	case UnitType::Blep: return GenerateBlep(wave, freq, phase);
+	case UnitType::Blep: return GenerateBlep(freq);
+	case UnitType::Sin: return std::sinf(static_cast<float>(_phase));
 	default: assert(false); return 0.0f;
 	}
 }
 
 float
-UnitDSP::GenerateBlep(WaveType type, float freq, float phase)
+UnitDSP::GenerateBlep(float freq)
 {
+	auto phase = static_cast<float>(_phase);
 	float inc = freq / _input->source.rate;
-	if(type == WaveType::Saw)
+	if(_model->blepType == BlepType::Saw)
 		return GenerateBlepSaw(phase + 0.5f, inc);
-  if(type == WaveType::Pulse)
+  if(_model->blepType == BlepType::Pulse)
   {
     float saw = GenerateBlepSaw(phase, inc);
     return (saw - GenerateBlepSaw(PwPhase(), inc)) * 0.5f;
   }
-  if(type != WaveType::Tri) 
+  if(_model->blepType != BlepType::Tri)
     return assert(false), 0.0f;
 	float saw = GenerateBlepSaw(phase + 0.25f, inc);
 	float pulse = (saw - GenerateBlepSaw(PwPhase() + 0.25f, inc)) * 0.5f;
