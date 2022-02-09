@@ -7,7 +7,7 @@
 
 namespace Xts {
 
-static const float BlepLeaky = 1.0e-4f;
+static const double BlepLeaky = 1.0e-4;
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float
@@ -29,6 +29,14 @@ GenerateBlepSaw(float phase, float inc)
 }
 
 float
+UnitDSP::PwPhase() const
+{
+	float phase = static_cast<float>(_phase);
+	float result = phase + 0.5f - LevelExc(_model->pw) * 0.5f;
+	return result - (int)result;
+}
+
+float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
@@ -39,45 +47,25 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 	return Xts::Freq(noteNum + cent / 100.0f);
 }
 
-float
-UnitDSP::PwPhase() const
-{
-	float phase = static_cast<float>(_phase);
-	float result = phase + 0.5f - LevelExc(_model->pw) * 0.5f;
-	return result - (int)result;
-}
-
-AudioOutput
-UnitDSP::Value() const
-{
-	if (_model->type != UnitType::Blep) return _value;
-	if (_model->waveType != WaveType::Tri) return _value;
-	auto result = (_value * (1.0f + LevelExc(_model->pw))) * 4.0f - 2.0f;
-  assert(-1.0f <= result.l && result.l <= 1.0f);
-	assert(-1.0f <= result.r && result.r <= 1.0f);
-	return result;
-}
-
 void
 UnitDSP::Next(SourceDSP const& source)
 {
   _value = AudioOutput();
 	if (!_model->on) return;
 	float freq = Freq(*_model, _input->key);
-	_last = Generate(freq);
+	float sample = Generate(freq);
 	float amp = LevelInc(_model->amp);
 	float pan = Mix01Inclusive(_model->pan);
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
-	assert(-1.0 <= _last && _last <= 1.0); 
-  float last = static_cast<float>(_last);
-	_value = AudioOutput(last * amp * (1.0f - pan), last * amp * pan);
+	assert(-1.0 <= sample && sample <= 1.0);
+	_value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
 }
 
 float
-UnitDSP::Generate(float freq) const
+UnitDSP::Generate(float freq)
 {
-  auto wave = _model->waveType;
+	auto wave = _model->waveType;
 	auto phase = static_cast<float>(_phase);
 	switch (_model->type)
 	{
@@ -104,7 +92,7 @@ UnitDSP::GenerateNaive(WaveType type, float phase) const
 }
 
 float
-UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
+UnitDSP::GenerateBlep(WaveType type, float freq, float phase)
 {
 	float inc = freq / _input->source.rate;
 	if(type == WaveType::Saw)
@@ -118,38 +106,8 @@ UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
     return assert(false), 0.0f;
 	float saw = GenerateBlepSaw(phase + 0.25f, inc);
 	float pulse = (saw - GenerateBlepSaw(PwPhase() + 0.25f, inc)) * 0.5f;
-	return (1.0f - BlepLeaky) * static_cast<float>(_last) + inc * pulse;
-}
-
-void
-UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
-{
-	if (!model.on) return;
-	KeyInput key(4, UnitNote::C);
-	output.max = 1.0f;
-	output.min = -1.0f;
-	output.freq = Freq(model, key);
-	output.rate = input.spec? input.rate: output.freq * input.pixels;
-
-	SourceInput sourceInput(output.rate, input.bpm);
-	AudioInput audio(sourceInput, key);
-	UnitDSP dsp(&model, &audio);
-  SourceDSP sourceDsp(&source, &sourceInput);
-  float fsamples = input.spec ? input.rate : output.rate / output.freq + 1.0f;
-	int samples = static_cast<int>(std::ceilf(fsamples));
-	for (int i = 0; i < samples; i++)
-  {
-		sourceDsp.Next();
-    dsp.Next(sourceDsp);
-		output.samples->push_back(dsp.Value().Mono());
-  }
-
-	output.vSplits->emplace_back(VSplit(0.0f, L"0"));
-	output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
-	output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
-	output.hSplits->emplace_back(HSplit(0, L"0"));
-	output.hSplits->emplace_back(HSplit(samples, L""));
-	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
+	_blepTri = (1.0 - BlepLeaky) * _blepTri + inc * pulse;
+  return static_cast<float>((_blepTri * (1.0f + LevelExc(_model->pw))) * 4.0f - 2.0f);
 }
 
 float
@@ -226,6 +184,37 @@ UnitDSP::GenerateAdd(float freq, float phase, int parts, int step, float logRoll
 	result /= limit;
 	assert(-1.0f <= result && result <= 1.0f);
   return result;
+}
+
+void
+UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
+{
+	if (!model.on) return;
+	KeyInput key(4, UnitNote::C);
+	output.max = 1.0f;
+	output.min = -1.0f;
+	output.freq = Freq(model, key);
+	output.rate = input.spec? input.rate: output.freq * input.pixels;
+
+	SourceInput sourceInput(output.rate, input.bpm);
+	AudioInput audio(sourceInput, key);
+	UnitDSP dsp(&model, &audio);
+  SourceDSP sourceDsp(&source, &sourceInput);
+  float fsamples = input.spec ? input.rate : output.rate / output.freq + 1.0f;
+	int samples = static_cast<int>(std::ceilf(fsamples));
+	for (int i = 0; i < samples; i++)
+  {
+		sourceDsp.Next();
+    dsp.Next(sourceDsp);
+		output.samples->push_back(dsp.Value().Mono());
+  }
+
+	output.vSplits->emplace_back(VSplit(0.0f, L"0"));
+	output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
+	output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
+	output.hSplits->emplace_back(HSplit(0, L"0"));
+	output.hSplits->emplace_back(HSplit(samples, L""));
+	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
 }
 
 } // namespace Xts
