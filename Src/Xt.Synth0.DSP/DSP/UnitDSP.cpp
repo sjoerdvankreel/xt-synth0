@@ -107,7 +107,7 @@ UnitDSP::GenerateBlep(WaveType type, float freq, float phase)
 	float saw = GenerateBlepSaw(phase + 0.25f, inc);
 	float pulse = (saw - GenerateBlepSaw(PwPhase() + 0.25f, inc)) * 0.5f;
 	_blepTri = (1.0 - BlepLeaky) * _blepTri + inc * pulse;
-  return static_cast<float>((_blepTri * (1.0f + LevelExc(_model->pw))) * 4.0f - 2.0f);
+	return static_cast<float>(_blepTri) * (1.0f + LevelExc(_model->pw)) * 4.0f;
 }
 
 float
