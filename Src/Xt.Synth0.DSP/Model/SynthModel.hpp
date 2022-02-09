@@ -93,9 +93,11 @@ private:
   UnitNote note;
   XtsBool addSub;
   BlepType blepType;
+  int32_t amt1, amt2;
+  ModSource src1, src2;
+  ModTarget tgt1, tgt2;
   int32_t amp, pan, oct, dtn, pw;
-  int32_t addParts, addStep, addRoll;
-  int32_t src1, tgt1, amt1, src2, tgt2, amt2, pad__;
+  int32_t addParts, addStep, addRoll, pad__;
 };
 XTS_CHECK_SIZE(UnitModel, 80);
 

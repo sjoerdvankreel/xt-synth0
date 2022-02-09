@@ -17,9 +17,9 @@ namespace Xt.Synth0.Model
 		{
 			internal const int Size = 80;
 			internal int on, type, note, addSub, blepType;
+			internal int amt1, amt2, src1, src2, tgt1, tgt2;
 			internal int amp, pan, oct, dtn, pw;
-			internal int addParts, addStep, addRoll;
-			internal int src1, tgt1, amt1, src2, tgt2, amt2, pad__;
+			internal int addParts, addStep, addRoll, pad__;
 		}
 
 		public Param On { get; } = new(OnInfo);
