@@ -194,6 +194,7 @@ UnitDSP::GenerateAdd(float freq) const
 void
 UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
 {
+  const float cycles = 3.0f;
 	if (!model.on) return;
 	KeyInput key(4, UnitNote::C);
 	output.max = 1.0f;
@@ -205,7 +206,8 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	AudioInput audio(sourceInput, key);
 	UnitDSP dsp(&model, &audio);
   SourceDSP sourceDsp(&source, &sourceInput);
-  float fsamples = input.spec ? input.rate : output.rate / output.freq + 1.0f;
+  float regular = (output.rate * cycles / output.freq) + 1.0f;
+  float fsamples = input.spec ? input.rate : regular;
 	int samples = static_cast<int>(std::ceilf(fsamples));
 	for (int i = 0; i < samples; i++)
   {
@@ -217,9 +219,9 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	output.vSplits->emplace_back(VSplit(0.0f, L"0"));
 	output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
 	output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
-	output.hSplits->emplace_back(HSplit(0, L"0"));
 	output.hSplits->emplace_back(HSplit(samples, L""));
-	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
+  for(int i = 0; i < 6; i++)
+	  output.hSplits->emplace_back(HSplit(samples * i / 6, std::to_wstring(i) + L"\u03C0"));
 }
 
 } // namespace Xts
