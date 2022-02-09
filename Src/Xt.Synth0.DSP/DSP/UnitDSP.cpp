@@ -10,6 +10,14 @@ namespace Xts {
 static const float MaxPw = 0.975f;
 static const double BlepLeaky = 1.0e-4;
 
+static inline float
+ModulateUnipolar(float val, float mod, float amt)
+{	return (1.0f - amt) * val + amt * val * mod; }
+
+static inline float
+ModulateBipolar(float val, float mod, float amt)
+{ return val + (0.5f - std::fabs(val - 0.5f)) * amt * (mod * 2.0f - 1.0f); }
+
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float
 GenerateBlepSaw(float phase, float inc)
@@ -41,14 +49,6 @@ UnitDSP::Generate(float freq)
 }
 
 float
-UnitDSP::PwPhase() const
-{
-	float phase = static_cast<float>(_phase);
-	float result = phase + 0.5f - LevelExc(_model->pw) * MaxPw * 0.5f;
-	return result - (int)result;
-}
-
-float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
@@ -57,6 +57,14 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 	int noteNum = unit + key - base;
 	int cent = Mix0100Inclusive(model.dtn);
 	return Xts::Freq(noteNum + cent / 100.0f);
+}
+
+float
+UnitDSP::PwPhase() const
+{
+	float phase = static_cast<float>(_phase);
+	float result = phase + 0.5f - LevelExc(_model->pw) * MaxPw * 0.5f;
+	return result - (int)result;
 }
 
 float
@@ -97,11 +105,14 @@ UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) co
 {
 	float result = val;
 	assert(0.0f <= val && val <= 1.0f);
-  float range = 0.5f - std::fabs(val - 0.5f);
-	if (_model->tgt1 == tgt && bip)	result = result + range * _amt1 * (mod1 * 2.0f - 1.0f);
-	if (_model->tgt2 == tgt && bip)	result = result + range * _amt2 * (mod2 * 2.0f - 1.0f);
-	if (_model->tgt1 == tgt && !bip) result = (1.0f - _amt1) * result + _amt1 * result * mod1;
-	if (_model->tgt2 == tgt && !bip) result = (1.0f - _amt2) * result + _amt2 * result * mod2;
+  if(bip)
+  {
+		if(_model->tgt1 == tgt) result = ModulateBipolar(result, mod1, _amt1);
+		if(_model->tgt2 == tgt) result = ModulateBipolar(result, mod2, _amt2);
+  } else {
+    if(_model->tgt1 == tgt) result = ModulateUnipolar(result, mod1, _amt1);
+	  if(_model->tgt2 == tgt) result = ModulateUnipolar(result, mod2, _amt2);
+  }
 	assert(0.0f <= result && result <= 1.0f);
 	return result;
 }
