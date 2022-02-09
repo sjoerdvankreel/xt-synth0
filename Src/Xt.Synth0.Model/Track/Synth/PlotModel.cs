@@ -17,8 +17,9 @@ namespace Xt.Synth0.Model
 
 		public int Index => 0;
 		public int Columns => 3;
-		public Param Enabled => null;
 		public string Name => "Plot";
+		public Param Enabled => null;
+		public bool AutoSizeCols => true;
 		public ThemeGroup ThemeGroup => ThemeGroup.Plot;
 		public string Id => "BD224A37-6B8E-4EDA-9E49-DE3DD1AF61CE";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

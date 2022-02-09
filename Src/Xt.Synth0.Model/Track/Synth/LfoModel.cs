@@ -22,9 +22,10 @@ namespace Xt.Synth0.Model
 		public Param Rate { get; } = new(RateInfo);
 		public Param Step { get; } = new(StepInfo);
 
-		public int Columns => 3;
+		public int Columns => 2;
 		public int Index { get; }
 		public Param Enabled => On;
+		public bool AutoSizeCols => false;
 		public string Name => $"LFO {Index + 1}";
 		public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
 		public string Id => "E2E5D904-8652-450B-A293-7CDFF05892BF";

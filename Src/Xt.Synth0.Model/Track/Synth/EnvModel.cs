@@ -41,6 +41,7 @@ namespace Xt.Synth0.Model
 		public int Columns => 3;
 		public int Index { get; }
 		public Param Enabled => On;
+		public bool AutoSizeCols => true;
 		public string Name => $"Env {Index + 1}";
 		public ThemeGroup ThemeGroup => ThemeGroup.Env;
 		public string Id => "A7FF2DD9-62D5-4426-8530-02C60710237D";

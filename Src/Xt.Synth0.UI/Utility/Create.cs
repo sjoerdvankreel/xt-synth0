@@ -6,49 +6,30 @@ namespace Xt.Synth0.UI
 {
 	public static class Create
 	{
-		static RowDefinition Row()
+		internal static Grid Grid(int rows, int cols)
+		=> Grid(rows, cols, GridLength.Auto, GridLength.Auto);
+		internal static GroupBox ThemedGroup(SettingsModel settings, IUIModel model, object content)
+		=> ThemedGroup(settings, model, content, model.Name);
+
+		static RowDefinition Row(GridLength height)
 		{
 			var result = new RowDefinition();
-			result.Height = GridLength.Auto;
+			result.Height = height;
 			return result;
 		}
 
-		static ColumnDefinition Col()
+		static ColumnDefinition Col(GridLength width)
 		{
 			var result = new ColumnDefinition();
-			result.Width = GridLength.Auto;
+			result.Width = width;
 			return result;
 		}
 
-		internal static GroupBox Group(
-			string header, object content)
+		internal static GroupBox Group(string header, object content)
 		{
 			var result = new GroupBox();
 			result.Content = content;
 			result.Header = header;
-			return result;
-		}
-
-		internal static GroupBox ThemedGroup(
-			SettingsModel settings, IUIModel model, object content)
-		=> ThemedGroup(settings, model, content, model.Name);
-
-		internal static GroupBox ThemedGroup(
-			SettingsModel settings, IUIModel model, object content, object header)
-		{
-			var result = Themed<GroupBox>(settings, model.ThemeGroup);
-			result.Content = content;
-			result.Header = header;
-			return result;
-		}
-
-		internal static Grid Grid(int rows, int cols)
-		{
-			var result = new Grid();
-			for (int r = 0; r < rows; r++)
-				result.RowDefinitions.Add(Row());
-			for (int c = 0; c < cols; c++)
-				result.ColumnDefinitions.Add(Col());
 			return result;
 		}
 
@@ -61,16 +42,18 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Label Label(string text)
+		internal static GroupBox ThemedGroup(
+			SettingsModel settings, IUIModel model, object content, object header)
 		{
-			var result = new Label();
-			result.Content = text;
+			var result = Themed<GroupBox>(settings, model.ThemeGroup);
+			result.Content = content;
+			result.Header = header;
 			return result;
 		}
 
-		internal static Label Label(string text, Cell cell)
+		internal static Label Label(string text)
 		{
-			var result = Element<Label>(cell);
+			var result = new Label();
 			result.Content = text;
 			return result;
 		}
@@ -79,6 +62,13 @@ namespace Xt.Synth0.UI
 		{
 			var result = new TextBlock();
 			result.Text = text;
+			return result;
+		}
+
+		internal static Label Label(string text, Cell cell)
+		{
+			var result = Element<Label>(cell);
+			result.Content = text;
 			return result;
 		}
 
@@ -106,6 +96,17 @@ namespace Xt.Synth0.UI
 			result.Text = " ";
 			var binding = Bind.Show(param, min);
 			result.SetBinding(UIElement.VisibilityProperty, binding);
+			return result;
+		}
+
+		internal static Grid Grid(
+			int rows, int cols, GridLength height, GridLength width)
+		{
+			var result = new Grid();
+			for (int r = 0; r < rows; r++)
+				result.RowDefinitions.Add(Row(height));
+			for (int c = 0; c < cols; c++)
+				result.ColumnDefinitions.Add(Col(width));
 			return result;
 		}
 

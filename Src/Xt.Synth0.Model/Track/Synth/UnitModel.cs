@@ -45,6 +45,7 @@ namespace Xt.Synth0.Model
 		public int Columns => 3;
 		public int Index { get; }
 		public Param Enabled => On;
+		public bool AutoSizeCols => true;
 		public string Name => $"Unit {Index + 1}";
 		public ThemeGroup ThemeGroup => ThemeGroup.Unit;
 		public string Id => "3DACD0A4-9688-4FA9-9CA3-B8A0E49A45E5";
