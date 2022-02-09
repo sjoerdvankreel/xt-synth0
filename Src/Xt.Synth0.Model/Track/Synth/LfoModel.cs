@@ -11,13 +11,11 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
 		{
-			internal const int Size = 32;
-			internal int type, on, sync, inv, bi;
-			internal int rate, step, pad__;
+			internal const int Size = 24;
+			internal int type, on, sync, inv, rate, step;
 		};
 
 		public Param On { get; } = new(OnInfo);
-		public Param Bi { get; } = new(BiInfo);
 		public Param Inv { get; } = new(InvInfo);
 		public Param Type { get; } = new(TypeInfo);
 		public Param Sync { get; } = new(SyncInfo);
@@ -35,8 +33,8 @@ namespace Xt.Synth0.Model
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
-			{ Type, 0 }, { Sync, 1 } ,{ Rate, 2 }, { Step, 2 },
-			{ Inv, 3 }, { Bi, 4 }
+			{ Type, 0 }, { Rate, 1 }, { Step, 1 },
+			{ Inv, 2 }, { Sync, 3 }
 		};
 
 		internal LfoModel(int index) => Index = index;
@@ -44,7 +42,6 @@ namespace Xt.Synth0.Model
 		static readonly IRelevance RelevanceTime = Relevance.When((LfoModel m) => m.Sync, (int s) => s == 0);
 
 		static readonly ParamInfo InvInfo = ParamInfo.Toggle(p => &((Native*)p)->inv, nameof(Inv), "Invert", "Invert", false);
-		static readonly ParamInfo BiInfo = ParamInfo.Toggle(p => &((Native*)p)->bi, nameof(Bi), "Bipolar", "Bipolar", false);
 		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
 		static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, nameof(Sync), nameof(Sync), "Sync to beat", false);
