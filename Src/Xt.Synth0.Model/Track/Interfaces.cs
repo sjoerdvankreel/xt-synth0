@@ -25,7 +25,6 @@ namespace Xt.Synth0.Model
 	{
 		int Columns { get; }
 		Param Enabled { get; }
-		bool AutoSizeCols { get; }
 		IDictionary<Param, int> Layout { get; }
 	}
 

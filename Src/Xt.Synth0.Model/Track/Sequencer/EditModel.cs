@@ -24,7 +24,6 @@ namespace Xt.Synth0.Model
 		public int Columns => 2;
 		public Param Enabled => null;
 		public string Name => "Edit";
-		public bool AutoSizeCols => true;
 		public ThemeGroup ThemeGroup => ThemeGroup.Pattern;
 		public string Id => "01ECE266-D442-4FF0-B7BE-341DED3CD55B";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

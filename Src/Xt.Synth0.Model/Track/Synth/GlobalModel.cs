@@ -26,7 +26,6 @@ namespace Xt.Synth0.Model
 		public int Columns => 3;
 		public Param Enabled => null;
 		public string Name => "Global";
-		public bool AutoSizeCols => true;
 		public ThemeGroup ThemeGroup => ThemeGroup.Global;
 		public string Id => "F7791FBA-3693-4D71-8EC9-AB507A03FE9A";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

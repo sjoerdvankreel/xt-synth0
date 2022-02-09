@@ -74,9 +74,7 @@ namespace Xt.Synth0.UI
 			int cols = group.Columns;
 			var positions = group.Layout.Max(p => p.Value) + 1;
 			int rows = (int)Math.Ceiling(positions / (double)cols);
-			GridLength rowHeight = GridLength.Auto;
-			GridLength colWidth = group.AutoSizeCols ? GridLength.Auto : new GridLength(1.0, GridUnitType.Star);
-			var result = Create.Grid(rows, cols, rowHeight, colWidth);
+			var result = Create.Grid(rows, cols);
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.HorizontalAlignment = HorizontalAlignment.Stretch;
 			result.RowDefinitions[rows - 1].Height = new GridLength(1.0, GridUnitType.Star);
