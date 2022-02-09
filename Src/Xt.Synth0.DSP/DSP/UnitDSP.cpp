@@ -7,9 +7,6 @@
 
 namespace Xts {
 
-static const float MaxPw = 0.975f;
-static const double BlepLeaky = 1.0e-4;
-
 static inline float
 ModulateUnipolar(float val, float mod, float amt)
 {	return (1.0f - amt) * val + amt * val * mod; }
@@ -41,8 +38,8 @@ UnitDSP::Generate(float freq, float mod1, float mod2)
 {
 	switch (_model->type)
 	{
-	case UnitType::Blep: return GenerateBlep(freq);
 	case UnitType::Add: return GenerateAdd(freq, mod1, mod2);
+	case UnitType::Blep: return GenerateBlep(freq, mod1, mod2);
 	default: assert(false); return 0.0f;
 	}
 }
@@ -59,10 +56,11 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 }
 
 float
-UnitDSP::PwPhase() const
+UnitDSP::PwPhase(float mod1, float mod2) const
 {
 	float phase = static_cast<float>(_phase);
-	float result = phase + 0.5f - LevelExc(_model->pw) * MaxPw * 0.5f;
+  float modpw = Modulate(ModTarget::Pw, _pw, mod1, mod2, true);
+	float result = phase + 0.5f - modpw * 0.5f;
 	return result - (int)result;
 }
 
@@ -119,8 +117,9 @@ UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) co
 }
 
 float
-UnitDSP::GenerateBlep(float freq)
+UnitDSP::GenerateBlep(float freq, float mod1, float mod2)
 {
+	const double BlepLeaky = 1.0e-4;
 	auto phase = static_cast<float>(_phase);
 	float inc = freq / _input->source.rate;
 	if(_model->blepType == BlepType::Saw)
@@ -128,12 +127,12 @@ UnitDSP::GenerateBlep(float freq)
   if(_model->blepType == BlepType::Pulse)
   {
     float saw = GenerateBlepSaw(phase, inc);
-    return (saw - GenerateBlepSaw(PwPhase(), inc)) * 0.5f;
+    return (saw - GenerateBlepSaw(PwPhase(mod1, mod2), inc)) * 0.5f;
   }
   if(_model->blepType != BlepType::Tri)
     return assert(false), 0.0f;
 	float saw = GenerateBlepSaw(phase + 0.25f, inc);
-	float pulse = (saw - GenerateBlepSaw(PwPhase() + 0.25f, inc)) * 0.5f;
+	float pulse = (saw - GenerateBlepSaw(PwPhase(mod1, mod2) + 0.25f, inc)) * 0.5f;
 	_blepTri = (1.0 - BlepLeaky) * _blepTri + inc * pulse;
 	return static_cast<float>(_blepTri) * (1.0f + LevelExc(_model->pw)) * 4.0f;
 }

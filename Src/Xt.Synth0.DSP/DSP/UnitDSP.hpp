@@ -11,8 +11,9 @@ namespace Xts {
 class UnitDSP: 
 public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
+  static constexpr float MaxPw = 0.975f;
   double _phase, _blepTri;
-  float _amt1, _amt2, _amp, _pan, _roll;
+  float _amt1, _amt2, _amp, _pw, _pan, _roll;
 public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
@@ -21,12 +22,13 @@ public:
   _amt1(LevelInc(_model->amt1)), 
   _amt2(LevelInc(_model->amt2)), 
   _amp(LevelInc(_model->amp)), 
+  _pw(LevelExc(_model->pw) * MaxPw),
   _pan(Mix01Inclusive(_model->pan)),
   _roll(Mix01Inclusive(_model->addRoll)) {}
 private:
-  float PwPhase() const;
-  float GenerateBlep(float freq);
+  float PwPhase(float mod1, float mod2) const;
   float Generate(float freq, float mod1, float mod2);
+  float GenerateBlep(float freq, float mod1, float mod2);
   float Mod(SourceDSP const& source, ModSource mod) const;
   float GenerateAdd(float freq, float mod1, float mod2) const;
   float Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) const;
