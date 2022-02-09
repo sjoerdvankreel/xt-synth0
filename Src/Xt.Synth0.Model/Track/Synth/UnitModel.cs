@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+	public enum UnitType { Sin, Add, Blep }
 	public enum WaveType { Saw, Pulse, Tri }
-	public enum UnitType { Sin, Add, Blep, Naive }
 	public enum ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 }
 	public enum ModTarget { Off, Pw, Amp, Pan, Dtn, Roll, Pitch, Phase };
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
@@ -70,8 +70,7 @@ namespace Xt.Synth0.Model
 		static readonly AddType[] BasicAddTypes = new[] { Synth0.Model.AddType.Saw, Synth0.Model.AddType.Sqr, Synth0.Model.AddType.Pulse, Synth0.Model.AddType.Tri, Synth0.Model.AddType.Impulse };
 
 		static readonly IRelevance RelevanceWave = Relevance.Any(
-			Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
-			Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive));
+			Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep));
 		static readonly IRelevance RelevanceAdd = Relevance.When(
 			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add);
 		static readonly IRelevance RelevanceAddBasic = Relevance.All(RelevanceAdd,
@@ -79,8 +78,6 @@ namespace Xt.Synth0.Model
 		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdd,
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => CustomAddTypes.Contains(t)));
 		static readonly IRelevance RelevancePw = Relevance.Any(
-			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Naive),
-			Relevance.When((UnitModel m) => m.WaveType, (WaveType t) => t == Synth0.Model.WaveType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add),
 			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Synth0.Model.AddType.Pulse)),
 			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
@@ -88,9 +85,9 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), nameof(Dtn), "Detune");
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), nameof(Pan), "Panning");
+		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
 		static readonly ParamInfo Amt1Info = ParamInfo.Level(p => &((Native*)p)->amt1, nameof(Amt1), "Amt", "Mod 1 amount", 0);
 		static readonly ParamInfo Amt2Info = ParamInfo.Level(p => &((Native*)p)->amt2, nameof(Amt2), "Amt", "Mod 2 amount", 0);
-		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 255);
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");

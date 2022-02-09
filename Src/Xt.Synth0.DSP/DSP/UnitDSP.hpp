@@ -20,7 +20,6 @@ private:
   float PwPhase() const;
   float Generate(float freq);
   float GenerateAdd(float freq) const;
-  float GenerateNaive(WaveType type, float phase) const;
   float GenerateBlep(WaveType type, float freq, float phase);
   static float Freq(UnitModel const& model, KeyInput const& input);
   float GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const;
