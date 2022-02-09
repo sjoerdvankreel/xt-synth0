@@ -61,6 +61,7 @@ UnitDSP::Pan(float mod1, float mod2) const
 		result = (1.0f - _amt1) * result + _amt1 * result * mod1;
 	if (_model->tgt2 == ModTarget::Pan)
 		result = (1.0f - _amt2) * result + _amt2 * result * mod2;
+  assert(0.0f <= result && result <= 1.0f);
 	return result;
 }
 
