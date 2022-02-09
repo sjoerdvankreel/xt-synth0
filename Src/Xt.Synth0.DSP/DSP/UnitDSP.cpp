@@ -13,7 +13,6 @@ static const double BlepLeaky = 1.0e-4;
 static inline float
 ModulateUnipolar(float val, float mod, float amt)
 {	return (1.0f - amt) * val + amt * val * mod; }
-
 static inline float
 ModulateBipolar(float val, float mod, float amt)
 { return val + (0.5f - std::fabs(val - 0.5f)) * amt * (mod * 2.0f - 1.0f); }
@@ -74,7 +73,7 @@ UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
   int lfo = static_cast<int>(ModSource::LFO1);
   switch(mod)
   {
-  case ModSource::Off: return 1.0f;
+  case ModSource::Off: return 0.0f;
 	case ModSource::LFO1: case ModSource::LFO2:
 	return source.Lfos()[static_cast<int>(mod) - lfo].Value();
 	case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
@@ -104,14 +103,16 @@ float
 UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) const
 {
 	float result = val;
+  bool fst = _model->src1 != ModSource::Off;
+	bool snd = _model->src2 != ModSource::Off;
 	assert(0.0f <= val && val <= 1.0f);
   if(bip)
   {
-		if(_model->tgt1 == tgt) result = ModulateBipolar(result, mod1, _amt1);
-		if(_model->tgt2 == tgt) result = ModulateBipolar(result, mod2, _amt2);
+		if(fst && _model->tgt1 == tgt) result = ModulateBipolar(result, mod1, _amt1);
+		if(snd && _model->tgt2 == tgt) result = ModulateBipolar(result, mod2, _amt2);
   } else {
-    if(_model->tgt1 == tgt) result = ModulateUnipolar(result, mod1, _amt1);
-	  if(_model->tgt2 == tgt) result = ModulateUnipolar(result, mod2, _amt2);
+    if(fst && _model->tgt1 == tgt) result = ModulateUnipolar(result, mod1, _amt1);
+	  if(snd && _model->tgt2 == tgt) result = ModulateUnipolar(result, mod2, _amt2);
   }
 	assert(0.0f <= result && result <= 1.0f);
 	return result;
