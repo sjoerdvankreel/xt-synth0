@@ -6,7 +6,6 @@ automation groups
 make it faster
 detach sequencer
 multiple synths + select target in sequencer
-fast log/sin approx?
 notifyparamchange + recalc + param interpolation
 random lfo
 noise generator
