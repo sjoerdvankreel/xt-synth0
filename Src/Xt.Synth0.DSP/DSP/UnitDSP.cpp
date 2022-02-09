@@ -98,8 +98,8 @@ UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) co
 	float result = val;
 	assert(0.0f <= val && val <= 1.0f);
 	float range = 1.0f - std::fabs(val - 1.0f);
-	if (_model->tgt1 == tgt && bip)	result = result + range * (mod1 * 2.0f - 1.0f);
-	if (_model->tgt2 == tgt && bip)	result = result + range * (mod2 * 2.0f - 1.0f);
+	if (_model->tgt1 == tgt && bip)	result = result + range * _amt1 * (mod1 * 2.0f - 1.0f);
+	if (_model->tgt2 == tgt && bip)	result = result + range * _amt2 * (mod2 * 2.0f - 1.0f);
 	if (_model->tgt1 == tgt && !bip) result = (1.0f - _amt1) * result + _amt1 * result * mod1;
 	if (_model->tgt2 == tgt && !bip) result = (1.0f - _amt2) * result + _amt2 * result * mod2;
 	assert(0.0f <= result && result <= 1.0f);
