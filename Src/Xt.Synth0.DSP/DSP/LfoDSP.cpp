@@ -43,10 +43,12 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
   output.min = model.bi? -1.0f: 0.0f;
 	output.freq = Freq(model, testIn);
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
+
 	SourceInput in(output.rate, input.bpm);
 	LfoDSP dsp(&model, &in);
-	int samples = static_cast<int>(input.spec? output.rate: output.rate / output.freq);
-	for (int i = 0; i < (samples); i++)
+  float fsamples = input.spec ? output.rate : output.rate / output.freq + 1;
+	int samples = static_cast<int>(std::ceilf(fsamples));
+	for (int i = 0; i < samples; i++)
   {
     dsp.Next();
 		output.samples->push_back(dsp.Value());

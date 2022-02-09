@@ -130,7 +130,8 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 	AudioInput audio(sourceInput, key);
 	UnitDSP dsp(&model, &audio);
   SourceDSP sourceDsp(&source, &sourceInput);
-	int samples = static_cast<int>(input.spec? input.rate: output.rate / output.freq);
+  float fsamples = input.spec ? input.rate : output.rate / output.freq + 1.0f;
+	int samples = static_cast<int>(std::ceilf(fsamples));
 	for (int i = 0; i < samples; i++)
   {
 		sourceDsp.Next();

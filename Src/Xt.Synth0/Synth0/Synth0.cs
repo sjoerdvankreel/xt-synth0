@@ -218,10 +218,12 @@ namespace Xt.Synth0
 
 		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
+			int rate = Model.Settings.SampleRate.ToInt();
+			if (rate == 0 || e.Pixels == 0) return;
+			_nativePlotState->rate = rate;
 			_nativePlotState->pixels = e.Pixels;
 			_nativePlotState->synth = _nativePlotSynthModel;
 			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
-			_nativePlotState->rate = Model.Settings.SampleRate.ToInt();
 			Model.Track.Synth.ToNative(_nativePlotBinding);
 			Native.XtsPlotDSPRender(_nativePlotState);
 			e.Freq = _nativePlotState->freq;
