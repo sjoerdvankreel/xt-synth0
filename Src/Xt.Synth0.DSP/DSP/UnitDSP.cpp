@@ -48,7 +48,20 @@ UnitDSP::Amp(float mod1, float mod2) const
     result = (1.0f - _amt1) * result + _amt1 * result * mod1;
   if(_model->tgt2 == ModTarget::Amp) 
     result = (1.0f - _amt2) * result + _amt2 * result * mod2;
+  assert(-1.0f <= result && result <= 1.0f);
   return result;
+}
+
+float
+UnitDSP::Pan(float mod1, float mod2) const
+{
+	float result = _pan;
+  return result;
+	if (_model->tgt1 == ModTarget::Pan)
+		result = (1.0f - _amt1) * result + _amt1 * result * mod1;
+	if (_model->tgt2 == ModTarget::Pan)
+		result = (1.0f - _amt2) * result + _amt2 * result * mod2;
+	return result;
 }
 
 float
@@ -96,7 +109,7 @@ UnitDSP::Next(SourceDSP const& source)
 	float freq = Freq(*_model, _input->key);
 	float sample = Generate(freq);
 	float amp = Amp(mod1, mod2);
-	float pan = Mix01Inclusive(_model->pan);
+	float pan = Pan(mod1, mod2);
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
 	assert(-1.0 <= sample && sample <= 1.0);
