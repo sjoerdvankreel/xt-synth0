@@ -27,9 +27,8 @@ private:
   float Generate(float freq);
   float GenerateBlep(float freq);
   float GenerateAdd(float freq) const;
-  float Amp(float mod1, float mod2) const;
-  float Pan(float mod1, float mod2) const;
   float Mod(SourceDSP const& source, ModSource mod) const;
+  float Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) const;
   static float Freq(UnitModel const& model, KeyInput const& input);
 public:
   void Next(SourceDSP const& source);

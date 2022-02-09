@@ -40,31 +40,6 @@ UnitDSP::Generate(float freq)
 	}
 }
 
-float 
-UnitDSP::Amp(float mod1, float mod2) const
-{
-  float result = _amp;
-  if(_model->tgt1 == ModTarget::Amp) 
-    result = (1.0f - _amt1) * result + _amt1 * result * mod1;
-  if(_model->tgt2 == ModTarget::Amp) 
-    result = (1.0f - _amt2) * result + _amt2 * result * mod2;
-  assert(-1.0f <= result && result <= 1.0f);
-  return result;
-}
-
-float
-UnitDSP::Pan(float mod1, float mod2) const
-{
-	float result = _pan;
-  return result;
-	if (_model->tgt1 == ModTarget::Pan)
-		result = (1.0f - _amt1) * result + _amt1 * result * mod1;
-	if (_model->tgt2 == ModTarget::Pan)
-		result = (1.0f - _amt2) * result + _amt2 * result * mod2;
-  assert(0.0f <= result && result <= 1.0f);
-	return result;
-}
-
 float
 UnitDSP::PwPhase() const
 {
@@ -109,12 +84,26 @@ UnitDSP::Next(SourceDSP const& source)
 	float mod2 = Mod(source, _model->src2);
 	float freq = Freq(*_model, _input->key);
 	float sample = Generate(freq);
-	float amp = Amp(mod1, mod2);
-	float pan = Pan(mod1, mod2);
+	float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2, true);
+	float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2, false);
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
 	assert(-1.0 <= sample && sample <= 1.0);
 	_value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
+}
+
+float
+UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) const
+{
+	float result = val;
+	assert(0.0f <= val && val <= 1.0f);
+	float range = 1.0f - std::fabs(val - 1.0f);
+	if (_model->tgt1 == tgt && bip)	result = result + range * (mod1 * 2.0f - 1.0f);
+	if (_model->tgt2 == tgt && bip)	result = result + range * (mod2 * 2.0f - 1.0f);
+	if (_model->tgt1 == tgt && !bip) result = (1.0f - _amt1) * result + _amt1 * result * mod1;
+	if (_model->tgt2 == tgt && !bip) result = (1.0f - _amt2) * result + _amt2 * result * mod2;
+	assert(0.0f <= result && result <= 1.0f);
+	return result;
 }
 
 float
