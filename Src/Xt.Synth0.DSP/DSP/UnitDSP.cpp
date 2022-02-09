@@ -7,6 +7,7 @@
 
 namespace Xts {
 
+static const float MaxPw = 0.975f;
 static const double BlepLeaky = 1.0e-4;
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
@@ -29,14 +30,6 @@ GenerateBlepSaw(float phase, float inc)
 }
 
 float
-UnitDSP::PwPhase() const
-{
-	float phase = static_cast<float>(_phase);
-	float result = phase + 0.5f - LevelExc(_model->pw) * 0.5f;
-	return result - (int)result;
-}
-
-float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
@@ -45,6 +38,14 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 	int noteNum = unit + key - base;
 	int cent = Mix0100Inclusive(model.dtn);
 	return Xts::Freq(noteNum + cent / 100.0f);
+}
+
+float
+UnitDSP::PwPhase() const
+{
+	float phase = static_cast<float>(_phase);
+	float result = phase + 0.5f - LevelExc(_model->pw) * MaxPw * 0.5f;
+	return result - (int)result;
 }
 
 void
