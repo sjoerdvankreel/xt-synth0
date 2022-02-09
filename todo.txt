@@ -1,4 +1,4 @@
-polyblep, hard sync, integrate blit / PWM triangle
+hard sync
 dont plot too often (throttle)
 dont trigger gc from the callback - dispatch all to ui
 sampler
