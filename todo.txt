@@ -27,3 +27,4 @@ remove naive
 wavetype->wave
 blep sine shaper
 relevancewave
+lfo ramp up/down ? inv ?

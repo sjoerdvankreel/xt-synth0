@@ -70,7 +70,7 @@ UnitDSP::Generate(float freq)
 	{
 	case UnitType::Add: return GenerateAdd(freq);
 	case UnitType::Blep: return GenerateBlep(freq);
-	case UnitType::Sin: return std::sinf(static_cast<float>(_phase));
+	case UnitType::Sin: return std::sinf(static_cast<float>(_phase) * 2.0f * PI);
 	default: assert(false); return 0.0f;
 	}
 }

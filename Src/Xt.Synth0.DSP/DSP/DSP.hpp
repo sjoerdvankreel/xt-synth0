@@ -43,15 +43,6 @@ inline float TimeF(int val, float rate)
 inline int TimeI(int val, float rate)
 { return static_cast<int>(TimeF(val, rate)); }
 
-inline float BasicSaw(float phase)
-{ return 1.0f - phase * 2.0f; }
-inline float BasicSin(float phase)
-{ return sinf(phase * 2.0f * PI); }
-inline float BasicSqr(float phase)
-{ return phase < 0.5f? 1.0f: -1.0f; }
-inline float BasicTri(float phase)
-{ return (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f; }
-
 inline float Freq(float midi)
 { return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f); }
 
