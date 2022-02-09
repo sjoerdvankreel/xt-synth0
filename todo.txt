@@ -22,9 +22,4 @@ show automation range error in UI
 connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 niet zomaar het model eroverheen kopieren zonder de state te updaten
-remove additive basic waveforms and remove cos
-remove naive
-wavetype->wave
 blep sine shaper
-relevancewave
-lfo ramp up/down ? inv ?

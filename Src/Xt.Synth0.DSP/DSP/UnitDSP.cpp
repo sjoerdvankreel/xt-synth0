@@ -30,6 +30,17 @@ GenerateBlepSaw(float phase, float inc)
 }
 
 float
+UnitDSP::Generate(float freq)
+{
+	switch (_model->type)
+	{
+	case UnitType::Add: return GenerateAdd(freq);
+	case UnitType::Blep: return GenerateBlep(freq);
+	default: assert(false); return 0.0f;
+	}
+}
+
+float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
@@ -64,18 +75,6 @@ UnitDSP::Next(SourceDSP const& source)
 }
 
 float
-UnitDSP::Generate(float freq)
-{
-	switch (_model->type)
-	{
-	case UnitType::Add: return GenerateAdd(freq);
-	case UnitType::Blep: return GenerateBlep(freq);
-	case UnitType::Sin: return std::sinf(static_cast<float>(_phase) * 2.0f * PI);
-	default: assert(false); return 0.0f;
-	}
-}
-
-float
 UnitDSP::GenerateBlep(float freq)
 {
 	auto phase = static_cast<float>(_phase);
@@ -95,38 +94,18 @@ UnitDSP::GenerateBlep(float freq)
 	return static_cast<float>(_blepTri) * (1.0f + LevelExc(_model->pw)) * 4.0f;
 }
 
-float
+float 
 UnitDSP::GenerateAdd(float freq) const
 {
-  int step = _model->addStep;
-	int parts = _model->addParts;
-	AddType type = _model->addType;
-	int maxParts = Exp(_model->addMaxParts);
-	auto phase = static_cast<float>(_phase);
-	float logRoll = Mix02Inclusive(_model->addRoll);
-	bool sinCos = type == AddType::SinAddCos || type == AddType::SinSubCos;
-	bool addSub = type == AddType::SinSubSin || type == AddType::SinSubCos;
-	switch(type)
-  {
-	case AddType::Pulse: break;
-	case AddType::Tri: return GenerateAdd(freq, phase, maxParts, 2, 2.0f, true, false);
-	case AddType::Saw: return GenerateAdd(freq, phase, maxParts, 1, 1.0f, false, false);
-	case AddType::Sqr: return GenerateAdd(freq, phase, maxParts, 2, 1.0f, false, false);
-	case AddType::Impulse: return GenerateAdd(freq, phase, maxParts, 1, 0.0f, false, false);
-  default: return GenerateAdd(freq, phase, parts, step, logRoll, addSub, sinCos);
-	}
-  float saw = GenerateAdd(freq, phase, maxParts, 1, 1.0f, false, false);
-	return (saw - GenerateAdd(freq, PwPhase(), maxParts, 1, 1.0f, false, false)) / 2.0f;
-}
-
-float 
-UnitDSP::GenerateAdd(float freq, float phase, int parts, int step, float logRoll, bool addSub, bool sinCos) const
-{
-	__m256 cosines;
   bool any = false;
 	float limit = 0.0;
 	float result = 0.0;
-	const int selector = 0b01010101;
+
+	int step = _model->addStep;
+	int parts = _model->addParts;
+  bool addSub = _model->addSub;
+	auto phase = static_cast<float>(_phase);
+	float logRoll = Mix02Inclusive(_model->addRoll);
 
   __m256 ones = _mm256_set1_ps(1.0f);
 	__m256 zeros = _mm256_set1_ps(0.0f);
@@ -153,9 +132,8 @@ UnitDSP::GenerateAdd(float freq, float phase, int parts, int step, float logRoll
   	__m256 rolls = _mm256_pow_ps(allPs, logRolls);
     __m256 amps = _mm256_div_ps(ones, rolls);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
-    __m256 sines = _mm256_sincos_ps(&cosines, _mm256_mul_ps(psPhases, twopis));
-    __m256 waves = !sinCos? sines: _mm256_blend_ps(sines, cosines, selector);
-    __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(waves, amps), signs);
+    __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
+    __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
 		limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, wantedPs));
 		results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, wantedPs));
 		any = true;

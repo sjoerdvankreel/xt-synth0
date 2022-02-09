@@ -18,7 +18,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1088);
+XTS_CHECK_SIZE(VoiceBinding, 1064);
 
 enum class PlotType { Off, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, Global, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -76,7 +76,7 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
-enum class UnitType { Sin, Add, Blep };
+enum class UnitType { Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
 enum class ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 };
 enum class ModTarget { Off, Pw, Amp, Pan, Dtn, Roll, Pitch, Phase };
@@ -91,11 +91,11 @@ private:
   XtsBool on;
   UnitType type;
   UnitNote note;
-  AddType addType;
+  XtsBool addSub;
   BlepType blepType;
   int32_t amp, pan, oct, dtn, pw;
-  int32_t src1, tgt1, amt1, src2, tgt2, amt2;
-  int32_t addMaxParts, addParts, addStep, addRoll;
+  int32_t addParts, addStep, addRoll;
+  int32_t src1, tgt1, amt1, src2, tgt2, amt2, pad__;
 };
 XTS_CHECK_SIZE(UnitModel, 80);
 

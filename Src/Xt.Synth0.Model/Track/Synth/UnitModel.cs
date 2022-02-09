@@ -4,12 +4,11 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum UnitType { Sin, Add, Blep }
+	public enum UnitType { Add, Blep }
 	public enum BlepType { Saw, Pulse, Tri }
 	public enum ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 }
 	public enum ModTarget { Off, Pw, Amp, Pan, Dtn, Roll, Pitch, Phase };
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
-	public enum AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 
 	public unsafe sealed class UnitModel : IUIParamGroupModel
 	{
@@ -17,10 +16,10 @@ namespace Xt.Synth0.Model
 		internal ref struct Native
 		{
 			internal const int Size = 80;
-			internal int on, type, note, addType, blepType;
+			internal int on, type, note, addSub, blepType;
 			internal int amp, pan, oct, dtn, pw;
-			internal int src1, tgt1, amt1, src2, tgt2, amt2;
-			internal int addMaxParts, addParts, addStep, addRoll;
+			internal int addParts, addStep, addRoll;
+			internal int src1, tgt1, amt1, src2, tgt2, amt2, pad__;
 		}
 
 		public Param On { get; } = new(OnInfo);
@@ -37,12 +36,11 @@ namespace Xt.Synth0.Model
 		public Param Src2 { get; } = new(Src2Info);
 		public Param Tgt2 { get; } = new(Tgt2Info);
 		public Param Amt2 { get; } = new(Amt2Info);
-		public Param BlepType { get; } = new(BlepTypeInfo);
-		public Param AddType { get; } = new(AddTypeInfo);
+		public Param AddSub { get; } = new(AddSubInfo);
 		public Param AddStep { get; } = new(AddStepInfo);
 		public Param AddRoll { get; } = new(AddRollInfo);
 		public Param AddParts { get; } = new(AddPartsInfo);
-		public Param AddMaxParts { get; } = new(AddMaxPartsInfo);
+		public Param BlepType { get; } = new(BlepTypeInfo);
 
 		public int Columns => 3;
 		public int Index { get; }
@@ -55,33 +53,24 @@ namespace Xt.Synth0.Model
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
 			{ On, -1 },
-			{ Type, 0 }, { AddType, 1 }, { BlepType, 1 },
+			{ Type, 0 }, { AddSub, 1 }, { BlepType, 1 },
 			{ Amp, 3 }, { Pan, 4 }, { Pw, 5 },
 			{ Oct, 6 }, { Note, 7 }, { Dtn, 8 },
-			{ AddParts, 9 }, { AddMaxParts, 9 }, { AddStep, 10 }, { AddRoll, 11 },
+			{ AddParts, 9 }, { AddStep, 10 }, { AddRoll, 11 },
 			{ Src1, 12 }, { Tgt1, 13 }, {Amt1, 14 },
 			{ Src2, 15 }, { Tgt2, 16}, {Amt2, 17 },
 		};
 
 		internal UnitModel(int index) => Index = index;
 		static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
-		static readonly string[] AddNames = { "Saw", "Sqr", "Pulse", "Tri", "Impulse", "Sin+Sin", "Sin+Cos", "Sin-Sin", "Sin-Cos" };
-		static readonly AddType[] CustomAddTypes = new[] { Synth0.Model.AddType.SinAddSin, Synth0.Model.AddType.SinSubSin, Synth0.Model.AddType.SinAddCos, Synth0.Model.AddType.SinSubCos };
-		static readonly AddType[] BasicAddTypes = new[] { Synth0.Model.AddType.Saw, Synth0.Model.AddType.Sqr, Synth0.Model.AddType.Pulse, Synth0.Model.AddType.Tri, Synth0.Model.AddType.Impulse };
 
 		static readonly IRelevance RelevanceAdd = Relevance.When(
 			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add);
 		static readonly IRelevance RelevanceBlep = Relevance.When(
 			(UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep);
-		static readonly IRelevance RelevanceAddBasic = Relevance.All(RelevanceAdd,
-			Relevance.When((UnitModel m) => m.AddType, (AddType t) => BasicAddTypes.Contains(t)));
-		static readonly IRelevance RelevanceAddCustom = Relevance.All(RelevanceAdd,
-			Relevance.When((UnitModel m) => m.AddType, (AddType t) => CustomAddTypes.Contains(t)));
-		static readonly IRelevance RelevancePw = Relevance.Any(
-			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add),
-			Relevance.When((UnitModel m) => m.AddType, (AddType t) => t == Synth0.Model.AddType.Pulse)),
-			Relevance.All(Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
-			Relevance.When((UnitModel m) => m.BlepType, (BlepType t) => t == Synth0.Model.BlepType.Pulse || t == Synth0.Model.BlepType.Tri)));
+		static readonly IRelevance RelevancePw = Relevance.All(
+			Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
+			Relevance.When((UnitModel m) => m.BlepType, (BlepType t) => t != Synth0.Model.BlepType.Saw));
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), nameof(Dtn), "Detune");
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), nameof(Pan), "Panning");
@@ -97,11 +86,10 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, nameof(Src2), "Source", "Mod 2 source");
 		static readonly ParamInfo Tgt2Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt2, nameof(Tgt2), "Target", "Mod 2 target");
 		static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, nameof(Note), nameof(Note), "Note", Notes);
-		static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, nameof(AddRoll), "Roll", "Additive custom rolloff", RelevanceAddCustom);
+		static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, nameof(AddRoll), "Roll", "Additive rolloff", RelevanceAdd);
+		static readonly ParamInfo AddSubInfo = ParamInfo.Toggle(p => &((Native*)p)->addSub, nameof(AddSub), "Sub", "Additive subtract", false, RelevanceAdd);
+		static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, nameof(AddStep), "Step", "Additive step", 1, 32, 1, RelevanceAdd);
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, nameof(AddParts), "Parts", "Additive partials", 1, 32, 1, RelevanceAdd);
 		static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, nameof(BlepType), "Type", "Blep type", null, RelevanceBlep);
-		static readonly ParamInfo AddTypeInfo = ParamInfo.List<AddType>(p => &((Native*)p)->addType, nameof(AddType), "Type", "Additive type", AddNames, RelevanceAdd);
-		static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, nameof(AddStep), "Step", "Additive custom step", 1, 32, 1, RelevanceAddCustom);
-		static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, nameof(AddParts), "Hms", "Additive custom partials", 1, 32, 1, RelevanceAddCustom);
-		static readonly ParamInfo AddMaxPartsInfo = ParamInfo.Exp(p => &((Native*)p)->addMaxParts, nameof(AddMaxParts), "Hms", "Additive basic partials", 12, 4, RelevanceAddBasic);
 	}
 }
