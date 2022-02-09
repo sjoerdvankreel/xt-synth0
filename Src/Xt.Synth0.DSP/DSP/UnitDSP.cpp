@@ -66,7 +66,7 @@ UnitDSP::Next(SourceDSP const& source)
 	float pan = Mix01Inclusive(_model->pan);
 	_phase += freq / _input->source.rate;
 	_phase -= floor(_phase);
-	assert(-1.0 <= _last && _last <= 1.0); 
+	//assert(-1.0 <= _last && _last <= 1.0); 
   float last = static_cast<float>(_last);
 	_value = AudioOutput(last * amp * (1.0f - pan), last * amp * pan);
 }
@@ -104,12 +104,11 @@ float
 UnitDSP::GenerateBlep(WaveType type, float freq, float phase) const
 {
 	float inc = freq / _input->source.rate;
-	float saw = GenerateBlepSaw(phase + 0.5f, inc);
-  if(type == WaveType::Saw) return saw;
-  return 0.0f;
-	//float pulse = (saw - GenerateBlep(WaveType::Saw, freq, PwPhase())) / 2.0f;
-  //if(type == WaveType::Pulse) return pulse;
-	//return (1.0f - BlepLeaky) * static_cast<float>(_last) + inc * pulse;
+  if(type == WaveType::Saw) return GenerateBlepSaw(phase + 0.5f, inc);
+  float pulse = (GenerateBlepSaw(phase, inc) - GenerateBlepSaw(PwPhase(), inc)) * 0.5f;
+  if(type == WaveType::Pulse) return pulse;
+  if(type != WaveType::Tri) return assert(false), 0.0f;
+	return (1.0f - BlepLeaky) * static_cast<float>(_last) + inc * pulse;
 }
 
 void
