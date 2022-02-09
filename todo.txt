@@ -18,15 +18,10 @@ init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters, envelopes
 reconsider automating running voices
 init with streampos / derive stuff from streampos ?
-tri = integrate pulse
 show automation range error in UI
 connect pattern amp->velocity
 xtaudio use iaudioclient->reset
-autoselect plotsource
 niet zomaar het model eroverheen kopieren zonder de state te updaten
-store enums as names (param value tostored)
-polyblep triangle
-fix waveforms start at 0
 remove additive basic waveforms and remove cos
 remove naive
 wavetype->wave

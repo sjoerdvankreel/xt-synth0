@@ -33,7 +33,7 @@ namespace Xt.Synth0.Model
 		{
 			var result = new StoreModel();
 			foreach (var param in group.Params)
-				result.Params.Add(param.Info.Id, param.Value);
+				result.Params.Add(param.Info.Id, param.Info.Store(param.Value));
 			return result;
 		}
 
@@ -61,7 +61,7 @@ namespace Xt.Synth0.Model
 				var param = model.Params.SingleOrDefault(
 					p => p.Info.Id == entry.Key);
 				if (param != null)
-					param.Value = entry.Value;
+					param.Value = param.Info.Load(entry.Value);
 			}
 		}
 
