@@ -87,18 +87,6 @@ UnitDSP::Next(SourceDSP const& source)
   _value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
 }
 
-// https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
-float 
-UnitDSP::ModPhase(float mod1, float mod2) const
-{
-  float result = static_cast<float>(_phase);
-  bool fst = _model->src1 != ModSource::Off;
-  bool snd = _model->src2 != ModSource::Off;
-  if(fst && _model->tgt1 == ModTarget::Phase) result += mod1 * _amt1;
-  if(snd && _model->tgt2 == ModTarget::Phase) result += mod2 * _amt2;
-  return result - floorf(result);
-}
-
 float
 UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
 {
@@ -113,6 +101,18 @@ UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
   if(snd && _model->tgt2 == tgt) result = Xts::Modulate(result, mod2, _amt2);
   assert(0.0f <= result && result <= 1.0f);
   return result;
+}
+
+// https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
+float
+UnitDSP::ModPhase(float mod1, float mod2) const
+{
+  float result = static_cast<float>(_phase);
+  bool fst = _model->src1 != ModSource::Off;
+  bool snd = _model->src2 != ModSource::Off;
+  if (fst && _model->tgt1 == ModTarget::Phase) result += _amt1 * (mod1 * 2.0f - 1);
+  if (snd && _model->tgt2 == ModTarget::Phase) result += _amt2 * (mod2 * 2.0f - 1);
+  return result - floorf(result);
 }
 
 float
