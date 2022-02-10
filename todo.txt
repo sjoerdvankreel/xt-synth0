@@ -21,6 +21,5 @@ show automation range error in UI
 connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 niet zomaar het model eroverheen kopieren zonder de state te updaten
-fix triangle
 dump stacktrace
 save file backup on crash
