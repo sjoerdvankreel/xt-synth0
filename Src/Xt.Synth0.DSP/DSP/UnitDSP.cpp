@@ -53,15 +53,6 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 }
 
 float
-UnitDSP::PwPhase(float mod1, float mod2) const
-{
-  float phase = static_cast<float>(_phase);
-  float modpw = Modulate(ModTarget::Pw, _pw, mod1, mod2);
-  float result = phase + 0.5f - modpw * 0.5f;
-  return result - (int)result;
-}
-
-float
 UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
 {
   int env = static_cast<int>(ModSource::Env1);
@@ -120,19 +111,22 @@ UnitDSP::GenerateBlep(float freq, float mod1, float mod2)
     assert(-1.0f <= result && result <= 1.0f);
     return result;
   }
+  float modPw = Modulate(ModTarget::Pw, _pw, mod1, mod2);
+  float pwPhase = phase + 0.5f - modPw * 0.5f;
+  pwPhase -= (int)pwPhase;
   if(_model->blepType == BlepType::Pulse)
   {
     float saw = GenerateBlepSaw(phase, inc);
-    float result = (saw - GenerateBlepSaw(PwPhase(mod1, mod2), inc)) * 0.5f;
+    float result = (saw - GenerateBlepSaw(pwPhase, inc)) * 0.5f;
     assert(-1.0f <= result && result <= 1.0f);
     return result;
   }
   if(_model->blepType != BlepType::Tri)
-  return assert(false), 0.0f;
+    return assert(false), 0.0f;
   float saw = GenerateBlepSaw(phase + 0.25f, inc);
-  float pulse = (saw - GenerateBlepSaw(PwPhase(mod1, mod2) + 0.25f, inc)) * 0.5f;
+  float pulse = (saw - GenerateBlepSaw(pwPhase + 0.25f, inc)) * 0.5f;
   _blepTri = (1.0 - BlepLeaky) * _blepTri + inc * pulse;
-  result = static_cast<float>(_blepTri) * (1.0f + LevelExc(_model->pw)) * 4.0f;
+  result = static_cast<float>(_blepTri) * (1.0f + modPw) * 4.0f;
   assert(-1.0f <= result && result <= 1.0f);
   return result;
 }

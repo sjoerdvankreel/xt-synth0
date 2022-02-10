@@ -26,7 +26,6 @@ public:
   _pan(Mix01Inclusive(_model->pan)),
   _roll(Mix01Inclusive(_model->addRoll)) {}
 private:
-  float PwPhase(float mod1, float mod2) const;
   float Generate(float freq, float mod1, float mod2);
   float GenerateBlep(float freq, float mod1, float mod2);
   float Mod(SourceDSP const& source, ModSource mod) const;
