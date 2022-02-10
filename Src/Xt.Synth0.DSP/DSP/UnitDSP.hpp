@@ -31,7 +31,7 @@ private:
   float GenerateBlep(float freq, float mod1, float mod2);
   float Mod(SourceDSP const& source, ModSource mod) const;
   float GenerateAdd(float freq, float mod1, float mod2) const;
-  float Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) const;
+  float Modulate(ModTarget tgt, float val, float mod1, float mod2) const;
   static float Freq(UnitModel const& model, KeyInput const& input);
 public:
   void Next(SourceDSP const& source);

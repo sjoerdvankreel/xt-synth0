@@ -8,10 +8,7 @@
 namespace Xts {
 
 static inline float
-ModulateUnipolar(float val, float mod, float amt)
-{ return (1.0f - amt) * val + amt * val * mod; }
-static inline float
-ModulateBipolar(float val, float mod, float amt)
+Modulate(float val, float mod, float amt)
 { return val + (0.5f - std::fabs(val - 0.5f)) * amt * (mod * 2.0f - 1.0f); }
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
@@ -59,7 +56,7 @@ float
 UnitDSP::PwPhase(float mod1, float mod2) const
 {
   float phase = static_cast<float>(_phase);
-  float modpw = Modulate(ModTarget::Pw, _pw, mod1, mod2, true);
+  float modpw = Modulate(ModTarget::Pw, _pw, mod1, mod2);
   float result = phase + 0.5f - modpw * 0.5f;
   return result - (int)result;
 }
@@ -89,8 +86,8 @@ UnitDSP::Next(SourceDSP const& source)
   float mod2 = Mod(source, _model->src2);
   float freq = Freq(*_model, _input->key);
   float sample = Generate(freq, mod1, mod2);
-  float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2, true);
-  float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2, false);
+  float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2);
+  float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2);
   _phase += freq / _input->source.rate;
   _phase -= floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
@@ -98,20 +95,14 @@ UnitDSP::Next(SourceDSP const& source)
 }
 
 float
-UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2, bool bip) const
+UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
 {
   float result = val;
   bool fst = _model->src1 != ModSource::Off;
   bool snd = _model->src2 != ModSource::Off;
   assert(0.0f <= val && val <= 1.0f);
-  if(bip)
-  {
-	if(fst && _model->tgt1 == tgt) result = ModulateBipolar(result, mod1, _amt1);
-	if(snd && _model->tgt2 == tgt) result = ModulateBipolar(result, mod2, _amt2);
-  } else {
-    if(fst && _model->tgt1 == tgt) result = ModulateUnipolar(result, mod1, _amt1);
-	if(snd && _model->tgt2 == tgt) result = ModulateUnipolar(result, mod2, _amt2);
-  }
+  if(fst && _model->tgt1 == tgt) result = Xts::Modulate(result, mod1, _amt1);
+  if(snd && _model->tgt2 == tgt) result = Xts::Modulate(result, mod2, _amt2);
   assert(0.0f <= result && result <= 1.0f);
   return result;
 }
@@ -148,7 +139,7 @@ UnitDSP::GenerateAdd(float freq, float mod1, float mod2) const
   int parts = _model->addParts;
   bool addSub = _model->addSub;
   auto phase = static_cast<float>(_phase);
-  float logRoll = Modulate(ModTarget::Roll, _roll, mod1, mod2, true) * 2.0f;
+  float logRoll = Modulate(ModTarget::Roll, _roll, mod1, mod2) * 2.0f;
 
   __m256 ones = _mm256_set1_ps(1.0f);
   __m256 zeros = _mm256_set1_ps(0.0f);
