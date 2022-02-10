@@ -115,8 +115,8 @@ float
 UnitDSP::ModulateFreq(float mod1, float mod2) const
 {
   float result = _freq;
-  float freqRange = 14.0f;
   float pitchRange = 0.02930223f;
+  float freqRange = static_cast<float>(1 << 12);
   bool fst = _model->src1 != ModSource::Off;
   bool snd = _model->src2 != ModSource::Off;
   if (fst && _model->tgt1 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod1, _amt1, freqRange);
