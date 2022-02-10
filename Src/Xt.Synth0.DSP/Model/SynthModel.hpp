@@ -79,7 +79,7 @@ XTS_CHECK_SIZE(EnvModel, 72);
 enum class UnitType { Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
 enum class ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 };
-enum class ModTarget { Off, Pw, Amp, Pan, Roll, Freq, Phase };
+enum class ModTarget { Off, Pw, Amp, Pan, Roll, Freq, Pitch, Phase };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 struct XTS_ALIGN UnitModel
