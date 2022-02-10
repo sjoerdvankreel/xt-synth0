@@ -112,7 +112,8 @@ UnitDSP::ModFreq(float mod1, float mod2) const
   float pitchRange = 0.02930223f;
   bool fst = _model->src1 != ModSource::Off;
   bool snd = _model->src2 != ModSource::Off;
-  if (fst && _model->tgt1 == ModTarget::Pitch) result += result * _amt1 * (mod1 * 2.0f - 1.0f) * pitchRange;
+  if (fst && _model->tgt1 == ModTarget::Pitch && mod1 < 0.5f) result /= 1.0f + (_amt1 * (0.5f - mod1) * 2.0f) * pitchRange;
+  if (fst && _model->tgt1 == ModTarget::Pitch && mod1 >= 0.5f) result *= 1.0f + (_amt1 * (mod1 - 0.5f) * 2.0f) * pitchRange;
   assert(result > 0.0f);
   return result;
 }
