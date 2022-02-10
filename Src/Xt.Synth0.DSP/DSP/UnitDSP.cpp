@@ -11,6 +11,7 @@ static inline float
 Modulate(float val, float mod, float amt)
 { return val + (0.5f - std::fabs(val - 0.5f)) * amt * (mod * 2.0f - 1.0f); }
 
+
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float
 GenerateBlepSaw(float phase, float inc)
@@ -31,12 +32,12 @@ GenerateBlepSaw(float phase, float inc)
 }
 
 float
-UnitDSP::Generate(float freq, float mod1, float mod2)
+UnitDSP::Generate(float phase, float freq, float mod1, float mod2)
 {
   switch (_model->type)
   {
-  case UnitType::Add: return GenerateAdd(freq, mod1, mod2);
-  case UnitType::Blep: return GenerateBlep(freq, mod1, mod2);
+  case UnitType::Add: return GenerateAdd(phase, freq, mod1, mod2);
+  case UnitType::Blep: return GenerateBlep(phase, freq, mod1, mod2);
   default: assert(false); return 0.0f;
   }
 }
@@ -76,7 +77,8 @@ UnitDSP::Next(SourceDSP const& source)
   float mod1 = Mod(source, _model->src1);
   float mod2 = Mod(source, _model->src2);
   float freq = Freq(*_model, _input->key);
-  float sample = Generate(freq, mod1, mod2);
+  float phase = static_cast<float>(_phase);
+  float sample = Generate(phase, freq, mod1, mod2);
   float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2);
   float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2);
   _phase += freq / _input->source.rate;
@@ -99,11 +101,10 @@ UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
 }
 
 float
-UnitDSP::GenerateBlep(float freq, float mod1, float mod2)
+UnitDSP::GenerateBlep(float phase, float freq, float mod1, float mod2)
 {
   float result = 0.0f;
   const double BlepLeaky = 1.0e-4;
-  auto phase = static_cast<float>(_phase);
   float inc = freq / _input->source.rate;
   if (_model->blepType == BlepType::Saw)
   {
@@ -132,7 +133,7 @@ UnitDSP::GenerateBlep(float freq, float mod1, float mod2)
 }
 
 float 
-UnitDSP::GenerateAdd(float freq, float mod1, float mod2) const
+UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
 {
   bool any = false;
   float limit = 0.0;
@@ -141,7 +142,6 @@ UnitDSP::GenerateAdd(float freq, float mod1, float mod2) const
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
-  auto phase = static_cast<float>(_phase);
   float logRoll = Modulate(ModTarget::Roll, _roll, mod1, mod2) * 2.0f;
 
   __m256 ones = _mm256_set1_ps(1.0f);
