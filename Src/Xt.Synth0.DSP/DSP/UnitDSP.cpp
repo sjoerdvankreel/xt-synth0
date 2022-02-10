@@ -14,8 +14,8 @@ Modulate(float val, float mod, float amt)
 static inline float
 ModulateFreq(float val, float mod, float amt, float range)
 {
-  if(mod < 0.5f) return val / 1.0f + (amt * (0.5f - mod) * 2.0f) * range;
-  else return val * 1.0f + (amt * (mod - 0.5f) * 2.0f) * range;
+  if(mod < 0.5f) return val / (1.0f + (amt * (0.5f - mod) * 2.0f) * range);
+  else return val * (1.0f + (amt * (mod - 0.5f) * 2.0f) * range);
 }
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
@@ -115,13 +115,13 @@ float
 UnitDSP::ModulateFreq(float mod1, float mod2) const
 {
   float result = _freq;
-  float freqRange = 12.0f;
+  float freqRange = 14.0f;
   float pitchRange = 0.02930223f;
   bool fst = _model->src1 != ModSource::Off;
   bool snd = _model->src2 != ModSource::Off;
   if (fst && _model->tgt1 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod1, _amt1, freqRange);
-  if (snd && _model->tgt2 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod2, _amt2, freqRange);
   if (fst && _model->tgt1 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod1, _amt1, pitchRange);
+  if (snd && _model->tgt2 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod2, _amt2, freqRange);
   if (snd && _model->tgt2 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod2, _amt2, pitchRange);
   assert(result > 0.0f);
   return result;

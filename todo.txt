@@ -9,7 +9,6 @@ multiple synths + select target in sequencer
 notifyparamchange + recalc + param interpolation
 random lfo
 noise generator
-connect mod sources
 filter lfos
 lfo NOT key sync
 phase modulation
@@ -24,3 +23,4 @@ niet zomaar het model eroverheen kopieren zonder de state te updaten
 dump stacktrace
 save file backup on crash
 velocity to global amp
+filter aliasing caused by modulation (filter lfos? oversample?)
