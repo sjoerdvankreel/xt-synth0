@@ -11,6 +11,13 @@ static inline float
 Modulate(float val, float mod, float amt)
 { return val + (0.5f - std::fabs(val - 0.5f)) * amt * (mod * 2.0f - 1.0f); }
 
+static inline float
+ModulateFreq(float val, float mod, float amt, float range)
+{
+  if(mod < 0.5f) return val / 1.0f + (amt * (0.5f - mod) * 2.0f) * range;
+  else return val * 1.0f + (amt * (mod - 0.5f) * 2.0f) * range;
+}
+
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float
 GenerateBlepSaw(float phase, float inc)
@@ -64,8 +71,8 @@ UnitDSP::Next(SourceDSP const& source)
   if (!_model->on) return;
   float mod1 = Mod(source, _model->src1);
   float mod2 = Mod(source, _model->src2);
-  float freq = ModFreq(mod1, mod2);
-  float phase = ModPhase(mod1, mod2);
+  float freq = ModulateFreq(mod1, mod2);
+  float phase = ModulatePhase(mod1, mod2);
   float sample = Generate(phase, freq, mod1, mod2);
   float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2);
   float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2);
@@ -93,7 +100,7 @@ UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
 
 // https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
 float
-UnitDSP::ModPhase(float mod1, float mod2) const
+UnitDSP::ModulatePhase(float mod1, float mod2) const
 {
   float result = static_cast<float>(_phase);
   bool fst = _model->src1 != ModSource::Off;
@@ -105,15 +112,17 @@ UnitDSP::ModPhase(float mod1, float mod2) const
 
 // https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
 float
-UnitDSP::ModFreq(float mod1, float mod2) const
+UnitDSP::ModulateFreq(float mod1, float mod2) const
 {
   float result = _freq;
   float freqRange = 12.0f;
   float pitchRange = 0.02930223f;
   bool fst = _model->src1 != ModSource::Off;
   bool snd = _model->src2 != ModSource::Off;
-  if (fst && _model->tgt1 == ModTarget::Pitch && mod1 < 0.5f) result /= 1.0f + (_amt1 * (0.5f - mod1) * 2.0f) * pitchRange;
-  if (fst && _model->tgt1 == ModTarget::Pitch && mod1 >= 0.5f) result *= 1.0f + (_amt1 * (mod1 - 0.5f) * 2.0f) * pitchRange;
+  if (fst && _model->tgt1 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod1, _amt1, freqRange);
+  if (snd && _model->tgt2 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod2, _amt2, freqRange);
+  if (fst && _model->tgt1 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod1, _amt1, pitchRange);
+  if (snd && _model->tgt2 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod2, _amt2, pitchRange);
   assert(result > 0.0f);
   return result;
 }
