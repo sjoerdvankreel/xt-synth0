@@ -26,6 +26,7 @@ public:
   _pan(Mix01Inclusive(_model->pan)),
   _roll(Mix01Inclusive(_model->addRoll)) {}
 private:
+  float ModPhase(float mod1, float mod2) const;
   float Mod(SourceDSP const& source, ModSource mod) const;
   float Modulate(ModTarget tgt, float val, float mod1, float mod2) const;
   float Generate(float phase, float freq, float mod1, float mod2);

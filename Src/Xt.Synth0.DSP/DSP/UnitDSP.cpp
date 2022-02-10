@@ -77,7 +77,7 @@ UnitDSP::Next(SourceDSP const& source)
   float mod1 = Mod(source, _model->src1);
   float mod2 = Mod(source, _model->src2);
   float freq = Freq(*_model, _input->key);
-  float phase = static_cast<float>(_phase);
+  float phase = ModPhase(mod1, mod2);
   float sample = Generate(phase, freq, mod1, mod2);
   float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2);
   float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2);
@@ -87,13 +87,28 @@ UnitDSP::Next(SourceDSP const& source)
   _value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
 }
 
+// https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
+float 
+UnitDSP::ModPhase(float mod1, float mod2) const
+{
+  float result = static_cast<float>(_phase);
+  bool fst = _model->src1 != ModSource::Off;
+  bool snd = _model->src2 != ModSource::Off;
+  if(fst && _model->tgt1 == ModTarget::Phase) result += mod1 * _amt1;
+  if(snd && _model->tgt2 == ModTarget::Phase) result += mod2 * _amt2;
+  return result - floorf(result);
+}
+
 float
 UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
 {
+  assert(0.0f <= val && val <= 1.0f);
+  assert(0.0f <= mod1 && mod1 <= 1.0f);
+  assert(0.0f <= mod2 && mod2 <= 1.0f);
+
   float result = val;
   bool fst = _model->src1 != ModSource::Off;
   bool snd = _model->src2 != ModSource::Off;
-  assert(0.0f <= val && val <= 1.0f);
   if(fst && _model->tgt1 == tgt) result = Xts::Modulate(result, mod1, _amt1);
   if(snd && _model->tgt2 == tgt) result = Xts::Modulate(result, mod2, _amt2);
   assert(0.0f <= result && result <= 1.0f);
@@ -138,7 +153,6 @@ UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
   bool any = false;
   float limit = 0.0;
   float result = 0.0;
-
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
@@ -155,8 +169,8 @@ UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
   __m256 logRolls = _mm256_set1_ps(logRoll);
   __m256 nyquists = _mm256_set1_ps(_input->source.rate / 2.0f);
   __m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
-  if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
 
+  if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
   for (int p = 1; p <= parts * step; p += step * 8)
   {
     if(p * freq >= _input->source.rate / 2.0f) break;
