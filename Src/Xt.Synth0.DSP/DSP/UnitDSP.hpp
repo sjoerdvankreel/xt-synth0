@@ -13,7 +13,7 @@ public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
   static constexpr float MaxPw = 0.975f;
   double _phase, _blepTri;
-  float _amt1, _amt2, _amp, _pw, _pan, _roll;
+  float _amt1, _amt2, _amp, _pw, _pan, _roll, _freq;
 public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
@@ -24,8 +24,10 @@ public:
   _amp(LevelInc(_model->amp)), 
   _pw(LevelExc(_model->pw) * MaxPw),
   _pan(Mix01Inclusive(_model->pan)),
-  _roll(Mix01Inclusive(_model->addRoll)) {}
+  _roll(Mix01Inclusive(_model->addRoll)),
+  _freq(Freq(*_model, _input->key)) {}
 private:
+  float ModFreq(float mod1, float mod2) const;
   float ModPhase(float mod1, float mod2) const;
   float Mod(SourceDSP const& source, ModSource mod) const;
   float Modulate(ModTarget tgt, float val, float mod1, float mod2) const;

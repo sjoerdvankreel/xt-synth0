@@ -11,7 +11,6 @@ static inline float
 Modulate(float val, float mod, float amt)
 { return val + (0.5f - std::fabs(val - 0.5f)) * amt * (mod * 2.0f - 1.0f); }
 
-
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float
 GenerateBlepSaw(float phase, float inc)
@@ -29,17 +28,6 @@ GenerateBlepSaw(float phase, float inc)
     return saw - ((blep + 2.0f) * blep + 1.0f);
   }
   return saw;
-}
-
-float
-UnitDSP::Generate(float phase, float freq, float mod1, float mod2)
-{
-  switch (_model->type)
-  {
-  case UnitType::Add: return GenerateAdd(phase, freq, mod1, mod2);
-  case UnitType::Blep: return GenerateBlep(phase, freq, mod1, mod2);
-  default: assert(false); return 0.0f;
-  }
 }
 
 float
@@ -76,7 +64,7 @@ UnitDSP::Next(SourceDSP const& source)
   if (!_model->on) return;
   float mod1 = Mod(source, _model->src1);
   float mod2 = Mod(source, _model->src2);
-  float freq = Freq(*_model, _input->key);
+  float freq = ModFreq(mod1, mod2);
   float phase = ModPhase(mod1, mod2);
   float sample = Generate(phase, freq, mod1, mod2);
   float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2);
@@ -110,9 +98,32 @@ UnitDSP::ModPhase(float mod1, float mod2) const
   float result = static_cast<float>(_phase);
   bool fst = _model->src1 != ModSource::Off;
   bool snd = _model->src2 != ModSource::Off;
-  if (fst && _model->tgt1 == ModTarget::Phase) result += _amt1 * (mod1 * 2.0f - 1);
-  if (snd && _model->tgt2 == ModTarget::Phase) result += _amt2 * (mod2 * 2.0f - 1);
+  if (fst && _model->tgt1 == ModTarget::Phase) result += _amt1 * (mod1 * 2.0f - 1.0f);
+  if (snd && _model->tgt2 == ModTarget::Phase) result += _amt2 * (mod2 * 2.0f - 1.0f);
   return result - floorf(result);
+}
+
+// https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
+float
+UnitDSP::ModFreq(float mod1, float mod2) const
+{
+  float result = _freq;
+  bool fst = _model->src1 != ModSource::Off;
+  bool snd = _model->src2 != ModSource::Off;
+  if (fst && _model->tgt1 == ModTarget::Pitch) result += _amt1 * (mod1 * 2.0f - 1.0f);
+  if (snd && _model->tgt2 == ModTarget::Pitch) result += _amt2 * (mod2 * 2.0f - 1.0f);
+  return result - floorf(result);
+}
+
+float
+UnitDSP::Generate(float phase, float freq, float mod1, float mod2)
+{
+  switch (_model->type)
+  {
+  case UnitType::Add: return GenerateAdd(phase, freq, mod1, mod2);
+  case UnitType::Blep: return GenerateBlep(phase, freq, mod1, mod2);
+  default: assert(false); return 0.0f;
+  }
 }
 
 float
