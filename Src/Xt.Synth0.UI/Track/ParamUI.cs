@@ -40,21 +40,20 @@ namespace Xt.Synth0.UI
 			bool conditional = param.Info.Relevance != null;
 			if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(group, param));
 			result.Add(MakeControl(app, group.ThemeGroup, param), Dock.Left);
-			if (param.Info.Type == ParamType.List) return result;
+			if (param.Info.Control == ParamControl.List) return result;
 			var name = result.Add(Create.Text($"{param.Info.Name} "), Dock.Left);
 			name.VerticalAlignment = VerticalAlignment.Center;
-			if (param.Info.Type == ParamType.Toggle) return result;
+			if (param.Info.Control == ParamControl.Toggle) return result;
 			result.Add(MakeValue(param), Dock.Left);
 			return result;
 		}
 
 		internal static Control MakeControl(AppModel app, ThemeGroup group, Param param)
-		=> param.Info.Type switch
+		=> param.Info.Control switch
 		{
-			ParamType.List => MakeList(app, param),
-			ParamType.Toggle => MakeToggle(app, param),
-			ParamType.Lin => MakeKnob(app, group, param),
-			ParamType.Time => MakeKnob(app, group, param),
+			ParamControl.List => MakeList(app, param),
+			ParamControl.Toggle => MakeToggle(app, param),
+			ParamControl.Knob => MakeKnob(app, group, param),
 			_ => throw new InvalidOperationException()
 		};
 

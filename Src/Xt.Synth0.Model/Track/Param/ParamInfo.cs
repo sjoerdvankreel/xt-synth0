@@ -5,22 +5,23 @@ namespace Xt.Synth0.Model
 {
 	unsafe delegate int* Address(void* parent);
 	public enum ParamControl { Toggle, List, Knob };
-	public enum ParamType { Toggle, List, Lin, Time };
 
 	public sealed class ParamInfo
 	{
+		enum ParamType { Toggle, List, Lin, Time };
+
 		int? _maxDisplayLength;
 		readonly Address _address;
 		readonly Func<string, int> _load;
 		readonly Func<int, string> _store;
 		readonly Func<int, string> _display;
 
+		ParamType Type { get; }
 		public int Min { get; }
 		public int Max { get; }
 		public int Default { get; }
 		public string Id { get; }
 		public string Name { get; }
-		public ParamType Type { get; }
 		public string Description { get; }
 		public IRelevance Relevance { get; }
 
