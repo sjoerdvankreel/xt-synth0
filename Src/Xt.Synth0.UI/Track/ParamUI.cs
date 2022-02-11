@@ -54,7 +54,6 @@ namespace Xt.Synth0.UI
 			ParamType.List => MakeList(app, param),
 			ParamType.Toggle => MakeToggle(app, param),
 			ParamType.Lin => MakeKnob(app, group, param),
-			ParamType.Exp => MakeKnob(app, group, param),
 			ParamType.Time => MakeKnob(app, group, param),
 			_ => throw new InvalidOperationException()
 		};

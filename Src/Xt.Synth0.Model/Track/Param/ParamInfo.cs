@@ -5,7 +5,7 @@ namespace Xt.Synth0.Model
 {
 	unsafe delegate int* Address(void* parent);
 	public enum ParamControl { Toggle, List, Knob };
-	public enum ParamType { Toggle, List, Lin, Time, Exp };
+	public enum ParamType { Toggle, List, Lin, Time };
 
 	public sealed class ParamInfo
 	{
@@ -26,7 +26,6 @@ namespace Xt.Synth0.Model
 
 		public ParamControl Control => Type switch
 		{
-			ParamType.Exp => ParamControl.Knob,
 			ParamType.Lin => ParamControl.Knob,
 			ParamType.Time => ParamControl.Knob,
 			ParamType.List => ParamControl.List,
@@ -39,7 +38,6 @@ namespace Xt.Synth0.Model
 			ParamType.Lin => _display(value),
 			ParamType.List => _display(value),
 			ParamType.Time => FormatTime(value),
-			ParamType.Exp => (1 << value).ToString(),
 			ParamType.Toggle => value == 0 ? "Off" : "On",
 			_ => throw new InvalidOperationException()
 		};
@@ -55,7 +53,7 @@ namespace Xt.Synth0.Model
 
 		public string Range(bool hex)
 		{
-			bool lin = Type != ParamType.Time && Type != ParamType.Exp;
+			bool lin = Type != ParamType.Time;
 			string min = hex ? Min.ToString("X2") : Min.ToString();
 			string max = hex ? Max.ToString("X2") : Max.ToString();
 			return lin ? $"{min} .. {max}" : $"{min} ({Format(Min)}) .. {max} ({Format(Max)})";
@@ -87,10 +85,6 @@ namespace Xt.Synth0.Model
 		internal static ParamInfo Mix(Address address, string id, string name,
 			string description, IRelevance relevance = null)
 		=> new ParamInfo(ParamType.Lin, address, id, name, description, 1, 255, 128, null, null, null, relevance);
-
-		internal static ParamInfo Exp(Address address, string id, string name,
-			string description, int max, int @default, IRelevance relevance = null)
-		=> new ParamInfo(ParamType.Exp, address, id, name, description, 0, max, @default, null, null, null, relevance);
 
 		internal static ParamInfo Level(Address address, string id, string name,
 			string description, int @default, IRelevance relevance = null)
