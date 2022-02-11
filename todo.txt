@@ -31,3 +31,4 @@ mix always -11inclusive
 mix ui -127 to 127
 velocity to global amp
 allow negative mod amount (mix)
+different ui color for mix buttons
