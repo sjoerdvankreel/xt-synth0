@@ -24,4 +24,10 @@ dump stacktrace
 save file backup on crash
 velocity to global amp
 filter aliasing caused by modulation (filter lfos? oversample?)
-lfo always bipolar, env always uni, better freqmod range
+lfo allow both uni and bipolar, env always uni, better freqmod range
+share modulation code
+level always 01exclusive
+mix always -11inclusive
+mix ui -127 to 127
+velocity to global amp
+allow negative mod amount (mix)
