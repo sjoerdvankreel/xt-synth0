@@ -1,6 +1,7 @@
 #ifndef XTS_GLOBAL_DSP_HPP
 #define XTS_GLOBAL_DSP_HPP
 
+#include "DSP.hpp"
 #include "SourceDSP.hpp"
 #include "GlobalDSP.hpp"
 #include "../Model/DSPModel.hpp"
@@ -11,10 +12,13 @@ namespace Xts {
 class GlobalDSP:
 public DSPBase<GlobalModel, SourceInput, float>
 {
+  float _amp, _lfoAmt;
 public:
   GlobalDSP() = default;
   GlobalDSP(GlobalModel const* model, SourceInput const* input):
-  DSPBase(model, input) {}
+  DSPBase(model, input),
+  _amp(Level(model->amp)),
+  _lfoAmt(Mix(model->lfoAmt)) {}
 public:
   void Next(SourceDSP const& source);
   float Value() const { return _value; }

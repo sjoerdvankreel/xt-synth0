@@ -1,4 +1,3 @@
-#include "DSP.hpp"
 #include "GlobalDSP.hpp"
 
 namespace Xts {
@@ -6,13 +5,11 @@ namespace Xts {
 void
 GlobalDSP::Next(SourceDSP const& source)
 {
-  float amp = LevelInc(_model->amp);
-  float lfoAmt = LevelInc(_model->lfoAmt);
-  float lfoVal = source.Lfos()[static_cast<int>(_model->lfoSrc)].Value();
-  float lfo = (1.0f - lfoAmt) + lfoAmt * lfoVal;
-  float envVal = source.Envs()[static_cast<int>(_model->envSrc)].Value();
-  float env = 1.0f * envVal;
-  _value = (amp * lfo) + (1.0f - amp) * env * lfo;
+  int lfoSrc = static_cast<int>(_model->lfoSrc);
+  float lfoVal = source.Lfos()[lfoSrc].Value();
+  int envSrc = static_cast<int>(_model->envSrc);
+  float envVal = source.Envs()[envSrc].Value();
+  _value = Mod(_amp, lfoVal, _lfoAmt) * envVal;
 }
 
 void

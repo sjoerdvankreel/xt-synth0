@@ -20,6 +20,13 @@ void Fft(
   std::vector<std::complex<float>>& fft,
   std::vector<std::complex<float>>& scratch);
 
+inline float Level(int val)
+{ return static_cast<float>(val) / 256.0f; }
+inline float Mix(int val)
+{ return static_cast<float>(val - 128) / 127.0f; }
+inline float Mod(float val, float mod, float amt)
+{ return val + amt * mod * (0.5f - std::fabs(std::fabs(val) - 0.5f)); }
+
 inline float Mix01Exclusive(int val)
 { return static_cast<float>(val / 256.0f); }
 inline float Mix02Exclusive(int val)
