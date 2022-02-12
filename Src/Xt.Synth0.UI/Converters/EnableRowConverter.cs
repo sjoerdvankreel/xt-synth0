@@ -3,14 +3,14 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-	class EnableRowConverter : MultiConverter<ThemeType, string, string, int, Brush>
+	class EnableRowConverter : MultiConverter<string, int, Brush>
 	{
 		readonly int _row;
 		readonly SettingsModel _settings;
 		internal EnableRowConverter(SettingsModel settings, int row)
 		=> (_settings, _row) = (settings, row);
 
-		protected override Brush Convert(ThemeType type, string themeColor, string patternColor, int rows)
+		protected override Brush Convert(string patternColor, int rows)
 		{
 			var resources = Utility.GetThemeResources(_settings, ThemeGroup.Pattern);
 			var enabled = (Brush)resources[Utility.RowEnabledKey];

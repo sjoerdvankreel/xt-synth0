@@ -9,10 +9,9 @@ namespace Xt.Synth0.UI
 {
 	public static class Utility
 	{
-		static ResourceDictionary _genericResources;
+		public static readonly FontFamily FontFamily = new("Consolas");
 		static readonly Dictionary<string, ResourceDictionary> ThemeResources = new();
 
-		public static readonly FontFamily FontFamily = new("Consolas");
 		internal static string RowEnabledKey = nameof(RowEnabledKey);
 		internal static string ForegroundKey = nameof(ForegroundKey);
 		internal static string Foreground1Key = nameof(Foreground1Key);
@@ -34,7 +33,6 @@ namespace Xt.Synth0.UI
 
 		public static ResourceDictionary GetThemeResources(SettingsModel settings, ThemeGroup group)
 		{
-			if (settings.ThemeType == ThemeType.Generic) return GetGenericResources();
 			string themeColor = GetThemeColor(settings, group);
 			if (ThemeResources.TryGetValue(themeColor, out var result)) return result;
 			result = new ResourceDictionary();
@@ -65,14 +63,6 @@ namespace Xt.Synth0.UI
 		}
 
 		static string GetThemeColor(SettingsModel settings, ThemeGroup group)
-		=> settings.ThemeType switch
-		{
-			ThemeType.Themed => settings.ThemeColor,
-			ThemeType.Grouped => GetGroupColor(settings, group),
-			_ => throw new InvalidOperationException()
-		};
-
-		static string GetGroupColor(SettingsModel settings, ThemeGroup group)
 		=> group switch
 		{
 			ThemeGroup.Lfo => settings.LfoColor,
@@ -80,9 +70,9 @@ namespace Xt.Synth0.UI
 			ThemeGroup.Unit => settings.UnitColor,
 			ThemeGroup.Env => settings.EnvelopeColor,
 			ThemeGroup.Global => settings.GlobalColor,
-			ThemeGroup.Settings => settings.ThemeColor,
 			ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
+			ThemeGroup.Settings => settings.SettingsColor,
 			_ => throw new InvalidOperationException()
 		};
 
@@ -93,14 +83,6 @@ namespace Xt.Synth0.UI
 			result.UriSource = new Uri("pack://application:,,,/Xt.Synth0.UI;component/Themes/Noise.png");
 			result.EndInit();
 			return result;
-		}
-
-		static ResourceDictionary GetGenericResources()
-		{
-			if (_genericResources != null) return _genericResources;
-			_genericResources = new ResourceDictionary();
-			_genericResources.Source = new Uri($"pack://application:,,,/Xt.Synth0.UI;component/Themes/Generic.xaml");
-			return _genericResources;
 		}
 	}
 }

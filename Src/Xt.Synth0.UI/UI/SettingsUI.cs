@@ -35,43 +35,13 @@ namespace Xt.Synth0.UI
 			var result = new StackPanel();
 			result.Orientation = Orientation.Horizontal;
 			result.Add(Create.ThemedGroup(settings, settings, MakeAudioContent(settings), "Audio"));
-			result.Add(Create.ThemedGroup(settings, settings, MakeThemeContent(settings), "Theme"));
+			result.Add(Create.ThemedGroup(settings, settings, Create.ThemedContent(MakeTheme(settings)), "Theme"));
 			return result;
 		}
 
-		static UIElement MakeThemeContent(SettingsModel settings)
+		static FrameworkElement MakeTheme(SettingsModel settings)
 		{
-			var result = new StackPanel();
-			result.Orientation = Orientation.Vertical;
-			result.Add(MakeThemeType(settings));
-			result.Add(MakeThemeColor(settings));
-			result.Add(MakeGroupColor(settings));
-			result.SetValue(Grid.IsSharedSizeScopeProperty, true);
-			return Create.ThemedContent(result);
-		}
-
-		static UIElement MakeThemeType(SettingsModel settings)
-		{
-			var result = Create.Grid(1, 2, true);
-			result.Add(Create.Label("Theme type", new(0, 0)));
-			result.Add(MakeThemeType(settings, new(0, 1)));
-			return result;
-		}
-
-		static UIElement MakeThemeColor(SettingsModel settings)
-		{
-			var result = Create.Grid(1, 2, true);
-			result.Add(Create.Label("Color", new(0, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.ThemeColor), new(0, 1)));
-			var conv = new VisibilityConverter<ThemeType>(false, ThemeType.Themed);
-			var binding = Bind.To(settings, nameof(settings.ThemeType), conv);
-			result.SetBinding(UIElement.VisibilityProperty, binding);
-			return result;
-		}
-
-		static UIElement MakeGroupColor(SettingsModel settings)
-		{
-			var result = Create.Grid(7, 2, true);
+			var result = Create.Grid(8, 2, true);
 			result.Add(Create.Label("LFO", new(0, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.LfoColor), new(0, 1)));
 			result.Add(Create.Label("Plot", new(1, 0)));
@@ -84,11 +54,10 @@ namespace Xt.Synth0.UI
 			result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(4, 1)));
 			result.Add(Create.Label("Control", new(5, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(5, 1)));
-			result.Add(Create.Label("Envelope", new(6, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.EnvelopeColor), new(6, 1))); 
-			var conv = new VisibilityConverter<ThemeType>(false, ThemeType.Grouped);
-			var binding = Bind.To(settings, nameof(settings.ThemeType), conv);
-			result.SetBinding(UIElement.VisibilityProperty, binding);
+			result.Add(Create.Label("Settings", new(6, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(6, 1)));
+			result.Add(Create.Label("Envelope", new(7, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.EnvelopeColor), new(7, 1))); 
 			return result;
 		}
 
@@ -160,15 +129,6 @@ namespace Xt.Synth0.UI
 			result.Content = "OK";
 			result.Click += (s, e) => window.Close();
 			result.HorizontalAlignment = HorizontalAlignment.Right;
-			return result;
-		}
-
-		static UIElement MakeThemeType(SettingsModel settings, Cell cell)
-		{
-			var result = MakeCombo(cell, RightControlWidth);
-			result.ItemsSource = Enum.GetValues<ThemeType>();
-			var binding = Bind.To(settings, nameof(settings.ThemeType));
-			result.SetBinding(Selector.SelectedValueProperty, binding);
 			return result;
 		}
 

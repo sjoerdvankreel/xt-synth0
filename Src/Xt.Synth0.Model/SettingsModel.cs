@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 namespace Xt.Synth0.Model
 {
 	public enum BitDepth { Depth16, Depth24, Depth32 }
-	public enum ThemeType { Generic, Themed, Grouped }
 	public enum SampleRate { Rate44100, Rate48000, Rate96000, Rate192000 }
 	public enum BufferSize { Size1, Size2, Size3, Size5, Size10, Size20, Size30, Size50, Size100 }
 
@@ -21,22 +20,6 @@ namespace Xt.Synth0.Model
 		public string Name => "Settings";
 		[IgnoreMember]
 		public ThemeGroup ThemeGroup => ThemeGroup.Settings;
-
-		ThemeType _themeType = ThemeType.Grouped;
-		[Key(nameof(ThemeType))]
-		public ThemeType ThemeType
-		{
-			get => _themeType;
-			set => Set(ref _themeType, value);
-		}
-
-		string _themeColor = "#E0E0E0";
-		[Key(nameof(ThemeColor))]
-		public string ThemeColor
-		{
-			get => _themeColor;
-			set => Set(ref _themeColor, value);
-		}
 
 		string _envelopeColor = "#80C0FF";
 		[Key(nameof(EnvelopeColor))]
@@ -76,6 +59,14 @@ namespace Xt.Synth0.Model
 		{
 			get => _globalColor;
 			set => Set(ref _globalColor, value);
+		}
+
+		string _settingsColor = "#E0E0E0";
+		[Key(nameof(SettingsColor))]
+		public string SettingsColor
+		{
+			get => _settingsColor;
+			set => Set(ref _settingsColor, value);
 		}
 
 		string _patternColor = "#FFC080";
@@ -168,14 +159,13 @@ namespace Xt.Synth0.Model
 
 		public void CopyTo(SettingsModel settings)
 		{
-			settings.ThemeType = ThemeType;
-			settings.ThemeColor = ThemeColor;
 			settings.LfoColor = LfoColor;
 			settings.PlotColor = PlotColor;
 			settings.UnitColor = UnitColor;
 			settings.GlobalColor = GlobalColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
+			settings.SettingsColor = SettingsColor;
 			settings.EnvelopeColor = EnvelopeColor;
 
 			settings.UseAsio = UseAsio;
