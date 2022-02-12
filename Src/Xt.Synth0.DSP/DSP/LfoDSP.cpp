@@ -12,15 +12,15 @@ LfoDSP::Next()
 	if (!_model->on) return;
 	_value = Generate();
 	assert(-1.0f <= _value && _value <= 1.0f);
-	_phase += _freq / _input->rate;
-	_phase -= floor(_phase);
+	_phase += _incr;
+	_phase -= std::floor(_phase);
 }
 
 float
 LfoDSP::Freq(LfoModel const& model, SourceInput const& input)
 {
-	float length = model.sync ? SyncF(input, model.step) : TimeF(model.rate, input.rate);
-	return input.rate / length;
+	if (model.sync) return input.rate / SyncF(input, model.step);
+	return input.rate / TimeF(model.rate, input.rate);
 }
 
 float
