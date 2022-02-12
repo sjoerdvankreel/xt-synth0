@@ -6,10 +6,11 @@ void
 GlobalDSP::Next(SourceDSP const& source)
 {
   int lfoSrc = static_cast<int>(_model->lfoSrc);
-  float lfoVal = source.Lfos()[lfoSrc].Value();
+  auto const& lfo = source.Lfos()[lfoSrc];
+  float lfoVal = Mod(_amp, false, lfo.Value(), lfo.Bipolar(), _lfoAmt);
   int envSrc = static_cast<int>(_model->envSrc);
   float envVal = source.Envs()[envSrc].Value();
-  _value = Mod(Mod(_amp, lfoVal, _lfoAmt), envVal, 1.0f);
+  _value = Mod(lfoVal, false, envVal, false, 1.0f);
 }
 
 void

@@ -24,6 +24,7 @@ private:
 public:
   void Next();
   float Value() const { return _value; }
+  bool Bipolar() const { return _model->bip != 0; };
   static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);
 };
 static_assert(StateSourceDSP<LfoDSP, LfoModel>);

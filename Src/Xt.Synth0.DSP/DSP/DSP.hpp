@@ -24,8 +24,6 @@ inline float Level(int val)
 { return static_cast<float>(val) / 256.0f; }
 inline float Mix(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
-inline float Mod(float val, float mod, float amt)
-{ return val + amt * mod * (0.5f - std::fabs(std::fabs(val) - 0.5f)); }
 
 inline float Mix01Exclusive(int val)
 { return static_cast<float>(val / 256.0f); }
@@ -78,6 +76,25 @@ SyncF(SourceInput const& input, int val)
 
 inline int SyncI(SourceInput const& input, int val)
 { return static_cast<int>(SyncF(input, val)); }
+
+inline float 
+Mod(float val, bool vbip, float mod, bool mbip, float amt)
+{
+  assert(-1.0f <= amt && amt <= 1.0f);
+  assert(vbip || 0.0f <= val && val <= 1.0f);
+  assert(mbip || 0.0f <= mod && mod <= 1.0f);
+  assert(!vbip || -1.0f <= val && val <= 1.0f);
+  assert(!mbip || -1.0f <= mod && mod <= 1.0f);
+  if(amt == 0.0f) return val;
+  if(mbip && vbip) return val + val * mod * amt * (1.0f - std::fabs(val));
+  if(mbip && !vbip) return val + val * mod * amt * (0.5f - std::fabs(val - 0.5f));
+  if(!mbip && !vbip && amt < 0.0f) return val + val * mod * amt;
+  if(!mbip && !vbip && amt > 0.0f) return val + (1.0f - val) * mod * amt;
+  if(!mbip && vbip && amt > 0.0f) return val + (2.0f - val) * mod * amt;
+  if (!mbip && vbip && amt < 0.0f) return val + val * mod * amt * 2.0f;
+  assert(false);
+  return 0.0f;
+}
 
 } // namespace Xts
 #endif // XTS_DSP_HPP

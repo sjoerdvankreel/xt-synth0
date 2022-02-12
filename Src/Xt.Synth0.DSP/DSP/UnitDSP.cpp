@@ -192,9 +192,9 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
   int samples = static_cast<int>(std::ceilf(fsamples));
   for (int i = 0; i < samples; i++)
   {
-	sourceDsp.Next();
+	  sourceDsp.Next();
     dsp.Next(sourceDsp);
-	output.samples->push_back(dsp.Value().Mono());
+	  output.samples->push_back(dsp.Value().Mono());
   }
 
   output.vSplits->emplace_back(VSplit(0.0f, L"0"));
