@@ -12,7 +12,7 @@ LfoDSP::Next()
 	if (!_model->on) return;
 	_value = Generate();
 	assert(-1.0f <= _value && _value <= 1.0f);
-	_phase += Freq(*_model, *_input) / _input->rate;
+	_phase += _freq / _input->rate;
 	_phase -= floor(_phase);
 }
 
@@ -29,14 +29,14 @@ LfoDSP::Generate()
 	float phase = static_cast<float>(_phase);
 	switch (_model->type)
 	{
-	case LfoType::Saw: return _base + _factor * (1.0f - phase * 2.0f);
+	case LfoType::Tri: break;
+	case LfoType::Saw: return _base + _factor * (phase * 2.0f - 1.0f);
 	case LfoType::Sin: return _base + _factor * sinf(phase * 2.0f * PI);
 	case LfoType::Sqr: return _base + _factor * (phase < 0.5f ? 1.0f : -1.0f);
-	case LfoType::Tri: break;
 	default: assert(false); return 0.0f;
 	}
-	float tri = (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f;
-	return _base + _factor * tri;
+	float tri = phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f;
+	return _base + _factor * tri * 4.0f;
 }
 
 void
