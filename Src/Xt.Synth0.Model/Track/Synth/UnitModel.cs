@@ -74,9 +74,9 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, nameof(Dtn), nameof(Dtn), "Detune");
 		static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, nameof(Pan), nameof(Pan), "Panning");
+		static readonly ParamInfo Amt1Info = ParamInfo.Mix(p => &((Native*)p)->amt1, nameof(Amt1), "Amt", "Mod 1 amount");
+		static readonly ParamInfo Amt2Info = ParamInfo.Mix(p => &((Native*)p)->amt2, nameof(Amt2), "Amt", "Mod 2 amount");
 		static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, nameof(On), nameof(On), "Enabled", false);
-		static readonly ParamInfo Amt1Info = ParamInfo.Level(p => &((Native*)p)->amt1, nameof(Amt1), "Amt", "Mod 1 amount", 0);
-		static readonly ParamInfo Amt2Info = ParamInfo.Level(p => &((Native*)p)->amt2, nameof(Amt2), "Amt", "Mod 2 amount", 0);
 		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 255);
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
@@ -89,7 +89,7 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, nameof(AddRoll), "Roll", "Additive rolloff", RelevanceAdd);
 		static readonly ParamInfo AddSubInfo = ParamInfo.Toggle(p => &((Native*)p)->addSub, nameof(AddSub), "Sub", "Additive subtract", false, RelevanceAdd);
 		static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, nameof(AddStep), "Step", "Additive step", 1, 32, 1, RelevanceAdd);
-		static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, nameof(AddParts), "Parts", "Additive partials", 1, 32, 1, RelevanceAdd);
 		static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, nameof(BlepType), "Type", "Blep type", null, RelevanceBlep);
+		static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, nameof(AddParts), "Parts", "Additive partials", 1, 32, 1, RelevanceAdd);
 	}
 }

@@ -38,10 +38,10 @@ namespace Xt.Synth0.Model
         public string Format(int value) => Type switch
         {
             ParamType.Lin => _display(value),
-            ParamType.Mix => _display(value),
             ParamType.List => _display(value),
             ParamType.Time => FormatTime(value),
             ParamType.Toggle => value == 0 ? "Off" : "On",
+            ParamType.Mix => (value - 128).ToString("+#;-#;0"),
             _ => throw new InvalidOperationException()
         };
 
