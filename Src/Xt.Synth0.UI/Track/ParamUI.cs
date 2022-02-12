@@ -90,6 +90,7 @@ namespace Xt.Synth0.UI
 		static Control MakeKnob(AppModel app, ThemeGroup group, Param param)
 		{
 			var result = new Knob();
+			result.IsMix = param.Info.IsMix;
 			result.Minimum = param.Info.Min;
 			result.Maximum = param.Info.Max;
 			result.ToolTip = Tooltip(app.Track.Synth, param);

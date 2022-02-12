@@ -21,6 +21,7 @@ namespace Xt.Synth0.UI
 		internal static string Foreground4Key = nameof(Foreground4Key);
 		internal static string RowDisabledKey = nameof(RowDisabledKey);
 		internal static string BorderParamKey = nameof(BorderParamKey);
+		internal static string ForegroundMixKey = nameof(ForegroundMixKey);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
 
 		static Color Multiply(Color color, double factor)
@@ -46,6 +47,7 @@ namespace Xt.Synth0.UI
 			result.Add(nameof(Foreground2Key), new SolidColorBrush(Multiply(color, 0.75)));
 			result.Add(nameof(Foreground3Key), new SolidColorBrush(Multiply(color, 0.5)));
 			result.Add(nameof(Foreground4Key), new SolidColorBrush(Multiply(color, 0.25)));
+			result.Add(nameof(ForegroundMixKey), new SolidColorBrush(Multiply(color, 0.375)));
 			ThemeResources.Add(themeColor, result);
 			return result;
 		}
@@ -69,7 +71,6 @@ namespace Xt.Synth0.UI
 			ThemeType.Grouped => GetGroupColor(settings, group),
 			_ => throw new InvalidOperationException()
 		};
-
 
 		static string GetGroupColor(SettingsModel settings, ThemeGroup group)
 		=> group switch

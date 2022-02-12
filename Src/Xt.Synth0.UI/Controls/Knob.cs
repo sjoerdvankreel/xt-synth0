@@ -18,6 +18,11 @@ namespace Xt.Synth0.UI
 		static Point? ActivePosition;
 		static double? ActiveBaseValue;
 
+		public static readonly DependencyProperty IsMixProperty = DependencyProperty.Register(
+			nameof(IsMix), typeof(bool), typeof(Knob), new(false));
+		public static bool GetIsMix(DependencyObject obj) => (bool)obj.GetValue(IsMixProperty);
+		public static void SetIsMix(DependencyObject obj, bool value) => obj.SetValue(IsMixProperty, value);
+
 		static readonly DependencyPropertyKey MarkerXPropertyKey = DependencyProperty.RegisterReadOnly(
 			nameof(MarkerX), typeof(double), typeof(Knob), new(0.0));
 		public static readonly DependencyProperty MarkerXProperty = MarkerXPropertyKey.DependencyProperty;
@@ -137,6 +142,12 @@ namespace Xt.Synth0.UI
 			EventManager.RegisterClassHandler(typeof(Window), MouseMoveEvent, new MouseEventHandler(OnWindowMouseMove), true);
 			EventManager.RegisterClassHandler(typeof(Window), MouseLeftButtonUpEvent, new MouseButtonEventHandler(OnWindowMouseLeftButtonUp), true);
 			EventManager.RegisterClassHandler(typeof(Window), MouseLeftButtonDownEvent, new MouseButtonEventHandler(OnWindowMouseLeftButtonDown), true);
+		}
+
+		public bool IsMix
+		{
+			get => GetIsMix(this);
+			set => SetIsMix(this, value);
 		}
 
 		public double Sensitivity

@@ -33,12 +33,31 @@
         <Setter Property="MarkerFill" Value="{DynamicResource Foreground1Key}"/>
         <Setter Property="MarkerStroke" Value="{DynamicResource Foreground1Key}"/>
         <Style.Triggers>
-            <Trigger Property="IsEnabled" Value="False">
+            <Trigger Property="IsMix" Value="True">
                 <Trigger.Setters>
-                    <Setter Property="RotaryStroke" Value="{DynamicResource Foreground2Key}"/>
-                    <Setter Property="RotaryFill" Value="{DynamicResource BackgroundDarkKey}"/>
+                    <Setter Property="RotaryFill" Value="{DynamicResource ForegroundMixKey}"/>
                 </Trigger.Setters>
             </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMix" Value="False"/>
+                    <Condition Property="IsEnabled" Value="False"/>
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="RotaryStroke" Value="{DynamicResource Foreground2Key}"/>
+                    <Setter Property="RotaryFill" Value="{DynamicResource BackgroundDarkKey}"/>
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMix" Value="True"/>
+                    <Condition Property="IsEnabled" Value="False"/>
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="RotaryStroke" Value="{DynamicResource Foreground2Key}"/>
+                    <Setter Property="RotaryFill" Value="{DynamicResource Foreground4Key}"/>
+                </MultiTrigger.Setters>
+            </MultiTrigger>
         </Style.Triggers>
     </Style>
 
