@@ -18,7 +18,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1048);
+XTS_CHECK_SIZE(VoiceBinding, 1040);
 
 enum class PlotType { Off, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, Global, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -41,11 +41,11 @@ struct XTS_ALIGN GlobalModel
   GlobalModel() = default;
   GlobalModel(GlobalModel const&) = delete;
 private:
-  GlobalAmpEnv ampEnv;
-  GlobalAmpLfo ampLfo;
-  int32_t amp, ampEnvAmt, ampLfoAmt, pad__;
+  GlobalAmpEnv envSrc;
+  GlobalAmpLfo lfoSrc;
+  int32_t amp, lfoAmt;
 };
-XTS_CHECK_SIZE(GlobalModel, 24);
+XTS_CHECK_SIZE(GlobalModel, 16);
 
 enum class LfoType { Sin, Saw, Sqr, Tri };
 struct XTS_ALIGN LfoModel
@@ -78,8 +78,8 @@ XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class UnitType { Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
-enum class ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 };
-enum class ModTarget { Off, Pw, Amp, Pan, Roll, Freq, Pitch, Phase };
+enum class ModSource { Key, LFO1, LFO2, Env1, Env2, Env3 };
+enum class ModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 struct XTS_ALIGN UnitModel
@@ -127,7 +127,7 @@ private:
   SourceModel source;
   UnitModel units[UnitCount];
 };
-XTS_CHECK_SIZE(SynthModel, 544);
+XTS_CHECK_SIZE(SynthModel, 536);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

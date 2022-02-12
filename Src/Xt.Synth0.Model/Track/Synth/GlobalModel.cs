@@ -12,18 +12,17 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct Native
 		{
-			internal int ampEnv, ampLfo;
-			internal int amp, ampEnvAmt, ampLfoAmt, pad__;
+			internal int envSrc, lfoSrc;
+			internal int amp, lfoAmt;
 		}
 
 		public Param Amp { get; } = new(AmpInfo);
-		public Param AmpEnv { get; } = new(AmpEnvInfo);
-		public Param AmpLfo { get; } = new(AmpLfoInfo);
-		public Param AmpEnvAmt { get; } = new(AmpEnvAmtInfo);
-		public Param AmpLfoAmt { get; } = new(AmpLfoAmtInfo);
+		public Param LfoSrc { get; } = new(LfoSrcInfo);
+		public Param LfoAmt { get; } = new(LfoAmtInfo);
+		public Param EnvSrc { get; } = new(EnvSrcInfo);
 
 		public int Index => 0;
-		public int Columns => 3;
+		public int Columns => 2;
 		public Param Enabled => null;
 		public string Name => "Global";
 		public ThemeGroup ThemeGroup => ThemeGroup.Global;
@@ -32,14 +31,13 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>
 		{
-			{ Amp, 0 }, { AmpEnv, 1 }, { AmpEnvAmt, 2 },
-			{ AmpLfo, 4 }, { AmpLfoAmt, 5 }
+			{ LfoSrc, 0 }, { LfoAmt, 1 },
+			{ EnvSrc, 2 }, { Amp, 3 }
 		};
 
-		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 0);
-		static readonly ParamInfo AmpLfoAmtInfo = ParamInfo.Level(p => &((Native*)p)->ampLfoAmt, nameof(AmpLfoAmt), "Amt", "Amp lfo amount", 0);
-		static readonly ParamInfo AmpLfoInfo = ParamInfo.List<GlobalAmpLfo>(p => &((Native*)p)->ampLfo, nameof(AmpLfo), "LFO", "Amp lfo source");
-		static readonly ParamInfo AmpEnvInfo = ParamInfo.List<GlobalAmpEnv>(p => &((Native*)p)->ampEnv, nameof(AmpEnv), "Env", "Amp env source");
-		static readonly ParamInfo AmpEnvAmtInfo = ParamInfo.Level(p => &((Native*)p)->ampEnvAmt, nameof(AmpEnvAmt), "Amt", "Amp env amount", 255);
+		static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 128);
+		static readonly ParamInfo LfoAmtInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmt, nameof(LfoAmt), "Amt", "Amp LFO amount");
+		static readonly ParamInfo LfoSrcInfo = ParamInfo.List<GlobalAmpLfo>(p => &((Native*)p)->lfoSrc, nameof(LfoSrc), "LFO", "Amp LFO source");
+		static readonly ParamInfo EnvSrcInfo = ParamInfo.List<GlobalAmpEnv>(p => &((Native*)p)->envSrc, nameof(EnvSrc), "Env", "Amp env source");
 	}
 }

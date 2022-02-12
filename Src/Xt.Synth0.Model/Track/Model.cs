@@ -5,7 +5,7 @@
 		public const int LfoCount = 2;
 		public const int EnvCount = 3;
 		public const int UnitCount = 3;
-		public const int ParamCount = 131;
+		public const int ParamCount = 130;
 
 		public const int MaxFxs = 3;
 		public const int MaxLpb = 16;

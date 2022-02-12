@@ -55,7 +55,7 @@ UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
   int lfo = static_cast<int>(ModSource::LFO1);
   switch(mod)
   {
-  case ModSource::Off: return 0.0f;
+  case ModSource::Key: return 0.0f;
   case ModSource::LFO1: case ModSource::LFO2:
   return source.Lfos()[static_cast<int>(mod) - lfo].Value();
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
@@ -85,15 +85,12 @@ UnitDSP::Next(SourceDSP const& source)
 float
 UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
 {
+  float result = val;
   assert(0.0f <= val && val <= 1.0f);
   assert(0.0f <= mod1 && mod1 <= 1.0f);
   assert(0.0f <= mod2 && mod2 <= 1.0f);
-
-  float result = val;
-  bool fst = _model->src1 != ModSource::Off;
-  bool snd = _model->src2 != ModSource::Off;
-  if(fst && _model->tgt1 == tgt) result = Xts::Modulate(result, mod1, _amt1);
-  if(snd && _model->tgt2 == tgt) result = Xts::Modulate(result, mod2, _amt2);
+  if(_model->tgt1 == tgt) result = Xts::Modulate(result, mod1, _amt1);
+  if(_model->tgt2 == tgt) result = Xts::Modulate(result, mod2, _amt2);
   assert(0.0f <= result && result <= 1.0f);
   return result;
 }
@@ -103,10 +100,8 @@ float
 UnitDSP::ModulatePhase(float mod1, float mod2) const
 {
   float result = static_cast<float>(_phase);
-  bool fst = _model->src1 != ModSource::Off;
-  bool snd = _model->src2 != ModSource::Off;
-  if (fst && _model->tgt1 == ModTarget::Phase) result += _amt1 * (mod1 * 2.0f - 1.0f);
-  if (snd && _model->tgt2 == ModTarget::Phase) result += _amt2 * (mod2 * 2.0f - 1.0f);
+  if (_model->tgt1 == ModTarget::Phase) result += _amt1 * (mod1 * 2.0f - 1.0f);
+  if (_model->tgt2 == ModTarget::Phase) result += _amt2 * (mod2 * 2.0f - 1.0f);
   return result - floorf(result);
 }
 
@@ -117,12 +112,10 @@ UnitDSP::ModulateFreq(float mod1, float mod2) const
   float result = _freq;
   float pitchRange = 0.02930223f;
   float freqRange = static_cast<float>(1 << 12);
-  bool fst = _model->src1 != ModSource::Off;
-  bool snd = _model->src2 != ModSource::Off;
-  if (fst && _model->tgt1 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod1, _amt1, freqRange);
-  if (fst && _model->tgt1 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod1, _amt1, pitchRange);
-  if (snd && _model->tgt2 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod2, _amt2, freqRange);
-  if (snd && _model->tgt2 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod2, _amt2, pitchRange);
+  if(_model->tgt1 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod1, _amt1, freqRange);
+  if(_model->tgt1 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod1, _amt1, pitchRange);
+  if(_model->tgt2 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod2, _amt2, freqRange);
+  if(_model->tgt2 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod2, _amt2, pitchRange);
   assert(result > 0.0f);
   return result;
 }

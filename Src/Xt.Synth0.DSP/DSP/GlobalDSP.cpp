@@ -7,12 +7,11 @@ void
 GlobalDSP::Next(SourceDSP const& source)
 {
   float amp = LevelInc(_model->amp);
-  float lfoAmt = LevelInc(_model->ampLfoAmt);
-  float lfoVal = source.Lfos()[static_cast<int>(_model->ampLfo)].Value();
+  float lfoAmt = LevelInc(_model->lfoAmt);
+  float lfoVal = source.Lfos()[static_cast<int>(_model->lfoSrc)].Value();
   float lfo = (1.0f - lfoAmt) + lfoAmt * lfoVal;
-  float envAmt = LevelInc(_model->ampEnvAmt);
-  float envVal = source.Envs()[static_cast<int>(_model->ampEnv)].Value();
-  float env = envAmt * envVal;
+  float envVal = source.Envs()[static_cast<int>(_model->envSrc)].Value();
+  float env = 1.0f * envVal;
   _value = (amp * lfo) + (1.0f - amp) * env * lfo;
 }
 

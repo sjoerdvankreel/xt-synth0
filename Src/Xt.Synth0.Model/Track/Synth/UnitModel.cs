@@ -6,8 +6,8 @@ namespace Xt.Synth0.Model
 {
 	public enum UnitType { Add, Blep }
 	public enum BlepType { Saw, Pulse, Tri }
-	public enum ModSource { Off, Env1, Env2, Env3, LFO1, LFO2 }
-	public enum ModTarget { Off, Pw, Amp, Pan, Roll, Freq, Pitch, Phase };
+	public enum ModSource { Key, LFO1, LFO2, Env1, Env2, Env3 }
+	public enum ModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase }
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 
 	public unsafe sealed class UnitModel : IUIParamGroupModel
