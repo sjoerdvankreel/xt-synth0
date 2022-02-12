@@ -36,8 +36,8 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { Rate, 1 }, { Step, 1 },
-            { Bip, 3 }, { Sync, 4 }, { Inv, 5}
+            { Type, 0 }, { Sync, 1 }, { Rate, 2 }, { Step, 2 },
+            { Bip, 3 }, { Inv, 4 }
         };
 
         internal LfoModel(int index) => Index = index;
