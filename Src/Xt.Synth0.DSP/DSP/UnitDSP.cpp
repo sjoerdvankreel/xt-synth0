@@ -1,22 +1,9 @@
-#include "DSP.hpp"
 #include "UnitDSP.hpp"
-
 #include <cmath>
 #include <cassert>
 #include <immintrin.h>
 
 namespace Xts {
-
-static inline float
-Modulate(float val, float mod, float amt)
-{ return val + (0.5f - std::fabs(val - 0.5f)) * amt * (mod * 2.0f - 1.0f); }
-
-static inline float
-ModulateFreq(float val, float mod, float amt, float range)
-{
-  if(mod < 0.5f) return val / (1.0f + (amt * (0.5f - mod) * 2.0f) * range);
-  else return val * (1.0f + (amt * (mod - 0.5f) * 2.0f) * range);
-}
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float
@@ -43,9 +30,8 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
   int key = input.oct * 12 + static_cast<int>(input.note);
   int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
-  int noteNum = unit + key - base;
   int cent = Mix0100Inclusive(model.dtn);
-  return Xts::Freq(noteNum + cent / 100.0f);
+  return Xts::Freq(unit + key - base + cent / 100.0f);
 }
 
 float
@@ -64,6 +50,14 @@ UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
   }
 }
 
+float 
+UnitDSP::Mod(ModTarget tgt, float val, float mod1, float mod2) const
+{
+  if (_model->tgt1 == tgt) val = Xts::Mod(val, mod1, _amt1);
+  if (_model->tgt2 == tgt) val = Xts::Mod(val, mod2, _amt2);
+  return val;
+}
+
 void
 UnitDSP::Next(SourceDSP const& source)
 {
@@ -71,53 +65,15 @@ UnitDSP::Next(SourceDSP const& source)
   if (!_model->on) return;
   float mod1 = Mod(source, _model->src1);
   float mod2 = Mod(source, _model->src2);
-  float freq = ModulateFreq(mod1, mod2);
-  float phase = ModulatePhase(mod1, mod2);
+  float freq = _freq;// ModulateFreq(mod1, mod2);
+  float phase = _phase;// ModulatePhase(mod1, mod2);
   float sample = Generate(phase, freq, mod1, mod2);
-  float pan = Modulate(ModTarget::Pan, _pan, mod1, mod2);
-  float amp = Modulate(ModTarget::Amp, _amp, mod1, mod2);
-  _phase += freq / _input->source.rate;
+  float pan = Mod(ModTarget::Pan, _pan, mod1, mod2);
+  float amp = Mod(ModTarget::Amp, _amp, mod1, mod2);
+  _phase += _incr;
   _phase -= floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
   _value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
-}
-
-float
-UnitDSP::Modulate(ModTarget tgt, float val, float mod1, float mod2) const
-{
-  float result = val;
-  assert(0.0f <= val && val <= 1.0f);
-  assert(0.0f <= mod1 && mod1 <= 1.0f);
-  assert(0.0f <= mod2 && mod2 <= 1.0f);
-  if(_model->tgt1 == tgt) result = Xts::Modulate(result, mod1, _amt1);
-  if(_model->tgt2 == tgt) result = Xts::Modulate(result, mod2, _amt2);
-  assert(0.0f <= result && result <= 1.0f);
-  return result;
-}
-
-// https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
-float
-UnitDSP::ModulatePhase(float mod1, float mod2) const
-{
-  float result = static_cast<float>(_phase);
-  if (_model->tgt1 == ModTarget::Phase) result += _amt1 * (mod1 * 2.0f - 1.0f);
-  if (_model->tgt2 == ModTarget::Phase) result += _amt2 * (mod2 * 2.0f - 1.0f);
-  return result - floorf(result);
-}
-
-// https://www.musicdsp.org/en/latest/Synthesis/111-phase-modulation-vs-frequency-modulation.html
-float
-UnitDSP::ModulateFreq(float mod1, float mod2) const
-{
-  float result = _freq;
-  float pitchRange = 0.02930223f;
-  float freqRange = static_cast<float>(1 << 12);
-  if(_model->tgt1 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod1, _amt1, freqRange);
-  if(_model->tgt1 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod1, _amt1, pitchRange);
-  if(_model->tgt2 == ModTarget::Freq) result = Xts::ModulateFreq(result, mod2, _amt2, freqRange);
-  if(_model->tgt2 == ModTarget::Pitch) result = Xts::ModulateFreq(result, mod2, _amt2, pitchRange);
-  assert(result > 0.0f);
-  return result;
 }
 
 float
@@ -143,7 +99,7 @@ UnitDSP::GenerateBlep(float phase, float freq, float mod1, float mod2)
     assert(-1.0f <= result && result <= 1.0f);
     return result;
   }
-  float modPw = Modulate(ModTarget::Pw, _pw, mod1, mod2);
+  float modPw = Mod(ModTarget::Pw, _pw, mod1, mod2);
   float pwPhase = phase + 0.5f - modPw * 0.5f;
   pwPhase -= (int)pwPhase;
   if(_model->blepType == BlepType::Pulse)
@@ -172,7 +128,7 @@ UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
-  float logRoll = Modulate(ModTarget::Roll, _roll, mod1, mod2) * 2.0f;
+  float logRoll = Mod(ModTarget::Roll, _roll, mod1, mod2) * 2.0f;
 
   __m256 ones = _mm256_set1_ps(1.0f);
   __m256 zeros = _mm256_set1_ps(0.0f);
