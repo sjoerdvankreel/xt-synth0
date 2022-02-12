@@ -26,19 +26,17 @@ LfoDSP::Freq(LfoModel const& model, SourceInput const& input)
 float
 LfoDSP::Generate()
 {
-	float inv = _model->inv ? -1.0f : 1.0f;
-	float factor = inv * 0.5f;
 	float phase = static_cast<float>(_phase);
-  switch(_model->type)
-  {
-    case LfoType::Saw: return 0.5f + factor * (1.0f - phase * 2.0f);
-		case LfoType::Sin: return 0.5f + factor * sinf(phase * 2.0f * PI);
-		case LfoType::Sqr: return 0.5f + factor * (phase < 0.5f ? 1.0f : -1.0f);
-		case LfoType::Tri: break;
-		default: assert(false); return 0.0f;
+	switch (_model->type)
+	{
+	case LfoType::Saw: return _base + _factor * (1.0f - phase * 2.0f);
+	case LfoType::Sin: return _base + _factor * sinf(phase * 2.0f * PI);
+	case LfoType::Sqr: return _base + _factor * (phase < 0.5f ? 1.0f : -1.0f);
+	case LfoType::Tri: break;
+	default: assert(false); return 0.0f;
 	}
 	float tri = (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : -0.25f + (phase - 0.75f)) * 4.0f;
-	return 0.5f + factor * tri;
+	return _base + _factor * tri;
 }
 
 void
@@ -48,26 +46,35 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	if (!model.on) return;
 	SourceInput testIn(testRate, input.bpm);
 	output.max = 1.0f;
-  output.min = 0.0f;
+	output.min = model.bip ? -1.0f : 0.0f;
 	output.freq = Freq(model, testIn);
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
 
 	SourceInput in(output.rate, input.bpm);
 	LfoDSP dsp(&model, &in);
-  float fsamples = input.spec ? output.rate : output.rate / output.freq + 1;
+	float fsamples = input.spec ? output.rate : output.rate / output.freq + 1;
 	int samples = static_cast<int>(std::ceilf(fsamples));
 	for (int i = 0; i < samples; i++)
-  {
-    dsp.Next();
+	{
+		dsp.Next();
 		output.samples->push_back(dsp.Value());
-  }
+	}
 
 	output.hSplits->emplace_back(HSplit(0, L"0"));
 	output.hSplits->emplace_back(HSplit(samples, L""));
 	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
-  output.vSplits->emplace_back(VSplit(0.0f, L"1"));
-	output.vSplits->emplace_back(VSplit(1.0f, L"0"));
-	output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
+	if (model.bip)
+	{
+		output.vSplits->emplace_back(VSplit(0.0f, L"0"));
+		output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
+		output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
+	}
+	else
+	{
+		output.vSplits->emplace_back(VSplit(0.0f, L"1"));
+		output.vSplits->emplace_back(VSplit(1.0f, L"0"));
+		output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
+	}
 }
 
 } // namespace Xts

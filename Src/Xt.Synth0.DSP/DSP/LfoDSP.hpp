@@ -10,10 +10,13 @@ class LfoDSP:
 public DSPBase<LfoModel, SourceInput, float>
 {
   double _phase;
+  float _base, _factor;
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, SourceInput const* input):
-  DSPBase(model, input), _phase(0.0) {}
+  DSPBase(model, input), _phase(0.0),
+  _base(_model->bip ? 0.0f : 0.5f),
+  _factor((_model->inv ? -1.0f : 1.0f) * (1.0f - _base)) {}
 private:
   float Generate();
   static float Freq(LfoModel const& model, SourceInput const& input);
