@@ -67,7 +67,7 @@ EnvDSP::Next()
 float
 EnvDSP::Generate(float from, float to, int len, SlopeType type)
 {
-  double slp;
+  double slp = 0.0;
   switch (type)
   {
   case SlopeType::Lin: slp = _slp; break;
