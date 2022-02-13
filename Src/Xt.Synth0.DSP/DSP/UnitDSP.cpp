@@ -51,7 +51,7 @@ UnitDSP::ModVal(SourceDSP const& source, ModSource mod) const
   int lfo = static_cast<int>(ModSource::LFO1);
   switch(mod)
   {
-  case ModSource::Key: return _velo;
+  case ModSource::Key: return _input->key.amp;
   case ModSource::LFO1: case ModSource::LFO2:
   return source.Lfos()[static_cast<int>(mod) - lfo].Value();
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
@@ -86,7 +86,7 @@ UnitDSP::Next(SourceDSP const& source)
   float phase = _phase;// ModulatePhase(mod1, mod2);
   float sample = Generate(phase, freq, params);
   float amp = Mod(ModTarget::Amp, _amp, false, params);
-  float pan = BiToUni(Mod(ModTarget::Pan, _pan, true, params));
+  float pan = BiToUni1(Mod(ModTarget::Pan, _pan, true, params));
   _phase += _incr;
   _phase -= floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
@@ -146,7 +146,7 @@ UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
-  float logRoll = Mod(ModTarget::Roll, _roll, true, params);
+  float logRoll = BiToUni2(Mod(ModTarget::Roll, _roll, true, params));
 
   __m256 ones = _mm256_set1_ps(1.0f);
   __m256 zeros = _mm256_set1_ps(0.0f);

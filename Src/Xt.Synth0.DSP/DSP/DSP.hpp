@@ -20,14 +20,14 @@ void Fft(
   std::vector<std::complex<float>>& fft,
   std::vector<std::complex<float>>& scratch);
 
-inline float BiToUni(float val)
+inline float BiToUni2(float val)
+{ return val + 1.0f; }
+inline float BiToUni1(float val)
 { return (val + 1.0f) * 0.5f; }
 inline float Level(int val)
 { return static_cast<float>(val) / 256.0f; }
 inline float Mix(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
-inline float MixUni2(int val)
-{ return static_cast<float>(val - 1) / 127.0f; }
 inline float TimeF(int val, float rate)
 { return static_cast<float>(val * val * rate / 1000.0f); }
 inline int TimeI(int val, float rate)

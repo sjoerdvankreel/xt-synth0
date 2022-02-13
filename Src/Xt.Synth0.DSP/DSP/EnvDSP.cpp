@@ -45,7 +45,7 @@ EnvDSP::Generate(float from, float to, int len, int slp) const
   float range = to - from;
   float pos = _pos / static_cast<float>(len);
   assert(0.0f <= pos && pos <= 1.0f);
-  float mix = MixUni2(slp);
+  float mix = BiToUni2(Mix(slp));
   if (mix <= 1.0f) 
   { 
     float slope = powf(pos, mix);
