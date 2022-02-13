@@ -17,7 +17,7 @@ public:
   GlobalDSP() = default;
   GlobalDSP(GlobalModel const* model, AudioInput const* input) :
   DSPBase(model, input),
-  _lfoAmt(MixBi2(model->lfoAmt)),
+  _lfoAmt(Mix(model->lfoAmt)),
   _amp(Level(model->amp) * input->key.amp) {}
 public:
   void Next(SourceDSP const& source);

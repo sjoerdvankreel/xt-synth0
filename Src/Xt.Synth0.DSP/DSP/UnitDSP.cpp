@@ -27,7 +27,7 @@ GenerateBlepSaw(float phase, float inc)
 float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
-  float cent = MixBi1(model.dtn);
+  float cent = Mix(model.dtn) * 0.5f;
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
   int key = input.oct * 12 + static_cast<int>(input.note);
   int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
