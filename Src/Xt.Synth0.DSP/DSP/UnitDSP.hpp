@@ -30,7 +30,7 @@ public:
   DSPBase(model, input), 
   _phase(0.0), _blepTri(0.0),
   _amp(Level(_model->amp)), 
-  _pan(MixUni1(_model->pan)),
+  _pan(Mix(_model->pan)),
   _amt1(Mix(_model->amt1)),
   _amt2(Mix(_model->amt2)),
   _velo(Level(input->key.amp)),

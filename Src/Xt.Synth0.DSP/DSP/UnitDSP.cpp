@@ -85,8 +85,8 @@ UnitDSP::Next(SourceDSP const& source)
   float freq = _freq;// ModulateFreq(mod1, mod2);
   float phase = _phase;// ModulatePhase(mod1, mod2);
   float sample = Generate(phase, freq, params);
-  float pan = Mod(ModTarget::Pan, _pan, true, params);
   float amp = Mod(ModTarget::Amp, _amp, false, params);
+  float pan = BiToUni(Mod(ModTarget::Pan, _pan, true, params));
   _phase += _incr;
   _phase -= floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
