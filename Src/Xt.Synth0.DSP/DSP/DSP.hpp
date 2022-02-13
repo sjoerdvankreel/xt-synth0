@@ -87,7 +87,7 @@ Mod(float val, bool vbip, float mod, bool mbip, float amt)
   assert(!mbip || -1.0f <= mod && mod <= 1.0f);
   if(amt == 0.0f) return val;
   if(mbip && vbip) return val + val * mod * amt * (1.0f - std::fabs(val));
-  if(mbip && !vbip) return val + val * mod * amt * (0.5f - std::fabs(val - 0.5f));
+  if(mbip && !vbip) return val + mod * amt * (0.5f - std::fabs(val - 0.5f));
   if(!mbip && !vbip && amt < 0.0f) return val + val * mod * amt;
   if(!mbip && !vbip && amt > 0.0f) return val + (1.0f - val) * mod * amt;
   if(!mbip && vbip && amt > 0.0f) return val + (2.0f - val) * mod * amt;

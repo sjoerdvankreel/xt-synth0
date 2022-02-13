@@ -12,13 +12,15 @@ namespace Xts {
 class GlobalDSP:
 public DSPBase<GlobalModel, SourceInput, float>
 {
-  float _amp, _lfoAmt;
+  float _amp, _keyAmt, _lfoAmt, _envAmt;
 public:
   GlobalDSP() = default;
-  GlobalDSP(GlobalModel const* model, SourceInput const* input):
+  GlobalDSP(GlobalModel const* model, SourceInput const* input) :
   DSPBase(model, input),
   _amp(Level(model->amp)),
-  _lfoAmt(Mix(model->lfoAmt)) {}
+  _keyAmt(Mix(model->keyAmt)),
+  _lfoAmt(Mix(model->lfoAmt)),
+  _envAmt(Mix(model->envAmt)) {}
 public:
   void Next(SourceDSP const& source);
   float Value() const { return _value; }

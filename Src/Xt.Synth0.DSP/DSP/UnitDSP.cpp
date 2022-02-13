@@ -53,8 +53,8 @@ UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
 float 
 UnitDSP::Mod(ModTarget tgt, float val, float mod1, float mod2) const
 {
-  if (_model->tgt1 == tgt) val = Xts::Mod(val, mod1, _amt1);
-  if (_model->tgt2 == tgt) val = Xts::Mod(val, mod2, _amt2);
+  //if (_model->tgt1 == tgt) val = Xts::Mod(val, mod1, _amt1);
+  //if (_model->tgt2 == tgt) val = Xts::Mod(val, mod2, _amt2);
   return val;
 }
 
