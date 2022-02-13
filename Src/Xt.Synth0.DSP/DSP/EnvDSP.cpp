@@ -45,7 +45,7 @@ EnvDSP::Generate(float from, float to, int len, int slp) const
   float range = to - from;
   float pos = _pos / static_cast<float>(len);
   assert(0.0f <= pos && pos <= 1.0f);
-  float mix = Mix02Exclusive(slp);
+  float mix = Mix(slp) + 1.0f;
   if (mix <= 1.0f) 
   { 
     float slope = powf(pos, mix);
@@ -92,7 +92,7 @@ EnvDSP::Params(EnvModel const& model, SourceInput const& input)
 {
   EnvParams result;
   bool sync = model.sync != 0;
-  result.s = LevelInc(model.s);
+  result.s = Level(model.s);
   result.a = sync ? SyncI(input, model.aStp) : TimeI(model.a, input.rate);
   result.d = sync ? SyncI(input, model.dStp) : TimeI(model.d, input.rate);
   result.r = sync ? SyncI(input, model.rStp) : TimeI(model.r, input.rate);

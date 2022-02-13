@@ -24,27 +24,10 @@ inline float Level(int val)
 { return static_cast<float>(val) / 256.0f; }
 inline float Mix(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
-
-inline float Mix01Exclusive(int val)
-{ return static_cast<float>(val / 256.0f); }
-inline float Mix02Exclusive(int val)
-{ return static_cast<float>(val / 128.0f); }
-inline int Mix0100Inclusive(int val)
-{ return static_cast<int>((val - 1) / 2.54f); }
-inline float Mix01Inclusive(int val)
-{ return static_cast<float>((val - 1) / 254.0f); }
-
-inline int Exp(int val)
-{ return 1 << val; }
-inline float LevelInc(int val)
-{ return static_cast<float>(val / 255.0f); }
-inline float LevelExc(int val)
-{ return static_cast<float>(val / 256.0f); }
 inline float TimeF(int val, float rate)
 { return static_cast<float>(val * val * rate / 1000.0f); }
 inline int TimeI(int val, float rate)
 { return static_cast<int>(TimeF(val, rate)); }
-
 inline float Freq(float midi)
 { return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f); }
 

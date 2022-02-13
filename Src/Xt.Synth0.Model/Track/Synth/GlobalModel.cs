@@ -39,7 +39,7 @@ namespace Xt.Synth0.Model
 
         static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 0);
         static readonly ParamInfo LfoAmtInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmt, nameof(LfoAmt), "Amt", "Amp LFO amount", 128);
-        static readonly ParamInfo EnvAmtInfo = ParamInfo.Mix(p => &((Native*)p)->envAmt, nameof(EnvAmt), "Amt", "Amp env amount", 255);
+        static readonly ParamInfo EnvAmtInfo = ParamInfo.Mix(p => &((Native*)p)->envAmt, nameof(EnvAmt), "Amt", "Amp env amount", 192);
         static readonly ParamInfo KeyAmtInfo = ParamInfo.Mix(p => &((Native*)p)->keyAmt, nameof(KeyAmt), "Key", "Key velocity amount", 128);
         static readonly ParamInfo LfoSrcInfo = ParamInfo.List<GlobalAmpLfo>(p => &((Native*)p)->lfoSrc, nameof(LfoSrc), "LFO", "Amp LFO source");
         static readonly ParamInfo EnvSrcInfo = ParamInfo.List<GlobalAmpEnv>(p => &((Native*)p)->envSrc, nameof(EnvSrc), "Env", "Amp env source");
