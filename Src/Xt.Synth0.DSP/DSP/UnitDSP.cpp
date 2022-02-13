@@ -148,18 +148,18 @@ UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
     if(p * freq >= _input->source.rate / 2.0f) break;
     __m256 allPs = _mm256_set_ps(
       p + 0.0f * step, p + 1.0f * step, p + 2.0f * step, p + 3.0f * step,
-	  p + 4.0f * step, p + 5.0f * step,	p + 6.0f * step, p + 7.0f * step);
+	    p + 4.0f * step, p + 5.0f * step,	p + 6.0f * step, p + 7.0f * step);
     __m256 belowMax = _mm256_cmp_ps(allPs, maxPs, _CMP_LE_OQ);
-	__m256 belowNyquists = _mm256_cmp_ps(_mm256_mul_ps(allPs, freqs), nyquists, _CMP_LT_OQ);
+	  __m256 belowNyquists = _mm256_cmp_ps(_mm256_mul_ps(allPs, freqs), nyquists, _CMP_LT_OQ);
     __m256 wantedPs = _mm256_blendv_ps(zeros, _mm256_blendv_ps(zeros, ones, belowMax), belowNyquists);
   	__m256 rolls = _mm256_pow_ps(allPs, logRolls);
     __m256 amps = _mm256_div_ps(ones, rolls);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
     __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
-	limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, wantedPs));
-	results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, wantedPs));
-	any = true;
+	  limits = _mm256_add_ps(limits, _mm256_mul_ps(amps, wantedPs));
+	  results = _mm256_add_ps(results, _mm256_mul_ps(partialResults, wantedPs));
+	  any = true;
   }
   for(int i = 0; i < parts && i < 8; i++)
   {
