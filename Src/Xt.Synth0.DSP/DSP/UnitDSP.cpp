@@ -79,12 +79,12 @@ UnitDSP::Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const
 float
 UnitDSP::ModPhase(ModParams const& params) const
 {
-  float base1 = params.bip1 ? 0.5f : 0.0f;
-  float base2 = params.bip2 ? 0.5f : 0.0f;
+  float base1 = params.bip1 ? 0.5f : _amt1 >= 0.0f ? 0.0f : 1.0f;
+  float base2 = params.bip1 ? 0.5f : _amt2 >= 0.0f ? 0.0f : 1.0f;
   float phase = static_cast<float>(_phase);
   if (_model->tgt1 == ModTarget::Phase) phase += Xts::Mod(base1, false, params.mod1, params.bip1, _amt1);
   if (_model->tgt2 == ModTarget::Phase) phase += Xts::Mod(base2, false, params.mod2, params.bip2, _amt2);
-  return phase;
+  return phase - std::floorf(phase);
 }
 
 void
@@ -99,7 +99,7 @@ UnitDSP::Next(SourceDSP const& source)
   float amp = Mod(ModTarget::Amp, _amp, false, params);
   float pan = BiToUni1(Mod(ModTarget::Pan, _pan, true, params));
   _phase += _incr;
-  _phase -= floor(_phase);
+  _phase -= std::floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
   _value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
 }
