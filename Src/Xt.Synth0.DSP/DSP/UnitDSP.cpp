@@ -34,14 +34,24 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
   return Xts::Freq(unit + key - base + cent);
 }
 
+ModParams
+UnitDSP::Params(SourceDSP const& source)
+{
+  bool bip1 = ModBip(source, _model->src1);
+  bool bip2 = ModBip(source, _model->src2);
+  float val1 = ModVal(source, _model->src1);
+  float val2 = ModVal(source, _model->src2);
+  return ModParams(val1, bip1, val2, bip2);
+}
+
 float
-UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
+UnitDSP::ModVal(SourceDSP const& source, ModSource mod) const
 {
   int env = static_cast<int>(ModSource::Env1);
   int lfo = static_cast<int>(ModSource::LFO1);
   switch(mod)
   {
-  case ModSource::Key: return 0.0f;
+  case ModSource::Key: return _velo;
   case ModSource::LFO1: case ModSource::LFO2:
   return source.Lfos()[static_cast<int>(mod) - lfo].Value();
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
@@ -50,11 +60,19 @@ UnitDSP::Mod(SourceDSP const& source, ModSource mod) const
   }
 }
 
-float 
-UnitDSP::Mod(ModTarget tgt, float val, float mod1, float mod2) const
+bool
+UnitDSP::ModBip(SourceDSP const& source, ModSource mod) const
 {
-  //if (_model->tgt1 == tgt) val = Xts::Mod(val, mod1, _amt1);
-  //if (_model->tgt2 == tgt) val = Xts::Mod(val, mod2, _amt2);
+  if (mod == ModSource::LFO1 && source.Lfos()[0].Bipolar()) return true;
+  if (mod == ModSource::LFO2 && source.Lfos()[1].Bipolar()) return true;
+  return false;
+}
+
+float 
+UnitDSP::Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const
+{
+  if (_model->tgt1 == tgt) val = Xts::Mod(val, bip, params.mod1, params.bip1, _amt1);
+  if (_model->tgt2 == tgt) val = Xts::Mod(val, bip, params.mod2, params.bip2, _amt2);
   return val;
 }
 
@@ -63,13 +81,12 @@ UnitDSP::Next(SourceDSP const& source)
 {
   _value = AudioOutput();
   if (!_model->on) return;
-  float mod1 = Mod(source, _model->src1);
-  float mod2 = Mod(source, _model->src2);
+  ModParams params = Params(source);
   float freq = _freq;// ModulateFreq(mod1, mod2);
   float phase = _phase;// ModulatePhase(mod1, mod2);
-  float sample = Generate(phase, freq, mod1, mod2);
-  float pan = Mod(ModTarget::Pan, _pan, mod1, mod2);
-  float amp = Mod(ModTarget::Amp, _amp, mod1, mod2);
+  float sample = Generate(phase, freq, params);
+  float pan = Mod(ModTarget::Pan, _pan, true, params);
+  float amp = Mod(ModTarget::Amp, _amp, false, params);
   _phase += _incr;
   _phase -= floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
@@ -77,18 +94,18 @@ UnitDSP::Next(SourceDSP const& source)
 }
 
 float
-UnitDSP::Generate(float phase, float freq, float mod1, float mod2)
+UnitDSP::Generate(float phase, float freq, ModParams const& params)
 {
   switch (_model->type)
   {
-  case UnitType::Add: return GenerateAdd(phase, freq, mod1, mod2);
-  case UnitType::Blep: return GenerateBlep(phase, freq, mod1, mod2);
+  case UnitType::Add: return GenerateAdd(phase, freq, params);
+  case UnitType::Blep: return GenerateBlep(phase, freq, params);
   default: assert(false); return 0.0f;
   }
 }
 
 float
-UnitDSP::GenerateBlep(float phase, float freq, float mod1, float mod2)
+UnitDSP::GenerateBlep(float phase, float freq, ModParams const& params)
 {
   float result = 0.0f;
   const double BlepLeaky = 1.0e-4;
@@ -99,7 +116,8 @@ UnitDSP::GenerateBlep(float phase, float freq, float mod1, float mod2)
     assert(-1.0f <= result && result <= 1.0f);
     return result;
   }
-  float modPw = Mod(ModTarget::Pw, _pw, mod1, mod2);
+
+  float modPw = Mod(ModTarget::Pw, _pw, false, params);
   float pwPhase = phase + 0.5f - modPw * 0.5f;
   pwPhase -= (int)pwPhase;
   if(_model->blepType == BlepType::Pulse)
@@ -109,8 +127,8 @@ UnitDSP::GenerateBlep(float phase, float freq, float mod1, float mod2)
     assert(-1.0f <= result && result <= 1.0f);
     return result;
   }
-  if(_model->blepType != BlepType::Tri)
-    return assert(false), 0.0f;
+
+  if(_model->blepType != BlepType::Tri) return assert(false), 0.0f;
   float saw = GenerateBlepSaw(phase + 0.25f, inc);
   float pulse = (saw - GenerateBlepSaw(pwPhase + 0.25f, inc)) * 0.5f;
   _blepTri = (1.0 - BlepLeaky) * _blepTri + inc * pulse;
@@ -120,7 +138,7 @@ UnitDSP::GenerateBlep(float phase, float freq, float mod1, float mod2)
 }
 
 float 
-UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
+UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
 {
   bool any = false;
   float limit = 0.0;
@@ -128,7 +146,7 @@ UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
-  float logRoll = Mod(ModTarget::Roll, _roll, mod1, mod2);
+  float logRoll = Mod(ModTarget::Roll, _roll, true, params);
 
   __m256 ones = _mm256_set1_ps(1.0f);
   __m256 zeros = _mm256_set1_ps(0.0f);
@@ -202,7 +220,7 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
   output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
   output.hSplits->emplace_back(HSplit(samples, L""));
   for(int i = 0; i < 6; i++)
-	output.hSplits->emplace_back(HSplit(samples * i / 6, std::to_wstring(i) + L"\u03C0"));
+	  output.hSplits->emplace_back(HSplit(samples * i / 6, std::to_wstring(i) + L"\u03C0"));
 }
 
 } // namespace Xts

@@ -8,32 +8,45 @@
 
 namespace Xts {
 
+struct ModParams
+{
+  bool bip1, bip2;
+  float mod1, mod2;
+public:
+  ModParams(ModParams const&) = default;
+  ModParams(float mod1, bool bip1, float mod2, bool bip2):
+  bip1(bip1), bip2(bip2), mod1(mod1), mod2(mod2) {}
+};
+
 class UnitDSP: 
 public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
   static constexpr float MaxPw = 0.975f;
   double _phase, _blepTri;
-  float _amp, _pw, _pan, _amt1, _amt2, _roll, _freq, _incr;
+  float _amp, _pan, _amt1, _amt2, _velo, _pw, _roll, _freq, _incr;
 public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
   DSPBase(model, input), 
   _phase(0.0), _blepTri(0.0),
   _amp(Level(_model->amp)), 
-  _pw(Level(_model->pw) * MaxPw),
   _pan(MixUni1(_model->pan)),
   _amt1(MixBi2(_model->amt1)),
   _amt2(MixBi2(_model->amt2)),
+  _velo(Level(input->key.amp)),
+  _pw(Level(_model->pw) * MaxPw),
   _roll(MixUni2(_model->addRoll)),
   _freq(Freq(*_model, _input->key)),
   _incr(_freq / input->source.rate) {}
 private:
   static float Freq(UnitModel const& model, KeyInput const& input);
-  float Mod(SourceDSP const& source, ModSource mod) const;
-  float Mod(ModTarget tgt, float val, float mod1, float mod2) const;
-  float Generate(float phase, float freq, float mod1, float mod2);
-  float GenerateBlep(float phase, float freq, float mod1, float mod2);
-  float GenerateAdd(float phase, float freq, float mod1, float mod2) const;
+  ModParams Params(SourceDSP const& source);
+  bool ModBip(SourceDSP const& source, ModSource mod) const;
+  float ModVal(SourceDSP const& source, ModSource mod) const;
+  float Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const;
+  float Generate(float phase, float freq, ModParams const& params);
+  float GenerateBlep(float phase, float freq, ModParams const& params);
+  float GenerateAdd(float phase, float freq, ModParams const& params) const;
 public:
   void Next(SourceDSP const& source);
   AudioOutput Value() const { return _value; }
