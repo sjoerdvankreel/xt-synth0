@@ -76,6 +76,17 @@ UnitDSP::Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const
   return val;
 }
 
+float
+UnitDSP::ModPhase(ModParams const& params) const
+{
+  float base1 = params.bip1 ? 0.5f : 0.0f;
+  float base2 = params.bip2 ? 0.5f : 0.0f;
+  float phase = static_cast<float>(_phase);
+  if (_model->tgt1 == ModTarget::Phase) phase += Xts::Mod(base1, false, params.mod1, params.bip1, _amt1);
+  if (_model->tgt2 == ModTarget::Phase) phase += Xts::Mod(base2, false, params.mod2, params.bip2, _amt2);
+  return phase;
+}
+
 void
 UnitDSP::Next(SourceDSP const& source)
 {
@@ -83,7 +94,7 @@ UnitDSP::Next(SourceDSP const& source)
   if (!_model->on) return;
   ModParams params = Params(source);
   float freq = _freq;// ModulateFreq(mod1, mod2);
-  float phase = _phase;// ModulatePhase(mod1, mod2);
+  float phase = ModPhase(params);
   float sample = Generate(phase, freq, params);
   float amp = Mod(ModTarget::Amp, _amp, false, params);
   float pan = BiToUni1(Mod(ModTarget::Pan, _pan, true, params));

@@ -39,13 +39,14 @@ public:
   _incr(_freq / input->source.rate) {}
 private:
   static float Freq(UnitModel const& model, KeyInput const& input);
-  ModParams Params(SourceDSP const& source);
-  bool ModBip(SourceDSP const& source, ModSource mod) const;
-  float ModVal(SourceDSP const& source, ModSource mod) const;
-  float Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const;
   float Generate(float phase, float freq, ModParams const& params);
   float GenerateBlep(float phase, float freq, ModParams const& params);
   float GenerateAdd(float phase, float freq, ModParams const& params) const;
+  ModParams Params(SourceDSP const& source);
+  float ModPhase(ModParams const& params) const;
+  bool ModBip(SourceDSP const& source, ModSource mod) const;
+  float ModVal(SourceDSP const& source, ModSource mod) const;
+  float Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const;
 public:
   void Next(SourceDSP const& source);
   AudioOutput Value() const { return _value; }
