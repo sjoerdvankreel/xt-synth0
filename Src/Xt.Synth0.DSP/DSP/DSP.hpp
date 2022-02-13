@@ -80,20 +80,22 @@ inline int SyncI(SourceInput const& input, int val)
 inline float 
 Mod(float val, bool vbip, float mod, bool mbip, float amt)
 {
+  float result = 0.0f;
   assert(-1.0f <= amt && amt <= 1.0f);
   assert(vbip || 0.0f <= val && val <= 1.0f);
   assert(mbip || 0.0f <= mod && mod <= 1.0f);
   assert(!vbip || -1.0f <= val && val <= 1.0f);
   assert(!mbip || -1.0f <= mod && mod <= 1.0f);
   if(amt == 0.0f) return val;
-  if(mbip && vbip) return val + val * mod * amt * (1.0f - std::fabs(val));
-  if(mbip && !vbip) return val + mod * amt * (0.5f - std::fabs(val - 0.5f));
-  if(!mbip && !vbip && amt < 0.0f) return val + val * mod * amt;
-  if(!mbip && !vbip && amt > 0.0f) return val + (1.0f - val) * mod * amt;
-  if(!mbip && vbip && amt > 0.0f) return val + (2.0f - val) * mod * amt;
-  if (!mbip && vbip && amt < 0.0f) return val + val * mod * amt * 2.0f;
-  assert(false);
-  return 0.0f;
+  if(mbip && vbip) result = val + mod * amt * (1.0f - std::fabs(val));
+  if(mbip && !vbip) result = val + mod * amt * (0.5f - std::fabs(val - 0.5f));
+  if(!mbip && !vbip && amt < 0.0f) result = val + val * mod * amt;
+  if(!mbip && !vbip && amt > 0.0f) result = val + (1.0f - val) * mod * amt;
+  if(!mbip && vbip && amt > 0.0f) result = val + (1.0f - val) * mod * amt;
+  if(!mbip && vbip && amt < 0.0f) result = val + (val + 1.0f) * mod * amt;
+  assert(vbip || 0.0f <= result && result <= 1.0f);
+  assert(!vbip || -1.0f <= result && result <= 1.0f);
+  return result;
 }
 
 } // namespace Xts
