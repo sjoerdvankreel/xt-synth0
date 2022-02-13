@@ -18,9 +18,9 @@ public:
   GlobalDSP(GlobalModel const* model, SourceInput const* input) :
   DSPBase(model, input),
   _amp(Level(model->amp)),
-  _keyAmt(Mix(model->keyAmt)),
-  _lfoAmt(Mix(model->lfoAmt)),
-  _envAmt(Mix(model->envAmt)) {}
+  _keyAmt(MixBi2(model->keyAmt)),
+  _lfoAmt(MixBi2(model->lfoAmt)),
+  _envAmt(MixBi2(model->envAmt)) {}
 public:
   void Next(SourceDSP const& source);
   float Value() const { return _value; }

@@ -13,18 +13,18 @@ public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
   static constexpr float MaxPw = 0.975f;
   double _phase, _blepTri;
-  float _pan, _amt1, _amt2, _amp, _roll, _pw, _freq, _incr;
+  float _amp, _pw, _pan, _amt1, _amt2, _roll, _freq, _incr;
 public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, AudioInput const* input):
   DSPBase(model, input), 
   _phase(0.0), _blepTri(0.0),
-  _pan(Mix(_model->pan)),
-  _amt1(Mix(_model->amt1)), 
-  _amt2(Mix(_model->amt2)),
   _amp(Level(_model->amp)), 
-  _roll(Mix(_model->addRoll)),
   _pw(Level(_model->pw) * MaxPw),
+  _pan(MixUni1(_model->pan)),
+  _amt1(MixBi2(_model->amt1)),
+  _amt2(MixBi2(_model->amt2)),
+  _roll(MixUni2(_model->addRoll)),
   _freq(Freq(*_model, _input->key)),
   _incr(_freq / input->source.rate) {}
 private:

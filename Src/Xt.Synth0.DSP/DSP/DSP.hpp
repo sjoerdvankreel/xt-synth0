@@ -22,7 +22,13 @@ void Fft(
 
 inline float Level(int val)
 { return static_cast<float>(val) / 256.0f; }
-inline float Mix(int val)
+inline float MixUni1(int val)
+{ return static_cast<float>(val - 1) / 254.0f; }
+inline float MixUni2(int val)
+{ return static_cast<float>(val - 1) / 127.0f; }
+inline float MixBi1(int val)
+{ return static_cast<float>(val - 128) / 254.0f; }
+inline float MixBi2(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
 inline float TimeF(int val, float rate)
 { return static_cast<float>(val * val * rate / 1000.0f); }
