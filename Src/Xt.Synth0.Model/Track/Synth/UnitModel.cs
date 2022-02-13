@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public enum UnitType { Add, Blep }
+	public enum UnitType { Sin, Add, Blep }
 	public enum BlepType { Saw, Pulse, Tri }
 	public enum ModSource { Key, LFO1, LFO2, Env1, Env2, Env3 }
 	public enum ModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase }

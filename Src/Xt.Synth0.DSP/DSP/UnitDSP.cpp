@@ -109,6 +109,7 @@ UnitDSP::Generate(float phase, float freq, ModParams const& params)
 {
   switch (_model->type)
   {
+  case UnitType::Sin: return std::sinf(phase * 2.0f * PI);
   case UnitType::Add: return GenerateAdd(phase, freq, params);
   case UnitType::Blep: return GenerateBlep(phase, freq, params);
   default: assert(false); return 0.0f;

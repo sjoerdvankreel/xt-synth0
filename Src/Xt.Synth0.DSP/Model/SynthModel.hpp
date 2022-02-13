@@ -76,7 +76,7 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
-enum class UnitType { Add, Blep };
+enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
 enum class ModSource { Key, LFO1, LFO2, Env1, Env2, Env3 };
 enum class ModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase };

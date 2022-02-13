@@ -11,25 +11,14 @@ random lfo
 noise generator
 filter lfos
 lfo NOT key sync
-phase modulation
 init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters, envelopes
 reconsider automating running voices
 init with streampos / derive stuff from streampos ?
 show automation range error in UI
-connect pattern amp->velocity
 xtaudio use iaudioclient->reset
 niet zomaar het model eroverheen kopieren zonder de state te updaten
 dump stacktrace
 save file backup on crash
-velocity to global amp
 filter aliasing caused by modulation (filter lfos? oversample?)
-lfo allow both uni and bipolar, env always uni, better freqmod range
-share modulation code
-level always 01exclusive
-mix always -11inclusive
-mix ui -127 to 127
-velocity to global amp
-allow negative mod amount (mix)
-connect key modsource
-sine osc
+better freqmod range
