@@ -51,7 +51,7 @@ UnitDSP::ModVal(SourceDSP const& source, ModSource mod) const
   int lfo = static_cast<int>(ModSource::LFO1);
   switch(mod)
   {
-  case ModSource::Key: return _input->key.amp;
+  case ModSource::Velo: return _input->key.amp;
   case ModSource::LFO1: case ModSource::LFO2:
   return source.Lfos()[static_cast<int>(mod) - lfo].Value();
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
