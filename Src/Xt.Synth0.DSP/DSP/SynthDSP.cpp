@@ -19,7 +19,7 @@ SynthDSP::Next(SourceDSP const& source)
 SynthDSP::
 SynthDSP(SynthModel const* model, AudioInput const* input):
 DSPBase(model, input), _source(&model->source, &input->source), 
-_global(&model->global, &input->source), _units()
+_global(&model->global, input), _units()
 {
   for (int u = 0; u < UnitCount; u++)
     _units[u] = UnitDSP(&model->units[u], input);
@@ -38,7 +38,7 @@ SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput con
   output.max = 1.0f;
   output.min = -1.0f;
   output.rate = plotRate;
-  KeyInput key(4, UnitNote::C);
+  KeyInput key(4, UnitNote::C, 1.0f);
   SourceInput sourceInput(plotRate, input.bpm);
   AudioInput audio(sourceInput, key);
   SynthDSP dsp(&model, &audio);

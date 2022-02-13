@@ -187,7 +187,7 @@ SeqDSP::Trigger(SeqInput const& input)
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-      KeyInput keyInput(key.oct, unote);
+      KeyInput keyInput(key.oct, unote, Level(key.amp));
       SourceInput sourceInput(input.rate, bpm);
       _inputs[voice] = AudioInput(sourceInput, keyInput);
       _dsps[voice] = SynthDSP(&_synths[voice], &_inputs[voice]);

@@ -177,7 +177,7 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
 {
   const float cycles = 3.0f;
   if (!model.on) return;
-  KeyInput key(4, UnitNote::C);
+  KeyInput key(4, UnitNote::C, 1.0f);
   output.max = 1.0f;
   output.min = -1.0f;
   output.freq = Freq(model, key);

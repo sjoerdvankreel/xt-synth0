@@ -51,17 +51,6 @@ public:
   PlotOutput(PlotOutput const&) = delete;
 };
 
-struct KeyInput
-{
-  int oct;
-  UnitNote note;
-public:
-  KeyInput() = default;
-  KeyInput(KeyInput const&) = default;
-  KeyInput(int oct, UnitNote note):
-  oct(oct), note(note) {}
-};
-
 struct SourceInput
 {
   float bpm, rate;
@@ -70,6 +59,18 @@ public:
   SourceInput(SourceInput const&) = default;
   SourceInput(float rate, float bpm): 
   rate(rate), bpm(bpm) {}
+};
+
+struct KeyInput
+{
+  int oct;
+  float amp;
+  UnitNote note;
+public:
+  KeyInput() = default;
+  KeyInput(KeyInput const&) = default;
+  KeyInput(int oct, UnitNote note, float amp):
+  oct(oct), amp(amp), note(note) {}
 };
 
 struct AudioInput
@@ -157,7 +158,7 @@ requires(T& dsp)
 { { dsp.Next() } -> std::same_as<void>; };
 
 template <class T, class Model> 
-concept StatePipeDSP = PlottableDependentDSP<T, Model, SourceInput, float> &&
+concept StatePipeDSP = PlottableDependentDSP<T, Model, AudioInput, float> &&
 requires(T& dsp, SourceDSP const& source)
 { { dsp.Next(source) } -> std::same_as<void>; };
 

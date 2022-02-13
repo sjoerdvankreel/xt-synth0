@@ -24,8 +24,10 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
   output.min = 0.0f;
   output.max = 1.0f;
   output.rate = plotRate;
+  KeyInput keyInput(4, UnitNote::C, 1.0f);
   SourceInput sourceInput(plotRate, input.bpm);
-  GlobalDSP dsp(&model, &sourceInput);
+  AudioInput audioInput(sourceInput, keyInput);
+  GlobalDSP dsp(&model, &audioInput);
   SourceDSP sourceDsp(&source, &sourceInput);
   while (i++ < maxSamples)
   {

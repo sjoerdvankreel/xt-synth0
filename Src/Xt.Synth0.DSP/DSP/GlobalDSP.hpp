@@ -10,16 +10,15 @@
 namespace Xts {
 
 class GlobalDSP:
-public DSPBase<GlobalModel, SourceInput, float>
+public DSPBase<GlobalModel, AudioInput, float>
 {
-  float _amp, _keyAmt, _lfoAmt;
+  float _lfoAmt, _amp;
 public:
   GlobalDSP() = default;
-  GlobalDSP(GlobalModel const* model, SourceInput const* input) :
+  GlobalDSP(GlobalModel const* model, AudioInput const* input) :
   DSPBase(model, input),
-  _amp(Level(model->amp)),
-  _keyAmt(MixBi2(model->keyAmt)),
-  _lfoAmt(MixBi2(model->lfoAmt)) {}
+  _lfoAmt(MixBi2(model->lfoAmt)),
+  _amp(Level(model->amp) * input->key.amp) {}
 public:
   void Next(SourceDSP const& source);
   float Value() const { return _value; }
@@ -27,7 +26,7 @@ public:
   static void Plot(GlobalModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
 };
 static_assert(StatePipeDSP<GlobalDSP, GlobalModel>);
-static_assert(FiniteDependentDSP<GlobalDSP, GlobalModel, SourceInput, float>);
+static_assert(FiniteDependentDSP<GlobalDSP, GlobalModel, AudioInput, float>);
 
 } // namespace Xts
 #endif // XTS_GLOBAL_DSP_HPP
