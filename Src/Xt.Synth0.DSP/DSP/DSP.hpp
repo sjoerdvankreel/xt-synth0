@@ -12,6 +12,7 @@
 
 namespace Xts {
 
+inline float Eps = 1e-3f;
 inline float MaxLevel = 0.95f;
 inline float PI = static_cast<float>(3.14159265358979323846);
 
@@ -28,6 +29,8 @@ inline float Level(int val)
 { return static_cast<float>(val) / 256.0f; }
 inline float Mix(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
+inline float EpsToZero(float val)
+{ return -Eps <= val && val <= Eps? 0.0f: val; }
 inline float TimeF(int val, float rate)
 { return static_cast<float>(val * val * rate / 1000.0f); }
 inline int TimeI(int val, float rate)
@@ -68,6 +71,7 @@ inline float
 Mod(float val, bool vbip, float mod, bool mbip, float amt)
 {
   float range = 0.0f;
+  val = EpsToZero(val);
   assert(-1.0f <= amt && amt <= 1.0f);
   assert(vbip || 0.0f <= val && val <= 1.0f);
   assert(mbip || 0.0f <= mod && mod <= 1.0f);
