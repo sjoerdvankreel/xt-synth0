@@ -128,7 +128,7 @@ UnitDSP::GenerateAdd(float phase, float freq, float mod1, float mod2) const
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
-  float logRoll = Mod(ModTarget::Roll, _roll, mod1, mod2) * 2.0f;
+  float logRoll = Mod(ModTarget::Roll, _roll, mod1, mod2);
 
   __m256 ones = _mm256_set1_ps(1.0f);
   __m256 zeros = _mm256_set1_ps(0.0f);

@@ -32,3 +32,4 @@ mix ui -127 to 127
 velocity to global amp
 allow negative mod amount (mix)
 connect key modsource
+sine osc
