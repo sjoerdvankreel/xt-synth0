@@ -7,20 +7,17 @@
 
 namespace Xts {
 
-struct EnvParams
-{
-  float s;
-  int dly, a, hld, d, r;
-public:
-  EnvParams() = default;
-  EnvParams(EnvParams const&) = default;
-};
+static const double MaxEnv = 0.99;
 
-void
-EnvDSP::NextStage(EnvStage stage)
+EnvDSP::
+EnvDSP(EnvModel const* model, SourceInput const* input) :
+DSPBase(model, input), 
+_pos(0), _max(0.0f), _stage(EnvStage::Dly),
+_params(Params(*model, *input)),
+_slp(0.0), _lin(0.0), _log(0.0)
 {
-  _pos = 0;
-  _stage = stage;
+  NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
+  CycleStage(model->type);
 }
 
 void
@@ -28,48 +25,28 @@ EnvDSP::Release()
 {
   if (_model->on && _stage >= EnvStage::R) return;
   NextStage(!_model->on ? EnvStage::End : EnvStage::R);
-  CycleStage(_model->type, Params(*_model, *_input));
+  CycleStage(_model->type);
 }
 
-EnvDSP::
-EnvDSP(EnvModel const* model, SourceInput const* input) :
-DSPBase(model, input), _pos(0), _level(0.0f), _stage(EnvStage::Dly)
+void
+EnvDSP::NextStage(EnvStage stage)
 {
-  NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
-  CycleStage(model->type, Params(*model, *input));
-}
-
-float
-EnvDSP::Generate(float from, float to, int len, int slp) const
-{
-  float range = to - from;
-  float pos = _pos / static_cast<float>(len);
-  assert(0.0f <= pos && pos <= 1.0f);
-  float mix = BiToUni2(Mix(slp));
-  if (mix <= 1.0f) 
-  { 
-    float slope = powf(pos, mix);
-    assert(0.0f <= slope && slope <= 1.0f);
-    return from + range * slope;
-  }
-  float slope = powf(1.0f - pos, 2.0f - mix);
-  assert(0.0f <= slope && slope <= 1.0f);
-  return from + range * (1.0f - slope);
-}
-
-float
-EnvDSP::Generate(EnvParams const& params) const
-{
-  switch (_stage)
+  int len;
+  _pos = 0;
+  _slp = 0.0;
+  _lin = 0.0;
+  _log = 0.0;
+  _stage = stage;
+  switch (stage)
   {
-  case EnvStage::Dly: return 0.0f; 
-  case EnvStage::Hld: return 1.0f; 
-  case EnvStage::S: return params.s;
-  case EnvStage::A: return Generate(0.0, 1.0, params.a, _model->aSlp);
-  case EnvStage::R: return Generate(_level, 0.0, params.r, _model->rSlp);
-  case EnvStage::D: return Generate(1.0, params.s, params.d, _model->dSlp);
-  default: assert(false); return 0.0f;
+  case EnvStage::A: len = _params.a; break;
+  case EnvStage::D: len = _params.d; break;
+  case EnvStage::R: len = _params.r; break;
+  default: len = -1; break;
   }
+  if (len == -1) return;
+  _lin = MaxEnv / len;
+  _log = std::pow(1.0 + MaxEnv, 1.0 / static_cast<double>(len));
 }
 
 void
@@ -78,13 +55,39 @@ EnvDSP::Next()
   _value = 0.0f;
   const float threshold = 1.0E-5f;
   if (!_model->on || _stage == EnvStage::End) return;
-  EnvParams params = Params(*_model, *_input);
-  _value = Generate(params);
+  _value = Generate();
   assert(0.0f <= _value && _value <= 1.0f);
   if (_stage != EnvStage::End) _pos++;
-  if (_stage < EnvStage::R) _level = _value;
+  if (_stage < EnvStage::R) _max = _value;
   if (_stage > EnvStage::A && _value <= threshold) NextStage(EnvStage::End);
-  CycleStage(_model->type, params);
+  CycleStage(_model->type);
+}
+
+float
+EnvDSP::Generate(float from, float to, int len, SlopeType type)
+{
+  double slp = type == SlopeType::Inv ? (1.0 - _slp) : _slp;
+  float val = from + static_cast<float>(_slp) * (to - from);
+  assert(0.0f <= val && val <= 1.0f);
+  if (type == SlopeType::Lin) _slp += _lin;
+  else _slp *= _log;
+  assert(0.0 <= _slp && _slp <= 1.0);
+  return val;
+}
+
+float
+EnvDSP::Generate()
+{
+  switch (_stage)
+  {
+  case EnvStage::Dly: return 0.0f;
+  case EnvStage::Hld: return 1.0f;
+  case EnvStage::S: return _params.s;
+  case EnvStage::A: return Generate(0.0, 1.0, _params.a, _model->aSlp);
+  case EnvStage::R: return Generate(_max, 0.0, _params.r, _model->rSlp);
+  case EnvStage::D: return Generate(1.0, _params.s, _params.d, _model->dSlp);
+  default: assert(false); return 0.0f;
+  }
 }
 
 EnvParams
@@ -102,15 +105,15 @@ EnvDSP::Params(EnvModel const& model, SourceInput const& input)
 }
 
 void
-EnvDSP::CycleStage(EnvType type, EnvParams const& params)
+EnvDSP::CycleStage(EnvType type)
 {
-  if (_stage == EnvStage::Dly && _pos >= params.dly) NextStage(EnvStage::A);
-  if (_stage == EnvStage::A && _pos >= params.a) NextStage(EnvStage::Hld);
-  if (_stage == EnvStage::Hld && _pos >= params.hld) NextStage(EnvStage::D);
-  if (_stage == EnvStage::D && _pos >= params.d) NextStage(EnvStage::S);
-  if (_stage == EnvStage::S && type == EnvType::DAHDR) _level = std::max(_level, params.s);
+  if (_stage == EnvStage::Dly && _pos >= _params.dly) NextStage(EnvStage::A);
+  if (_stage == EnvStage::A && _pos >= _params.a) NextStage(EnvStage::Hld);
+  if (_stage == EnvStage::Hld && _pos >= _params.hld) NextStage(EnvStage::D);
+  if (_stage == EnvStage::D && _pos >= _params.d) NextStage(EnvStage::S);
+  if (_stage == EnvStage::S && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
   if (_stage == EnvStage::S && type == EnvType::DAHDR) NextStage(EnvStage::R);
-  if (_stage == EnvStage::R && _pos >= params.r) NextStage(EnvStage::End);
+  if (_stage == EnvStage::R && _pos >= _params.r) NextStage(EnvStage::End);
 }
 
 void

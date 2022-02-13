@@ -6,23 +6,33 @@
 
 namespace Xts {
 
-struct EnvParams;
+struct EnvParams
+{
+  float s;
+  int dly, a, hld, d, r;
+public:
+  EnvParams() = default;
+  EnvParams(EnvParams const&) = default;
+};
+
 enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
 class EnvDSP:
 public DSPBase<EnvModel, SourceInput, float>
 {
   int _pos;
-  float _level;
+  float _max;
   EnvStage _stage;
+  EnvParams _params;
+  double _slp, _lin, _log;
 public:
   EnvDSP() = default;
   EnvDSP(EnvModel const* model, SourceInput const* input);
 private:
+  float Generate();
+  void CycleStage(EnvType type);
   void NextStage(EnvStage stage);
-  float Generate(EnvParams const& params) const;
-  void CycleStage(EnvType type, EnvParams const& params);
-  float Generate(float from, float to, int len, int slp) const;
+  float Generate(float from, float to, int len, SlopeType type);
   static EnvParams Params(EnvModel const& model, SourceInput const& input);
 public:
   void Next();
