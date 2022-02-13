@@ -67,7 +67,7 @@ float
 EnvDSP::Generate(float from, float to, int len, SlopeType type)
 {
   double slp = type == SlopeType::Inv ? (1.0 - _slp) : _slp;
-  float val = from + static_cast<float>(_slp) * (to - from);
+  float val = from + static_cast<float>(slp) * (to - from);
   assert(0.0f <= val && val <= 1.0f);
   if (type == SlopeType::Lin) _slp += _lin;
   else _slp *= _log;
