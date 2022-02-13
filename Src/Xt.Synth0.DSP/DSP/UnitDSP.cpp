@@ -24,16 +24,6 @@ GenerateBlepSaw(float phase, float inc)
   return saw;
 }
 
-float
-UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
-{
-  float cent = Mix(model.dtn) * 0.5f;
-  int base = 4 * 12 + static_cast<int>(UnitNote::C);
-  int key = input.oct * 12 + static_cast<int>(input.note);
-  int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
-  return Xts::Freq(unit + key - base + cent);
-}
-
 ModParams
 UnitDSP::Params(SourceDSP const& source)
 {
@@ -42,6 +32,16 @@ UnitDSP::Params(SourceDSP const& source)
   float val1 = ModVal(source, _model->src1);
   float val2 = ModVal(source, _model->src2);
   return ModParams(val1, bip1, val2, bip2);
+}
+
+float
+UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
+{
+  float cent = Mix(model.dtn) * 0.5f;
+  int base = 4 * 12 + static_cast<int>(UnitNote::C);
+  int key = input.oct * 12 + static_cast<int>(input.note);
+  int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
+  return Xts::Freq(unit + key - base + cent);
 }
 
 float
@@ -76,6 +76,7 @@ UnitDSP::Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const
   return val;
 }
 
+// https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 float
 UnitDSP::ModPhase(ModParams const& params) const
 {
