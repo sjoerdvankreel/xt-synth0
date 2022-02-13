@@ -13,7 +13,7 @@ namespace Xt.Synth0.Model
         internal ref struct Native
         {
             internal int envSrc, lfoSrc;
-            internal int amp, keyAmt, lfoAmt, envAmt;
+            internal int amp, keyAmt, lfoAmt, pad__;
         }
 
         public Param Amp { get; } = new(AmpInfo);
@@ -21,7 +21,6 @@ namespace Xt.Synth0.Model
         public Param LfoSrc { get; } = new(LfoSrcInfo);
         public Param LfoAmt { get; } = new(LfoAmtInfo);
         public Param EnvSrc { get; } = new(EnvSrcInfo);
-        public Param EnvAmt { get; } = new(EnvAmtInfo);
 
         public int Index => 0;
         public int Columns => 3;
@@ -34,12 +33,11 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { Amp, 0 }, { LfoSrc, 1 }, { LfoAmt, 2 },
-            { KeyAmt, 3 }, { EnvSrc, 4 }, { EnvAmt, 5 }
+            { EnvSrc, 4 }, { KeyAmt, 5 }
         };
 
-        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 0);
+        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 128);
         static readonly ParamInfo LfoAmtInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmt, nameof(LfoAmt), "Amt", "Amp LFO amount", 128);
-        static readonly ParamInfo EnvAmtInfo = ParamInfo.Mix(p => &((Native*)p)->envAmt, nameof(EnvAmt), "Amt", "Amp env amount", 192);
         static readonly ParamInfo KeyAmtInfo = ParamInfo.Mix(p => &((Native*)p)->keyAmt, nameof(KeyAmt), "Key", "Key velocity amount", 128);
         static readonly ParamInfo LfoSrcInfo = ParamInfo.List<GlobalAmpLfo>(p => &((Native*)p)->lfoSrc, nameof(LfoSrc), "LFO", "Amp LFO source");
         static readonly ParamInfo EnvSrcInfo = ParamInfo.List<GlobalAmpEnv>(p => &((Native*)p)->envSrc, nameof(EnvSrc), "Env", "Amp env source");
