@@ -94,10 +94,15 @@ float
 UnitDSP::ModFreq(ModParams const& params) const
 {
   float result = _freq;
-  float freqRange = 10000.0f;
+  float minFreq = 10.0f;
+  float maxFreq = 10000.0f;
   float pitchRange = 0.02930223f;
+  float freqRange = maxFreq - minFreq;
+  float freqBase = (std::max(minFreq, std::min(_freq, maxFreq)) - minFreq) / freqRange;
   if (_model->tgt1 == ModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod1, params.bip1, _amt1) * pitchRange;
+  if (_model->tgt1 == ModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod1, params.bip1, _amt1) * freqRange;
   if (_model->tgt2 == ModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod2, params.bip2, _amt2) * pitchRange;
+  if (_model->tgt2 == ModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod2, params.bip2, _amt1) * freqRange;
   assert(result > 0.0f);
   return result;
 }
