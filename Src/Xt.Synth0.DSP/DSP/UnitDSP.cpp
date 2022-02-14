@@ -204,7 +204,7 @@ UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
 	  __m256 belowNyquists = _mm256_cmp_ps(_mm256_mul_ps(allPs, freqs), nyquists, _CMP_LT_OQ);
     __m256 wantedPs = _mm256_blendv_ps(zeros, _mm256_blendv_ps(zeros, ones, belowMax), belowNyquists);
     if (roll >= 0.0f) psRolls = _mm256_mul_ps(allPs, _mm256_add_ps(ones, _mm256_mul_ps(_mm256_sub_ps(allPs, ones), rolls)));
-    else psRolls = ones;
+    else psRolls = _mm256_add_ps(ones, _mm256_mul_ps(_mm256_sub_ps(allPs, ones), _mm256_add_ps(rolls, ones)));
     __m256 amps = _mm256_div_ps(ones, psRolls);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
