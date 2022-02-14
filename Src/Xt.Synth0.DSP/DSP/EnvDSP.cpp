@@ -29,28 +29,6 @@ EnvDSP::Release()
 }
 
 void
-EnvDSP::NextStage(EnvStage stage)
-{
-  int len;
-  bool lin;
-  _pos = 0;
-  _slp = 0.0;
-  _lin = 0.0;
-  _log = 0.0;
-  _stage = stage;
-  switch (stage)
-  {
-  case EnvStage::A: len = _params.a; lin = _model->aSlp == SlopeType::Lin; break;
-  case EnvStage::D: len = _params.d; lin = _model->dSlp == SlopeType::Lin; break;
-  case EnvStage::R: len = _params.r; lin = _model->rSlp == SlopeType::Lin; break;
-  default: len = -1; lin = false;  break;
-  }
-  if(len == -1) return;
-  if(lin) _slp = 0.0f, _lin = MaxEnv / len;
-  else _slp = 1.0f, _log = std::pow(1.0 + MaxEnv, 1.0 / static_cast<double>(len));
-}
-
-void
 EnvDSP::Next()
 {
   _value = 0.0f;
@@ -123,6 +101,29 @@ EnvDSP::CycleStage(EnvType type)
   if (_stage == EnvStage::S && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
   if (_stage == EnvStage::S && type == EnvType::DAHDR) NextStage(EnvStage::R);
   if (_stage == EnvStage::R && _pos >= _params.r) NextStage(EnvStage::End);
+}
+
+void
+EnvDSP::NextStage(EnvStage stage)
+{
+  int len;
+  SlopeType type;
+  _pos = 0;
+  _stage = stage;
+  switch (stage)
+  {
+  case EnvStage::A: len = _params.a; type = _model->aSlp; break;
+  case EnvStage::D: len = _params.d; type = _model->dSlp; break;
+  case EnvStage::R: len = _params.r; type = _model->rSlp; break;
+  default: len = -1; type = SlopeType::Lin;  break;
+  }
+  if (len == -1) return;
+  switch (type)
+  {
+  case SlopeType::Lin: _slp = 0.0, _lin = MaxEnv / static_cast<double>(len); break;
+  case SlopeType::Log: _slp = 1.0, _log = std::pow(1.0 + MaxEnv, 1.0 / static_cast<double>(len)); break;
+  default: assert(false); break;
+  }
 }
 
 void
