@@ -178,17 +178,17 @@ UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
-  float logRoll = BiToUni2(Mod(ModTarget::Roll, _roll, true, params));
+  float roll = BiToUni1(Mod(ModTarget::Roll, _roll, true, params));
 
   __m256 ones = _mm256_set1_ps(1.0f);
   __m256 zeros = _mm256_set1_ps(0.0f);
   __m256 signs = _mm256_set1_ps(1.0f);
   __m256 freqs = _mm256_set1_ps(freq);
+  __m256 rolls = _mm256_set1_ps(roll);
   __m256 limits = _mm256_set1_ps(0.0f);
   __m256 results = _mm256_set1_ps(0.0f);
   __m256 phases = _mm256_set1_ps(phase);
   __m256 twopis = _mm256_set1_ps(2.0f * PI);
-  __m256 logRolls = _mm256_set1_ps(logRoll);
   __m256 nyquists = _mm256_set1_ps(_input->source.rate / 2.0f);
   __m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
 
@@ -202,8 +202,8 @@ UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
     __m256 belowMax = _mm256_cmp_ps(allPs, maxPs, _CMP_LE_OQ);
 	  __m256 belowNyquists = _mm256_cmp_ps(_mm256_mul_ps(allPs, freqs), nyquists, _CMP_LT_OQ);
     __m256 wantedPs = _mm256_blendv_ps(zeros, _mm256_blendv_ps(zeros, ones, belowMax), belowNyquists);
-  	__m256 rolls = _mm256_pow_ps(allPs, logRolls);
-    __m256 amps = _mm256_div_ps(ones, rolls);
+  	__m256 psRolls = _mm256_mul_ps(allPs, _mm256_add_ps(ones, _mm256_mul_ps(_mm256_sub_ps(allPs, ones), rolls)));
+    __m256 amps = _mm256_div_ps(ones, psRolls);
     __m256 psPhases = _mm256_mul_ps(phases, allPs);
     __m256 sines = _mm256_sin_ps(_mm256_mul_ps(psPhases, twopis));
     __m256 partialResults = _mm256_mul_ps(_mm256_mul_ps(sines, amps), signs);
