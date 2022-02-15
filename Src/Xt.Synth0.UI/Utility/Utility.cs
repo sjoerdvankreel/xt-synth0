@@ -70,6 +70,7 @@ namespace Xt.Synth0.UI
 			ThemeGroup.Unit => settings.UnitColor,
 			ThemeGroup.Env => settings.EnvelopeColor,
 			ThemeGroup.Global => settings.GlobalColor,
+			ThemeGroup.Filter => settings.FilterColor,
 			ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
 			ThemeGroup.Settings => settings.SettingsColor,
