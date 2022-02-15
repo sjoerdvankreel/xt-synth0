@@ -49,6 +49,8 @@ namespace Xt.Synth0.Model
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->filters[Index * Native.Size];
 
         internal FilterModel(int index) => Index = index;
+        static readonly string[] Rolls = new[] { "6dB", "12dB", "18dB", "24dB" };
+
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
@@ -64,13 +66,13 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo Amt2Info = ParamInfo.Mix(p => &((Native*)p)->amt2, nameof(Amt2), "Amt", "Mod 2 amount", 128);
         static readonly ParamInfo ResInfo = ParamInfo.Level(p => &((Native*)p)->res, nameof(Res), nameof(Res), "Resonance", 0);
         static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
-        static readonly ParamInfo RollInfo = ParamInfo.List<FilterRoll>(p => &((Native*)p)->roll, nameof(Roll), nameof(Roll), "Roll");
         static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, nameof(Src1), "Source", "Mod 1 source");
         static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, nameof(Src2), "Source", "Mod 2 source");
         static readonly ParamInfo FreqInfo = ParamInfo.Level(p => &((Native*)p)->freq, nameof(Freq), nameof(Freq), "Frequency cutoff", 0);
         static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->unit1, nameof(Unit1), nameof(Unit1), "Unit 1 amount", 0);
         static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->unit2, nameof(Unit2), nameof(Unit2), "Unit 2 amount", 0);
         static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->unit3, nameof(Unit3), nameof(Unit3), "Unit 3 amount", 0);
+        static readonly ParamInfo RollInfo = ParamInfo.List<FilterRoll>(p => &((Native*)p)->roll, nameof(Roll), nameof(Roll), "Roll", Rolls);
         static readonly ParamInfo Tgt1Info = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->tgt1, nameof(Tgt1), "Target", "Mod 1 target");
         static readonly ParamInfo Tgt2Info = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->tgt2, nameof(Tgt2), "Target", "Mod 2 target");
     }

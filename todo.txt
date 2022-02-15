@@ -20,3 +20,5 @@ niet zomaar het model eroverheen kopieren zonder de state te updaten
 dump stacktrace
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
+show routing in ui
+revise pattern param types
