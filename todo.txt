@@ -1,6 +1,5 @@
 hard sync
 dont plot too often (throttle)
-dont trigger gc from the callback - dispatch all to ui
 sampler
 automation groups
 make it faster
@@ -21,3 +20,4 @@ niet zomaar het model eroverheen kopieren zonder de state te updaten
 dump stacktrace
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
+sine env shape

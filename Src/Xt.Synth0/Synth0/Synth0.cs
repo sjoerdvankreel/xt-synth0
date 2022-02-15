@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -24,6 +25,7 @@ namespace Xt.Synth0
 		{
 			try
 			{
+				Xt.Synth0.Model.Model.MainThreadId = Thread.CurrentThread.ManagedThreadId;
 				var infos = Model.Track.Synth.ParamInfos();
 				fixed (SynthModel.Native.SyncStep* steps = SynthModel.SyncSteps)
 				fixed (SynthModel.Native.ParamInfo* pis = infos)
@@ -257,7 +259,7 @@ namespace Xt.Synth0
 			seq.Pattern.Rows[0].Keys[0].Oct.Value = e.Oct;
 			seq.Pattern.Rows[0].Keys[0].Note.Value = (int)e.Note;
 			_engine.Stop(false);
-			_engine.Start(seq, new StreamModel());
+			_engine.Start(seq, new StreamModel(false));
 		}
 
 		static AudioEngine SetupEngine(Window mainWindow)

@@ -2,6 +2,8 @@
 {
 	public static class Model
 	{
+		public static int MainThreadId { get; set; } = -1;
+
 		public const int LfoCount = 2;
 		public const int EnvCount = 3;
 		public const int UnitCount = 3;
