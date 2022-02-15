@@ -11,7 +11,7 @@ namespace Xt.Synth0
     {
         const float OverloadLimit = 0.9f;
         const float InfoDurationSeconds = 0.5f;
-        const float CpuUsageUpdateIntervalSeconds = 0.2f;
+        const float CpuUsageUpdateIntervalSeconds = 1.0f;
         const float CpuUsageSamplingPeriodSeconds = 0.5f;
 
         static XtSample DepthToSample(int size) => size switch
