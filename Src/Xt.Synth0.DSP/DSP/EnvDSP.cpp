@@ -43,27 +43,6 @@ EnvDSP::Next()
 }
 
 float
-EnvDSP::Generate(float from, float to, int len, SlopeType type)
-{
-  double slp = 0.0;
-  switch (type)
-  {
-  case SlopeType::Lin: slp = _slp; break;
-  case SlopeType::Log: slp = _slp - 1.0f; break;
-  case SlopeType::Inv: slp = _slp - 1.0f; break;
-  default: assert(false); break;
-  }
-  assert(0.0f <= slp && slp <= 1.0f);
-  float val = from + static_cast<float>(slp) * (to - from);
-  assert(0.0f <= val && val <= 1.0f);
-  if (type == SlopeType::Lin) _slp += _lin;
-  else _slp *= _log;
-  assert(type != SlopeType::Lin || 0.0 <= _slp && _slp <= 1.0);
-  assert(type == SlopeType::Lin || 1.0 <= _slp && _slp <= 2.0);
-  return val;
-}
-
-float
 EnvDSP::Generate()
 {
   switch (_stage)
@@ -76,6 +55,26 @@ EnvDSP::Generate()
   case EnvStage::D: return Generate(1.0, _params.s, _params.d, _model->dSlp);
   default: assert(false); return 0.0f;
   }
+}
+
+float
+EnvDSP::Generate(float from, float to, int len, SlopeType type)
+{
+  float val = 0.0f;
+  switch (type)
+  {
+  case SlopeType::Lin: val = from + static_cast<float>(_slp) * (to - from); break;
+  case SlopeType::Inv: val = from + static_cast<float>(_slp - 1.0) * (to - from); break;
+  case SlopeType::Log: val = from + static_cast<float>(_slp - 1.0) * (to - from); break;
+  default: assert(false); break;
+  }
+  assert(to < from || from <= val && val <= to);
+  assert(to >= from || to <= val && val <= from);
+  if (type == SlopeType::Lin) _slp += _lin;
+  else _slp *= _log;
+  assert(type != SlopeType::Lin || 0.0 <= _slp && _slp <= 1.0);
+  assert(type == SlopeType::Lin || 1.0 <= _slp && _slp <= 2.0);
+  return val;
 }
 
 EnvParams
