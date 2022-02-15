@@ -22,6 +22,8 @@ namespace Xt.Synth0.Model
 
 		public int Index => 0;
 		public int Columns => 2;
+		public string[] In => null;
+		public string[] Out => null;
 		public Param Enabled => null;
 		public string Name => "Edit";
 		public ThemeGroup ThemeGroup => ThemeGroup.Pattern;

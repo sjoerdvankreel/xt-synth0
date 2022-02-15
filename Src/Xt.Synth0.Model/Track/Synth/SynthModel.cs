@@ -10,6 +10,13 @@ namespace Xt.Synth0.Model
 
 	public unsafe sealed class SynthModel : MainModel
 	{
+		internal const string PartAll = "All";
+		internal const string PartEnv = "Env";
+		internal const string PartLFO = "LFO";
+		internal const string PartUnit = "Unit";
+		internal const string PartFilter = "Filter";
+		internal const string PartGlobal = "Global";
+
 		static int GCD(int a, int b)
 		{
 			while (b > 0) { int rem = a % b; a = b; b = rem; }

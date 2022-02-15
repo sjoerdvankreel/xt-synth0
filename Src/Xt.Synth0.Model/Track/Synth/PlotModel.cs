@@ -17,9 +17,11 @@ namespace Xt.Synth0.Model
 
 		public int Index => 0;
 		public int Columns => 3;
+		public string[] Out => null;
 		public Param Enabled => null;
 		public string Name => "Plot";
 		public ThemeGroup ThemeGroup => ThemeGroup.Plot;
+		public string[] In => new[] { SynthModel.PartAll };
 		public string Id => "BD224A37-6B8E-4EDA-9E49-DE3DD1AF61CE";
 		public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
 		public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;

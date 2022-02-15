@@ -41,11 +41,13 @@ namespace Xt.Synth0.Model
 
         public int Columns => 3;
         public int Index { get; }
+        public string[] In => null;
         public Param Enabled => On;
         public string Name => $"Env {Index + 1}";
         public ThemeGroup ThemeGroup => ThemeGroup.Env;
         public string Id => "A7FF2DD9-62D5-4426-8530-02C60710237D";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
+        public string[] Out => new[] { SynthModel.PartUnit, SynthModel.PartFilter, SynthModel.PartGlobal };
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->source.envs[Index * Native.Size];
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
