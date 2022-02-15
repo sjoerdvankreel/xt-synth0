@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+	public enum ModSource { Velo, LFO1, LFO2, Env1, Env2, Env3 }
+
 	public unsafe sealed class SynthModel : MainModel
 	{
 		static int GCD(int a, int b)

@@ -46,7 +46,7 @@ private:
   float ModPhase(ModParams const& params) const;
   bool ModBip(SourceDSP const& source, ModSource mod) const;
   float ModVal(SourceDSP const& source, ModSource mod) const;
-  float Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const;
+  float Mod(UnitModTarget tgt, float val, bool bip, ModParams const& params) const;
 public:
   void Next(SourceDSP const& source);
   AudioOutput Value() const { return _value; }

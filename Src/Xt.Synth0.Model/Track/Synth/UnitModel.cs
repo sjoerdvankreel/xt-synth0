@@ -6,8 +6,7 @@ namespace Xt.Synth0.Model
 {
 	public enum UnitType { Sin, Add, Blep }
 	public enum BlepType { Saw, Pulse, Tri }
-	public enum ModSource { Velo, LFO1, LFO2, Env1, Env2, Env3 }
-	public enum ModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase }
+	public enum UnitModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase }
 	public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 
 	public unsafe sealed class UnitModel : IUIParamGroupModel
@@ -82,9 +81,9 @@ namespace Xt.Synth0.Model
 		static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
 		static readonly ParamInfo PwInfo = ParamInfo.Level(p => &((Native*)p)->pw, nameof(Pw), "PW", "Pulse width", 0, RelevancePw);
 		static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, nameof(Src1), "Source", "Mod 1 source");
-		static readonly ParamInfo Tgt1Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt1, nameof(Tgt1), "Target", "Mod 1 target");
 		static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, nameof(Src2), "Source", "Mod 2 source");
-		static readonly ParamInfo Tgt2Info = ParamInfo.List<ModTarget>(p => &((Native*)p)->tgt2, nameof(Tgt2), "Target", "Mod 2 target");
+		static readonly ParamInfo Tgt1Info = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->tgt1, nameof(Tgt1), "Target", "Mod 1 target");
+		static readonly ParamInfo Tgt2Info = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->tgt2, nameof(Tgt2), "Target", "Mod 2 target");
 		static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, nameof(Note), nameof(Note), "Note", Notes);
 		static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, nameof(AddRoll), "Roll", "Additive rolloff", 128, RelevanceAdd);
 		static readonly ParamInfo AddSubInfo = ParamInfo.Toggle(p => &((Native*)p)->addSub, nameof(AddSub), "Sub", "Additive subtract", false, RelevanceAdd);

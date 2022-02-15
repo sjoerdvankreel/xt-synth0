@@ -13,6 +13,8 @@ void SynthModelInit(
   struct ParamInfo* infos, int32_t infoCount,
   struct SyncStep* steps, int32_t stepCount);
 
+enum class ModSource { Velo, LFO1, LFO2, Env1, Env2, Env3 };
+
 struct XTS_ALIGN SyncStep { int32_t num, den; };
 XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
@@ -79,8 +81,7 @@ XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
-enum class ModSource { Velo, LFO1, LFO2, Env1, Env2, Env3 };
-enum class ModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase };
+enum class UnitModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 struct XTS_ALIGN UnitModel
@@ -96,7 +97,7 @@ private:
   BlepType blepType;
   int32_t amt1, amt2;
   ModSource src1, src2;
-  ModTarget tgt1, tgt2;
+  UnitModTarget tgt1, tgt2;
   int32_t amp, pan, oct, dtn, pw;
   int32_t addParts, addStep, addRoll, pad__;
 };
