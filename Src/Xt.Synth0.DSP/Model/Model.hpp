@@ -20,7 +20,8 @@ namespace Xts {
 constexpr int LfoCount = 2;
 constexpr int EnvCount = 3;
 constexpr int UnitCount = 3;
-constexpr int ParamCount = 132;
+constexpr int FilterCount = 2;
+constexpr int ParamCount = 160;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;

@@ -66,8 +66,8 @@ EnvDSP::Generate(float from, float to, int len, SlopeType type)
   switch (type)
   {
   case SlopeType::Lin: val = from + slp * range; break;
-  case SlopeType::Log: val = from + (slp - 1.0) * range; break;
-  case SlopeType::Inv: val = from + (2.0 - slp * 2.0) * range; break;
+  case SlopeType::Log: val = from + (slp - 1.0f) * range; break;
+  case SlopeType::Inv: val = from + (2.0f - slp * 2.0f) * range; break;
   case SlopeType::Sin: val = from + std::sinf(slp * PI * 0.5f) * range; break;
   case SlopeType::Cos: val = from + (1.0f - std::cosf(slp * PI * 0.5f)) * range; break;
   default: assert(false); break;

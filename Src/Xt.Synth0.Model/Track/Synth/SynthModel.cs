@@ -31,6 +31,7 @@ namespace Xt.Synth0.Model
 			internal GlobalModel.Native global;
 			internal SourceModel source;
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
+			internal fixed byte filters[Model.FilterCount * FilterModel.Native.Size];
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct ParamInfo { public int min, max; }
@@ -65,20 +66,27 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
 		public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
+		public IReadOnlyList<FilterModel> Filters = new ReadOnlyCollection<FilterModel>(MakeFilters());
 
 		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, Model.LfoCount).Select(i => new LfoModel(i)).ToList();
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
+		static IList<FilterModel> MakeFilters() => Enumerable.Range(0, Model.FilterCount).Select(i => new FilterModel(i)).ToList();
 
 		public override int Index => 0;
 		public override string Id => "8D6AB9FB-19DB-4F77-B56C-9E72AB67341F";
 		public override IReadOnlyList<IGroupContainerModel> Children => new IGroupContainerModel[0];
-		public override IReadOnlyList<IParamGroupModel> Groups => Units.Concat<IParamGroupModel>(Envs).Concat(Lfos).Concat(new IParamGroupModel[] { Plot, Global }).ToArray();
+		public override IReadOnlyList<IParamGroupModel> Groups => Units
+			.Concat<IParamGroupModel>(Envs)
+			.Concat(Lfos).Concat(Filters)
+			.Concat(new IParamGroupModel[] { Plot, Global }).ToArray();
 
 		public SynthModel()
 		{
 			Envs[0].On.Value = 1;
 			Units[0].On.Value = 1;
+			Filters[0].On.Value = 1;
+			Filters[0].Unit1.Value = 255;
 			Plot.Type.Value = (int)PlotType.Unit1;
 			var @params = ListParams(this).Select((p, i) => new SynthParam((IUIParamGroupModel)p.Group, i + 1, p.Param));
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());

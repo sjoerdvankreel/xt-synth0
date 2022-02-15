@@ -20,7 +20,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1056);
+XTS_CHECK_SIZE(VoiceBinding, 1280);
 
 enum class PlotType { Off, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, Global, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -62,6 +62,26 @@ private:
   int32_t rate, step, pad__;
 };
 XTS_CHECK_SIZE(LfoModel, 32);
+
+enum class FilterModTarget { Freq, Res };
+enum class FilterRoll { Roll6, Roll12, Roll18, Roll24 };
+enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
+struct XTS_ALIGN FilterModel
+{
+  friend class FilterDSP;
+  FilterModel() = default;
+  FilterModel(FilterModel const&) = delete;
+private:
+  XtsBool on;
+  FilterType type;
+  FilterRoll roll;
+  int32_t freq, res;
+  int32_t amt1, amt2;
+  ModSource src1, src2;
+  FilterModTarget tgt1, tgt2;
+  int32_t unit1, unit2, unit3;
+};
+XTS_CHECK_SIZE(FilterModel, 56);
 
 enum class EnvType { DAHDSR, DAHDR };
 enum class SlopeType { Lin, Log, Inv, Sin, Cos };
@@ -128,8 +148,9 @@ private:
   GlobalModel global;
   SourceModel source;
   UnitModel units[UnitCount];
+  FilterModel filters[FilterCount];
 };
-XTS_CHECK_SIZE(SynthModel, 552);
+XTS_CHECK_SIZE(SynthModel, 664);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

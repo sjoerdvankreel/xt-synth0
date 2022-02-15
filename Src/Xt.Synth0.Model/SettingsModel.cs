@@ -53,6 +53,14 @@ namespace Xt.Synth0.Model
 			set => Set(ref _unitColor, value);
 		}
 
+		string _filterColor = "#FF0000";
+		[Key(nameof(FilterColor))]
+		public string FilterColor
+		{
+			get => _filterColor;
+			set => Set(ref _filterColor, value);
+		}
+
 		string _globalColor = "#FF8080";
 		[Key(nameof(GlobalColor))]
 		public string GlobalColor
