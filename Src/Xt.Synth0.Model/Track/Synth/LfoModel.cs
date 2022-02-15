@@ -28,12 +28,10 @@ namespace Xt.Synth0.Model
         public int Columns => 3;
         public int Index { get; }
         public Param Enabled => On;
-        public string[] In => null;
         public string Name => $"LFO {Index + 1}";
         public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
         public string Id => "E2E5D904-8652-450B-A293-7CDFF05892BF";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public string[] Out => new[] { SynthModel.PartUnit, SynthModel.PartFilter, SynthModel.PartGlobal };
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->source.lfos[Index * Native.Size];
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {

@@ -24,8 +24,6 @@ namespace Xt.Synth0.Model
 	public interface IUIParamGroupModel : IParamGroupModel, IUIModel
 	{
 		int Columns { get; }
-		string[] In { get; }
-		string[] Out { get; }
 		Param Enabled { get; }
 		IDictionary<Param, int> Layout { get; }
 	}

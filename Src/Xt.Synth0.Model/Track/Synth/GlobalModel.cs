@@ -23,14 +23,12 @@ namespace Xt.Synth0.Model
 
         public int Index => 0;
         public int Columns => 2;
-        public string[] Out => null;
         public Param Enabled => null;
         public string Name => "Global";
         public ThemeGroup ThemeGroup => ThemeGroup.Global;
         public string Id => "F7791FBA-3693-4D71-8EC9-AB507A03FE9A";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
-        public string[] In => new[] { SynthModel.PartFilter, SynthModel.PartLFO, SynthModel.PartEnv };
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { EnvSrc, 0 }, { Amp, 1 },

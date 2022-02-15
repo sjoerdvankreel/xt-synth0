@@ -44,10 +44,8 @@ namespace Xt.Synth0.Model
         public Param Enabled => On;
         public string Name => $"Filter {Index + 1}";
         public ThemeGroup ThemeGroup => ThemeGroup.Filter;
-        public string[] Out => new[] { SynthModel.PartGlobal };
         public string Id => "33E5297E-8C93-4A0C-810C-CD5E37DB50B2";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public string[] In => new[] { SynthModel.PartUnit, SynthModel.PartEnv, SynthModel.PartLFO };
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->filters[Index * Native.Size];
 
         internal FilterModel(int index) => Index = index;
