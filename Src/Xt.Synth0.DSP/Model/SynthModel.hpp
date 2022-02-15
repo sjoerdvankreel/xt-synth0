@@ -62,7 +62,7 @@ private:
 XTS_CHECK_SIZE(LfoModel, 32);
 
 enum class EnvType { DAHDSR, DAHDR };
-enum class SlopeType { Lin, Log, Inv };
+enum class SlopeType { Lin, Log, Inv, Sin, Cos };
 struct XTS_ALIGN EnvModel 
 {
   friend class EnvDSP;

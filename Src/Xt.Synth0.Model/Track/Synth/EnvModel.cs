@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
     public enum EnvType { DAHDSR, DAHDR }
-    public enum SlopeType { Lin, Log, Inv }
+    public enum SlopeType { Lin, Log, Inv, Sin, Cos }
 
     public unsafe sealed class EnvModel : IUIParamGroupModel
     {
