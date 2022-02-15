@@ -231,8 +231,9 @@ namespace Xt.Synth0
             _cpuUsageFactors = null;
             _cpuUsageFrameCounts = null;
             _cpuUsageTotalFrameCount = 0;
-            _streamUI = null;
+            new StreamModel(false).CopyTo(_streamUI);
             new StreamModel(false).CopyTo(_localStream);
+            _streamUI = null;
 
             for (int i = 0; i < _gcPositions.Length; i++)
             {
