@@ -31,9 +31,7 @@ UnitDSP::Params(SourceDSP const& source)
   bool bip2 = ModBip(source, _model->src2);
   float val1 = ModVal(source, _model->src1);
   float val2 = ModVal(source, _model->src2);
-  bool on1 = _model->src1 != ModSource::Off;
-  bool on2 = _model->src2 != ModSource::Off;
-  return ModParams(on1, val1, bip1, on2, val2, bip2);
+  return ModParams(val1, bip1, val2, bip2);
 }
 
 float
@@ -53,7 +51,6 @@ UnitDSP::ModVal(SourceDSP const& source, ModSource mod) const
   int lfo = static_cast<int>(ModSource::LFO1);
   switch(mod)
   {
-  case ModSource::Off: return 0.0f;
   case ModSource::Velo: return _input->key.amp;
   case ModSource::LFO1: case ModSource::LFO2:
   return source.Lfos()[static_cast<int>(mod) - lfo].Value();
@@ -74,8 +71,8 @@ UnitDSP::ModBip(SourceDSP const& source, ModSource mod) const
 float 
 UnitDSP::Mod(ModTarget tgt, float val, bool bip, ModParams const& params) const
 {
-  if (params.on1 && _model->tgt1 == tgt) val = Xts::Mod(val, bip, params.mod1, params.bip1, _amt1);
-  if (params.on2 && _model->tgt2 == tgt) val = Xts::Mod(val, bip, params.mod2, params.bip2, _amt2);
+  if (_model->tgt1 == tgt) val = Xts::Mod(val, bip, params.mod1, params.bip1, _amt1);
+  if (_model->tgt2 == tgt) val = Xts::Mod(val, bip, params.mod2, params.bip2, _amt2);
   return val;
 }
 
@@ -86,8 +83,8 @@ UnitDSP::ModPhase(ModParams const& params) const
   float phase = static_cast<float>(_phase);
   float base1 = params.bip1 ? 0.5f : _amt1 >= 0.0f ? 0.0f : 1.0f;
   float base2 = params.bip1 ? 0.5f : _amt2 >= 0.0f ? 0.0f : 1.0f;
-  if (params.on1 && _model->tgt1 == ModTarget::Phase) phase += Xts::Mod(base1, false, params.mod1, params.bip1, _amt1);
-  if (params.on2 && _model->tgt2 == ModTarget::Phase) phase += Xts::Mod(base2, false, params.mod2, params.bip2, _amt2);
+  if (_model->tgt1 == ModTarget::Phase) phase += Xts::Mod(base1, false, params.mod1, params.bip1, _amt1);
+  if (_model->tgt2 == ModTarget::Phase) phase += Xts::Mod(base2, false, params.mod2, params.bip2, _amt2);
   float result = phase - std::floorf(phase);
   assert(0.0f <= result && result <= 1.0f);
   return result;
@@ -102,10 +99,10 @@ UnitDSP::ModFreq(ModParams const& params) const
   float pitchRange = 0.02930223f;
   float freqRange = maxFreq - minFreq;
   float freqBase = (std::max(minFreq, std::min(_freq, maxFreq)) - minFreq) / freqRange;
-  if (params.on1 && _model->tgt1 == ModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod1, params.bip1, _amt1) * pitchRange;
-  if (params.on1 && _model->tgt1 == ModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod1, params.bip1, _amt1) * freqRange;
-  if (params.on2 && _model->tgt2 == ModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod2, params.bip2, _amt2) * pitchRange;
-  if (params.on2 && _model->tgt2 == ModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod2, params.bip2, _amt2) * freqRange;
+  if (_model->tgt1 == ModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod1, params.bip1, _amt1) * pitchRange;
+  if (_model->tgt1 == ModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod1, params.bip1, _amt1) * freqRange;
+  if (_model->tgt2 == ModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod2, params.bip2, _amt2) * pitchRange;
+  if (_model->tgt2 == ModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod2, params.bip2, _amt2) * freqRange;
   assert(result > 0.0f);
   return result;
 }

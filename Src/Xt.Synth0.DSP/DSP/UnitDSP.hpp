@@ -10,13 +10,12 @@ namespace Xts {
 
 struct ModParams
 {
-  bool on1, on2;
   bool bip1, bip2;
   float mod1, mod2;
 public:
   ModParams(ModParams const&) = default;
-  ModParams(bool on1, float mod1, bool bip1, bool on2, float mod2, bool bip2):
-  on1(on1), on2(on2), bip1(bip1), bip2(bip2), mod1(mod1), mod2(mod2) {}
+  ModParams(float mod1, bool bip1, float mod2, bool bip2):
+  bip1(bip1), bip2(bip2), mod1(mod1), mod2(mod2) {}
 };
 
 class UnitDSP: 
