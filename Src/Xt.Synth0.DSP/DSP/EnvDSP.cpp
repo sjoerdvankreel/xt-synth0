@@ -60,20 +60,26 @@ EnvDSP::Generate()
 float
 EnvDSP::Generate(float from, float to, int len, SlopeType type)
 {
+  from = 0; to = 1;
   float val = 0.0f;
   switch (type)
   {
   case SlopeType::Lin: val = from + static_cast<float>(_slp) * (to - from); break;
-  case SlopeType::Inv: val = from + static_cast<float>(_slp - 1.0) * (to - from); break;
+  case SlopeType::Inv: val = from + static_cast<float>(1.0 - _slp) * (to - from); break;
   case SlopeType::Log: val = from + static_cast<float>(_slp - 1.0) * (to - from); break;
   default: assert(false); break;
   }
   assert(to < from || from <= val && val <= to);
   assert(to >= from || to <= val && val <= from);
-  if (type == SlopeType::Lin) _slp += _lin;
-  else _slp *= _log;
-  assert(type != SlopeType::Lin || 0.0 <= _slp && _slp <= 1.0);
-  assert(type == SlopeType::Lin || 1.0 <= _slp && _slp <= 2.0);
+  switch (type)
+  {
+  case SlopeType::Lin: _slp += _lin; break;
+  case SlopeType::Log: _slp *= _log; break;
+  case SlopeType::Inv: _slp /= _log; break;
+  default: assert(false); break;
+  }
+  assert(type == SlopeType::Log || 0.0 <= _slp && _slp <= 1.0);
+  assert(type != SlopeType::Log || 1.0 <= _slp && _slp <= 2.0);
   return val;
 }
 
