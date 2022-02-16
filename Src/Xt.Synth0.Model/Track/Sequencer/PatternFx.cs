@@ -21,7 +21,7 @@ namespace Xt.Synth0.Model
 		public string Id => "ABD763E7-8A06-4582-8D24-88214BB04A3A";
 		public void* Address(void* parent) => &((PatternRow.Native*)parent)->fx[Index * Native.Size];
 
-		static readonly ParamInfo ValInfo = ParamInfo.Level(p => &((Native*)p)->val, nameof(Val), nameof(Val), "Automation value", 0);
-		static readonly ParamInfo TgtInfo = ParamInfo.Level(p => &((Native*)p)->tgt, nameof(Tgt), nameof(Tgt), "Automation target", 0);
+		static readonly ParamInfo ValInfo = ParamInfo.Pattern(p => &((Native*)p)->val, nameof(Val), nameof(Val), "Automation value", 0, 255, 0);
+		static readonly ParamInfo TgtInfo = ParamInfo.Pattern(p => &((Native*)p)->tgt, nameof(Tgt), nameof(Tgt), "Automation target", 0, 255, 0);
 	}
 }

@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 
     public sealed class ParamInfo
     {
-        enum ParamType { Toggle, List, Lin, Mix, Time };
+        enum ParamType { Toggle, List, Lin, Mix, Time, Pattern };
 
         int? _maxDisplayLength;
         readonly Address _address;
@@ -40,6 +40,7 @@ namespace Xt.Synth0.Model
             ParamType.Lin => _display(value),
             ParamType.List => _display(value),
             ParamType.Time => FormatTime(value),
+            ParamType.Pattern => _display(value),
             ParamType.Toggle => value == 0 ? "Off" : "On",
             ParamType.Mix => (value - 128).ToString("+#;-#;0"),
             _ => throw new InvalidOperationException()
@@ -87,6 +88,10 @@ namespace Xt.Synth0.Model
             _display ??= x => x.ToString();
         }
 
+        internal static ParamInfo Pattern(Address address, string id,
+            string name, string description, int min, int max, int @default)
+        => new ParamInfo(ParamType.Pattern, address, id, name, description, 0, 255, @default, null, null, null, null);
+
         internal static ParamInfo Mix(Address address, string id, string name,
             string description, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Mix, address, id, name, description, 1, 255, @default, null, null, null, relevance);
@@ -106,6 +111,10 @@ namespace Xt.Synth0.Model
         internal static ParamInfo Toggle(Address address, string id, string name,
             string description, bool @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Toggle, address, id, name, description, 0, 1, @default ? 1 : 0, null, null, null, relevance);
+
+        internal static ParamInfo Pattern(Address address, string id,
+            string name, string description, string[] display)
+        => new ParamInfo(ParamType.Pattern, address, id, name, description, 0, display.Length - 1, 0, null, null, x => display[x], null);
 
         internal static ParamInfo Select<TEnum>(Address address, string id, string name,
             string description, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
