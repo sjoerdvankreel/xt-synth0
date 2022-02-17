@@ -100,15 +100,14 @@ namespace Xt.Synth0.Model
         }
 
         internal static ParamInfo Pattern(Address address, string id,
-            string name, string description, int min, int max, int @default)
-        => new ParamInfo(ParamType.Pattern, address, id, name, description, 0, 255, @default, null, null, null, null);
+             string name, string description, int min, int max, int @default)
+         => new ParamInfo(ParamType.Pattern, address, id, name, description, min, max, @default, null, null, null, null);
 
         internal static ParamInfo Freq(Address address, string id, string name, string description, int @default)
         => new ParamInfo(ParamType.Freq, address, id, name, description, 0, 255, @default, null, null, null, null);
 
-        internal static ParamInfo Mix(Address address, string id, string name,
-            string description, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Mix, address, id, name, description, 1, 255, @default, null, null, null, relevance);
+        internal static ParamInfo Mix(Address address, string id, string name, string description, IRelevance relevance = null)
+        => new ParamInfo(ParamType.Mix, address, id, name, description, 1, 255, 128, null, null, null, relevance);
 
         internal static ParamInfo Level(Address address, string id, string name,
             string description, int @default, IRelevance relevance = null)

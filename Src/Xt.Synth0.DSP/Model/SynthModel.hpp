@@ -20,7 +20,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1472);
+XTS_CHECK_SIZE(VoiceBinding, 1496);
 
 enum class PlotType { Off, Amp, Env1, Env2, Env3, LFO1, LFO2, LFO3, Unit1, Unit2, Unit3, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -61,11 +61,12 @@ struct XTS_ALIGN AmpModel
 private:
   AmpEnv envSrc;
   AmpLfo lfoSrc;
-  int32_t lvl, lfoAmt;
+  ModSource panSrc;
   int32_t flt1, flt2, flt3;
   int32_t unit1, unit2, unit3;
+  int32_t lvl, pan, lfoAmt, panAmt, pad__;
 };
-XTS_CHECK_SIZE(AmpModel, 40);
+XTS_CHECK_SIZE(AmpModel, 56);
 
 enum class FilterModTarget { Freq, Res };
 enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
@@ -105,7 +106,6 @@ enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
 enum class UnitModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
-enum class AddType { Saw, Sqr, Pulse, Tri, Impulse, SinAddSin, SinAddCos, SinSubSin, SinSubCos };
 struct XTS_ALIGN UnitModel
 {
   friend class UnitDSP;
@@ -152,7 +152,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filters[FilterCount];
 };
-XTS_CHECK_SIZE(SynthModel, 752);
+XTS_CHECK_SIZE(SynthModel, 768);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP
