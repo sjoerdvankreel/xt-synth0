@@ -46,8 +46,8 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	if (!model.on) return;
 	SourceInput testIn(testRate, input.bpm);
 	output.max = 1.0f;
-	output.min = model.bip ? -1.0f : 0.0f;
 	output.freq = Freq(model, testIn);
+	output.min = LfoIsBipolar(model.plty) ? -1.0f : 0.0f;
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
 
 	SourceInput in(output.rate, input.bpm);
@@ -63,7 +63,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.hSplits->emplace_back(HSplit(0, L"0"));
 	output.hSplits->emplace_back(HSplit(samples, L""));
 	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
-	if (model.bip)
+	if (LfoIsBipolar(model.plty))
 	{
 		output.vSplits->emplace_back(VSplit(0.0f, L"0"));
 		output.vSplits->emplace_back(VSplit(1.0f, L"-1"));

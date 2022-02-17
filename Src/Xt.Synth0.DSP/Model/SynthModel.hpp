@@ -20,7 +20,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1392);
+XTS_CHECK_SIZE(VoiceBinding, 1376);
 
 enum class PlotType { Off, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, Global, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -50,6 +50,7 @@ private:
 XTS_CHECK_SIZE(GlobalModel, 16);
 
 enum class LfoType { Sin, Saw, Sqr, Tri };
+enum class LfoPolarity { Uni, UniInv, Bi, BiInv };
 struct XTS_ALIGN LfoModel
 {
   friend class LfoDSP;
@@ -58,10 +59,11 @@ struct XTS_ALIGN LfoModel
   LfoModel(LfoModel const&) = delete;
 private:
   LfoType type;
-  XtsBool on, sync, inv, bip;
-  int32_t rate, step, pad__;
+  LfoPolarity plty;
+  XtsBool on, sync;
+  int32_t rate, step;
 };
-XTS_CHECK_SIZE(LfoModel, 32);
+XTS_CHECK_SIZE(LfoModel, 24);
 
 enum class FilterModTarget { Freq, Res };
 enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
@@ -132,7 +134,7 @@ private:
   LfoModel lfos[LfoCount];
   EnvModel envs[EnvCount];
 };
-XTS_CHECK_SIZE(SourceModel, 280);
+XTS_CHECK_SIZE(SourceModel, 264);
 
 struct XTS_ALIGN SynthModel
 {
@@ -148,7 +150,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filters[FilterCount];
 };
-XTS_CHECK_SIZE(SynthModel, 720);
+XTS_CHECK_SIZE(SynthModel, 704);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

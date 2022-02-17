@@ -22,7 +22,7 @@ namespace Xt.Synth0.Model
         public Param EnvSrc { get; } = new(EnvSrcInfo);
 
         public int Index => 0;
-        public int Columns => 2;
+        public int Columns => 4;
         public Param Enabled => null;
         public string Name => "Global";
         public ThemeGroup ThemeGroup => ThemeGroup.Global;
@@ -31,8 +31,7 @@ namespace Xt.Synth0.Model
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
-            { EnvSrc, 0 }, { Amp, 1 },
-            { LfoSrc, 2 }, { LfoAmt, 3 }
+            { EnvSrc, 0 }, { Amp, 1 }, { LfoSrc, 2 }, { LfoAmt, 3 }
         };
 
         static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, nameof(Amp), nameof(Amp), "Amplitude", 128);
