@@ -52,7 +52,7 @@ UnitDSP::ModVal(SourceDSP const& source, ModSource mod) const
   switch(mod)
   {
   case ModSource::Velo: return _input->key.amp;
-  case ModSource::LFO1: case ModSource::LFO2:
+  case ModSource::LFO1: case ModSource::LFO2: case ModSource::LFO3:
   return source.Lfos()[static_cast<int>(mod) - lfo].Value();
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
   return source.Envs()[static_cast<int>(mod) - env].Value();
@@ -65,6 +65,7 @@ UnitDSP::ModBip(SourceDSP const& source, ModSource mod) const
 {
   if (mod == ModSource::LFO1 && source.Lfos()[0].Bipolar()) return true;
   if (mod == ModSource::LFO2 && source.Lfos()[1].Bipolar()) return true;
+  if (mod == ModSource::LFO3 && source.Lfos()[2].Bipolar()) return true;
   return false;
 }
 

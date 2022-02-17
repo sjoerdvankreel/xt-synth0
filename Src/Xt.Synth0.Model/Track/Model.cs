@@ -4,11 +4,11 @@
 	{
 		public static int MainThreadId { get; set; } = -1;
 
-		public const int LfoCount = 2;
+		public const int LfoCount = 3;
 		public const int EnvCount = 3;
 		public const int UnitCount = 3;
 		public const int FilterCount = 3;
-		public const int ParamCount = 178;
+		public const int ParamCount = 184;
 
 		public const int MaxFxs = 3;
 		public const int MaxLpb = 16;

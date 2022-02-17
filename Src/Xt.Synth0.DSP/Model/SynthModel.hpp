@@ -13,16 +13,16 @@ void SynthModelInit(
   struct ParamInfo* infos, int32_t infoCount,
   struct SyncStep* steps, int32_t stepCount);
 
-enum class ModSource { Velo, LFO1, LFO2, Env1, Env2, Env3 };
+enum class ModSource { Velo, Env1, Env2, Env3, LFO1, LFO2, LFO3 };
 
 struct XTS_ALIGN SyncStep { int32_t num, den; };
 XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1424);
+XTS_CHECK_SIZE(VoiceBinding, 1472);
 
-enum class PlotType { Off, Amp, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, SynthL, SynthR };
+enum class PlotType { Off, Amp, Env1, Env2, Env3, LFO1, LFO2, LFO3, Unit1, Unit2, Unit3, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;
@@ -51,7 +51,7 @@ private:
 };
 XTS_CHECK_SIZE(LfoModel, 24);
 
-enum class AmpLfo { LFO1, LFO2 };
+enum class AmpLfo { LFO1, LFO2, LFO3 };
 enum class AmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN AmpModel
 {
@@ -136,7 +136,7 @@ private:
   LfoModel lfos[LfoCount];
   EnvModel envs[EnvCount];
 };
-XTS_CHECK_SIZE(SourceModel, 264);
+XTS_CHECK_SIZE(SourceModel, 288);
 
 struct XTS_ALIGN SynthModel
 {
@@ -152,7 +152,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filters[FilterCount];
 };
-XTS_CHECK_SIZE(SynthModel, 728);
+XTS_CHECK_SIZE(SynthModel, 752);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

@@ -17,11 +17,11 @@ constexpr XtsBool XtsFalse = 0;
 
 namespace Xts {
 
-constexpr int LfoCount = 2;
+constexpr int LfoCount = 3;
 constexpr int EnvCount = 3;
 constexpr int UnitCount = 3;
 constexpr int FilterCount = 3;
-constexpr int ParamCount = 178;
+constexpr int ParamCount = 184;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;

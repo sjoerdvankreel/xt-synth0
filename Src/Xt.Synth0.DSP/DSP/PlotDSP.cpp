@@ -86,7 +86,7 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   case PlotType::Amp: {
     AmpDSP().Plot(synth.amp, synth.source, input, output);
     break; }
-  case PlotType::LFO1: case PlotType::LFO2: {
+  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: {
     auto lfo = static_cast<int>(PlotType::LFO1);
     LfoDSP().Plot(synth.source.lfos[index - lfo], input, output);
     break; }
