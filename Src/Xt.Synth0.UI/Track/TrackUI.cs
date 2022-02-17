@@ -9,24 +9,44 @@ namespace Xt.Synth0.UI
         public static UIElement Make(AppModel app)
         {
             var result = new DockPanel();
-            result.Add(MakeLeft(app), Dock.Left);
-            result.Add(MakeCenter(app), Dock.Left);
-            result.Add(MakeRight(app), Dock.Left);
+            result.Add(MakeSynth(app), Dock.Left);
+            result.Add(MakeSeq(app), Dock.Left);
             return result;
         }
 
-        static UIElement MakeLeft(AppModel app)
+        static UIElement MakeSynth(AppModel app)
+        {
+            var result = new DockPanel();
+            result.Add(MakeSynthLeft(app), Dock.Left);
+            result.Add(MakeSynthRight(app), Dock.Left);
+            return result;
+        }
+
+        static UIElement MakeSynthLeft(AppModel app)
         {
             var synth = app.Track.Synth;
             var result = new DockPanel();
-            foreach (var unit in synth.Units)
-                result.Add(GroupUI.Make(app, unit), Dock.Top);
-            foreach (var filter in synth.Filters)
-                result.Add(GroupUI.Make(app, filter), Dock.Top);
+            for (int i = 0; i < Model.Model.UnitCount; i++)
+                result.Add(GroupUI.Make(app, synth.Units[i]), Dock.Top);
+            for (int i = 0; i < Model.Model.LfoCount; i++)
+                result.Add(GroupUI.Make(app, synth.Lfos[i]), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.Global), Dock.Top);
+            result.Add(PlotUI.Make(app), Dock.Top);
             return result;
         }
 
-        static UIElement MakeRight(AppModel app)
+        static UIElement MakeSynthRight(AppModel app)
+        {
+            var synth = app.Track.Synth;
+            var result = new DockPanel();
+            for (int i = 0; i < Model.Model.FilterCount; i++)
+                result.Add(GroupUI.Make(app, synth.Filters[i]), Dock.Top);
+            for (int i = 0; i < Model.Model.EnvCount; i++)
+                result.Add(GroupUI.Make(app, synth.Envs[i]), Dock.Top);
+            return result;
+        }
+
+        static UIElement MakeSeq(AppModel app)
         {
             var result = new DockPanel();
             result.Add(ControlUI.Make(app), Dock.Bottom);
@@ -35,22 +55,6 @@ namespace Xt.Synth0.UI
             var binding = Bind.To(app.Stream, nameof(app.Stream.IsStopped));
             edit.SetBinding(UIElement.IsEnabledProperty, binding);
             result.Add(PatternUI.Make(app), Dock.Top);
-            return result;
-        }
-
-        static UIElement MakeCenter(AppModel app)
-        {
-            var synth = app.Track.Synth;
-            var envCount = Model.Model.EnvCount;
-            var lfoCount = Model.Model.LfoCount;
-            var result = Create.Grid(envCount + lfoCount + 2, 1);
-            for (int i = 0; i < envCount; i++)
-                result.Add(GroupUI.Make(app, synth.Envs[i]), new(i, 0));
-            for (int i = 0; i < lfoCount; i++)
-                result.Add(GroupUI.Make(app, synth.Lfos[i]), new(envCount + i, 0));
-            result.Add(GroupUI.Make(app, app.Track.Synth.Global), new(envCount + lfoCount + 0, 0));
-            result.Add(PlotUI.Make(app), new(envCount + lfoCount + 1, 0));
-            result.RowDefinitions[envCount + lfoCount + 1].Height = new GridLength(1.0, GridUnitType.Star);
             return result;
         }
     }
