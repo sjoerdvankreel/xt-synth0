@@ -134,8 +134,14 @@ namespace Xt.Synth0
             _synth.BindVoice(_nativeSynth, _nativeBinding);
         }
 
-        void CopyStreamToUI() => _localStream.CopyTo(_streamUI);
         internal void OnGCNotification(int generation) => _gcCollecteds[generation] = true;
+
+        void CopyStreamToUI()
+        {
+            var streamUI = _streamUI;
+            if (streamUI != null)
+                _localStream.CopyTo(streamUI);
+        }
 
         public void Dispose()
         {

@@ -64,7 +64,6 @@ private:
 XTS_CHECK_SIZE(LfoModel, 32);
 
 enum class FilterModTarget { Freq, Res };
-enum class FilterRoll { Roll6, Roll12, Roll18, Roll24 };
 enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
 struct XTS_ALIGN FilterModel
 {
@@ -72,9 +71,8 @@ struct XTS_ALIGN FilterModel
   FilterModel() = default;
   FilterModel(FilterModel const&) = delete;
 private:
-  XtsBool on;
   FilterType type;
-  FilterRoll roll;
+  XtsBool on, db24;
   int32_t freq, res;
   int32_t amt1, amt2;
   ModSource src1, src2;
