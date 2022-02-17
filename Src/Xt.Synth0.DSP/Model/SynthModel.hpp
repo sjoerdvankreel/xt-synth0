@@ -20,7 +20,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1376);
+XTS_CHECK_SIZE(VoiceBinding, 1424);
 
 enum class PlotType { Off, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, Global, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -34,20 +34,6 @@ private:
   int32_t hold, pad__;
 };
 XTS_CHECK_SIZE(PlotModel, 16);
-
-enum class GlobalAmpLfo { LFO1, LFO2 };
-enum class GlobalAmpEnv { Env1, Env2, Env3 };
-struct XTS_ALIGN GlobalModel
-{
-  friend class GlobalDSP;
-  GlobalModel() = default;
-  GlobalModel(GlobalModel const&) = delete;
-private:
-  GlobalAmpEnv envSrc;
-  GlobalAmpLfo lfoSrc;
-  int32_t amp, lfoAmt;
-};
-XTS_CHECK_SIZE(GlobalModel, 16);
 
 enum class LfoType { Sin, Saw, Sqr, Tri };
 enum class LfoPolarity { Uni, UniInv, Bi, BiInv };
@@ -64,6 +50,22 @@ private:
   int32_t rate, step;
 };
 XTS_CHECK_SIZE(LfoModel, 24);
+
+enum class GlobalAmpLfo { LFO1, LFO2 };
+enum class GlobalAmpEnv { Env1, Env2, Env3 };
+struct XTS_ALIGN GlobalModel
+{
+  friend class GlobalDSP;
+  GlobalModel() = default;
+  GlobalModel(GlobalModel const&) = delete;
+private:
+  GlobalAmpEnv envSrc;
+  GlobalAmpLfo lfoSrc;
+  int32_t amp, lfoAmt;
+  int32_t flt1, flt2, flt3;
+  int32_t unit1, unit2, unit3;
+};
+XTS_CHECK_SIZE(GlobalModel, 40);
 
 enum class FilterModTarget { Freq, Res };
 enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
@@ -150,7 +152,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filters[FilterCount];
 };
-XTS_CHECK_SIZE(SynthModel, 704);
+XTS_CHECK_SIZE(SynthModel, 728);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

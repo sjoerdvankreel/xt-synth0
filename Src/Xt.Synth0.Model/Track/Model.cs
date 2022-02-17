@@ -8,7 +8,7 @@
 		public const int EnvCount = 3;
 		public const int UnitCount = 3;
 		public const int FilterCount = 3;
-		public const int ParamCount = 172;
+		public const int ParamCount = 178;
 
 		public const int MaxFxs = 3;
 		public const int MaxLpb = 16;

@@ -21,7 +21,7 @@ constexpr int LfoCount = 2;
 constexpr int EnvCount = 3;
 constexpr int UnitCount = 3;
 constexpr int FilterCount = 3;
-constexpr int ParamCount = 172;
+constexpr int ParamCount = 178;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;
