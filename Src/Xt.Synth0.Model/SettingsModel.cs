@@ -21,7 +21,7 @@ namespace Xt.Synth0.Model
 		[IgnoreMember]
 		public ThemeGroup ThemeGroup => ThemeGroup.Settings;
 
-		string _envelopeColor = "#80C0FF";
+		string _envelopeColor = "#40E0C0";
 		[Key(nameof(EnvelopeColor))]
 		public string EnvelopeColor
 		{
@@ -29,7 +29,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _envelopeColor, value);
 		}
 
-		string _lfoColor = "#40E0C0";
+		string _lfoColor = "#FF8040";
 		[Key(nameof(LfoColor))]
 		public string LfoColor
 		{
@@ -37,7 +37,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _lfoColor, value);
 		}
 
-		string _plotColor = "#40E080";
+		string _plotColor = "#FF4040";
 		[Key(nameof(PlotColor))]
 		public string PlotColor
 		{
@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _plotColor, value);
 		}
 
-		string _unitColor = "#FF8000";
+		string _unitColor = "#FFC080";
 		[Key(nameof(UnitColor))]
 		public string UnitColor
 		{
@@ -53,7 +53,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _unitColor, value);
 		}
 
-		string _filterColor = "#FF8080";
+		string _filterColor = "#40E080";
 		[Key(nameof(FilterColor))]
 		public string FilterColor
 		{
@@ -61,7 +61,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _filterColor, value);
 		}
 
-		string _globalColor = "#60C0E0";
+		string _globalColor = "#FF8080";
 		[Key(nameof(GlobalColor))]
 		public string GlobalColor
 		{
@@ -77,7 +77,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _settingsColor, value);
 		}
 
-		string _patternColor = "#FFC080";
+		string _patternColor = "#00C0FF";
 		[Key(nameof(PatternColor))]
 		public string PatternColor
 		{
@@ -85,7 +85,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _patternColor, value);
 		}
 
-		string _controlColor = "#FFC000";
+		string _controlColor = "#A0C0FF";
 		[Key(nameof(ControlColor))]
 		public string ControlColor
 		{
