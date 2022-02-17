@@ -49,8 +49,8 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { Db24, 1},
-            { Freq, 3 }, { Res, 4 },
+            { Type, 0 }, { Freq, 1},
+            { Db24, 3 }, { Res, 4 },
             { Unit1, 6 }, { Unit2, 7 }, { Unit3, 8 },
             { Src1, 9 }, { Tgt1, 10 }, { Amt1, 11 },
             { Src2, 12 }, { Tgt2, 13 }, { Amt2, 14 }
