@@ -48,10 +48,10 @@ namespace Xt.Synth0.Model
 
         string FormatTime(int value)
         {
-            int ms = value * value;
-            if (ms < 1000) return $"{ms}m";
-            if (ms < 10000) return $"{(ms / 1000.0).ToString("N1")}s";
-            if (ms == 10000) return "10s";
+            double ms = (value / 2.55) * (value / 2.55);
+            if (ms < 1000.0) return $"{ms.ToString("N1")}m";
+            if (ms < 10000.0) return $"{(ms / 1000.0).ToString("N1")}s";
+            if (ms == 10000.0) return "10s";
             throw new InvalidOperationException();
         }
 
@@ -106,7 +106,7 @@ namespace Xt.Synth0.Model
 
         internal static ParamInfo Time(Address address, string id, string name,
             string description, int min, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Time, address, id, name, description, min, 100, @default, null, null, null, relevance);
+        => new ParamInfo(ParamType.Time, address, id, name, description, min, 255, @default, null, null, null, relevance);
 
         internal static ParamInfo Toggle(Address address, string id, string name,
             string description, bool @default, IRelevance relevance = null)
