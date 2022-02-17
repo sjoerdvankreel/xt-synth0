@@ -24,3 +24,5 @@ show routing in ui
 allow dsound
 global pan
 always hold 1second for spectrum
+indicate blocks within single group
+relevanceindex
