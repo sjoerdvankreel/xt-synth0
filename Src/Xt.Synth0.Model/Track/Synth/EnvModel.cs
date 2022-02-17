@@ -73,9 +73,9 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo RStpInfo = ParamInfo.Step(p => &((Native*)p)->rStp, nameof(RStp), "R", "Release steps", 0, 15, RelevanceSync);
         static readonly ParamInfo HldStpInfo = ParamInfo.Step(p => &((Native*)p)->hldStp, nameof(HldStp), "Hld", "Hold steps", 0, 0, RelevanceSync);
         static readonly ParamInfo DlyStpInfo = ParamInfo.Step(p => &((Native*)p)->dlyStp, nameof(DlyStp), "Dly", "Delay steps", 0, 0, RelevanceSync);
-        static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), nameof(D), "Decay milliseconds", 0, 7, RelevanceTime);
-        static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), nameof(A), "Attack milliseconds", 0, 3, RelevanceTime);
-        static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), nameof(R), "Release milliseconds", 0, 14, RelevanceTime);
+        static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, nameof(D), nameof(D), "Decay milliseconds", 0, 18, RelevanceTime);
+        static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, nameof(A), nameof(A), "Attack milliseconds", 0, 7, RelevanceTime);
+        static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, nameof(R), nameof(R), "Release milliseconds", 0, 36, RelevanceTime);
         static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, nameof(Hld), nameof(Hld), "Hold milliseconds", 0, 0, RelevanceTime);
         static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, nameof(Dly), nameof(Dly), "Delay milliseconds", 0, 0, RelevanceTime);
     }

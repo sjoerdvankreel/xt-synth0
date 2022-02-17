@@ -27,6 +27,6 @@ namespace Xt.Synth0.Model
 
 		static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Source");
 		static readonly ParamInfo SpecInfo = ParamInfo.Toggle(p => &((Native*)p)->spec, nameof(Spec), nameof(Spec), "Spectrum", false);
-		static readonly ParamInfo HoldInfo = ParamInfo.Time(p => &((Native*)p)->hold, nameof(Hold), nameof(Hold), "Hold key time", 1, 10);
+		static readonly ParamInfo HoldInfo = ParamInfo.Time(p => &((Native*)p)->hold, nameof(Hold), nameof(Hold), "Hold key time", 1, 26);
 	}
 }
