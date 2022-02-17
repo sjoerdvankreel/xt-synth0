@@ -22,7 +22,7 @@ XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
 XTS_CHECK_SIZE(VoiceBinding, 1424);
 
-enum class PlotType { Off, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, Global, SynthL, SynthR };
+enum class PlotType { Off, Amp, Env1, Env2, Env3, LFO1, LFO2, Unit1, Unit2, Unit3, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
 {
   friend class PlotDSP;
@@ -40,7 +40,7 @@ enum class LfoPolarity { Uni, UniInv, Bi, BiInv };
 struct XTS_ALIGN LfoModel
 {
   friend class LfoDSP;
-  friend class GlobalDSP;
+  friend class AmpDSP;
   LfoModel() = default;
   LfoModel(LfoModel const&) = delete;
 private:
@@ -51,21 +51,21 @@ private:
 };
 XTS_CHECK_SIZE(LfoModel, 24);
 
-enum class GlobalAmpLfo { LFO1, LFO2 };
-enum class GlobalAmpEnv { Env1, Env2, Env3 };
-struct XTS_ALIGN GlobalModel
+enum class AmpLfo { LFO1, LFO2 };
+enum class AmpEnv { Env1, Env2, Env3 };
+struct XTS_ALIGN AmpModel
 {
-  friend class GlobalDSP;
-  GlobalModel() = default;
-  GlobalModel(GlobalModel const&) = delete;
+  friend class AmpDSP;
+  AmpModel() = default;
+  AmpModel(AmpModel const&) = delete;
 private:
-  GlobalAmpEnv envSrc;
-  GlobalAmpLfo lfoSrc;
-  int32_t amp, lfoAmt;
+  AmpEnv envSrc;
+  AmpLfo lfoSrc;
+  int32_t lvl, lfoAmt;
   int32_t flt1, flt2, flt3;
   int32_t unit1, unit2, unit3;
 };
-XTS_CHECK_SIZE(GlobalModel, 40);
+XTS_CHECK_SIZE(AmpModel, 40);
 
 enum class FilterModTarget { Freq, Res };
 enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
@@ -127,8 +127,8 @@ XTS_CHECK_SIZE(UnitModel, 80);
 
 struct XTS_ALIGN SourceModel
 {
+  friend class AmpDSP;
   friend class PlotDSP;
-  friend class GlobalDSP;
   friend class SourceDSP;
   SourceModel() = default;
   SourceModel(SourceModel const&) = delete;
@@ -146,8 +146,8 @@ struct XTS_ALIGN SynthModel
   SynthModel() = default;
   SynthModel(SynthModel const&) = delete;
 private:
+  AmpModel amp;
   PlotModel plot;
-  GlobalModel global;
   SourceModel source;
   UnitModel units[UnitCount];
   FilterModel filters[FilterCount];

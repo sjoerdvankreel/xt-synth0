@@ -12,14 +12,16 @@ SynthDSP::Next(SourceDSP const& source)
     _units[u].Next(source);
     output += _units[u].Value();
   }
-  _global.Next(source);
-  _value = output * _global.Value();
+  _amp.Next(source);
+  _value = output * _amp.Value();
 }
 
 SynthDSP::
 SynthDSP(SynthModel const* model, AudioInput const* input):
-DSPBase(model, input), _source(&model->source, &input->source), 
-_global(&model->global, input), _units()
+DSPBase(model, input), 
+_amp(&model->amp, input), 
+_source(&model->source, &input->source),
+_units()
 {
   for (int u = 0; u < UnitCount; u++)
     _units[u] = UnitDSP(&model->units[u], input);

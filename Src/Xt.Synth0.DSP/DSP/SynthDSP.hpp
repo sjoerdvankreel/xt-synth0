@@ -1,9 +1,9 @@
 #ifndef XTS_SYNTH_DSP_HPP
 #define XTS_SYNTH_DSP_HPP
 
+#include "AmpDSP.hpp"
 #include "UnitDSP.hpp"
 #include "SourceDSP.hpp"
-#include "GlobalDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -12,8 +12,8 @@ namespace Xts {
 class SynthDSP:
 public DSPBase<SynthModel, AudioInput, AudioOutput>
 {
+  AmpDSP _amp;
   SourceDSP _source;
-  GlobalDSP _global;
   UnitDSP _units[UnitCount];
 public:
   SynthDSP() = default;
@@ -24,7 +24,7 @@ public:
   bool End() const { return End(_source); }
   AudioOutput Value() const { return _value; }
   void Next() { _source.Next(); return Next(_source); };
-  bool End(SourceDSP const& source) const { return _global.End(source); }
+  bool End(SourceDSP const& source) const { return _amp.End(source); }
   static void Plot(SynthModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
 };
 static_assert(AudioSourceDSP<SynthDSP, SynthModel>);

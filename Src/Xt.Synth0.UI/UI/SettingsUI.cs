@@ -42,14 +42,14 @@ namespace Xt.Synth0.UI
 		static FrameworkElement MakeTheme(SettingsModel settings)
 		{
 			var result = Create.Grid(9, 2, true);
-			result.Add(Create.Label("LFO", new(0, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.LfoColor), new(0, 1)));
-			result.Add(Create.Label("Plot", new(1, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.PlotColor), new(1, 1)));
-			result.Add(Create.Label("Unit", new(2, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(2, 1)));
-			result.Add(Create.Label("Global", new(3, 0)));
-			result.Add(MakeThemeColor(settings, nameof(settings.GlobalColor), new(3, 1)));
+			result.Add(Create.Label("Amp", new(0, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.AmpColor), new(0, 1)));
+			result.Add(Create.Label("LFO", new(1, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.LfoColor), new(1, 1)));
+			result.Add(Create.Label("Plot", new(2, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.PlotColor), new(2, 1)));
+			result.Add(Create.Label("Unit", new(3, 0)));
+			result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(3, 1)));
 			result.Add(Create.Label("Filter", new(4, 0)));
 			result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(4, 1)));
 			result.Add(Create.Label("Pattern", new(5, 0)));

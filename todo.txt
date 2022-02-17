@@ -22,3 +22,4 @@ save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
 allow dsound
+global pan

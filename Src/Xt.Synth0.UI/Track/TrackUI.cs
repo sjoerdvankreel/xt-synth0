@@ -30,7 +30,7 @@ namespace Xt.Synth0.UI
                 result.Add(GroupUI.Make(app, synth.Units[i]), Dock.Top);
             for (int i = 0; i < Model.Model.LfoCount; i++)
                 result.Add(GroupUI.Make(app, synth.Lfos[i]), Dock.Top);
-            result.Add(GroupUI.Make(app, synth.Global), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             result.Add(PlotUI.Make(app), Dock.Top);
             return result;
         }

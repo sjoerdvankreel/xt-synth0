@@ -43,7 +43,7 @@
     <ClInclude Include="Model\Model.hpp">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\GlobalDSP.hpp">
+    <ClInclude Include="DSP\AmpDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
     <ClInclude Include="DSP\LfoDSP.hpp">
@@ -73,7 +73,7 @@
     <ClCompile Include="DSP\PlotDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\GlobalDSP.cpp">
+    <ClCompile Include="DSP\AmpDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="DSP\LfoDSP.cpp">

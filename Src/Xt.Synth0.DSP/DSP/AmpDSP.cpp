@@ -1,19 +1,19 @@
-#include "GlobalDSP.hpp"
+#include "AmpDSP.hpp"
 
 namespace Xts {
 
 void
-GlobalDSP::Next(SourceDSP const& source)
+AmpDSP::Next(SourceDSP const& source)
 {
   int lfoSrc = static_cast<int>(_model->lfoSrc);
   auto const& lfo = source.Lfos()[lfoSrc];
-  float amp = Mod(_amp, false, lfo.Value(), lfo.Bipolar(), _lfoAmt);
+  float lvl = Mod(_lvl, false, lfo.Value(), lfo.Bipolar(), _lfoAmt);
   int envSrc = static_cast<int>(_model->envSrc);
-  _value = source.Envs()[envSrc].Value() * amp;
+  _value = source.Envs()[envSrc].Value() * lvl;
 }
 
 void
-GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
+AmpDSP::Plot(AmpModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
 {
   int i = 0;
   int h = 0;
@@ -27,7 +27,7 @@ GlobalDSP::Plot(GlobalModel const& model, SourceModel const& source, PlotInput c
   KeyInput keyInput(4, UnitNote::C, 1.0f);
   SourceInput sourceInput(plotRate, input.bpm);
   AudioInput audioInput(sourceInput, keyInput);
-  GlobalDSP dsp(&model, &audioInput);
+  AmpDSP dsp(&model, &audioInput);
   SourceDSP sourceDsp(&source, &sourceInput);
   while (i++ < maxSamples)
   {
