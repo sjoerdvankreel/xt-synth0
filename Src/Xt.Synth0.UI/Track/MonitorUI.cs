@@ -75,7 +75,7 @@ namespace Xt.Synth0.UI
 		{
 			var result = Create.Element<StackPanel>(cell);
 			result.Orientation = Orientation.Horizontal;
-			result.Add(Create.Text("Voices: "));
+			result.Add(Create.Text("Voices "));
 			var text = result.Add(new TextBlock());
 			var binding = Bind.To(stream, nameof(stream.Voices));
 			text.SetBinding(TextBlock.TextProperty, binding);
