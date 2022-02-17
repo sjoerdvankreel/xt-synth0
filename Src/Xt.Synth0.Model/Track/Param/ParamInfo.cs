@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 
     public sealed class ParamInfo
     {
-        enum ParamType { Toggle, List, Lin, Mix, Time, Pattern };
+        enum ParamType { Toggle, List, Lin, Mix, Time, Freq, Pattern };
 
         int? _maxDisplayLength;
         readonly Address _address;
@@ -30,6 +30,7 @@ namespace Xt.Synth0.Model
             ParamType.Lin => ParamControl.Knob,
             ParamType.Mix => ParamControl.Knob,
             ParamType.Time => ParamControl.Knob,
+            ParamType.Freq => ParamControl.Knob,
             ParamType.List => ParamControl.List,
             ParamType.Toggle => ParamControl.Toggle,
             _ => throw new InvalidOperationException()
@@ -40,6 +41,7 @@ namespace Xt.Synth0.Model
             ParamType.Lin => _display(value),
             ParamType.List => _display(value),
             ParamType.Time => FormatTime(value),
+            ParamType.Freq => FormatFreq(value),
             ParamType.Pattern => _display(value),
             ParamType.Toggle => value == 0 ? "Off" : "On",
             ParamType.Mix => (value - 128).ToString("+#;-#;0"),
@@ -52,6 +54,15 @@ namespace Xt.Synth0.Model
             if (ms < 1000.0) return $"{ms.ToString("N1")}m";
             if (ms < 10000.0) return $"{(ms / 1000.0).ToString("N1")}s";
             if (ms == 10000.0) return "10s";
+            throw new InvalidOperationException();
+        }
+
+        string FormatFreq(int value)
+        {
+            double hz = 10.0 + 9990.0 * (value / 255.0) * (value / 255.0);
+            if (hz < 1000.0) return $"{hz.ToString("N1")}h";
+            if (hz < 10000.0) return $"{(hz / 1000.0).ToString("N1")}k";
+            if (hz == 10000.0) return "10k";
             throw new InvalidOperationException();
         }
 
@@ -91,6 +102,9 @@ namespace Xt.Synth0.Model
         internal static ParamInfo Pattern(Address address, string id,
             string name, string description, int min, int max, int @default)
         => new ParamInfo(ParamType.Pattern, address, id, name, description, 0, 255, @default, null, null, null, null);
+
+        internal static ParamInfo Freq(Address address, string id, string name, string description, int @default)
+        => new ParamInfo(ParamType.Freq, address, id, name, description, 0, 255, @default, null, null, null, null);
 
         internal static ParamInfo Mix(Address address, string id, string name,
             string description, int @default, IRelevance relevance = null)

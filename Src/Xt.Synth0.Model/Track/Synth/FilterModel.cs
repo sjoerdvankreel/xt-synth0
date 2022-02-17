@@ -64,7 +64,7 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->type, nameof(Type), nameof(Type), "Type");
         static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, nameof(Src1), "Source", "Mod 1 source");
         static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, nameof(Src2), "Source", "Mod 2 source");
-        static readonly ParamInfo FreqInfo = ParamInfo.Level(p => &((Native*)p)->freq, nameof(Freq), nameof(Freq), "Frequency cutoff", 0);
+        static readonly ParamInfo FreqInfo = ParamInfo.Freq(p => &((Native*)p)->freq, nameof(Freq), nameof(Freq), "Cutoff frequency", 0);
         static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->unit1, nameof(Unit1), nameof(Unit1), "Unit 1 amount", 0);
         static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->unit2, nameof(Unit2), nameof(Unit2), "Unit 2 amount", 0);
         static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->unit3, nameof(Unit3), nameof(Unit3), "Unit 3 amount", 0);
