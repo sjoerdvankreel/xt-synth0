@@ -20,7 +20,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1496);
+XTS_CHECK_SIZE(VoiceBinding, 1544);
 
 enum class PlotType { Off, Amp, Env1, Env2, Env3, LFO1, LFO2, LFO3, Unit1, Unit2, Unit3, SynthL, SynthR };
 struct XTS_ALIGN PlotModel
@@ -82,9 +82,9 @@ private:
   int32_t amt1, amt2;
   ModSource src1, src2;
   FilterModTarget tgt1, tgt2;
-  int32_t unit1, unit2, unit3;
+  int32_t flt1, flt2, unit1, unit2, unit3;
 };
-XTS_CHECK_SIZE(FilterModel, 56);
+XTS_CHECK_SIZE(FilterModel, 64);
 
 enum class EnvType { DAHDSR, DAHDR };
 enum class SlopeType { Lin, Log, Inv, Sin, Cos };
@@ -152,7 +152,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filters[FilterCount];
 };
-XTS_CHECK_SIZE(SynthModel, 768);
+XTS_CHECK_SIZE(SynthModel, 792);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

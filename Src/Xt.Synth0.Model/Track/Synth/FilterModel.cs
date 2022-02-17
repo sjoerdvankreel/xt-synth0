@@ -12,13 +12,13 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal const int Size = 56;
+            internal const int Size = 64;
             internal int type, on, db24;
             internal int freq, res;
             internal int amt1, amt2;
             internal int src1, src2;
             internal int tgt1, tgt2;
-            internal int unit1, unit2, unit3;
+            internal int flt1, flt2, unit1, unit2, unit3;
         };
 
         public Param On { get; } = new(OnInfo);
@@ -32,6 +32,8 @@ namespace Xt.Synth0.Model
         public Param Src2 { get; } = new(Src2Info);
         public Param Tgt1 { get; } = new(Tgt1Info);
         public Param Tgt2 { get; } = new(Tgt2Info);
+        public Param Flt1 { get; } = new(Flt1Info);
+        public Param Flt2 { get; } = new(Flt2Info);
         public Param Unit1 { get; } = new(Unit1Info);
         public Param Unit2 { get; } = new(Unit2Info);
         public Param Unit3 { get; } = new(Unit3Info);
@@ -49,11 +51,11 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { Freq, 1},
-            { Db24, 3 }, { Res, 4 },
-            { Unit1, 6 }, { Unit2, 7 }, { Unit3, 8 },
-            { Src1, 9 }, { Tgt1, 10 }, { Amt1, 11 },
-            { Src2, 12 }, { Tgt2, 13 }, { Amt2, 14 }
+            { Type, 0 }, { Db24, 1}, { Flt1, 2 },
+            { Freq, 3 }, { Res, 4 }, { Flt2, 5 },
+            { Src1, 6 }, { Src2, 7 }, { Unit1, 8 },
+            { Tgt1, 9 }, { Tgt2, 10 }, { Unit2, 11 },
+            { Amt1, 12 }, { Amt2, 13 }, { Unit3, 14 }
         };
 
         static readonly ParamInfo Amt1Info = ParamInfo.Mix(p => &((Native*)p)->amt1, nameof(Amt1), "Amt", "Mod 1 amount");
@@ -65,6 +67,8 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, nameof(Src1), "Source", "Mod 1 source");
         static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, nameof(Src2), "Source", "Mod 2 source");
         static readonly ParamInfo FreqInfo = ParamInfo.Freq(p => &((Native*)p)->freq, nameof(Freq), nameof(Freq), "Cutoff frequency", 0);
+        static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flt1, nameof(Flt1), nameof(Flt1), "Filter 1 amount", 0);
+        static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->flt2, nameof(Flt2), nameof(Flt2), "Filter 2 amount", 0);
         static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->unit1, nameof(Unit1), nameof(Unit1), "Unit 1 amount", 0);
         static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->unit2, nameof(Unit2), nameof(Unit2), "Unit 2 amount", 0);
         static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->unit3, nameof(Unit3), nameof(Unit3), "Unit 3 amount", 0);
