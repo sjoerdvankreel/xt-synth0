@@ -14,7 +14,6 @@ init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters, envelopes
 reconsider automating running voices
 init with streampos / derive stuff from streampos ?
-show automation range error in UI
 xtaudio use iaudioclient->reset
 niet zomaar het model eroverheen kopieren zonder de state te updaten
 dump stacktrace
