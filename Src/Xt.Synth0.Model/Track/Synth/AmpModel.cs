@@ -45,9 +45,9 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { Lvl, 0 }, { EnvSrc, 1 }, { LfoSrc, 2 }, { LfoAmt, 3 },
-            { Pan, 5 }, { PanSrc, 6 }, { PanAmt, 7 },
-            { Unit1, 9 }, { Unit2, 10 }, { Unit3, 11 },
-            { Flt1, 13 }, { Flt2, 14 }, { Flt3, 15 }
+            { Unit1, 5 },{ Flt1, 6 }, { Pan, 7 },
+            { Unit2, 9 }, { Flt2, 10 }, { PanSrc, 11 },
+            { Unit3, 13 }, { Flt3, 14 }, { PanAmt, 15 }
         };
 
         static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 2, nameof(Pan), nameof(Pan), "Panning");
