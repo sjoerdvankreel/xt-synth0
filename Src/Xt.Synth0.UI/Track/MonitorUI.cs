@@ -29,10 +29,10 @@ namespace Xt.Synth0.UI
 			var result = Create.Grid(3, 2);
 			result.Add(CreateCpuUsage(stream, new(0, 0)));
 			result.Add(CreateGC(stream, new(0, 1)));
-			result.Add(CreateClipOverload(stream, new(1, 0)));
-			result.Add(CreateExhausted(stream, new(1, 1)));
-			result.Add(CreateBuffer(stream, new(2, 0)));
-			result.Add(CreateVoices(stream, new(2, 1)));
+			result.Add(CreateBuffer(stream, new(1, 0)));
+			result.Add(CreateVoices(stream, new(1, 1)));
+			result.Add(CreateClipOverload(stream, new(2, 0)));
+			result.Add(CreateExhausted(stream, new(2, 1)));
 			result.VerticalAlignment = VerticalAlignment.Center;
 			result.HorizontalAlignment = HorizontalAlignment.Left;
 			return result;
