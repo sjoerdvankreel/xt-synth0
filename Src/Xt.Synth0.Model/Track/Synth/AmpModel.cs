@@ -54,9 +54,9 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo LvlInfo = ParamInfo.Level(p => &((Native*)p)->lvl, 0, nameof(Lvl), nameof(Lvl), "Level", 128);
         static readonly ParamInfo PanAmtInfo = ParamInfo.Mix(p => &((Native*)p)->panAmt, 1, nameof(PanAmt), "Amt", "Pan mod amount");
         static readonly ParamInfo LfoAmtInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmt, 0, nameof(LfoAmt), "Amt", "Level LFO amount");
-        static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flt1, 2, nameof(Flt1), nameof(Flt1), "Filter 1  amount", 0);
-        static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->flt2, 2, nameof(Flt2), nameof(Flt2), "Filter 2  amount", 0);
-        static readonly ParamInfo Flt3Info = ParamInfo.Level(p => &((Native*)p)->flt3, 2, nameof(Flt3), nameof(Flt3), "Filter 3  amount", 0);
+        static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flt1, 2, nameof(Flt1), nameof(Flt1), "Filter 1 amount", 0);
+        static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->flt2, 2, nameof(Flt2), nameof(Flt2), "Filter 2 amount", 0);
+        static readonly ParamInfo Flt3Info = ParamInfo.Level(p => &((Native*)p)->flt3, 2, nameof(Flt3), nameof(Flt3), "Filter 3 amount", 0);
         static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->unit2, 2, nameof(Unit2), nameof(Unit2), "Unit 2 amount", 0);
         static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->unit3, 2, nameof(Unit3), nameof(Unit3), "Unit 3 amount", 0);
         static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->unit1, 2, nameof(Unit1), nameof(Unit1), "Unit 1 amount", 255);
