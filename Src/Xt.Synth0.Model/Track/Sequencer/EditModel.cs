@@ -30,11 +30,11 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>()
 		{
-			{ Pats, 0 }, { Keys, 1 },
-			{ Rows, 2 }, { Fxs, 3 },
+			{ Pats, 0 }, { Rows, 1 },
+			{ Keys, 2 }, { Fxs, 3 },
 			{ Loop, 4 }, { Edit, 5 },
-			{ Bpm, 6 }, { Oct, 7 } ,
-			{ Lpb, 8 }, { Step, 9 }
+			{ Oct, 6 }, { Step, 7 } ,
+			{ Bpm, 8 }, { Lpb, 9 }
 		};
 
 		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, 2, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
