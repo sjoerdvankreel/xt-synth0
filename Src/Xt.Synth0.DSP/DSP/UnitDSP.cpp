@@ -24,16 +24,6 @@ GenerateBlepSaw(float phase, float inc)
   return saw;
 }
 
-ModParams
-UnitDSP::Params(SourceDSP const& source)
-{
-  bool bip1 = ModBip(source, _model->src1);
-  bool bip2 = ModBip(source, _model->src2);
-  float val1 = ModVal(source, _model->src1);
-  float val2 = ModVal(source, _model->src2);
-  return ModParams(val1, bip1, val2, bip2);
-}
-
 float
 UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
 {
@@ -42,31 +32,6 @@ UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
   int key = input.oct * 12 + static_cast<int>(input.note);
   int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
   return Xts::Freq(unit + key - base + cent);
-}
-
-float
-UnitDSP::ModVal(SourceDSP const& source, ModSource mod) const
-{
-  int env = static_cast<int>(ModSource::Env1);
-  int lfo = static_cast<int>(ModSource::LFO1);
-  switch(mod)
-  {
-  case ModSource::Velo: return source.Velo();
-  case ModSource::LFO1: case ModSource::LFO2: case ModSource::LFO3:
-  return source.Lfos()[static_cast<int>(mod) - lfo].Value();
-  case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
-  return source.Envs()[static_cast<int>(mod) - env].Value();
-  default: assert(false); return 0.0f;
-  }
-}
-
-bool
-UnitDSP::ModBip(SourceDSP const& source, ModSource mod) const
-{
-  if (mod == ModSource::LFO1 && source.Lfos()[0].Bipolar()) return true;
-  if (mod == ModSource::LFO2 && source.Lfos()[1].Bipolar()) return true;
-  if (mod == ModSource::LFO3 && source.Lfos()[2].Bipolar()) return true;
-  return false;
 }
 
 float 
@@ -91,6 +56,7 @@ UnitDSP::ModPhase(ModParams const& params) const
   return result;
 }
 
+// https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 float
 UnitDSP::ModFreq(ModParams const& params) const
 {
@@ -113,7 +79,7 @@ UnitDSP::Next(SourceDSP const& source)
 {
   _value = AudioOutput();
   if (!_model->on) return;
-  ModParams params = Params(source);
+  ModParams params = ModulationParams(source, _model->src1, _model->src2);
   float freq = ModFreq(params);
   float phase = ModPhase(params);
   float sample = Generate(phase, freq, params);
@@ -137,6 +103,7 @@ UnitDSP::Generate(float phase, float freq, ModParams const& params)
   }
 }
 
+// http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 float
 UnitDSP::GenerateBlep(float phase, float freq, ModParams const& params)
 {

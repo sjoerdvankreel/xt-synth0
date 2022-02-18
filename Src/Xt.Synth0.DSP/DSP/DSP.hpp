@@ -16,10 +16,9 @@ inline float Eps = 1e-3f;
 inline float MaxLevel = 0.95f;
 inline float PI = static_cast<float>(3.14159265358979323846);
 
-void Fft(
-  std::vector<float> const& x,
-  std::vector<std::complex<float>>& fft,
-  std::vector<std::complex<float>>& scratch);
+float Mod(float val, bool vbip, float mod, bool mbip, float amt);
+ModParams ModulationParams(SourceDSP const& source, ModSource src1, ModSource src2);
+void Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vector<std::complex<float>>& scratch);
 
 inline float BiToUni2(float val)
 { return val + 1.0f; }
@@ -66,28 +65,6 @@ SyncF(SourceInput const& input, int val)
 
 inline int SyncI(SourceInput const& input, int val)
 { return static_cast<int>(SyncF(input, val)); }
-
-inline float 
-Mod(float val, bool vbip, float mod, bool mbip, float amt)
-{
-  float range = 0.0f;
-  val = EpsToZero(val);
-  assert(-1.0f <= amt && amt <= 1.0f);
-  assert(vbip || 0.0f <= val && val <= 1.0f);
-  assert(mbip || 0.0f <= mod && mod <= 1.0f);
-  assert(!vbip || -1.0f <= val && val <= 1.0f);
-  assert(!mbip || -1.0f <= mod && mod <= 1.0f);
-  if(amt == 0.0f) return val;
-  if(!mbip && amt > 0.0f) range = 1.0f - val;
-  if(!mbip && !vbip && amt < 0.0f) range = val;
-  if(!mbip && vbip && amt < 0.0f) range = 1.0f + val;
-  if(mbip && vbip) range = 1.0f - std::fabs(val);
-  if(mbip && !vbip) range = 0.5f - std::fabs(val - 0.5f);
-  float result = val + mod * amt * range;
-  assert(vbip || 0.0f <= result && result <= 1.0f);
-  assert(!vbip || -1.0f <= result && result <= 1.0f);
-  return result;
-}
 
 } // namespace Xts
 #endif // XTS_DSP_HPP

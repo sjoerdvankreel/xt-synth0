@@ -8,16 +8,6 @@
 
 namespace Xts {
 
-struct ModParams
-{
-  bool bip1, bip2;
-  float mod1, mod2;
-public:
-  ModParams(ModParams const&) = default;
-  ModParams(float mod1, bool bip1, float mod2, bool bip2):
-  bip1(bip1), bip2(bip2), mod1(mod1), mod2(mod2) {}
-};
-
 class UnitDSP: 
 public DSPBase<UnitModel, AudioInput, AudioOutput>
 {
@@ -38,14 +28,11 @@ public:
   _freq(Freq(*_model, _input->key)) {}
 private:
   static float Freq(UnitModel const& model, KeyInput const& input);
+  float ModFreq(ModParams const& params) const;
+  float ModPhase(ModParams const& params) const;
   float Generate(float phase, float freq, ModParams const& params);
   float GenerateBlep(float phase, float freq, ModParams const& params);
   float GenerateAdd(float phase, float freq, ModParams const& params) const;
-  ModParams Params(SourceDSP const& source);
-  float ModFreq(ModParams const& params) const;
-  float ModPhase(ModParams const& params) const;
-  bool ModBip(SourceDSP const& source, ModSource mod) const;
-  float ModVal(SourceDSP const& source, ModSource mod) const;
   float Mod(UnitModTarget tgt, float val, bool bip, ModParams const& params) const;
 public:
   void Next(SourceDSP const& source);
