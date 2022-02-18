@@ -20,13 +20,13 @@ SourceDSP::Next()
 }
 
 SourceDSP::
-SourceDSP(SourceModel const* model, SourceInput const* input):
+SourceDSP(SourceModel const* model, AudioInput const* input):
 DSPBase(model, input), _lfos(), _envs()
 {
   for (int l = 0; l < LfoCount; l++)
-    _lfos[l] = LfoDSP(&model->lfos[l], input);
+    _lfos[l] = LfoDSP(&model->lfos[l], &input->source);
   for (int e = 0; e < EnvCount; e++)
-    _envs[e] = EnvDSP(&model->envs[e], input);
+    _envs[e] = EnvDSP(&model->envs[e], &input->source);
 }
 
 } // namespace Xts

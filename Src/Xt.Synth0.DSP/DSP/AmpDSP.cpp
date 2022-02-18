@@ -28,7 +28,7 @@ AmpDSP::Plot(AmpModel const& model, SourceModel const& source, PlotInput const& 
   SourceInput sourceInput(plotRate, input.bpm);
   AudioInput audioInput(sourceInput, keyInput);
   AmpDSP dsp(&model, &audioInput);
-  SourceDSP sourceDsp(&source, &sourceInput);
+  SourceDSP sourceDsp(&source, &audioInput);
   while (i++ < maxSamples)
   {
     if (h++ == hold) sourceDsp.Release();

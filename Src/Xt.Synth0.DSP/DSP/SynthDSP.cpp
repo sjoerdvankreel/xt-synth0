@@ -20,7 +20,7 @@ SynthDSP::
 SynthDSP(SynthModel const* model, AudioInput const* input):
 DSPBase(model, input), 
 _amp(&model->amp, input), 
-_source(&model->source, &input->source),
+_source(&model->source, input),
 _units()
 {
   for (int u = 0; u < UnitCount; u++)
@@ -42,9 +42,9 @@ SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput con
   output.rate = plotRate;
   KeyInput key(4, UnitNote::C, 1.0f);
   SourceInput sourceInput(plotRate, input.bpm);
-  AudioInput audio(sourceInput, key);
-  SynthDSP dsp(&model, &audio);
-  SourceDSP sourceDsp(&source, &sourceInput);
+  AudioInput audioInput(sourceInput, key);
+  SynthDSP dsp(&model, &audioInput);
+  SourceDSP sourceDsp(&source, &audioInput);
   while (i++ < maxSamples)
   {
     if (h++ == hold) sourceDsp.Release();

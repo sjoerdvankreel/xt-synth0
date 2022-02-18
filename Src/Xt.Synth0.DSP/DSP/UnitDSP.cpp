@@ -51,7 +51,7 @@ UnitDSP::ModVal(SourceDSP const& source, ModSource mod) const
   int lfo = static_cast<int>(ModSource::LFO1);
   switch(mod)
   {
-  case ModSource::Velo: return _input->key.amp;
+  case ModSource::Velo: return source.Velo();
   case ModSource::LFO1: case ModSource::LFO2: case ModSource::LFO3:
   return source.Lfos()[static_cast<int>(mod) - lfo].Value();
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
@@ -237,9 +237,9 @@ UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const
   output.rate = input.spec? input.rate: output.freq * input.pixels;
 
   SourceInput sourceInput(output.rate, input.bpm);
-  AudioInput audio(sourceInput, key);
-  UnitDSP dsp(&model, &audio);
-  SourceDSP sourceDsp(&source, &sourceInput);
+  AudioInput audioInput(sourceInput, key);
+  UnitDSP dsp(&model, &audioInput);
+  SourceDSP sourceDsp(&source, &audioInput);
   float regular = (output.rate * cycles / output.freq) + 1.0f;
   float fsamples = input.spec ? input.rate : regular;
   int samples = static_cast<int>(std::ceilf(fsamples));
