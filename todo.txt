@@ -26,4 +26,3 @@ global pan
 always hold 1second for spectrum
 relevanceindex
 shortcut up/down octave edit
-dont edit on ctrl+s

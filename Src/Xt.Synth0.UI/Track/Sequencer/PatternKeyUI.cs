@@ -84,6 +84,7 @@ namespace Xt.Synth0.UI
 		static void OnNoteKeyDown(EditModel edit, Param keyNote, Param keyOct,
 			PatternKeyElements elems, KeyEventArgs e)
 		{
+			if (Keyboard.Modifiers != ModifierKeys.None) return;
 			if (e.Key == Key.Down || e.Key == Key.Up)
 			{
 				elems.RequestMoveNoteFocus(e.Key == Key.Up);
