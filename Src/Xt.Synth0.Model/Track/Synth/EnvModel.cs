@@ -64,9 +64,9 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), nameof(On), "Enabled", false);
         static readonly ParamInfo InvInfo = ParamInfo.Toggle(p => &((Native*)p)->inv, 0, nameof(Inv), "Invert", "Invert", false);
         static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, 0, nameof(Type), nameof(Type), "Type");
-        static readonly ParamInfo DSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->dSlp, 1, nameof(DSlp), "Slp", "Decay slope");
-        static readonly ParamInfo ASlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->aSlp, 1, nameof(ASlp), "Slp", "Attack slope");
-        static readonly ParamInfo RSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->rSlp, 1, nameof(RSlp), "Slp", "Release slope");
+        static readonly ParamInfo DSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->dSlp, 2, nameof(DSlp), "Slp", "Decay slope");
+        static readonly ParamInfo ASlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->aSlp, 2, nameof(ASlp), "Slp", "Attack slope");
+        static readonly ParamInfo RSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->rSlp, 2, nameof(RSlp), "Slp", "Release slope");
         static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 0, nameof(Sync), nameof(Sync), "Sync to beat", false);
         static readonly ParamInfo DStpInfo = ParamInfo.Step(p => &((Native*)p)->dStp, 1, nameof(DStp), "D", "Decay steps", 0, 11, RelevanceSync);
         static readonly ParamInfo AStpInfo = ParamInfo.Step(p => &((Native*)p)->aStp, 1, nameof(AStp), "A", "Attack steps", 0, 1, RelevanceSync);
