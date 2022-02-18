@@ -74,6 +74,7 @@ namespace Xt.Synth0
 			var result = new SettingsModel();
 			result.AsioDeviceId = engine.AsioDefaultDeviceId;
 			result.WasapiDeviceId = engine.WasapiDefaultDeviceId;
+			result.DSoundDeviceId = engine.DSoundDefaultDeviceId;
 			try
 			{
 				return IO.LoadSettings() ?? result;
@@ -270,6 +271,7 @@ namespace Xt.Synth0
 			var result = AudioEngine.Create(helper.Handle, Model.Settings, Model.Track.Synth, logger, dispatchToUI);
 			AudioModel.AddAsioDevices(result.AsioDevices);
 			AudioModel.AddWasapiDevices(result.WasapiDevices);
+			AudioModel.AddDSoundDevices(result.DSoundDevices);
 			return result;
 		}
 	}

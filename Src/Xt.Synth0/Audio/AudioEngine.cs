@@ -43,10 +43,12 @@ namespace Xt.Synth0
         {
             var asio = platform.GetService(XtSystem.ASIO);
             var wasapi = platform.GetService(XtSystem.WASAPI);
+            var dSound = platform.GetService(XtSystem.DirectSound);
             return new AudioEngine(platform, settings, synth, dispatchToUI,
                 asio.GetDefaultDeviceId(true),
                 wasapi.GetDefaultDeviceId(true),
-                GetDevices(asio), GetDevices(wasapi));
+                dSound.GetDefaultDeviceId(true),
+                GetDevices(asio), GetDevices(wasapi), GetDevices(dSound));
         }
 
         static IReadOnlyList<DeviceModel> GetDevices(XtService service)
@@ -99,8 +101,10 @@ namespace Xt.Synth0
 
         public string AsioDefaultDeviceId { get; }
         public string WasapiDefaultDeviceId { get; }
+        public string DSoundDefaultDeviceId { get; }
         public IReadOnlyList<DeviceModel> AsioDevices { get; }
         public IReadOnlyList<DeviceModel> WasapiDevices { get; }
+        public IReadOnlyList<DeviceModel> DSoundDevices { get; }
 
         AudioEngine(
             XtPlatform platform,
@@ -109,15 +113,19 @@ namespace Xt.Synth0
             Action<Action> dispatchToUI,
             string asioDefaultDeviceId,
             string wasapiDefaultDeviceId,
+            string dSoundDefaultDeviceId,
             IReadOnlyList<DeviceModel> asioDevices,
-            IReadOnlyList<DeviceModel> wasapiDevices)
+            IReadOnlyList<DeviceModel> wasapiDevices,
+            IReadOnlyList<DeviceModel> dSoundDevices)
         {
             GCNotification.Register(this);
 
             AsioDevices = asioDevices;
             WasapiDevices = wasapiDevices;
+            DSoundDevices = dSoundDevices;
             AsioDefaultDeviceId = asioDefaultDeviceId;
             WasapiDefaultDeviceId = wasapiDefaultDeviceId;
+            DSoundDefaultDeviceId = dSoundDefaultDeviceId;
 
             _synth = synth;
             _settings = settings;
@@ -509,20 +517,6 @@ namespace Xt.Synth0
             return service.OpenDevice(id);
         }
 
-        XtDevice OpenDevice()
-        {
-            var system = _settings.UseAsio ? XtSystem.ASIO : XtSystem.WASAPI;
-            var selectedId = _settings.UseAsio ? _settings.AsioDeviceId : _settings.WasapiDeviceId;
-            var defaultId = _settings.UseAsio ? AsioDefaultDeviceId : WasapiDefaultDeviceId;
-            return OpenDevice(system, selectedId, defaultId);
-        }
-
-        internal void ShowASIOControlPanel(string deviceId)
-        {
-            using var device = OpenDevice(XtSystem.ASIO, deviceId, AsioDefaultDeviceId);
-            device.ShowControlPanel();
-        }
-
         IAudioStream OpenDeviceStream(in XtDeviceStreamParams deviceParams)
         {
             XtDevice device = OpenDevice();
@@ -536,6 +530,40 @@ namespace Xt.Synth0
                 device.Dispose();
                 throw;
             }
+        }
+
+        internal void ShowASIOControlPanel(string deviceId)
+        {
+            using var device = OpenDevice(XtSystem.ASIO, deviceId, AsioDefaultDeviceId);
+            device.ShowControlPanel();
+        }
+
+        XtDevice OpenDevice()
+        {
+            XtSystem system;
+            string defaultId;
+            string selectedId;
+            switch (_settings.DeviceType)
+            {
+                case DeviceType.Asio:
+                    system = XtSystem.ASIO;
+                    defaultId = AsioDefaultDeviceId;
+                    selectedId = _settings.AsioDeviceId;
+                    break;
+                case DeviceType.Wasapi:
+                    system = XtSystem.WASAPI;
+                    defaultId = WasapiDefaultDeviceId;
+                    selectedId = _settings.WasapiDeviceId;
+                    break;
+                case DeviceType.DSound:
+                    system = XtSystem.DirectSound;
+                    defaultId = DSoundDefaultDeviceId;
+                    selectedId = _settings.DSoundDeviceId;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+            return OpenDevice(system, selectedId, defaultId);
         }
     }
 }

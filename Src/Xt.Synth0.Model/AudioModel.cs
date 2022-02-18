@@ -50,11 +50,18 @@ namespace Xt.Synth0.Model
 			= new ReadOnlyCollection<EnumModel<BufferSize>>(Enum.GetValues<BufferSize>()
 				.Select(s => new EnumModel<BufferSize>(s, s.ToInt())).ToList());
 
+		public static IReadOnlyList<EnumModel<DeviceType>> DeviceTypes { get; }
+			= new ReadOnlyCollection<EnumModel<DeviceType>>(Enum.GetValues<DeviceType>()
+				.Select(t => new EnumModel<DeviceType>(t, (int)t)).ToList());
+
 		static readonly List<DeviceModel> _asioDevices = new();
 		static readonly List<DeviceModel> _wasapiDevices = new();
+		static readonly List<DeviceModel> _dSoundDevices = new();
 		public static void AddAsioDevices(IEnumerable<DeviceModel> models) => _asioDevices.AddRange(models);
 		public static void AddWasapiDevices(IEnumerable<DeviceModel> models) => _wasapiDevices.AddRange(models);
+		public static void AddDSoundDevices(IEnumerable<DeviceModel> models) => _dSoundDevices.AddRange(models);
 		public static IReadOnlyList<DeviceModel> AsioDevices { get; } = new ReadOnlyCollection<DeviceModel>(_asioDevices);
 		public static IReadOnlyList<DeviceModel> WasapiDevices { get; } = new ReadOnlyCollection<DeviceModel>(_wasapiDevices);
+		public static IReadOnlyList<DeviceModel> DSoundDevices { get; } = new ReadOnlyCollection<DeviceModel>(_dSoundDevices);
 	}
 }

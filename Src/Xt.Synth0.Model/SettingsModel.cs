@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Xt.Synth0.Model
 {
+	public enum DeviceType { DSound, Wasapi, Asio }
 	public enum BitDepth { Depth16, Depth24, Depth32 }
 	public enum SampleRate { Rate44100, Rate48000, Rate96000, Rate192000 }
 	public enum BufferSize { Size1, Size2, Size3, Size5, Size10, Size20, Size30, Size50, Size100 }
@@ -93,14 +94,6 @@ namespace Xt.Synth0.Model
 			set => Set(ref _controlColor, value);
 		}
 
-		bool _useAsio;
-		[Key(nameof(UseAsio))]
-		public bool UseAsio
-		{
-			get => _useAsio;
-			set => Set(ref _useAsio, value);
-		}
-
 		BitDepth _bitDepth;
 		[Key(nameof(BitDepth))]
 		public BitDepth BitDepth
@@ -115,6 +108,14 @@ namespace Xt.Synth0.Model
 		{
 			get => _sampleRate;
 			set => Set(ref _sampleRate, value);
+		}
+
+		DeviceType _deviceType;
+		[Key(nameof(DeviceType))]
+		public DeviceType DeviceType
+		{
+			get => _deviceType;
+			set => Set(ref _deviceType, value);
 		}
 
 		BufferSize _bufferSize;
@@ -149,6 +150,14 @@ namespace Xt.Synth0.Model
 			set => Set(ref _asioDeviceId, value);
 		}
 
+		string _dSoundDeviceId;
+		[Key(nameof(DSoundDeviceId))]
+		public string DSoundDeviceId
+		{
+			get => _dSoundDeviceId;
+			set => Set(ref _dSoundDeviceId, value);
+		}
+
 		string _wasapiDeviceId;
 		[Key(nameof(WasapiDeviceId))]
 		public string WasapiDeviceId
@@ -177,13 +186,14 @@ namespace Xt.Synth0.Model
 			settings.SettingsColor = SettingsColor;
 			settings.EnvelopeColor = EnvelopeColor;
 
-			settings.UseAsio = UseAsio;
 			settings.BitDepth = BitDepth;
+			settings.DeviceType = DeviceType;
 			settings.SampleRate = SampleRate;
 			settings.OutputPath = OutputPath;
 			settings.BufferSize = BufferSize;
 			settings.WriteToDisk = WriteToDisk;
 			settings.AsioDeviceId = AsioDeviceId;
+			settings.DSoundDeviceId = DSoundDeviceId;
 			settings.WasapiDeviceId = WasapiDeviceId;
 			settings.RecentFiles.Clear();
 			foreach (var f in RecentFiles)
