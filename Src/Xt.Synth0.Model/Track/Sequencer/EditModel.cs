@@ -30,22 +30,22 @@ namespace Xt.Synth0.Model
 		public void* Address(void* parent) => &((SeqModel.Native*)parent)->edit;
 		public IDictionary<Param, int> Layout => new Dictionary<Param, int>()
 		{
-			{ Pats, 0 }, { Rows, 1 },
-			{ Keys, 2 }, { Fxs, 3 },
-			{ Bpm, 4 }, { Lpb, 5 },
-			{ Step, 6 }, {Oct, 7} ,
-			{ Edit, 8 }, {Loop,9 }
+			{ Pats, 0 }, { Keys, 1 },
+			{ Rows, 2 }, { Fxs, 3 },
+			{ Loop, 4 }, { Edit, 5 },
+			{ Bpm, 6 }, { Oct, 7 } ,
+			{ Lpb, 8 }, { Step, 9 }
 		};
 
-		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, 0, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
+		static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, 2, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
 		static readonly ParamInfo LoopInfo = ParamInfo.Toggle(p => &((Native*)p)->loop, 0, nameof(Loop), nameof(Loop), nameof(Loop), true);
-		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, 0, nameof(Step), nameof(Step), "Edit step", 0, 8, 1);
-		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, 0, nameof(Bpm), "BPM", "Beats per minute", 1, 255, 120);
-		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, 0, nameof(Lpb), "LPB", "Lines per beat", 1, Model.MaxLpb, 4);
+		static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, 2, nameof(Step), nameof(Step), "Edit step", 0, 8, 1);
+		static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, 1, nameof(Bpm), "BPM", "Beats per minute", 1, 255, 120);
+		static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, 1, nameof(Lpb), "LPB", "Lines per beat", 1, Model.MaxLpb, 4);
 		static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, 0, nameof(Fxs), nameof(Fxs), "Effect count", 0, Model.MaxFxs, 1);
 		static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, 0, nameof(Keys), nameof(Keys), "Key count", 1, Model.MaxKeys, 2);
 		static readonly ParamInfo PatsInfo = ParamInfo.Select(p => &((Native*)p)->pats, 0, nameof(Pats), nameof(Pats), "Pattern count", 1, Model.MaxPatterns, 1);
-		static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, 0, nameof(Edit), nameof(Edit), "Active pattern", 1, Model.MaxPatterns, 1);
+		static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, 2, nameof(Edit), nameof(Edit), "Active pattern", 1, Model.MaxPatterns, 1);
 		static readonly ParamInfo RowsInfo = ParamInfo.Select(p => &((Native*)p)->rows, 0, nameof(Rows), nameof(Rows), "Rows per pattern", 1, Model.MaxRows, Model.MaxRows);
 	}
 }
