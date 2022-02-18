@@ -93,77 +93,77 @@ namespace Xt.Synth0.Model
         {
             (Type, _address, SubGroup, Id, Name, Description, Min, Max, Default, _load, _store, _display, Relevance)
             = (type, address, subGroup, id, name, description, min, max, @default, load, store, display, relevance);
-            if (min < 0 || max > 255 || min >= max || @default < min || @default > max)
-                throw new InvalidOperationException();
+            if (subGroup < 0 || subGroup > 8) throw new InvalidOperationException();
+            if (min < 0 || max > 255 || min >= max || @default < min || @default > max) throw new InvalidOperationException();
             _load ??= x => int.Parse(x);
             _store ??= x => x.ToString();
             _display ??= x => x.ToString();
         }
 
         internal static ParamInfo Pattern(
-            Address address, string id, string name, 
+            Address address, string id, string name,
             string description, int min, int max, int @default)
          => new ParamInfo(ParamType.Pattern, address, 0, id, name,
              description, min, max, @default, null, null, null, null);
 
         internal static ParamInfo Freq(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, int @default)
-        => new ParamInfo(ParamType.Freq, address, subGroup, id, name, 
+        => new ParamInfo(ParamType.Freq, address, subGroup, id, name,
             description, 0, 255, @default, null, null, null, null);
 
         internal static ParamInfo Mix(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Mix, address, subGroup, id, name, 
+        => new ParamInfo(ParamType.Mix, address, subGroup, id, name,
             description, 1, 255, 128, null, null, null, relevance);
 
         internal static ParamInfo Level(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, 
+        => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
             description, 0, 255, @default, null, null, null, relevance);
 
         internal static ParamInfo Toggle(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, bool @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Toggle, address, subGroup, id, name, 
+        => new ParamInfo(ParamType.Toggle, address, subGroup, id, name,
             description, 0, 1, @default ? 1 : 0, null, null, null, relevance);
 
         internal static ParamInfo Time(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, int min, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Time, address, subGroup, id, name, 
+        => new ParamInfo(ParamType.Time, address, subGroup, id, name,
             description, min, 255, @default, null, null, null, relevance);
 
         internal static ParamInfo Pattern(
-            Address address, string id, string name, 
+            Address address, string id, string name,
             string description, string[] display)
-        => new ParamInfo(ParamType.Pattern, address, 0, id, name, 
+        => new ParamInfo(ParamType.Pattern, address, 0, id, name,
             description, 0, display.Length - 1, 0, null, null, x => display[x], null);
 
         internal static ParamInfo Select(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, int min, int max, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, 
+        => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
             description, min, max, @default, null, null, null, relevance);
 
         internal static ParamInfo Select<TEnum>(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
-        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, 0, 
+        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, 0,
             display.Length - 1, 0, LoadEnum<TEnum>, StoreEnum<TEnum>, x => display[x], relevance);
 
         internal static unsafe ParamInfo Step(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, int min, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, min, 
+        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, min,
             SynthModel.SyncSteps.Length - 1, @default, null, null, val => SynthModel.SyncSteps[val].ToString(), relevance);
 
         internal static ParamInfo List<TEnum>(
-            Address address, int subGroup, string id, string name, 
+            Address address, int subGroup, string id, string name,
             string description, string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum
-        => new ParamInfo(ParamType.List, address, subGroup, id, name, description, 0, Enum.GetValues<TEnum>().Length - 1, 
+        => new ParamInfo(ParamType.List, address, subGroup, id, name, description, 0, Enum.GetValues<TEnum>().Length - 1,
             0, LoadEnum<TEnum>, StoreEnum<TEnum>, display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x], relevance);
     }
 }

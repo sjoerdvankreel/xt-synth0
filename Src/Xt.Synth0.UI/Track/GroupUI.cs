@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -25,7 +26,7 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		internal static Border MakeOuterBorder(UIElement child)
+		static Border MakeOuterBorder(UIElement child)
 		{
 			var result = new Border();
 			result.Child = child;
@@ -36,10 +37,10 @@ namespace Xt.Synth0.UI
 			return Create.ThemedContent(result);
 		}
 
-		internal static Border MakeInnerBorder(UIElement child, Cell cell)
+		static Border MakeInnerBorder(UIElement child, Cell cell)
 		{
 			var result = Create.Element<Border>(cell);
-			result.Padding = new(0, 0, 2, 0);
+			result.Padding = new(0.0);
 			result.SnapsToDevicePixels = true;
 			result.BorderThickness = new(BorderThickness, BorderThickness, 0, 0);
 			result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
