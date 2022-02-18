@@ -40,19 +40,19 @@ namespace Xt.Synth0.Model
 
 		public static IReadOnlyList<EnumModel<BitDepth>> BitDepths { get; }
 			= new ReadOnlyCollection<EnumModel<BitDepth>>(Enum.GetValues<BitDepth>()
-				.Select(d => new EnumModel<BitDepth>(d, d.ToInt())).ToList());
-
-		public static IReadOnlyList<EnumModel<SampleRate>> SampleRates { get; }
-			= new ReadOnlyCollection<EnumModel<SampleRate>>(Enum.GetValues<SampleRate>()
-				.Select(r => new EnumModel<SampleRate>(r, r.ToInt())).ToList());
-
-		public static IReadOnlyList<EnumModel<BufferSize>> BufferSizes { get; }
-			= new ReadOnlyCollection<EnumModel<BufferSize>>(Enum.GetValues<BufferSize>()
-				.Select(s => new EnumModel<BufferSize>(s, s.ToInt())).ToList());
+				.Select(d => new EnumModel<BitDepth>(d, d.ToInt().ToString())).ToList());
 
 		public static IReadOnlyList<EnumModel<DeviceType>> DeviceTypes { get; }
 			= new ReadOnlyCollection<EnumModel<DeviceType>>(Enum.GetValues<DeviceType>()
-				.Select(t => new EnumModel<DeviceType>(t, (int)t)).ToList());
+				.Select(t => new EnumModel<DeviceType>(t, t.ToString())).ToList());
+
+		public static IReadOnlyList<EnumModel<SampleRate>> SampleRates { get; }
+			= new ReadOnlyCollection<EnumModel<SampleRate>>(Enum.GetValues<SampleRate>()
+				.Select(r => new EnumModel<SampleRate>(r, r.ToInt().ToString())).ToList());
+
+		public static IReadOnlyList<EnumModel<BufferSize>> BufferSizes { get; }
+			= new ReadOnlyCollection<EnumModel<BufferSize>>(Enum.GetValues<BufferSize>()
+				.Select(s => new EnumModel<BufferSize>(s, s.ToInt().ToString())).ToList());
 
 		static readonly List<DeviceModel> _asioDevices = new();
 		static readonly List<DeviceModel> _wasapiDevices = new();

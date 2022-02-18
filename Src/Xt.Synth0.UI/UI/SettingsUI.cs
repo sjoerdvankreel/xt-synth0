@@ -101,11 +101,11 @@ namespace Xt.Synth0.UI
         {
             var result = Create.Grid(4, 2, true);
             result.Add(Create.Label("Type", new(0, 0)));
-            result.Add(MakeDeviceType(settings, new(0, 1)));
+            result.Add(MakeType(settings, new(0, 1)));
             result.Add(Create.Label("Device", new(1, 0)));
             result.Add(MakeAsioDevice(settings, new(1, 1)));
-            result.Add(MakeWasapiDevice(settings, new(1, 1)));
             result.Add(MakeDSoundDevice(settings, new(1, 1)));
+            result.Add(MakeWasapiDevice(settings, new(1, 1)));
             result.Add(Create.Label("Buffer size (ms)", new(2, 0)));
             result.Add(MakeBufferSize(settings, new(2, 1)));
             result.Add(Create.Label("Format supported", new(3, 0)));
@@ -190,18 +190,19 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement MakeDeviceType(SettingsModel settings, Cell cell)
+        static UIElement MakeType(SettingsModel settings, Cell cell)
         {
-            var result = Create.Element<StackPanel>(cell);
-            result.Orientation = Orientation.Horizontal;
-            result.Add(MakeDeviceType(settings));
-            result.Add(MakeAsioControlPanel(settings));
+            var result = Create.Grid(1, 2);
+            result.SetValue(Grid.RowProperty, cell.Row);
+            result.SetValue(Grid.ColumnProperty, cell.Col);
+            result.Add(MakeDeviceType(settings, new(0, 0)));
+            result.Add(MakeAsioControlPanel(settings, new(0, 1)));
             return result;
         }
 
-        static UIElement MakeDeviceType(SettingsModel settings)
+        static UIElement MakeDeviceType(SettingsModel settings, Cell cell)
         {
-            var result = MakeCombo(new(0, 0), LeftControlWidth);
+            var result = Create.Element<ComboBox>(cell);
             result.ItemsSource = AudioModel.DeviceTypes;
             var binding = Bind.To(settings, nameof(settings.DeviceType));
             result.SetBinding(Selector.SelectedValueProperty, binding);
@@ -283,7 +284,7 @@ namespace Xt.Synth0.UI
             if (!args.IsSupported) return "False";
             string min = args.MinBuffer.ToString("N1");
             string max = args.MaxBuffer.ToString("N1");
-            return $"True, buffer: {min} .. {max}ms";
+            return $"True, {min} .. {max}ms";
         }
 
         static UIElement MakeFormatSupport(SettingsModel settings, Cell cell)
@@ -305,9 +306,9 @@ namespace Xt.Synth0.UI
                 label.Content = DoQueryFormatSupport();
         }
 
-        static UIElement MakeAsioControlPanel(SettingsModel settings)
+        static UIElement MakeAsioControlPanel(SettingsModel settings, Cell cell)
         {
-            var result = new Button();
+            var result = Create.Element<Button>(cell);
             result.Content = "Control panel";
             result.Click += (s, e) => ShowASIOControlPanel?.Invoke(null, EventArgs.Empty);
             var conv = new VisibilityConverter<DeviceType>(true, DeviceType.Asio);
