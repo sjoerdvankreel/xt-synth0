@@ -21,6 +21,7 @@ namespace Xt.Synth0.UI
 		internal static string RowDisabledKey = nameof(RowDisabledKey);
 		internal static string BorderParamKey = nameof(BorderParamKey);
 		internal static string ForegroundMixKey = nameof(ForegroundMixKey);
+		internal static string BackgroundDarkKey = nameof(BackgroundDarkKey);
 		internal static string BackgroundParamKey = nameof(BackgroundParamKey);
 
 		static Color Multiply(Color color, double factor)

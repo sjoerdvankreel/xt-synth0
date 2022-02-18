@@ -116,8 +116,8 @@ namespace Xt.Synth0.UI
         {
             panel.Opacity = subGroup == 0 ? 0.1 : subGroup == 1 ? 0.2 : 0.4;
             if (subGroup == 0) panel.Background = Brushes.White;
-            else if (subGroup == 2) panel.SetResourceReference(Panel.BackgroundProperty, Utility.ForegroundKey);
             else if (subGroup == 1) panel.SetResourceReference(Panel.BackgroundProperty, Utility.ForegroundKey);
+            else if (subGroup == 2) panel.SetResourceReference(Panel.BackgroundProperty, Utility.BackgroundDarkKey);
             else throw new InvalidOperationException();
         }
     }
