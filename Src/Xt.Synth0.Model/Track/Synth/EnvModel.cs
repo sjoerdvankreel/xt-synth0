@@ -57,8 +57,8 @@ namespace Xt.Synth0.Model
         };
 
         internal EnvModel(int index) => Index = index;
-        static readonly IRelevance RelevanceSync = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 1);
-        static readonly IRelevance RelevanceTime = Relevance.When((EnvModel m) => m.Sync, (int s) => s == 0);
+        static readonly IRelevance RelevanceSync = Relevance.Param((EnvModel m) => m.Sync, (int s) => s == 1);
+        static readonly IRelevance RelevanceTime = Relevance.Param((EnvModel m) => m.Sync, (int s) => s == 0);
 
         static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, 1, nameof(S), nameof(S), "Sustain level", 128);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), nameof(On), "Enabled", false);

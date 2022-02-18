@@ -2,7 +2,6 @@ hard sync
 dont plot too often (throttle)
 sampler
 automation groups
-make it faster
 detach sequencer
 multiple synths + select target in sequencer
 notifyparamchange + recalc + param interpolation
@@ -20,6 +19,4 @@ dump stacktrace
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
-global pan
-relevanceindex
 check xtaudio dsound min buffer size

@@ -61,13 +61,13 @@ namespace Xt.Synth0.Model
         internal UnitModel(int index) => Index = index;
         static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
-        static readonly IRelevance RelevanceAdd = Relevance.When(
+        static readonly IRelevance RelevanceAdd = Relevance.Param(
             (UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add);
-        static readonly IRelevance RelevanceBlep = Relevance.When(
+        static readonly IRelevance RelevanceBlep = Relevance.Param(
             (UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep);
         static readonly IRelevance RelevancePw = Relevance.All(
-            Relevance.When((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
-            Relevance.When((UnitModel m) => m.BlepType, (BlepType t) => t != Synth0.Model.BlepType.Saw));
+            Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
+            Relevance.Param((UnitModel m) => m.BlepType, (BlepType t) => t != Synth0.Model.BlepType.Saw));
 
         static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, 0, nameof(Dtn), nameof(Dtn), "Detune");
         static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 0, nameof(Pan), nameof(Pan), "Panning");
