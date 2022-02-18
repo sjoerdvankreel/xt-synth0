@@ -98,29 +98,6 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static void ApplySubGroupBackground(DockPanel panel, int subGroup)
-        {
-            if (subGroup == 0)
-            {
-                panel.Opacity = 0.2;
-                panel.SetResourceReference(Panel.BackgroundProperty, Utility.ForegroundKey);
-            }
-            else if (subGroup == 1)
-            {
-                panel.Opacity = 0.1;
-                panel.Background = Brushes.White;
-            }
-            else if (subGroup == 2)
-            {
-                panel.Opacity = 0.4;
-                panel.Background = Brushes.Black;
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
-        }
-
         static Grid MakeSubGroup(IUIParamGroupModel group, Param param, DockPanel content)
         {
             var result = new Grid();
@@ -133,6 +110,15 @@ namespace Xt.Synth0.UI
             bool conditional = param.Info.Relevance != null;
             if (conditional) result.SetBinding(UIElement.VisibilityProperty, Bind.Relevance(group, param));
             return result;
+        }
+
+        static void ApplySubGroupBackground(DockPanel panel, int subGroup)
+        {
+            panel.Opacity = subGroup == 0 ? 0.1 : subGroup == 1 ? 0.2 : 0.4;
+            if (subGroup == 0) panel.Background = Brushes.White;
+            else if (subGroup == 2) panel.SetResourceReference(Panel.BackgroundProperty, Utility.ForegroundKey);
+            else if (subGroup == 1) panel.SetResourceReference(Panel.BackgroundProperty, Utility.ForegroundKey);
+            else throw new InvalidOperationException();
         }
     }
 }
