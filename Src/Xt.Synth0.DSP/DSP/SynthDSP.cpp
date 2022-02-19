@@ -36,9 +36,11 @@ SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& outp
 
   output.hSplits->emplace_back(0, L"");
   output.hSplits->emplace_back(i - 1, L"");
-  output.vSplits->emplace_back(0.0f, L"0");
+  output.vSplits->emplace_back(-0.5f, L"L");
+  output.vSplits->emplace_back(0.5f, L"R");
+  output.vSplits->emplace_back(0.0f, L"-+");
   output.vSplits->emplace_back(1.0f, L"-1");
-  output.vSplits->emplace_back(-1.0f, L"1");
+  output.vSplits->emplace_back(-1.0f, L"+1");
 }
 
 } // namespace Xts

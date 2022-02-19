@@ -241,7 +241,7 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
 
   output.vSplits->emplace_back(0.0f, L"0");
   output.vSplits->emplace_back(1.0f, L"-1");
-  output.vSplits->emplace_back(-1.0f, L"1");
+  output.vSplits->emplace_back(-1.0f, L"+1");
   output.hSplits->emplace_back(samples, L"");
   for(int i = 0; i < 6; i++)
 	  output.hSplits->emplace_back(samples * i / 6, std::to_wstring(i) + L"\u03C0");

@@ -79,7 +79,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	{
 		output.vSplits->emplace_back(0.0f, L"0");
 		output.vSplits->emplace_back(1.0f, L"-1");
-		output.vSplits->emplace_back(-1.0f, L"1");
+		output.vSplits->emplace_back(-1.0f, L"+1");
 	}
 	else
 	{
