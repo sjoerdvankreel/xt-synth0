@@ -49,7 +49,7 @@
     <ClInclude Include="DSP\LfoDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\SourceDSP.hpp">
+    <ClInclude Include="DSP\CVDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
     <ClInclude Include="Utility\Utility.hpp">
@@ -82,7 +82,7 @@
     <ClCompile Include="Model\SynthModel.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\SourceDSP.cpp">
+    <ClCompile Include="DSP\CVDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="DSP\DSP.cpp">

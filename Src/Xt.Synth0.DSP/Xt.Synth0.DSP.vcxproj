@@ -17,7 +17,7 @@
     <ClInclude Include="DSP\LfoDSP.hpp" />
     <ClInclude Include="DSP\PlotDSP.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
-    <ClInclude Include="DSP\SourceDSP.hpp" />
+    <ClInclude Include="DSP\CVDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />
     <ClInclude Include="DSP\UnitDSP.hpp" />
     <ClInclude Include="Model\DSPModel.hpp" />
@@ -34,7 +34,7 @@
     <ClCompile Include="DSP\LfoDSP.cpp" />
     <ClCompile Include="DSP\PlotDSP.cpp" />
     <ClCompile Include="DSP\SeqDSP.cpp" />
-    <ClCompile Include="DSP\SourceDSP.cpp" />
+    <ClCompile Include="DSP\CVDSP.cpp" />
     <ClCompile Include="DSP\SynthDSP.cpp" />
     <ClCompile Include="DSP\UnitDSP.cpp" />
     <ClCompile Include="Model\SynthModel.cpp" />

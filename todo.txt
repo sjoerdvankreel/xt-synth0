@@ -19,4 +19,5 @@ dump stacktrace
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
+plot hold conditional + impulse response
 check xtaudio dsound min buffer size

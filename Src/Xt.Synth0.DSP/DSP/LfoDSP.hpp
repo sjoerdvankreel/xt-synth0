@@ -20,7 +20,7 @@ public:
   LfoDSP(LfoModel const* model, float bpm, float rate);
 public:
   void Next();
-  CVOutput const& Output() const { return _output; }
+  CVOutput Output() const { return _output; }
   static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);
 };
 

@@ -27,9 +27,9 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
 		{
-			internal AmpModel.Native amp;
+            internal CVModel cv;
+            internal AmpModel.Native amp;
 			internal PlotModel.Native plot;
-			internal SourceModel source;
 			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
 			internal fixed byte filters[Model.FilterCount * FilterModel.Native.Size];
 
@@ -40,8 +40,8 @@ namespace Xt.Synth0.Model
 			public ref struct VoiceBinding { internal fixed byte @params[Model.ParamCount * 8]; }
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
-			public ref struct SourceModel 
-			{
+            internal ref struct CVModel
+            {
 				internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
 				internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			}

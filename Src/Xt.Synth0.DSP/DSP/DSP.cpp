@@ -71,7 +71,7 @@ ModulationInput(CVState const& cv, ModSource src1, ModSource src2)
 }
 
 float 
-Modulate(float val, bool bip, CVOutput const& cv, float amt)
+Modulate(float val, bool bip, float amt, CVOutput cv)
 {
   float range = 0.0f;
   val = EpsToZero(val);

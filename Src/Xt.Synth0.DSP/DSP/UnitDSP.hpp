@@ -1,6 +1,7 @@
 #ifndef XTS_UNIT_DSP_HPP
 #define XTS_UNIT_DSP_HPP
 
+#include "CVDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -8,13 +9,13 @@ namespace Xts {
 
 class UnitDSP
 {
-  static constexpr float MaxPw = 0.975f;
   AudioOutput _output;
+  UnitModel const* _model;
   double _phase, _blepTri;
-  float _pan, _amt1, _amt2, _amp, _roll, _pw, _freq;
+  float _rate, _pan, _amt1, _amt2, _amp, _roll, _pw, _freq;
 public:
   UnitDSP() = default;
-  UnitDSP(UnitModel const* model, int oct, UnitNote note);
+  UnitDSP(UnitModel const* model, int oct, UnitNote note, float rate);
 private:
   static float Freq(UnitModel const& model, int oct, UnitNote note);
   float ModFreq(ModInput const& mod) const;
@@ -24,9 +25,9 @@ private:
   float GenerateAdd(float phase, float freq, ModInput const& mod) const;
   float Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const;
 public:
-  void Next(SourceDSP const& source);
-  AudioOutput const& Output() const { return _output; }
-  static void Plot(UnitModel const& model, CVState const& cv, PlotInput const& input, PlotOutput& output);
+  void Next(CVState const& cv);
+  AudioOutput const Output() const { return _output; }
+  static void Plot(UnitModel const& model, CVModel const& cv, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

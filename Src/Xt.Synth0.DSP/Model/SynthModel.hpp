@@ -125,18 +125,18 @@ private:
 };
 XTS_CHECK_SIZE(UnitModel, 80);
 
-struct XTS_ALIGN SourceModel
+struct XTS_ALIGN CVModel
 {
+  friend class CVDSP;
   friend class AmpDSP;
   friend class PlotDSP;
-  friend class SourceDSP;
-  SourceModel() = default;
-  SourceModel(SourceModel const&) = delete;
+  CVModel() = default;
+  CVModel(CVModel const&) = delete;
 private:
   LfoModel lfos[LfoCount];
   EnvModel envs[EnvCount];
 };
-XTS_CHECK_SIZE(SourceModel, 288);
+XTS_CHECK_SIZE(CVModel, 288);
 
 struct XTS_ALIGN SynthModel
 {
@@ -146,9 +146,9 @@ struct XTS_ALIGN SynthModel
   SynthModel() = default;
   SynthModel(SynthModel const&) = delete;
 private:
+  CVModel cv;
   AmpModel amp;
   PlotModel plot;
-  SourceModel source;
   UnitModel units[UnitCount];
   FilterModel filters[FilterCount];
 };

@@ -1,10 +1,13 @@
 #include "DSP.hpp"
 #include "UnitDSP.hpp"
+
 #include <cmath>
 #include <cassert>
 #include <immintrin.h>
 
 namespace Xts {
+
+static const float MaxPw = 0.975f;
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 static float
@@ -25,9 +28,16 @@ GenerateBlepSaw(float phase, float inc)
   return saw;
 }
 
+AudioOutput _output;
+double _phase, _blepTri;
+float _pan, _amt1, _amt2, _amp, _roll, _pw, _freq;
+
 UnitDSP::
-UnitDSP(UnitModel const* model, int oct, UnitNote note):
+UnitDSP(UnitModel const* model, int oct, UnitNote note, float rate):
+_output(),
+_model(model),
 _phase(0.0), _blepTri(0.0),
+_rate(rate),
 _pan(Mix(model->pan)),
 _amt1(Mix(model->amt1)),
 _amt2(Mix(model->amt2)),
@@ -47,22 +57,22 @@ UnitDSP::Freq(UnitModel const& model, int oct, UnitNote note)
 }
 
 float 
-UnitDSP::Mod(UnitModTarget tgt, float val, bool bip, ModParams const& params) const
+UnitDSP::Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const
 {
-  if (_model->tgt1 == tgt) val = Xts::Mod(val, bip, params.mod1, params.bip1, _amt1);
-  if (_model->tgt2 == tgt) val = Xts::Mod(val, bip, params.mod2, params.bip2, _amt2);
+  if (_model->tgt1 == tgt) val = Modulate(val, bip, _amt1, mod.cv1);
+  if (_model->tgt2 == tgt) val = Modulate(val, bip, _amt2, mod.cv2);
   return val;
 }
 
 // https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 float
-UnitDSP::ModPhase(ModParams const& params) const
+UnitDSP::ModPhase(ModInput const& mod) const
 {
   float phase = static_cast<float>(_phase);
-  float base1 = params.bip1 ? 0.5f : _amt1 >= 0.0f ? 0.0f : 1.0f;
-  float base2 = params.bip1 ? 0.5f : _amt2 >= 0.0f ? 0.0f : 1.0f;
-  if (_model->tgt1 == UnitModTarget::Phase) phase += Xts::Mod(base1, false, params.mod1, params.bip1, _amt1);
-  if (_model->tgt2 == UnitModTarget::Phase) phase += Xts::Mod(base2, false, params.mod2, params.bip2, _amt2);
+  float base1 = mod.cv1.bip ? 0.5f : _amt1 >= 0.0f ? 0.0f : 1.0f;
+  float base2 = mod.cv2.bip ? 0.5f : _amt2 >= 0.0f ? 0.0f : 1.0f;
+  if (_model->tgt1 == UnitModTarget::Phase) phase += Modulate(base1, false, _amt1, mod.cv1);
+  if (_model->tgt2 == UnitModTarget::Phase) phase += Modulate(base2, false, _amt2, mod.cv2);
   float result = phase - std::floorf(phase);
   assert(0.0f <= result && result <= 1.0f);
   return result;
@@ -70,7 +80,7 @@ UnitDSP::ModPhase(ModParams const& params) const
 
 // https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 float
-UnitDSP::ModFreq(ModParams const& params) const
+UnitDSP::ModFreq(ModInput const& mod) const
 {
   float result = _freq;
   float minFreq = 10.0f;
@@ -78,50 +88,52 @@ UnitDSP::ModFreq(ModParams const& params) const
   float pitchRange = 0.02930223f;
   float freqRange = maxFreq - minFreq;
   float freqBase = (std::max(minFreq, std::min(_freq, maxFreq)) - minFreq) / freqRange;
-  if (_model->tgt1 == UnitModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod1, params.bip1, _amt1) * pitchRange;
-  if (_model->tgt1 == UnitModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod1, params.bip1, _amt1) * freqRange;
-  if (_model->tgt2 == UnitModTarget::Pitch) result *= 1.0f + Xts::Mod(0.0f, true, params.mod2, params.bip2, _amt2) * pitchRange;
-  if (_model->tgt2 == UnitModTarget::Freq) result = minFreq + Xts::Mod(freqBase, false, params.mod2, params.bip2, _amt2) * freqRange;
+  if (_model->tgt1 == UnitModTarget::Pitch) result *= 1.0f + Modulate(0.0f, true, _amt1, mod.cv1) * pitchRange;
+  if (_model->tgt1 == UnitModTarget::Freq) result = minFreq + Modulate(freqBase, false, _amt1, mod.cv1) * freqRange;
+  if (_model->tgt2 == UnitModTarget::Pitch) result *= 1.0f + Modulate(0.0f, true, _amt2, mod.cv2) * pitchRange;
+  if (_model->tgt2 == UnitModTarget::Freq) result = minFreq + Modulate(freqBase, false, _amt2, mod.cv2) * freqRange;
   assert(result > 0.0f);
   return result;
 }
 
 void
-UnitDSP::Next(SourceDSP const& source)
+UnitDSP::Next(CVState const& cv)
 {
-  _value = AudioOutput();
+  _output.l = 0.0f;
+  _output.r = 0.0f;
   if (!_model->on) return;
-  ModParams params = ModulationParams(source, _model->src1, _model->src2);
-  float freq = ModFreq(params);
-  float phase = ModPhase(params);
-  float sample = Generate(phase, freq, params);
-  float amp = Mod(UnitModTarget::Amp, _amp, false, params);
-  float pan = BiToUni1(Mod(UnitModTarget::Pan, _pan, true, params));
-  _phase += freq / _input->source.rate;
+  ModInput mod = ModulationInput(cv, _model->src1, _model->src2);
+  float freq = ModFreq(mod);
+  float phase = ModPhase(mod);
+  float sample = Generate(phase, freq, mod);
+  float amp = Mod(UnitModTarget::Amp, _amp, false, mod);
+  float pan = BiToUni1(Mod(UnitModTarget::Pan, _pan, true, mod));
+  _phase += freq / _rate;
   _phase -= std::floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
-  _value = AudioOutput(sample * amp * (1.0f - pan), sample * amp * pan);
+  _output.l = sample * amp * (1.0f - pan);
+  _output.r = sample * amp * pan;
 }
 
 float
-UnitDSP::Generate(float phase, float freq, ModParams const& params)
+UnitDSP::Generate(float phase, float freq, ModInput const& mod)
 {
   switch (_model->type)
   {
   case UnitType::Sin: return std::sinf(phase * 2.0f * PI);
-  case UnitType::Add: return GenerateAdd(phase, freq, params);
-  case UnitType::Blep: return GenerateBlep(phase, freq, params);
+  case UnitType::Add: return GenerateAdd(phase, freq, mod);
+  case UnitType::Blep: return GenerateBlep(phase, freq, mod);
   default: assert(false); return 0.0f;
   }
 }
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 float
-UnitDSP::GenerateBlep(float phase, float freq, ModParams const& params)
+UnitDSP::GenerateBlep(float phase, float freq, ModInput const& mod)
 {
   float result = 0.0f;
   const double BlepLeaky = 1.0e-4;
-  float inc = freq / _input->source.rate;
+  float inc = freq / _rate;
   if (_model->blepType == BlepType::Saw)
   {
     result = GenerateBlepSaw(phase + 0.5f, inc);
@@ -129,7 +141,7 @@ UnitDSP::GenerateBlep(float phase, float freq, ModParams const& params)
     return result;
   }
 
-  float modPw = Mod(UnitModTarget::Pw, _pw, false, params);
+  float modPw = Mod(UnitModTarget::Pw, _pw, false, mod);
   float pwPhase = phase + 0.5f - modPw * 0.5f;
   pwPhase -= (int)pwPhase;
   if(_model->blepType == BlepType::Pulse)
@@ -150,7 +162,7 @@ UnitDSP::GenerateBlep(float phase, float freq, ModParams const& params)
 }
 
 float 
-UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
+UnitDSP::GenerateAdd(float phase, float freq, ModInput const& mod) const
 {
   bool any = false;
   float limit = 0.0;
@@ -158,7 +170,7 @@ UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
   int step = _model->addStep;
   int parts = _model->addParts;
   bool addSub = _model->addSub;
-  float roll = Mod(UnitModTarget::Roll, _roll, true, params);
+  float roll = Mod(UnitModTarget::Roll, _roll, true, mod);
 
   __m256 psRolls;
   __m256 ones = _mm256_set1_ps(1.0f);
@@ -170,13 +182,13 @@ UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
   __m256 results = _mm256_set1_ps(0.0f);
   __m256 phases = _mm256_set1_ps(phase);
   __m256 twopis = _mm256_set1_ps(2.0f * PI);
-  __m256 nyquists = _mm256_set1_ps(_input->source.rate / 2.0f);
+  __m256 nyquists = _mm256_set1_ps(_rate / 2.0f);
   __m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
 
   if(addSub) signs = _mm256_set_ps(1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f, -1.0f);
   for (int p = 1; p <= parts * step; p += step * 8)
   {
-    if(p * freq >= _input->source.rate / 2.0f) break;
+    if(p * freq >= _rate * 0.5f) break;
     __m256 allPs = _mm256_set_ps(
       p + 0.0f * step, p + 1.0f * step, p + 2.0f * step, p + 3.0f * step,
 	    p + 4.0f * step, p + 5.0f * step,	p + 6.0f * step, p + 7.0f * step);
@@ -205,36 +217,33 @@ UnitDSP::GenerateAdd(float phase, float freq, ModParams const& params) const
 }
 
 void
-UnitDSP::Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
+UnitDSP::Plot(UnitModel const& model, CVModel const& cv, PlotInput const& input, PlotOutput& output)
 {
   const float cycles = 3.0f;
   if (!model.on) return;
-  KeyInput key(4, UnitNote::C, 1.0f);
   output.max = 1.0f;
   output.min = -1.0f;
-  output.freq = Freq(model, key);
+  output.freq = Freq(model, 4, UnitNote::C);
   output.rate = input.spec? input.rate: output.freq * input.pixels;
 
-  SourceInput sourceInput(output.rate, input.bpm);
-  AudioInput audioInput(sourceInput, key);
-  UnitDSP dsp(&model, &audioInput);
-  SourceDSP sourceDsp(&source, &audioInput);
+  CVDSP cvDsp(&cv, 1.0f, input.bpm, output.rate);
+  UnitDSP dsp(&model, 4, UnitNote::C, output.rate);
   float regular = (output.rate * cycles / output.freq) + 1.0f;
   float fsamples = input.spec ? input.rate : regular;
   int samples = static_cast<int>(std::ceilf(fsamples));
   for (int i = 0; i < samples; i++)
   {
-	  sourceDsp.Next();
-    dsp.Next(sourceDsp);
-	  output.samples->push_back(dsp.Value().Mono());
+    cvDsp.Next();
+    dsp.Next(cvDsp.Output());
+	  output.samples->push_back(dsp.Output().l + dsp.Output().r);
   }
 
-  output.vSplits->emplace_back(VSplit(0.0f, L"0"));
-  output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
-  output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
-  output.hSplits->emplace_back(HSplit(samples, L""));
+  output.vSplits->emplace_back(0.0f, L"0");
+  output.vSplits->emplace_back(1.0f, L"-1");
+  output.vSplits->emplace_back(-1.0f, L"1");
+  output.hSplits->emplace_back(samples, L"");
   for(int i = 0; i < 6; i++)
-	  output.hSplits->emplace_back(HSplit(samples * i / 6, std::to_wstring(i) + L"\u03C0"));
+	  output.hSplits->emplace_back(samples * i / 6, std::to_wstring(i) + L"\u03C0");
 }
 
 } // namespace Xts
