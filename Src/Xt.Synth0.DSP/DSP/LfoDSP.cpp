@@ -75,18 +75,8 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.hSplits->emplace_back(0, L"0");
 	output.hSplits->emplace_back(samples, L"");
 	output.hSplits->emplace_back(samples / 2, L"\u03C0");
-	if (IsBipolar(model.plty))
-	{
-		output.vSplits->emplace_back(0.0f, L"0");
-		output.vSplits->emplace_back(1.0f, L"-1");
-		output.vSplits->emplace_back(-1.0f, L"+1");
-	}
-	else
-	{
-		output.vSplits->emplace_back(0.0f, L"1");
-		output.vSplits->emplace_back(1.0f, L"0");
-		output.vSplits->emplace_back(0.5f, L"\u00BD");
-	}
+	if (IsBipolar(model.plty)) *output.vSplits = BiVSPlits;
+	else *output.vSplits = UniVSPlits;
 }
 
 } // namespace Xts

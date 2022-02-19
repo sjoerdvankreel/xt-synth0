@@ -2,6 +2,22 @@
 
 namespace Xts {
 
+std::vector<VSplit> BiVSPlits = { 
+  { -1.0f, L"+1" }, 
+  { -0.5f, L"\u00BD" }, 
+  { 0.0f, L"0" }, 
+  { 0.5f, L"-\u00BD" }, 
+  { 1.0f, L"-1" } 
+};
+
+std::vector<VSplit> UniVSPlits = { 
+  { 0.0f, L"1" }, 
+  { 0.25f, L"\u00BE" }, 
+  { 0.5f, L"\u00BD" }, 
+  { 0.75f, L"\u00BC" }, 
+  { 1.0f, L"0" } 
+};
+
 static void
 Fft(std::complex<float>* x, std::complex<float>* scratch, size_t count)
 {
@@ -31,6 +47,22 @@ Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vec
   for(size_t i = 0; i < x.size(); i++)
     fft[i] = std::complex<float>(x[i], 0.0f);
   Fft(fft.data(), scratch.data(), x.size());
+}
+
+std::wstring
+FormatEnv(EnvStage stage)
+{
+  switch (stage)
+  {
+  case EnvStage::A: return L"A";
+  case EnvStage::D: return L"D";
+  case EnvStage::S: return L"S";
+  case EnvStage::R: return L"R";
+  case EnvStage::Dly: return L"D";
+  case EnvStage::Hld: return L"H";
+  case EnvStage::End: return L"";
+  default: assert(false); return L"";
+  }
 }
 
 static bool

@@ -5,6 +5,7 @@
 #include "../Model/SynthModel.hpp"
 
 #include <cmath>
+#include <string>
 #include <vector>
 #include <cstdint>
 #include <cassert>
@@ -16,6 +17,9 @@ inline float Eps = 1e-3f;
 inline float MaxLevel = 0.95f;
 inline float PI = static_cast<float>(3.14159265358979323846);
 
+extern std::vector<VSplit> BiVSPlits;
+extern std::vector<VSplit> UniVSPlits;
+std::wstring FormatEnv(EnvStage stage);
 float Modulate(float val, bool bip, float amt, CvOutput cv);
 CvOutput ModulationInput(CvState const& cv, ModSource src);
 ModInput ModulationInput(CvState const& cv, ModSource src1, ModSource src2);

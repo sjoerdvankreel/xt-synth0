@@ -167,14 +167,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     if((firstMarker || prev != dsp._output.stage) && !dsp.End())
     {
       firstMarker = false;
-      std::wstring marker = L"";
-      if(dsp._output.stage == EnvStage::A) marker = L"A";
-      if(dsp._output.stage == EnvStage::D) marker = L"D";
-      if(dsp._output.stage == EnvStage::S) marker = L"S";
-      if(dsp._output.stage == EnvStage::R) marker = L"R";
-      if(dsp._output.stage == EnvStage::Dly) marker = L"D";
-      if(dsp._output.stage == EnvStage::Hld) marker = L"H";
-      output.hSplits->emplace_back(i, marker);
+      output.hSplits->emplace_back(i, FormatEnv(dsp._output.stage));
     }
     prev = dsp._output.stage;
     i++;
