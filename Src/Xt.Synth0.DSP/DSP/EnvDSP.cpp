@@ -172,12 +172,8 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     prev = dsp._output.stage;
     i++;
   }
+  *output.vSplits = UniVSPlits;
   output.hSplits->emplace_back(i - 1, L"");
-  output.vSplits->emplace_back(0.0f, L"1");
-  output.vSplits->emplace_back(1.0f, L"0");
-  output.vSplits->emplace_back(0.5f, L"\u00BD");
-  output.vSplits->emplace_back(0.25f, L"\u00BE");
-  output.vSplits->emplace_back(0.75f, L"\u00BC");
 }
 
 } // namespace Xts
