@@ -10,13 +10,12 @@ class LfoDSP
 {
   double _phase;
   LfoModel const* _model;
-  float _bpm, _rate, _value;
-  float _incr, _base, _factor;
+  float _value, _incr, _base, _factor;
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, float bpm, float rate) :
-  _phase(0.0), _model(model), _bpm(bpm), _rate(rate),
-  _value(0.0f), _incr(Freq(*_model, bpm, rate) / rate),
+  _phase(0.0), _model(model), _value(0.0f), 
+  _incr(Freq(*_model, bpm, rate) / rate),
   _base(IsBipolar(_model->plty) ? 0.0f : 0.5f),
   _factor((IsInverted(_model->plty) ? -1.0f : 1.0f) * (1.0f - _base)) {}
 public:
