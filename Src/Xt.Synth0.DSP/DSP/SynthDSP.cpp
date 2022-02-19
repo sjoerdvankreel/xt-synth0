@@ -1,34 +1,16 @@
-#include "DSP.hpp"
 #include "SynthDSP.hpp"
 
 namespace Xts {
 
-void
-SynthDSP::Next(SourceDSP const& source)
-{
-  AudioOutput output;
-  for (int u = 0; u < UnitCount; u++)
-  {
-    _units[u].Next(source);
-    output += _units[u].Value();
-  }
-  _amp.Next(source);
-  _value = output * _amp.Value();
-}
-
 SynthDSP::
-SynthDSP(SynthModel const* model, AudioInput const* input):
-DSPBase(model, input), 
-_amp(&model->amp, input), 
-_source(&model->source, input),
-_units()
-{
-  for (int u = 0; u < UnitCount; u++)
-    _units[u] = UnitDSP(&model->units[u], input);
-}
+SynthDSP(SynthModel const* model, int oct, UnitNote note, float velo, float bpm, float rate):
+_cv(&model->cv, velo, bpm, rate),
+_amp(&model->amp, velo),
+_audio(&model->audio, oct, note, rate),
+_output() {}
 
 void
-SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output)
+SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   int i = 0;
   int h = 0;
@@ -40,28 +22,23 @@ SynthDSP::Plot(SynthModel const& model, SourceModel const& source, PlotInput con
   output.max = 1.0f;
   output.min = -1.0f;
   output.rate = plotRate;
-  KeyInput key(4, UnitNote::C, 1.0f);
-  SourceInput sourceInput(plotRate, input.bpm);
-  AudioInput audioInput(sourceInput, key);
-  SynthDSP dsp(&model, &audioInput);
-  SourceDSP sourceDsp(&source, &audioInput);
+  SynthDSP dsp(&model, 4, UnitNote::C, 1.0f, input.bpm, plotRate);
   while (i++ < maxSamples)
   {
-    if (h++ == hold) sourceDsp.Release();
-    if (dsp.End(sourceDsp)) break;
-    sourceDsp.Next();
-    dsp.Next(sourceDsp);
-    auto audio = dsp.Value();
+    if (h++ == hold) dsp.Release();
+    if (dsp.End()) break;
+    dsp.Next();
+    auto audio = dsp.Output();
     float sample = l ? audio.l : audio.r;
     output.clip |= Clip(sample);
     output.samples->push_back(sample);
   }
 
-  output.hSplits->emplace_back(HSplit(0, L""));
-  output.hSplits->emplace_back(HSplit(i - 1, L""));
-  output.vSplits->emplace_back(VSplit(0.0f, L"0"));
-  output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
-  output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
+  output.hSplits->emplace_back(0, L"");
+  output.hSplits->emplace_back(i - 1, L"");
+  output.vSplits->emplace_back(0.0f, L"0");
+  output.vSplits->emplace_back(1.0f, L"-1");
+  output.vSplits->emplace_back(-1.0f, L"1");
 }
 
 } // namespace Xts

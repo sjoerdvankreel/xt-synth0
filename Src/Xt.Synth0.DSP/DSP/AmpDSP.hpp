@@ -2,30 +2,30 @@
 #define XTS_AMP_DSP_HPP
 
 #include "DSP.hpp"
-#include "SourceDSP.hpp"
+#include "CvDSP.hpp"
+#include "AudioDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
 namespace Xts {
 
-class AmpDSP:
-public DSPBase<AmpModel, AudioInput, float>
+class AmpDSP
 {
-  float _lfoAmt, _lvl;
+  float _amp;
+  AudioOutput _output;
+  AmpModel const* _model;
+  float _flt1, _flt2, _flt3;
+  float _unit1, _unit2, _unit3;
+  float _pan, _lvlAmt, _panAmt, _lvl;
 public:
   AmpDSP() = default;
-  AmpDSP(AmpModel const* model, AudioInput const* input) :
-  DSPBase(model, input),
-  _lfoAmt(Mix(model->lfoAmt)),
-  _lvl(Level(model->lvl) * input->key.amp) {}
+  AmpDSP(AmpModel const* model, float velo);
 public:
-  void Next(SourceDSP const& source);
-  float Value() const { return _value; }
-  bool End(SourceDSP const& source) const { return source.Envs()[static_cast<int>(_model->envSrc)].End(); }
-  static void Plot(AmpModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
+  AudioOutput Output() const { return _output; }
+  void Next(CvState const& cv, AudioState const& audio);
+  bool End(CvDSP const& cv) const { return cv.End(static_cast<int>(_model->envSrc)); }
+  static void Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, PlotInput const& input, PlotOutput& output);
 };
-static_assert(StatePipeDSP<AmpDSP, AmpModel>);
-static_assert(FiniteDependentDSP<AmpDSP, AmpModel, AudioInput, float>);
 
 } // namespace Xts
 #endif // XTS_AMP_DSP_HPP

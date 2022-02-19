@@ -13,11 +13,11 @@ namespace Xt.Synth0.Model
         internal ref struct Native
         {
             internal int envSrc;
-            internal int lfoSrc;
+            internal int lvlSrc;
             internal int panSrc;
             internal int flt1, flt2, flt3;
             internal int unit1, unit2, unit3;
-            internal int lvl, pan, lfoAmt, panAmt, pad__;
+            internal int lvl, pan, lvlAmt, panAmt, pad__;
         }
 
         public Param Lvl { get; } = new(LvlInfo);
@@ -28,8 +28,8 @@ namespace Xt.Synth0.Model
         public Param Unit1 { get; } = new(Unit1Info);
         public Param Unit2 { get; } = new(Unit2Info);
         public Param Unit3 { get; } = new(Unit3Info);
-        public Param LfoSrc { get; } = new(LfoSrcInfo);
-        public Param LfoAmt { get; } = new(LfoAmtInfo);
+        public Param LvlSrc { get; } = new(LvlSrcInfo);
+        public Param LvlAmt { get; } = new(LvlAmtInfo);
         public Param EnvSrc { get; } = new(EnvSrcInfo);
         public Param PanSrc { get; } = new(PanSrcInfo);
         public Param PanAmt { get; } = new(PanAmtInfo);
@@ -44,7 +44,7 @@ namespace Xt.Synth0.Model
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->amp;
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
-            { Lvl, 0 }, { EnvSrc, 1 }, { LfoSrc, 2 }, { LfoAmt, 3 },
+            { Lvl, 0 }, { EnvSrc, 1 }, { LvlSrc, 2 }, { LvlAmt, 3 },
             { Unit1, 5 },{ Flt1, 6 }, { Pan, 7 },
             { Unit2, 9 }, { Flt2, 10 }, { PanSrc, 11 },
             { Unit3, 13 }, { Flt3, 14 }, { PanAmt, 15 }
@@ -53,14 +53,14 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 2, nameof(Pan), nameof(Pan), "Panning");
         static readonly ParamInfo LvlInfo = ParamInfo.Level(p => &((Native*)p)->lvl, 1, nameof(Lvl), nameof(Lvl), "Level", 128);
         static readonly ParamInfo PanAmtInfo = ParamInfo.Mix(p => &((Native*)p)->panAmt, 2, nameof(PanAmt), "Amt", "Pan mod amount");
-        static readonly ParamInfo LfoAmtInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmt, 1, nameof(LfoAmt), "Amt", "Level LFO amount");
+        static readonly ParamInfo LvlAmtInfo = ParamInfo.Mix(p => &((Native*)p)->lvlAmt, 1, nameof(LvlAmt), "Amt", "Level LFO amount");
         static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flt1, 0, nameof(Flt1), nameof(Flt1), "Filter 1 amount", 0);
         static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->flt2, 0, nameof(Flt2), nameof(Flt2), "Filter 2 amount", 0);
         static readonly ParamInfo Flt3Info = ParamInfo.Level(p => &((Native*)p)->flt3, 0, nameof(Flt3), nameof(Flt3), "Filter 3 amount", 0);
         static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->unit2, 0, nameof(Unit2), nameof(Unit2), "Unit 2 amount", 0);
         static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->unit3, 0, nameof(Unit3), nameof(Unit3), "Unit 3 amount", 0);
         static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->unit1, 0, nameof(Unit1), nameof(Unit1), "Unit 1 amount", 255);
-        static readonly ParamInfo LfoSrcInfo = ParamInfo.List<AmpLfoSource>(p => &((Native*)p)->lfoSrc, 1, nameof(LfoSrc), "LFO", "Level LFO source");
+        static readonly ParamInfo LvlSrcInfo = ParamInfo.List<AmpLfoSource>(p => &((Native*)p)->lvlSrc, 1, nameof(LvlSrc), "LFO", "Level LFO source");
         static readonly ParamInfo EnvSrcInfo = ParamInfo.List<AmpEnvSource>(p => &((Native*)p)->envSrc, 1, nameof(EnvSrc), "Env", "Level env source");
         static readonly ParamInfo PanSrcInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panSrc, 2, nameof(PanSrc), nameof(PanSrc), "Pan mod source");
     }

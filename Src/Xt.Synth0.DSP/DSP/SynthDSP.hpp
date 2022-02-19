@@ -1,36 +1,31 @@
 #ifndef XTS_SYNTH_DSP_HPP
 #define XTS_SYNTH_DSP_HPP
 
+#include "CvDSP.hpp"
 #include "AmpDSP.hpp"
-#include "UnitDSP.hpp"
-#include "SourceDSP.hpp"
+#include "AudioDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
 namespace Xts {
 
-class SynthDSP:
-public DSPBase<SynthModel, AudioInput, AudioOutput>
+class SynthDSP
 {
+  CvDSP _cv;
   AmpDSP _amp;
-  SourceDSP _source;
-  UnitDSP _units[UnitCount];
+  AudioDSP _audio;
+  AudioOutput _output;
 public:
   SynthDSP() = default;
-  SynthDSP(SynthModel const* model, AudioInput const* input);
+  SynthDSP(SynthModel const* model, int oct, UnitNote note, float velo, float bpm, float rate);
 public:
-  void Next(SourceDSP const& source);
-  void Release() { _source.Release(); }
-  bool End() const { return End(_source); }
-  AudioOutput Value() const { return _value; }
-  void Next() { _source.Next(); return Next(_source); };
-  bool End(SourceDSP const& source) const { return _amp.End(source); }
-  static void Plot(SynthModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
+  void Release() { _cv.Release(); }
+  bool End() const { return _amp.End(_cv); }
+  AudioOutput Output() const { return _output; }
+  void Next(CvState const& cv, AudioState const& audio) { _amp.Next(cv, audio); };
+  void Next() { _cv.Next(); _audio.Next(_cv.Output()); Next(_cv.Output(), _audio.Output()); }
+  static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
-static_assert(AudioSourceDSP<SynthDSP, SynthModel>);
-static_assert(ReleaseableDSP<SynthDSP, SynthModel, AudioInput, AudioOutput>);
-static_assert(FiniteSourceDSP<SynthDSP, SynthModel, AudioInput, AudioOutput>);
-static_assert(FiniteDependentDSP<SynthDSP, SynthModel, AudioInput, AudioOutput>);
 
 } // namespace Xts
 #endif // XTS_SYNTH_DSP_HPP

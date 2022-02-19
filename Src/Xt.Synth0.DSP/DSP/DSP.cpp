@@ -59,14 +59,21 @@ ModVal(CvState const& cv, ModSource mod)
   }
 }
 
+CvOutput
+ModulationInput(CvState const& cv, ModSource src)
+{
+  CvOutput result;
+  result.val = ModVal(cv, src);
+  result.bip = ModBip(cv, src);
+  return result;
+}
+
 ModInput
 ModulationInput(CvState const& cv, ModSource src1, ModSource src2)
 {
   ModInput result;
-  result.cv1.bip = ModBip(cv, src1);
-  result.cv1.val = ModVal(cv, src1);
-  result.cv2.bip = ModBip(cv, src2);
-  result.cv2.val = ModVal(cv, src2);
+  result.cv1 = ModulationInput(cv, src1);
+  result.cv2 = ModulationInput(cv, src2);
   return result;
 }
 

@@ -117,11 +117,11 @@ struct XTS_ALIGN AmpModel
   AmpModel(AmpModel const&) = delete;
 private:
   AmpEnv envSrc;
-  AmpLfo lfoSrc;
+  AmpLfo lvlSrc;
   ModSource panSrc;
   int32_t flt1, flt2, flt3;
   int32_t unit1, unit2, unit3;
-  int32_t lvl, pan, lfoAmt, panAmt, pad__;
+  int32_t lvl, pan, lvlAmt, panAmt, pad__;
 };
 XTS_CHECK_SIZE(AmpModel, 56);
 

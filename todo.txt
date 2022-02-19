@@ -20,4 +20,7 @@ save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
 plot hold conditional + impulse response
+plot ampl/ampr?
+dual channel plot
 check xtaudio dsound min buffer size
+plot l/r/mix/both/spec/IR + visibility if CV
