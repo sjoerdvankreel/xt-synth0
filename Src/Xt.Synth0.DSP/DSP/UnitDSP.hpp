@@ -1,45 +1,33 @@
 #ifndef XTS_UNIT_DSP_HPP
 #define XTS_UNIT_DSP_HPP
 
-#include "DSP.hpp"
-#include "SourceDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
 namespace Xts {
 
-class UnitDSP: 
-public DSPBase<UnitModel, AudioInput, AudioOutput>
+class UnitDSP
 {
   static constexpr float MaxPw = 0.975f;
+  AudioOutput _output;
   double _phase, _blepTri;
   float _pan, _amt1, _amt2, _amp, _roll, _pw, _freq;
 public:
   UnitDSP() = default;
-  UnitDSP(UnitModel const* model, AudioInput const* input):
-  DSPBase(model, input), 
-  _phase(0.0), _blepTri(0.0),
-  _pan(Mix(_model->pan)),
-  _amt1(Mix(_model->amt1)),
-  _amt2(Mix(_model->amt2)),
-  _amp(Level(_model->amp)), 
-  _roll(Mix(_model->addRoll)),
-  _pw(Level(_model->pw) * MaxPw),
-  _freq(Freq(*_model, _input->key)) {}
+  UnitDSP(UnitModel const* model, int oct, UnitNote note);
 private:
-  static float Freq(UnitModel const& model, KeyInput const& input);
-  float ModFreq(ModParams const& params) const;
-  float ModPhase(ModParams const& params) const;
-  float Generate(float phase, float freq, ModParams const& params);
-  float GenerateBlep(float phase, float freq, ModParams const& params);
-  float GenerateAdd(float phase, float freq, ModParams const& params) const;
-  float Mod(UnitModTarget tgt, float val, bool bip, ModParams const& params) const;
+  static float Freq(UnitModel const& model, int oct, UnitNote note);
+  float ModFreq(ModInput const& mod) const;
+  float ModPhase(ModInput const& mod) const;
+  float Generate(float phase, float freq, ModInput const& mod);
+  float GenerateBlep(float phase, float freq, ModInput const& mod);
+  float GenerateAdd(float phase, float freq, ModInput const& mod) const;
+  float Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const;
 public:
   void Next(SourceDSP const& source);
-  AudioOutput Value() const { return _value; }
-  static void Plot(UnitModel const& model, SourceModel const& source, PlotInput const& input, PlotOutput& output);
+  AudioOutput const& Output() const { return _output; }
+  static void Plot(UnitModel const& model, CVState const& cv, PlotInput const& input, PlotOutput& output);
 };
-static_assert(AudioSourceDSP<UnitDSP, UnitModel>);
 
 } // namespace Xts
 #endif // XTS_UNIT_DSP_HPP

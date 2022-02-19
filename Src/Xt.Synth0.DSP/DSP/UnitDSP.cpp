@@ -1,3 +1,4 @@
+#include "DSP.hpp"
 #include "UnitDSP.hpp"
 #include <cmath>
 #include <cassert>
@@ -24,12 +25,23 @@ GenerateBlepSaw(float phase, float inc)
   return saw;
 }
 
+UnitDSP::
+UnitDSP(UnitModel const* model, int oct, UnitNote note):
+_phase(0.0), _blepTri(0.0),
+_pan(Mix(model->pan)),
+_amt1(Mix(model->amt1)),
+_amt2(Mix(model->amt2)),
+_amp(Level(model->amp)),
+_roll(Mix(model->addRoll)),
+_pw(Level(model->pw) * MaxPw),
+_freq(Freq(*model, oct, note)) {}
+
 float
-UnitDSP::Freq(UnitModel const& model, KeyInput const& input)
+UnitDSP::Freq(UnitModel const& model, int oct, UnitNote note)
 {
   float cent = Mix(model.dtn) * 0.5f;
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
-  int key = input.oct * 12 + static_cast<int>(input.note);
+  int key = oct * 12 + static_cast<int>(note);
   int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
   return Xts::Freq(unit + key - base + cent);
 }
