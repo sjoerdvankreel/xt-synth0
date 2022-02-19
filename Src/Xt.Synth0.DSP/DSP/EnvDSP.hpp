@@ -17,23 +17,23 @@ public:
 
 enum class EnvStage { Dly, A, Hld, D, S, R, End };
 
-class EnvDSP:
-public DSPBase<EnvModel, SourceInput, float>
+class EnvDSP
 {
   int _pos;
-  float _max;
   EnvStage _stage;
   EnvParams _params;
+  float _max, _value;
+  EnvModel const* _model;
   double _slp, _lin, _log;
 public:
   EnvDSP() = default;
-  EnvDSP(EnvModel const* model, SourceInput const* input);
+  EnvDSP(EnvModel const* model, float bpm, float rate);
 private:
   float Generate();
   void CycleStage(EnvType type);
   void NextStage(EnvStage stage);
-  float Generate(float from, float to, int len, SlopeType type);
-  static EnvParams Params(EnvModel const& model, SourceInput const& input);
+  float Generate(float from, float to, SlopeType type);
+  static EnvParams Params(EnvModel const& model, float bpm, float rate);
 public:
   void Next();
   void Release();
@@ -41,9 +41,6 @@ public:
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
   float Value() const { return (_model->on && _model->inv) ? 1.0f - _value : _value; }
 };
-static_assert(StateSourceDSP<EnvDSP, EnvModel>);
-static_assert(ReleaseableDSP<EnvDSP, EnvModel, SourceInput, float>);
-static_assert(FiniteSourceDSP<EnvDSP, EnvModel, SourceInput, float>);
 
 } // namespace Xts
 #endif // XTS_ENV_DSP_HPP
