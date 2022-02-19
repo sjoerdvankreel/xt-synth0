@@ -76,6 +76,8 @@ AmpDSP::Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, 
   output.vSplits->emplace_back(0.0f, L"1");
   output.vSplits->emplace_back(1.0f, L"0");
   output.vSplits->emplace_back(0.5f, L"\u00BD");
+  output.vSplits->emplace_back(0.25f, L"\u00BE");
+  output.vSplits->emplace_back(0.75f, L"\u00BC");
 }
 
 } // namespace Xts
