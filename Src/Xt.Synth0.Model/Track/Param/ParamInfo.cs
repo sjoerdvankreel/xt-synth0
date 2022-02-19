@@ -130,17 +130,17 @@ namespace Xt.Synth0.Model
         => new ParamInfo(ParamType.Toggle, address, subGroup, id, name,
             description, 0, 1, @default ? 1 : 0, null, null, null, relevance);
 
-        internal static ParamInfo Time(
-            Address address, int subGroup, string id, string name,
-            string description, int min, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Time, address, subGroup, id, name,
-            description, min, 255, @default, null, null, null, relevance);
-
         internal static ParamInfo Pattern(
             Address address, string id, string name,
             string description, string[] display)
         => new ParamInfo(ParamType.Pattern, address, 0, id, name,
             description, 0, display.Length - 1, 0, null, null, x => display[x], null);
+
+        internal static ParamInfo Time(
+            Address address, int subGroup, string id, string name,
+            string description, int min, int max, int @default, IRelevance relevance = null)
+        => new ParamInfo(ParamType.Time, address, subGroup, id, name,
+            description, min, max, @default, null, null, null, relevance);
 
         internal static ParamInfo Select(
             Address address, int subGroup, string id, string name,
