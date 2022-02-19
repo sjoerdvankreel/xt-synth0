@@ -17,14 +17,14 @@ LfoDSP::Next()
 }
 
 float
-LfoDSP::Freq(LfoModel const& model, SourceInput const& input)
+LfoDSP::Freq(LfoModel const& model, float bpm, float rate)
 {
-	if (model.sync) return input.rate / SyncF(input, model.step);
-	return input.rate / TimeF(model.rate, input.rate);
+	if (model.sync) return rate / SyncF(bpm, rate, model.step);
+	return rate / TimeF(model.rate, rate);
 }
 
 float
-LfoDSP::Generate()
+LfoDSP::Generate() const
 {
 	float phase = static_cast<float>(_phase);
 	switch (_model->type)
@@ -44,14 +44,12 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 {
 	const float testRate = 1000.0f;
 	if (!model.on) return;
-	SourceInput testIn(testRate, input.bpm);
 	output.max = 1.0f;
-	output.freq = Freq(model, testIn);
-	output.min = LfoIsBipolar(model.plty) ? -1.0f : 0.0f;
+	output.freq = Freq(model, input.bpm, testRate);
+	output.min = IsBipolar(model.plty) ? -1.0f : 0.0f;
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
 
-	SourceInput in(output.rate, input.bpm);
-	LfoDSP dsp(&model, &in);
+	LfoDSP dsp(&model, input.bpm, output.rate);
 	float fsamples = input.spec ? output.rate : output.rate / output.freq + 1;
 	int samples = static_cast<int>(std::ceilf(fsamples));
 	for (int i = 0; i < samples; i++)
@@ -63,7 +61,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.hSplits->emplace_back(HSplit(0, L"0"));
 	output.hSplits->emplace_back(HSplit(samples, L""));
 	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
-	if (LfoIsBipolar(model.plty))
+	if (IsBipolar(model.plty))
 	{
 		output.vSplits->emplace_back(VSplit(0.0f, L"0"));
 		output.vSplits->emplace_back(VSplit(1.0f, L"-1"));

@@ -81,22 +81,22 @@ PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
   {
   case PlotType::Off: break;
   case PlotType::SynthL: case PlotType::SynthR: {
-    SynthDSP().Plot(synth, synth.source, input, output);
+    SynthDSP::Plot(synth, synth.source, input, output);
     break; }
   case PlotType::Amp: {
-    AmpDSP().Plot(synth.amp, synth.source, input, output);
+    AmpDSP::Plot(synth.amp, synth.source, input, output);
     break; }
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: {
     auto lfo = static_cast<int>(PlotType::LFO1);
-    LfoDSP().Plot(synth.source.lfos[index - lfo], input, output);
+    LfoDSP::Plot(synth.source.lfos[index - lfo], input, output);
     break; }
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: {
     auto env = static_cast<int>(PlotType::Env1);
-    EnvDSP().Plot(synth.source.envs[index - env], input, output);
+    EnvDSP::Plot(synth.source.envs[index - env], input, output);
     break; }
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: {
     auto unit = static_cast<int>(PlotType::Unit1);
-    UnitDSP().Plot(synth.units[index - unit], synth.source, input, output);
+    UnitDSP::Plot(synth.units[index - unit], synth.source, input, output);
     break; }
   default: {
     assert(false);

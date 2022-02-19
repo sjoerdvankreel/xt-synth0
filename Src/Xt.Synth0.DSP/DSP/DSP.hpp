@@ -56,15 +56,15 @@ Clip(float& val)
 }
 
 inline float 
-SyncF(SourceInput const& input, int val)
+SyncF(float bpm, float rate, int val)
 {
   auto const& step = SyncSteps()[val];
-  float fpb = input.rate * 60.0f / input.bpm;
+  float fpb = rate * 60.0f / bpm;
   return fpb * step.num / step.den;
 }
 
-inline int SyncI(SourceInput const& input, int val)
-{ return static_cast<int>(SyncF(input, val)); }
+inline int SyncI(float bpm, float rate, int val)
+{ return static_cast<int>(SyncF(bpm, rate, val)); }
 
 } // namespace Xts
 #endif // XTS_DSP_HPP

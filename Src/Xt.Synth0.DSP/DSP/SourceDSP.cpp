@@ -24,7 +24,7 @@ SourceDSP(SourceModel const* model, AudioInput const* input):
 DSPBase(model, input), _lfos(), _envs()
 {
   for (int l = 0; l < LfoCount; l++)
-    _lfos[l] = LfoDSP(&model->lfos[l], &input->source);
+    _lfos[l] = LfoDSP(&model->lfos[l], input->source.bpm, input->source.rate);
   for (int e = 0; e < EnvCount; e++)
     _envs[e] = EnvDSP(&model->envs[e], &input->source);
 }
