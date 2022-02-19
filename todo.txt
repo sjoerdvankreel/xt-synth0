@@ -23,4 +23,4 @@ plot hold conditional + impulse response
 plot ampl/ampr?
 dual channel plot
 check xtaudio dsound min buffer size
-plot l/r/mix/both/spec/IR + visibility if CV
+plot l/r/mix/both/specMix/specBoth/specL/specR/IR + visibility if CV

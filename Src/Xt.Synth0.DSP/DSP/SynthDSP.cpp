@@ -6,8 +6,7 @@ SynthDSP::
 SynthDSP(SynthModel const* model, int oct, UnitNote note, float velo, float bpm, float rate):
 _cv(&model->cv, velo, bpm, rate),
 _amp(&model->amp, velo),
-_audio(&model->audio, oct, note, rate),
-_output() {}
+_audio(&model->audio, oct, note, rate) {}
 
 void
 SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)

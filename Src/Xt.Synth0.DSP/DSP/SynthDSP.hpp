@@ -14,14 +14,13 @@ class SynthDSP
   CvDSP _cv;
   AmpDSP _amp;
   AudioDSP _audio;
-  AudioOutput _output;
 public:
   SynthDSP() = default;
   SynthDSP(SynthModel const* model, int oct, UnitNote note, float velo, float bpm, float rate);
 public:
   void Release() { _cv.Release(); }
   bool End() const { return _amp.End(_cv); }
-  AudioOutput Output() const { return _output; }
+  AudioOutput Output() const { return _amp.Output(); }
   void Next(CvState const& cv, AudioState const& audio) { _amp.Next(cv, audio); };
   void Next() { _cv.Next(); _audio.Next(_cv.Output()); Next(_cv.Output(), _audio.Output()); }
   static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
