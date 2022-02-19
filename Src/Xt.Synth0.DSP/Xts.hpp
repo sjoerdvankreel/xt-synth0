@@ -40,6 +40,7 @@ public:
 struct XTS_ALIGN PlotState
 {
   XtsBool clip;
+  XtsBool stereo;
   float* lSamples;
   float* rSamples;
   float* vSplitVals;

@@ -25,8 +25,10 @@ namespace Xt.Synth0
 		internal ref struct PlotState
 		{
 			internal int clip;
-			internal float* samples;
-			internal float* vSplitVals;
+            internal int stereo;
+			internal float* lSamples;
+            internal float* rSamples;
+            internal float* vSplitVals;
 			internal int* hSplitVals;
 			internal int bpm, pixels;
 			internal float freq, rate, min, max;
@@ -34,8 +36,9 @@ namespace Xt.Synth0
 			internal ushort** hSplitMarkers;
 			internal int sampleCount, hSplitCount, vSplitCount;
 			internal SynthModel.Native* synth;
-			IntPtr sampleData;
-			IntPtr vSplitValData;
+			IntPtr lSampleData;
+            IntPtr rSampleData;
+            IntPtr vSplitValData;
 			IntPtr hSplitValData;
 			IntPtr vSplitData;
 			IntPtr hSplitData;

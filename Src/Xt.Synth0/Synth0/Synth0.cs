@@ -229,30 +229,34 @@ namespace Xt.Synth0
 			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
 			Model.Track.Synth.ToNative(_nativePlotBinding);
 			Native.XtsPlotDSPRender(_nativePlotState);
-			e.Freq = _nativePlotState->freq;
+            e.Min = _nativePlotState->min;
+            e.Max = _nativePlotState->max;
+            e.Freq = _nativePlotState->freq;
 			e.Clip = _nativePlotState->clip != 0;
-			e.SampleRate = _nativePlotState->rate;
-			e.Min = _nativePlotState->min;
-			e.Max = _nativePlotState->max;
+            e.SampleRate = _nativePlotState->rate;
+            e.Stereo = _nativePlotState->stereo != 0;
 			e.Spectrum = Model.Track.Synth.Plot.Spec.Value != 0;
-			e.HSplitVals.Clear();
+            e.LSamples.Clear();
+            for (int i = 0; i < _nativePlotState->sampleCount; i++)
+                e.LSamples.Add(_nativePlotState->lSamples[i]);
+            e.RSamples.Clear();
+            for (int i = 0; i < _nativePlotState->sampleCount; i++)
+                e.RSamples.Add(_nativePlotState->rSamples[i]);
+            e.HSplitVals.Clear();
 			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
 				e.HSplitVals.Add(_nativePlotState->hSplitVals[i]);
-			e.HSplitMarkers.Clear();
+            e.VSplitVals.Clear();
+            for (int i = 0; i < _nativePlotState->vSplitCount; i++)
+                e.VSplitVals.Add(_nativePlotState->vSplitVals[i]);
+            e.HSplitMarkers.Clear();
 			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
 				e.HSplitMarkers.Add(FromWideChar(_nativePlotState->hSplitMarkers[i]));
-			e.VSplitVals.Clear();
-			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
-				e.VSplitVals.Add(_nativePlotState->vSplitVals[i]);
 			e.VSplitMarkers.Clear();
 			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
 				e.VSplitMarkers.Add(FromWideChar(_nativePlotState->vSplitMarkers[i]));
-			e.Samples.Clear();
-			for (int i = 0; i < _nativePlotState->sampleCount; i++)
-				e.Samples.Add(_nativePlotState->samples[i]);
-		}
+        }
 
-		static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
+        static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
 		{
 			var seq = new SeqModel();
 			seq.Edit.Loop.Value = 0;

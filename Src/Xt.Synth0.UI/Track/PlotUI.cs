@@ -65,16 +65,16 @@ namespace Xt.Synth0.UI
 		{
 			double hPad = h - PadBottom;
 			var result = new PointCollection();
-			for (int i = 0; i < Args.Samples.Count; i++)
+			for (int i = 0; i < Args.LSamples.Count; i++)
 			{
-				var samplePos = (double)i / Args.Samples.Count;
-				var xSample = samplePos * Args.Samples.Count;
+				var samplePos = (double)i / Args.LSamples.Count;
+				var xSample = samplePos * Args.LSamples.Count;
 				var weight = xSample - (int)xSample;
 				var x1 = (int)Math.Ceiling(xSample);
-				var y0 = (1.0 - weight) * Args.Samples[(int)xSample];
-				var y1 = weight * Args.Samples[x1];
+				var y0 = (1.0 - weight) * Args.LSamples[(int)xSample];
+				var y1 = weight * Args.LSamples[x1];
 				var y = (1.0f - MaxLevel) * hPad + (1.0 - (y0 + y1)) * MaxLevel * hPad;
-				var screenPos = i / (Args.Samples.Count - 1.0);
+				var screenPos = i / (Args.LSamples.Count - 1.0);
 				var l = PadLeft + screenPos * (w - PadLeft);
 				result.Add(new Point(l, VPadText + y / (max - min)));
 			}
@@ -136,12 +136,12 @@ namespace Xt.Synth0.UI
 			double h = container.ActualHeight;
 			Args.Pixels = w;
 			RequestPlotData?.Invoke(null, Args);
-			container.Content = Args.Samples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : Off;
+			container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : Off;
 			string header = $"{plot.Name} @ {Args.SampleRate.ToString("N1")}Hz";
-			header += $"{Environment.NewLine}{Args.Samples.Count} samples";
+			header += $"{Environment.NewLine}{Args.LSamples.Count} samples";
 			if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
 			if (Args.Clip) header += " (Clip)";
-			text.Text = Args.Samples.Count > 0 ? header : $"{plot.Name}{Environment.NewLine}No data";
+			text.Text = Args.LSamples.Count > 0 ? header : $"{plot.Name}{Environment.NewLine}No data";
 		}
 
 		static UIElement Plot(int w, double h, float min, float max)
@@ -163,7 +163,7 @@ namespace Xt.Synth0.UI
 			}
 			for (int i = 0; i < Args.HSplitVals.Count; i++)
 			{
-				double pos = Args.HSplitVals[i] / (Args.Samples.Count - 1.0);
+				double pos = Args.HSplitVals[i] / (Args.LSamples.Count - 1.0);
 				double l = PadLeft + pos * (w - PadLeft);
 				result.Add(Split(l, l, VPadText, VPadText + h - PadBottom));
 				result.Add(Marker(l - HPadText, h - PadBottom + VPadText, Args.HSplitMarkers[i]));
