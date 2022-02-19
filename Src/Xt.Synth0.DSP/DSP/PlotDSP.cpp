@@ -76,12 +76,10 @@ PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
   auto index = static_cast<int>(type);
   input.spec = model.plot.spec;
   input.hold = !input.spec? model.plot.hold: 81;
-  output.channel = type == PlotType::SynthR? 1: 0;
 
   switch(model.plot.type)
   {
-  case PlotType::Off: break;
-  case PlotType::SynthL: case PlotType::SynthR: {
+  case PlotType::Synth: {
     SynthDSP::Plot(model, input, output);
     break; }
   case PlotType::Amp: {
@@ -102,14 +100,20 @@ PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
   default: {
     assert(false);
     break; }
-  }
-  
+  }  
   if(!model.plot.spec) return;
+
   output.min = 0.0f;
   output.max = 1.0f;
-  output.samples->resize(NextPow2(output.samples->size()));
-  if(output.samples->empty()) return;
-  Spectrum(*output.samples, *output.hSplits, *output.vSplits, *output.fftData, *output.fftScratch, output.rate);
+  if (output.lSamples->empty()) return;
+  output.lSamples->resize(NextPow2(output.lSamples->size()));
+  Spectrum(*output.lSamples, *output.hSplits, *output.vSplits, *output.fftData, *output.fftScratch, output.rate);
+  if(!output.stereo) return;
+
+  output.hSplits->clear();
+  output.vSplits->clear();
+  output.rSamples->resize(NextPow2(output.rSamples->size()));
+  Spectrum(*output.rSamples, *output.hSplits, *output.vSplits, *output.fftData, *output.fftScratch, output.rate);
 }
 
 } // namespace Xts

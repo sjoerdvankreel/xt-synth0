@@ -40,7 +40,8 @@ public:
 struct XTS_ALIGN PlotState
 {
   XtsBool clip;
-  float* samples;
+  float* lSamples;
+  float* rSamples;
   float* vSplitVals;
   int32_t* hSplitVals;
   int32_t bpm, pixels;
@@ -49,7 +50,8 @@ struct XTS_ALIGN PlotState
   wchar_t const** hSplitMarkers;
   int32_t sampleCount, hSplitCount, vSplitCount;
   Xts::SynthModel const* synth;
-  std::vector<float>* sampleData;
+  std::vector<float>* lSampleData;
+  std::vector<float>* rSampleData;
   std::vector<float>* vSplitValData;
   std::vector<int32_t>* hSplitValData;
   std::vector<Xts::VSplit>* vSplitData;

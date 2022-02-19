@@ -30,7 +30,8 @@ XtsPlotStateDestroy(PlotState* state)
   delete state->fftData;
   delete state->hSplitData;
   delete state->vSplitData;
-  delete state->sampleData;
+  delete state->lSampleData;
+  delete state->rSampleData;
   delete state->fftScratch;
   delete state->hSplitValData;
   delete state->vSplitValData;
@@ -39,7 +40,8 @@ XtsPlotStateDestroy(PlotState* state)
   state->fftData = nullptr;
   state->hSplitData = nullptr;
   state->vSplitData = nullptr;
-  state->sampleData = nullptr;
+  state->lSampleData = nullptr;
+  state->rSampleData = nullptr;
   state->fftScratch = nullptr;
   state->hSplitValData = nullptr;
   state->vSplitValData = nullptr;
@@ -52,7 +54,8 @@ PlotState* XTS_CALL
 XtsPlotStateCreate(void)
 {
   auto result = new PlotState;
-  result->sampleData = new std::vector<float>();
+  result->lSampleData = new std::vector<float>();
+  result->rSampleData = new std::vector<float>();
   result->vSplitValData = new std::vector<float>();
   result->hSplitValData = new std::vector<int32_t>();
   result->vSplitData = new std::vector<Xts::VSplit>();
@@ -91,8 +94,9 @@ XtsPlotDSPRender(PlotState* state)
   state->fftData->clear();
   state->hSplitData->clear();
   state->vSplitData->clear();
-  state->sampleData->clear();
   state->fftScratch->clear();
+  state->lSampleData->clear();
+  state->rSampleData->clear();
   state->hSplitValData->clear();
   state->vSplitValData->clear();
   state->hSplitMarkerData->clear();
@@ -101,7 +105,8 @@ XtsPlotDSPRender(PlotState* state)
   out.fftData = state->fftData;
   out.hSplits = state->hSplitData;
   out.vSplits = state->vSplitData;
-  out.samples = state->sampleData;
+  out.lSamples = state->lSampleData;
+  out.rSamples = state->rSampleData;
   out.fftScratch = state->fftScratch;
   in.rate = state->rate;
   in.bpm = static_cast<float>(state->bpm);
@@ -113,10 +118,12 @@ XtsPlotDSPRender(PlotState* state)
   state->clip = out.clip;
   state->freq = out.freq;
   state->rate = out.rate;
-  state->samples = state->sampleData->data();
+  state->lSamples = state->lSampleData->data();
+  state->rSamples = state->rSampleData->data();
   state->hSplitCount = static_cast<int32_t>(state->hSplitData->size());
   state->vSplitCount = static_cast<int32_t>(state->vSplitData->size());
-  state->sampleCount = static_cast<int32_t>(state->sampleData->size());
+  state->sampleCount = static_cast<int32_t>(state->lSampleData->size());
+  assert(state->sampleCount == state->rSampleData->size() || state->rSampleData->size() == 0);
   for(size_t i = 0; i < state->hSplitData->size(); i++)
   {
     state->hSplitValData->push_back((*state->hSplitData)[i].pos);

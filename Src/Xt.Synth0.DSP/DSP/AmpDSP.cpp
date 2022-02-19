@@ -51,12 +51,12 @@ AmpDSP::Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, 
 {
   int i = 0;
   int h = 0;
-  bool l = output.channel == 0;
   float plotRate = input.spec? input.rate: 5000;
   int hold = TimeI(input.hold, plotRate);  
   int maxSamples = static_cast<int>(input.spec? input.rate: 5 * plotRate);
   output.min = 0.0f;
   output.max = 1.0f;
+  output.stereo = false;
   output.rate = plotRate;
 
   AmpDSP dsp(&model, 1.0f);
@@ -68,7 +68,7 @@ AmpDSP::Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, 
     if (dsp.End(cvDSP)) break;
     cvDSP.Next();
     dsp.Next(cvDSP.Output(), audioState);
-    output.samples->push_back(dsp._amp);
+    output.lSamples->push_back(dsp._amp);
   }
 
   output.hSplits->emplace_back(0, L"");

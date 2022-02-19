@@ -223,6 +223,7 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
   if (!model.on) return;
   output.max = 1.0f;
   output.min = -1.0f;
+  output.stereo = false;
   output.freq = Freq(model, 4, UnitNote::C);
   output.rate = input.spec? input.rate: output.freq * input.pixels;
 
@@ -235,7 +236,7 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
   {
     cvDsp.Next();
     dsp.Next(cvDsp.Output());
-	  output.samples->push_back(dsp.Output().l + dsp.Output().r);
+	  output.lSamples->push_back(dsp.Output().l + dsp.Output().r);
   }
 
   output.vSplits->emplace_back(0.0f, L"0");

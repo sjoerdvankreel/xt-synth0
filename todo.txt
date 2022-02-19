@@ -24,3 +24,4 @@ plot ampl/ampr?
 dual channel plot
 check xtaudio dsound min buffer size
 plot l/r/mix/both/specMix/specBoth/specL/specR/IR + visibility if CV
+observe plot hold for everything

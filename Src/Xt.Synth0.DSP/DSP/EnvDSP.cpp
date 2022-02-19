@@ -144,6 +144,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   
   output.min = 0.0;
   output.max = 1.0;
+  output.stereo = false;
   output.rate = input.spec? input.rate: input.pixels * testRate / (release + params.r);
   hold = static_cast<int>(hold * output.rate / testRate);
   EnvDSP dsp(&model, input.bpm, output.rate);
@@ -152,7 +153,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     if(h++ == hold) dsp.Release();
     if(dsp.End()) break;
     dsp.Next();
-    output.samples->push_back(dsp.Output());
+    output.lSamples->push_back(dsp.Output());
     if((firstMarker || prev != dsp._stage) && !dsp.End())
     {
       firstMarker = false;

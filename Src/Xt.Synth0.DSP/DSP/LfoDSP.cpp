@@ -58,6 +58,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	const float testRate = 1000.0f;
 	if (!model.on) return;
 	output.max = 1.0f;
+  output.stereo = false;
 	output.freq = Freq(model, input.bpm, testRate);
 	output.min = IsBipolar(model.plty) ? -1.0f : 0.0f;
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
@@ -68,7 +69,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	for (int i = 0; i < samples; i++)
 	{
 		dsp.Next();
-		output.samples->push_back(dsp.Output().val);
+		output.lSamples->push_back(dsp.Output().val);
 	}
 
 	output.hSplits->emplace_back(0, L"0");
