@@ -6,8 +6,7 @@
 
 namespace Xts {
 
-class LfoDSP: 
-public DSPBase<LfoModel, SourceInput, float>
+class LfoDSP
 {
   double _phase;
   LfoModel const* _model;
