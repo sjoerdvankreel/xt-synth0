@@ -11,7 +11,8 @@ namespace Xts {
 
 struct CVOutput { bool bip; float val; };
 struct AudioOutput { float l; float r; };
-struct ModInput { CVOutput cv1; CVOutput cv2; };
+struct CVState { };
+
 
 struct HSplit { int pos; std::wstring marker; };
 struct VSplit { float pos; std::wstring marker; };

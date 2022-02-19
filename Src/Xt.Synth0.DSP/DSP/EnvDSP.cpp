@@ -10,7 +10,7 @@ static const double MaxEnv = 0.99;
 
 EnvDSP::
 EnvDSP(EnvModel const* model, float bpm, float rate) :
-_pos(0), _max(0.0f), _stage(EnvStage::Dly), _output(),
+_pos(0), _max(0.0f), _output(0.0f), _stage(EnvStage::Dly),
 _params(Params(*model, bpm, rate)), _model(model),
 _slp(0.0), _lin(0.0), _log(0.0)
 {
@@ -26,25 +26,17 @@ EnvDSP::Release()
   CycleStage(_model->type);
 }
 
-CVOutput
-EnvDSP::Output() const
-{
-  CVOutput result = _output;
-  if (_model->on && _model->inv) result.val = 1.0f - result.val;
-  return result;
-}
-
 void
 EnvDSP::Next()
 {
-  _output.val = 0.0f;
+  _output = 0.0f;
   const float threshold = 1.0E-5f;
   if (!_model->on || _stage == EnvStage::End) return;
-  _output.val = Generate();
-  assert(0.0f <= _output.val && _output.val <= 1.0f);
+  _output = Generate();
+  assert(0.0f <= _output && _output <= 1.0f);
   if (_stage != EnvStage::End) _pos++;
-  if (_stage < EnvStage::R) _max = _output.val;
-  if (_stage > EnvStage::A && _output.val <= threshold) NextStage(EnvStage::End);
+  if (_stage < EnvStage::R) _max = _output;
+  if (_stage > EnvStage::A && _output <= threshold) NextStage(EnvStage::End);
   CycleStage(_model->type);
 }
 
@@ -160,7 +152,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     if(h++ == hold) dsp.Release();
     if(dsp.End()) break;
     dsp.Next();
-    output.samples->push_back(dsp.Output().val);
+    output.samples->push_back(dsp.Output());
     if((firstMarker || prev != dsp._stage) && !dsp.End())
     {
       firstMarker = false;
