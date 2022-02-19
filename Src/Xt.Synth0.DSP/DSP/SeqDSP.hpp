@@ -16,9 +16,6 @@ struct SeqInput
   int frames;
   float rate;
   float* buffer;
-public:
-  SeqInput() = default;
-  SeqInput(SeqInput const&) = delete;
 };
 
 struct SeqOutput
@@ -26,9 +23,6 @@ struct SeqOutput
   int64_t pos;
   int row, voices;
   bool clip, exhausted;
-public:
-  SeqOutput() = default;
-  SeqOutput(SeqOutput const&) = delete;
 };
 
 class SeqDSP
@@ -47,7 +41,6 @@ private:
   int _active[MaxKeys];
   SynthDSP _dsps[MaxVoices];
   int64_t _started[MaxVoices];
-  AudioInput _inputs[MaxVoices];
   SynthModel _synths[MaxVoices];
 private:
   void Automate();

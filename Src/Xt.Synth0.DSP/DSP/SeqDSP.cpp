@@ -55,12 +55,12 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
       if (_active[k] != -1)
         _dsps[_active[k]].Release();
   }
-  AudioOutput result;
+  AudioOutput result = { 0 };
   for (int v = 0; v < MaxVoices; v++)
   {
     if (_keys[v] == -1) continue;
     _dsps[v].Next();
-    result += _dsps[v].Value();
+    result += _dsps[v].Output();
     if (_dsps[v].End()) Return(_keys[v], v);
   }
   return result;
@@ -187,10 +187,7 @@ SeqDSP::Trigger(SeqInput const& input)
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-      KeyInput keyInput(key.oct, unote, Level(key.amp));
-      SourceInput sourceInput(input.rate, bpm);
-      _inputs[voice] = AudioInput(sourceInput, keyInput);
-      _dsps[voice] = SynthDSP(&_synths[voice], &_inputs[voice]);
+      _dsps[voice] = SynthDSP(& _synths[voice], key.oct, unote, Level(key.amp), bpm, input.rate);
     }
   }
   return result;
