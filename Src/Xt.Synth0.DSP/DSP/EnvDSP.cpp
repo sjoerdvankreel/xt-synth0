@@ -1,6 +1,5 @@
 #include "DSP.hpp"
 #include "EnvDSP.hpp"
-#include "SourceDSP.hpp"
 
 #include <cmath>
 #include <cassert>
@@ -11,9 +10,8 @@ static const double MaxEnv = 0.99;
 
 EnvDSP::
 EnvDSP(EnvModel const* model, float bpm, float rate) :
-_pos(0), _stage(EnvStage::Dly), 
-_params(Params(*model, bpm, rate)),
-_max(0.0f), _value(0.0f), _model(model), 
+_pos(0), _max(0.0f), _stage(EnvStage::Dly), _output(),
+_params(Params(*model, bpm, rate)), _model(model),
 _slp(0.0), _lin(0.0), _log(0.0)
 {
   NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
@@ -28,17 +26,25 @@ EnvDSP::Release()
   CycleStage(_model->type);
 }
 
+CVOutput
+EnvDSP::Output() const
+{
+  CVOutput result = _output;
+  if (_model->on && _model->inv) result.val = 1.0f - result.val;
+  return result;
+}
+
 void
 EnvDSP::Next()
 {
-  _value = 0.0f;
+  _output.val = 0.0f;
   const float threshold = 1.0E-5f;
   if (!_model->on || _stage == EnvStage::End) return;
-  _value = Generate();
-  assert(0.0f <= _value && _value <= 1.0f);
+  _output.val = Generate();
+  assert(0.0f <= _output.val && _output.val <= 1.0f);
   if (_stage != EnvStage::End) _pos++;
-  if (_stage < EnvStage::R) _max = _value;
-  if (_stage > EnvStage::A && _value <= threshold) NextStage(EnvStage::End);
+  if (_stage < EnvStage::R) _max = _output.val;
+  if (_stage > EnvStage::A && _output.val <= threshold) NextStage(EnvStage::End);
   CycleStage(_model->type);
 }
 
@@ -154,7 +160,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     if(h++ == hold) dsp.Release();
     if(dsp.End()) break;
     dsp.Next();
-    output.samples->push_back(dsp.Value());
+    output.samples->push_back(dsp.Output().val);
     if((firstMarker || prev != dsp._stage) && !dsp.End())
     {
       firstMarker = false;
@@ -165,17 +171,17 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
       if(dsp._stage == EnvStage::R) marker = L"R";
       if(dsp._stage == EnvStage::Dly) marker = L"D";
       if(dsp._stage == EnvStage::Hld) marker = L"H";
-      output.hSplits->push_back(HSplit(i, marker));
+      output.hSplits->emplace_back(i, marker);
     }
     prev = dsp._stage; 
     i++;
   }
-  output.hSplits->push_back(HSplit(i - 1, L""));
-  output.vSplits->emplace_back(VSplit(0.0f, L"1"));
-  output.vSplits->emplace_back(VSplit(1.0f, L"0"));
-  output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
-  output.vSplits->emplace_back(VSplit(0.25f, L"\u00BE"));
-  output.vSplits->emplace_back(VSplit(0.75f, L"\u00BC"));
+  output.hSplits->emplace_back(i - 1, L"");
+  output.vSplits->emplace_back(0.0f, L"1");
+  output.vSplits->emplace_back(1.0f, L"0");
+  output.vSplits->emplace_back(0.5f, L"\u00BD");
+  output.vSplits->emplace_back(0.25f, L"\u00BE");
+  output.vSplits->emplace_back(0.75f, L"\u00BC");
 }
 
 } // namespace Xts

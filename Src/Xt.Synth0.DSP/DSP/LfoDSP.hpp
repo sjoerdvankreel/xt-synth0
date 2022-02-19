@@ -6,16 +6,10 @@
 
 namespace Xts {
 
-struct LfoOutput
-{
-  bool bip;
-  float val;
-};
-
 class LfoDSP
 {
   double _phase;
-  LfoOutput _output;
+  CVOutput _output;
   LfoModel const* _model;
   float _incr, _base, _factor;
 private:
@@ -26,7 +20,7 @@ public:
   LfoDSP(LfoModel const* model, float bpm, float rate);
 public:
   void Next();
-  LfoOutput  const& Output() const { return _output; }
+  CVOutput const& Output() const { return _output; }
   static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);
 };
 

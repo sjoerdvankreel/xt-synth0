@@ -16,8 +16,8 @@ inline float Eps = 1e-3f;
 inline float MaxLevel = 0.95f;
 inline float PI = static_cast<float>(3.14159265358979323846);
 
-float Mod(float val, bool vbip, float mod, bool mbip, float amt);
-ModParams ModulationParams(SourceDSP const& source, ModSource src1, ModSource src2);
+//float Mod(float val, bool vbip, float mod, bool mbip, float amt);
+//ModInput ModulationParams(SourceDSP const& source, ModSource src1, ModSource src2);
 void Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vector<std::complex<float>>& scratch);
 
 inline float BiToUni2(float val)

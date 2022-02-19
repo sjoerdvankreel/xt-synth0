@@ -71,20 +71,20 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 		output.samples->push_back(dsp.Output().val);
 	}
 
-	output.hSplits->emplace_back(HSplit(0, L"0"));
-	output.hSplits->emplace_back(HSplit(samples, L""));
-	output.hSplits->emplace_back(HSplit(samples / 2, L"\u03C0"));
+	output.hSplits->emplace_back(0, L"0");
+	output.hSplits->emplace_back(samples, L"");
+	output.hSplits->emplace_back(samples / 2, L"\u03C0");
 	if (IsBipolar(model.plty))
 	{
-		output.vSplits->emplace_back(VSplit(0.0f, L"0"));
-		output.vSplits->emplace_back(VSplit(1.0f, L"-1"));
-		output.vSplits->emplace_back(VSplit(-1.0f, L"1"));
+		output.vSplits->emplace_back(0.0f, L"0");
+		output.vSplits->emplace_back(1.0f, L"-1");
+		output.vSplits->emplace_back(-1.0f, L"1");
 	}
 	else
 	{
-		output.vSplits->emplace_back(VSplit(0.0f, L"1"));
-		output.vSplits->emplace_back(VSplit(1.0f, L"0"));
-		output.vSplits->emplace_back(VSplit(0.5f, L"\u00BD"));
+		output.vSplits->emplace_back(0.0f, L"1");
+		output.vSplits->emplace_back(1.0f, L"0");
+		output.vSplits->emplace_back(0.5f, L"\u00BD");
 	}
 }
 
