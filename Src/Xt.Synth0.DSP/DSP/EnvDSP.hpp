@@ -15,14 +15,12 @@ public:
   EnvParams(EnvParams const&) = default;
 };
 
-enum class EnvStage { Dly, A, Hld, D, S, R, End };
-
 class EnvDSP
 {
   int _pos;
-  EnvStage _stage;
+  float _max;
+  EnvOutput _output;
   EnvParams _params;
-  float _max, _output;
   EnvModel const* _model;
   double _slp, _lin, _log;
 public:
@@ -37,8 +35,8 @@ private:
 public:
   void Next();
   void Release();
-  bool End() const { return _stage == EnvStage::End; }
-  float Output() const { return _model->on && _model->inv? 1.0f - _output: _output; }
+  EnvOutput Output() const;
+  bool End() const { return _output.stage == EnvStage::End; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
 };
 

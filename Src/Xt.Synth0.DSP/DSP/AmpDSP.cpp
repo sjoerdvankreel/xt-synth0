@@ -25,7 +25,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   CvOutput lvlLfo = cv.lfos[static_cast<int>(_model->lvlSrc)];
   float lvl = Modulate(_lvl, false, _lvlAmt, lvlLfo);
   int envSrc = static_cast<int>(_model->envSrc);
-  _amp = cv.envs[static_cast<int>(_model->envSrc)] * lvl;
+  _amp = cv.envs[static_cast<int>(_model->envSrc)].val * lvl;
 
   CvOutput mod = ModulationInput(cv, _model->panSrc);
   float pan = BiToUni1(Modulate(_pan, true, _panAmt, mod));

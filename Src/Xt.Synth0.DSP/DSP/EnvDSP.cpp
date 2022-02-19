@@ -10,10 +10,12 @@ static const double MaxEnv = 0.99;
 
 EnvDSP::
 EnvDSP(EnvModel const* model, float bpm, float rate) :
-_pos(0), _max(0.0f), _output(0.0f), _stage(EnvStage::Dly),
+_pos(0), _max(0.0f), _output(),
 _params(Params(*model, bpm, rate)), _model(model),
 _slp(0.0), _lin(0.0), _log(0.0)
 {
+  _output.val = 0.0f;
+  _output.stage = EnvStage::Dly;
   NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
   CycleStage(model->type);
 }
@@ -21,29 +23,37 @@ _slp(0.0), _lin(0.0), _log(0.0)
 void
 EnvDSP::Release()
 {
-  if (_model->on && _stage >= EnvStage::R) return;
+  if (_model->on && _output.stage >= EnvStage::R) return;
   NextStage(!_model->on ? EnvStage::End : EnvStage::R);
   CycleStage(_model->type);
+}
+
+EnvOutput
+EnvDSP::Output() const 
+{
+  EnvOutput result = _output;
+  result.val = _model->on && _model->inv ? 1.0f - _output.val : _output.val; 
+  return result;
 }
 
 void
 EnvDSP::Next()
 {
-  _output = 0.0f;
+  _output.val = 0.0f;
   const float threshold = 1.0E-5f;
-  if (!_model->on || _stage == EnvStage::End) return;
-  _output = Generate();
-  assert(0.0f <= _output && _output <= 1.0f);
-  if (_stage != EnvStage::End) _pos++;
-  if (_stage < EnvStage::R) _max = _output;
-  if (_stage > EnvStage::A && _output <= threshold) NextStage(EnvStage::End);
+  if (!_model->on || _output.stage == EnvStage::End) return;
+  _output.val = Generate();
+  assert(0.0f <= _output.val && _output.val <= 1.0f);
+  if (_output.stage != EnvStage::End) _pos++;
+  if (_output.stage < EnvStage::R) _max = _output.val;
+  if (_output.stage > EnvStage::A && _output.val <= threshold) NextStage(EnvStage::End);
   CycleStage(_model->type);
 }
 
 float
 EnvDSP::Generate()
 {
-  switch (_stage)
+  switch (_output.stage)
   {
   case EnvStage::Dly: return 0.0f;
   case EnvStage::Hld: return 1.0f;
@@ -94,13 +104,13 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
 void
 EnvDSP::CycleStage(EnvType type)
 {
-  if (_stage == EnvStage::Dly && _pos >= _params.dly) NextStage(EnvStage::A);
-  if (_stage == EnvStage::A && _pos >= _params.a) NextStage(EnvStage::Hld);
-  if (_stage == EnvStage::Hld && _pos >= _params.hld) NextStage(EnvStage::D);
-  if (_stage == EnvStage::D && _pos >= _params.d) NextStage(EnvStage::S);
-  if (_stage == EnvStage::S && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
-  if (_stage == EnvStage::S && type == EnvType::DAHDR) NextStage(EnvStage::R);
-  if (_stage == EnvStage::R && _pos >= _params.r) NextStage(EnvStage::End);
+  if (_output.stage == EnvStage::Dly && _pos >= _params.dly) NextStage(EnvStage::A);
+  if (_output.stage == EnvStage::A && _pos >= _params.a) NextStage(EnvStage::Hld);
+  if (_output.stage == EnvStage::Hld && _pos >= _params.hld) NextStage(EnvStage::D);
+  if (_output.stage == EnvStage::D && _pos >= _params.d) NextStage(EnvStage::S);
+  if (_output.stage == EnvStage::S && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
+  if (_output.stage == EnvStage::S && type == EnvType::DAHDR) NextStage(EnvStage::R);
+  if (_output.stage == EnvStage::R && _pos >= _params.r) NextStage(EnvStage::End);
 }
 
 void
@@ -109,7 +119,7 @@ EnvDSP::NextStage(EnvStage stage)
   int len;
   SlopeType type;
   _pos = 0;
-  _stage = stage;
+  _output.stage = stage;
   switch (stage)
   {
   case EnvStage::A: len = _params.a; type = _model->aSlp; break;
@@ -153,20 +163,20 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
     if(h++ == hold) dsp.Release();
     if(dsp.End()) break;
     dsp.Next();
-    output.lSamples->push_back(dsp.Output());
-    if((firstMarker || prev != dsp._stage) && !dsp.End())
+    output.lSamples->push_back(dsp.Output().val);
+    if((firstMarker || prev != dsp._output.stage) && !dsp.End())
     {
       firstMarker = false;
       std::wstring marker = L"";
-      if(dsp._stage == EnvStage::A) marker = L"A";
-      if(dsp._stage == EnvStage::D) marker = L"D";
-      if(dsp._stage == EnvStage::S) marker = L"S";
-      if(dsp._stage == EnvStage::R) marker = L"R";
-      if(dsp._stage == EnvStage::Dly) marker = L"D";
-      if(dsp._stage == EnvStage::Hld) marker = L"H";
+      if(dsp._output.stage == EnvStage::A) marker = L"A";
+      if(dsp._output.stage == EnvStage::D) marker = L"D";
+      if(dsp._output.stage == EnvStage::S) marker = L"S";
+      if(dsp._output.stage == EnvStage::R) marker = L"R";
+      if(dsp._output.stage == EnvStage::Dly) marker = L"D";
+      if(dsp._output.stage == EnvStage::Hld) marker = L"H";
       output.hSplits->emplace_back(i, marker);
     }
-    prev = dsp._stage; 
+    prev = dsp._output.stage;
     i++;
   }
   output.hSplits->emplace_back(i - 1, L"");

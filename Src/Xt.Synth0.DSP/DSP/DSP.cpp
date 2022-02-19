@@ -52,7 +52,7 @@ ModVal(CvState const& cv, ModSource mod)
   case ModSource::Velo: 
     return cv.velo;
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
-    return cv.envs[static_cast<int>(mod) - env];
+    return cv.envs[static_cast<int>(mod) - env].val;
   case ModSource::LFO1: case ModSource::LFO2: case ModSource::LFO3:
     return cv.lfos[static_cast<int>(mod) - lfo].val;
   default: assert(false); return 0.0f;

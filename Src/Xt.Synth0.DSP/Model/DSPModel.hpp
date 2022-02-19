@@ -9,7 +9,9 @@
 
 namespace Xts {
 
+enum class EnvStage { Dly, A, Hld, D, S, R, End };
 struct CvOutput { bool bip; float val; };
+struct EnvOutput { float val; EnvStage stage; };
 struct ModInput { CvOutput cv1; CvOutput cv2; };
 struct HSplit { int pos; std::wstring marker; };
 struct VSplit { float pos; std::wstring marker; };
@@ -17,8 +19,8 @@ struct VSplit { float pos; std::wstring marker; };
 struct CvState
 { 
   float velo;
-  float envs[EnvCount];
   CvOutput lfos[LfoCount];
+  EnvOutput envs[EnvCount];
 };
 
 struct AudioOutput
