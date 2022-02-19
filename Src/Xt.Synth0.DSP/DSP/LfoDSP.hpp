@@ -6,28 +6,28 @@
 
 namespace Xts {
 
+struct LfoOutput
+{
+  bool bip;
+  float val;
+};
+
 class LfoDSP
 {
   double _phase;
+  LfoOutput _output;
   LfoModel const* _model;
-  float _value, _incr, _base, _factor;
-public:
-  LfoDSP() = default;
-  LfoDSP(LfoModel const* model, float bpm, float rate) :
-  _phase(0.0), _model(model), _value(0.0f), 
-  _incr(Freq(*_model, bpm, rate) / rate),
-  _base(IsBipolar(_model->plty) ? 0.0f : 0.5f),
-  _factor((IsInverted(_model->plty) ? -1.0f : 1.0f) * (1.0f - _base)) {}
-public:
-  void Next();
-  float Value() const { return _value; }
-  bool Bipolar() const { return IsBipolar(_model->plty); };
-  static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);
+  float _incr, _base, _factor;
 private:
   float Generate() const;
   static float Freq(LfoModel const& model, float bpm, float rate);
-  static bool IsBipolar(LfoPolarity plty) { return plty == LfoPolarity::Bi || plty == LfoPolarity::BiInv; }
-  static bool IsInverted(LfoPolarity plty) { return plty == LfoPolarity::BiInv || plty == LfoPolarity::UniInv; }
+public:
+  LfoDSP() = default;
+  LfoDSP(LfoModel const* model, float bpm, float rate);
+public:
+  void Next();
+  LfoOutput  const& Output() const { return _output; }
+  static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

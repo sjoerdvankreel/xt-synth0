@@ -5,13 +5,26 @@
 
 namespace Xts {
 
+static inline bool
+IsBipolar(LfoPolarity plty) { return plty == LfoPolarity::Bi || plty == LfoPolarity::BiInv; }
+static inline bool
+IsInverted(LfoPolarity plty) { return plty == LfoPolarity::BiInv || plty == LfoPolarity::UniInv; }
+
+LfoDSP::
+LfoDSP(LfoModel const* model, float bpm, float rate):
+_phase(0.0), _output(), _model(model),
+_incr(Freq(*_model, bpm, rate) / rate),
+_base(IsBipolar(_model->plty) ? 0.0f : 0.5f),
+_factor((IsInverted(_model->plty) ? -1.0f : 1.0f)* (1.0f - _base))
+{	_output.bip = IsBipolar(_model->plty); }
+
 void
 LfoDSP::Next()
 {
-  _value = 0.0f;
+  _output.val = 0.0f;
 	if (!_model->on) return;
-	_value = Generate();
-	assert(-1.0f <= _value && _value <= 1.0f);
+	_output.val = Generate();
+	assert(-1.0f <= _output.val && _output.val <= 1.0f);
 	_phase += _incr;
 	_phase -= std::floor(_phase);
 }
@@ -55,7 +68,7 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	for (int i = 0; i < samples; i++)
 	{
 		dsp.Next();
-		output.samples->push_back(dsp.Value());
+		output.samples->push_back(dsp.Output().val);
 	}
 
 	output.hSplits->emplace_back(HSplit(0, L"0"));
