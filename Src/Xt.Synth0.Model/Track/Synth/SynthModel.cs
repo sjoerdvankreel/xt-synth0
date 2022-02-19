@@ -30,8 +30,7 @@ namespace Xt.Synth0.Model
             internal CvModel cv;
             internal AmpModel.Native amp;
 			internal PlotModel.Native plot;
-			internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
-			internal fixed byte filters[Model.FilterCount * FilterModel.Native.Size];
+            internal AudioModel audio;
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct ParamInfo { public int min, max; }
@@ -46,7 +45,14 @@ namespace Xt.Synth0.Model
 				internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
 			}
 
-			[StructLayout(LayoutKind.Sequential, Pack = 8)]
+            [StructLayout(LayoutKind.Sequential, Pack = 8)]
+            internal ref struct AudioModel
+            {
+                internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
+                internal fixed byte filts[Model.FilterCount * FilterModel.Native.Size];
+            }
+
+            [StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct SyncStep
 			{
 				internal int num, den;

@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
         public ThemeGroup ThemeGroup => ThemeGroup.Filter;
         public string Id => "33E5297E-8C93-4A0C-810C-CD5E37DB50B2";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => &((SynthModel.Native*)parent)->filters[Index * Native.Size];
+        public void* Address(void* parent) => &((SynthModel.Native*)parent)->audio.filts[Index * Native.Size];
 
         internal FilterModel(int index) => Index = index;
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>

@@ -51,22 +51,21 @@ private:
 };
 XTS_CHECK_SIZE(LfoModel, 24);
 
-enum class AmpLfo { LFO1, LFO2, LFO3 };
-enum class AmpEnv { Env1, Env2, Env3 };
-struct XTS_ALIGN AmpModel
+enum class EnvType { DAHDSR, DAHDR };
+enum class SlopeType { Lin, Log, Inv, Sin, Cos };
+struct XTS_ALIGN EnvModel
 {
-  friend class AmpDSP;
-  AmpModel() = default;
-  AmpModel(AmpModel const&) = delete;
+  friend class EnvDSP;
+  EnvModel() = default;
+  EnvModel(EnvModel const&) = delete;
 private:
-  AmpEnv envSrc;
-  AmpLfo lfoSrc;
-  ModSource panSrc;
-  int32_t flt1, flt2, flt3;
-  int32_t unit1, unit2, unit3;
-  int32_t lvl, pan, lfoAmt, panAmt, pad__;
+  EnvType type;
+  XtsBool on, sync, inv;
+  SlopeType aSlp, dSlp, rSlp;
+  int32_t dly, a, hld, d, s, r;
+  int32_t dlyStp, aStp, hldStp, dStp, rStp;
 };
-XTS_CHECK_SIZE(AmpModel, 56);
+XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class FilterModTarget { Freq, Res };
 enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
@@ -85,22 +84,6 @@ private:
   int32_t flt1, flt2, unit1, unit2, unit3;
 };
 XTS_CHECK_SIZE(FilterModel, 64);
-
-enum class EnvType { DAHDSR, DAHDR };
-enum class SlopeType { Lin, Log, Inv, Sin, Cos };
-struct XTS_ALIGN EnvModel 
-{
-  friend class EnvDSP;
-  EnvModel() = default;
-  EnvModel(EnvModel const&) = delete;
-private:
-  EnvType type;
-  XtsBool on, sync, inv;
-  SlopeType aSlp, dSlp, rSlp;
-  int32_t dly, a, hld, d, s, r;
-  int32_t dlyStp, aStp, hldStp, dStp, rStp;
-};
-XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
@@ -125,6 +108,23 @@ private:
 };
 XTS_CHECK_SIZE(UnitModel, 80);
 
+enum class AmpLfo { LFO1, LFO2, LFO3 };
+enum class AmpEnv { Env1, Env2, Env3 };
+struct XTS_ALIGN AmpModel
+{
+  friend class AmpDSP;
+  AmpModel() = default;
+  AmpModel(AmpModel const&) = delete;
+private:
+  AmpEnv envSrc;
+  AmpLfo lfoSrc;
+  ModSource panSrc;
+  int32_t flt1, flt2, flt3;
+  int32_t unit1, unit2, unit3;
+  int32_t lvl, pan, lfoAmt, panAmt, pad__;
+};
+XTS_CHECK_SIZE(AmpModel, 56);
+
 struct XTS_ALIGN CvModel
 {
   friend class CvDSP;
@@ -138,6 +138,19 @@ private:
 };
 XTS_CHECK_SIZE(CvModel, 288);
 
+struct XTS_ALIGN AudioModel
+{
+  friend class AmpDSP;
+  friend class PlotDSP;
+  friend class AudioDSP;
+  AudioModel() = default;
+  AudioModel(AudioModel const&) = delete;
+private:
+  UnitModel units[UnitCount];
+  FilterModel filts[FilterCount];
+};
+XTS_CHECK_SIZE(AudioModel, 432);
+
 struct XTS_ALIGN SynthModel
 {
   friend class SeqDSP;
@@ -149,8 +162,7 @@ private:
   CvModel cv;
   AmpModel amp;
   PlotModel plot;
-  UnitModel units[UnitCount];
-  FilterModel filters[FilterCount];
+  AudioModel audio;
 };
 XTS_CHECK_SIZE(SynthModel, 792);
 

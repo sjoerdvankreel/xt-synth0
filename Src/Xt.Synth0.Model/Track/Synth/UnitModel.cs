@@ -48,7 +48,7 @@ namespace Xt.Synth0.Model
         public ThemeGroup ThemeGroup => ThemeGroup.Unit;
         public string Id => "3DACD0A4-9688-4FA9-9CA3-B8A0E49A45E5";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => &((SynthModel.Native*)parent)->units[Index * Native.Size];
+        public void* Address(void* parent) => &((SynthModel.Native*)parent)->audio.units[Index * Native.Size];
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },

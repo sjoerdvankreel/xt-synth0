@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DSP\AudioDSP.hpp" />
     <ClInclude Include="DSP\CvDSP.hpp" />
     <ClInclude Include="DSP\DSP.hpp" />
     <ClInclude Include="DSP\EnvDSP.hpp" />
@@ -28,6 +29,7 @@
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DSP\AudioDSP.cpp" />
     <ClCompile Include="DSP\CvDSP.cpp" />
     <ClCompile Include="DSP\DSP.cpp" />
     <ClCompile Include="DSP\EnvDSP.cpp" />
