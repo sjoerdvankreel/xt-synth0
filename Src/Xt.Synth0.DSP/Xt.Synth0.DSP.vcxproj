@@ -11,13 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DSP\CvDSP.hpp" />
     <ClInclude Include="DSP\DSP.hpp" />
     <ClInclude Include="DSP\EnvDSP.hpp" />
     <ClInclude Include="DSP\AmpDSP.hpp" />
     <ClInclude Include="DSP\LfoDSP.hpp" />
     <ClInclude Include="DSP\PlotDSP.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
-    <ClInclude Include="DSP\CVDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />
     <ClInclude Include="DSP\UnitDSP.hpp" />
     <ClInclude Include="Model\DSPModel.hpp" />
@@ -28,13 +28,13 @@
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DSP\CvDSP.cpp" />
     <ClCompile Include="DSP\DSP.cpp" />
     <ClCompile Include="DSP\EnvDSP.cpp" />
     <ClCompile Include="DSP\AmpDSP.cpp" />
     <ClCompile Include="DSP\LfoDSP.cpp" />
     <ClCompile Include="DSP\PlotDSP.cpp" />
     <ClCompile Include="DSP\SeqDSP.cpp" />
-    <ClCompile Include="DSP\CVDSP.cpp" />
     <ClCompile Include="DSP\SynthDSP.cpp" />
     <ClCompile Include="DSP\UnitDSP.cpp" />
     <ClCompile Include="Model\SynthModel.cpp" />

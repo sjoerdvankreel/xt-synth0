@@ -97,7 +97,7 @@ UnitDSP::ModFreq(ModInput const& mod) const
 }
 
 void
-UnitDSP::Next(CVState const& cv)
+UnitDSP::Next(CvState const& cv)
 {
   _output.l = 0.0f;
   _output.r = 0.0f;
@@ -217,7 +217,7 @@ UnitDSP::GenerateAdd(float phase, float freq, ModInput const& mod) const
 }
 
 void
-UnitDSP::Plot(UnitModel const& model, CVModel const& cv, PlotInput const& input, PlotOutput& output)
+UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input, PlotOutput& output)
 {
   const float cycles = 3.0f;
   if (!model.on) return;
@@ -226,7 +226,7 @@ UnitDSP::Plot(UnitModel const& model, CVModel const& cv, PlotInput const& input,
   output.freq = Freq(model, 4, UnitNote::C);
   output.rate = input.spec? input.rate: output.freq * input.pixels;
 
-  CVDSP cvDsp(&cv, 1.0f, input.bpm, output.rate);
+  CvDSP cvDsp(&cv, 1.0f, input.bpm, output.rate);
   UnitDSP dsp(&model, 4, UnitNote::C, output.rate);
   float regular = (output.rate * cycles / output.freq) + 1.0f;
   float fsamples = input.spec ? input.rate : regular;

@@ -1,16 +1,16 @@
-#include "CVDSP.hpp"
+#include "CvDSP.hpp"
 
 namespace Xts {
 
 void
-CVDSP::Release()
+CvDSP::Release()
 { 
   for (int e = 0; e < EnvCount; e++) 
     _envs[e].Release(); 
 }
 
 void
-CVDSP::Next()
+CvDSP::Next()
 {
   for (int l = 0; l < LfoCount; l++)
   {
@@ -24,8 +24,8 @@ CVDSP::Next()
   }
 }
 
-CVDSP::
-CVDSP(CVModel const* model, float velo, float bpm, float rate):
+CvDSP::
+CvDSP(CvModel const* model, float velo, float bpm, float rate):
 _output(), _lfos(), _envs()
 {
   _output.velo = velo;

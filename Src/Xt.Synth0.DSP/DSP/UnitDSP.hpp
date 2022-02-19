@@ -1,7 +1,7 @@
 #ifndef XTS_UNIT_DSP_HPP
 #define XTS_UNIT_DSP_HPP
 
-#include "CVDSP.hpp"
+#include "CvDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -25,9 +25,9 @@ private:
   float GenerateAdd(float phase, float freq, ModInput const& mod) const;
   float Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const;
 public:
-  void Next(CVState const& cv);
+  void Next(CvState const& cv);
   AudioOutput const Output() const { return _output; }
-  static void Plot(UnitModel const& model, CVModel const& cv, PlotInput const& input, PlotOutput& output);
+  static void Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

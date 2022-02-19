@@ -49,11 +49,11 @@
     <ClInclude Include="DSP\LfoDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\CVDSP.hpp">
-      <Filter>DSP</Filter>
-    </ClInclude>
     <ClInclude Include="Utility\Utility.hpp">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\CvDSP.hpp">
+      <Filter>DSP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -82,10 +82,10 @@
     <ClCompile Include="Model\SynthModel.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\CVDSP.cpp">
+    <ClCompile Include="DSP\DSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\DSP.cpp">
+    <ClCompile Include="DSP\CvDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
   </ItemGroup>

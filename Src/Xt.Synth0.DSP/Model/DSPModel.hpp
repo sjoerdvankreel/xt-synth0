@@ -10,16 +10,16 @@
 namespace Xts {
 
 struct AudioOutput { float l; float r; };
-struct CVOutput { bool bip; float val; };
-struct ModInput { CVOutput cv1; CVOutput cv2; };
+struct CvOutput { bool bip; float val; };
+struct ModInput { CvOutput cv1; CvOutput cv2; };
 struct HSplit { int pos; std::wstring marker; };
 struct VSplit { float pos; std::wstring marker; };
 
-struct CVState 
+struct CvState
 { 
   float velo;
   float envs[EnvCount];
-  CVOutput lfos[LfoCount];
+  CvOutput lfos[LfoCount];
 };
 
 struct AudioState

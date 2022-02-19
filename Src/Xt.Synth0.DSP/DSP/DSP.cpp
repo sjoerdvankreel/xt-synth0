@@ -34,7 +34,7 @@ Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vec
 }
 
 static bool
-ModBip(CVState const& cv, ModSource mod)
+ModBip(CvState const& cv, ModSource mod)
 {
   if (mod == ModSource::LFO1 && cv.lfos[0].bip) return true;
   if (mod == ModSource::LFO2 && cv.lfos[1].bip) return true;
@@ -43,7 +43,7 @@ ModBip(CVState const& cv, ModSource mod)
 }
 
 static float
-ModVal(CVState const& cv, ModSource mod)
+ModVal(CvState const& cv, ModSource mod)
 {
   int env = static_cast<int>(ModSource::Env1);
   int lfo = static_cast<int>(ModSource::LFO1);
@@ -60,7 +60,7 @@ ModVal(CVState const& cv, ModSource mod)
 }
 
 ModInput
-ModulationInput(CVState const& cv, ModSource src1, ModSource src2)
+ModulationInput(CvState const& cv, ModSource src1, ModSource src2)
 {
   ModInput result;
   result.cv1.bip = ModBip(cv, src1);
@@ -71,7 +71,7 @@ ModulationInput(CVState const& cv, ModSource src1, ModSource src2)
 }
 
 float 
-Modulate(float val, bool bip, float amt, CVOutput cv)
+Modulate(float val, bool bip, float amt, CvOutput cv)
 {
   float range = 0.0f;
   val = EpsToZero(val);

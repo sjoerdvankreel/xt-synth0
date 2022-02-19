@@ -8,18 +8,18 @@
 
 namespace Xts {
 
-class CVDSP
+class CvDSP
 {
-  CVState _output;
+  CvState _output;
   LfoDSP _lfos[LfoCount];
   EnvDSP _envs[EnvCount];
 public:
   void Next();
   void Release();
-  CVState const& Output() const { return _output; };
+  CvState const& Output() const { return _output; };
 public:
-  CVDSP() = default;
-  CVDSP(CVModel const* model, float velo, float bpm, float rate);
+  CvDSP() = default;
+  CvDSP(CvModel const* model, float velo, float bpm, float rate);
 };
 
 } // namespace Xts
