@@ -9,7 +9,7 @@ namespace Xts {
 class PlotDSP
 {
 public:
-  static void Render(SynthModel const& synth, PlotInput& input, PlotOutput& output);
+  static void Render(SynthModel const& model, PlotInput& input, PlotOutput& output);
 };
 
 } // namespace Xts

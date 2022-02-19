@@ -1,4 +1,5 @@
 #include "DSP.hpp"
+#include "AmpDSP.hpp"
 #include "EnvDSP.hpp"
 #include "UnitDSP.hpp"
 #include "PlotDSP.hpp"
@@ -69,41 +70,41 @@ Spectrum(
 }
 
 void
-PlotDSP::Render(SynthModel const& synth, PlotInput& input, PlotOutput& output)
+PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
 {
-  auto type = synth.plot.type;
+  auto type = model.plot.type;
   auto index = static_cast<int>(type);
-  input.spec = synth.plot.spec;
-  input.hold = !input.spec? synth.plot.hold: 81;
+  input.spec = model.plot.spec;
+  input.hold = !input.spec? model.plot.hold: 81;
   output.channel = type == PlotType::SynthR? 1: 0;
 
-  switch(synth.plot.type)
+  switch(model.plot.type)
   {
   case PlotType::Off: break;
   case PlotType::SynthL: case PlotType::SynthR: {
-    SynthDSP::Plot(synth, synth.source, input, output);
+    SynthDSP::Plot(model, input, output);
     break; }
   case PlotType::Amp: {
-    AmpDSP::Plot(synth.amp, synth.source, input, output);
+    AmpDSP::Plot(model.amp, model.cv, model.audio, input, output);
     break; }
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: {
     auto lfo = static_cast<int>(PlotType::LFO1);
-    LfoDSP::Plot(synth.source.lfos[index - lfo], input, output);
+    LfoDSP::Plot(model.cv.lfos[index - lfo], input, output);
     break; }
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: {
     auto env = static_cast<int>(PlotType::Env1);
-    EnvDSP::Plot(synth.source.envs[index - env], input, output);
+    EnvDSP::Plot(model.cv.envs[index - env], input, output);
     break; }
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: {
     auto unit = static_cast<int>(PlotType::Unit1);
-    UnitDSP::Plot(synth.units[index - unit], synth.source, input, output);
+    UnitDSP::Plot(model.audio.units[index - unit], model.cv, input, output);
     break; }
   default: {
     assert(false);
     break; }
   }
   
-  if(!synth.plot.spec) return;
+  if(!model.plot.spec) return;
   output.min = 0.0f;
   output.max = 1.0f;
   output.samples->resize(NextPow2(output.samples->size()));
