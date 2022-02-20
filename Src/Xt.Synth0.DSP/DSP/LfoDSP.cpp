@@ -55,11 +55,10 @@ LfoDSP::Generate() const
 void
 LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 {
-	const float testRate = 1000.0f;
 	if (!model.on) return;
 	output.max = 1.0f;
   output.stereo = false;
-	output.freq = Freq(model, input.bpm, testRate);
+	output.freq = Freq(model, input.bpm, input.rate);
 	output.min = IsBipolar(model.plty) ? -1.0f : 0.0f;
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
 
@@ -77,6 +76,8 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.hSplits->emplace_back(samples / 2, L"\u03C0");
 	if (IsBipolar(model.plty)) *output.vSplits = BiVSPlits;
 	else *output.vSplits = UniVSPlits;
+  assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
+  assert(input.spec || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
 }
 
 } // namespace Xts

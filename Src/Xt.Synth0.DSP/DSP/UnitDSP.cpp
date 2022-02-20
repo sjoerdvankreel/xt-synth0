@@ -225,7 +225,7 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
   output.min = -1.0f;
   output.stereo = false;
   output.freq = Freq(model, 4, UnitNote::C);
-  output.rate = input.spec? input.rate: output.freq * input.pixels;
+  output.rate = input.spec? input.rate: output.freq * input.pixels / cycles;
 
   CvDSP cvDsp(&cv, 1.0f, input.bpm, output.rate);
   UnitDSP dsp(&model, 4, UnitNote::C, output.rate);
@@ -246,6 +246,8 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
     int pos = samples * i / (cycles * 2);
 	  output.hSplits->emplace_back(pos, std::to_wstring(i) + L"\u03C0");
   }
+  assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
+  assert(input.spec || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
 }
 
 } // namespace Xts
