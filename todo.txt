@@ -19,20 +19,7 @@ dump stacktrace
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
-plot hold conditional + impulse response
-plot ampl/ampr?
-dual channel plot
-check xtaudio dsound min buffer size
-plot l/r/mix/both/specMix/specBoth/specL/specR/IR + visibility if CV
-observe plot hold for everything
-lfo rate -> hz
-remove plot info
-plot rate not over audio rate
-time/freq params with maximum
-return Output from Next()
-stereo spec
-no spec on env/amp
-lfo -> period
 remove friend classes except plot
 plot the right way, dont embed ui offset into plotdata
 output.spec/bars plot
+stereo spec
