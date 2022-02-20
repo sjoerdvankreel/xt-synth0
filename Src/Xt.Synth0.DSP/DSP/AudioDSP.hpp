@@ -12,7 +12,7 @@ class AudioDSP
   AudioState _output;
   UnitDSP _units[UnitCount];
 public:
-  void Next(CvState const& cv);
+  AudioState const& Next(CvState const& cv);
   AudioState const& Output() const { return _output; };
 public:
   AudioDSP() = default;

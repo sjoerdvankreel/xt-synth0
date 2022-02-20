@@ -9,7 +9,7 @@ CvDSP::Release()
     _envs[e].Release(); 
 }
 
-void
+CvState const&
 CvDSP::Next()
 {
   for (int l = 0; l < LfoCount; l++)
@@ -22,6 +22,7 @@ CvDSP::Next()
     _envs[e].Next();
     _output.envs[e] = _envs[e].Output();
   }
+  return Output();
 }
 
 CvDSP::

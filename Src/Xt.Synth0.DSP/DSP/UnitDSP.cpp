@@ -96,12 +96,12 @@ UnitDSP::ModFreq(ModInput const& mod) const
   return result;
 }
 
-void
+AudioOutput
 UnitDSP::Next(CvState const& cv)
 {
   _output.l = 0.0f;
   _output.r = 0.0f;
-  if (!_model->on) return;
+  if (!_model->on) return Output();
   ModInput mod = ModulationInput(cv, _model->src1, _model->src2);
   float freq = ModFreq(mod);
   float phase = ModPhase(mod);
@@ -113,6 +113,7 @@ UnitDSP::Next(CvState const& cv)
   assert(-1.0 <= sample && sample <= 1.0);
   _output.l = sample * amp * (1.0f - pan);
   _output.r = sample * amp * pan;
+  return Output();
 }
 
 float

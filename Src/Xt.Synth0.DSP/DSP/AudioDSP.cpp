@@ -2,7 +2,7 @@
 
 namespace Xts {
 
-void
+AudioState const&
 AudioDSP::Next(CvState const& cv)
 {
   for (int u = 0; u < UnitCount; u++)
@@ -10,6 +10,7 @@ AudioDSP::Next(CvState const& cv)
     _units[u].Next(cv);
     _output.units[u] = _units[u].Output();
   }
+  return Output();
 }
 
 AudioDSP::

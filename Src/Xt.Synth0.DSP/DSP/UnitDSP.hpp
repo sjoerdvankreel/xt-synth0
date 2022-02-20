@@ -25,7 +25,7 @@ private:
   float GenerateAdd(float phase, float freq, ModInput const& mod) const;
   float Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const;
 public:
-  void Next(CvState const& cv);
+  AudioOutput Next(CvState const& cv);
   AudioOutput const Output() const { return _output; }
   static void Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input, PlotOutput& output);
 };

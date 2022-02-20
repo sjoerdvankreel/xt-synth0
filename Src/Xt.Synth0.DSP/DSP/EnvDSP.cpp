@@ -36,18 +36,19 @@ EnvDSP::Output() const
   return result;
 }
 
-void
+EnvOutput
 EnvDSP::Next()
 {
   _output.val = 0.0f;
   const float threshold = 1.0E-5f;
-  if (!_model->on || _output.stage == EnvStage::End) return;
+  if (!_model->on || _output.stage == EnvStage::End) return Output();
   _output.val = Generate();
   assert(0.0f <= _output.val && _output.val <= 1.0f);
   if (_output.stage != EnvStage::End) _pos++;
   if (_output.stage < EnvStage::R) _max = _output.val;
   if (_output.stage > EnvStage::A && _output.val <= threshold) NextStage(EnvStage::End);
   CycleStage(_model->type);
+  return Output();
 }
 
 float

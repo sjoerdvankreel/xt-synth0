@@ -18,15 +18,16 @@ _base(IsBipolar(_model->plty) ? 0.0f : 0.5f),
 _factor((IsInverted(_model->plty) ? -1.0f : 1.0f)* (1.0f - _base))
 {	_output.bip = IsBipolar(_model->plty); }
 
-void
+CvOutput
 LfoDSP::Next()
 {
   _output.val = 0.0f;
-	if (!_model->on) return;
+	if (!_model->on) return Output();
 	_output.val = Generate();
 	assert(-1.0f <= _output.val && _output.val <= 1.0f);
 	_phase += _incr;
 	_phase -= std::floor(_phase);
+  return Output();
 }
 
 float

@@ -16,7 +16,7 @@ _lvlAmt(Mix(model->lvlAmt)),
 _panAmt(Mix(model->panAmt)),
 _lvl(Level(model->lvl) * velo) {}
 
-void
+AudioOutput
 AmpDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.l = 0.0f;
@@ -44,6 +44,8 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   _output.r += _unit2 * r * audio.units[1].r;
   _output.l += _unit3 * l * audio.units[2].l;
   _output.r += _unit3 * r * audio.units[2].r;
+  
+  return Output();
 }
 
 void

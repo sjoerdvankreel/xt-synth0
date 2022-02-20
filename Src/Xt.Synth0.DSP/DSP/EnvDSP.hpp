@@ -33,8 +33,8 @@ private:
   float Generate(float from, float to, SlopeType type);
   static EnvParams Params(EnvModel const& model, float bpm, float rate);
 public:
-  void Next();
   void Release();
+  EnvOutput Next();
   EnvOutput Output() const;
   bool End() const { return _output.stage == EnvStage::End; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);

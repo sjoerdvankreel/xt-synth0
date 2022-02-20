@@ -22,7 +22,7 @@ public:
   AmpDSP(AmpModel const* model, float velo);
 public:
   AudioOutput Output() const { return _output; }
-  void Next(CvState const& cv, AudioState const& audio);
+  AudioOutput Next(CvState const& cv, AudioState const& audio);
   bool End(CvDSP const& cv) const { return cv.End(static_cast<int>(_model->envSrc)); }
   static void Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, PlotInput const& input, PlotOutput& output);
 };
