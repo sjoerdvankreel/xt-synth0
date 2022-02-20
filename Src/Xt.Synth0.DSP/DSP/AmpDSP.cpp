@@ -42,7 +42,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
 }
 
 void
-AmpDSP::Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, PlotInput const& input, PlotOutput& output)
+AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel, CvModel const& cvModel, AudioModel const& audio, PlotInput const& input, PlotOutput& output)
 {
   int i = 0;
   int h = 0;
@@ -56,11 +56,11 @@ AmpDSP::Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, 
 
   AmpDSP dsp(&model, 1.0f);
   AudioState audioState = { 0 };
-  CvDSP cvDSP(&cv, 1.0f, input.bpm, output.rate);
+  CvDSP cvDSP(&cvModel, 1.0f, input.bpm, output.rate);
   while (i++ < maxSamples)
   {
-    if (h++ == hold) cvDSP.Release();
-    if (dsp.End(cvDSP.Output())) break;
+    if (h++ == hold) cvDSP.ReleaseAll(dsp.Env());
+    if (cvDSP.End(dsp.Env())) break;
     cvDSP.Next();
     dsp.Next(cvDSP.Output(), audioState);
     output.lSamples->push_back(dsp._amp);

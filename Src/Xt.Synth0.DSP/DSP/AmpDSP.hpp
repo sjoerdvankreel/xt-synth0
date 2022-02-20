@@ -22,9 +22,9 @@ public:
   AmpDSP(AmpModel const* model, float velo);
 public:
   AudioOutput Output() const { return _output; };
+  int Env() const { return static_cast<int>(_model->envSrc); }
   AudioOutput Next(CvState const& cv, AudioState const& audio);
-  bool End(CvState const& cv) const { return cv.envs[static_cast<int>(_model->envSrc)].stage == EnvStage::End; };
-  static void Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, PlotInput const& input, PlotOutput& output);
+  static void Plot(AmpModel const& model, EnvModel const& envModel, CvModel const& cvModel, AudioModel const& audio, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

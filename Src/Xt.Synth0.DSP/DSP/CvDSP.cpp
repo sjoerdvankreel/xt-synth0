@@ -2,11 +2,12 @@
 
 namespace Xts {
 
-void
-CvDSP::Release() 
+EnvOutput
+CvDSP::ReleaseAll(int env)
 { 
   for (int i = 0; i < EnvCount; i++) 
-    _envs[i].Release(); 
+    _envs[i].Release();
+  return _envs[env].Output();
 }
 
 CvState const&

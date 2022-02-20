@@ -76,14 +76,12 @@ PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
   auto index = static_cast<int>(type);
   input.spec = model.plot.spec;
   input.hold = !input.spec? model.plot.hold: 81;
+  int ampEnv = static_cast<int>(model.amp.envSrc);
 
   switch(model.plot.type)
   {
   case PlotType::Synth: {
     SynthDSP::Plot(model, input, output);
-    break; }
-  case PlotType::Amp: {
-    AmpDSP::Plot(model.amp, model.cv, model.audio, input, output);
     break; }
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: {
     auto lfo = static_cast<int>(PlotType::LFO1);
@@ -96,6 +94,9 @@ PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: {
     auto unit = static_cast<int>(PlotType::Unit1);
     UnitDSP::Plot(model.audio.units[index - unit], model.cv, input, output);
+    break; }
+  case PlotType::Amp: {
+    AmpDSP::Plot(model.amp, model.cv.envs[ampEnv], model.cv, model.audio, input, output);
     break; }
   default: {
     assert(false);

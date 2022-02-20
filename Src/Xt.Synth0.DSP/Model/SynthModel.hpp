@@ -56,6 +56,7 @@ enum class SlopeType { Lin, Log, Inv, Sin, Cos };
 struct XTS_ALIGN EnvModel
 {
   friend class EnvDSP;
+  friend class AmpDSP;
   EnvModel() = default;
   EnvModel(EnvModel const&) = delete;
 private:
@@ -115,6 +116,7 @@ enum class AmpEnv { Env1, Env2, Env3 };
 struct XTS_ALIGN AmpModel
 {
   friend class AmpDSP;
+  friend class PlotDSP;
   AmpModel() = default;
   AmpModel(AmpModel const&) = delete;
 private:
