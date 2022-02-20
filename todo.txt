@@ -34,3 +34,4 @@ stereo spec
 no spec on env/amp
 lfo -> period
 remove friend classes except plot
+plot the right way, dont embed ui offset into plotdata
