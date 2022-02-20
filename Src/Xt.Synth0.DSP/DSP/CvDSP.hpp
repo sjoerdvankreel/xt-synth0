@@ -20,7 +20,6 @@ public:
   void Release();
   CvState const& Next();
   CvState const& Output() const { return _output; };
-  bool End(int env) const { return _envs[env].End(); }
 };
 
 } // namespace Xts

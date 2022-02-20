@@ -19,7 +19,7 @@ public:
   SynthDSP(SynthModel const* model, int oct, UnitNote note, float velo, float bpm, float rate);
 public:
   void Release() { _cv.Release(); }
-  bool End() const { return _amp.End(_cv); }
+  bool End() const { return _amp.End(_cv.Output()); }
   AudioOutput Output() const { return _amp.Output(); }
   static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
   AudioOutput Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };

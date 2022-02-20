@@ -60,7 +60,7 @@ AmpDSP::Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, 
   while (i++ < maxSamples)
   {
     if (h++ == hold) cvDSP.Release();
-    if (dsp.End(cvDSP)) break;
+    if (dsp.End(cvDSP.Output())) break;
     cvDSP.Next();
     dsp.Next(cvDSP.Output(), audioState);
     output.lSamples->push_back(dsp._amp);
