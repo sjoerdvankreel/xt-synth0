@@ -21,6 +21,7 @@ public:
   EnvOutput ReleaseAll(int env);
   CvState const& Output() const { return _output; };
   bool End(int env) const { return _envs[env].End(); }
+  EnvOutput EnvOutput(int env) const { return _envs[env].Output(); };
 };
 
 } // namespace Xts

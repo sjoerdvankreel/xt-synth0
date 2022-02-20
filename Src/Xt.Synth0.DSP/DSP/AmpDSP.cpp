@@ -44,31 +44,32 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
 void
 AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel, CvModel const& cvModel, AudioModel const& audio, PlotInput const& input, PlotOutput& output)
 {
-  int i = 0;
-  int h = 0;
-  float plotRate = input.spec? input.rate: 5000;
-  int hold = TimeI(input.hold, plotRate);  
-  int maxSamples = static_cast<int>(input.spec? input.rate: 5 * plotRate);
   output.min = 0.0f;
   output.max = 1.0f;
   output.stereo = false;
-  output.rate = plotRate;
+  output.rate = input.rate;
+  *output.vSplits = UniVSPlits;
+  float hold = TimeF(input.hold, input.rate);
+  float release = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
+  output.rate = input.spec ? input.rate : input.rate * input.pixels / (hold + release);
+  hold *= output.rate / input.rate;
 
+  int h = 0;
+  int i = 0;
   AmpDSP dsp(&model, 1.0f);
   AudioState audioState = { 0 };
   CvDSP cvDSP(&cvModel, 1.0f, input.bpm, output.rate);
-  while (i++ < maxSamples)
+  while (!cvDSP.End(dsp.Env()))
   {
-    if (h++ == hold) cvDSP.ReleaseAll(dsp.Env());
-    if (cvDSP.End(dsp.Env())) break;
-    cvDSP.Next();
-    dsp.Next(cvDSP.Output(), audioState);
+    if (h++ == static_cast<int>(hold))
+      output.hSplits->emplace_back(i, FormatEnv(cvDSP.ReleaseAll(dsp.Env()).stage));
+    dsp.Next(cvDSP.Next(), audioState);
     output.lSamples->push_back(dsp._amp);
+    if (i == 0 || cvDSP.EnvOutput(dsp.Env()).staged)
+      output.hSplits->emplace_back(i, FormatEnv(cvDSP.EnvOutput(dsp.Env()).stage));
+    i++;
   }
-
-  *output.vSplits = UniVSPlits;
-  output.hSplits->emplace_back(0, L"");
-  output.hSplits->emplace_back(i - 1, L"");
+  output.lSamples->push_back(0.0f);
 }
 
 } // namespace Xts
