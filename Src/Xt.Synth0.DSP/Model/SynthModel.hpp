@@ -57,6 +57,7 @@ struct XTS_ALIGN EnvModel
 {
   friend class EnvDSP;
   friend class AmpDSP;
+  friend class PlotDSP;
   EnvModel() = default;
   EnvModel(EnvModel const&) = delete;
 private:

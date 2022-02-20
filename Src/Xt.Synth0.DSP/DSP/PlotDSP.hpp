@@ -64,8 +64,8 @@ void PlotDSP::RenderStaged(
   output.rate = input.rate;
   *output.vSplits = UniVSPlits;
   float hold = TimeF(input.hold, input.rate);
-  float release = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
-  output.rate = input.spec ? input.rate : input.rate * input.pixels / (hold + release);
+  float releaseSamples = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
+  output.rate = input.spec ? input.rate : input.rate * input.pixels / (hold + releaseSamples);
   hold *= output.rate / input.rate;
 
   int h = 0;
@@ -74,7 +74,7 @@ void PlotDSP::RenderStaged(
   while (!end(state))
   {
     if (h++ == static_cast<int>(hold))
-      output.hSplits->emplace_back(i, FormatEnv(release(state).staged));
+      output.hSplits->emplace_back(i, FormatEnv(release(state).stage));
     next(state);
     output.lSamples->push_back(value(state));
     if (i == 0 || envOutput(state).staged)

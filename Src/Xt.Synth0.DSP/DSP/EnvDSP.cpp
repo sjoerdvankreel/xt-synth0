@@ -1,5 +1,6 @@
 #include "DSP.hpp"
 #include "EnvDSP.hpp"
+#include "PlotDSP.hpp"
 
 #include <cmath>
 #include <cassert>
@@ -145,29 +146,14 @@ EnvDSP::NextStage(EnvStage stage)
 void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  output.min = 0.0f;
-  output.max = 1.0f;
-  output.stereo = false;
-  output.rate = input.rate;
-  *output.vSplits = UniVSPlits;
-  float hold = TimeF(input.hold, input.rate);
-  float release = model.sync ? SyncF(input.bpm, input.rate, model.rStp) : TimeF(model.r, input.rate);
-  output.rate = input.spec? input.rate: input.rate * input.pixels / (hold + release);
-  hold *= output.rate / input.rate;
-
-  int h = 0;
-  int i = 0;
-  EnvDSP dsp(&model, input.bpm, output.rate);
-  while(!dsp.End())
-  {
-    if(h++ == static_cast<int>(hold)) 
-      output.hSplits->emplace_back(i, FormatEnv(dsp.Release().stage));
-    output.lSamples->push_back(dsp.Next().val);
-    if(i == 0 || dsp.Output().staged)
-      output.hSplits->emplace_back(i, FormatEnv(dsp.Output().stage));
-    i++;
-  }
-  output.lSamples->push_back(0.0f);
+  if(!model.on) return;
+  auto next = [](EnvDSP& dsp) { dsp.Next(); };
+  auto end = [](EnvDSP& dsp) { return dsp.End(); };
+  auto release = [](EnvDSP& dsp) { return dsp.Release(); };
+  auto envOutput = [](EnvDSP& dsp) { return dsp.Output(); };
+  auto value = [](EnvDSP& dsp) { return dsp.Output().val; };
+  auto factory = [&](float rate) { return EnvDSP(&model, input.bpm, rate); };
+  PlotDSP::RenderStaged(model, input, output, factory, next, value, envOutput, release, end);
 }
 
 } // namespace Xts
