@@ -74,7 +74,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
 {
   auto type = model.plot.type;
   auto index = static_cast<int>(type);
-  input.spec = model.plot.spec;
+  input.spec = model.plot.spec && (model.plot.type < PlotType::Amp || model.plot.type > PlotType::Env3);
   input.hold = !input.spec? model.plot.hold: 81;
   int ampEnv = static_cast<int>(model.amp.envSrc);
   EnvModel const& envModel = model.cv.envs[ampEnv];
@@ -105,7 +105,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
   }  
 
   assert(output.rate <= input.rate);
-  if(!model.plot.spec) return;
+  if(!input.spec) return;  
 
   output.min = 0.0f;
   output.max = 1.0f;
