@@ -148,10 +148,10 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
   if(!model.on) return;
   auto next = [](EnvDSP& dsp) { dsp.Next(); };
-  auto end = [](EnvDSP& dsp) { return dsp.End(); };
+  auto end = [](EnvDSP const& dsp) { return dsp.End(); };
   auto release = [](EnvDSP& dsp) { return dsp.Release(); };
-  auto envOutput = [](EnvDSP& dsp) { return dsp.Output(); };
-  auto value = [](EnvDSP& dsp) { return dsp.Output().val; };
+  auto envOutput = [](EnvDSP const& dsp) { return dsp.Output(); };
+  auto value = [](EnvDSP const& dsp) { return dsp.Output().val; };
   auto factory = [&](float rate) { return EnvDSP(&model, input.bpm, rate); };
   PlotDSP::RenderStaged(model, input, output, factory, next, value, envOutput, release, end);
 }

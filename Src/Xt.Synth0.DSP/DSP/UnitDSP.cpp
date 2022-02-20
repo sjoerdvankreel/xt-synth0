@@ -223,18 +223,8 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cvModel, PlotInput const& i
   const int cycles = 5;
   if (!model.on) return;
   float freq = Freq(model, 4, UnitNote::C);
-  auto factory = [&](float rate) 
-  { 
-    auto cv = CvDSP(&cvModel, 1.0f, input.bpm, rate);
-    auto unit = UnitDSP(&model, 4, UnitNote::C, rate);
-    return std::make_tuple(cv, unit);
-  };
-  auto next = [](std::tuple<CvDSP, UnitDSP>& state) 
-  { 
-    auto& cv = std::get<CvDSP>(state);
-    auto& unit = std::get<UnitDSP>(state);
-    return unit.Next(cv.Next()).Mono();
-  };
+  auto next = [](std::tuple<CvDSP, UnitDSP>& state) { return std::get<UnitDSP>(state).Next(std::get<CvDSP>(state).Next()).Mono(); };
+  auto factory = [&](float rate) { return std::make_tuple(CvDSP(&cvModel, 1.0f, input.bpm, rate), UnitDSP(&model, 4, UnitNote::C, rate)); };
   PlotDSP::RenderCycled(cycles, true, freq, input, output, factory, next);
 }
 
