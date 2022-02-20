@@ -14,8 +14,8 @@ class AmpDSP
   float _amp;
   AudioOutput _output;
   AmpModel const* _model;
-  float _flt1, _flt2, _flt3;
-  float _unit1, _unit2, _unit3;
+  float _units[UnitCount];
+  float _flts[FilterCount];
   float _pan, _lvlAmt, _panAmt, _lvl;
 public:
   AmpDSP() = default;

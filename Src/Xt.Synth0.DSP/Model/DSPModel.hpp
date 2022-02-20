@@ -33,8 +33,10 @@ struct AudioOutput
 { 
   float l;
   float r;
-  AudioOutput& operator+=(AudioOutput const& rhs)
-  { l += rhs.l; r += rhs.r; return *this; }
+  void Clear() { l = r = 0.0f; }
+  AudioOutput operator*(float s) const { return { l * s, r * s }; }
+  AudioOutput operator*(AudioOutput s) const { return { l * s.l, r * s.r }; }
+  AudioOutput& operator+=(AudioOutput const& rhs) { l += rhs.l; r += rhs.r; return *this; }
 };
 
 struct AudioState

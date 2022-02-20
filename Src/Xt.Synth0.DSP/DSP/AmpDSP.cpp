@@ -4,47 +4,39 @@ namespace Xts {
 
 AmpDSP::
 AmpDSP(AmpModel const* model, float velo):
-_amp(0.0f), _output(), _model(model),
-_flt1(Level(model->flt1)),
-_flt2(Level(model->flt2)),
-_flt3(Level(model->flt3)),
-_unit1(Level(model->unit1)),
-_unit2(Level(model->unit2)),
-_unit3(Level(model->unit3)),
+_amp(0.0f), 
+_output(), 
+_model(model), 
+_units(), _flts(),
 _pan(Mix(model->pan)),
 _lvlAmt(Mix(model->lvlAmt)),
 _panAmt(Mix(model->panAmt)),
-_lvl(Level(model->lvl) * velo) {}
+_lvl(Level(model->lvl) * velo) 
+{
+  _flts[0] = Level(model->flt1);
+  _flts[1] = Level(model->flt2);
+  _flts[2] = Level(model->flt3);
+  _units[0] = Level(model->unit1);
+  _units[1] = Level(model->unit2);
+  _units[2] = Level(model->unit3);
+}
 
 AudioOutput
 AmpDSP::Next(CvState const& cv, AudioState const& audio)
 {
-  _output.l = 0.0f;
-  _output.r = 0.0f;
+  _output.Clear();    
 
   CvOutput lvlLfo = cv.lfos[static_cast<int>(_model->lvlSrc)];
   float lvl = Modulate(_lvl, false, _lvlAmt, lvlLfo);
   int envSrc = static_cast<int>(_model->envSrc);
   _amp = cv.envs[static_cast<int>(_model->envSrc)].val * lvl;
-
-  CvOutput mod = ModulationInput(cv, _model->panSrc);
-  float pan = BiToUni1(Modulate(_pan, true, _panAmt, mod));
-  float l = (1.0f - pan) * _amp;
-  float r = pan * _amp;
-
-  _output.l += _flt1 * l * audio.filts[0].l;
-  _output.r += _flt1 * r * audio.filts[0].r;
-  _output.l += _flt2 * l * audio.filts[1].l;
-  _output.r += _flt2 * r * audio.filts[1].r;
-  _output.l += _flt3 * l * audio.filts[2].l;
-  _output.r += _flt3 * r * audio.filts[2].r;
-  _output.l += _unit1 * l * audio.units[0].l;
-  _output.r += _unit1 * r * audio.units[0].r;
-  _output.l += _unit2 * l * audio.units[1].l;
-  _output.r += _unit2 * r * audio.units[1].r;
-  _output.l += _unit3 * l * audio.units[2].l;
-  _output.r += _unit3 * r * audio.units[2].r;
   
+  CvOutput mod = ModulationInput(cv, _model->panSrc);
+  float panMix = BiToUni1(Modulate(_pan, true, _panAmt, mod));
+  AudioOutput pan = { (1.0f - panMix) * _amp, panMix * _amp };
+
+  for (int i = 0; i < UnitCount; i++) _output += audio.units[i] * pan * _units[i];
+  for(int i = 0; i < FilterCount; i++) _output += audio.filts[i] * pan * _flts[i];  
   return Output();
 }
 
