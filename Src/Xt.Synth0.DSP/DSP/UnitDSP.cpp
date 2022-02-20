@@ -220,12 +220,15 @@ void
 UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input, PlotOutput& output)
 {
   const int cycles = 5;
+
   if (!model.on) return;
   output.max = 1.0f;
   output.min = -1.0f;
   output.stereo = false;
   output.freq = Freq(model, 4, UnitNote::C);
-  output.rate = input.spec? input.rate: output.freq * input.pixels / cycles;
+  float idealRate = output.freq * input.pixels / cycles;
+  float cappedRate = std::min(input.rate, idealRate);
+  output.rate = input.spec? input.rate: cappedRate;
 
   CvDSP cvDsp(&cv, 1.0f, input.bpm, output.rate);
   UnitDSP dsp(&model, 4, UnitNote::C, output.rate);
@@ -247,7 +250,8 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
 	  output.hSplits->emplace_back(pos, std::to_wstring(i) + UnicodePi);
   }
   assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
-  assert(input.spec || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
+  assert(input.spec || idealRate <= cappedRate || (fsamples - 1) * idealRate / cappedRate == input.pixels);
+  assert(input.spec || idealRate > cappedRate || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
 }
 
 } // namespace Xts
