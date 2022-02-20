@@ -223,10 +223,10 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
   const int cycles = 5;
   if (!model.on) return;
   float freq = Freq(model, 4, UnitNote::C);
-  CvDSP cvDsp(&cv, 1.0f, input.bpm, output.rate);
-  UnitDSP dsp(&model, 4, UnitNote::C, output.rate);
-  //auto next = [] () { return dsp.Next(cvDsp.Next()).Mono(); };
-  //PlotDSP::RenderCycled(cycles, true, freq, input, output, next);
+  PlotDSP::RenderCycled(cycles, true, freq, input, output, 
+    [](CvDSP& cv, UnitDSP& unit) { return unit.Next(cv.Next()).Mono(); },
+    [&](float rate) { return CvDSP(&cv, 1.0f, input.bpm, rate); },
+    [&](float rate) { return UnitDSP(&model, 4, UnitNote::C, rate); });
 }
 
 } // namespace Xts
