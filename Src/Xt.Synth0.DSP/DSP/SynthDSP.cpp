@@ -12,14 +12,18 @@ _audio(&model->audio, oct, note, rate) {}
 void
 SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, PlotInput const& input, PlotOutput& output)
 {
-  auto next = [](SynthDSP& dsp) { dsp.Next(); };
   auto end = [](SynthDSP const& dsp) { return dsp.End(); };
   auto release = [](SynthDSP& dsp) { return dsp.Release(); };
-  auto value = [](SynthDSP const& dsp) { return dsp.Output(); };
   auto envOutput = [](SynthDSP const& dsp) { return dsp._cv.EnvOutput(dsp._amp.Env()); };
   auto factory = [&](float rate) { return SynthDSP(&model, 4, UnitNote::C, 1.0f, input.bpm, rate); };
-  PlotDSP::RenderStaged(true, true, envModel, input, output, factory, next, value, envOutput, release, end);
+  auto next = [](SynthDSP& dsp, PlotOutput& output) 
+  { 
+    dsp.Next(); 
+    output.lSamples->push_back(dsp.Output().l); 
+    output.rSamples->push_back(dsp.Output().r); 
+  };
 
+  PlotDSP::RenderStaged(true, true, envModel, input, output, factory, next, envOutput, release, end);
   output.vSplits->clear();
   output.vSplits->emplace_back(-0.5f, L"L");
   output.vSplits->emplace_back(0.5f, L"R");

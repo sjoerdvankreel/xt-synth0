@@ -147,13 +147,12 @@ void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
   if(!model.on) return;
-  auto next = [](EnvDSP& dsp) { dsp.Next(); };
   auto end = [](EnvDSP const& dsp) { return dsp.End(); };
   auto release = [](EnvDSP& dsp) { return dsp.Release(); };
   auto envOutput = [](EnvDSP const& dsp) { return dsp.Output(); };
-  auto value = [](EnvDSP const& dsp) { return dsp.Output().val; };
   auto factory = [&](float rate) { return EnvDSP(&model, input.bpm, rate); };
-  PlotDSP::RenderStaged(false, false, model, input, output, factory, next, value, envOutput, release, end);
+  auto next = [](EnvDSP& dsp, PlotOutput& output) { output.lSamples->push_back(dsp.Next().val); };
+  PlotDSP::RenderStaged(false, false, model, input, output, factory, next, envOutput, release, end);
 }
 
 } // namespace Xts

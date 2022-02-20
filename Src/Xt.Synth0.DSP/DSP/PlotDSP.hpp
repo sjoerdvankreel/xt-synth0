@@ -16,11 +16,11 @@ public:
     PlotInput const& input, PlotOutput& output, 
     Factory factory, Next next);
 
-  template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
+  template <class Factory, class Next, class EnvOutput, class Release, class End>
   static void RenderStaged(
     bool bipolar, bool stereo,
     EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
-    Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end);
+    Factory factory, Next next, EnvOutput envOutput, Release release, End end);
 
   static void Render(SynthModel const& model, PlotInput& input, PlotOutput& output);
 };
@@ -52,17 +52,17 @@ void PlotDSP::RenderCycled(
     output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
 }
 
-template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
+template <class Factory, class Next, class EnvOutput, class Release, class End>
 void PlotDSP::RenderStaged(
   bool bipolar, bool stereo, 
   EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
-  Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end)
+  Factory factory, Next next, EnvOutput envOutput, Release release, End end)
 {
-  output.min = 0.0f;
   output.max = 1.0f;
   output.stereo = stereo;
   output.rate = input.rate;
-  *output.vSplits = UniVSPlits;
+  output.min = bipolar ? -1.0f : 0.0f;
+  *output.vSplits = bipolar ? BiVSPlits : UniVSPlits;
   float hold = TimeF(input.hold, input.rate);
   float releaseSamples = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
   output.rate = input.spec ? input.rate : input.rate * input.pixels / (hold + releaseSamples);
@@ -75,13 +75,11 @@ void PlotDSP::RenderStaged(
   {
     if (h++ == static_cast<int>(hold))
       output.hSplits->emplace_back(i, FormatEnv(release(state).stage));
-    next(state);
-    output.lSamples->push_back(value(state));
+    next(state, output);
     if (i == 0 || envOutput(state).staged)
       output.hSplits->emplace_back(i, FormatEnv(envOutput(state).stage));
     i++;
   }
-  output.lSamples->push_back(0.0f);
 }
 
 } // namespace Xts
