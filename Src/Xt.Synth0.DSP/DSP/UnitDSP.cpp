@@ -242,10 +242,6 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
   output.hSplits->emplace_back(samples, L"");
   for(int i = 0; i < cycles * 2; i++)
 	  output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
-
-  assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
-  assert(input.spec || idealRate <= cappedRate || (fsamples - 1) * idealRate / cappedRate == input.pixels);
-  assert(input.spec || idealRate > cappedRate || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
 }
 
 } // namespace Xts

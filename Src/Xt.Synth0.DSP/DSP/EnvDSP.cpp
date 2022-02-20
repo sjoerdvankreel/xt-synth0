@@ -168,6 +168,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
       output.hSplits->emplace_back(i, FormatEnv(dsp.Output().stage));
     i++;
   }
+  output.lSamples->push_back(0.0f);
 }
 
 } // namespace Xts

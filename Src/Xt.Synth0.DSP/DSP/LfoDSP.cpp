@@ -75,10 +75,6 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 	output.hSplits->emplace_back(samples, L"");
 	output.hSplits->emplace_back(samples / 2, std::wstring(1, UnicodePi));
 	*output.vSplits = IsBipolar(model.plty)? BiVSPlits: UniVSPlits;
-
-  assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
-  assert(input.spec || idealRate <= cappedRate || (fsamples - 1) * idealRate / cappedRate == input.pixels);
-  assert(input.spec || idealRate > cappedRate || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
 }
 
 } // namespace Xts
