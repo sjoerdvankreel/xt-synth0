@@ -158,7 +158,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   int h = 0;
   int i = 0;
   EnvDSP dsp(&model, input.bpm, output.rate);
-  while(dsp.Output().stage != EnvStage::End)
+  while(!dsp.End())
   {
     if(h++ == static_cast<int>(hold)) 
       output.hSplits->emplace_back(i, FormatEnv(dsp.Release().stage));

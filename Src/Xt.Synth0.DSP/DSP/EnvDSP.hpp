@@ -36,6 +36,7 @@ public:
   EnvOutput Next();
   EnvOutput Release();
   EnvOutput Output() const;
+  bool End() const { return _output.stage == EnvStage::End; }
   static void Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output);
 };
 
