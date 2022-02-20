@@ -153,7 +153,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   auto envOutput = [](EnvDSP const& dsp) { return dsp.Output(); };
   auto value = [](EnvDSP const& dsp) { return dsp.Output().val; };
   auto factory = [&](float rate) { return EnvDSP(&model, input.bpm, rate); };
-  PlotDSP::RenderStaged(false, model, input, output, factory, next, value, envOutput, release, end);
+  PlotDSP::RenderStaged(false, false, model, input, output, factory, next, value, envOutput, release, end);
 }
 
 } // namespace Xts

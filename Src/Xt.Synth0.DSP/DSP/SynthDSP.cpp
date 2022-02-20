@@ -1,4 +1,5 @@
 #include "SynthDSP.hpp"
+#include "PlotDSP.hpp"
 
 namespace Xts {
 
@@ -9,33 +10,17 @@ _amp(&model->amp, velo),
 _audio(&model->audio, oct, note, rate) {}
 
 void
-SynthDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, PlotInput const& input, PlotOutput& output)
 {
-  int i = 0;
-  int h = 0;
-  float plotRate = input.spec ? input.rate : 5000;
-  int hold = TimeI(input.hold, plotRate);
-  int maxSamples = static_cast<int>(input.spec ? input.rate : 5 * plotRate);
-  
-  output.max = 1.0f;
-  output.min = -1.0f;
-  output.stereo = true;
-  output.rate = plotRate;
-  SynthDSP dsp(&model, 4, UnitNote::C, 1.0f, input.bpm, plotRate);
-  while (i++ < maxSamples)
-  {
-    if (h++ == hold) dsp.Release();
-    if (dsp.End()) break;
-    dsp.Next();
-    auto audio = dsp.Output();
-    output.clip |= Clip(audio.l);
-    output.clip |= Clip(audio.r);
-    output.lSamples->push_back(audio.l);
-    output.rSamples->push_back(audio.r);
-  }
+  auto next = [](SynthDSP& dsp) { dsp.Next(); };
+  auto end = [](SynthDSP const& dsp) { return dsp.End(); };
+  auto release = [](SynthDSP& dsp) { return dsp.Release(); };
+  auto value = [](SynthDSP const& dsp) { return dsp.Output(); };
+  auto envOutput = [](SynthDSP const& dsp) { return dsp._cv.EnvOutput(dsp._amp.Env()); };
+  auto factory = [&](float rate) { return SynthDSP(&model, 4, UnitNote::C, 1.0f, input.bpm, rate); };
+  PlotDSP::RenderStaged(true, true, envModel, input, output, factory, next, value, envOutput, release, end);
 
-  output.hSplits->emplace_back(0, L"");
-  output.hSplits->emplace_back(i - 1, L"");
+  output.vSplits->clear();
   output.vSplits->emplace_back(-0.5f, L"L");
   output.vSplits->emplace_back(0.5f, L"R");
   output.vSplits->emplace_back(0.0f, L"-+");

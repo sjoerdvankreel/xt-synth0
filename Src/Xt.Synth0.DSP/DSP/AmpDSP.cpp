@@ -52,7 +52,7 @@ AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel,
   auto end = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).End(std::get<AmpDSP>(state).Env()); };
   auto release = [](std::tuple<CvDSP, AmpDSP>& state) { return std::get<CvDSP>(state).ReleaseAll(std::get<AmpDSP>(state).Env()); };
   auto envOutput = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).EnvOutput(std::get<AmpDSP>(state).Env()); };
-  return PlotDSP::RenderStaged(false, envModel, input, output, factory, next, value, envOutput, release, end);
+  return PlotDSP::RenderStaged(false, false, envModel, input, output, factory, next, value, envOutput, release, end);
 }
 
 } // namespace Xts

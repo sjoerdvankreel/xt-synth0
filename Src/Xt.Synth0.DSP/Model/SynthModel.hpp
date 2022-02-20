@@ -118,6 +118,7 @@ struct XTS_ALIGN AmpModel
 {
   friend class AmpDSP;
   friend class PlotDSP;
+  friend class SynthDSP;
   AmpModel() = default;
   AmpModel(AmpModel const&) = delete;
 private:
@@ -135,6 +136,7 @@ struct XTS_ALIGN CvModel
   friend class CvDSP;
   friend class AmpDSP;
   friend class PlotDSP;
+  friend class SynthDSP;
   CvModel() = default;
   CvModel(CvModel const&) = delete;
 private:

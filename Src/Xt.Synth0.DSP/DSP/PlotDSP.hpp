@@ -18,8 +18,8 @@ public:
 
   template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
   static void RenderStaged(
-    bool stereo, EnvModel const& envModel,
-    PlotInput const& input, PlotOutput& output,
+    bool bipolar, bool stereo,
+    EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
     Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end);
 
   static void Render(SynthModel const& model, PlotInput& input, PlotOutput& output);
@@ -54,8 +54,8 @@ void PlotDSP::RenderCycled(
 
 template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
 void PlotDSP::RenderStaged(
-  bool stereo, EnvModel const& envModel,
-  PlotInput const& input, PlotOutput& output,
+  bool bipolar, bool stereo, 
+  EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
   Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end)
 {
   output.min = 0.0f;
