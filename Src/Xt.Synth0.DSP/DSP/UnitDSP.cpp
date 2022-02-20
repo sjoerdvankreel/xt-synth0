@@ -236,19 +236,13 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
   float fsamples = input.spec ? input.rate : regular;
   int samples = static_cast<int>(std::ceilf(fsamples));
   for (int i = 0; i < samples; i++)
-  {
-    cvDsp.Next();
-    dsp.Next(cvDsp.Output());
-	  output.lSamples->push_back(dsp.Output().l + dsp.Output().r);
-  }
+	  output.lSamples->push_back(dsp.Next(cvDsp.Next()).Mono());
 
   *output.vSplits = BiVSPlits;
   output.hSplits->emplace_back(samples, L"");
   for(int i = 0; i < cycles * 2; i++)
-  {
-    int pos = samples * i / (cycles * 2);
-	  output.hSplits->emplace_back(pos, std::to_wstring(i) + UnicodePi);
-  }
+	  output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
+
   assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
   assert(input.spec || idealRate <= cappedRate || (fsamples - 1) * idealRate / cappedRate == input.pixels);
   assert(input.spec || idealRate > cappedRate || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);

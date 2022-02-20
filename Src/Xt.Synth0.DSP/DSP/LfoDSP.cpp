@@ -61,24 +61,25 @@ LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
   output.stereo = false;
 	output.freq = Freq(model, input.bpm, input.rate);
 	output.min = IsBipolar(model.plty) ? -1.0f : 0.0f;
-	output.rate = input.spec ? input.rate : output.freq * input.pixels;
+  float idealRate = output.freq * input.pixels;
+  float cappedRate = std::min(input.rate, idealRate);
+  output.rate = input.spec ? input.rate : cappedRate;
 
 	LfoDSP dsp(&model, input.bpm, output.rate);
 	float fsamples = input.spec ? output.rate : output.rate / output.freq + 1;
 	int samples = static_cast<int>(std::ceilf(fsamples));
 	for (int i = 0; i < samples; i++)
-	{
-		dsp.Next();
-		output.lSamples->push_back(dsp.Output().val);
-	}
+		output.lSamples->push_back(dsp.Next().val);
 
 	output.hSplits->emplace_back(0, L"0");
 	output.hSplits->emplace_back(samples, L"");
 	output.hSplits->emplace_back(samples / 2, std::wstring(1, UnicodePi));
 	if (IsBipolar(model.plty)) *output.vSplits = BiVSPlits;
 	else *output.vSplits = UniVSPlits;
+
   assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
-  assert(input.spec || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
+  assert(input.spec || idealRate <= cappedRate || (fsamples - 1) * idealRate / cappedRate == input.pixels);
+  assert(input.spec || idealRate > cappedRate || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);
 }
 
 } // namespace Xts
