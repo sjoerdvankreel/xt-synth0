@@ -156,11 +156,12 @@ namespace Xt.Synth0.UI
             Args.Pixels = w;
             RequestPlotData?.Invoke(null, Args);
             container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : Off;
-            string header = $"{plot.Name} @ {Args.SampleRate.ToString("N1")}Hz";
-            header += $"{Environment.NewLine}{Args.LSamples.Count} samples";
+            string header = $"{plot.Name}";
+            header += Args.Freq == 0.0f ? " @ " : " ";
+            header += $"{Args.LSamples.Count} samples";
             if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
             if (Args.Clip) header += " (Clip)";
-            text.Text = Args.LSamples.Count > 0 ? header : $"{plot.Name}{Environment.NewLine}No data";
+            text.Text = header;
         }
 
         static UIElement Plot(int w, double h, float min, float max)
