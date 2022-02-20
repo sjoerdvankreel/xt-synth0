@@ -157,7 +157,6 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 
   int h = 0;
   int i = 0;
-  EnvStage stg = EnvStage::Dly;
   EnvDSP dsp(&model, input.bpm, output.rate);
   while(dsp.Output().stage != EnvStage::End)
   {
