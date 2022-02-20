@@ -219,7 +219,7 @@ UnitDSP::GenerateAdd(float phase, float freq, ModInput const& mod) const
 void
 UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input, PlotOutput& output)
 {
-  const float cycles = 3.0f;
+  const int cycles = 5;
   if (!model.on) return;
   output.max = 1.0f;
   output.min = -1.0f;
@@ -241,8 +241,11 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
 
   *output.vSplits = BiVSPlits;
   output.hSplits->emplace_back(samples, L"");
-  for(int i = 0; i < 6; i++)
-	  output.hSplits->emplace_back(samples * i / 6, std::to_wstring(i) + L"\u03C0");
+  for(int i = 0; i < cycles * 2; i++)
+  {
+    int pos = samples * i / (cycles * 2);
+	  output.hSplits->emplace_back(pos, std::to_wstring(i) + L"\u03C0");
+  }
 }
 
 } // namespace Xts
