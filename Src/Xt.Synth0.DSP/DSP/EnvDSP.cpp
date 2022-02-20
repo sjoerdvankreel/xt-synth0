@@ -149,6 +149,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   output.max = 1.0f;
   output.stereo = false;
   output.rate = input.rate;
+  *output.vSplits = UniVSPlits;
   float hold = TimeF(input.hold, input.rate);
   float release = model.sync ? SyncF(input.bpm, input.rate, model.rStp) : TimeF(model.r, input.rate);
   output.rate = input.spec? input.rate: input.rate * input.pixels / (hold + release);
@@ -167,44 +168,6 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
       output.hSplits->emplace_back(i, FormatEnv(dsp.Output().stage));
     i++;
   }
-
-  /*
-  int i = 0;
-  int h = 0;
-  bool firstMarker = true;
-  auto prev = EnvStage::Dly;
-  const float testRate = input.spec? input.rate: 1000.0f;
-
-  if (!model.on) return;
-  bool dahdsr = model.type == EnvType::DAHDSR;
-  auto params = Params(model, input.bpm, testRate);
-  int hold = TimeI(input.hold, testRate);
-  int fixed = params.dly + params.a + params.hld + params.d;
-  int release = dahdsr ? hold : std::min(hold, fixed);
-  
-  output.min = 0.0;
-  output.max = 1.0;
-  output.stereo = false;
-  output.rate = input.spec? input.rate: input.pixels * testRate / (release + params.r);
-  hold = static_cast<int>(hold * output.rate / testRate);
-  EnvDSP dsp(&model, input.bpm, output.rate);
-  while(true)
-  {
-    if(h++ == hold) dsp.Release();
-    if(dsp.End()) break;
-    dsp.Next();
-    output.lSamples->push_back(dsp.Output().val);
-    if((firstMarker || prev != dsp._output.stage) && !dsp.End())
-    {
-      firstMarker = false;
-      output.hSplits->emplace_back(i, FormatEnv(dsp._output.stage));
-    }
-    prev = dsp._output.stage;
-    i++;
-  }
-  *output.vSplits = UniVSPlits;
-  output.hSplits->emplace_back(i - 1, L"");
-  */
 }
 
 } // namespace Xts
