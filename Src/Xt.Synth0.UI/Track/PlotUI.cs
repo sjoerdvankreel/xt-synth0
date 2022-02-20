@@ -123,18 +123,6 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement PlotBar(Point p, double h, double stroke)
-        {
-            var result = new Line();
-            result.X1 = p.X;
-            result.X2 = p.X;
-            result.Y2 = p.Y;
-            result.Y1 = h + VPadText - PadBottom;
-            result.StrokeThickness = stroke;
-            PlotProperties(result);
-            return result;
-        }
-
         static UIElement Split(double x1, double x2, double y1, double y2)
         {
             var result = new Line();
@@ -145,6 +133,18 @@ namespace Xt.Synth0.UI
             result.Opacity = 0.5f;
             result.StrokeDashArray = new DoubleCollection(new[] { 4.0, 2.0 });
             result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground2Key);
+            return result;
+        }
+
+        static UIElement PlotBar(Point p, double h, double stroke, double @base, double scale)
+        {
+            var result = new Line();
+            result.X1 = p.X;
+            result.X2 = p.X;
+            result.Y2 = p.Y;
+            result.Y1 = (h - PadBottom) * scale + VPadText;
+            result.StrokeThickness = stroke;
+            PlotProperties(result);
             return result;
         }
 
@@ -169,14 +169,9 @@ namespace Xt.Synth0.UI
             var result = new Canvas();
             double hPad = h - PadBottom;
             var data = MakePlotData(w, h, min, max);
-            if (!Args.Spectrum)
-            {
-                result.Add(PlotLine(data.l));
-                if (Args.Stereo) result.Add(PlotLine(data.r));
-            }
-            else
-                for (int i = 0; i < data.l.Count; i++)
-                    result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count));
+            result.VerticalAlignment = VerticalAlignment.Stretch;
+            result.HorizontalAlignment = HorizontalAlignment.Stretch;
+
             for (int i = 0; i < Args.VSplitVals.Count; i++)
             {
                 double pos = (Args.VSplitVals[i] - min) / (max - min);
@@ -184,6 +179,7 @@ namespace Xt.Synth0.UI
                 result.Add(Split(PadLeft, w, y, y));
                 result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i].PadLeft(2)));
             }
+
             for (int i = 0; i < Args.HSplitVals.Count; i++)
             {
                 double pos = Args.HSplitVals[i] / (Args.LSamples.Count - 1.0);
@@ -191,8 +187,23 @@ namespace Xt.Synth0.UI
                 result.Add(Split(l, l, VPadText, VPadText + h - PadBottom));
                 result.Add(Marker(l - HPadText, h - PadBottom + VPadText, Args.HSplitMarkers[i]));
             }
-            result.VerticalAlignment = VerticalAlignment.Stretch;
-            result.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            if (!Args.Spectrum)
+            {
+                result.Add(PlotLine(data.l));
+                if (Args.Stereo) result.Add(PlotLine(data.r));
+            }
+            else
+                for (int i = 0; i < data.l.Count; i++)
+                {
+                    if (!Args.Stereo)
+                        result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, 0.0, 1.0));
+                    else
+                    {
+                        result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, 0.5, 0.5));
+                        //result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count, 0.5, 0.5));
+                    }
+                }
             return result;
         }
     }
