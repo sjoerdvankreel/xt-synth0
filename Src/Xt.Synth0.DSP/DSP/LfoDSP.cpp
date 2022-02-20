@@ -36,7 +36,7 @@ float
 LfoDSP::Freq(LfoModel const& model, float bpm, float rate)
 {
 	if (model.sync) return rate / SyncF(bpm, rate, model.step);
-	return rate / TimeF(model.rate, rate);
+	return rate / TimeF(model.prd, rate);
 }
 
 float
