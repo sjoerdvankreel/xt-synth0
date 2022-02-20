@@ -10,19 +10,26 @@ namespace Xts {
 class PlotDSP
 {
 public:
-  static void Render(SynthModel const& model, PlotInput& input, PlotOutput& output);
-  template <class StateFactory, class Next> 
+  template <class Factory, class Next>
   static void RenderCycled(
     int cycles, bool bipolar, float freq,
     PlotInput const& input, PlotOutput& output, 
-    StateFactory factory, Next next);
+    Factory factory, Next next);
+
+  template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
+  static void RenderStaged(
+    EnvModel const& envModel,
+    PlotInput const& input, PlotOutput& output,
+    Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end);
+
+  static void Render(SynthModel const& model, PlotInput& input, PlotOutput& output);
 };
 
-template <class StateFactory, class Next>
+template <class Factory, class Next>
 void PlotDSP::RenderCycled(
   int cycles, bool bipolar, float freq,
   PlotInput const& input, PlotOutput& output,
-  StateFactory factory, Next next)
+  Factory factory, Next next)
 {
   output.max = 1.0f;
   output.freq = freq;
@@ -43,6 +50,38 @@ void PlotDSP::RenderCycled(
   output.hSplits->emplace_back(samples, L"");
   for (int i = 0; i < cycles * 2; i++)
     output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
+}
+
+template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
+void PlotDSP::RenderStaged(
+  EnvModel const& envModel,
+  PlotInput const& input, PlotOutput& output,
+  Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end)
+{
+  output.min = 0.0f;
+  output.max = 1.0f;
+  output.stereo = false;
+  output.rate = input.rate;
+  *output.vSplits = UniVSPlits;
+  float hold = TimeF(input.hold, input.rate);
+  float release = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
+  output.rate = input.spec ? input.rate : input.rate * input.pixels / (hold + release);
+  hold *= output.rate / input.rate;
+
+  int h = 0;
+  int i = 0;
+  auto state = factory(output.rate);
+  while (!end(state))
+  {
+    if (h++ == static_cast<int>(hold))
+      output.hSplits->emplace_back(i, FormatEnv(release(state).staged));
+    next(state);
+    output.lSamples->push_back(value(state));
+    if (i == 0 || envOutput(state).staged)
+      output.hSplits->emplace_back(i, FormatEnv(envOutput(state).stage));
+    i++;
+  }
+  output.lSamples->push_back(0.0f);
 }
 
 } // namespace Xts
