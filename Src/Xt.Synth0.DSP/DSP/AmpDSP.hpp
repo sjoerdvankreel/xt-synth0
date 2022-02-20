@@ -21,17 +21,11 @@ public:
   AmpDSP() = default;
   AmpDSP(AmpModel const* model, float velo);
 public:
-  AudioOutput Output() const;
-  bool End(CvDSP const& cv) const;
+  AudioOutput Output() const { return _output; };
   AudioOutput Next(CvState const& cv, AudioState const& audio);
-public:
+  bool End(CvDSP const& cv) const { return cv.End(static_cast<int>(_model->envSrc)); };
   static void Plot(AmpModel const& model, CvModel const& cv, AudioModel const& audio, PlotInput const& input, PlotOutput& output);
 };
-
-inline AudioOutput AmpDSP::Output() const 
-{ return _output; }
-inline bool AmpDSP::End(CvDSP const& cv) const 
-{ return cv.End(static_cast<int>(_model->envSrc)); }
 
 } // namespace Xts
 #endif // XTS_AMP_DSP_HPP

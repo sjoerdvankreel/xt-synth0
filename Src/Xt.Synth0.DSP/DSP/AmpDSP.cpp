@@ -13,8 +13,10 @@ _lvlAmt(Mix(model->lvlAmt)),
 _panAmt(Mix(model->panAmt)),
 _lvl(Level(model->lvl) * velo) 
 {
-  for(int i = 0; i < UnitCount; i++) _units[i] = Level(model->units[i]);
-  for(int i = 0; i < FilterCount; i++) _flts[i] = Level(model->flts[i]);
+  for(int i = 0; i < UnitCount; i++) 
+    _units[i] = Level(model->units[i]);
+  for(int i = 0; i < FilterCount; i++) 
+    _flts[i] = Level(model->flts[i]);
 }
 
 AudioOutput
@@ -31,8 +33,11 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   float panMix = BiToUni1(Modulate(_pan, true, _panAmt, mod));
   AudioOutput pan = { (1.0f - panMix) * _amp, panMix * _amp };
 
-  for (int i = 0; i < UnitCount; i++) _output += audio.units[i] * pan * _units[i];
-  for (int i = 0; i < FilterCount; i++) _output += audio.filts[i] * pan * _flts[i];  
+  for (int i = 0; i < UnitCount; i++) 
+    _output += audio.units[i] * pan * _units[i];
+  for (int i = 0; i < FilterCount; i++) 
+    _output += audio.filts[i] * pan * _flts[i];  
+
   return Output();
 }
 

@@ -14,13 +14,13 @@ class CvDSP
   LfoDSP _lfos[LfoCount];
   EnvDSP _envs[EnvCount];
 public:
+  CvDSP() = default;
+  CvDSP(CvModel const* model, float velo, float bpm, float rate);
+public:
   void Release();
   CvState const& Next();
   CvState const& Output() const { return _output; };
   bool End(int env) const { return _envs[env].End(); }
-public:
-  CvDSP() = default;
-  CvDSP(CvModel const* model, float velo, float bpm, float rate);
 };
 
 } // namespace Xts

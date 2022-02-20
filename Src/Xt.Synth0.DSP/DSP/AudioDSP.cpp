@@ -5,11 +5,8 @@ namespace Xts {
 AudioState const&
 AudioDSP::Next(CvState const& cv)
 {
-  for (int u = 0; u < UnitCount; u++)
-  {
-    _units[u].Next(cv);
-    _output.units[u] = _units[u].Output();
-  }
+  for (int i = 0; i < UnitCount; i++) 
+    _output.units[i] = _units[i].Next(cv);
   return Output();
 }
 
@@ -17,8 +14,8 @@ AudioDSP::
 AudioDSP(AudioModel const* model, int oct, UnitNote note, float rate):
 _output(), _units()
 {
-  for (int u = 0; u < UnitCount; u++)
-    _units[u] = UnitDSP(&model->units[u], oct, note, rate);
+  for (int i = 0; i < UnitCount; i++) 
+    _units[i] = UnitDSP(&model->units[i], oct, note, rate);
 }
 
 } // namespace Xts
