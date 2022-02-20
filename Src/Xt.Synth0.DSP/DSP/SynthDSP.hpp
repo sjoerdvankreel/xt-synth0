@@ -21,9 +21,9 @@ public:
   void Release() { _cv.Release(); }
   bool End() const { return _amp.End(_cv); }
   AudioOutput Output() const { return _amp.Output(); }
+  static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
   AudioOutput Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };
   AudioOutput Next() { _cv.Next(); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
-  static void Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

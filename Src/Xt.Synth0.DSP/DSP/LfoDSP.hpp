@@ -12,12 +12,12 @@ class LfoDSP
   CvOutput _output;
   LfoModel const* _model;
   float _incr, _base, _factor;
-private:
-  float Generate() const;
-  static float Freq(LfoModel const& model, float bpm, float rate);
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, float bpm, float rate);
+private:
+  float Generate() const;
+  static float Freq(LfoModel const& model, float bpm, float rate);
 public:
   CvOutput Next();
   CvOutput Output() const { return _output; }

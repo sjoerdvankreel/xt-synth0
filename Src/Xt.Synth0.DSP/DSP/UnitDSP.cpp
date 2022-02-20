@@ -99,8 +99,7 @@ UnitDSP::ModFreq(ModInput const& mod) const
 AudioOutput
 UnitDSP::Next(CvState const& cv)
 {
-  _output.l = 0.0f;
-  _output.r = 0.0f;
+  _output.Clear();
   if (!_model->on) return Output();
   ModInput mod = ModulationInput(cv, _model->src1, _model->src2);
   float freq = ModFreq(mod);
