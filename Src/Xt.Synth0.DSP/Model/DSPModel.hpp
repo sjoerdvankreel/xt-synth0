@@ -9,6 +9,12 @@
 
 namespace Xts {
 
+inline constexpr wchar_t UnicodePi = L'\u03C0';
+inline constexpr wchar_t UnicodeOneHalf = L'\u00BD';
+inline constexpr wchar_t UnicodeOneEight = L'\u215B';
+inline constexpr wchar_t UnicodeOneQuarter = L'\u00BC';
+inline constexpr wchar_t UnicodeThreeQuarter = L'\u00BE';
+
 enum class EnvStage { Dly, A, Hld, D, S, R, End };
 struct CvOutput { bool bip; float val; };
 struct EnvOutput { float val; EnvStage stage; };

@@ -28,3 +28,4 @@ observe plot hold for everything
 lfo rate -> hz
 remove plot info
 plot rate not over audio rate
+time/freq params with maximum

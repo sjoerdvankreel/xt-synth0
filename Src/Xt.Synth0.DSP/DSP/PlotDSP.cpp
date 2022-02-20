@@ -61,9 +61,9 @@ Spectrum(
     float split = 1.0f - 1.0f / (1 << i);
     std::wstring marker = L"";
     if(i == 0) marker = L"1";
-    if(i == 1) marker = L"\u00BD";
-    if(i == 2) marker = L"\u00BC";
-    if(i == 3) marker = L"\u215B";
+    if(i == 1) marker = std::wstring(1, UnicodeOneHalf);
+    if(i == 2) marker = std::wstring(1, UnicodeOneQuarter);
+    if(i == 3) marker = std::wstring(1, UnicodeOneEight);
     vSplits.emplace_back(VSplit(split, marker));
   }
   vSplits.emplace_back(VSplit(1.0f, L"0"));

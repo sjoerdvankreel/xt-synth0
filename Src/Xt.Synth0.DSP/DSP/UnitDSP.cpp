@@ -244,7 +244,7 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input,
   for(int i = 0; i < cycles * 2; i++)
   {
     int pos = samples * i / (cycles * 2);
-	  output.hSplits->emplace_back(pos, std::to_wstring(i) + L"\u03C0");
+	  output.hSplits->emplace_back(pos, std::to_wstring(i) + UnicodePi);
   }
   assert(!input.spec || output.lSamples->size() == static_cast<size_t>(input.rate));
   assert(input.spec || output.lSamples->size() == static_cast<size_t>(input.pixels) + 1);

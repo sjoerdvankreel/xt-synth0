@@ -4,17 +4,17 @@ namespace Xts {
 
 std::vector<VSplit> BiVSPlits = { 
   { -1.0f, L"+1" }, 
-  { -0.5f, L"\u00BD" }, 
+  { -0.5f, std::wstring(1, UnicodeOneHalf) },
   { 0.0f, L"0" }, 
-  { 0.5f, L"-\u00BD" }, 
+  { 0.5f, L"-" + std::wstring(1, UnicodeOneHalf) },
   { 1.0f, L"-1" } 
 };
 
 std::vector<VSplit> UniVSPlits = { 
   { 0.0f, L"1" }, 
-  { 0.25f, L"\u00BE" }, 
-  { 0.5f, L"\u00BD" }, 
-  { 0.75f, L"\u00BC" }, 
+  { 0.25f, std::wstring(1, UnicodeThreeQuarter) },
+  { 0.5f, std::wstring(1, UnicodeOneHalf) },
+  { 0.75f, std::wstring(1, UnicodeOneQuarter) },
   { 1.0f, L"0" } 
 };
 
