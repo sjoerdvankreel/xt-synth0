@@ -15,17 +15,20 @@ _params(Params(*model, bpm, rate)), _model(model),
 _slp(0.0), _lin(0.0), _log(0.0)
 {
   _output.val = 0.0f;
+  _output.staged = false;
   _output.stage = EnvStage::Dly;
   NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
   CycleStage(model->type);
 }
 
-void
+EnvOutput
 EnvDSP::Release()
 {
-  if (_model->on && _output.stage >= EnvStage::R) return;
+  if (_model->on && _output.stage >= EnvStage::R) 
+    return Output();
   NextStage(!_model->on ? EnvStage::End : EnvStage::R);
   CycleStage(_model->type);
+  return Output();
 }
 
 EnvOutput
@@ -40,6 +43,7 @@ EnvOutput
 EnvDSP::Next()
 {
   _output.val = 0.0f;
+  _output.staged = false;
   const float threshold = 1.0E-5f;
   if (!_model->on || _output.stage == EnvStage::End) return Output();
   _output.val = Generate();
@@ -121,6 +125,7 @@ EnvDSP::NextStage(EnvStage stage)
   SlopeType type;
   _pos = 0;
   _output.stage = stage;
+  _output.staged = true;
   switch (stage)
   {
   case EnvStage::A: len = _params.a; type = _model->aSlp; break;
@@ -140,6 +145,30 @@ EnvDSP::NextStage(EnvStage stage)
 void
 EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
 {
+  output.min = 0.0f;
+  output.max = 1.0f;
+  output.stereo = false;
+  output.rate = input.rate;
+  float hold = TimeF(input.hold, input.rate);
+  float release = model.sync ? SyncF(input.bpm, input.rate, model.rStp) : TimeF(model.r, input.rate);
+  output.rate = input.spec? input.rate: input.rate * input.pixels / (hold + release);
+  hold *= output.rate / input.rate;
+
+  int h = 0;
+  int i = 0;
+  EnvStage stg = EnvStage::Dly;
+  EnvDSP dsp(&model, input.bpm, output.rate);
+  while(dsp.Output().stage != EnvStage::End)
+  {
+    if(h++ == static_cast<int>(hold)) 
+      output.hSplits->emplace_back(i, FormatEnv(dsp.Release().stage));
+    output.lSamples->push_back(dsp.Next().val);
+    if(i == 0 || dsp.Output().staged)
+      output.hSplits->emplace_back(i, FormatEnv(dsp.Output().stage));
+    i++;
+  }
+
+  /*
   int i = 0;
   int h = 0;
   bool firstMarker = true;
@@ -175,6 +204,7 @@ EnvDSP::Plot(EnvModel const& model, PlotInput const& input, PlotOutput& output)
   }
   *output.vSplits = UniVSPlits;
   output.hSplits->emplace_back(i - 1, L"");
+  */
 }
 
 } // namespace Xts

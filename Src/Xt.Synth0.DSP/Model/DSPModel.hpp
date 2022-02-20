@@ -15,12 +15,12 @@ inline constexpr wchar_t UnicodeOneEight = L'\u215B';
 inline constexpr wchar_t UnicodeOneQuarter = L'\u00BC';
 inline constexpr wchar_t UnicodeThreeQuarter = L'\u00BE';
 
-enum class EnvStage { Dly, A, Hld, D, S, R, End };
 struct CvOutput { bool bip; float val; };
-struct EnvOutput { float val; EnvStage stage; };
 struct ModInput { CvOutput cv1; CvOutput cv2; };
 struct HSplit { int pos; std::wstring marker; };
 struct VSplit { float pos; std::wstring marker; };
+enum class EnvStage { Dly, A, Hld, D, S, R, End };
+struct EnvOutput { float val; EnvStage stage; bool staged; };
 
 struct CvState
 { 
