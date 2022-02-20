@@ -27,7 +27,7 @@ private:
 public:
   AudioOutput Next(CvState const& cv);
   AudioOutput const Output() const { return _output; }
-  static void Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input, PlotOutput& output);
+  static void Plot(UnitModel const& model, CvModel const& cvModel, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

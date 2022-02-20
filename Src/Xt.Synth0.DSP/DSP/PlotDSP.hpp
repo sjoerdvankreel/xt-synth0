@@ -11,18 +11,18 @@ class PlotDSP
 {
 public:
   static void Render(SynthModel const& model, PlotInput& input, PlotOutput& output);
-  template <class Next, class... Factories> 
+  template <class StateFactory, class Next> 
   static void RenderCycled(
-    int cycles, bool bipolar, float freq, 
+    int cycles, bool bipolar, float freq,
     PlotInput const& input, PlotOutput& output, 
-    Next next, Factories... factories);
+    StateFactory factory, Next next);
 };
 
-template <class Next, class... Factories>
+template <class StateFactory, class Next>
 void PlotDSP::RenderCycled(
   int cycles, bool bipolar, float freq,
   PlotInput const& input, PlotOutput& output,
-  Next next, Factories... factories)
+  StateFactory factory, Next next)
 {
   output.max = 1.0f;
   output.freq = freq;
@@ -32,13 +32,12 @@ void PlotDSP::RenderCycled(
   float cappedRate = std::min(input.rate, idealRate);
   output.rate = input.spec ? input.rate : cappedRate;
 
-  auto apply = [&](auto factory) { return factory(output.rate); };
-  auto dsps = (apply(factories), ...);
+  auto state = factory(output.rate);
   float regular = (output.rate * cycles / output.freq) + 1.0f;
   float fsamples = input.spec ? input.rate : regular;
   int samples = static_cast<int>(std::ceilf(fsamples));
   for (int i = 0; i < samples; i++)
-    output.lSamples->push_back(next(dsps));
+    output.lSamples->push_back(next(state));
 
   *output.vSplits = bipolar? BiVSPlits: UniVSPlits;
   output.hSplits->emplace_back(samples, L"");
