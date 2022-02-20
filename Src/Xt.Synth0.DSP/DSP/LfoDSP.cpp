@@ -55,11 +55,10 @@ LfoDSP::Generate() const
 void
 LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 {
-	const float testRate = 1000.0f;
 	if (!model.on) return;
 	output.max = 1.0f;
   output.stereo = false;
-	output.freq = Freq(model, input.bpm, testRate);
+	output.freq = Freq(model, input.bpm, input.rate);
 	output.min = IsBipolar(model.plty) ? -1.0f : 0.0f;
 	output.rate = input.spec ? input.rate : output.freq * input.pixels;
 
