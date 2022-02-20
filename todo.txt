@@ -33,3 +33,4 @@ return Output from Next()
 stereo spec
 no spec on env/amp
 lfo -> period
+remove friend classes except plot
