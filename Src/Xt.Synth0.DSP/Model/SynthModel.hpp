@@ -119,8 +119,8 @@ private:
   AmpEnv envSrc;
   AmpLfo lvlSrc;
   ModSource panSrc;
-  int32_t flt1, flt2, flt3;
-  int32_t unit1, unit2, unit3;
+  int32_t units[UnitCount];
+  int32_t flts[FilterCount];
   int32_t lvl, pan, lvlAmt, panAmt, pad__;
 };
 XTS_CHECK_SIZE(AmpModel, 56);

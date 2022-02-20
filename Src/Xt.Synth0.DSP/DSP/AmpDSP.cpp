@@ -13,12 +13,8 @@ _lvlAmt(Mix(model->lvlAmt)),
 _panAmt(Mix(model->panAmt)),
 _lvl(Level(model->lvl) * velo) 
 {
-  _flts[0] = Level(model->flt1);
-  _flts[1] = Level(model->flt2);
-  _flts[2] = Level(model->flt3);
-  _units[0] = Level(model->unit1);
-  _units[1] = Level(model->unit2);
-  _units[2] = Level(model->unit3);
+  for(int i = 0; i < UnitCount; i++) _units[i] = Level(model->units[i]);
+  for(int i = 0; i < FilterCount; i++) _flts[i] = Level(model->flts[i]);
 }
 
 AudioOutput
@@ -36,7 +32,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   AudioOutput pan = { (1.0f - panMix) * _amp, panMix * _amp };
 
   for (int i = 0; i < UnitCount; i++) _output += audio.units[i] * pan * _units[i];
-  for(int i = 0; i < FilterCount; i++) _output += audio.filts[i] * pan * _flts[i];  
+  for (int i = 0; i < FilterCount; i++) _output += audio.filts[i] * pan * _flts[i];  
   return Output();
 }
 
