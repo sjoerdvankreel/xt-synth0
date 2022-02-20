@@ -46,8 +46,8 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
   MoveType type = Move(input);
   if (type == MoveType::Next)
   {
-    exhausted = Trigger(input);
     Automate();
+    exhausted = Trigger(input);
     ApplyActive();
   } else if(type == MoveType::End)
   {
