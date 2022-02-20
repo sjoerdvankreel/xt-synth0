@@ -18,7 +18,7 @@ public:
 
   template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
   static void RenderStaged(
-    EnvModel const& envModel,
+    bool stereo, EnvModel const& envModel,
     PlotInput const& input, PlotOutput& output,
     Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end);
 
@@ -54,13 +54,13 @@ void PlotDSP::RenderCycled(
 
 template <class Factory, class Next, class Value, class EnvOutput, class Release, class End>
 void PlotDSP::RenderStaged(
-  EnvModel const& envModel,
+  bool stereo, EnvModel const& envModel,
   PlotInput const& input, PlotOutput& output,
   Factory factory, Next next, Value value, EnvOutput envOutput, Release release, End end)
 {
   output.min = 0.0f;
   output.max = 1.0f;
-  output.stereo = false;
+  output.stereo = stereo;
   output.rate = input.rate;
   *output.vSplits = UniVSPlits;
   float hold = TimeF(input.hold, input.rate);
