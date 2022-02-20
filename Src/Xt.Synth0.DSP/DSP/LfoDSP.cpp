@@ -1,5 +1,7 @@
 #include "DSP.hpp"
 #include "LfoDSP.hpp"
+#include "PlotDSP.hpp"
+
 #include <cmath>
 #include <cassert>
 
@@ -57,24 +59,11 @@ void
 LfoDSP::Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output)
 {
 	if (!model.on) return;
-	output.max = 1.0f;
-  output.stereo = false;
-	output.freq = Freq(model, input.bpm, input.rate);
-	output.min = IsBipolar(model.plty) ? -1.0f : 0.0f;
-  float idealRate = output.freq * input.pixels;
-  float cappedRate = std::min(input.rate, idealRate);
-  output.rate = input.spec ? input.rate : cappedRate;
-
-	LfoDSP dsp(&model, input.bpm, output.rate);
-	float fsamples = input.spec ? output.rate : output.rate / output.freq + 1;
-	int samples = static_cast<int>(std::ceilf(fsamples));
-	for (int i = 0; i < samples; i++)
-		output.lSamples->push_back(dsp.Next().val);
-
-	output.hSplits->emplace_back(0, L"0");
-	output.hSplits->emplace_back(samples, L"");
-	output.hSplits->emplace_back(samples / 2, std::wstring(1, UnicodePi));
-	*output.vSplits = IsBipolar(model.plty)? BiVSPlits: UniVSPlits;
+  bool bipolar = IsBipolar(model.plty);
+  float freq = Freq(model, input.bpm, input.rate);
+  LfoDSP dsp(&model, input.bpm, output.rate);
+  auto next = [&] (float rate) { return dsp.Next().val; };
+  PlotDSP::RenderCycled(1, bipolar, freq, input, output, next);
 }
 
 } // namespace Xts

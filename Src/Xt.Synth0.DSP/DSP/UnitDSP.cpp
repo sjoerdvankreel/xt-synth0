@@ -1,5 +1,6 @@
 #include "DSP.hpp"
 #include "UnitDSP.hpp"
+#include "PlotDSP.hpp"
 
 #include <cmath>
 #include <cassert>
@@ -220,28 +221,12 @@ void
 UnitDSP::Plot(UnitModel const& model, CvModel const& cv, PlotInput const& input, PlotOutput& output)
 {
   const int cycles = 5;
-
   if (!model.on) return;
-  output.max = 1.0f;
-  output.min = -1.0f;
-  output.stereo = false;
-  output.freq = Freq(model, 4, UnitNote::C);
-  float idealRate = output.freq * input.pixels / cycles;
-  float cappedRate = std::min(input.rate, idealRate);
-  output.rate = input.spec? input.rate: cappedRate;
-
+  float freq = Freq(model, 4, UnitNote::C);
   CvDSP cvDsp(&cv, 1.0f, input.bpm, output.rate);
   UnitDSP dsp(&model, 4, UnitNote::C, output.rate);
-  float regular = (output.rate * cycles / output.freq) + 1.0f;
-  float fsamples = input.spec ? input.rate : regular;
-  int samples = static_cast<int>(std::ceilf(fsamples));
-  for (int i = 0; i < samples; i++)
-	  output.lSamples->push_back(dsp.Next(cvDsp.Next()).Mono());
-
-  *output.vSplits = BiVSPlits;
-  output.hSplits->emplace_back(samples, L"");
-  for(int i = 0; i < cycles * 2; i++)
-	  output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
+  //auto next = [] () { return dsp.Next(cvDsp.Next()).Mono(); };
+  //PlotDSP::RenderCycled(cycles, true, freq, input, output, next);
 }
 
 } // namespace Xts

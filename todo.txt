@@ -32,3 +32,4 @@ time/freq params with maximum
 return Output from Next()
 stereo spec
 no spec on env/amp
+lfo -> period
