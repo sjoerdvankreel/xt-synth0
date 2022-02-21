@@ -218,14 +218,14 @@ UnitDSP::GenerateAdd(float phase, float freq, ModInput const& mod) const
 }
 
 void
-UnitDSP::Plot(UnitModel const& model, CvModel const& cvModel, PlotInput const& input, PlotOutput& output)
+UnitDSP::Plot(UnitModel const& model, CvModel const& cvModel, bool spec, PlotInput const& input, PlotOutput& output)
 {
   const int cycles = 5;
   if (!model.on) return;
   float freq = Freq(model, 4, UnitNote::C);
   auto next = [](std::tuple<CvDSP, UnitDSP>& state) { return std::get<UnitDSP>(state).Next(std::get<CvDSP>(state).Next()).Mono(); };
   auto factory = [&](float rate) { return std::make_tuple(CvDSP(&cvModel, 1.0f, input.bpm, rate), UnitDSP(&model, 4, UnitNote::C, rate)); };
-  PlotDSP::RenderCycled(cycles, true, freq, input, output, factory, next);
+  PlotDSP::RenderCycled(spec, true, cycles, freq, input, output, factory, next);
 }
 
 } // namespace Xts

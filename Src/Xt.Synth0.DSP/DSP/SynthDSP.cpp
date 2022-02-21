@@ -10,7 +10,7 @@ _amp(&model->amp, velo),
 _audio(&model->audio, oct, note, rate) {}
 
 void
-SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, PlotInput const& input, PlotOutput& output)
+SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, bool spec, int hold, PlotInput const& input, PlotOutput& output)
 {
   auto end = [](SynthDSP const& dsp) { return dsp.End(); };
   auto release = [](SynthDSP& dsp) { return dsp.Release(); };
@@ -23,7 +23,7 @@ SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, PlotInput cons
     output.rSamples->push_back(dsp.Output().r); 
   };
 
-  PlotDSP::RenderStaged(true, true, envModel, input, output, factory, next, envOutput, release, end);
+  PlotDSP::RenderStaged(spec, true, true, hold, envModel, input, output, factory, next, envOutput, release, end);
   output.vSplits->clear();
   output.vSplits->emplace_back(-0.5f, L"L");
   output.vSplits->emplace_back(0.5f, L"R");

@@ -12,36 +12,37 @@ class PlotDSP
 public:
   template <class Factory, class Next>
   static void RenderCycled(
-    int cycles, bool bipolar, float freq,
+    bool spec, bool bipolar, int cycles, float freq,
     PlotInput const& input, PlotOutput& output, 
     Factory factory, Next next);
 
   template <class Factory, class Next, class EnvOutput, class Release, class End>
   static void RenderStaged(
-    bool bipolar, bool stereo,
+    bool spec, bool bipolar, bool stereo, int hold,
     EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
     Factory factory, Next next, EnvOutput envOutput, Release release, End end);
 
-  static void Render(SynthModel const& model, PlotInput& input, PlotOutput& output);
+  static void Render(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
 
 template <class Factory, class Next>
 void PlotDSP::RenderCycled(
-  int cycles, bool bipolar, float freq,
+  bool spec, bool bipolar, int cycles, float freq,
   PlotInput const& input, PlotOutput& output,
   Factory factory, Next next)
 {
   output.max = 1.0f;
   output.freq = freq;
+  output.spec = spec;
   output.stereo = false;
   output.min = bipolar ? -1.0f : 0.0f;
   float idealRate = output.freq * input.pixels / cycles;
   float cappedRate = std::min(input.rate, idealRate);
-  output.rate = input.spec ? input.rate : cappedRate;
+  output.rate = spec ? input.rate : cappedRate;
 
   auto state = factory(output.rate);
   float regular = (output.rate * cycles / output.freq) + 1.0f;
-  float fsamples = input.spec ? input.rate : regular;
+  float fsamples = spec ? input.rate : regular;
   int samples = static_cast<int>(std::ceilf(fsamples));
   for (int i = 0; i < samples; i++)
     output.lSamples->push_back(next(state));
@@ -54,26 +55,27 @@ void PlotDSP::RenderCycled(
 
 template <class Factory, class Next, class EnvOutput, class Release, class End>
 void PlotDSP::RenderStaged(
-  bool bipolar, bool stereo, 
+  bool spec, bool bipolar, bool stereo, int hold,
   EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
   Factory factory, Next next, EnvOutput envOutput, Release release, End end)
 {
   output.max = 1.0f;
+  output.spec = spec;
   output.stereo = stereo;
   output.rate = input.rate;
   output.min = bipolar ? -1.0f : 0.0f;
   *output.vSplits = bipolar ? BiVSPlits : UniVSPlits;
-  float hold = TimeF(input.hold, input.rate);
+  float fhold = TimeF(hold, input.rate);
   float releaseSamples = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
-  output.rate = input.spec ? input.rate : input.rate * input.pixels / (hold + releaseSamples);
-  hold *= output.rate / input.rate;
+  output.rate = spec ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
+  fhold *= output.rate / input.rate;
 
   int h = 0;
   int i = 0;
   auto state = factory(output.rate);
   while (!end(state))
   {
-    if (h++ == static_cast<int>(hold))
+    if (h++ == static_cast<int>(fhold))
       output.hSplits->emplace_back(i, FormatEnv(release(state).stage));
     next(state, output);
     if (i == 0 || envOutput(state).staged)

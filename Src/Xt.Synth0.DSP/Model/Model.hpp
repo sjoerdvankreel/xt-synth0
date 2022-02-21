@@ -17,6 +17,8 @@ constexpr XtsBool XtsFalse = 0;
 
 namespace Xts {
 
+constexpr int SpecHold = 81;
+
 constexpr int LfoCount = 3;
 constexpr int EnvCount = 3;
 constexpr int UnitCount = 3;

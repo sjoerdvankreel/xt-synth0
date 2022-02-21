@@ -24,7 +24,8 @@ namespace Xt.Synth0
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct PlotState
 		{
-			internal int clip;
+            internal int spec;
+            internal int clip;
             internal int stereo;
 			internal float* lSamples;
             internal float* rSamples;

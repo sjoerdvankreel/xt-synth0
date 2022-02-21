@@ -70,34 +70,33 @@ Spectrum(
 }
 
 void
-PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
+PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   auto type = model.plot.type;
   auto index = static_cast<int>(type);
-  input.spec = model.plot.spec && (model.plot.type < PlotType::Amp || model.plot.type > PlotType::Env3);
-  input.hold = !input.spec? model.plot.hold: 81;
   int ampEnv = static_cast<int>(model.amp.envSrc);
   EnvModel const& envModel = model.cv.envs[ampEnv];
+  int hold = model.plot.spec && (model.plot.type == PlotType::Synth || model.plot.type >= PlotType::LFO1)? SpecHold: model.plot.hold;
 
   switch(model.plot.type)
   {
   case PlotType::Synth: {
-    SynthDSP::Plot(model, envModel, input, output);
+    SynthDSP::Plot(model, envModel, model.plot.spec, hold, input, output);
     break; }
-  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: {
-    auto lfo = static_cast<int>(PlotType::LFO1);
-    LfoDSP::Plot(model.cv.lfos[index - lfo], input, output);
+  case PlotType::Amp: {
+    AmpDSP::Plot(model.amp, envModel, model.cv, model.audio, hold, input, output);
     break; }
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: {
     auto env = static_cast<int>(PlotType::Env1);
-    EnvDSP::Plot(model.cv.envs[index - env], input, output);
+    EnvDSP::Plot(model.cv.envs[index - env], hold, input, output);
+    break; }
+  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: {
+    auto lfo = static_cast<int>(PlotType::LFO1);
+    LfoDSP::Plot(model.cv.lfos[index - lfo], model.plot.spec, input, output);
     break; }
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: {
     auto unit = static_cast<int>(PlotType::Unit1);
-    UnitDSP::Plot(model.audio.units[index - unit], model.cv, input, output);
-    break; }
-  case PlotType::Amp: {
-    AmpDSP::Plot(model.amp, envModel, model.cv, model.audio, input, output);
+    UnitDSP::Plot(model.audio.units[index - unit], model.cv, model.plot.spec, input, output);
     break; }
   default: {
     assert(false);
@@ -105,7 +104,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput& input, PlotOutput& output)
   }  
 
   assert(output.rate <= input.rate);
-  if(!input.spec) return;  
+  if(!output.spec) return;  
 
   output.min = 0.0f;
   output.max = 1.0f;

@@ -49,14 +49,12 @@ struct AudioState
 struct PlotInput
 {
   int32_t hold;
-  XtsBool spec;
   float bpm, rate, pixels;
 };
 
 struct PlotOutput
 {
-  bool clip;
-  bool stereo;
+  bool clip, spec, stereo;
   float freq, rate, min, max;
   std::vector<float>* lSamples;
   std::vector<float>* rSamples;

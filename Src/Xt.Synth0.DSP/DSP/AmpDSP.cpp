@@ -44,7 +44,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
 
 void
 AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel, 
-  CvModel const& cvModel, AudioModel const& audio, PlotInput const& input, PlotOutput& output)
+  CvModel const& cvModel, AudioModel const& audio, int hold, PlotInput const& input, PlotOutput& output)
 {
   auto value = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<AmpDSP>(state)._amp; };
   auto factory = [&](float rate) { return std::make_tuple(CvDSP(&cvModel, 1.0f, input.bpm, rate), AmpDSP(&model, 1.0f)); };
@@ -56,7 +56,7 @@ AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel,
     std::get<AmpDSP>(state).Next(std::get<CvDSP>(state).Next(), {});
     output.lSamples->push_back(std::get<AmpDSP>(state)._amp); 
   };
-  return PlotDSP::RenderStaged(false, false, envModel, input, output, factory, next, envOutput, release, end);
+  return PlotDSP::RenderStaged(false, false, false, hold, envModel, input, output, factory, next, envOutput, release, end);
 }
 
 } // namespace Xts

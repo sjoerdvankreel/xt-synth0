@@ -227,7 +227,8 @@ namespace Xt.Synth0
 			_nativePlotState->pixels = e.Pixels;
 			_nativePlotState->synth = _nativePlotSynthModel;
 			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
-			Model.Track.Synth.ToNative(_nativePlotBinding);
+            _nativePlotState->spec = Model.Track.Synth.Plot.Spec.Value == 0? 0: 1;
+            Model.Track.Synth.ToNative(_nativePlotBinding);
 			Native.XtsPlotDSPRender(_nativePlotState);
             e.Min = _nativePlotState->min;
             e.Max = _nativePlotState->max;
@@ -235,7 +236,7 @@ namespace Xt.Synth0
 			e.Clip = _nativePlotState->clip != 0;
             e.SampleRate = _nativePlotState->rate;
             e.Stereo = _nativePlotState->stereo != 0;
-			e.Spectrum = Model.Track.Synth.Plot.Spec.Value != 0;
+            e.Spectrum = _nativePlotState->spec != 0;
             e.LSamples.Clear();
             for (int i = 0; i < _nativePlotState->sampleCount; i++)
                 e.LSamples.Add(_nativePlotState->lSamples[i]);

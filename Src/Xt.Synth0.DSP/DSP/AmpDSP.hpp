@@ -24,8 +24,8 @@ public:
   AudioOutput Output() const { return _output; };
   int Env() const { return static_cast<int>(_model->envSrc); }
   AudioOutput Next(CvState const& cv, AudioState const& audio);
-  static void Plot(AmpModel const& model, EnvModel const& envModel, 
-    CvModel const& cvModel, AudioModel const& audio, PlotInput const& input, PlotOutput& output);
+  static void Plot(AmpModel const& model, EnvModel const& envModel, CvModel const& cvModel, 
+    AudioModel const& audio, int hold, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

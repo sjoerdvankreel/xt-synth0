@@ -21,7 +21,7 @@ private:
 public:
   CvOutput Next();
   CvOutput Output() const { return _output; }
-  static void Plot(LfoModel const& model, PlotInput const& input, PlotOutput& output);
+  static void Plot(LfoModel const& model, bool spec, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts
