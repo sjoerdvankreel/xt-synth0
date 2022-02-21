@@ -21,6 +21,3 @@ filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
 remove friend classes except plot
 plot the right way, dont embed ui offset into plotdata
-output.spec/bars plot
-stereo spec
-spec->no hold
