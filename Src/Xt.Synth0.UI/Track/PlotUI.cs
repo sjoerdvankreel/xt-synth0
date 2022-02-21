@@ -94,9 +94,10 @@ namespace Xt.Synth0.UI
         {
             var result = new PlotData();
             double scale = Args.Stereo ? 0.5 : 1.0;
-            double @base = Args.Stereo ? 0.5f : 0.0f;
-            result.l = MakeChannelData(Args.LSamples, w, h, min, max, @base, scale);
-            if (Args.Stereo) result.r = MakeChannelData(Args.RSamples, w, h, min, max, -0.5, 0.5);
+            double baseL = Args.Stereo ? 0.5f : 0.0f;
+            double baseR = (1.0f - (max - min)) / 2.0f;
+            result.l = MakeChannelData(Args.LSamples, w, h, min, max, baseL, scale);
+            if (Args.Stereo) result.r = MakeChannelData(Args.RSamples, w, h, min, max, baseR, 0.5);
             return result;
         }
 
@@ -136,13 +137,13 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement PlotBar(Point p, double h, double stroke, double @base, double scale)
+        static UIElement PlotBar(Point p, double h, double stroke)
         {
             var result = new Line();
             result.X1 = p.X;
             result.X2 = p.X;
             result.Y2 = p.Y;
-            result.Y1 = (h - PadBottom) * scale + VPadText;
+            result.Y1 = h - PadBottom + VPadText;
             result.StrokeThickness = stroke;
             PlotProperties(result);
             return result;
@@ -196,13 +197,8 @@ namespace Xt.Synth0.UI
             else
                 for (int i = 0; i < data.l.Count; i++)
                 {
-                    if (!Args.Stereo)
-                        result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, 0.0, 1.0));
-                    else
-                    {
-                        result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, 0.5, 0.5));
-                        //result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count, 0.5, 0.5));
-                    }
+                    //result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count));
+                    if (Args.Stereo) result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count));
                 }
             return result;
         }
