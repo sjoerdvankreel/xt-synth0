@@ -61,39 +61,22 @@ Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 static void
 Spectrum(
   std::vector<float>& x, 
-  std::vector<VSplit>& vSplits,
   std::vector<std::complex<float>>& fft, 
   std::vector<std::complex<float>>& fftScratch,
   float rate)
 {
-  int i = 0;
   float max = 0;
   assert(x.size() > 0 && x.size() == NextPow2(x.size()));
   Fft(x, fft, fftScratch);
-
   x.clear();
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
   for(int oct = 0; oct < 12; oct++)
   {
-    std::wstring marker = oct >= 2? std::to_wstring(oct - 2): L"";
-    for(int note = 0; note < 12; note++, i++)
+    for(int note = 0; note < 12; note++)
       x.push_back(Power(fft, rate, oct, note));
   }    
   for (size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for (size_t i = 0; i < x.size(); i++) x[i] = max == 0.0f? 0.0f: x[i] / max;
-
-  vSplits.clear();
-  for(int i = 0; i < 7; i++)
-  {
-    float split = 1.0f - 1.0f / (1 << i);
-    std::wstring marker = L"";
-    if(i == 0) marker = L"1";
-    if(i == 1) marker = std::wstring(1, UnicodeOneHalf);
-    if(i == 2) marker = std::wstring(1, UnicodeOneQuarter);
-    if(i == 3) marker = std::wstring(1, UnicodeOneEight);
-    vSplits.emplace_back(VSplit(split, marker));
-  }
-  vSplits.emplace_back(VSplit(1.0f, L"0"));
 }
 
 void
@@ -137,13 +120,13 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
 
   if (output.lSamples->empty()) return;  
   output.lSamples->resize(NextPow2(output.lSamples->size()));
-  Spectrum(*output.lSamples, *output.vSplits, *output.fftData, *output.fftScratch, output.rate);
+  Spectrum(*output.lSamples, *output.fftData, *output.fftScratch, output.rate);
   SpectrumHSplits(*output.hSplits);
   SpectrumVSplits(*output.vSplits);
   
   if(!output.stereo) return;
   output.rSamples->resize(NextPow2(output.rSamples->size()));
-  Spectrum(*output.rSamples, *output.vSplits, *output.fftData, *output.fftScratch, output.rate);
+  Spectrum(*output.rSamples, *output.fftData, *output.fftScratch, output.rate);
 }
 
 } // namespace Xts
