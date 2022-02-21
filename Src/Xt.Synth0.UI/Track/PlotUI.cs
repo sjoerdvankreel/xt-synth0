@@ -85,7 +85,10 @@ namespace Xt.Synth0.UI
                 var yScreen = (1.0f - MaxLevel) * hPad + (1.0 - y) * MaxLevel * hPad;
                 var screenPos = i / (samples.Count - 1.0);
                 var l = PadLeft + screenPos * (w - PadLeft);
-                result.Add(new Point(l, VPadText + yScreen / (max - min)));
+                Point p = new Point(l, VPadText + yScreen / (max - min));
+                if (double.IsNaN(p.X) || double.IsNaN(p.Y))
+                    throw new InvalidOperationException();
+                result.Add(p);
             }
             return result;
         }
