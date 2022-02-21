@@ -44,9 +44,10 @@ namespace Xt.Synth0
 			SizeToContent = SizeToContent.WidthAndHeight;
 			_automationPeer = new NoAutomationPeer(this);
 			Model.Track.ParamChanged += OnTrackParamChanged;
-		}
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        }
 
-		void OnTrackParamChanged(object sender, EventArgs e)
+        void OnTrackParamChanged(object sender, EventArgs e)
 		{
 			if (!Model.Stream.IsRunning)
 				IsDirty = true;
