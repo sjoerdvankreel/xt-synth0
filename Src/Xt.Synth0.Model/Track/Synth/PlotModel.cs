@@ -25,8 +25,11 @@ namespace Xt.Synth0.Model
         public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>() { { Type, 0 }, { Spec, 1 }, { Hold, 2 } };
 
-        static readonly IRelevance RelevanceHold = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t < PlotType.LFO1);
-        static readonly IRelevance RelevanceSpec = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t >= PlotType.LFO1 || t == PlotType.Synth);
+        static readonly IRelevance RelevanceHold = Relevance.All(
+            Relevance.Param((PlotModel m) => m.Spec, (int spec) => spec == 0),
+            Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t < PlotType.LFO1));
+        static readonly IRelevance RelevanceSpec = Relevance.Param(
+            (PlotModel m) => m.Type, (PlotType t) => t >= PlotType.LFO1 || t == PlotType.Synth);
 
         static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, 1, nameof(Type), nameof(Type), "Source");
         static readonly ParamInfo SpecInfo = ParamInfo.Toggle(p => &((Native*)p)->spec, 1, nameof(Spec), nameof(Spec), "Spectrum", false, RelevanceSpec);
