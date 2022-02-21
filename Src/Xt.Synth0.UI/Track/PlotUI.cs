@@ -137,13 +137,13 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement PlotBar(Point p, double h, double stroke)
+        static UIElement PlotBar(Point p, double h, double stroke, double @base)
         {
             var result = new Line();
             result.X1 = p.X;
             result.X2 = p.X;
             result.Y2 = p.Y;
-            result.Y1 = h - PadBottom + VPadText;
+            result.Y1 = (h - PadBottom) * @base + VPadText;
             result.StrokeThickness = stroke;
             PlotProperties(result);
             return result;
@@ -197,8 +197,9 @@ namespace Xt.Synth0.UI
             else
                 for (int i = 0; i < data.l.Count; i++)
                 {
-                    //result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count));
-                    if (Args.Stereo) result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count));
+                    double @baseL = Args.Stereo ? 0.5 : 1.0;
+                    result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, @baseL));
+                    if (Args.Stereo) result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count, 1.0));
                 }
             return result;
         }
