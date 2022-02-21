@@ -24,7 +24,9 @@ Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
   size_t bin2 = static_cast<size_t>(Freq(midi + 1) * freq2Bin);
   for (size_t i = bin1; i < bin2 && i < fft.size(); i++)
     result += fft[i].real() * fft[i].real() + fft[i].imag() * fft[i].imag();
-  return sqrtf(result);
+  result = std::sqrtf(result);
+  assert(!std::isnan(result));
+  return result;
 }
 
 static void
@@ -53,7 +55,7 @@ Spectrum(
   }    
   hSplits.emplace_back(HSplit(143, L""));
   for (size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
-  for (size_t i = 0; i < x.size(); i++) x[i] /= max;
+  for (size_t i = 0; i < x.size(); i++) x[i] = max == 0.0f? 0.0f: x[i] / max;
 
   vSplits.clear();
   for(int i = 0; i < 7; i++)
