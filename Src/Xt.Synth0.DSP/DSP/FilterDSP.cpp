@@ -46,7 +46,11 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   if (!_model->on) return Output();
-  _output = audio.units[0] * _b[0] + _x[1] * _b[1] + _x[0] * _b[2] - _y[1] * _a[0] - _y[0] * _a[1];
+  for(int i = 0; i < UnitCount; i++)
+    _output += audio.units[i] * _units[i];
+  //for(int i = 0; i < FilterCount - 1; i++)
+  //  _output += audio.filters[]
+  _output = _output * _b[0] + _x[1] * _b[1] + _x[0] * _b[2] - _y[1] * _a[0] - _y[0] * _a[1];
   _x[0] = _x[1];
   _x[1] = audio.units[0];
   _y[0] = _y[1];
