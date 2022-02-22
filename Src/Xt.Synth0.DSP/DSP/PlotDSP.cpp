@@ -25,20 +25,31 @@ SpectrumHSplits(std::vector<HSplit>& hSplits)
 }
 
 static void
-SpectrumVSplits(std::vector<VSplit>& vSplits)
+SpectrumVSplitsMono(std::vector<VSplit>& vSplits)
 {
   vSplits.clear();
-  for (int i = 0; i < 7; i++)
-  {
-    float split = 1.0f - 1.0f / (1 << i);
-    std::wstring marker = L"";
-    if (i == 0) marker = L"1";
-    if (i == 1) marker = std::wstring(1, UnicodeOneHalf);
-    if (i == 2) marker = std::wstring(1, UnicodeOneQuarter);
-    if (i == 3) marker = std::wstring(1, UnicodeOneEight);
-    vSplits.emplace_back(VSplit(split, marker));
-  }
-  vSplits.emplace_back(VSplit(1.0f, L"0"));
+  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1");
+  vSplits.emplace_back(1.0f - (1.0f / 2.0f), std::wstring(1, UnicodeOneHalf));
+  vSplits.emplace_back(1.0f - (1.0f / 4.0f), std::wstring(1, UnicodeOneQuarter));
+  vSplits.emplace_back(1.0f - (1.0f / 8.0f), std::wstring(1, UnicodeOneEight));
+  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
+  vSplits.emplace_back(1.0f - (1.0f / 32.0f), L"");
+  vSplits.emplace_back(1.0f, L"0");
+}
+
+static void
+SpectrumVSplitsStereo(std::vector<VSplit>& vSplits)
+{
+  vSplits.clear();
+  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1");
+  vSplits.emplace_back(1.0f - (3.0f / 4.0f), std::wstring(1, UnicodeOneHalf));
+  vSplits.emplace_back(1.0f - (5.0f / 8.0f), std::wstring(1, UnicodeOneQuarter));
+  vSplits.emplace_back(1.0f - (9.0f / 16.0f), L"");
+  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L"01");
+  vSplits.emplace_back(1.0f - (1.0f / 4.0f), std::wstring(1, UnicodeOneHalf));
+  vSplits.emplace_back(1.0f - (1.0f / 8.0f), std::wstring(1, UnicodeOneQuarter));
+  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
+  vSplits.emplace_back(1.0f, L"0");
 }
 
 // https://stackoverflow.com/questions/604453/analyze-audio-using-fast-fourier-transform
@@ -112,8 +123,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
     assert(false);
     break; }
   }  
-  assert(output.rate <= input.rate);
-  
+  assert(output.rate <= input.rate);  
   if(!output.spec) return;  
   output.min = 0.0f;
   output.max = 1.0f;
@@ -122,9 +132,13 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   output.lSamples->resize(NextPow2(output.lSamples->size()));
   Spectrum(*output.lSamples, *output.fftData, *output.fftScratch, output.rate);
   SpectrumHSplits(*output.hSplits);
-  SpectrumVSplits(*output.vSplits);
   
-  if(!output.stereo) return;
+  if (!output.stereo)
+  {
+    SpectrumVSplitsMono(*output.vSplits);
+    return;
+  }
+  SpectrumVSplitsStereo(*output.vSplits);
   output.rSamples->resize(NextPow2(output.rSamples->size()));
   Spectrum(*output.rSamples, *output.fftData, *output.fftScratch, output.rate);
 }

@@ -20,4 +20,3 @@ save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
 remove friend classes except plot
-fix the panning
