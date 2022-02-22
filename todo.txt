@@ -19,3 +19,4 @@ dump stacktrace
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
+make it faster
