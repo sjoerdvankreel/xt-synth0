@@ -1,4 +1,5 @@
 #include "AudioDSP.hpp"
+#include <cassert>
 
 namespace Xts {
 

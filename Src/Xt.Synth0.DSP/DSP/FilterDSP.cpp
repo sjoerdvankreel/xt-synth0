@@ -18,7 +18,7 @@ _amt2(Mix(model->amt2))
   _y[1].Clear();
   for (int i = 0; i < UnitCount; i++)
     _units[i] = Level(model->units[i]);
-  for (int i = 0; i < FilterCount; i++)
+  for (int i = 0; i < FilterCount - 1; i++)
     _flts[i] = Level(model->flts[i]);
 
   float freq = FreqHz(model->freq);
@@ -34,6 +34,10 @@ _amt2(Mix(model->amt2))
   _a[1] = (1.0f - alpha) / a0;
   _b[1] = (1.0f - cosw0) / a0;
   _b[0] = _b[2] = ((1.0f - cosw0) / 2.0f) / a0;
+  assert(!std::isnan(_a[0]));
+  assert(!std::isnan(_a[1]));
+  assert(!std::isnan(_b[0]));
+  assert(!std::isnan(_b[1]));
 }
 
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
@@ -42,12 +46,15 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   if (!_model->on) return Output();
-  _output += audio.units[0] * _b[0] + _x[1] * _b[1] + _x[0] * _b[2];
-  _output += _y[1] * _a[0] + _y[0] * _a[1];
+  _output = audio.units[0] * _b[0] + _x[1] * _b[1] + _x[0] * _b[2] - _y[1] * _a[0] - _y[0] * _a[1];
   _x[0] = _x[1];
   _x[1] = audio.units[0];
   _y[0] = _y[1];
   _y[1] = _output;
+  assert(!std::isnan(_output.l));
+  assert(!std::isnan(_output.r));
+  assert(!std::isinf(_output.l));
+  assert(!std::isinf(_output.r));
   return _output;
 }
 

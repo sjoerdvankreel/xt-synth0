@@ -37,6 +37,7 @@ struct AudioOutput
   float Mono() const { return l + r; }
   AudioOutput operator*(float s) const { return { l * s, r * s }; }
   AudioOutput operator+(AudioOutput s) const { return { l + s.l, r + s.r }; }
+  AudioOutput operator-(AudioOutput s) const { return { l - s.l, r - s.r }; }
   AudioOutput operator*(AudioOutput s) const { return { l * s.l, r * s.r }; }
   AudioOutput& operator+=(AudioOutput const& rhs) { l += rhs.l; r += rhs.r; return *this; }
 };

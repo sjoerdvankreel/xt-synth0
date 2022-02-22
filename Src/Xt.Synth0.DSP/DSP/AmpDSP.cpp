@@ -39,6 +39,8 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   for (int i = 0; i < FilterCount; i++) 
     _output += audio.filts[i] * pan * _flts[i];  
 
+  assert(!std::isnan(_output.l));
+  assert(!std::isnan(_output.r));
   return Output();
 }
 

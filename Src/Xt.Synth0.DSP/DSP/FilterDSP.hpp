@@ -14,7 +14,7 @@ class FilterDSP
   AudioOutput _x[2], _y[2];
   FilterModel const* _model;
   float _units[UnitCount];
-  float _flts[FilterCount];
+  float _flts[FilterCount - 1];
   float _rate, _amt1, _amt2;
 public:
   FilterDSP() = default;

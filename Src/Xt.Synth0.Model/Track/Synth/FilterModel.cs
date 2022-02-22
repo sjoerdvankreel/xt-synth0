@@ -12,15 +12,14 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal const int Size = 72;
+            internal const int Size = 64;
             internal int type, on, db24;
             internal int freq, res;
             internal int amt1, amt2;
             internal int src1, src2;
             internal fixed int units[Model.UnitCount];
-            internal fixed int flts[Model.FilterCount];
+            internal fixed int flts[Model.FilterCount - 1];
             internal int tgt1, tgt2;
-            internal int pad__;
         };
 
         public Param On { get; } = new(OnInfo);
