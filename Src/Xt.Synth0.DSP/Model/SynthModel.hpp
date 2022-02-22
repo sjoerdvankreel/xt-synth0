@@ -40,7 +40,6 @@ enum class LfoPolarity { Uni, UniInv, Bi, BiInv };
 struct XTS_ALIGN LfoModel
 {
   friend class LfoDSP;
-  friend class AmpDSP;
   LfoModel() = default;
   LfoModel(LfoModel const&) = delete;
 private:
@@ -56,7 +55,6 @@ enum class SlopeType { Lin, Log, Inv, Sin, Cos };
 struct XTS_ALIGN EnvModel
 {
   friend class EnvDSP;
-  friend class AmpDSP;
   friend class PlotDSP;
   EnvModel() = default;
   EnvModel(EnvModel const&) = delete;
@@ -118,7 +116,6 @@ struct XTS_ALIGN AmpModel
 {
   friend class AmpDSP;
   friend class PlotDSP;
-  friend class SynthDSP;
   AmpModel() = default;
   AmpModel(AmpModel const&) = delete;
 private:
@@ -134,9 +131,7 @@ XTS_CHECK_SIZE(AmpModel, 56);
 struct XTS_ALIGN CvModel
 {
   friend class CvDSP;
-  friend class AmpDSP;
   friend class PlotDSP;
-  friend class SynthDSP;
   CvModel() = default;
   CvModel(CvModel const&) = delete;
 private:
@@ -147,7 +142,6 @@ XTS_CHECK_SIZE(CvModel, 288);
 
 struct XTS_ALIGN AudioModel
 {
-  friend class AmpDSP;
   friend class PlotDSP;
   friend class AudioDSP;
   AudioModel() = default;
@@ -160,7 +154,6 @@ XTS_CHECK_SIZE(AudioModel, 456);
 
 struct XTS_ALIGN SynthModel
 {
-  friend class SeqDSP;
   friend class PlotDSP;
   friend class SynthDSP;
   SynthModel() = default;
