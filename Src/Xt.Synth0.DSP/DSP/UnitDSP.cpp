@@ -54,7 +54,7 @@ UnitDSP::Freq(UnitModel const& model, int oct, UnitNote note)
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
   int key = oct * 12 + static_cast<int>(note);
   int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
-  return Xts::Freq(unit + key - base + cent);
+  return FreqNote(unit + key - base + cent);
 }
 
 float 

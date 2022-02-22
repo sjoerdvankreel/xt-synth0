@@ -20,3 +20,5 @@ save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
 make it faster
+make filters
+div max amp = sum of audio in amp and filters

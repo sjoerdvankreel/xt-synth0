@@ -16,6 +16,7 @@
     <ClInclude Include="DSP\DSP.hpp" />
     <ClInclude Include="DSP\EnvDSP.hpp" />
     <ClInclude Include="DSP\AmpDSP.hpp" />
+    <ClInclude Include="DSP\FilterDSP.hpp" />
     <ClInclude Include="DSP\LfoDSP.hpp" />
     <ClInclude Include="DSP\PlotDSP.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="DSP\DSP.cpp" />
     <ClCompile Include="DSP\EnvDSP.cpp" />
     <ClCompile Include="DSP\AmpDSP.cpp" />
+    <ClCompile Include="DSP\FilterDSP.cpp" />
     <ClCompile Include="DSP\LfoDSP.cpp" />
     <ClCompile Include="DSP\PlotDSP.cpp" />
     <ClCompile Include="DSP\SeqDSP.cpp" />

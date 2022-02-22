@@ -58,6 +58,9 @@
     <ClInclude Include="DSP\AudioDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\FilterDSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -92,6 +95,9 @@
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="DSP\AudioDSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\FilterDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
   </ItemGroup>

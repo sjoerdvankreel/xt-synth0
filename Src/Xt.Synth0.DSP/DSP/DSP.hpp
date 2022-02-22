@@ -35,8 +35,10 @@ inline float Mix(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
 inline float EpsToZero(float val)
 { return -Eps <= val && val <= Eps? 0.0f: val; }
-inline float Freq(float midi)
+inline float FreqNote(float midi)
 { return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f); }
+inline float FreqHz(int val)
+{ return 10.0f + 9990.0f * (val / 255.0f) * (val / 255.0f); }
 inline float TimeF(int val, float rate)
 { return static_cast<float>((val / 2.55f) * (val / 2.55f) * rate / 1000.0f); }
 inline int TimeI(int val, float rate)
