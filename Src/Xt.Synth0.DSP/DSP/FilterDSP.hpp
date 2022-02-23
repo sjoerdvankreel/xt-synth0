@@ -9,9 +9,9 @@ namespace Xts {
 
 class FilterDSP
 {
-  float _a[2], _b[3];
+  float _a[3], _b[3];
   AudioOutput _output;
-  AudioOutput _x[2], _y[2];
+  AudioOutput _x[3], _y[3];
   FilterModel const* _model;
   float _units[UnitCount];
   float _flts[FilterCount - 1];
