@@ -31,6 +31,8 @@ _amt2(Mix(model->amt2))
 
   float q = MinQ + Level(model->res) * (MaxQ - MinQ);
   float alphaQ = sinw0 / (2.0f * q);
+  float bw = Level(model->res);
+  float alphaBW = sinw0 * std::sinhf(std::logf(2.0f) / 2.0f * bw * w0 / sinw0);
 
   switch (model->type)
   {
@@ -49,6 +51,14 @@ _amt2(Mix(model->amt2))
     _b[0] = (1.0f + cosw0) / 2.0f;
     _b[1] = -(1.0f + cosw0);
     _b[2] = (1.0f + cosw0) / 2.0f;
+    break;
+  case FilterType::BPF:
+    _b[0] = alphaBW;
+    _b[1] = 0.0f;
+    _b[2] = -alphaBW;
+    _a[0] = 1.0f + alphaBW;
+    _a[1] = -2.0f * cosw0;
+    _a[2] = 1.0f - alphaBW;
     break;
   default:
     assert(false);
