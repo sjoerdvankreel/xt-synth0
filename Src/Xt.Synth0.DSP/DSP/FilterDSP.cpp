@@ -21,23 +21,42 @@ _amt2(Mix(model->amt2))
   for (int i = 0; i < FilterCount - 1; i++)
     _flts[i] = Level(model->flts[i]);
 
+  float a0;
   float freq = FreqHz(model->freq);
-  // todo find out range of Q
-  float res = Level(model->res) + 0.5f;
+  // todo find out range of Q (0.5-50?)
+  float res = Level(model->res)*100.0f + 0.5f;
   float w0 = 2.0f * PI * freq / rate;
   float cosw0 = std::cosf(w0);
-  //float sinw0 = std::sinf(w0);
-  float alpha = std::sinf(w0) / (2.0f * res);
+  float sinw0 = std::sinf(w0);
+  float alpha = sinw0 / (2.0f * res);
+  
   // todo case lpf
-  float a0 = 1.0f + alpha;
-  _a[0] = (-2.0f * cosw0) / a0;
-  _a[1] = (1.0f - alpha) / a0;
-  _b[1] = (1.0f - cosw0) / a0;
-  _b[0] = _b[2] = ((1.0f - cosw0) / 2.0f) / a0;
+  switch(model->type)
+  {
+  case FilterType::LPF:
+    a0 = 1.0f + alpha;
+    _a[0] = (-2.0f * cosw0) / a0;
+    _a[1] = (1.0f - alpha) / a0;
+    _b[1] = (1.0f - cosw0) / a0;
+    _b[0] = _b[2] = ((1.0f - cosw0) / 2.0f) / a0;
+    break;
+  case FilterType::HPF:
+    a0 = 1.0f + alpha;
+    _a[0] = (-2.0f * cosw0) / a0;
+    _a[1] = (1.0f - alpha) / a0;
+    _b[1] = (-(1.0f + cosw0)) / a0;
+    _b[0] = _b[2] = ((1.0f + cosw0) / 2.0f) / a0;
+    break;
+  default:
+    assert(false); 
+    break;
+  }
+
   assert(!std::isnan(_a[0]));
   assert(!std::isnan(_a[1]));
   assert(!std::isnan(_b[0]));
   assert(!std::isnan(_b[1]));
+  assert(!std::isnan(_b[2]));
 }
 
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
