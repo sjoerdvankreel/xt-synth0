@@ -70,6 +70,14 @@ _amt2(Mix(model->amt2))
     _b[1] = -2.0f * cosw0;
     _b[2] = 1.0f;
     break;
+  case FilterType::APF:
+    _a[0] = 1.0f + alphaQ;
+    _a[1] = -2.0f * cosw0;
+    _a[2] = 1.0f - alphaQ;
+    _b[0] = 1.0f - alphaQ;
+    _b[1] = -2.0f * cosw0;
+    _b[2] = 1.0f + alphaQ;
+    break;
   default:
     assert(false);
     break;
