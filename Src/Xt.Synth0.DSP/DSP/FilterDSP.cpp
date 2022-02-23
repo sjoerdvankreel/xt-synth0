@@ -53,19 +53,12 @@ _amt2(Mix(model->amt2))
     assert(false);
     break;
   }
-
-  for(int i = 0; i < 3; i++)
-  {
-    _a[i] /= _a[0];
-    _b[i] /= _a[0];
-  }
-
-  assert(!std::isnan(_a[0]) && !std::isinf(_a[0]));
-  assert(!std::isnan(_a[1]) && !std::isinf(_a[1]));
-  assert(!std::isnan(_a[2]) && !std::isinf(_a[2]));
-  assert(!std::isnan(_b[0]) && !std::isinf(_b[0]));
-  assert(!std::isnan(_b[1]) && !std::isinf(_b[1]));
-  assert(!std::isnan(_b[2]) && !std::isinf(_b[2]));
+  
+  _a[1] /= _a[0];
+  _a[2] /= _a[0];
+  _b[0] /= _a[0];
+  _b[1] /= _a[0];
+  _b[2] /= _a[0];
 }
 
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
