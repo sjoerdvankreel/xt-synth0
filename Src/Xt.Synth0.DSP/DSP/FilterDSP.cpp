@@ -27,7 +27,6 @@ _units(), _flts(), _model(model)
     _flts[i] = Level(model->flts[i]);
 
   float freq = FreqHz(model->freq);
-  //assert(freq < rate / 2.0f);
   float w0 = 2.0f * PI * freq / rate;
   float sinw0 = std::sinf(w0);
   float cosw0 = std::cosf(w0);
