@@ -10,12 +10,12 @@ namespace Xts {
 class FilterDSP
 {
   int _index;
+  float _amt1, _amt2;
   float _a[3], _b[3];
   AudioOutput _x[3], _y[3];
-  FilterModel const* _model;
   float _units[UnitCount];
   float _flts[FilterCount];
-  float _rate, _amt1, _amt2;
+  FilterModel const* _model;
 public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);

@@ -11,11 +11,11 @@ static const float MaxBW = 6.0f;
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate) :
-_index(index), _a(), _b(), _x(), _y(),
-_model(model), _units(), _flts(), 
-_rate(rate),
+_index(index),
 _amt1(Mix(model->amt1)),
-_amt2(Mix(model->amt2))
+_amt2(Mix(model->amt2)),
+_a(), _b(), _x(), _y(),
+_units(), _flts(), _model(model)
 {
   for (int i = 0; i < 3; i++)
     _x[i].Clear();
@@ -27,7 +27,8 @@ _amt2(Mix(model->amt2))
     _flts[i] = Level(model->flts[i]);
 
   float freq = FreqHz(model->freq);
-  float w0 = 2.0f * PI * freq / _rate;
+  //assert(freq < rate / 2.0f);
+  float w0 = 2.0f * PI * freq / rate;
   float sinw0 = std::sinf(w0);
   float cosw0 = std::cosf(w0);
 
