@@ -10,8 +10,8 @@ static const float MaxBW = 6.0f;
 
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 FilterDSP::
-FilterDSP(FilterModel const* model, float rate) :
-_a(), _b(), _x(), _y(),
+FilterDSP(FilterModel const* model, int index, float rate) :
+_index(index), _a(), _b(), _x(), _y(),
 _model(model), _units(), _flts(), 
 _rate(rate),
 _amt1(Mix(model->amt1)),
@@ -23,7 +23,7 @@ _amt2(Mix(model->amt2))
     _y[i].Clear();
   for (int i = 0; i < UnitCount; i++)
     _units[i] = Level(model->units[i]);
-  for (int i = 0; i < FilterCount - 1; i++)
+  for (int i = 0; i < FilterCount; i++)
     _flts[i] = Level(model->flts[i]);
 
   float freq = FreqHz(model->freq);
@@ -91,6 +91,8 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   _x[0].Clear();
   for(int i = 0; i < UnitCount; i++)
     _x[0] += audio.units[i] * _units[i];
+  for(int i = 0; i < _index; i++)
+    _x[0] += audio.filts[i] * _flts[i];
   _y[0] = _x[0] * _b[0] + _x[1] * _b[1] + _x[2] * _b[2] - _y[1] * _a[1] - _y[2] * _a[2];
   _x[2] = _x[1];
   _x[1] = _x[0];

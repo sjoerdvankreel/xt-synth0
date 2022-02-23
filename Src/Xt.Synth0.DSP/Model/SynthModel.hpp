@@ -81,10 +81,10 @@ private:
   int32_t amt1, amt2;
   ModSource src1, src2;
   int32_t units[UnitCount];
-  int32_t flts[FilterCount - 1];
-  FilterModTarget tgt1, tgt2;
+  int32_t flts[FilterCount];
+  FilterModTarget tgt1, tgt2, pad__;
 };
-XTS_CHECK_SIZE(FilterModel, 64);
+XTS_CHECK_SIZE(FilterModel, 72);
 
 enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
@@ -149,7 +149,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filts[FilterCount];
 };
-XTS_CHECK_SIZE(AudioModel, 432);
+XTS_CHECK_SIZE(AudioModel, 456);
 
 struct XTS_ALIGN SynthModel
 {
@@ -163,7 +163,7 @@ private:
   PlotModel plot;
   AudioModel audio;
 };
-XTS_CHECK_SIZE(SynthModel, 792);
+XTS_CHECK_SIZE(SynthModel, 816);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

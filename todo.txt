@@ -25,3 +25,5 @@ div max amp = sum of audio in amp and filters ?
 if(unit1>0 etc)
 24db/oct filters
 comb filters
+dont need to recalc filter parameters per voice
+plot filter response
