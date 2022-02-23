@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
     public enum FilterModTarget { Freq, Res }
-    public enum FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF }
+    public enum FilterType { LPF, HPF, BPF, BSF, APF, CPF, CMF }
 
     public unsafe sealed class FilterModel : IUIParamGroupModel
     {

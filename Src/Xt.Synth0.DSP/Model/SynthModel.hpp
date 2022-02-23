@@ -68,7 +68,7 @@ private:
 XTS_CHECK_SIZE(EnvModel, 72);
 
 enum class FilterModTarget { Freq, Res };
-enum class FilterType { LPF, BPF, HPF, APF, BSF, CPF, CMF };
+enum class FilterType { LPF, HPF, BPF, BSF, APF, CPF, CMF };
 struct XTS_ALIGN FilterModel
 {
   friend class FilterDSP;

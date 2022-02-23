@@ -62,6 +62,14 @@ _amt2(Mix(model->amt2))
     _b[1] = 0.0f;
     _b[2] = -sinw0 / 2.0f;
     break;
+  case FilterType::BSF:
+    _a[0] = 1.0f + alphaBW;
+    _a[1] = -2.0f * cosw0;
+    _a[2] = 1.0f - alphaBW;
+    _b[0] = 1.0f;
+    _b[1] = -2.0f * cosw0;
+    _b[2] = 1.0f;
+    break;
   default:
     assert(false);
     break;
