@@ -25,26 +25,27 @@ _amt2(Mix(model->amt2))
     _flts[i] = Level(model->flts[i]);
 
   float freq = FreqHz(model->freq);
-  float q = MinQ + Level(model->res) * (MaxQ - MinQ);
   float w0 = 2.0f * PI * freq / _rate;
   float sinw0 = std::sinf(w0);
   float cosw0 = std::cosf(w0);
-  float alpha = sinw0 / (2.0f * q);
+
+  float q = MinQ + Level(model->res) * (MaxQ - MinQ);
+  float alphaQ = sinw0 / (2.0f * q);
 
   switch (model->type)
   {
   case FilterType::LPF:
-    _a[0] = 1.0f + alpha;
+    _a[0] = 1.0f + alphaQ;
     _a[1] = -2.0f * cosw0;
-    _a[2] = 1.0f - alpha;
+    _a[2] = 1.0f - alphaQ;
     _b[0] = (1.0f - cosw0) / 2.0f;
     _b[1] = 1.0f - cosw0;
     _b[2] = (1.0f - cosw0) / 2.0f;
     break;
   case FilterType::HPF:
-    _a[0] = 1.0f + alpha;
+    _a[0] = 1.0f + alphaQ;
     _a[1] = -2.0f * cosw0;
-    _a[2] = 1.0f - alpha;
+    _a[2] = 1.0f - alphaQ;
     _b[0] = (1.0f + cosw0) / 2.0f;
     _b[1] = -(1.0f + cosw0);
     _b[2] = (1.0f + cosw0) / 2.0f;
