@@ -9,7 +9,7 @@ static const float MaxQ = 100.0f;
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 FilterDSP::
 FilterDSP(FilterModel const* model, float rate) :
-_a(), _b(), _output(), _x(), _y(),
+_a(), _b(), _x(), _y(),
 _model(model), _units(), _flts(), 
 _rate(rate),
 _amt1(Mix(model->amt1)),
@@ -65,13 +65,17 @@ _amt2(Mix(model->amt2))
 AudioOutput 
 FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
-  _x[0] = audio.units[0];
-  AudioOutput result = _x[0] * _b[0] + _x[1] * _b[1] + _x[2] * _b[2] - _y[1] * _a[1] - _y[2] * _a[2];
+  _y[0].Clear();
+  if(!_model->on) return _y[0];
+  _x[0].Clear();
+  for(int i = 0; i < UnitCount; i++)
+    _x[0] += audio.units[i] * _units[i];
+  _y[0] = _x[0] * _b[0] + _x[1] * _b[1] + _x[2] * _b[2] - _y[1] * _a[1] - _y[2] * _a[2];
   _x[2] = _x[1];
   _x[1] = _x[0];
   _y[2] = _y[1];
-  _y[1] = result;
-  return result;
+  _y[1] = _y[0];
+  return _y[0];
 }
 
 } // namespace Xts

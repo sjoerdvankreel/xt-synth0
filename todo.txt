@@ -22,3 +22,4 @@ show routing in ui
 make it faster
 make filters
 div max amp = sum of audio in amp and filters
+if(unit1>0 etc)
