@@ -123,6 +123,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
     assert(false);
     break; }
   }  
+  
   assert(output.rate <= input.rate);  
   if(!output.spec) return;  
   output.min = 0.0f;

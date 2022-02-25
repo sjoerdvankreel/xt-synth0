@@ -58,7 +58,7 @@ AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel,
     std::get<AmpDSP>(state).Next(std::get<CvDSP>(state).Next(), {});
     output.lSamples->push_back(std::get<AmpDSP>(state)._amp); 
   };
-  return PlotDSP::RenderStaged(false, false, false, hold, envModel, input, output, factory, next, envOutput, release, end);
+  return PlotDSP::RenderStaged(hold, 0, envModel, input, output, factory, next, envOutput, release, end);
 }
 
 } // namespace Xts

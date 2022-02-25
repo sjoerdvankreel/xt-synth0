@@ -222,10 +222,13 @@ UnitDSP::Plot(UnitModel const& model, CvModel const& cvModel, bool spec, PlotInp
 {
   const int cycles = 5;
   if (!model.on) return;
+  PlotFlags flags = PlotNone;
+  flags |= PlotBipolar;
+  flags |= spec ? PlotSpec : 0;
   float freq = Freq(model, 4, UnitNote::C);
   auto next = [](std::tuple<CvDSP, UnitDSP>& state) { return std::get<UnitDSP>(state).Next(std::get<CvDSP>(state).Next()).Mono(); };
   auto factory = [&](float rate) { return std::make_tuple(CvDSP(&cvModel, 1.0f, input.bpm, rate), UnitDSP(&model, 4, UnitNote::C, rate)); };
-  PlotDSP::RenderCycled(spec, true, cycles, freq, input, output, factory, next);
+  PlotDSP::RenderCycled(cycles, freq, flags, input, output, factory, next);
 }
 
 } // namespace Xts

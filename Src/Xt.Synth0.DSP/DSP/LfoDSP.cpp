@@ -59,11 +59,13 @@ void
 LfoDSP::Plot(LfoModel const& model, bool spec, PlotInput const& input, PlotOutput& output)
 {
 	if (!model.on) return;
-  bool bipolar = IsBipolar(model.plty);
+  PlotFlags flags = PlotNone;
+  flags |= spec ? PlotSpec : 0;
+  flags |= IsBipolar(model.plty)? PlotBipolar: 0;
   float freq = Freq(model, input.bpm, input.rate);
   auto next = [](LfoDSP& dsp) { return dsp.Next().val; };
   auto factory = [&](float rate) { return LfoDSP(&model, input.bpm, rate); };
-  PlotDSP::RenderCycled(spec, bipolar, 1, freq, input, output, factory, next);
+  PlotDSP::RenderCycled(1, freq, flags, input, output, factory, next);
 }
 
 } // namespace Xts
