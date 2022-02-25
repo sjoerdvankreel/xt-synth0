@@ -27,3 +27,4 @@ if(unit1>0 etc)
 comb filters
 dont need to recalc filter parameters per voice
 plot filter response
+enable/disable plot
