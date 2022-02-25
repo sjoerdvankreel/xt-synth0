@@ -31,9 +31,9 @@ void PlotDSP::RenderCycled(
   PlotInput const& input, PlotOutput& output,
   Factory factory, Next next)
 {
-  assert((flags & Plot20Khz) == 0);
   assert((flags & PlotStereo) == 0);
- 
+  assert((flags & PlotNoResample) == 0);
+
   output.max = 1.0f;
   output.freq = freq;
   output.stereo = false;
@@ -66,10 +66,10 @@ void PlotDSP::RenderStaged(
   output.spec = (flags & PlotSpec) != 0;
   output.stereo = (flags & PlotStereo) != 0;
   output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
-  bool sr20k = (flags & Plot20Khz) != 0;
+  bool noResample = (flags & PlotNoResample) != 0;
   float fhold = TimeF(hold, input.rate);
   float releaseSamples = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
-  output.rate = sr20k? 20000.0f: output.spec ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
+  output.rate = output.spec || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
   fhold *= output.rate / input.rate;
   *output.vSplits = (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
 

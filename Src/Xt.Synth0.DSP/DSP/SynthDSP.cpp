@@ -22,7 +22,7 @@ SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, bool spec, int
     output.lSamples->push_back(dsp.Output().l); 
     output.rSamples->push_back(dsp.Output().r); 
   };
-  PlotFlags flags = PlotStereo | PlotBipolar | Plot20Khz;
+  PlotFlags flags = PlotStereo | PlotBipolar | PlotNoResample;
   if (spec) flags |= PlotSpec;
   PlotDSP::RenderStaged(hold, flags, envModel, input, output, factory, next, envOutput, release, end);
   output.vSplits->clear();
