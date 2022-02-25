@@ -159,7 +159,7 @@ namespace Xt.Synth0.UI
             var plot = app.Track.Synth.Plot;
             int w = (int)container.ActualWidth;
             double h = container.ActualHeight;
-            Args.Pixels = w;
+            Args.Pixels = w - PadLeft;
             RequestPlotData?.Invoke(null, Args);
             container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : Off;
             string header = $"{plot.Name}";
