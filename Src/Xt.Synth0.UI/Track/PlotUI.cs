@@ -71,20 +71,20 @@ namespace Xt.Synth0.UI
         static PointCollection MakeChannelData(List<float> samples,
             int w, double h, float min, float max, double @base, double scale)
         {
+            int width = w - PadLeft;
             double hPad = h - PadBottom;
             var result = new PointCollection();
-            for (int i = 0; i < samples.Count; i++)
+            for(int i = 0; i <= width; i++)
             {
-                var samplePos = (double)i / samples.Count;
-                var xSample = samplePos * samples.Count;
+                var xScreen = (double)i / width;
+                var xSample = xScreen * (samples.Count - 1);
                 var weight = xSample - (int)xSample;
                 var x1 = (int)Math.Ceiling(xSample);
                 var y0 = (1.0 - weight) * samples[(int)xSample];
                 var y1 = weight * samples[x1];
                 var y = @base + scale * (y0 + y1);
                 var yScreen = (1.0f - MaxLevel) * hPad + (1.0 - y) * MaxLevel * hPad;
-                var screenPos = i / (samples.Count - 1.0);
-                var l = PadLeft + screenPos * (w - PadLeft);
+                var l = PadLeft + xScreen * (w - PadLeft);
                 if (max - min == 0.0f)
                     throw new InvalidOperationException();
                 Point p = new Point(l, VPadText + yScreen / (max - min));
