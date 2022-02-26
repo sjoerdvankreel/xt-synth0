@@ -8,18 +8,27 @@ namespace Xts {
 
 class FilterDSP
 {
+  AudioOutput _output;
   int _index;
   float _amt1, _amt2;
-  float _a[3], _b[3];
-  AudioOutput _x[3], _y[3];
   float _units[UnitCount];
   float _flts[FilterCount];
   FilterModel const* _model;
+  int _cbdPlus, _cbdMin;
+  float _cbgPlus, _cbgMin;
+  float _bqa[3], _bqb[3];
+  AudioOutput _bqx[3], _bqy[3];
+  AudioOutput _cbx[16], _cby[16];
+private:
+  void InitComb();
+  void InitBQ(float rate);
+  AudioOutput GenerateBQ(AudioOutput audio);
+  AudioOutput GenerateComb(AudioOutput audio);
 public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);
 public:
-  AudioOutput Output() const { return _y[0]; };
+  AudioOutput Output() const { return _output; };
   AudioOutput Next(CvState const& cv, AudioState const& audio);
   static void Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& AudioModel, bool spec, int index, PlotInput const& input, PlotOutput& output);
 };

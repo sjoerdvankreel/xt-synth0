@@ -14,94 +14,143 @@ static const float MaxBW = 6.0f;
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate) :
+_output(),
 _index(index),
 _amt1(Mix(model->amt1)),
 _amt2(Mix(model->amt2)),
-_a(), _b(), _x(), _y(),
-_units(), _flts(), _model(model)
+_units(), _flts(), _model(model),
+_cbdPlus(model->dlyPlus),
+_cbdMin(model->dlyMin),
+_cbgPlus(Mix(model->gPlus)),
+_cbgMin(Mix(model->gMin)),
+_bqa(), _bqb(), _bqx(), _bqy(), _cbx(), _cby()
 {
-  for (int i = 0; i < 3; i++)
-    _x[i].Clear();
-  for (int i = 0; i < 3; i++)
-    _y[i].Clear();
   for (int i = 0; i < UnitCount; i++)
     _units[i] = Level(model->units[i]);
   for (int i = 0; i < FilterCount; i++)
     _flts[i] = Level(model->flts[i]);
+  switch (model->type)
+  {
+  case FilterType::Comb: InitComb(); break;
+  case FilterType::Bqd: InitBQ(rate); break;
+  default: assert(false); break;
+  }
+}
 
-  float freq = FreqHz(model->freq);
+// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
+AudioOutput
+FilterDSP::Next(CvState const& cv, AudioState const& audio)
+{
+  _output.Clear();
+  if (!_model->on) return _output;
+  for (int i = 0; i < UnitCount; i++)
+    _output += audio.units[i] * _units[i];
+  for (int i = 0; i < _index; i++)
+    _output += audio.filts[i] * _flts[i];
+  switch (_model->type)
+  {
+  case FilterType::Bqd: _output = GenerateBQ(_output); break;
+  case FilterType::Comb: _output = GenerateComb(_output); break;
+  default: assert(false); break;
+  }
+  return _output;
+}
+
+// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
+AudioOutput
+FilterDSP::GenerateBQ(AudioOutput audio)
+{
+  _bqy[0].Clear();
+  _bqx[0] = audio;
+  _bqy[0] = _bqx[0] * _bqb[0] + _bqx[1] * _bqb[1] + _bqx[2] * _bqb[2] - _bqy[1] * _bqa[1] - _bqy[2] * _bqa[2];
+  _bqx[2] = _bqx[1];
+  _bqx[1] = _bqx[0];
+  _bqy[2] = _bqy[1];
+  _bqy[1] = _bqy[0];
+  return _bqy[0];
+}
+
+// https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
+AudioOutput
+FilterDSP::GenerateComb(AudioOutput audio)
+{
+  return audio;
+}
+
+void 
+FilterDSP::InitComb()
+{
+  for (int i = 0; i < 16; i++)
+  {
+    _cbx[i].Clear();
+    _cby[i].Clear();
+  }
+}
+
+void
+FilterDSP::InitBQ(float rate)
+{
+  for (int i = 0; i < 3; i++)
+  {
+    _bqx[i].Clear();
+    _bqy[i].Clear();
+  }
+
+  float freq = FreqHz(_model->freq);
   float w0 = 2.0f * PI * freq / rate;
   float sinw0 = std::sinf(w0);
   float cosw0 = std::cosf(w0);
 
-  float q = MinQ + Level(model->res) * (MaxQ - MinQ);
+  float res = Level(_model->res);
+  float q = MinQ + res * (MaxQ - MinQ);
   float alphaQ = sinw0 / (2.0f * q);
-  float bw = (1.0f - Level(model->res)) * (MaxBW - MinBW);
+  float bw = (1.0f - res) * (MaxBW - MinBW);
   float alphaBW = sinw0 * std::sinhf(std::logf(2.0f) / 2.0f * bw * w0 / sinw0);
 
-  switch (model->bqType)
+  switch (_model->bqType)
   {
   case BiquadType::LPF:
-    _a[0] = 1.0f + alphaQ;
-    _a[1] = -2.0f * cosw0;
-    _a[2] = 1.0f - alphaQ;
-    _b[0] = (1.0f - cosw0) / 2.0f;
-    _b[1] = 1.0f - cosw0;
-    _b[2] = (1.0f - cosw0) / 2.0f;
+    _bqa[0] = 1.0f + alphaQ;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaQ;
+    _bqb[0] = (1.0f - cosw0) / 2.0f;
+    _bqb[1] = 1.0f - cosw0;
+    _bqb[2] = (1.0f - cosw0) / 2.0f;
     break;
   case BiquadType::HPF:
-    _a[0] = 1.0f + alphaQ;
-    _a[1] = -2.0f * cosw0;
-    _a[2] = 1.0f - alphaQ;
-    _b[0] = (1.0f + cosw0) / 2.0f;
-    _b[1] = -(1.0f + cosw0);
-    _b[2] = (1.0f + cosw0) / 2.0f;
+    _bqa[0] = 1.0f + alphaQ;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaQ;
+    _bqb[0] = (1.0f + cosw0) / 2.0f;
+    _bqb[1] = -(1.0f + cosw0);
+    _bqb[2] = (1.0f + cosw0) / 2.0f;
     break;
   case BiquadType::BPF:
-    _a[0] = 1.0f + alphaBW;
-    _a[1] = -2.0f * cosw0;
-    _a[2] = 1.0f - alphaBW;
-    _b[0] = sinw0 / 2.0f;
-    _b[1] = 0.0f;
-    _b[2] = -sinw0 / 2.0f;
+    _bqa[0] = 1.0f + alphaBW;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaBW;
+    _bqb[0] = sinw0 / 2.0f;
+    _bqb[1] = 0.0f;
+    _bqb[2] = -sinw0 / 2.0f;
     break;
   case BiquadType::BSF:
-    _a[0] = 1.0f + alphaBW;
-    _a[1] = -2.0f * cosw0;
-    _a[2] = 1.0f - alphaBW;
-    _b[0] = 1.0f;
-    _b[1] = -2.0f * cosw0;
-    _b[2] = 1.0f;
+    _bqa[0] = 1.0f + alphaBW;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaBW;
+    _bqb[0] = 1.0f;
+    _bqb[1] = -2.0f * cosw0;
+    _bqb[2] = 1.0f;
     break;
   default:
     assert(false);
     break;
   }
-  
-  _a[1] /= _a[0];
-  _a[2] /= _a[0];
-  _b[0] /= _a[0];
-  _b[1] /= _a[0];
-  _b[2] /= _a[0];
-}
 
-// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
-AudioOutput 
-FilterDSP::Next(CvState const& cv, AudioState const& audio)
-{
-  _y[0].Clear();
-  if(!_model->on) return _y[0];
-  _x[0].Clear();
-  for(int i = 0; i < UnitCount; i++)
-    _x[0] += audio.units[i] * _units[i];
-  for(int i = 0; i < _index; i++)
-    _x[0] += audio.filts[i] * _flts[i];
-  _y[0] = _x[0] * _b[0] + _x[1] * _b[1] + _x[2] * _b[2] - _y[1] * _a[1] - _y[2] * _a[2];
-  _x[2] = _x[1];
-  _x[1] = _x[0];
-  _y[2] = _y[1];
-  _y[1] = _y[0];
-  return _y[0];
+  _bqa[1] /= _bqa[0];
+  _bqa[2] /= _bqa[0];
+  _bqb[0] /= _bqa[0];
+  _bqb[1] /= _bqa[0];
+  _bqb[2] /= _bqa[0];
 }
 
 void
