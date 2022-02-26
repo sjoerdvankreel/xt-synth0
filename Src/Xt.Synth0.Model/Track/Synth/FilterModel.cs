@@ -48,7 +48,7 @@ namespace Xt.Synth0.Model
         public Param DlyMin { get; } = new(DlyMinInfo);
         public Param DlyPlus { get; } = new(DlyPlusInfo);
 
-        public int Columns => 3;
+        public int Columns => 4;
         public int Index { get; }
         public Param Enabled => On;
         public string Name => $"Filter {Index + 1}";
@@ -61,12 +61,10 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { Freq, 1 }, { GMin, 1 }, { DlyMin, 2 },
-            { BqType, 3 }, { Res, 4 }, { GPlus, 4 }, { DlyPlus, 5 },
-            { Unit1, 6 }, { Unit2, 7 }, { Unit3, 8 },
-            { Flt1, 9 }, { Flt2, 10 },
-            { Src1, 12 }, { Tgt1, 13 }, { Amt1, 14 },
-            { Src2, 15 }, { Tgt2, 16 }, { Amt2, 17 }
+            { Type, 0 }, { BqType, 1 }, { GMin, 1 }, { Freq, 2 }, { DlyMin, 2 }, { Res, 3 }, { GPlus, 3 },
+            { Src1, 4 }, { Src2, 5 }, { Unit1, 6 }, { DlyPlus, 7 },
+            { Tgt1, 8 }, { Tgt2, 9 }, { Unit2, 10 }, { Flt1, 11 },
+            { Amt1, 12 }, { Amt2, 13 }, { Unit3, 14 }, { Flt2, 15 }
         };
 
         static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);
