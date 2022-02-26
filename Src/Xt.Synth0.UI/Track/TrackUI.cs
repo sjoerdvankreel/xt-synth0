@@ -30,7 +30,6 @@ namespace Xt.Synth0.UI
                 result.Add(GroupUI.Make(app, synth.Units[i]), Dock.Top);
             for (int i = 0; i < Model.Model.LfoCount; i++)
                 result.Add(GroupUI.Make(app, synth.Lfos[i]), Dock.Top);
-            result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             result.Add(PlotUI.Make(app), Dock.Top);
             return result;
         }
@@ -39,10 +38,11 @@ namespace Xt.Synth0.UI
         {
             var synth = app.Track.Synth;
             var result = new DockPanel();
-            for (int i = 0; i < Model.Model.FilterCount; i++)
-                result.Add(GroupUI.Make(app, synth.Filters[i]), Dock.Top);
             for (int i = 0; i < Model.Model.EnvCount; i++)
                 result.Add(GroupUI.Make(app, synth.Envs[i]), Dock.Top);
+            for (int i = 0; i < Model.Model.FilterCount; i++)
+                result.Add(GroupUI.Make(app, synth.Filters[i]), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             return result;
         }
 
