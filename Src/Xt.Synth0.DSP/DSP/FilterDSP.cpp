@@ -7,7 +7,7 @@
 namespace Xts {
 
 static const float MinQ = 0.5f;
-static const float MaxQ = 100.0f;
+static const float MaxQ = 40.0f;
 static const float MinBW = 0.5f;
 static const float MaxBW = 6.0f;
 
