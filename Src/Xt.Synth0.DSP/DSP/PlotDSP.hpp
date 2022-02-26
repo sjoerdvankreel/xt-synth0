@@ -3,12 +3,21 @@
 
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
+
+#include <string>
+#include <vector>
 #include <algorithm>
 
 namespace Xts {
 
 class PlotDSP
 {
+  static std::vector<VSplit> BiVSPlits;
+  static std::vector<VSplit> UniVSPlits;
+  static std::vector<VSplit> StereoVSPlits;
+  static std::wstring FormatEnv(EnvStage stage);
+  static std::vector<VSplit> MakeBiVSplits(float max);
+
 public:
   template <class Factory, class Next>
   static void RenderCycled(

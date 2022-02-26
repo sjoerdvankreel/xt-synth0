@@ -1,51 +1,6 @@
 #include "DSP.hpp"
-#include <iomanip>
-#include <sstream>
 
 namespace Xts {
-
-static std::wstring 
-VSplitMarker(float val, float max)
-{
-  std::wstringstream str;
-  str << std::fixed << std::setprecision(1) << val;
-  return str.str();
-}
-
-std::vector<VSplit> StereoVSPlits = {
-  { -1.0f, L"+1" },
-  { -0.5f, L"L" },
-  { 0.0f, L"-+" },
-  { 0.5f, L"R" },
-  { 1.0f, L"-1" }
-};
-
-std::vector<VSplit> BiVSPlits = { 
-  { -1.0f, L"+1" }, 
-  { -0.5f, std::wstring(1, UnicodeOneHalf) },
-  { 0.0f, L"0" }, 
-  { 0.5f, L"-" + std::wstring(1, UnicodeOneHalf) },
-  { 1.0f, L"-1" } 
-};
-
-std::vector<VSplit> UniVSPlits = { 
-  { 0.0f, L"1" }, 
-  { 0.25f, std::wstring(1, UnicodeThreeQuarter) },
-  { 0.5f, std::wstring(1, UnicodeOneHalf) },
-  { 0.75f, std::wstring(1, UnicodeOneQuarter) },
-  { 1.0f, L"0" } 
-};
-
-std::vector<VSplit> MakeBiVSplits(float max)
-{
-  std::vector<VSplit> result;
-  result.emplace_back(-1.0f, VSplitMarker(max, max));
-  result.emplace_back(-0.5f, VSplitMarker(max / 2.0f, max));
-  result.emplace_back(-0.0f, L"0");
-  result.emplace_back(0.5f, VSplitMarker(-max / 2.0f, max));
-  result.emplace_back(1.0f, VSplitMarker(-max, max));
-  return result;
-}
 
 static void
 Fft(std::complex<float>* x, std::complex<float>* scratch, size_t count)
@@ -76,22 +31,6 @@ Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vec
   for(size_t i = 0; i < x.size(); i++)
     fft[i] = std::complex<float>(x[i], 0.0f);
   Fft(fft.data(), scratch.data(), x.size());
-}
-
-std::wstring
-FormatEnv(EnvStage stage)
-{
-  switch (stage)
-  {
-  case EnvStage::A: return L"A";
-  case EnvStage::D: return L"D";
-  case EnvStage::S: return L"S";
-  case EnvStage::R: return L"R";
-  case EnvStage::Dly: return L"D";
-  case EnvStage::Hld: return L"H";
-  case EnvStage::End: return L"";
-  default: assert(false); return L"";
-  }
 }
 
 static bool
