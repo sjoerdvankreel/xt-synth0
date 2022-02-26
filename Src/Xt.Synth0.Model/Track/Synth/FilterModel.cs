@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum FilterType { Biquad, Comb };
+    public enum FilterType { Bqd, Comb };
     public enum BiquadType { LPF, HPF, BPF, BSF };
     public enum FilterModTarget { Freq, Res, GPlus, DlyPlus, GMin, DlyMin };
 
@@ -70,7 +70,7 @@ namespace Xt.Synth0.Model
         static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);
         static readonly IRelevance Relevance23 = Relevance.Index(i => i > 0);
         static readonly IRelevance RelevanceComb = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
-        static readonly IRelevance RelevanceBiquad = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t == FilterType.Biquad);
+        static readonly IRelevance RelevanceBiquad = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t == FilterType.Bqd);
 
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), nameof(On), "Enabled", false);
         static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->type, 0, nameof(Type), nameof(Type), "Type");
