@@ -12,7 +12,7 @@ namespace Xt.Synth0.UI
     {
         const int VPadText = 7;
         const int HPadText = 3;
-        const int PadLeft = 18;
+        const int PadLeft = 30;
         const int PadBottom = 20;
         const double MaxLevel = 0.99;
 
@@ -204,7 +204,7 @@ namespace Xt.Synth0.UI
                 double pos = (Args.VSplitVals[i] - min) / (max - min);
                 double y = VPadText + pos * hPad;
                 result.Add(Split(PadLeft, w, y, y));
-                result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i].PadLeft(2)));
+                result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i].PadLeft(4)));
             }
 
             for (int i = 0; i < Args.HSplitVals.Count; i++)
