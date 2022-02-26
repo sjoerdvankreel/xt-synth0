@@ -20,13 +20,10 @@ save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
 make it faster
-make filters
-div max amp = sum of audio in amp and filters ?
 if(unit1>0 etc)
 24db/oct filters
 comb filters
 dont need to recalc filter parameters per voice
 plot filter freq response
-enable/disable plot
 more filter types
 more unit types
