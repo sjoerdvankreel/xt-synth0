@@ -39,7 +39,7 @@ namespace Xt.Synth0.Model
         public Param HldStp { get; } = new(HldStpInfo);
         public Param DlyStp { get; } = new(DlyStpInfo);
 
-        public int Columns => 4;
+        public int Columns => 3;
         public int Index { get; }
         public Param Enabled => On;
         public string Name => $"Env {Index + 1}";
@@ -50,9 +50,10 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { Dly, 1 }, { DlyStp, 1 }, { A, 2 }, { AStp, 2 }, { ASlp, 3 },
-            { Sync, 4 }, { Hld, 5 }, { HldStp, 5 }, { D, 6 }, { DStp, 6 }, { DSlp, 7 },
-            { Inv, 8 }, { S, 9 }, { R, 10 }, { RStp, 10 }, { RSlp, 11 }
+            { Type, 0 }, { Sync, 1 }, { Inv, 2 },
+            { Dly, 3 }, { DlyStp, 3 }, { A, 4 }, { AStp, 4 }, { ASlp, 5 },
+            { Hld, 6 }, { HldStp, 6 }, { D, 7 }, { DStp, 7 }, { DSlp, 8 },
+            { S, 9 }, { R, 10 }, { RStp, 10 }, { RSlp, 11 }
         };
 
         internal EnvModel(int index) => Index = index;
