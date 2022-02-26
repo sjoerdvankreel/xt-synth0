@@ -54,12 +54,12 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo LvlInfo = ParamInfo.Level(p => &((Native*)p)->lvl, 1, nameof(Lvl), nameof(Lvl), "Level", 128);
         static readonly ParamInfo PanAmtInfo = ParamInfo.Mix(p => &((Native*)p)->panAmt, 2, nameof(PanAmt), "Amt", "Pan mod amount");
         static readonly ParamInfo LvlAmtInfo = ParamInfo.Mix(p => &((Native*)p)->lvlAmt, 1, nameof(LvlAmt), "Amt", "Level LFO amount");
-        static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flts[0], 0, nameof(Flt1), nameof(Flt1), "Filter 1 amount", 0);
-        static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->flts[1], 0, nameof(Flt2), nameof(Flt2), "Filter 2 amount", 0);
-        static readonly ParamInfo Flt3Info = ParamInfo.Level(p => &((Native*)p)->flts[2], 0, nameof(Flt3), nameof(Flt3), "Filter 3 amount", 0);
-        static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->units[0], 0, nameof(Unit1), nameof(Unit1), "Unit 1 amount", 255);
-        static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->units[1], 0, nameof(Unit2), nameof(Unit2), "Unit 2 amount", 0);
-        static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->units[2], 0, nameof(Unit3), nameof(Unit3), "Unit 3 amount", 0);
+        static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flts[0], 0, nameof(Flt1), "Ft1", "Filter 1 amount", 0);
+        static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->flts[1], 0, nameof(Flt2), "Ft2", "Filter 2 amount", 0);
+        static readonly ParamInfo Flt3Info = ParamInfo.Level(p => &((Native*)p)->flts[2], 0, nameof(Flt3), "Ft3", "Filter 3 amount", 0);
+        static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->units[0], 0, nameof(Unit1), "Ut1", "Unit 1 amount", 255);
+        static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->units[1], 0, nameof(Unit2), "Ut2", "Unit 2 amount", 0);
+        static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->units[2], 0, nameof(Unit3), "Ut3", "Unit 3 amount", 0);
         static readonly ParamInfo LvlSrcInfo = ParamInfo.List<AmpLfoSource>(p => &((Native*)p)->lvlSrc, 1, nameof(LvlSrc), "LFO", "Level LFO source");
         static readonly ParamInfo EnvSrcInfo = ParamInfo.List<AmpEnvSource>(p => &((Native*)p)->envSrc, 1, nameof(EnvSrc), "Env", "Level env source");
         static readonly ParamInfo PanSrcInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panSrc, 2, nameof(PanSrc), nameof(PanSrc), "Pan mod source");
