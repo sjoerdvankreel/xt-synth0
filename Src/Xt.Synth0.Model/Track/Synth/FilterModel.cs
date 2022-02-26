@@ -88,10 +88,10 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flts[0], 1, nameof(Flt1), "Ft1", "Filter 1 amount", 0, Relevance23);
         static readonly ParamInfo ResInfo = ParamInfo.Level(p => &((Native*)p)->res, 0, nameof(Res), nameof(Res), "Resonance", 0, RelevanceBiquad);
         static readonly ParamInfo FreqInfo = ParamInfo.Freq(p => &((Native*)p)->freq, 0, nameof(Freq), "Frq", "Cutoff frequency", 0, RelevanceBiquad);
-        static readonly ParamInfo BqTypeInfo = ParamInfo.List<BiquadType>(p => &((Native*)p)->bqType, 0, nameof(BqType), nameof(Type), "Type", null, RelevanceBiquad);        
-        static readonly ParamInfo GMinInfo = ParamInfo.Mix(p => &((Native*)p)->gMin, 0, nameof(GMin), "Gn-", "Feedback gain", RelevanceComb);
-        static readonly ParamInfo GPlusInfo = ParamInfo.Mix(p => &((Native*)p)->gPlus, 0, nameof(GPlus), "Gn+", "Feedforward gain", RelevanceComb);
-        static readonly ParamInfo DlyMinInfo = ParamInfo.Select(p => &((Native*)p)->dlyMin, 0, nameof(DlyMin), "Dly-", "Feedback delay", 1, 16, 1, RelevanceComb);
-        static readonly ParamInfo DlyPlusInfo = ParamInfo.Select(p => &((Native*)p)->dlyPlus, 0, nameof(DlyPlus), "Dly+", "Feedforward delay", 1, 16, 1, RelevanceComb);
+        static readonly ParamInfo BqTypeInfo = ParamInfo.List<BiquadType>(p => &((Native*)p)->bqType, 0, nameof(BqType), nameof(Type), "Biquad type", null, RelevanceBiquad);        
+        static readonly ParamInfo GMinInfo = ParamInfo.Mix(p => &((Native*)p)->gMin, 0, nameof(GMin), "Gn-", "Comb feedback gain", RelevanceComb);
+        static readonly ParamInfo GPlusInfo = ParamInfo.Mix(p => &((Native*)p)->gPlus, 0, nameof(GPlus), "Gn+", "Comb feedforward gain", RelevanceComb);
+        static readonly ParamInfo DlyMinInfo = ParamInfo.Select(p => &((Native*)p)->dlyMin, 0, nameof(DlyMin), "Dly-", "Comb feedback delay", 1, 16, 1, RelevanceComb);
+        static readonly ParamInfo DlyPlusInfo = ParamInfo.Select(p => &((Native*)p)->dlyPlus, 0, nameof(DlyPlus), "Dly+", "Comb feedforward delay", 1, 16, 1, RelevanceComb);
     }
 }
