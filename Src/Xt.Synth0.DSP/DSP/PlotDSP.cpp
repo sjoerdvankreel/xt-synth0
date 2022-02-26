@@ -16,6 +16,8 @@ namespace Xts {
 static std::wstring
 VSplitMarker(float val, float max)
 {
+  if(max >= 10)
+    return std::to_wstring(static_cast<int>(std::roundf(val)));
   std::wstringstream str;
   str << std::fixed << std::setprecision(1) << val;
   return str.str();
