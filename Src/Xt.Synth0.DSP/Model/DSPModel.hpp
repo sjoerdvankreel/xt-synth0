@@ -14,7 +14,8 @@ inline constexpr PlotFlags PlotNone = 0x0;
 inline constexpr PlotFlags PlotSpec = 0x1;
 inline constexpr PlotFlags PlotStereo = 0x2;
 inline constexpr PlotFlags PlotBipolar = 0x4;
-inline constexpr PlotFlags PlotNoResample = 0x8;
+inline constexpr PlotFlags PlotAutoRange = 0x8;
+inline constexpr PlotFlags PlotNoResample = 0x10;
 
 inline constexpr wchar_t UnicodePi = L'\u03C0';
 inline constexpr wchar_t UnicodeOneHalf = L'\u00BD';

@@ -111,6 +111,7 @@ FilterDSP::Plot(FilterModel const& model, CvModel const& cvModel, AudioModel con
   if (!model.on) return;
   PlotFlags flags = PlotNone;
   flags |= PlotBipolar;
+  flags |= PlotAutoRange;
   flags |= spec ? PlotSpec : 0;
   float freq = FreqNote(5 * 12 + static_cast<int>(UnitNote::C));
   auto factory = [&](float rate) 

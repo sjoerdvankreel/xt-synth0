@@ -36,6 +36,7 @@ void PlotDSP::RenderCycled(
   assert((flags & PlotStereo) == 0);
   assert((flags & PlotNoResample) == 0);
 
+  float max = 1.0f;
   output.max = 1.0f;
   output.freq = freq;
   output.clip = false;
@@ -53,14 +54,23 @@ void PlotDSP::RenderCycled(
   for (int i = 0; i < samples; i++)
   {
     float sample = next(state);
-    output.clip |= Clip(sample);
+    max = std::max(max, std::fabs(sample));
     output.lSamples->push_back(sample);
   }
 
-  *output.vSplits = (flags & PlotBipolar) != 0 ? BiVSPlits: UniVSPlits;
   output.hSplits->emplace_back(samples, L"");
   for (int i = 0; i < cycles * 2; i++)
     output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
+  if ((flags & PlotAutoRange) == 0)
+  {
+    assert(max <= 1.0f);
+    *output.vSplits = (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
+    return;
+  }
+  
+  assert((flags & PlotBipolar) != 0);
+  for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
+  *output.vSplits = MakeBiVSplits(max);
 }
 
 template <
@@ -71,6 +81,8 @@ void PlotDSP::RenderStaged(
   EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
   Factory factory, Next next, Left left, Right right, EnvOutput envOutput, Release release, End end)
 {
+  assert((flags & PlotAutoRange) == 0);
+
   output.max = 1.0f;
   output.clip = false;
   output.spec = (flags & PlotSpec) != 0;

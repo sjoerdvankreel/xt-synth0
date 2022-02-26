@@ -26,6 +26,17 @@ std::vector<VSplit> UniVSPlits = {
   { 1.0f, L"0" } 
 };
 
+std::vector<VSplit> MakeBiVSplits(float max)
+{
+  std::vector<VSplit> result;
+  result.emplace_back(-1.0f, std::to_wstring(max));
+  result.emplace_back(-0.5f, std::to_wstring(max / 2.0f));
+  result.emplace_back(-0.0f, L"0");
+  result.emplace_back(0.5f, std::to_wstring(-max / 2.0f));
+  result.emplace_back(1.0f, std::to_wstring(-max));
+  return result;
+}
+
 static void
 Fft(std::complex<float>* x, std::complex<float>* scratch, size_t count)
 {
