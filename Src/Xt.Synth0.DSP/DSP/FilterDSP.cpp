@@ -11,7 +11,6 @@ static const float MaxQ = 40.0f;
 static const float MinBW = 0.5f;
 static const float MaxBW = 6.0f;
 
-// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate) :
 _output(),
@@ -56,6 +55,31 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   return _output;
 }
 
+void
+FilterDSP::InitComb()
+{
+  for (int i = 0; i <= _cbdPlus; i++)
+    _cbx[i].Clear();
+  for (int i = 0; i <= _cbdMin; i++)
+    _cby[i].Clear();
+}
+
+// https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
+AudioOutput
+FilterDSP::GenerateComb(AudioOutput audio)
+{
+  _cby[0].Clear();
+  _cbx[0] = audio;
+  _cby[0] = _cbx[0] + _cbx[_cbdPlus] * _cbgPlus + _cby[_cbdMin] * _cbgMin;
+  for (int i = _cbdPlus; i > 0; i--)
+    _cbx[i] = _cbx[i - 1];
+  for (int i = _cbdMin; i > 0; i--)
+    _cby[i] = _cby[i - 1];
+  assert(!std::isnan(_cby[0].l));
+  assert(!std::isnan(_cby[0].r));
+  return _cby[0];
+}
+
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 AudioOutput
 FilterDSP::GenerateBQ(AudioOutput audio)
@@ -67,26 +91,12 @@ FilterDSP::GenerateBQ(AudioOutput audio)
   _bqx[1] = _bqx[0];
   _bqy[2] = _bqy[1];
   _bqy[1] = _bqy[0];
+  assert(!std::isnan(_bqy[0].l));
+  assert(!std::isnan(_bqy[0].r));
   return _bqy[0];
 }
 
-// https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
-AudioOutput
-FilterDSP::GenerateComb(AudioOutput audio)
-{
-  return audio;
-}
-
-void 
-FilterDSP::InitComb()
-{
-  for (int i = 0; i < 16; i++)
-  {
-    _cbx[i].Clear();
-    _cby[i].Clear();
-  }
-}
-
+// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 void
 FilterDSP::InitBQ(float rate)
 {

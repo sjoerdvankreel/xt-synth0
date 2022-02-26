@@ -18,7 +18,7 @@ class FilterDSP
   float _cbgPlus, _cbgMin;
   float _bqa[3], _bqb[3];
   AudioOutput _bqx[3], _bqy[3];
-  AudioOutput _cbx[16], _cby[16];
+  AudioOutput _cbx[256], _cby[256];
 private:
   void InitComb();
   void InitBQ(float rate);

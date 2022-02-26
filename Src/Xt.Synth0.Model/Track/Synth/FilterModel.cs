@@ -61,8 +61,8 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { BqType, 1 }, { DlyMin, 1 }, { Res, 2 }, { DlyPlus, 2 }, { Freq, 3 }, { GMin, 3 },
-            { Unit1, 4 }, { Unit2, 5 }, { Unit3, 6 }, { GPlus, 7 },
+            { Type, 0 }, { BqType, 1 }, { DlyPlus, 1 }, { Res, 2 }, { DlyMin, 2 }, { Freq, 3 }, { GPlus, 3 },
+            { Unit1, 4 }, { Unit2, 5 }, { Unit3, 6 }, { GMin, 7 },
             { Src1, 8 }, { Tgt1, 9 }, { Amt1, 10 }, { Flt1, 11 },
             { Src2, 12 }, { Tgt2, 13 }, { Amt2, 14 }, { Flt2, 15 }
         };
@@ -91,7 +91,7 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo BqTypeInfo = ParamInfo.List<BiquadType>(p => &((Native*)p)->bqType, 0, nameof(BqType), nameof(Type), "Biquad type", null, RelevanceBiquad);        
         static readonly ParamInfo GMinInfo = ParamInfo.Mix(p => &((Native*)p)->gMin, 0, nameof(GMin), "Gn-", "Comb feedback gain", RelevanceComb);
         static readonly ParamInfo GPlusInfo = ParamInfo.Mix(p => &((Native*)p)->gPlus, 0, nameof(GPlus), "Gn+", "Comb feedforward gain", RelevanceComb);
-        static readonly ParamInfo DlyMinInfo = ParamInfo.Select(p => &((Native*)p)->dlyMin, 0, nameof(DlyMin), "Dly-", "Comb feedback delay", 1, 16, 1, RelevanceComb);
-        static readonly ParamInfo DlyPlusInfo = ParamInfo.Select(p => &((Native*)p)->dlyPlus, 0, nameof(DlyPlus), "Dly+", "Comb feedforward delay", 1, 16, 1, RelevanceComb);
+        static readonly ParamInfo DlyMinInfo = ParamInfo.Select(p => &((Native*)p)->dlyMin, 0, nameof(DlyMin), "Dly-", "Comb feedback delay", 1, 255, 128, RelevanceComb);
+        static readonly ParamInfo DlyPlusInfo = ParamInfo.Select(p => &((Native*)p)->dlyPlus, 0, nameof(DlyPlus), "Dly+", "Comb feedforward delay", 1, 255, 128, RelevanceComb);
     }
 }
