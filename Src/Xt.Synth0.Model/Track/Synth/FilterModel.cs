@@ -62,9 +62,9 @@ namespace Xt.Synth0.Model
         {
             { On, -1 },
             { Type, 0 }, { BqType, 1 }, { GMin, 1 }, { Freq, 2 }, { DlyMin, 2 }, { Res, 3 }, { GPlus, 3 },
-            { Src1, 4 }, { Src2, 5 }, { Unit1, 6 }, { DlyPlus, 7 },
-            { Tgt1, 8 }, { Tgt2, 9 }, { Unit2, 10 }, { Flt1, 11 },
-            { Amt1, 12 }, { Amt2, 13 }, { Unit3, 14 }, { Flt2, 15 }
+            { Unit1, 4 }, { Unit2, 5 }, { Unit3, 6 }, { DlyPlus, 7 },
+            { Src1, 8 }, { Tgt1, 9 }, { Amt1, 10 }, { Flt1, 11 },
+            { Src2, 12 }, { Tgt2, 13 }, { Amt2, 14 }, { Flt2, 15 }
         };
 
         static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);
