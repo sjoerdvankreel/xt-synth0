@@ -22,11 +22,10 @@ namespace Xt.Synth0.UI
             internal PointCollection r;
         }
 
-        static readonly UIElement Off;
         static readonly RequestPlotDataEventArgs Args = new();
         public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 
-        static PlotUI()
+        static FrameworkElement MakeOff()
         {
             var dock = new DockPanel();
             var label = dock.Add(Create.Label("Plot OFF"));
@@ -34,7 +33,7 @@ namespace Xt.Synth0.UI
             label.VerticalAlignment = VerticalAlignment.Center;
             label.HorizontalAlignment = HorizontalAlignment.Center;
             label.SetResourceReference(Control.ForegroundProperty, Utility.RowDisabledKey);
-            Off = Create.ThemedContent(dock);
+            return Create.ThemedContent(dock);
         }
 
         internal static GroupBox Make(AppModel app)
@@ -54,9 +53,20 @@ namespace Xt.Synth0.UI
 
         static UIElement MakeContent(AppModel app, TextBlock text)
         {
-            var result = new DockPanel();
-            result.Add(GroupUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
-            result.Add(MakePlotContent(app, text), Dock.Top);
+            var result = new Grid();
+            var dock = new DockPanel();
+            var plot = app.Track.Synth.Plot;
+            dock.Add(GroupUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
+            dock.Add(MakePlotContent(app, text), Dock.Top);
+            var conv = new VisibilityConverter<int>(true, 1);
+            var binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
+            dock.SetBinding(UIElement.VisibilityProperty, binding);
+            result.Add(dock);
+            var off = MakeOff();
+            conv = new VisibilityConverter<int>(true, 0);
+            binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
+            off.SetBinding(UIElement.VisibilityProperty, binding);
+            result.Add(off);
             return result;
         }
 
@@ -81,7 +91,7 @@ namespace Xt.Synth0.UI
             int width = w - PadLeft;
             double hPad = h - PadBottom;
             var result = new PointCollection();
-            for(int i = 0; i <= width; i++)
+            for (int i = 0; i <= width; i++)
             {
                 var xScreen = (double)i / width;
                 var xSample = xScreen * (samples.Count - 1);
@@ -164,11 +174,17 @@ namespace Xt.Synth0.UI
         static void Update(AppModel app, TextBlock text, ContentControl container)
         {
             var plot = app.Track.Synth.Plot;
+            if (plot.On.Value == 0)
+            {
+                text.Text = null;
+                container.Content = MakeOff();
+                return;
+            }
             int w = (int)container.ActualWidth;
             double h = container.ActualHeight;
             Args.Pixels = w - PadLeft;
             RequestPlotData?.Invoke(null, Args);
-            container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : Off;
+            container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : MakeOff();
             string header = $"{Args.LSamples.Count} samples";
             if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
             if (Args.Clip) header += " (Clip)";
