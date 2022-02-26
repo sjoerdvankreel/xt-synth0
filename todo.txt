@@ -27,3 +27,5 @@ dont need to recalc filter parameters per voice
 plot filter freq response
 more filter types
 more unit types
+less resonance/depend on filttype ?
+filter keyboard track
