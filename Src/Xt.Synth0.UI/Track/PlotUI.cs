@@ -37,12 +37,19 @@ namespace Xt.Synth0.UI
             Off = Create.ThemedContent(dock);
         }
 
-        internal static UIElement Make(AppModel app)
+        internal static GroupBox Make(AppModel app)
         {
             var text = new TextBlock();
             var plot = app.Track.Synth.Plot;
             text.VerticalAlignment = VerticalAlignment.Center;
-            return Create.ThemedGroup(app.Settings, plot, MakeContent(app, text), text);
+            var result = Create.ThemedGroup(app.Settings, plot, MakeContent(app, text));
+            var wrap = new WrapPanel();
+            wrap.Add(Create.Text(plot.Name));
+            var enabled = wrap.Add(ParamUI.MakeControl(app, plot.ThemeGroup, plot.Enabled));
+            enabled.Margin = new(3.0, 0.0, 3.0, 0.0);
+            wrap.Add(text);
+            result.Header = wrap;
+            return result;
         }
 
         static UIElement MakeContent(AppModel app, TextBlock text)
@@ -162,9 +169,7 @@ namespace Xt.Synth0.UI
             Args.Pixels = w - PadLeft;
             RequestPlotData?.Invoke(null, Args);
             container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : Off;
-            string header = $"{plot.Name}";
-            header += Args.Freq == 0.0f ? " @ " : " ";
-            header += $"{Args.LSamples.Count} samples";
+            string header = $"{Args.LSamples.Count} samples";
             if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
             if (Args.Clip) header += " (Clip)";
             text.Text = header;
