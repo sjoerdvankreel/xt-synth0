@@ -26,7 +26,7 @@ if(unit1>0 etc)
 24db/oct filters
 comb filters
 dont need to recalc filter parameters per voice
-plot filter response
+plot filter freq response
 enable/disable plot
 more filter types
 more unit types

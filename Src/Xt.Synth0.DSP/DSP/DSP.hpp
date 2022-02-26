@@ -14,15 +14,17 @@
 namespace Xts {
 
 inline float Eps = 1e-3f;
-inline float MaxLevel = 0.95f;
 inline float PI = static_cast<float>(3.14159265358979323846);
 
 extern std::vector<VSplit> BiVSPlits;
 extern std::vector<VSplit> UniVSPlits;
-std::wstring FormatEnv(EnvStage stage);
+extern std::vector<VSplit> StereoVSPlits;
+
 float Modulate(float val, bool bip, float amt, CvOutput cv);
 CvOutput ModulationInput(CvState const& cv, ModSource src);
 ModInput ModulationInput(CvState const& cv, ModSource src1, ModSource src2);
+
+std::wstring FormatEnv(EnvStage stage);
 void Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vector<std::complex<float>>& scratch);
 
 inline float BiToUni2(float val)
@@ -57,8 +59,8 @@ NextPow2(uint64_t x)
 inline bool
 Clip(float& val)
 {
-  if (val > MaxLevel) return val = MaxLevel, true;
-  if (val < -MaxLevel) return val = -MaxLevel, true;
+  if (val > 1.0f) return val = 1.0f, true;
+  if (val < -1.0f) return val = -1.0f, true;
   return false;
 }
 

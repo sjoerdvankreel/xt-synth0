@@ -16,11 +16,13 @@ public:
     PlotInput const& input, PlotOutput& output, 
     Factory factory, Next next);
 
-  template <class Factory, class Next, class EnvOutput, class Release, class End>
+  template <
+    class Factory, class Next, class Left, class Right, 
+    class EnvOutput, class Release, class End>
   static void RenderStaged(
     int hold, PlotFlags flags,
     EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
-    Factory factory, Next next, EnvOutput envOutput, Release release, End end);
+    Factory factory, Next next, Left left, Right right, EnvOutput envOutput, Release release, End end);
 
   static void Render(SynthModel const& model, PlotInput const& input, PlotOutput& output);
 };
@@ -36,6 +38,7 @@ void PlotDSP::RenderCycled(
 
   output.max = 1.0f;
   output.freq = freq;
+  output.clip = false;
   output.stereo = false;
   output.spec = (flags & PlotSpec) != 0;
   output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
@@ -48,7 +51,12 @@ void PlotDSP::RenderCycled(
   float fsamples = output.spec ? output.rate : regular;
   int samples = static_cast<int>(std::ceilf(fsamples));
   for (int i = 0; i < samples; i++)
-    output.lSamples->push_back(next(state));
+  {
+    float sample = next(state);
+    output.clip |= Clip(sample);
+    assert(!output.clip);
+    output.lSamples->push_back(sample);
+  }
 
   *output.vSplits = (flags & PlotBipolar) != 0 ? BiVSPlits: UniVSPlits;
   output.hSplits->emplace_back(samples, L"");
@@ -56,13 +64,16 @@ void PlotDSP::RenderCycled(
     output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
 }
 
-template <class Factory, class Next, class EnvOutput, class Release, class End>
+template <
+  class Factory, class Next, class Left, class Right, 
+  class EnvOutput, class Release, class End>
 void PlotDSP::RenderStaged(
   int hold, PlotFlags flags,
   EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
-  Factory factory, Next next, EnvOutput envOutput, Release release, End end)
+  Factory factory, Next next, Left left, Right right, EnvOutput envOutput, Release release, End end)
 {
   output.max = 1.0f;
+  output.clip = false;
   output.spec = (flags & PlotSpec) != 0;
   output.stereo = (flags & PlotStereo) != 0;
   output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
@@ -71,7 +82,7 @@ void PlotDSP::RenderStaged(
   float releaseSamples = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
   output.rate = output.spec || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
   fhold *= output.rate / input.rate;
-  *output.vSplits = (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
+  *output.vSplits = output.stereo? StereoVSPlits: (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
 
   int h = 0;
   int i = 0;
@@ -80,7 +91,13 @@ void PlotDSP::RenderStaged(
   {
     if (h++ == static_cast<int>(fhold))
       output.hSplits->emplace_back(i, FormatEnv(release(state).stage));
-    next(state, output);
+    next(state);
+    float l = left(state);
+    output.clip |= Clip(l);
+    output.lSamples->push_back(l);
+    float r = output.stereo? right(state): 0.0f;
+    output.clip |= Clip(r);
+    output.rSamples->push_back(r);
     if (i == 0 || envOutput(state).staged)
       output.hSplits->emplace_back(i, FormatEnv(envOutput(state).stage));
     i++;

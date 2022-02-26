@@ -2,6 +2,14 @@
 
 namespace Xts {
 
+std::vector<VSplit> StereoVSPlits = {
+  { -1.0f, L"+1" },
+  { -0.5f, L"L" },
+  { 0.0f, L"-+" },
+  { 0.5f, L"R" },
+  { 1.0f, L"-1" }
+};
+
 std::vector<VSplit> BiVSPlits = { 
   { -1.0f, L"+1" }, 
   { -0.5f, std::wstring(1, UnicodeOneHalf) },
