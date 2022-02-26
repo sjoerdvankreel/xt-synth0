@@ -105,7 +105,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
     SynthDSP::Plot(model, envModel, model.plot.spec, hold, input, output);
     break; }
   case PlotType::Amp: {
-    AmpDSP::Plot(model.amp, envModel, model.cv, model.audio, hold, input, output);
+    AmpDSP::Plot(model.amp, envModel, model.cv, hold, input, output);
     break; }
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: {
     auto env = static_cast<int>(PlotType::Env1);
@@ -118,6 +118,10 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: {
     auto unit = static_cast<int>(PlotType::Unit1);
     UnitDSP::Plot(model.audio.units[index - unit], model.cv, model.plot.spec, input, output);
+    break; }
+  case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: {
+    auto filt = static_cast<int>(PlotType::Filt1);
+    FilterDSP::Plot(model.audio.filts[index - filt], model.cv, model.audio, model.plot.spec, index - filt, input, output);
     break; }
   default: {
     assert(false);

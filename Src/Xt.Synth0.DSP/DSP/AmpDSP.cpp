@@ -45,8 +45,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
 }
 
 void
-AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel, 
-  CvModel const& cvModel, AudioModel const& audio, int hold, PlotInput const& input, PlotOutput& output)
+AmpDSP::Plot(AmpModel const& model, EnvModel const& envModel, CvModel const& cvModel, int hold, PlotInput const& input, PlotOutput& output)
 {
   auto val = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<AmpDSP>(state)._amp; };
   auto next = [](std::tuple<CvDSP, AmpDSP>& state) { std::get<AmpDSP>(state).Next(std::get<CvDSP>(state).Next(), {}); };

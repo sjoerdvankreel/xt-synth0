@@ -54,7 +54,6 @@ void PlotDSP::RenderCycled(
   {
     float sample = next(state);
     output.clip |= Clip(sample);
-    assert(!output.clip);
     output.lSamples->push_back(sample);
   }
 

@@ -1,5 +1,8 @@
-#include "FilterDSP.hpp"
 #include "DSP.hpp"
+#include "CvDSP.hpp"
+#include "PlotDSP.hpp"
+#include "AudioDSP.hpp"
+#include "FilterDSP.hpp"
 
 namespace Xts {
 
@@ -99,6 +102,31 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   _y[2] = _y[1];
   _y[1] = _y[0];
   return _y[0];
+}
+
+void
+FilterDSP::Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& audioModel, int index, bool spec, PlotInput const& input, PlotOutput& output)
+{
+  const int cycles = 5;
+  if (!model.on) return;
+  PlotFlags flags = PlotNone;
+  flags |= PlotBipolar;
+  flags |= spec ? PlotSpec : 0;
+  float freq = FreqNote(5 * 12 + static_cast<int>(UnitNote::C));
+  auto factory = [&](float rate) 
+  { 
+    CvDSP cv(&cvModel, 1.0f, input.bpm, rate);
+    AudioDSP audio(& audioModel, 4, UnitNote::C, rate);
+    FilterDSP filter(&model, index, rate);
+    return std::make_tuple(cv, audio, filter);
+  };
+  auto next = [](std::tuple<CvDSP, AudioDSP, FilterDSP>& state) 
+  { 
+    auto const& cv = std::get<CvDSP>(state).Next();
+    auto const& audio = std::get<AudioDSP>(state).Next(cv);
+    return std::get<FilterDSP>(state).Next(cv, audio).Mono(); 
+  };
+  PlotDSP::RenderCycled(cycles, freq, flags, input, output, factory, next);
 }
 
 } // namespace Xts

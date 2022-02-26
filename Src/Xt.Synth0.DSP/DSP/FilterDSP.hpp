@@ -1,7 +1,6 @@
 #ifndef XTS_FILTER_DSP_HPP
 #define XTS_FILTER_DSP_HPP
 
-#include "CvDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -22,6 +21,7 @@ public:
 public:
   AudioOutput Output() const { return _y[0]; };
   AudioOutput Next(CvState const& cv, AudioState const& audio);
+  static void Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& AudioModel, int index, bool spec, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts
