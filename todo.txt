@@ -29,3 +29,6 @@ more filter types
 more unit types
 less resonance/depend on filttype ?
 filter keyboard track
+double precision biquad
+filter modulation - how ?
+check denormals
