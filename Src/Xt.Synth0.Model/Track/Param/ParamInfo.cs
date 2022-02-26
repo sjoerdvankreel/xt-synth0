@@ -52,7 +52,7 @@ namespace Xt.Synth0.Model
         string FormatTime(int value)
         {
             double ms = (value / 2.55) * (value / 2.55);
-            if (ms < 1000.0) return $"{ms.ToString("N1")}m";
+            if (ms < 1000.0) return $"{ms.ToString("N0")}m";
             if (ms < 10000.0) return $"{(ms / 1000.0).ToString("N1")}s";
             if (ms == 10000.0) return "10s";
             throw new InvalidOperationException();
@@ -61,7 +61,7 @@ namespace Xt.Synth0.Model
         string FormatFreq(int value)
         {
             double hz = 10.0 + 9990.0 * (value / 255.0) * (value / 255.0);
-            if (hz < 1000.0) return $"{hz.ToString("N1")}h";
+            if (hz < 1000.0) return $"{hz.ToString("N0")}h";
             if (hz < 10000.0) return $"{(hz / 1000.0).ToString("N1")}k";
             if (hz == 10000.0) return "10k";
             throw new InvalidOperationException();
