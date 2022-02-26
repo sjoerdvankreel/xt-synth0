@@ -105,7 +105,7 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 }
 
 void
-FilterDSP::Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& audioModel, int index, bool spec, PlotInput const& input, PlotOutput& output)
+FilterDSP::Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& audioModel, bool spec, int index, PlotInput const& input, PlotOutput& output)
 {
   const int cycles = 5;
   if (!model.on) return;
