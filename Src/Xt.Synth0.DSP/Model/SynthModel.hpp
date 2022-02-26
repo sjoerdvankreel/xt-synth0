@@ -20,7 +20,7 @@ XTS_CHECK_SIZE(SyncStep, 8);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1552);
+XTS_CHECK_SIZE(VoiceBinding, 1648);
 
 enum class PlotType { Synth, Amp, Env1, Env2, Env3, LFO1, LFO2, LFO3, Unit1, Unit2, Unit3, Filt1, Filt2, Filt3 };
 struct XTS_ALIGN PlotModel
@@ -67,24 +67,28 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
-enum class FilterModTarget { Freq, Res };
-enum class FilterType { LPF, HPF, BPF, BSF, CPF, CMF };
+enum class FilterType { Biquad, Comb };
+enum class BiquadType { LPF, HPF, BPF, BSF };
+enum class FilterModTarget { Freq, Res, GPlus, DlyPlus, GMin, DlyMin };
 struct XTS_ALIGN FilterModel
 {
   friend class FilterDSP;
   FilterModel() = default;
   FilterModel(FilterModel const&) = delete;
 private:
+  XtsBool on;
   FilterType type;
-  XtsBool on, db24;
+  BiquadType bqType;
   int32_t freq, res;
   int32_t amt1, amt2;
+  int32_t gPlus, gMin;
   ModSource src1, src2;
+  int32_t dlyPlus, dlyMin;
   int32_t units[UnitCount];
   int32_t flts[FilterCount];
   FilterModTarget tgt1, tgt2, pad__;
 };
-XTS_CHECK_SIZE(FilterModel, 72);
+XTS_CHECK_SIZE(FilterModel, 88);
 
 enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
@@ -149,7 +153,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filts[FilterCount];
 };
-XTS_CHECK_SIZE(AudioModel, 456);
+XTS_CHECK_SIZE(AudioModel, 504);
 
 struct XTS_ALIGN SynthModel
 {
@@ -163,7 +167,7 @@ private:
   PlotModel plot;
   AudioModel audio;
 };
-XTS_CHECK_SIZE(SynthModel, 816);
+XTS_CHECK_SIZE(SynthModel, 864);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

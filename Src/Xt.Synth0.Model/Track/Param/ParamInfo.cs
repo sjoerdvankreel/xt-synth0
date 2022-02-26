@@ -100,6 +100,12 @@ namespace Xt.Synth0.Model
             _display ??= x => x.ToString();
         }
 
+        internal static ParamInfo Mix(
+            Address address, int subGroup, string id, string name,
+            string description, IRelevance relevance = null)
+        => new ParamInfo(ParamType.Mix, address, subGroup, id, name,
+            description, 1, 255, 128, null, null, null, relevance);
+
         internal static ParamInfo Pattern(
             Address address, string id, string name,
             string description, int min, int max, int @default)
@@ -108,15 +114,9 @@ namespace Xt.Synth0.Model
 
         internal static ParamInfo Freq(
             Address address, int subGroup, string id, string name,
-            string description, int @default)
+            string description, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Freq, address, subGroup, id, name,
-            description, 0, 255, @default, null, null, null, null);
-
-        internal static ParamInfo Mix(
-            Address address, int subGroup, string id, string name,
-            string description, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Mix, address, subGroup, id, name,
-            description, 1, 255, 128, null, null, null, relevance);
+            description, 0, 255, @default, null, null, null, relevance);
 
         internal static ParamInfo Level(
             Address address, int subGroup, string id, string name,

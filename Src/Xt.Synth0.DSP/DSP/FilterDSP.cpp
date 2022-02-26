@@ -39,9 +39,9 @@ _units(), _flts(), _model(model)
   float bw = (1.0f - Level(model->res)) * (MaxBW - MinBW);
   float alphaBW = sinw0 * std::sinhf(std::logf(2.0f) / 2.0f * bw * w0 / sinw0);
 
-  switch (model->type)
+  switch (model->bqType)
   {
-  case FilterType::LPF:
+  case BiquadType::LPF:
     _a[0] = 1.0f + alphaQ;
     _a[1] = -2.0f * cosw0;
     _a[2] = 1.0f - alphaQ;
@@ -49,7 +49,7 @@ _units(), _flts(), _model(model)
     _b[1] = 1.0f - cosw0;
     _b[2] = (1.0f - cosw0) / 2.0f;
     break;
-  case FilterType::HPF:
+  case BiquadType::HPF:
     _a[0] = 1.0f + alphaQ;
     _a[1] = -2.0f * cosw0;
     _a[2] = 1.0f - alphaQ;
@@ -57,7 +57,7 @@ _units(), _flts(), _model(model)
     _b[1] = -(1.0f + cosw0);
     _b[2] = (1.0f + cosw0) / 2.0f;
     break;
-  case FilterType::BPF:
+  case BiquadType::BPF:
     _a[0] = 1.0f + alphaBW;
     _a[1] = -2.0f * cosw0;
     _a[2] = 1.0f - alphaBW;
@@ -65,7 +65,7 @@ _units(), _flts(), _model(model)
     _b[1] = 0.0f;
     _b[2] = -sinw0 / 2.0f;
     break;
-  case FilterType::BSF:
+  case BiquadType::BSF:
     _a[0] = 1.0f + alphaBW;
     _a[1] = -2.0f * cosw0;
     _a[2] = 1.0f - alphaBW;
