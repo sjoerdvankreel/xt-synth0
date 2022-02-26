@@ -7,9 +7,6 @@
     <Filter Include="DSP">
       <UniqueIdentifier>{d244098d-94dc-4553-a43c-115dcbf113ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utility">
-      <UniqueIdentifier>{17691c10-4603-4013-9798-9cbfa4ee3e11}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\SeqModel.hpp">
@@ -48,9 +45,6 @@
     </ClInclude>
     <ClInclude Include="DSP\LfoDSP.hpp">
       <Filter>DSP</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\Utility.hpp">
-      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="DSP\CvDSP.hpp">
       <Filter>DSP</Filter>
