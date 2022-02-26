@@ -4,7 +4,6 @@
 #include "UnitDSP.hpp"
 #include "PlotDSP.hpp"
 #include "SynthDSP.hpp"
-#include "../Utility/Utility.hpp"
 
 #include <vector>
 #include <complex>

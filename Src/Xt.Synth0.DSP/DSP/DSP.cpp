@@ -1,6 +1,16 @@
 #include "DSP.hpp"
+#include <iomanip>
+#include <sstream>
 
 namespace Xts {
+
+static std::wstring 
+VSplitMarker(float val, float max)
+{
+  std::wstringstream str;
+  str << std::fixed << std::setprecision(1) << val;
+  return str.str();
+}
 
 std::vector<VSplit> StereoVSPlits = {
   { -1.0f, L"+1" },
@@ -29,11 +39,11 @@ std::vector<VSplit> UniVSPlits = {
 std::vector<VSplit> MakeBiVSplits(float max)
 {
   std::vector<VSplit> result;
-  result.emplace_back(-1.0f, std::to_wstring(max));
-  result.emplace_back(-0.5f, std::to_wstring(max / 2.0f));
+  result.emplace_back(-1.0f, VSplitMarker(max, max));
+  result.emplace_back(-0.5f, VSplitMarker(max / 2.0f, max));
   result.emplace_back(-0.0f, L"0");
-  result.emplace_back(0.5f, std::to_wstring(-max / 2.0f));
-  result.emplace_back(1.0f, std::to_wstring(-max));
+  result.emplace_back(0.5f, VSplitMarker(-max / 2.0f, max));
+  result.emplace_back(1.0f, VSplitMarker(-max, max));
   return result;
 }
 
