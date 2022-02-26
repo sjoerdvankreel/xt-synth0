@@ -50,32 +50,32 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { Dly, 1 }, { DlyStp, 1 }, { A, 2 }, { AStp, 2 }, { ASlp, 3 },
-            { Sync, 4 }, { Hld, 5 }, { HldStp, 5 }, { D, 6 }, { DStp, 6 }, { DSlp, 7 },
-            { Inv, 8 }, { S, 9 }, { R, 10 }, { RStp, 10 }, { RSlp, 11 }
+            { Type, 0 }, { Dly, 1 }, { DlyStp, 1 }, { ASlp, 2 }, { A, 3 }, { AStp, 3 },
+            { Sync, 4 }, { Hld, 5 }, { HldStp, 5 }, { DSlp, 6 }, { D, 7 }, { DStp, 7 },
+            { Inv, 8 }, { S, 9 }, { RSlp, 10 }, { R, 11 }, { RStp, 11 }
         };
 
         internal EnvModel(int index) => Index = index;
         static readonly IRelevance RelevanceSync = Relevance.Param((EnvModel m) => m.Sync, (int s) => s == 1);
         static readonly IRelevance RelevanceTime = Relevance.Param((EnvModel m) => m.Sync, (int s) => s == 0);
 
-        static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, 1, nameof(S), nameof(S), "Sustain level", 128);
+        static readonly ParamInfo SInfo = ParamInfo.Level(p => &((Native*)p)->s, 2, nameof(S), nameof(S), "Sustain level", 128);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), nameof(On), "Enabled", false);
         static readonly ParamInfo InvInfo = ParamInfo.Toggle(p => &((Native*)p)->inv, 0, nameof(Inv), "Invert", "Invert", false);
         static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, 0, nameof(Type), nameof(Type), "Type");
-        static readonly ParamInfo DSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->dSlp, 2, nameof(DSlp), "Slp", "Decay slope");
-        static readonly ParamInfo ASlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->aSlp, 2, nameof(ASlp), "Slp", "Attack slope");
-        static readonly ParamInfo RSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->rSlp, 2, nameof(RSlp), "Slp", "Release slope");
+        static readonly ParamInfo DSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->dSlp, 1, nameof(DSlp), "Slp", "Decay slope");
+        static readonly ParamInfo ASlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->aSlp, 1, nameof(ASlp), "Slp", "Attack slope");
+        static readonly ParamInfo RSlpInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->rSlp, 1, nameof(RSlp), "Slp", "Release slope");
         static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 0, nameof(Sync), nameof(Sync), "Sync to beat", false);
         static readonly ParamInfo DStpInfo = ParamInfo.Step(p => &((Native*)p)->dStp, 1, nameof(DStp), "D", "Decay steps", 0, 11, RelevanceSync);
         static readonly ParamInfo AStpInfo = ParamInfo.Step(p => &((Native*)p)->aStp, 1, nameof(AStp), "A", "Attack steps", 0, 1, RelevanceSync);
         static readonly ParamInfo RStpInfo = ParamInfo.Step(p => &((Native*)p)->rStp, 1, nameof(RStp), "R", "Release steps", 0, 15, RelevanceSync);
-        static readonly ParamInfo HldStpInfo = ParamInfo.Step(p => &((Native*)p)->hldStp, 1, nameof(HldStp), "Hld", "Hold steps", 0, 0, RelevanceSync);
-        static readonly ParamInfo DlyStpInfo = ParamInfo.Step(p => &((Native*)p)->dlyStp, 1, nameof(DlyStp), "Dly", "Delay steps", 0, 0, RelevanceSync);
+        static readonly ParamInfo HldStpInfo = ParamInfo.Step(p => &((Native*)p)->hldStp, 2, nameof(HldStp), "Hld", "Hold steps", 0, 0, RelevanceSync);
+        static readonly ParamInfo DlyStpInfo = ParamInfo.Step(p => &((Native*)p)->dlyStp, 2, nameof(DlyStp), "Dly", "Delay steps", 0, 0, RelevanceSync);
         static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, 1, nameof(D), nameof(D), "Decay milliseconds", 0, 255, 18, RelevanceTime);
         static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, 1, nameof(A), nameof(A), "Attack milliseconds", 0, 255, 7, RelevanceTime);
         static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, 1, nameof(R), nameof(R), "Release milliseconds", 0, 255, 36, RelevanceTime);
-        static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, 1, nameof(Hld), nameof(Hld), "Hold milliseconds", 0, 255, 0, RelevanceTime);
-        static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, 1, nameof(Dly), nameof(Dly), "Delay milliseconds", 0, 255, 0, RelevanceTime);
+        static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, 2, nameof(Hld), nameof(Hld), "Hold milliseconds", 0, 255, 0, RelevanceTime);
+        static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, 2, nameof(Dly), nameof(Dly), "Delay milliseconds", 0, 255, 0, RelevanceTime);
     }
 }
