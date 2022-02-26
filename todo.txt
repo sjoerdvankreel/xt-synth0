@@ -28,3 +28,5 @@ comb filters
 dont need to recalc filter parameters per voice
 plot filter response
 enable/disable plot
+more filter types
+more unit types
