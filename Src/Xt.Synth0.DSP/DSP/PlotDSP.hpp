@@ -12,6 +12,8 @@ namespace Xts {
 
 class PlotDSP
 {
+  static constexpr wchar_t UnicodePi = L'\u03C0';
+
   static std::vector<VSplit> BiVSPlits;
   static std::vector<VSplit> UniVSPlits;
   static std::vector<VSplit> StereoVSPlits;

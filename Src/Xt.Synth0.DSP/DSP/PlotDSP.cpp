@@ -16,38 +16,43 @@ namespace Xts {
 static std::wstring
 VSplitMarker(float val, float max)
 {
+  float absval = std::fabs(val);
+  std::wstring result = val == 0.0f ? L"" : val > 0.0f ? L"+" : L"-";
   if(max >= 10)
-    return std::to_wstring(static_cast<int>(std::roundf(val)));
+  { 
+    int ival = static_cast<int>(std::roundf(absval));
+    return result + std::to_wstring(ival);
+  }
   std::wstringstream str;
-  str << std::fixed << std::setprecision(1) << val;
-  return str.str();
+  str << std::fixed << std::setprecision(1) << absval;
+  return result + str.str();
 }
 
 std::vector<VSplit> 
-PlotDSP::StereoVSPlits = {
-  { -1.0f, L"+1" },
-  { -0.5f, L"L" },
-  { 0.0f, L"-+" },
-  { 0.5f, L"R" },
-  { 1.0f, L"-1" }
-};
-
-std::vector<VSplit> 
 PlotDSP::BiVSPlits = {
-  { -1.0f, L"+1" },
-  { -0.5f, std::wstring(1, UnicodeOneHalf) },
-  { 0.0f, L"0" },
-  { 0.5f, L"-" + std::wstring(1, UnicodeOneHalf) },
-  { 1.0f, L"-1" }
+  { -1.0f, L"+1.0" },
+  { -0.5f, L"+0.5" },
+  { 0.0f, L"0.0" },
+  { 0.5f, L"-0.5" },
+  { 1.0f, L"-1.0" }
 };
 
 std::vector<VSplit> 
 PlotDSP::UniVSPlits = {
-  { 0.0f, L"1" },
-  { 0.25f, std::wstring(1, UnicodeThreeQuarter) },
-  { 0.5f, std::wstring(1, UnicodeOneHalf) },
-  { 0.75f, std::wstring(1, UnicodeOneQuarter) },
-  { 1.0f, L"0" }
+  { 0.0f, L"1.0" },
+  { 0.25f, L".75" },
+  { 0.5f, L"0.5" },
+  { 0.75f, L".25" },
+  { 1.0f, L"0.0" }
+};
+
+std::vector<VSplit>
+PlotDSP::StereoVSPlits = {
+  { -1.0f, L"+1.0" },
+  { -0.5f, L"L" },
+  { 0.0f, L"-/+1" },
+  { 0.5f, L"R" },
+  { 1.0f, L"-1.0" }
 };
 
 std::vector<VSplit> 
@@ -94,28 +99,28 @@ static void
 SpectrumVSplitsMono(std::vector<VSplit>& vSplits)
 {
   vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), std::wstring(1, UnicodeOneHalf));
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), std::wstring(1, UnicodeOneQuarter));
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), std::wstring(1, UnicodeOneEight));
+  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
+  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L".50");
+  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".25");
+  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L"");
   vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
   vSplits.emplace_back(1.0f - (1.0f / 32.0f), L"");
-  vSplits.emplace_back(1.0f, L"0");
+  vSplits.emplace_back(1.0f, L"0.0");
 }
 
 static void
 SpectrumVSplitsStereo(std::vector<VSplit>& vSplits)
 {
   vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1");
-  vSplits.emplace_back(1.0f - (3.0f / 4.0f), std::wstring(1, UnicodeOneHalf));
-  vSplits.emplace_back(1.0f - (5.0f / 8.0f), std::wstring(1, UnicodeOneQuarter));
+  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
+  vSplits.emplace_back(1.0f - (3.0f / 4.0f), L".50");
+  vSplits.emplace_back(1.0f - (5.0f / 8.0f), L".25");
   vSplits.emplace_back(1.0f - (9.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L"01");
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), std::wstring(1, UnicodeOneHalf));
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), std::wstring(1, UnicodeOneQuarter));
+  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L"0/1");
+  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".50");
+  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L".25");
   vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f, L"0");
+  vSplits.emplace_back(1.0f, L"0.0");
 }
 
 // https://stackoverflow.com/questions/604453/analyze-audio-using-fast-fourier-transform

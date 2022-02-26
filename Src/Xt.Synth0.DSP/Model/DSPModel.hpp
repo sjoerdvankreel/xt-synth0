@@ -17,12 +17,6 @@ inline constexpr PlotFlags PlotBipolar = 0x4;
 inline constexpr PlotFlags PlotAutoRange = 0x8;
 inline constexpr PlotFlags PlotNoResample = 0x10;
 
-inline constexpr wchar_t UnicodePi = L'\u03C0';
-inline constexpr wchar_t UnicodeOneHalf = L'\u00BD';
-inline constexpr wchar_t UnicodeOneEight = L'\u215B';
-inline constexpr wchar_t UnicodeOneQuarter = L'\u00BC';
-inline constexpr wchar_t UnicodeThreeQuarter = L'\u00BE';
-
 struct CvOutput { bool bip; float val; };
 struct ModInput { CvOutput cv1; CvOutput cv2; };
 struct HSplit { int pos; std::wstring marker; };
