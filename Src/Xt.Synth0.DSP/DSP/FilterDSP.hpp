@@ -18,10 +18,10 @@ struct BiquadState
 
 struct CombState
 {
-  int minDelay;
-  int plusDelay;
-  float minGain;
-  float plusGain;
+  int delayMin;
+  int delayPlus;
+  float gainMin;
+  float gainPlus;
   FloatSample x[XTS_MAX_COMB_DELAY];
   FloatSample y[XTS_MAX_COMB_DELAY];
 };

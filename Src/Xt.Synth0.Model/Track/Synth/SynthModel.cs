@@ -53,15 +53,6 @@ namespace Xt.Synth0.Model
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 8)]
-            internal ref struct ModulationModel
-            {
-                internal int amount;
-                internal int target;
-                internal int source;
-                internal int pad__;
-            };
-
-            [StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct SyncStep
 			{
 				internal int num, den;

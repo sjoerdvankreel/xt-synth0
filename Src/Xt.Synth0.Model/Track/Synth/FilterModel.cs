@@ -13,23 +13,18 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal const int Size = 96;
+            internal const int Size = 88;
             internal int on;
             internal int type;
-
-            internal int combMinGain;
-            internal int combPlusGain;
-            internal int combMinDelay;
-            internal int combPlusDelay;
-
-            internal int biquadType;
-            internal int biquadResonance;
-            internal int biquadFrequency;
-
-            internal SynthModel.Native.ModulationModel modulation1;
-            internal SynthModel.Native.ModulationModel modulation2;
-            internal fixed int unitAmount[Model.UnitCount];
-            internal fixed int filterAmount[Model.FilterCount];
+            internal int bqType;
+            internal int freq, res;
+            internal int amt1, amt2;
+            internal int gPlus, gMin;
+            internal int src1, src2;
+            internal int dlyPlus, dlyMin;
+            internal fixed int units[Model.UnitCount];
+            internal fixed int flts[Model.FilterCount];
+            internal int tgt1, tgt2, pad__;
         };
 
         public Param On { get; } = new(OnInfo);
@@ -80,23 +75,23 @@ namespace Xt.Synth0.Model
 
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), nameof(On), "Enabled", false);
         static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->type, 0, nameof(Type), nameof(Type), "Type");
-        static readonly ParamInfo Amt1Info = ParamInfo.Mix(p => &((Native*)p)->modulation1.amount, 2, nameof(Amt1), "Amt", "Mod 1 amount");
-        static readonly ParamInfo Amt2Info = ParamInfo.Mix(p => &((Native*)p)->modulation2.amount, 2, nameof(Amt2), "Amt", "Mod 2 amount");
-        static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->modulation1.source, 2, nameof(Src1), "Source", "Mod 1 source");
-        static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->modulation2.source, 2, nameof(Src2), "Source", "Mod 2 source");
-        static readonly ParamInfo Tgt1Info = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->modulation1.target, 2, nameof(Tgt1), "Target", "Mod 1 target", TargetNames);
-        static readonly ParamInfo Tgt2Info = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->modulation2.target, 2, nameof(Tgt2), "Target", "Mod 2 target", TargetNames);
-        static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->unitAmount[0], 1, nameof(Unit1), "Ut1", "Unit 1 amount", 0);
-        static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->unitAmount[1], 1, nameof(Unit2), "Ut2", "Unit 2 amount", 0);
-        static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->unitAmount[2], 1, nameof(Unit3), "Ut3", "Unit 3 amount", 0);
-        static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->filterAmount[1], 1, nameof(Flt2), "Ft2", "Filter 2 amount", 0, Relevance3);
-        static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->filterAmount[0], 1, nameof(Flt1), "Ft1", "Filter 1 amount", 0, Relevance23);
-        static readonly ParamInfo ResInfo = ParamInfo.Level(p => &((Native*)p)->biquadResonance, 0, nameof(Res), nameof(Res), "Resonance", 0, RelevanceBiquad);
-        static readonly ParamInfo FreqInfo = ParamInfo.Freq(p => &((Native*)p)->biquadFrequency, 0, nameof(Freq), "Frq", "Cutoff frequency", 0, RelevanceBiquad);
-        static readonly ParamInfo BqTypeInfo = ParamInfo.List<BiquadType>(p => &((Native*)p)->biquadType, 0, nameof(BqType), nameof(Type), "Biquad type", null, RelevanceBiquad);        
-        static readonly ParamInfo GMinInfo = ParamInfo.Mix(p => &((Native*)p)->combMinGain, 0, nameof(GMin), "Gn-", "Comb feedback gain", RelevanceComb);
-        static readonly ParamInfo GPlusInfo = ParamInfo.Mix(p => &((Native*)p)->combPlusGain, 0, nameof(GPlus), "Gn+", "Comb feedforward gain", RelevanceComb);
-        static readonly ParamInfo DlyMinInfo = ParamInfo.Select(p => &((Native*)p)->combMinDelay, 0, nameof(DlyMin), "Dly-", "Comb feedback delay", 1, 255, 128, RelevanceComb);
-        static readonly ParamInfo DlyPlusInfo = ParamInfo.Select(p => &((Native*)p)->combPlusDelay, 0, nameof(DlyPlus), "Dly+", "Comb feedforward delay", 1, 255, 128, RelevanceComb);
+        static readonly ParamInfo Amt1Info = ParamInfo.Mix(p => &((Native*)p)->amt1, 2, nameof(Amt1), "Amt", "Mod 1 amount");
+        static readonly ParamInfo Amt2Info = ParamInfo.Mix(p => &((Native*)p)->amt2, 2, nameof(Amt2), "Amt", "Mod 2 amount");
+        static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, 2, nameof(Src1), "Source", "Mod 1 source");
+        static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, 2, nameof(Src2), "Source", "Mod 2 source");
+        static readonly ParamInfo Tgt1Info = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->tgt1, 2, nameof(Tgt1), "Target", "Mod 1 target", TargetNames);
+        static readonly ParamInfo Tgt2Info = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->tgt2, 2, nameof(Tgt2), "Target", "Mod 2 target", TargetNames);
+        static readonly ParamInfo Unit1Info = ParamInfo.Level(p => &((Native*)p)->units[0], 1, nameof(Unit1), "Ut1", "Unit 1 amount", 0);
+        static readonly ParamInfo Unit2Info = ParamInfo.Level(p => &((Native*)p)->units[1], 1, nameof(Unit2), "Ut2", "Unit 2 amount", 0);
+        static readonly ParamInfo Unit3Info = ParamInfo.Level(p => &((Native*)p)->units[2], 1, nameof(Unit3), "Ut3", "Unit 3 amount", 0);
+        static readonly ParamInfo Flt2Info = ParamInfo.Level(p => &((Native*)p)->flts[1], 1, nameof(Flt2), "Ft2", "Filter 2 amount", 0, Relevance3);
+        static readonly ParamInfo Flt1Info = ParamInfo.Level(p => &((Native*)p)->flts[0], 1, nameof(Flt1), "Ft1", "Filter 1 amount", 0, Relevance23);
+        static readonly ParamInfo ResInfo = ParamInfo.Level(p => &((Native*)p)->res, 0, nameof(Res), nameof(Res), "Resonance", 0, RelevanceBiquad);
+        static readonly ParamInfo FreqInfo = ParamInfo.Freq(p => &((Native*)p)->freq, 0, nameof(Freq), "Frq", "Cutoff frequency", 0, RelevanceBiquad);
+        static readonly ParamInfo BqTypeInfo = ParamInfo.List<BiquadType>(p => &((Native*)p)->bqType, 0, nameof(BqType), nameof(Type), "Biquad type", null, RelevanceBiquad);        
+        static readonly ParamInfo GMinInfo = ParamInfo.Mix(p => &((Native*)p)->gMin, 0, nameof(GMin), "Gn-", "Comb feedback gain", RelevanceComb);
+        static readonly ParamInfo GPlusInfo = ParamInfo.Mix(p => &((Native*)p)->gPlus, 0, nameof(GPlus), "Gn+", "Comb feedforward gain", RelevanceComb);
+        static readonly ParamInfo DlyMinInfo = ParamInfo.Select(p => &((Native*)p)->dlyMin, 0, nameof(DlyMin), "Dly-", "Comb feedback delay", 1, 255, 128, RelevanceComb);
+        static readonly ParamInfo DlyPlusInfo = ParamInfo.Select(p => &((Native*)p)->dlyPlus, 0, nameof(DlyPlus), "Dly+", "Comb feedforward delay", 1, 255, 128, RelevanceComb);
     }
 }
