@@ -1,8 +1,8 @@
 #ifndef XTS_FILTER_DSP_HPP
 #define XTS_FILTER_DSP_HPP
 
-#include "../Model/DSPModel.hpp"
-#include "../Model/SynthModel.hpp"
+#include <Model/DSPModel.hpp>
+#include <Model/SynthModel.hpp>
 
 #define XTS_MAX_COMB_DELAY 256
 
