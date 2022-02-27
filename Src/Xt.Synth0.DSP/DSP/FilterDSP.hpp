@@ -12,8 +12,8 @@ struct BiquadState
 {
   double a[3];
   double b[3];
-  DAudioOutput x[3];
-  DAudioOutput y[3];
+  DoubleSample x[3];
+  DoubleSample y[3];
 };
 
 struct CombState
@@ -22,8 +22,8 @@ struct CombState
   int delayPlus;
   float gainMin;
   float gainPlus;
-  FAudioOutput x[XTS_MAX_COMB_DELAY];
-  FAudioOutput y[XTS_MAX_COMB_DELAY];
+  FloatSample x[XTS_MAX_COMB_DELAY];
+  FloatSample y[XTS_MAX_COMB_DELAY];
 };
 
 union FilterState
@@ -35,7 +35,7 @@ union FilterState
 class FilterDSP
 {
   int _index;
-  FAudioOutput _output;
+  FloatSample _output;
   float _amt1, _amt2;
   float _units[UnitCount];
   float _flts[FilterCount];
@@ -45,8 +45,8 @@ public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);
 public:
-  FAudioOutput Output() const { return _output; };
-  FAudioOutput Next(CvState const& cv, AudioState const& audio);
+  FloatSample Output() const { return _output; };
+  FloatSample Next(CvState const& cv, AudioState const& audio);
   static void Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& AudioModel, bool spec, int index, PlotInput const& input, PlotOutput& output);
 };
 

@@ -93,7 +93,7 @@ UnitDSP::ModFreq(ModInput const& mod) const
   return result;
 }
 
-FAudioOutput
+FloatSample
 UnitDSP::Next(CvState const& cv)
 {
   _output.Clear();

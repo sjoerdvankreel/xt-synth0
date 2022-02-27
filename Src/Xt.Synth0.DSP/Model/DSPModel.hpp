@@ -32,27 +32,27 @@ struct CvState
 };
 
 template <class T>
-struct AudioOutput
+struct AudioSample
 { 
   T l, r;
   T Mono() const { return l + r; }
   void Clear() { l = r = static_cast<T>(0.0); }
-  AudioOutput operator*(T s) const { return { l * s, r * s }; }
-  AudioOutput operator+(AudioOutput s) const { return { l + s.l, r + s.r }; }
-  AudioOutput operator-(AudioOutput s) const { return { l - s.l, r - s.r }; }
-  AudioOutput operator*(AudioOutput s) const { return { l * s.l, r * s.r }; }
-  AudioOutput& operator+=(AudioOutput const& rhs) { l += rhs.l; r += rhs.r; return *this; }
-  AudioOutput<float> ToFloat() const { return AudioOutput<float> { static_cast<float>(l), static_cast<float>(r) }; }
-  AudioOutput<double> ToDouble() const { return AudioOutput<double> { static_cast<double>(l), static_cast<double>(r) }; }
+  AudioSample operator*(T s) const { return { l * s, r * s }; }
+  AudioSample operator+(AudioSample s) const { return { l + s.l, r + s.r }; }
+  AudioSample operator-(AudioSample s) const { return { l - s.l, r - s.r }; }
+  AudioSample operator*(AudioSample s) const { return { l * s.l, r * s.r }; }
+  AudioSample& operator+=(AudioSample const& rhs) { l += rhs.l; r += rhs.r; return *this; }
+  AudioSample<float> ToFloat() const { return AudioSample<float> { static_cast<float>(l), static_cast<float>(r) }; }
+  AudioSample<double> ToDouble() const { return AudioSample<double> { static_cast<double>(l), static_cast<double>(r) }; }
 };
 
-typedef AudioOutput<float> FAudioOutput;
-typedef AudioOutput<double> DAudioOutput;
+typedef AudioSample<float> FloatSample;
+typedef AudioSample<double> DoubleSample;
 
 struct AudioState
 {
-  FAudioOutput units[UnitCount];
-  FAudioOutput filts[FilterCount];
+  FloatSample units[UnitCount];
+  FloatSample filts[FilterCount];
 };
 
 struct PlotInput

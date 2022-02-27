@@ -28,8 +28,8 @@ InitComb(FilterModel const& m, CombState& s)
   std::memset(&s.y, 0, sizeof(s.y));
 }
 
-static FAudioOutput
-GenerateComb(FAudioOutput audio, CombState& s)
+static FloatSample
+GenerateComb(FloatSample audio, CombState& s)
 {
   s.y[0].Clear();
   s.x[0] = audio;
@@ -143,8 +143,8 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
   for(int i = 1; i < 3; i++) s.a[i] /= s.a[0];
 }
 
-static FAudioOutput
-GenerateBiquad(FAudioOutput audio, BiquadState& s)
+static FloatSample
+GenerateBiquad(FloatSample audio, BiquadState& s)
 {
   s.y[0].Clear();
   s.x[0] = audio.ToDouble();
@@ -176,7 +176,7 @@ _state()
   }
 }
 
-FAudioOutput
+FloatSample
 FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
