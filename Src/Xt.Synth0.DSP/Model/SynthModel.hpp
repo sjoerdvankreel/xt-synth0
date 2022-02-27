@@ -14,6 +14,14 @@ void SynthModelInit(
   struct SyncStep* steps, int32_t stepCount);
 
 enum class ModSource { Velo, Env1, Env2, Env3, LFO1, LFO2, LFO3 };
+struct XTS_ALIGN ModulationModel
+{
+  int32_t amount;
+  int32_t target;
+  ModSource source;
+  int32_t pad__;
+};
+XTS_CHECK_SIZE(ModulationModel, 16);
 
 struct XTS_ALIGN SyncStep { int32_t num, den; };
 XTS_CHECK_SIZE(SyncStep, 8);
@@ -74,19 +82,25 @@ struct XTS_ALIGN FilterModel
 {
   FilterModel() = default;
   FilterModel(FilterModel const&) = delete;
+
   XtsBool on;
   FilterType type;
-  BiquadType bqType;
-  int32_t freq, res;
-  int32_t amt1, amt2;
-  int32_t gPlus, gMin;
-  ModSource src1, src2;
-  int32_t dlyPlus, dlyMin;
-  int32_t units[UnitCount];
-  int32_t flts[FilterCount];
-  FilterModTarget tgt1, tgt2, pad__;
+
+  int32_t combMinGain;
+  int32_t combPlusGain;
+  int32_t combMinDelay;
+  int32_t combPlusDelay;
+
+  BiquadType biquadType;
+  int32_t biquadResonance;
+  int32_t biquadFrequency;
+
+  ModulationModel modulation1;
+  ModulationModel modulation2;
+  int32_t unitAmount[UnitCount];
+  int32_t filterAmount[FilterCount];
 };
-XTS_CHECK_SIZE(FilterModel, 88);
+XTS_CHECK_SIZE(FilterModel, 96);
 
 enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };
@@ -151,7 +165,7 @@ private:
   UnitModel units[UnitCount];
   FilterModel filts[FilterCount];
 };
-XTS_CHECK_SIZE(AudioModel, 504);
+XTS_CHECK_SIZE(AudioModel, 528);
 
 struct XTS_ALIGN SynthModel
 {
@@ -165,7 +179,7 @@ private:
   PlotModel plot;
   AudioModel audio;
 };
-XTS_CHECK_SIZE(SynthModel, 864);
+XTS_CHECK_SIZE(SynthModel, 888);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP
