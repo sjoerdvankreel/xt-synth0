@@ -1,6 +1,8 @@
 #ifndef XTS_SYNTH_MODEL_HPP
 #define XTS_SYNTH_MODEL_HPP
 
+#include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/FilterModel.hpp>
 #include "Model.hpp"
 #include <cstdint>
 
@@ -12,16 +14,6 @@ struct ParamInfo* ParamInfos();
 void SynthModelInit(
   struct ParamInfo* infos, int32_t infoCount,
   struct SyncStep* steps, int32_t stepCount);
-
-enum class ModSource { Velo, Env1, Env2, Env3, LFO1, LFO2, LFO3 };
-struct XTS_ALIGN ModModel
-{
-  int32_t amount;
-  int32_t target;
-  ModSource source;
-  int32_t pad__;
-};
-XTS_CHECK_SIZE(ModModel, 16);
 
 struct XTS_ALIGN SyncStep { int32_t num, den; };
 XTS_CHECK_SIZE(SyncStep, 8);
@@ -74,34 +66,6 @@ private:
   int32_t dlyStp, aStp, hldStp, dStp, rStp;
 };
 XTS_CHECK_SIZE(EnvModel, 72);
-
-enum class FilterType { Biquad, Comb };
-enum class BiquadType { LPF, HPF, BPF, BSF };
-enum class FilterModTarget { BiquadFrequency, BiquadResonance, CombMinGain, CombPlusGain, CombMinDelay, CombPlusDelay };
-struct XTS_ALIGN FilterModel
-{
-  FilterModel() = default;
-  FilterModel(FilterModel const&) = delete;
-
-  XtsBool on;
-  FilterType type;
-
-  int32_t combMinGain;
-  int32_t combPlusGain;
-  int32_t combMinDelay;
-  int32_t combPlusDelay;
-
-  BiquadType biquadType;
-  int32_t biquadResonance;
-  int32_t biquadFrequency;
-  int32_t pad__;
-
-  ModModel mod1;
-  ModModel mod2;
-  int32_t unitAmount[UnitCount];
-  int32_t filterAmount[FilterCount];
-};
-XTS_CHECK_SIZE(FilterModel, 96);
 
 enum class UnitType { Sin, Add, Blep };
 enum class BlepType { Saw, Pulse, Tri };

@@ -7,6 +7,9 @@
     <Filter Include="DSP">
       <UniqueIdentifier>{d244098d-94dc-4553-a43c-115dcbf113ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model\Synth">
+      <UniqueIdentifier>{fec5cbb6-1150-485a-872e-740a3ca79434}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\SeqModel.hpp">
@@ -54,6 +57,12 @@
     </ClInclude>
     <ClInclude Include="DSP\FilterDSP.hpp">
       <Filter>DSP</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Synth\FilterModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Synth\ModModel.hpp">
+      <Filter>Model\Synth</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
