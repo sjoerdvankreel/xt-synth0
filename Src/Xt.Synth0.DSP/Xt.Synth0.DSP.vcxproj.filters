@@ -10,6 +10,9 @@
     <Filter Include="Model\Synth">
       <UniqueIdentifier>{fec5cbb6-1150-485a-872e-740a3ca79434}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DSP\Synth">
+      <UniqueIdentifier>{1a949363-935b-4daf-8483-7cd134bc804e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model\SeqModel.hpp">
@@ -55,14 +58,14 @@
     <ClInclude Include="DSP\AudioDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\FilterDSP.hpp">
-      <Filter>DSP</Filter>
-    </ClInclude>
     <ClInclude Include="Model\Synth\FilterModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
     <ClInclude Include="Model\Synth\ModModel.hpp">
       <Filter>Model\Synth</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\Synth\FilterDSP.hpp">
+      <Filter>DSP\Synth</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -100,8 +103,8 @@
     <ClCompile Include="DSP\AudioDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\FilterDSP.cpp">
-      <Filter>DSP</Filter>
+    <ClCompile Include="DSP\Synth\FilterDSP.cpp">
+      <Filter>DSP\Synth</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

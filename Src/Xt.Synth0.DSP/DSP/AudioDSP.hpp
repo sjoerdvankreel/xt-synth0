@@ -2,7 +2,7 @@
 #define XTS_AUDIO_DSP_HPP
 
 #include "UnitDSP.hpp"
-#include "FilterDSP.hpp"
+#include <DSP/Synth/FilterDSP.hpp>
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 

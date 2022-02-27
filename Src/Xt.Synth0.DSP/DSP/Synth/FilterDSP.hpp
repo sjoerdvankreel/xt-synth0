@@ -1,12 +1,14 @@
-#ifndef XTS_FILTER_DSP_HPP
-#define XTS_FILTER_DSP_HPP
+#ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
+#define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
+#include <DSP/CvDSP.hpp>
 #include <Model/DSPModel.hpp>
-#include <Model/SynthModel.hpp>
+#include <Model/Synth/FilterModel.hpp>
 
 #define XTS_MAX_COMB_DELAY 256
 
-namespace Xts {
+namespace Xts 
+{
 
 struct BiquadState
 {
@@ -51,4 +53,4 @@ public:
 };
 
 } // namespace Xts
-#endif // XTS_FILTER_DSP_HPP
+#endif // XTS_DSP_SYNTH_FILTER_DSP_HPP
