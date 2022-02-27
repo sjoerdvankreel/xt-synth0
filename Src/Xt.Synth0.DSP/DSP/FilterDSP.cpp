@@ -20,10 +20,10 @@ namespace Xts
 static void 
 InitComb(FilterModel const& m, CombState& s)
 {
-  s.delayMin = m.dlyMin;
-  s.delayPlus = m.dlyPlus;
-  s.gainMin = Mix(m.gMin);
-  s.gainPlus = Mix(m.gPlus);
+  s.minDelay = m.combMinDelay;
+  s.plusDelay = m.combPlusDelay;
+  s.minGain = Mix(m.combMinGain);
+  s.plusGain = Mix(m.combPlusGain);
   std::memset(&s.x, 0, sizeof(s.x));
   std::memset(&s.y, 0, sizeof(s.y));
 }
@@ -33,7 +33,7 @@ GenerateComb(FloatSample audio, CombState& s)
 {
   s.y[0].Clear();
   s.x[0] = audio;
-  s.y[0] = s.x[0] + s.x[s.delayPlus] * s.gainPlus + s.y[s.delayMin] * s.gainMin;
+  s.y[0] = s.x[0] + s.x[s.plusDelay] * s.plusGain + s.y[s.minDelay] * s.minGain;
   for (int i = XTS_MAX_COMB_DELAY - 1; i > 0; i--)
   {
     s.x[i] = s.x[i - 1];
@@ -114,12 +114,12 @@ BiquadAlphaBW(double res, double w0, double sinw0)
 static void
 BiquadParameters(FilterModel const& m, float rate, double& sinw0, double& cosw0, double& alpha)
 {
-  double res = Level(m.res);
-  double freq = FreqHz(m.freq);
+  double res = Level(m.biquadResonance);
+  double freq = FreqHz(m.biquadFrequency);
   double w0 = 2.0 * PI * freq / rate;
   sinw0 = std::sin(w0);
   cosw0 = std::cos(w0);
-  alpha = BiquadIsQ(m.bqType)? BiquadAlphaQ(res, sinw0): BiquadAlphaBW(res, w0, sinw0);
+  alpha = BiquadIsQ(m.biquadType)? BiquadAlphaQ(res, sinw0): BiquadAlphaBW(res, w0, sinw0);
 }
 
 static void
@@ -131,7 +131,7 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
   std::memset(&s.x, 0, sizeof(s.x));
   std::memset(&s.y, 0, sizeof(s.y));
   BiquadParameters(m, rate, sinw0, cosw0, alpha);
-  switch (m.bqType)
+  switch (m.biquadType)
   {
   case BiquadType::LPF: InitBiquadLPF(cosw0, alpha, s); break;
   case BiquadType::HPF: InitBiquadHPF(cosw0, alpha, s); break;
@@ -159,15 +159,15 @@ GenerateBiquad(FloatSample audio, BiquadState& s)
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate) :
 _index(index), _output(),
-_amt1(Mix(model->amt1)),
-_amt2(Mix(model->amt2)),
+_amt1(Mix(model->modulation1.amount)),
+_amt2(Mix(model->modulation2.amount)),
 _units(), _flts(), _model(model),
 _state()
 {
   for (int i = 0; i < UnitCount; i++)
-    _units[i] = Level(model->units[i]);
+    _units[i] = Level(model->unitAmount[i]);
   for (int i = 0; i < FilterCount; i++)
-    _flts[i] = Level(model->flts[i]);
+    _flts[i] = Level(model->filterAmount[i]);
   switch (model->type)
   {
   case FilterType::Comb: InitComb(*model, _state.comb); break;

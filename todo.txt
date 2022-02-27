@@ -33,3 +33,5 @@ double precision biquad
 filter modulation - how ?
 check denormals
 sanity checks
+parammix, paramlevel, paramfreqs
+cleanup native includes / split files / etc
