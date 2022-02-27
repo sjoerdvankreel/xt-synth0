@@ -39,7 +39,7 @@ SeqDSP::Take(int key, int voice)
   return voice;
 }
 
-AudioOutput
+FAudioOutput
 SeqDSP::Next(SeqInput const& input, bool& exhausted)
 {
   exhausted = false;
@@ -55,7 +55,7 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
       if (_active[k] != -1)
         _dsps[_active[k]].Release();
   }
-  AudioOutput result = { 0 };
+  FAudioOutput result = { 0 };
   for (int v = 0; v < MaxVoices; v++)
   {
     if (_keys[v] == -1) continue;

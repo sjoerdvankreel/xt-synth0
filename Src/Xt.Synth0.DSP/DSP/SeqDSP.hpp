@@ -50,7 +50,7 @@ private:
   int Take(int key, bool& exhausted);
   bool Trigger(SeqInput const& input);
   MoveType Move(SeqInput const& input);
-  AudioOutput Next(SeqInput const& input, bool& exhausted);
+  FAudioOutput Next(SeqInput const& input, bool& exhausted);
 public:
   bool End() const { return _endAudio; }
   void Render(SeqInput const& input, SeqOutput& output);

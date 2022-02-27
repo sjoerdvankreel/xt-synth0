@@ -9,7 +9,7 @@ namespace Xts {
 
 class UnitDSP
 {
-  AudioOutput _output;
+  FAudioOutput _output;
   UnitModel const* _model;
   double _phase, _blepTri;
   float _rate, _pan, _amt1, _amt2, _amp, _roll, _pw, _freq;
@@ -25,8 +25,8 @@ private:
   float GenerateAdd(float phase, float freq, ModInput const& mod) const;
   float Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const;
 public:
-  AudioOutput Next(CvState const& cv);
-  AudioOutput const Output() const { return _output; }
+  FAudioOutput Next(CvState const& cv);
+  FAudioOutput const Output() const { return _output; }
   static void Plot(UnitModel const& model, CvModel const& cvModel, bool spec, PlotInput const& input, PlotOutput& output);
 };
 
