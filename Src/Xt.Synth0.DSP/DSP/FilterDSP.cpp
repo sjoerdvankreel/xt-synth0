@@ -171,7 +171,7 @@ _state()
   switch (model->type)
   {
   case FilterType::Comb: InitComb(*model, _state.comb); break;
-  case FilterType::Bqd: InitBiquad(*model, rate, _state.biquad); break;
+  case FilterType::Biquad: InitBiquad(*model, rate, _state.biquad); break;
   default: assert(false); break;
   }
 }
@@ -186,7 +186,7 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   switch (_model->type)
   {
   case FilterType::Comb: _output = GenerateComb(_output, _state.comb); break;
-  case FilterType::Bqd: _output = GenerateBiquad(_output, _state.biquad); break;
+  case FilterType::Biquad: _output = GenerateBiquad(_output, _state.biquad); break;
   default: assert(false); break;
   }
   return _output;

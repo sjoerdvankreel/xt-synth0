@@ -75,9 +75,9 @@ private:
 };
 XTS_CHECK_SIZE(EnvModel, 72);
 
-enum class FilterType { Bqd, Comb };
+enum class FilterType { Biquad, Comb };
 enum class BiquadType { LPF, HPF, BPF, BSF };
-enum class FilterModTarget { Freq, Res, GPlus, DlyPlus, GMin, DlyMin };
+enum class FilterModTarget { BiquadFrequency, BiquadResonance, CombMinGain, CombPlusGain, CombMinDelay, CombPlusDelay };
 struct XTS_ALIGN FilterModel
 {
   FilterModel() = default;
