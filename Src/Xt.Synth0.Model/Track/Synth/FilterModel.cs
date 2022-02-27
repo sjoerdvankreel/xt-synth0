@@ -25,6 +25,7 @@ namespace Xt.Synth0.Model
             internal int biquadType;
             internal int biquadResonance;
             internal int biquadFrequency;
+            internal int pad__;
 
             internal SynthModel.Native.ModulationModel modulation1;
             internal SynthModel.Native.ModulationModel modulation2;

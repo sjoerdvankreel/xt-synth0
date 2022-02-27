@@ -94,6 +94,7 @@ struct XTS_ALIGN FilterModel
   BiquadType biquadType;
   int32_t biquadResonance;
   int32_t biquadFrequency;
+  int32_t pad__;
 
   ModulationModel modulation1;
   ModulationModel modulation2;
