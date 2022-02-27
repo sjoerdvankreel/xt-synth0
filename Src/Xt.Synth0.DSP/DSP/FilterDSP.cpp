@@ -4,165 +4,25 @@
 #include "AudioDSP.hpp"
 #include "FilterDSP.hpp"
 
-#include <cstring>
+namespace Xts {
 
-#define BIQUAD_MIN_Q 0.5f
-#define BIQUAD_MAX_Q 40.0f
-#define BIQUAD_MIN_BW 0.5f
-#define BIQUAD_MAX_BW 6.0f
-
-// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
-// https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
-
-namespace Xts
-{
-
-static void 
-InitComb(FilterModel const& m, CombState& s)
-{
-  s.delayMin = m.dlyMin;
-  s.delayPlus = m.dlyPlus;
-  s.gainMin = Mix(m.gMin);
-  s.gainPlus = Mix(m.gPlus);
-  std::memset(&s.x, 0, sizeof(s.x));
-  std::memset(&s.y, 0, sizeof(s.y));
-}
-
-static FAudioOutput
-GenerateComb(FAudioOutput audio, CombState& s)
-{
-  s.y[0].Clear();
-  s.x[0] = audio;
-  s.y[0] = s.x[0] + s.x[s.delayPlus] * s.gainPlus + s.y[s.delayMin] * s.gainMin;
-  for (int i = XTS_MAX_COMB_DELAY - 1; i > 0; i--)
-  {
-    s.x[i] = s.x[i - 1];
-    s.y[i] = s.y[i - 1];
-  }
-  return s.y[0];
-}
-
-static void
-InitBiquadLPF(double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = (1.0 - cosw0) / 2.0;
-  s.b[1] = 1.0 - cosw0;
-  s.b[2] = (1.0 - cosw0) / 2.0;
-}
-
-static void
-InitBiquadHPF(double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = (1.0 + cosw0) / 2.0;
-  s.b[1] = -(1.0 + cosw0);
-  s.b[2] = (1.0 + cosw0) / 2.0;
-}
-
-static void
-InitBiquadBSF(double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = 1.0;
-  s.b[1] = -2.0 * cosw0;
-  s.b[2] = 1.0;
-}
-
-static void
-InitBiquadBPF(double sinw0, double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = sinw0 / 2.0;
-  s.b[1] = 0.0;
-  s.b[2] = -sinw0 / 2.0;
-}
-
-static bool
-BiquadIsQ(BiquadType type)
-{
-  switch (type)
-  {
-  case BiquadType::LPF: case BiquadType::HPF: return true;
-  case BiquadType::BPF: case BiquadType::BSF: return false;
-  default: assert(false); return false;
-  }
-}
-
-static double
-BiquadAlphaQ(double res, double sinw0)
-{
-  double q = BIQUAD_MIN_Q + res * (BIQUAD_MAX_Q - BIQUAD_MIN_Q);
-  return sinw0 / (2.0 * q);
-}
-
-static double
-BiquadAlphaBW(double res, double w0, double sinw0)
-{
-  double q = (1.0 - res) * (BIQUAD_MAX_BW - BIQUAD_MIN_BW);
-  return sinw0 * std::sinh(std::log(2.0) / 2.0 * q * w0 / sinw0);
-}
-
-static void
-BiquadParameters(FilterModel const& m, float rate, double& sinw0, double& cosw0, double& alpha)
-{
-  double res = Level(m.res);
-  double freq = FreqHz(m.freq);
-  double w0 = 2.0 * PI * freq / rate;
-  sinw0 = std::sin(w0);
-  cosw0 = std::cos(w0);
-  alpha = BiquadIsQ(m.bqType)? BiquadAlphaQ(res, sinw0): BiquadAlphaBW(res, w0, sinw0);
-}
-
-static void
-InitBiquad(FilterModel const& m, float rate, BiquadState& s)
-{
-  double alpha;
-  double sinw0;
-  double cosw0;
-  std::memset(&s.x, 0, sizeof(s.x));
-  std::memset(&s.y, 0, sizeof(s.y));
-  BiquadParameters(m, rate, sinw0, cosw0, alpha);
-  switch (m.bqType)
-  {
-  case BiquadType::LPF: InitBiquadLPF(cosw0, alpha, s); break;
-  case BiquadType::HPF: InitBiquadHPF(cosw0, alpha, s); break;
-  case BiquadType::BSF: InitBiquadBSF(cosw0, alpha, s); break;
-  case BiquadType::BPF: InitBiquadBPF(sinw0, cosw0, alpha, s); break;
-  default: assert(false); break;
-  }
-  for(int i = 0; i < 3; i++) s.b[i] /= s.a[0];
-  for(int i = 1; i < 3; i++) s.a[i] /= s.a[0];
-}
-
-static FAudioOutput
-GenerateBiquad(FAudioOutput audio, BiquadState& s)
-{
-  s.y[0].Clear();
-  s.x[0] = audio.ToDouble();
-  s.y[0] = s.x[0] * s.b[0] + s.x[1] * s.b[1] + s.x[2] * s.b[2] - s.y[1] * s.a[1] - s.y[2] * s.a[2];
-  s.x[2] = s.x[1];
-  s.x[1] = s.x[0];
-  s.y[2] = s.y[1];
-  s.y[1] = s.y[0];
-  return s.y[0].ToFloat();
-}
+static const float MinQ = 0.5f;
+static const float MaxQ = 40.0f;
+static const float MinBW = 0.5f;
+static const float MaxBW = 6.0f;
 
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate) :
-_index(index), _output(),
+_output(),
+_index(index),
 _amt1(Mix(model->amt1)),
 _amt2(Mix(model->amt2)),
 _units(), _flts(), _model(model),
-_state()
+_cbdPlus(model->dlyPlus),
+_cbdMin(model->dlyMin),
+_cbgPlus(Mix(model->gPlus)),
+_cbgMin(Mix(model->gMin)),
+_bqa(), _bqb(), _bqx(), _bqy(), _cbx(), _cby()
 {
   for (int i = 0; i < UnitCount; i++)
     _units[i] = Level(model->units[i]);
@@ -170,26 +30,137 @@ _state()
     _flts[i] = Level(model->flts[i]);
   switch (model->type)
   {
-  case FilterType::Comb: InitComb(*model, _state.comb); break;
-  case FilterType::Bqd: InitBiquad(*model, rate, _state.biquad); break;
+  case FilterType::Comb: InitComb(); break;
+  case FilterType::Bqd: InitBQ(rate); break;
   default: assert(false); break;
   }
 }
 
-FAudioOutput
+// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
+AudioOutput
 FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   if (!_model->on) return _output;
-  for (int i = 0; i < _index; i++) _output += audio.filts[i] * _flts[i];
-  for (int i = 0; i < UnitCount; i++) _output += audio.units[i] * _units[i];
+  for (int i = 0; i < UnitCount; i++)
+    _output += audio.units[i] * _units[i];
+  for (int i = 0; i < _index; i++)
+    _output += audio.filts[i] * _flts[i];
   switch (_model->type)
   {
-  case FilterType::Comb: _output = GenerateComb(_output, _state.comb); break;
-  case FilterType::Bqd: _output = GenerateBiquad(_output, _state.biquad); break;
+  case FilterType::Bqd: _output = GenerateBQ(_output); break;
+  case FilterType::Comb: _output = GenerateComb(_output); break;
   default: assert(false); break;
   }
   return _output;
+}
+
+void
+FilterDSP::InitComb()
+{
+  for (int i = 0; i <= _cbdPlus; i++)
+    _cbx[i].Clear();
+  for (int i = 0; i <= _cbdMin; i++)
+    _cby[i].Clear();
+}
+
+// https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
+AudioOutput
+FilterDSP::GenerateComb(AudioOutput audio)
+{
+  _cby[0].Clear();
+  _cbx[0] = audio;
+  _cby[0] = _cbx[0] + _cbx[_cbdPlus] * _cbgPlus + _cby[_cbdMin] * _cbgMin;
+  for (int i = _cbdPlus; i > 0; i--)
+    _cbx[i] = _cbx[i - 1];
+  for (int i = _cbdMin; i > 0; i--)
+    _cby[i] = _cby[i - 1];
+  assert(!std::isnan(_cby[0].l));
+  assert(!std::isnan(_cby[0].r));
+  return _cby[0];
+}
+
+// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
+AudioOutput
+FilterDSP::GenerateBQ(AudioOutput audio)
+{
+  _bqy[0].Clear();
+  _bqx[0] = audio;
+  _bqy[0] = _bqx[0] * _bqb[0] + _bqx[1] * _bqb[1] + _bqx[2] * _bqb[2] - _bqy[1] * _bqa[1] - _bqy[2] * _bqa[2];
+  _bqx[2] = _bqx[1];
+  _bqx[1] = _bqx[0];
+  _bqy[2] = _bqy[1];
+  _bqy[1] = _bqy[0];
+  assert(!std::isnan(_bqy[0].l));
+  assert(!std::isnan(_bqy[0].r));
+  return _bqy[0];
+}
+
+// https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
+void
+FilterDSP::InitBQ(float rate)
+{
+  for (int i = 0; i < 3; i++)
+  {
+    _bqx[i].Clear();
+    _bqy[i].Clear();
+  }
+
+  float freq = FreqHz(_model->freq);
+  float w0 = 2.0f * PI * freq / rate;
+  float sinw0 = std::sinf(w0);
+  float cosw0 = std::cosf(w0);
+
+  float res = Level(_model->res);
+  float q = MinQ + res * (MaxQ - MinQ);
+  float alphaQ = sinw0 / (2.0f * q);
+  float bw = (1.0f - res) * (MaxBW - MinBW);
+  float alphaBW = sinw0 * std::sinhf(std::logf(2.0f) / 2.0f * bw * w0 / sinw0);
+
+  switch (_model->bqType)
+  {
+  case BiquadType::LPF:
+    _bqa[0] = 1.0f + alphaQ;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaQ;
+    _bqb[0] = (1.0f - cosw0) / 2.0f;
+    _bqb[1] = 1.0f - cosw0;
+    _bqb[2] = (1.0f - cosw0) / 2.0f;
+    break;
+  case BiquadType::HPF:
+    _bqa[0] = 1.0f + alphaQ;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaQ;
+    _bqb[0] = (1.0f + cosw0) / 2.0f;
+    _bqb[1] = -(1.0f + cosw0);
+    _bqb[2] = (1.0f + cosw0) / 2.0f;
+    break;
+  case BiquadType::BPF:
+    _bqa[0] = 1.0f + alphaBW;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaBW;
+    _bqb[0] = sinw0 / 2.0f;
+    _bqb[1] = 0.0f;
+    _bqb[2] = -sinw0 / 2.0f;
+    break;
+  case BiquadType::BSF:
+    _bqa[0] = 1.0f + alphaBW;
+    _bqa[1] = -2.0f * cosw0;
+    _bqa[2] = 1.0f - alphaBW;
+    _bqb[0] = 1.0f;
+    _bqb[1] = -2.0f * cosw0;
+    _bqb[2] = 1.0f;
+    break;
+  default:
+    assert(false);
+    break;
+  }
+
+  _bqa[1] /= _bqa[0];
+  _bqa[2] /= _bqa[0];
+  _bqb[0] /= _bqa[0];
+  _bqb[1] /= _bqa[0];
+  _bqb[2] /= _bqa[0];
 }
 
 void

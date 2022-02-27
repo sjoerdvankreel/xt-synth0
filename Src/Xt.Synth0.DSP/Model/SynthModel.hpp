@@ -72,8 +72,10 @@ enum class BiquadType { LPF, HPF, BPF, BSF };
 enum class FilterModTarget { Freq, Res, GPlus, DlyPlus, GMin, DlyMin };
 struct XTS_ALIGN FilterModel
 {
+  friend class FilterDSP;
   FilterModel() = default;
   FilterModel(FilterModel const&) = delete;
+private:
   XtsBool on;
   FilterType type;
   BiquadType bqType;

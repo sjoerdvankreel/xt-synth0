@@ -4,49 +4,32 @@
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
-#define XTS_MAX_COMB_DELAY 256
-
 namespace Xts {
-
-struct BiquadState
-{
-  double a[3];
-  double b[3];
-  DAudioOutput x[3];
-  DAudioOutput y[3];
-};
-
-struct CombState
-{
-  int delayMin;
-  int delayPlus;
-  float gainMin;
-  float gainPlus;
-  FAudioOutput x[XTS_MAX_COMB_DELAY];
-  FAudioOutput y[XTS_MAX_COMB_DELAY];
-};
-
-union FilterState
-{
-  CombState comb;
-  BiquadState biquad;
-};
 
 class FilterDSP
 {
+  AudioOutput _output;
   int _index;
-  FAudioOutput _output;
   float _amt1, _amt2;
   float _units[UnitCount];
   float _flts[FilterCount];
   FilterModel const* _model;
-  FilterState _state;
+  int _cbdPlus, _cbdMin;
+  float _cbgPlus, _cbgMin;
+  float _bqa[3], _bqb[3];
+  AudioOutput _bqx[3], _bqy[3];
+  AudioOutput _cbx[256], _cby[256];
+private:
+  void InitComb();
+  void InitBQ(float rate);
+  AudioOutput GenerateBQ(AudioOutput audio);
+  AudioOutput GenerateComb(AudioOutput audio);
 public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);
 public:
-  FAudioOutput Output() const { return _output; };
-  FAudioOutput Next(CvState const& cv, AudioState const& audio);
+  AudioOutput Output() const { return _output; };
+  AudioOutput Next(CvState const& cv, AudioState const& audio);
   static void Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& AudioModel, bool spec, int index, PlotInput const& input, PlotOutput& output);
 };
 

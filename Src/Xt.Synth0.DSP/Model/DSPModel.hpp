@@ -31,28 +31,23 @@ struct CvState
   EnvOutput envs[EnvCount];
 };
 
-template <class T>
 struct AudioOutput
 { 
-  T l, r;
-  T Mono() const { return l + r; }
-  void Clear() { l = r = static_cast<T>(0.0); }
-  AudioOutput operator*(T s) const { return { l * s, r * s }; }
+  float l;
+  float r;
+  void Clear() { l = r = 0.0f; }
+  float Mono() const { return l + r; }
+  AudioOutput operator*(float s) const { return { l * s, r * s }; }
   AudioOutput operator+(AudioOutput s) const { return { l + s.l, r + s.r }; }
   AudioOutput operator-(AudioOutput s) const { return { l - s.l, r - s.r }; }
   AudioOutput operator*(AudioOutput s) const { return { l * s.l, r * s.r }; }
   AudioOutput& operator+=(AudioOutput const& rhs) { l += rhs.l; r += rhs.r; return *this; }
-  AudioOutput<float> ToFloat() const { return AudioOutput<float> { static_cast<float>(l), static_cast<float>(r) }; }
-  AudioOutput<double> ToDouble() const { return AudioOutput<double> { static_cast<double>(l), static_cast<double>(r) }; }
 };
-
-typedef AudioOutput<float> FAudioOutput;
-typedef AudioOutput<double> DAudioOutput;
 
 struct AudioState
 {
-  FAudioOutput units[UnitCount];
-  FAudioOutput filts[FilterCount];
+  AudioOutput units[UnitCount];
+  AudioOutput filts[FilterCount];
 };
 
 struct PlotInput
