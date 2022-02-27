@@ -29,10 +29,6 @@ GenerateBlepSaw(float phase, float inc)
   return saw;
 }
 
-AudioOutput _output;
-double _phase, _blepTri;
-float _pan, _amt1, _amt2, _amp, _roll, _pw, _freq;
-
 UnitDSP::
 UnitDSP(UnitModel const* model, int oct, UnitNote note, float rate):
 _output(),
@@ -97,7 +93,7 @@ UnitDSP::ModFreq(ModInput const& mod) const
   return result;
 }
 
-AudioOutput
+FAudioOutput
 UnitDSP::Next(CvState const& cv)
 {
   _output.Clear();

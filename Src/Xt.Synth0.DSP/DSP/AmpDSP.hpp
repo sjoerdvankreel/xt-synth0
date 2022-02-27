@@ -12,7 +12,7 @@ namespace Xts {
 class AmpDSP
 {
   float _amp;
-  AudioOutput _output;
+  FAudioOutput _output;
   AmpModel const* _model;
   float _units[UnitCount];
   float _flts[FilterCount];
@@ -21,9 +21,9 @@ public:
   AmpDSP() = default;
   AmpDSP(AmpModel const* model, float velo);
 public:
-  AudioOutput Output() const { return _output; };
+  FAudioOutput Output() const { return _output; };
   int Env() const { return static_cast<int>(_model->envSrc); }
-  AudioOutput Next(CvState const& cv, AudioState const& audio);
+  FAudioOutput Next(CvState const& cv, AudioState const& audio);
   static void Plot(
     AmpModel const& model, EnvModel const& envModel, 
     CvModel const& cvModel, int hold, PlotInput const& input, PlotOutput& output);

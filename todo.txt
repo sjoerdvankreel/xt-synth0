@@ -32,3 +32,4 @@ filter keyboard track
 double precision biquad
 filter modulation - how ?
 check denormals
+sanity checks

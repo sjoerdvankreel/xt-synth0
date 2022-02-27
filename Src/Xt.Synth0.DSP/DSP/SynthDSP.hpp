@@ -19,10 +19,10 @@ public:
   SynthDSP(SynthModel const* model, int oct, UnitNote note, float velo, float bpm, float rate);
 public:
   bool End() const { return _cv.End(_amp.Env()); }
-  AudioOutput Output() const { return _amp.Output(); }
+  FAudioOutput Output() const { return _amp.Output(); }
   EnvOutput Release() { return _cv.ReleaseAll(_amp.Env()); }
-  AudioOutput Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };
-  AudioOutput Next() { _cv.Next(); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
+  FAudioOutput Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };
+  FAudioOutput Next() { _cv.Next(); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
   static void Plot(SynthModel const& model, EnvModel const& envModel, bool spec, int hold, PlotInput const& input, PlotOutput& output);
 };
 

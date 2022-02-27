@@ -20,7 +20,7 @@ _lvl(Level(model->lvl) * velo)
     _flts[i] = Level(model->flts[i]);
 }
 
-AudioOutput
+FAudioOutput
 AmpDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();    
@@ -32,7 +32,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   
   CvOutput mod = ModulationInput(cv, _model->panSrc);
   float panMix = BiToUni1(Modulate(_pan, true, _panAmt, mod));
-  AudioOutput pan = { (1.0f - panMix) * _amp, panMix * _amp };
+  FAudioOutput pan = { (1.0f - panMix) * _amp, panMix * _amp };
 
   for (int i = 0; i < UnitCount; i++) 
     _output += audio.units[i] * pan * _units[i];
