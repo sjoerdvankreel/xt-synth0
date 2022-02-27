@@ -14,14 +14,14 @@ void SynthModelInit(
   struct SyncStep* steps, int32_t stepCount);
 
 enum class ModSource { Velo, Env1, Env2, Env3, LFO1, LFO2, LFO3 };
-struct XTS_ALIGN ModulationModel
+struct XTS_ALIGN ModModel
 {
   int32_t amount;
   int32_t target;
   ModSource source;
   int32_t pad__;
 };
-XTS_CHECK_SIZE(ModulationModel, 16);
+XTS_CHECK_SIZE(ModModel, 16);
 
 struct XTS_ALIGN SyncStep { int32_t num, den; };
 XTS_CHECK_SIZE(SyncStep, 8);
@@ -96,8 +96,8 @@ struct XTS_ALIGN FilterModel
   int32_t biquadFrequency;
   int32_t pad__;
 
-  ModulationModel modulation1;
-  ModulationModel modulation2;
+  ModModel mod1;
+  ModModel mod2;
   int32_t unitAmount[UnitCount];
   int32_t filterAmount[FilterCount];
 };

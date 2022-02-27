@@ -53,7 +53,7 @@ namespace Xt.Synth0.Model
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 8)]
-            internal ref struct ModulationModel
+            internal ref struct ModModel
             {
                 internal int amount;
                 internal int target;

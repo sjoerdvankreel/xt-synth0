@@ -159,8 +159,8 @@ GenerateBiquad(FloatSample audio, BiquadState& s)
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate) :
 _index(index), _output(),
-_amt1(Mix(model->modulation1.amount)),
-_amt2(Mix(model->modulation2.amount)),
+_amt1(Mix(model->mod1.amount)),
+_amt2(Mix(model->mod2.amount)),
 _units(), _flts(), _model(model),
 _state()
 {
