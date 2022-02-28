@@ -36,9 +36,9 @@ Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vec
 static bool
 ModBip(CvState const& cv, ModSource mod)
 {
-  if (mod == ModSource::LFO1 && cv.lfos[0].bip) return true;
-  if (mod == ModSource::LFO2 && cv.lfos[1].bip) return true;
-  if (mod == ModSource::LFO3 && cv.lfos[2].bip) return true;
+  if (mod == ModSource::LFO1 && cv.lfos[0].bipolar) return true;
+  if (mod == ModSource::LFO2 && cv.lfos[1].bipolar) return true;
+  if (mod == ModSource::LFO3 && cv.lfos[2].bipolar) return true;
   return false;
 }
 
@@ -50,21 +50,21 @@ ModVal(CvState const& cv, ModSource mod)
   switch (mod)
   {
   case ModSource::Velo: 
-    return cv.velo;
+    return cv.velocity;
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3:
-    return cv.envs[static_cast<int>(mod) - env].val;
+    return cv.envelopes[static_cast<int>(mod) - env].value;
   case ModSource::LFO1: case ModSource::LFO2: case ModSource::LFO3:
-    return cv.lfos[static_cast<int>(mod) - lfo].val;
+    return cv.lfos[static_cast<int>(mod) - lfo].value;
   default: assert(false); return 0.0f;
   }
 }
 
-CvOutput
+CvSample
 ModulationInput(CvState const& cv, ModSource src)
 {
-  CvOutput result;
-  result.val = ModVal(cv, src);
-  result.bip = ModBip(cv, src);
+  CvSample result;
+  result.value = ModVal(cv, src);
+  result.bipolar = ModBip(cv, src);
   return result;
 }
 
@@ -78,22 +78,22 @@ ModulationInput(CvState const& cv, ModSource src1, ModSource src2)
 }
 
 float 
-Modulate(float val, bool bip, float amt, CvOutput cv)
+Modulate(float val, bool bip, float amt, CvSample cv)
 {
   float range = 0.0f;
   val = EpsToZero(val);
   assert(-1.0f <= amt && amt <= 1.0f);
   assert(bip || 0.0f <= val && val <= 1.0f);
-  assert(cv.bip || 0.0f <= cv.val && cv.val <= 1.0f);
+  assert(cv.bipolar || 0.0f <= cv.value && cv.value <= 1.0f);
   assert(!bip || -1.0f <= val && val <= 1.0f);
-  assert(!cv.bip || -1.0f <= cv.val && cv.val <= 1.0f);
+  assert(!cv.bipolar || -1.0f <= cv.value && cv.value <= 1.0f);
   if (amt == 0.0f) return val;
-  if (!cv.bip && amt > 0.0f) range = 1.0f - val;
-  if (!cv.bip && !bip && amt < 0.0f) range = val;
-  if (!cv.bip && bip && amt < 0.0f) range = 1.0f + val;
-  if (cv.bip && bip) range = 1.0f - std::fabs(val);
-  if (cv.bip && !bip) range = 0.5f - std::fabs(val - 0.5f);
-  float result = val + cv.val * amt * range;
+  if (!cv.bipolar && amt > 0.0f) range = 1.0f - val;
+  if (!cv.bipolar && !bip && amt < 0.0f) range = val;
+  if (!cv.bipolar && bip && amt < 0.0f) range = 1.0f + val;
+  if (cv.bipolar && bip) range = 1.0f - std::fabs(val);
+  if (cv.bipolar && !bip) range = 0.5f - std::fabs(val - 0.5f);
+  float result = val + cv.value * amt * range;
   assert(bip || 0.0f <= result && result <= 1.0f);
   assert(!bip || -1.0f <= result && result <= 1.0f);
   return result;

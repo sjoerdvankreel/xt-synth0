@@ -174,7 +174,7 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   if (!_model->on) return _output;
-  for (int i = 0; i < _index; i++) _output += audio.filts[i] * _filterAmount[i];
+  for (int i = 0; i < _index; i++) _output += audio.filters[i] * _filterAmount[i];
   for (int i = 0; i < UnitCount; i++) _output += audio.units[i] * _unitAmount[i];
   switch (_model->type)
   {

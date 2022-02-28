@@ -18,7 +18,7 @@ class PlotDSP
   static std::vector<VSplit> BiVSPlits;
   static std::vector<VSplit> UniVSPlits;
   static std::vector<VSplit> StereoVSPlits;
-  static std::wstring FormatEnv(EnvStage stage);
+  static std::wstring FormatEnv(EnvelopeStage stage);
   static std::vector<VSplit> MakeBiVSplits(float max);
 
 public:
@@ -121,7 +121,7 @@ void PlotDSP::RenderStaged(
     float r = output.stereo? right(state): 0.0f;
     output.clip |= Clip(r);
     output.rSamples->push_back(r);
-    if (i == 0 || envOutput(state).staged)
+    if (i == 0 || envOutput(state).switchedStage)
       output.hSplits->emplace_back(i, FormatEnv(envOutput(state).stage));
     i++;
   }

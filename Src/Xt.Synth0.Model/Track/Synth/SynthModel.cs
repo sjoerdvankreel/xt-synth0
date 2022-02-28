@@ -42,7 +42,7 @@ namespace Xt.Synth0.Model
             internal ref struct CvModel
             {
 				internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
-				internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
+				internal fixed byte envs[Model.EnvelopeCount * EnvModel.Native.Size];
 			}
 
             [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -84,7 +84,7 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<FilterModel> Filters = new ReadOnlyCollection<FilterModel>(MakeFilters());
 
 		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, Model.LfoCount).Select(i => new LfoModel(i)).ToList();
-		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
+		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvelopeCount).Select(i => new EnvModel(i)).ToList();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
 		static IList<FilterModel> MakeFilters() => Enumerable.Range(0, Model.FilterCount).Select(i => new FilterModel(i)).ToList();
 

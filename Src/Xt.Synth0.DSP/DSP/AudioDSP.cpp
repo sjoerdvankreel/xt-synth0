@@ -9,7 +9,7 @@ AudioDSP::Next(CvState const& cv)
   for (int i = 0; i < UnitCount; i++) 
     _output.units[i] = _units[i].Next(cv);
   for(int i = 0; i < FilterCount; i++)
-    _output.filts[i] = _flts[i].Next(cv, Output());
+    _output.filters[i] = _flts[i].Next(cv, Output());
   return Output();
 }
 

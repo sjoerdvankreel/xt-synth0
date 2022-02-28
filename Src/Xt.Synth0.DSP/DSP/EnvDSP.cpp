@@ -16,43 +16,43 @@ _pos(0), _max(0.0f), _output(),
 _params(Params(*model, bpm, rate)), _model(model),
 _slp(0.0), _lin(0.0), _log(0.0)
 {
-  _output.val = 0.0f;
-  _output.staged = false;
-  _output.stage = EnvStage::Dly;
-  NextStage(!_model->on ? EnvStage::S : EnvStage::Dly);
+  _output.value = 0.0f;
+  _output.switchedStage = false;
+  _output.stage = EnvelopeStage::Delay;
+  NextStage(!_model->on ? EnvelopeStage::Sustain : EnvelopeStage::Delay);
   CycleStage(model->type);
 }
 
-EnvOutput
+EnvelopeSample
 EnvDSP::Release()
 {
-  if (_model->on && _output.stage >= EnvStage::R) 
+  if (_model->on && _output.stage >= EnvelopeStage::Release)
     return Output();
-  NextStage(!_model->on ? EnvStage::End : EnvStage::R);
+  NextStage(!_model->on ? EnvelopeStage::End : EnvelopeStage::Release);
   CycleStage(_model->type);
   return Output();
 }
 
-EnvOutput
+EnvelopeSample
 EnvDSP::Output() const 
 {
-  EnvOutput result = _output;
-  result.val = _model->on && _model->inv ? 1.0f - _output.val : _output.val; 
+  EnvelopeSample result = _output;
+  result.value = _model->on && _model->inv ? 1.0f - _output.value : _output.value; 
   return result;
 }
 
-EnvOutput
+EnvelopeSample
 EnvDSP::Next()
 {
-  _output.val = 0.0f;
-  _output.staged = false;
+  _output.value = 0.0f;
+  _output.switchedStage = false;
   const float threshold = 1.0E-5f;
-  if (!_model->on || _output.stage == EnvStage::End) return Output();
-  _output.val = Generate();
-  assert(0.0f <= _output.val && _output.val <= 1.0f);
-  if (_output.stage != EnvStage::End) _pos++;
-  if (_output.stage < EnvStage::R) _max = _output.val;
-  if (_output.stage > EnvStage::A && _output.val <= threshold) NextStage(EnvStage::End);
+  if (!_model->on || _output.stage == EnvelopeStage::End) return Output();
+  _output.value = Generate();
+  assert(0.0f <= _output.value && _output.value <= 1.0f);
+  if (_output.stage != EnvelopeStage::End) _pos++;
+  if (_output.stage < EnvelopeStage::Release) _max = _output.value;
+  if (_output.stage > EnvelopeStage::Attack && _output.value <= threshold) NextStage(EnvelopeStage::End);
   CycleStage(_model->type);
   return Output();
 }
@@ -62,12 +62,12 @@ EnvDSP::Generate()
 {
   switch (_output.stage)
   {
-  case EnvStage::Dly: return 0.0f;
-  case EnvStage::Hld: return 1.0f;
-  case EnvStage::S: return _params.s;
-  case EnvStage::A: return Generate(0.0, 1.0, _model->aSlp);
-  case EnvStage::R: return Generate(_max, 0.0, _model->rSlp);
-  case EnvStage::D: return Generate(1.0, _params.s, _model->dSlp);
+  case EnvelopeStage::Delay: return 0.0f;
+  case EnvelopeStage::Hold: return 1.0f;
+  case EnvelopeStage::Sustain: return _params.s;
+  case EnvelopeStage::Attack: return Generate(0.0, 1.0, _model->aSlp);
+  case EnvelopeStage::Release: return Generate(_max, 0.0, _model->rSlp);
+  case EnvelopeStage::Decay: return Generate(1.0, _params.s, _model->dSlp);
   default: assert(false); return 0.0f;
   }
 }
@@ -111,28 +111,28 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
 void
 EnvDSP::CycleStage(EnvType type)
 {
-  if (_output.stage == EnvStage::Dly && _pos >= _params.dly) NextStage(EnvStage::A);
-  if (_output.stage == EnvStage::A && _pos >= _params.a) NextStage(EnvStage::Hld);
-  if (_output.stage == EnvStage::Hld && _pos >= _params.hld) NextStage(EnvStage::D);
-  if (_output.stage == EnvStage::D && _pos >= _params.d) NextStage(EnvStage::S);
-  if (_output.stage == EnvStage::S && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
-  if (_output.stage == EnvStage::S && type == EnvType::DAHDR) NextStage(EnvStage::R);
-  if (_output.stage == EnvStage::R && _pos >= _params.r) NextStage(EnvStage::End);
+  if (_output.stage == EnvelopeStage::Delay && _pos >= _params.dly) NextStage(EnvelopeStage::Attack);
+  if (_output.stage == EnvelopeStage::Attack && _pos >= _params.a) NextStage(EnvelopeStage::Hold);
+  if (_output.stage == EnvelopeStage::Hold && _pos >= _params.hld) NextStage(EnvelopeStage::Decay);
+  if (_output.stage == EnvelopeStage::Decay && _pos >= _params.d) NextStage(EnvelopeStage::Sustain);
+  if (_output.stage == EnvelopeStage::Sustain && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
+  if (_output.stage == EnvelopeStage::Sustain && type == EnvType::DAHDR) NextStage(EnvelopeStage::Release);
+  if (_output.stage == EnvelopeStage::Release && _pos >= _params.r) NextStage(EnvelopeStage::End);
 }
 
 void
-EnvDSP::NextStage(EnvStage stage)
+EnvDSP::NextStage(EnvelopeStage stage)
 {
   int len;
   SlopeType type;
   _pos = 0;
   _output.stage = stage;
-  _output.staged = true;
+  _output.switchedStage = true;
   switch (stage)
   {
-  case EnvStage::A: len = _params.a; type = _model->aSlp; break;
-  case EnvStage::D: len = _params.d; type = _model->dSlp; break;
-  case EnvStage::R: len = _params.r; type = _model->rSlp; break;
+  case EnvelopeStage::Attack: len = _params.a; type = _model->aSlp; break;
+  case EnvelopeStage::Decay: len = _params.d; type = _model->dSlp; break;
+  case EnvelopeStage::Release: len = _params.r; type = _model->rSlp; break;
   default: len = -1; type = SlopeType::Lin;  break;
   }
   if (len == -1) return;
@@ -151,7 +151,7 @@ EnvDSP::Plot(EnvModel const& model, int hold, PlotInput const& input, PlotOutput
   auto next = [](EnvDSP& dsp) { dsp.Next(); };
   auto end = [](EnvDSP const& dsp) { return dsp.End(); };
   auto release = [](EnvDSP& dsp) { return dsp.Release(); };
-  auto val = [](EnvDSP const& dsp) { return dsp.Output().val; };
+  auto val = [](EnvDSP const& dsp) { return dsp.Output().value; };
   auto envOutput = [](EnvDSP const& dsp) { return dsp.Output(); };
   auto factory = [&](float rate) { return EnvDSP(&model, input.bpm, rate); };
   PlotDSP::RenderStaged(hold, 0, model, input, output, factory, next, val, val, envOutput, release, end);

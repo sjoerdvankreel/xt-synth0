@@ -9,7 +9,7 @@ namespace Xts {
 class LfoDSP
 {
   double _phase;
-  CvOutput _output;
+  CvSample _output;
   LfoModel const* _model;
   float _incr, _base, _factor;
 public:
@@ -19,8 +19,8 @@ private:
   float Generate() const;
   static float Freq(LfoModel const& model, float bpm, float rate);
 public:
-  CvOutput Next();
-  CvOutput Output() const { return _output; }
+  CvSample Next();
+  CvSample Output() const { return _output; }
   static void Plot(LfoModel const& model, bool spec, PlotInput const& input, PlotOutput& output);
 };
 

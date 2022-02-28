@@ -1,6 +1,8 @@
 #ifndef XTS_DSP_HPP
 #define XTS_DSP_HPP
 
+#include <DSP/Synth/AudioState.hpp>
+#include <DSP/Synth/CvState.hpp>
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -14,8 +16,8 @@ namespace Xts {
 inline float Eps = 1e-3f;
 inline float PI = static_cast<float>(3.14159265358979323846);
 
-float Modulate(float val, bool bip, float amt, CvOutput cv);
-CvOutput ModulationInput(CvState const& cv, ModSource src);
+float Modulate(float val, bool bip, float amt, CvSample cv);
+CvSample ModulationInput(CvState const& cv, ModSource src);
 ModInput ModulationInput(CvState const& cv, ModSource src1, ModSource src2);
 
 void Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vector<std::complex<float>>& scratch);

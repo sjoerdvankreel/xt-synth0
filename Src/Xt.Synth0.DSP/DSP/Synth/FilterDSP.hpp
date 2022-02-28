@@ -1,6 +1,8 @@
 #ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
+#include <DSP/Synth/CvState.hpp>
+#include <DSP/Synth/AudioState.hpp>
 #include <Model/DSPModel.hpp>
 #include <Model/SynthModel.hpp>
 #include <DSP/AudioSample.hpp>

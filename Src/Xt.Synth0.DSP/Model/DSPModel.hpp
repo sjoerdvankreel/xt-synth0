@@ -2,6 +2,8 @@
 #define XTS_DSP_MODEL_HPP
 
 #include <DSP/AudioSample.hpp>
+#include <DSP/Synth/CvSample.hpp>
+#include <DSP/Synth/EnvelopeSample.hpp>
 #include "Model.hpp"
 #include <vector>
 #include <string>
@@ -18,25 +20,9 @@ inline constexpr PlotFlags PlotBipolar = 0x4;
 inline constexpr PlotFlags PlotAutoRange = 0x8;
 inline constexpr PlotFlags PlotNoResample = 0x10;
 
-struct CvOutput { bool bip; float val; };
-struct ModInput { CvOutput cv1; CvOutput cv2; };
+struct ModInput { CvSample cv1; CvSample cv2; };
 struct HSplit { int pos; std::wstring marker; };
 struct VSplit { float pos; std::wstring marker; };
-enum class EnvStage { Dly, A, Hld, D, S, R, End };
-struct EnvOutput { float val; EnvStage stage; bool staged; };
-
-struct CvState
-{ 
-  float velo;
-  CvOutput lfos[LfoCount];
-  EnvOutput envs[EnvCount];
-};
-
-struct AudioState
-{
-  FloatSample units[UnitCount];
-  FloatSample filts[FilterCount];
-};
 
 struct PlotInput
 {

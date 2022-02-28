@@ -19,15 +19,15 @@ _phase(0.0), _output(), _model(model),
 _incr(Freq(*_model, bpm, rate) / rate),
 _base(IsBipolar(_model->plty) ? 0.0f : 0.5f),
 _factor((IsInverted(_model->plty) ? -1.0f : 1.0f)* (1.0f - _base))
-{	_output.bip = IsBipolar(_model->plty); }
+{	_output.bipolar = IsBipolar(_model->plty); }
 
-CvOutput
+CvSample
 LfoDSP::Next()
 {
-  _output.val = 0.0f;
+  _output.value = 0.0f;
 	if (!_model->on) return Output();
-	_output.val = Generate();
-	assert(-1.0f <= _output.val && _output.val <= 1.0f);
+	_output.value = Generate();
+	assert(-1.0f <= _output.value && _output.value <= 1.0f);
 	_phase += _incr;
 	_phase -= std::floor(_phase);
   return Output();
@@ -64,7 +64,7 @@ LfoDSP::Plot(LfoModel const& model, bool spec, PlotInput const& input, PlotOutpu
   flags |= spec ? PlotSpec : 0;
   flags |= IsBipolar(model.plty)? PlotBipolar: 0;
   float freq = Freq(model, input.bpm, input.rate);
-  auto next = [](LfoDSP& dsp) { return dsp.Next().val; };
+  auto next = [](LfoDSP& dsp) { return dsp.Next().value; };
   auto factory = [&](float rate) { return LfoDSP(&model, input.bpm, rate); };
   PlotDSP::RenderCycled(1, freq, flags, input, output, factory, next);
 }

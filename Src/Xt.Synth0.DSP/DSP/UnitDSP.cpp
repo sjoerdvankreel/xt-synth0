@@ -67,8 +67,8 @@ float
 UnitDSP::ModPhase(ModInput const& mod) const
 {
   float phase = static_cast<float>(_phase);
-  float base1 = mod.cv1.bip ? 0.5f : _amt1 >= 0.0f ? 0.0f : 1.0f;
-  float base2 = mod.cv2.bip ? 0.5f : _amt2 >= 0.0f ? 0.0f : 1.0f;
+  float base1 = mod.cv1.bipolar ? 0.5f : _amt1 >= 0.0f ? 0.0f : 1.0f;
+  float base2 = mod.cv2.bipolar ? 0.5f : _amt2 >= 0.0f ? 0.0f : 1.0f;
   if (_model->tgt1 == UnitModTarget::Phase) phase += Modulate(base1, false, _amt1, mod.cv1);
   if (_model->tgt2 == UnitModTarget::Phase) phase += Modulate(base2, false, _amt2, mod.cv2);
   float result = phase - std::floorf(phase);

@@ -19,7 +19,7 @@ class EnvDSP
 {
   int _pos;
   float _max;
-  EnvOutput _output;
+  EnvelopeSample _output;
   EnvParams _params;
   EnvModel const* _model;
   double _slp, _lin, _log;
@@ -29,14 +29,14 @@ public:
 private:
   float Generate();
   void CycleStage(EnvType type);
-  void NextStage(EnvStage stage);
+  void NextStage(EnvelopeStage stage);
   float Generate(float from, float to, SlopeType type);
   static EnvParams Params(EnvModel const& model, float bpm, float rate);
 public:
-  EnvOutput Next();
-  EnvOutput Release();
-  EnvOutput Output() const;
-  bool End() const { return _output.stage == EnvStage::End; }
+  EnvelopeSample Next();
+  EnvelopeSample Release();
+  EnvelopeSample Output() const;
+  bool End() const { return _output.stage == EnvelopeStage::End; }
   static void Plot(EnvModel const& model, int hold, PlotInput const& input, PlotOutput& output);
 };
 

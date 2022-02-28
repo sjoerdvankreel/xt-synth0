@@ -26,19 +26,19 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();    
 
-  CvOutput lvlLfo = cv.lfos[static_cast<int>(_model->lvlSrc)];
+  CvSample lvlLfo = cv.lfos[static_cast<int>(_model->lvlSrc)];
   float lvl = Modulate(_lvl, false, _lvlAmt, lvlLfo);
   int envSrc = static_cast<int>(_model->envSrc);
-  _amp = cv.envs[static_cast<int>(_model->envSrc)].val * lvl;
+  _amp = cv.envelopes[static_cast<int>(_model->envSrc)].value * lvl;
   
-  CvOutput mod = ModulationInput(cv, _model->panSrc);
+  CvSample mod = ModulationInput(cv, _model->panSrc);
   float panMix = BiToUni1(Modulate(_pan, true, _panAmt, mod));
   FloatSample pan = { (1.0f - panMix) * _amp, panMix * _amp };
 
   for (int i = 0; i < UnitCount; i++) 
     _output += audio.units[i] * pan * _units[i];
   for (int i = 0; i < FilterCount; i++) 
-    _output += audio.filts[i] * pan * _flts[i];  
+    _output += audio.filters[i] * pan * _flts[i];  
 
   assert(!std::isnan(_output.left));
   assert(!std::isnan(_output.right));

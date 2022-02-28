@@ -116,7 +116,7 @@ struct XTS_ALIGN CvModel
   CvModel(CvModel const&) = delete;
 private:
   LfoModel lfos[LfoCount];
-  EnvModel envs[EnvCount];
+  EnvModel envs[EnvelopeCount];
 };
 XTS_CHECK_SIZE(CvModel, 288);
 

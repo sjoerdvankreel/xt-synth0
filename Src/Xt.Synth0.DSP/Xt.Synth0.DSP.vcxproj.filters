@@ -73,6 +73,18 @@
     <ClInclude Include="DSP\AudioSample.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Synth\AudioState.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\Synth\CvState.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\Synth\EnvelopeSample.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\Synth\CvSample.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">

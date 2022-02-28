@@ -22,6 +22,10 @@
     <ClInclude Include="DSP\PlotDSP.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />
+    <ClInclude Include="DSP\Synth\AudioState.hpp" />
+    <ClInclude Include="DSP\Synth\CvSample.hpp" />
+    <ClInclude Include="DSP\Synth\CvState.hpp" />
+    <ClInclude Include="DSP\Synth\EnvelopeSample.hpp" />
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\UnitDSP.hpp" />
     <ClInclude Include="Model\DSPModel.hpp" />
