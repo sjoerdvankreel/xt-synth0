@@ -17,6 +17,7 @@
     <ClInclude Include="DSP\EnvDSP.hpp" />
     <ClInclude Include="DSP\AmpDSP.hpp" />
     <ClInclude Include="DSP\LfoDSP.hpp" />
+    <ClInclude Include="DSP\Param.hpp" />
     <ClInclude Include="DSP\PlotDSP.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />

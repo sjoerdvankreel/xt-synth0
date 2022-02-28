@@ -1,6 +1,7 @@
 #include "DSP.hpp"
 #include "LfoDSP.hpp"
 #include "PlotDSP.hpp"
+#include <DSP/Param.hpp>
 
 #include <cmath>
 #include <cassert>
@@ -35,8 +36,8 @@ LfoDSP::Next()
 float
 LfoDSP::Freq(LfoModel const& model, float bpm, float rate)
 {
-	if (model.sync) return rate / SyncF(bpm, rate, model.step);
-	return rate / TimeF(model.prd, rate);
+	if (model.sync) return rate / Param::StepFramesF(bpm, rate, model.step);
+	return rate / Param::TimeFramesF(model.prd, rate);
 }
 
 float

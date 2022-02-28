@@ -1,6 +1,7 @@
 #include "DSP.hpp"
 #include "EnvDSP.hpp"
 #include "PlotDSP.hpp"
+#include <DSP/Param.hpp>
 
 #include <cmath>
 #include <cassert>
@@ -98,12 +99,12 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
 {
   EnvParams result;
   bool sync = model.sync != 0;
-  result.s = Level(model.s);
-  result.a = sync ? SyncI(bpm, rate, model.aStp) : TimeI(model.a, rate);
-  result.d = sync ? SyncI(bpm, rate, model.dStp) : TimeI(model.d, rate);
-  result.r = sync ? SyncI(bpm, rate, model.rStp) : TimeI(model.r, rate);
-  result.dly = sync ? SyncI(bpm, rate, model.dlyStp) : TimeI(model.dly, rate);
-  result.hld = sync ? SyncI(bpm, rate, model.hldStp) : TimeI(model.hld, rate);
+  result.s = Param::Level(model.s);
+  result.a = sync ? Param::StepFramesI(bpm, rate, model.aStp) : Param::TimeFramesI(model.a, rate);
+  result.d = sync ? Param::StepFramesI(bpm, rate, model.dStp) : Param::TimeFramesI(model.d, rate);
+  result.r = sync ? Param::StepFramesI(bpm, rate, model.rStp) : Param::TimeFramesI(model.r, rate);
+  result.dly = sync ? Param::StepFramesI(bpm, rate, model.dlyStp) : Param::TimeFramesI(model.dly, rate);
+  result.hld = sync ? Param::StepFramesI(bpm, rate, model.hldStp) : Param::TimeFramesI(model.hld, rate);
   return result;
 }
 

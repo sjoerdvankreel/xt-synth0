@@ -1,6 +1,7 @@
 #ifndef XTS_PLOT_DSP_HPP
 #define XTS_PLOT_DSP_HPP
 
+#include <DSP/Param.hpp>
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -100,8 +101,8 @@ void PlotDSP::RenderStaged(
   output.stereo = (flags & PlotStereo) != 0;
   output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
   bool noResample = (flags & PlotNoResample) != 0;
-  float fhold = TimeF(hold, input.rate);
-  float releaseSamples = envModel.sync ? SyncF(input.bpm, input.rate, envModel.rStp) : TimeF(envModel.r, input.rate);
+  float fhold = Param::TimeFramesF(hold, input.rate);
+  float releaseSamples = envModel.sync ? Param::StepFramesF(input.bpm, input.rate, envModel.rStp) : Param::TimeFramesF(envModel.r, input.rate);
   output.rate = output.spec || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
   fhold *= output.rate / input.rate;
   *output.vSplits = output.stereo? StereoVSPlits: (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;

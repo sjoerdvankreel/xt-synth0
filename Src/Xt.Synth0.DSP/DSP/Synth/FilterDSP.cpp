@@ -1,4 +1,5 @@
 #include <DSP/DSP.hpp>
+#include <DSP/Param.hpp>
 #include <DSP/CvDSP.hpp>
 #include <DSP/PlotDSP.hpp>
 #include <DSP/AudioDSP.hpp>
@@ -21,8 +22,8 @@ InitComb(FilterModel const& m, CombState& s)
 {
   s.minDelay = m.combMinDelay;
   s.plusDelay = m.combPlusDelay;
-  s.minGain = Mix(m.combMinGain);
-  s.plusGain = Mix(m.combPlusGain);
+  s.minGain = Param::Mix(m.combMinGain);
+  s.plusGain = Param::Mix(m.combPlusGain);
   std::memset(&s.x, 0, sizeof(s.x));
   std::memset(&s.y, 0, sizeof(s.y));
 }
@@ -113,8 +114,8 @@ BiquadAlphaBW(double res, double w0, double sinw0)
 static void
 BiquadParameters(FilterModel const& m, float rate, double& sinw0, double& cosw0, double& alpha)
 {
-  double res = Level(m.biquadResonance);
-  double freq = FreqHz(m.biquadFrequency);
+  double res = Param::Level(m.biquadResonance);
+  double freq = Param::Frequency(m.biquadFrequency);
   double w0 = 2.0 * PI * freq / rate;
   sinw0 = std::sin(w0);
   cosw0 = std::cos(w0);
@@ -158,15 +159,15 @@ GenerateBiquad(FloatSample audio, BiquadState& s)
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate) :
 _index(index), _output(),
-_amt1(Mix(model->mod1.amount)),
-_amt2(Mix(model->mod2.amount)),
+_amt1(Param::Mix(model->mod1.amount)),
+_amt2(Param::Mix(model->mod2.amount)),
 _units(), _flts(), _model(model),
 _state()
 {
   for (int i = 0; i < UnitCount; i++)
-    _units[i] = Level(model->unitAmount[i]);
+    _units[i] = Param::Level(model->unitAmount[i]);
   for (int i = 0; i < FilterCount; i++)
-    _flts[i] = Level(model->filterAmount[i]);
+    _flts[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
   {
   case FilterType::Comb: InitComb(*model, _state.comb); break;

@@ -24,20 +24,10 @@ inline float BiToUni2(float val)
 { return val + 1.0f; }
 inline float BiToUni1(float val)
 { return (val + 1.0f) * 0.5f; }
-inline float Level(int val)
-{ return static_cast<float>(val) / 256.0f; }
-inline float Mix(int val)
-{ return static_cast<float>(val - 128) / 127.0f; }
 inline float EpsToZero(float val)
 { return -Eps <= val && val <= Eps? 0.0f: val; }
 inline float FreqNote(float midi)
 { return 440.0f * powf(2.0f, (midi - 69.0f) / 12.0f); }
-inline float FreqHz(int val)
-{ return 20.0f + 9980.0f * (val / 255.0f) * (val / 255.0f); }
-inline float TimeF(int val, float rate)
-{ return static_cast<float>((val / 2.55f) * (val / 2.55f) * rate / 1000.0f); }
-inline int TimeI(int val, float rate)
-{ return static_cast<int>(TimeF(val, rate)); }
 
 inline uint64_t
 NextPow2(uint64_t x)
@@ -56,17 +46,6 @@ Clip(float& val)
   if (val < -1.0f) return val = -1.0f, true;
   return false;
 }
-
-inline float 
-SyncF(float bpm, float rate, int val)
-{
-  auto const& step = SyncSteps()[val];
-  float fpb = rate * 60.0f / bpm;
-  return fpb * step.num / step.den;
-}
-
-inline int SyncI(float bpm, float rate, int val)
-{ return static_cast<int>(SyncF(bpm, rate, val)); }
 
 } // namespace Xts
 #endif // XTS_DSP_HPP

@@ -1,5 +1,6 @@
 #include "SeqDSP.hpp"
 #include "DSP.hpp"
+#include <DSP/Param.hpp>
 #include <cassert>
 #include <algorithm>
 
@@ -187,7 +188,7 @@ SeqDSP::Trigger(SeqInput const& input)
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-      _dsps[voice] = SynthDSP(& _synths[voice], key.oct, unote, Level(key.amp), bpm, input.rate);
+      _dsps[voice] = SynthDSP(& _synths[voice], key.oct, unote, Param::Level(key.amp), bpm, input.rate);
     }
   }
   return result;

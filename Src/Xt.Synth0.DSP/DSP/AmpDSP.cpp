@@ -1,5 +1,6 @@
 #include "AmpDSP.hpp"
 #include "PlotDSP.hpp"
+#include <DSP/Param.hpp>
 
 namespace Xts {
 
@@ -9,15 +10,15 @@ _amp(0.0f),
 _output(), 
 _model(model), 
 _units(), _flts(),
-_pan(Mix(model->pan)),
-_lvlAmt(Mix(model->lvlAmt)),
-_panAmt(Mix(model->panAmt)),
-_lvl(Level(model->lvl) * velo) 
+_pan(Param::Mix(model->pan)),
+_lvlAmt(Param::Mix(model->lvlAmt)),
+_panAmt(Param::Mix(model->panAmt)),
+_lvl(Param::Level(model->lvl) * velo)
 {
   for(int i = 0; i < UnitCount; i++) 
-    _units[i] = Level(model->units[i]);
+    _units[i] = Param::Level(model->units[i]);
   for(int i = 0; i < FilterCount; i++) 
-    _flts[i] = Level(model->flts[i]);
+    _flts[i] = Param::Level(model->flts[i]);
 }
 
 FloatSample
