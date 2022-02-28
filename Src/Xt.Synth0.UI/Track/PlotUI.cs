@@ -185,6 +185,8 @@ namespace Xt.Synth0.UI
             Args.Pixels = w - PadLeft;
             RequestPlotData?.Invoke(null, Args);
             container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : MakeOff();
+            text.Text = null;
+            if (Args.LSamples.Count == 0) return;
             string header = $"{Args.LSamples.Count} samples";
             if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
             if (Args.Clip) header += " (Clip)";
