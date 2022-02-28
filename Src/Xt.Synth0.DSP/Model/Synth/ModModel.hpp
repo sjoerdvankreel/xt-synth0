@@ -3,8 +3,7 @@
 
 #include <Model/Model.hpp>
 
-namespace Xts 
-{
+namespace Xts {
 
 enum class ModSource
 {
@@ -19,6 +18,9 @@ enum class ModSource
 
 struct XTS_ALIGN ModModel
 {
+  ModModel() = default;
+  ModModel(ModModel const&) = delete;
+
   int32_t amount;
   int32_t target;
   ModSource source;

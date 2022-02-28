@@ -4,8 +4,7 @@
 #include <Model/Model.hpp>
 #include <Model/Synth/ModModel.hpp>
 
-namespace Xts 
-{
+namespace Xts {
 
 enum class FilterType 
 { 
