@@ -108,8 +108,8 @@ UnitDSP::Next(CvState const& cv)
   _phase += freq / _rate;
   _phase -= std::floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
-  _output.l = sample * amp * (1.0f - pan);
-  _output.r = sample * amp * pan;
+  _output.left = sample * amp * (1.0f - pan);
+  _output.right = sample * amp * pan;
   return Output();
 }
 

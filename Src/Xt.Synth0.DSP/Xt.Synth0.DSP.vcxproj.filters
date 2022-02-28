@@ -70,6 +70,9 @@
     <ClInclude Include="DSP\Param.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\AudioSample.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">

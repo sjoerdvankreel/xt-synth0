@@ -1,8 +1,8 @@
+#include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/DSP.hpp>
 #include <DSP/Param.hpp>
 #include <DSP/PlotDSP.hpp>
 #include <DSP/AudioDSP.hpp>
-#include <DSP/Synth/FilterDSP.hpp>
 #include <cstring>
 
 #define BIQUAD_MIN_Q 0.5f

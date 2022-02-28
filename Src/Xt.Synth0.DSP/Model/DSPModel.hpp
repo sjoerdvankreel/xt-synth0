@@ -1,6 +1,7 @@
 #ifndef XTS_DSP_MODEL_HPP
 #define XTS_DSP_MODEL_HPP
 
+#include <DSP/AudioSample.hpp>
 #include "Model.hpp"
 #include <vector>
 #include <string>
@@ -30,24 +31,6 @@ struct CvState
   CvOutput lfos[LfoCount];
   EnvOutput envs[EnvCount];
 };
-
-template <class T>
-struct AudioSample
-{ 
-  T l, r;
-  T Mono() const { return l + r; }
-  void Clear() { l = r = static_cast<T>(0.0); }
-  AudioSample operator*(T s) const { return { l * s, r * s }; }
-  AudioSample operator+(AudioSample s) const { return { l + s.l, r + s.r }; }
-  AudioSample operator-(AudioSample s) const { return { l - s.l, r - s.r }; }
-  AudioSample operator*(AudioSample s) const { return { l * s.l, r * s.r }; }
-  AudioSample& operator+=(AudioSample const& rhs) { l += rhs.l; r += rhs.r; return *this; }
-  AudioSample<float> ToFloat() const { return AudioSample<float> { static_cast<float>(l), static_cast<float>(r) }; }
-  AudioSample<double> ToDouble() const { return AudioSample<double> { static_cast<double>(l), static_cast<double>(r) }; }
-};
-
-typedef AudioSample<float> FloatSample;
-typedef AudioSample<double> DoubleSample;
 
 struct AudioState
 {
