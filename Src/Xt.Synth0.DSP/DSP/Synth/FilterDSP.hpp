@@ -34,12 +34,13 @@ union FilterState
 class FilterDSP
 {
   int _index;
-  FloatSample _output;
-  float _amt1, _amt2;
-  float _units[UnitCount];
-  float _flts[FilterCount];
-  FilterModel const* _model;
+  float _modAmount1;
+  float _modAmount2;
   FilterState _state;
+  FloatSample _output;
+  FilterModel const* _model;
+  float _unitAmount[UnitCount];
+  float _filterAmount[FilterCount];
 public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);

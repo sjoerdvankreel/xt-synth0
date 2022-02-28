@@ -1,6 +1,5 @@
 #include <DSP/DSP.hpp>
 #include <DSP/Param.hpp>
-#include <DSP/CvDSP.hpp>
 #include <DSP/PlotDSP.hpp>
 #include <DSP/AudioDSP.hpp>
 #include <DSP/Synth/FilterDSP.hpp>
@@ -14,8 +13,7 @@
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 // https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
 
-namespace Xts
-{
+namespace Xts {
 
 static void 
 InitComb(FilterModel const& m, CombState& s)
@@ -154,17 +152,15 @@ GenerateBiquad(FloatSample audio, BiquadState& s)
 }
 
 FilterDSP::
-FilterDSP(FilterModel const* model, int index, float rate) :
-_index(index), _output(),
-_amt1(Param::Mix(model->mod1.amount)),
-_amt2(Param::Mix(model->mod2.amount)),
-_units(), _flts(), _model(model),
-_state()
+FilterDSP(FilterModel const* model, int index, float rate):
+FilterDSP()
 {
-  for (int i = 0; i < UnitCount; i++)
-    _units[i] = Param::Level(model->unitAmount[i]);
-  for (int i = 0; i < FilterCount; i++)
-    _flts[i] = Param::Level(model->filterAmount[i]);
+  _index = index;
+  _model = model;
+  _modAmount1 = Param::Mix(model->mod1.amount);
+  _modAmount2 = Param::Mix(model->mod2.amount);
+  for (int i = 0; i < UnitCount; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
+  for (int i = 0; i < FilterCount; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
   {
   case FilterType::Comb: InitComb(*model, _state.comb); break;
@@ -178,8 +174,8 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   if (!_model->on) return _output;
-  for (int i = 0; i < _index; i++) _output += audio.filts[i] * _flts[i];
-  for (int i = 0; i < UnitCount; i++) _output += audio.units[i] * _units[i];
+  for (int i = 0; i < _index; i++) _output += audio.filts[i] * _filterAmount[i];
+  for (int i = 0; i < UnitCount; i++) _output += audio.units[i] * _unitAmount[i];
   switch (_model->type)
   {
   case FilterType::Comb: _output = GenerateComb(_output, _state.comb); break;
