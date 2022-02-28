@@ -2,6 +2,7 @@
 #include "EnvDSP.hpp"
 #include "PlotDSP.hpp"
 #include <DSP/Param.hpp>
+#include <DSP/Utility.hpp>
 
 #include <cmath>
 #include <cassert>
@@ -83,8 +84,8 @@ EnvDSP::Generate(float from, float to, SlopeType type)
   case SlopeType::Lin: val = from + slp * range; _slp += _lin; break;
   case SlopeType::Log: val = from + (slp - 1.0f) * range; _slp *= _log; break;
   case SlopeType::Inv: val = from + (2.0f - slp * 2.0f) * range; _slp /= _log; break;
-  case SlopeType::Sin: val = from + std::sinf(slp * PI * 0.5f) * range; _slp += _lin;  break;
-  case SlopeType::Cos: val = from + (1.0f - std::cosf(slp * PI * 0.5f)) * range; _slp += _lin; break;
+  case SlopeType::Sin: val = from + std::sinf(slp * PIF * 0.5f) * range; _slp += _lin;  break;
+  case SlopeType::Cos: val = from + (1.0f - std::cosf(slp * PIF * 0.5f)) * range; _slp += _lin; break;
   default: assert(false); break;
   }
   assert(to < from || from <= val && val <= to);

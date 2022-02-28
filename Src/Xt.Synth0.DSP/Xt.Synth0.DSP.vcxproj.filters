@@ -85,6 +85,9 @@
     <ClInclude Include="DSP\Synth\CvSample.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Utility.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -123,6 +126,9 @@
     </ClCompile>
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">
       <Filter>DSP\Synth</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\Utility.cpp">
+      <Filter>DSP</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

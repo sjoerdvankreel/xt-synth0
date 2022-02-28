@@ -4,6 +4,7 @@
 #include "UnitDSP.hpp"
 #include "PlotDSP.hpp"
 #include "SynthDSP.hpp"
+#include <DSP/Utility.hpp>
 
 #include <vector>
 #include <complex>
@@ -131,8 +132,8 @@ Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
   float result = 0.0f;
   float freq2Bin = rate / (fft.size() * 2.0f);
   float midi = static_cast<float>(oct * 12 + note);
-  size_t bin1 = static_cast<size_t>(FreqNote(midi) * freq2Bin);
-  size_t bin2 = static_cast<size_t>(FreqNote(midi + 1) * freq2Bin);
+  size_t bin1 = static_cast<size_t>(MidiNoteFrequency(midi) * freq2Bin);
+  size_t bin2 = static_cast<size_t>(MidiNoteFrequency(midi + 1) * freq2Bin);
   for (size_t i = bin1; i < bin2 && i < fft.size(); i++)
     result += fft[i].real() * fft[i].real() + fft[i].imag() * fft[i].imag();
   result = std::sqrtf(result);
@@ -148,7 +149,7 @@ Spectrum(
   float rate)
 {
   float max = 0;
-  assert(x.size() > 0 && x.size() == NextPow2(x.size()));
+  assert(x.size() > 0 && x.size() == NextPowerOf2(x.size()));
   Fft(x, fft, fftScratch);
   x.clear();
   fft.erase(fft.begin() + fft.size() / 2, fft.end());  
@@ -205,7 +206,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   output.max = 1.0f;
 
   if (output.lSamples->empty()) return;  
-  output.lSamples->resize(NextPow2(output.lSamples->size()));
+  output.lSamples->resize(NextPowerOf2(output.lSamples->size()));
   Spectrum(*output.lSamples, *output.fftData, *output.fftScratch, output.rate);
   SpectrumHSplits(*output.hSplits);
   
@@ -215,7 +216,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
     return;
   }
   SpectrumVSplitsStereo(*output.vSplits);
-  output.rSamples->resize(NextPow2(output.rSamples->size()));
+  output.rSamples->resize(NextPowerOf2(output.rSamples->size()));
   Spectrum(*output.rSamples, *output.fftData, *output.fftScratch, output.rate);
 }
 

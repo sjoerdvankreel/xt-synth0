@@ -48,7 +48,7 @@ LfoDSP::Generate() const
 	{
 	case LfoType::Tri: break;
 	case LfoType::Saw: return _base + _factor * (phase * 2.0f - 1.0f);
-	case LfoType::Sin: return _base + _factor * sinf(phase * 2.0f * PI);
+	case LfoType::Sin: return _base + _factor * sinf(phase * 2.0f * PIF);
 	case LfoType::Sqr: return _base + _factor * (phase < 0.5f ? 1.0f : -1.0f);
 	default: assert(false); return 0.0f;
 	}

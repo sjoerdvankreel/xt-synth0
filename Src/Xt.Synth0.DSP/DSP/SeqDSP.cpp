@@ -1,6 +1,7 @@
 #include "SeqDSP.hpp"
 #include "DSP.hpp"
 #include <DSP/Param.hpp>
+#include <DSP/Utility.hpp>
 #include <cassert>
 #include <algorithm>
 

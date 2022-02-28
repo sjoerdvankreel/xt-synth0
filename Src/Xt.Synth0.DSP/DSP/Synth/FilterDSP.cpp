@@ -1,9 +1,10 @@
 #include <DSP/Synth/FilterDSP.hpp>
-#include <DSP/DSP.hpp>
 #include <DSP/Param.hpp>
 #include <DSP/PlotDSP.hpp>
 #include <DSP/AudioDSP.hpp>
+#include <DSP/Utility.hpp>
 #include <cstring>
+#include <cassert>
 
 #define BIQUAD_MIN_Q 0.5f
 #define BIQUAD_MAX_Q 40.0f
@@ -111,7 +112,7 @@ BiquadParameters(FilterModel const& m, float rate, double& sinw0, double& cosw0,
 {
   double res = Param::Level(m.biquadResonance);
   double freq = Param::Frequency(m.biquadFrequency);
-  double w0 = 2.0 * PI * freq / rate;
+  double w0 = 2.0 * PID * freq / rate;
   sinw0 = std::sin(w0);
   cosw0 = std::cos(w0);
   alpha = BiquadIsQ(m.biquadType)? BiquadAlphaQ(res, sinw0): BiquadAlphaBW(res, w0, sinw0);
@@ -194,7 +195,7 @@ FilterDSP::Plot(FilterModel const& model, CvModel const& cvModel, AudioModel con
   flags |= PlotBipolar;
   flags |= PlotAutoRange;
   flags |= spec ? PlotSpec : 0;
-  float freq = FreqNote(5 * 12 + static_cast<int>(UnitNote::C));
+  float freq = MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C));
   auto factory = [&](float rate) 
   { 
     CvDSP cv(&cvModel, 1.0f, input.bpm, rate);

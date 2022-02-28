@@ -51,7 +51,7 @@ UnitDSP::Freq(UnitModel const& model, int oct, UnitNote note)
   int base = 4 * 12 + static_cast<int>(UnitNote::C);
   int key = oct * 12 + static_cast<int>(note);
   int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
-  return FreqNote(unit + key - base + cent);
+  return MidiNoteFrequency(unit + key - base + cent);
 }
 
 float 
@@ -104,7 +104,7 @@ UnitDSP::Next(CvState const& cv)
   float phase = ModPhase(mod);
   float sample = Generate(phase, freq, mod);
   float amp = Mod(UnitModTarget::Amp, _amp, false, mod);
-  float pan = BiToUni1(Mod(UnitModTarget::Pan, _pan, true, mod));
+  float pan = BipolarToUnipolar1(Mod(UnitModTarget::Pan, _pan, true, mod));
   _phase += freq / _rate;
   _phase -= std::floor(_phase);
   assert(-1.0 <= sample && sample <= 1.0);
@@ -118,7 +118,7 @@ UnitDSP::Generate(float phase, float freq, ModInput const& mod)
 {
   switch (_model->type)
   {
-  case UnitType::Sin: return std::sinf(phase * 2.0f * PI);
+  case UnitType::Sin: return std::sinf(phase * 2.0f * PIF);
   case UnitType::Add: return GenerateAdd(phase, freq, mod);
   case UnitType::Blep: return GenerateBlep(phase, freq, mod);
   default: assert(false); return 0.0f;
@@ -179,7 +179,7 @@ UnitDSP::GenerateAdd(float phase, float freq, ModInput const& mod) const
   __m256 limits = _mm256_set1_ps(0.0f);
   __m256 results = _mm256_set1_ps(0.0f);
   __m256 phases = _mm256_set1_ps(phase);
-  __m256 twopis = _mm256_set1_ps(2.0f * PI);
+  __m256 twopis = _mm256_set1_ps(2.0f * PIF);
   __m256 nyquists = _mm256_set1_ps(_rate / 2.0f);
   __m256 maxPs = _mm256_set1_ps(parts * static_cast<float>(step));
 

@@ -1,6 +1,7 @@
 #include "AmpDSP.hpp"
 #include "PlotDSP.hpp"
 #include <DSP/Param.hpp>
+#include <DSP/Utility.hpp>
 
 namespace Xts {
 
@@ -32,7 +33,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   _amp = cv.envelopes[static_cast<int>(_model->envSrc)].value * lvl;
   
   CvSample mod = ModulationInput(cv, _model->panSrc);
-  float panMix = BiToUni1(Modulate(_pan, true, _panAmt, mod));
+  float panMix = BipolarToUnipolar1(Modulate(_pan, true, _panAmt, mod));
   FloatSample pan = { (1.0f - panMix) * _amp, panMix * _amp };
 
   for (int i = 0; i < UnitCount; i++) 

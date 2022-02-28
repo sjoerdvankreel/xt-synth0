@@ -35,3 +35,4 @@ check denormals
 sanity checks
 parammix, paramlevel, paramfreqs
 cleanup native includes / split files / etc
+check epsilon value

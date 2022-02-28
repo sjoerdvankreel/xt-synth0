@@ -2,12 +2,14 @@
 #define XTS_PLOT_DSP_HPP
 
 #include <DSP/Param.hpp>
+#include <DSP/Utility.hpp>
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cassert>
 
 namespace Xts {
 
