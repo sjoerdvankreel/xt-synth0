@@ -34,11 +34,8 @@ GenerateComb(FloatSample audio, CombState& s)
   s.y[0].Clear();
   s.x[0] = audio;
   s.y[0] = s.x[0] + s.x[s.plusDelay] * s.plusGain + s.y[s.minDelay] * s.minGain;
-  for (int i = XTS_MAX_COMB_DELAY - 1; i > 0; i--)
-  {
-    s.x[i] = s.x[i - 1];
-    s.y[i] = s.y[i - 1];
-  }
+  std::memmove(&s.x[1], &s.x[0], sizeof(s.x) - sizeof(s.x[0]));
+  std::memmove(&s.y[1], &s.y[0], sizeof(s.y) - sizeof(s.y[0]));
   return s.y[0];
 }
 
