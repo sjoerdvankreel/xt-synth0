@@ -8,9 +8,11 @@ namespace Xt.Synth0.Model
 
     public sealed class ParamInfo
     {
-        enum ParamType { Toggle, List, Lin, Mix, Time, Freq, Pattern };
+        enum ParamType { Toggle, List, Lin, Mix, Time, Frequency, Pattern };
 
         int? _maxDisplayLength;
+        readonly int? _rangeMin;
+        readonly int? _rangeMax;
         readonly Address _address;
         readonly Func<string, int> _load;
         readonly Func<int, string> _store;
@@ -31,9 +33,9 @@ namespace Xt.Synth0.Model
             ParamType.Lin => ParamControl.Knob,
             ParamType.Mix => ParamControl.Knob,
             ParamType.Time => ParamControl.Knob,
-            ParamType.Freq => ParamControl.Knob,
             ParamType.List => ParamControl.List,
             ParamType.Toggle => ParamControl.Toggle,
+            ParamType.Frequency => ParamControl.Knob,
             _ => throw new InvalidOperationException()
         };
 
@@ -42,8 +44,8 @@ namespace Xt.Synth0.Model
             ParamType.Lin => _display(value),
             ParamType.List => _display(value),
             ParamType.Time => FormatTime(value),
-            ParamType.Freq => FormatFreq(value),
             ParamType.Pattern => _display(value),
+            ParamType.Frequency => FormatFrequency(value),
             ParamType.Toggle => value == 0 ? "Off" : "On",
             ParamType.Mix => (value - 128).ToString("+#;-#;0"),
             _ => throw new InvalidOperationException()
@@ -58,9 +60,9 @@ namespace Xt.Synth0.Model
             throw new InvalidOperationException();
         }
 
-        string FormatFreq(int value)
+        string FormatFrequency(int value)
         {
-            double hz = 20.0 + 9980.0 * (value / 255.0) * (value / 255.0);
+            double hz = _rangeMin.Value + (_rangeMax.Value - _rangeMin.Value) * (value / 255.0) * (value / 255.0);
             if (hz < 1000.0) return $"{hz.ToString("N0")}h";
             if (hz < 10000.0) return $"{(hz / 1000.0).ToString("N1")}k";
             if (hz == 10000.0) return "10k";
@@ -88,13 +90,14 @@ namespace Xt.Synth0.Model
         public int MaxDisplayLength => _maxDisplayLength ??= GetMaxDisplayLength();
         int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 
-        ParamInfo(ParamType type, Address address, int subGroup, string id, string name, string description, int min, int max,
-            int @default, Func<string, int> load, Func<int, string> store, Func<int, string> display, IRelevance relevance)
+        ParamInfo(ParamType type, Address address, int subGroup, string id, string name, string description, int min, int max, int @default, 
+            int? rangeMin, int? rangeMax, Func<string, int> load, Func<int, string> store, Func<int, string> display, IRelevance relevance)
         {
-            (Type, _address, SubGroup, Id, Name, Description, Min, Max, Default, _load, _store, _display, Relevance)
-            = (type, address, subGroup, id, name, description, min, max, @default, load, store, display, relevance);
+            (Type, _address, SubGroup, Id, Name, Description, Min, Max, Default, _rangeMin, _rangeMax, _load, _store, _display, Relevance)
+            = (type, address, subGroup, id, name, description, min, max, @default, rangeMin, rangeMax, load, store, display, relevance);
             if (subGroup < 0 || subGroup > 8) throw new InvalidOperationException();
             if (min < 0 || max > 255 || min >= max || @default < min || @default > max) throw new InvalidOperationException();
+            if (rangeMin.HasValue != rangeMax.HasValue || rangeMin.HasValue && rangeMin.Value >= rangeMax.Value) throw new InvalidOperationException();
             _load ??= x => int.Parse(x);
             _store ??= x => x.ToString();
             _display ??= x => x.ToString();
@@ -104,66 +107,66 @@ namespace Xt.Synth0.Model
             Address address, int subGroup, string id, string name,
             string description, IRelevance relevance = null)
         => new ParamInfo(ParamType.Mix, address, subGroup, id, name,
-            description, 1, 255, 128, null, null, null, relevance);
+            description, 1, 255, 128, null, null, null, null, null, relevance);
 
         internal static ParamInfo Pattern(
             Address address, string id, string name,
             string description, int min, int max, int @default)
          => new ParamInfo(ParamType.Pattern, address, 0, id, name,
-             description, min, max, @default, null, null, null, null);
+             description, min, max, @default, null, null, null, null, null, null);
 
-        internal static ParamInfo Freq(
+        internal static ParamInfo Frequency(
             Address address, int subGroup, string id, string name,
-            string description, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Freq, address, subGroup, id, name,
-            description, 0, 255, @default, null, null, null, relevance);
+            string description, int @default, int minHz, int maxHz, IRelevance relevance = null)
+        => new ParamInfo(ParamType.Frequency, address, subGroup, id, name,
+            description, 0, 255, @default, minHz, maxHz, null, null, null, relevance);
 
         internal static ParamInfo Level(
             Address address, int subGroup, string id, string name,
             string description, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
-            description, 0, 255, @default, null, null, null, relevance);
+            description, 0, 255, @default, null, null, null, null, null, relevance);
 
         internal static ParamInfo Toggle(
             Address address, int subGroup, string id, string name,
             string description, bool @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Toggle, address, subGroup, id, name,
-            description, 0, 1, @default ? 1 : 0, null, null, null, relevance);
+            description, 0, 1, @default ? 1 : 0, null, null, null, null, null, relevance);
 
         internal static ParamInfo Pattern(
             Address address, string id, string name,
             string description, string[] display)
         => new ParamInfo(ParamType.Pattern, address, 0, id, name,
-            description, 0, display.Length - 1, 0, null, null, x => display[x], null);
+            description, 0, display.Length - 1, 0, null, null, null, null, x => display[x], null);
 
         internal static ParamInfo Time(
             Address address, int subGroup, string id, string name,
             string description, int min, int max, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Time, address, subGroup, id, name,
-            description, min, max, @default, null, null, null, relevance);
+            description, min, max, @default, null, null, null, null, null, relevance);
 
         internal static ParamInfo Select(
             Address address, int subGroup, string id, string name,
             string description, int min, int max, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
-            description, min, max, @default, null, null, null, relevance);
+            description, min, max, @default, null, null, null, null, null, relevance);
 
         internal static ParamInfo Select<TEnum>(
             Address address, int subGroup, string id, string name,
             string description, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, 0,
-            display.Length - 1, 0, LoadEnum<TEnum>, StoreEnum<TEnum>, x => display[x], relevance);
+            display.Length - 1, 0, null, null, LoadEnum<TEnum>, StoreEnum<TEnum>, x => display[x], relevance);
 
         internal static unsafe ParamInfo Step(
             Address address, int subGroup, string id, string name,
             string description, int min, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, min,
-            SynthModel.SyncSteps.Length - 1, @default, null, null, val => SynthModel.SyncSteps[val].ToString(), relevance);
+            SynthModel.SyncSteps.Length - 1, @default, null, null, null, null, val => SynthModel.SyncSteps[val].ToString(), relevance);
 
         internal static ParamInfo List<TEnum>(
             Address address, int subGroup, string id, string name,
             string description, string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum
         => new ParamInfo(ParamType.List, address, subGroup, id, name, description, 0, Enum.GetValues<TEnum>().Length - 1,
-            0, LoadEnum<TEnum>, StoreEnum<TEnum>, display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x], relevance);
+            0, null, null, LoadEnum<TEnum>, StoreEnum<TEnum>, display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x], relevance);
     }
 }

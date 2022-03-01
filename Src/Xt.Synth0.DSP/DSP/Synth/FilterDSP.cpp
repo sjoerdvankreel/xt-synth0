@@ -11,6 +11,9 @@
 #define BIQUAD_MIN_BW 0.5f
 #define BIQUAD_MAX_BW 6.0f
 
+#define BIQUAD_MIN_FREQ_HZ 20.0f
+#define BIQUAD_MAX_FREQ_HZ 10000.0f
+
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 // https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
 
@@ -111,7 +114,7 @@ static void
 BiquadParameters(FilterModel const& m, float rate, double& sinw0, double& cosw0, double& alpha)
 {
   double res = Param::Level(m.biquadResonance);
-  double freq = Param::Frequency(m.biquadFrequency);
+  double freq = Param::Frequency(m.biquadFrequency, BIQUAD_MIN_FREQ_HZ, BIQUAD_MAX_FREQ_HZ);
   double w0 = 2.0 * PID * freq / rate;
   sinw0 = std::sin(w0);
   cosw0 = std::cos(w0);

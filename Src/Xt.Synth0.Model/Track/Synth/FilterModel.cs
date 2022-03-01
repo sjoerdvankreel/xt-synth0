@@ -30,6 +30,9 @@ namespace Xt.Synth0.Model
 
     public unsafe sealed class FilterModel : IUIParamGroupModel
     {
+        const int BiquadMinFrequencyHz = 20;
+        const int BiquadMaxFrequencyHz = 10000;
+
         public int Index { get; }
         internal FilterModel(int index) => Index = index;
 
@@ -99,10 +102,10 @@ namespace Xt.Synth0.Model
 
         public Param BiquadType { get; } = new(BiquadTypeInfo);
         public Param BiquadResonance { get; } = new(BiquadResonanceInfo);
-        public Param BiquadFrequency { get; } = new(BiquadFrequencyInfo); 
+        public Param BiquadFrequency { get; } = new(BiquadFrequencyInfo);
         static readonly ParamInfo BiquadTypeInfo = ParamInfo.List<BiquadType>(p => &((Native*)p)->biquadType, 0, nameof(BiquadType), "Type", "Biquad type", null, RelevanceBiquad);
         static readonly ParamInfo BiquadResonanceInfo = ParamInfo.Level(p => &((Native*)p)->biquadResonance, 0, nameof(BiquadResonance), "Res", "Resonance", 0, RelevanceBiquad);
-        static readonly ParamInfo BiquadFrequencyInfo = ParamInfo.Freq(p => &((Native*)p)->biquadFrequency, 0, nameof(BiquadFrequency), "Frq", "Cutoff frequency", 0, RelevanceBiquad);
+        static readonly ParamInfo BiquadFrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->biquadFrequency, 0, nameof(BiquadFrequency), "Frq", "Cutoff frequency", 0, BiquadMinFrequencyHz, BiquadMaxFrequencyHz, RelevanceBiquad);
 
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);

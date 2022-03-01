@@ -14,8 +14,8 @@ Mix(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
 
 inline float
-Frequency(int val)
-{ return 20.0f + 9980.0f * (val / 255.0f) * (val / 255.0f); }
+Frequency(int val, float minHz, float maxHz)
+{ return minHz + (maxHz - minHz) * (val / 255.0f) * (val / 255.0f); }
 
 inline float
 StepFramesF(float bpm, float rate, int val)
