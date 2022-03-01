@@ -27,10 +27,7 @@ StepFramesI(int val, float bpm, float rate)
 
 inline float 
 TimeFramesF(int val, float rate, float minMs, float maxMs)
-//{ return (minMs + (maxMs - minMs) * (val / 255.0f) * (val / 255.0f)) * rate / 1000.0f; }
-{
-  return static_cast<float>((val / 2.55f) * (val / 2.55f) * rate / 1000.0f);
-}
+{ return (minMs + (maxMs - minMs) * (val / 255.0f) * (val / 255.0f)) * rate / 1000.0f; }
 
 inline int 
 TimeFramesI(int val, float rate, float minMs, float maxMs)
