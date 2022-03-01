@@ -59,26 +59,18 @@ namespace Xt.Synth0.Model
             return lin ? $"{min} .. {max}" : $"{min} ({Format(Min)}) .. {max} ({Format(Max)})";
         }
 
-        string FormatTime(int value)
+        string FormatQuadratic(int value, string unit, string kilo)
         {
-            double ms = _rangeMin.Value + (_rangeMax.Value - _rangeMin.Value) * (value / 255.0) * (value / 255.0);
-            if (ms < 1000.0) return $"{ms.ToString("N0")}m";
-            if (ms < 10000.0) return $"{(ms / 1000.0).ToString("N1")}s";
-            if (ms == 10000.0) return "10s";
+            double v = _rangeMin.Value + (_rangeMax.Value - _rangeMin.Value) * (value / 255.0) * (value / 255.0);
+            if (v < 10.0) return $"{v.ToString("N1")}{unit}";
+            if (v < 1000.0) return $"{v.ToString("N0")}{unit}";
+            if (v < 10000.0) return $"{(v / 1000.0).ToString("N1")}{kilo}";
+            if (v == 10000.0) return $"10{kilo}";
             throw new InvalidOperationException();
         }
 
-        string FormatFrequency(int value)
-        {
-            double hz = _rangeMin.Value + (_rangeMax.Value - _rangeMin.Value) * (value / 255.0) * (value / 255.0);
-            if (hz < 1.0) return $"{hz.ToString("N3")}h";
-            if (hz < 10.0) return $"{hz.ToString("N2")}h";
-            if (hz < 100.0) return $"{hz.ToString("N1")}h";
-            if (hz < 1000.0) return $"{hz.ToString("N0")}h";
-            if (hz < 10000.0) return $"{(hz / 1000.0).ToString("N1")}k";
-            if (hz == 10000.0) return "10k";
-            throw new InvalidOperationException();
-        }
+        string FormatTime(int value) => FormatQuadratic(value, "m", "s");
+        string FormatFrequency(int value) => FormatQuadratic(value, "h", "k");
 
         static string StoreEnum<TEnum>(int value) where TEnum : struct, Enum
         => ((TEnum)(object)value).ToString();

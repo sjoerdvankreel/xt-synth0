@@ -30,6 +30,8 @@ namespace Xt.Synth0.Model
 
     public unsafe sealed class FilterModel : IUIParamGroupModel
     {
+        const double CombMaxDelayMs = 5.0;
+        const double CombMinDelayMs = 0.01;
         const double BiquadMinFreqHz = 20.0;
         const double BiquadMaxFreqHz = 10000.0;
 
@@ -97,8 +99,8 @@ namespace Xt.Synth0.Model
         public Param CombPlusDelay { get; } = new(CombPlusDelayInfo);
         static readonly ParamInfo CombMinGainInfo = ParamInfo.Mix(p => &((Native*)p)->combMinGain, 0, nameof(CombMinGain), "Gn-", "Comb feedback gain", RelevanceComb);
         static readonly ParamInfo CombPlusGainInfo = ParamInfo.Mix(p => &((Native*)p)->combPlusGain, 0, nameof(CombPlusGain), "Gn+", "Comb feedforward gain", RelevanceComb);
-        static readonly ParamInfo CombMinDelayInfo = ParamInfo.Select(p => &((Native*)p)->combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay", 1, 255, 128, RelevanceComb);
-        static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Select(p => &((Native*)p)->combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay", 1, 255, 128, RelevanceComb);
+        static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay", 0, CombMinDelayMs, CombMaxDelayMs, RelevanceComb);
+        static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay", 0, CombMinDelayMs, CombMaxDelayMs, RelevanceComb);
 
         public Param BiquadType { get; } = new(BiquadTypeInfo);
         public Param BiquadResonance { get; } = new(BiquadResonanceInfo);
