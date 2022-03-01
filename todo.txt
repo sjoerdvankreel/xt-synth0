@@ -36,3 +36,5 @@ sanity checks
 parammix, paramlevel, paramfreqs
 cleanup native includes / split files / etc
 check epsilon value
+fix min/max range for time params
+paraminfobuilder

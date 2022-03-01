@@ -63,6 +63,9 @@ namespace Xt.Synth0.Model
         string FormatFrequency(int value)
         {
             double hz = _rangeMin.Value + (_rangeMax.Value - _rangeMin.Value) * (value / 255.0) * (value / 255.0);
+            if (hz < 1.0) return $"{hz.ToString("N3")}h";
+            if (hz < 10.0) return $"{hz.ToString("N2")}h";
+            if (hz < 100.0) return $"{hz.ToString("N1")}h";
             if (hz < 1000.0) return $"{hz.ToString("N0")}h";
             if (hz < 10000.0) return $"{(hz / 1000.0).ToString("N1")}k";
             if (hz == 10000.0) return "10k";

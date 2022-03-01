@@ -46,7 +46,7 @@ private:
   LfoType type;
   LfoPolarity plty;
   XtsBool on, sync;
-  int32_t prd, step;
+  int32_t frq, step;
 };
 XTS_CHECK_SIZE(LfoModel, 24);
 

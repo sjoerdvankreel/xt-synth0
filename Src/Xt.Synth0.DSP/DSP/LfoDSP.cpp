@@ -6,6 +6,9 @@
 #include <cmath>
 #include <cassert>
 
+#define MIN_FREQ_HZ 0.1f
+#define MAX_FREQ_HZ 20.0f
+
 namespace Xts {
 
 static inline bool
@@ -37,7 +40,7 @@ float
 LfoDSP::Freq(LfoModel const& model, float bpm, float rate)
 {
 	if (model.sync) return rate / Param::StepFramesF(bpm, rate, model.step);
-	return rate / Param::TimeFramesF(model.prd, rate);
+	return Param::Frequency(model.frq, MIN_FREQ_HZ, MAX_FREQ_HZ);
 }
 
 float
