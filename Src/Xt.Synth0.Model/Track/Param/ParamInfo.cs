@@ -11,9 +11,9 @@ namespace Xt.Synth0.Model
         enum ParamType { Toggle, List, Lin, Mix, Time, Frequency, Pattern };
 
         int? _maxDisplayLength;
-        readonly int? _rangeMin;
-        readonly int? _rangeMax;
         readonly Address _address;
+        readonly double? _rangeMin;
+        readonly double? _rangeMax;
         readonly Func<string, int> _load;
         readonly Func<int, string> _store;
         readonly Func<int, string> _display;
@@ -91,7 +91,7 @@ namespace Xt.Synth0.Model
         int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 
         ParamInfo(ParamType type, Address address, int subGroup, string id, string name, string description, int min, int max, int @default, 
-            int? rangeMin, int? rangeMax, Func<string, int> load, Func<int, string> store, Func<int, string> display, IRelevance relevance)
+            double? rangeMin, double? rangeMax, Func<string, int> load, Func<int, string> store, Func<int, string> display, IRelevance relevance)
         {
             (Type, _address, SubGroup, Id, Name, Description, Min, Max, Default, _rangeMin, _rangeMax, _load, _store, _display, Relevance)
             = (type, address, subGroup, id, name, description, min, max, @default, rangeMin, rangeMax, load, store, display, relevance);
@@ -115,12 +115,6 @@ namespace Xt.Synth0.Model
          => new ParamInfo(ParamType.Pattern, address, 0, id, name,
              description, min, max, @default, null, null, null, null, null, null);
 
-        internal static ParamInfo Frequency(
-            Address address, int subGroup, string id, string name,
-            string description, int @default, int minHz, int maxHz, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Frequency, address, subGroup, id, name,
-            description, 0, 255, @default, minHz, maxHz, null, null, null, relevance);
-
         internal static ParamInfo Level(
             Address address, int subGroup, string id, string name,
             string description, int @default, IRelevance relevance = null)
@@ -133,12 +127,6 @@ namespace Xt.Synth0.Model
         => new ParamInfo(ParamType.Toggle, address, subGroup, id, name,
             description, 0, 1, @default ? 1 : 0, null, null, null, null, null, relevance);
 
-        internal static ParamInfo Pattern(
-            Address address, string id, string name,
-            string description, string[] display)
-        => new ParamInfo(ParamType.Pattern, address, 0, id, name,
-            description, 0, display.Length - 1, 0, null, null, null, null, x => display[x], null);
-
         internal static ParamInfo Time(
             Address address, int subGroup, string id, string name,
             string description, int min, int max, int @default, IRelevance relevance = null)
@@ -150,6 +138,18 @@ namespace Xt.Synth0.Model
             string description, int min, int max, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
             description, min, max, @default, null, null, null, null, null, relevance);
+
+        internal static ParamInfo Pattern(
+            Address address, string id, string name,
+            string description, string[] display)
+        => new ParamInfo(ParamType.Pattern, address, 0, id, name,
+            description, 0, display.Length - 1, 0, null, null, null, null, x => display[x], null);
+
+        internal static ParamInfo Frequency(
+            Address address, int subGroup, string id, string name,
+            string description, int @default, double minHz, double maxHz, IRelevance relevance = null)
+        => new ParamInfo(ParamType.Frequency, address, subGroup, id, name,
+            description, 0, 255, @default, minHz, maxHz, null, null, null, relevance);
 
         internal static ParamInfo Select<TEnum>(
             Address address, int subGroup, string id, string name,
