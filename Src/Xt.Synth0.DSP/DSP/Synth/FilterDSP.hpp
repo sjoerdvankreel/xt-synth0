@@ -8,8 +8,8 @@
 #include <Model/SynthModel.hpp>
 #include <DSP/AudioSample.hpp>
 
-#define XTS_COMB_MIN_DELAY_MS 0.0f
 #define XTS_COMB_MAX_DELAY_MS 5.0f
+#define XTS_COMB_MIN_DELAY_MS 0.01f
 
 namespace Xts {
 

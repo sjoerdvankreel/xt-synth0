@@ -141,11 +141,11 @@ InitComb(FilterModel const& m, float rate, CombState& s)
   s.minGain = Param::Mix(m.combMinGain);
   s.plusGain = Param::Mix(m.combPlusGain);
   s.maxDelay = static_cast<int>(std::ceilf(XTS_COMB_MAX_DELAY_MS * rate / 1000.0f));
-  s.minDelay = Param::TimeFramesI(m.combMinDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS);
-  s.plusDelay = Param::TimeFramesI(m.combPlusDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS);
-  assert(s.minDelay <= s.maxDelay);
-  assert(s.plusDelay <= s.maxDelay);
+  s.minDelay = static_cast<int>(std::ceilf(Param::TimeFramesF(m.combMinDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS)));
+  s.plusDelay = static_cast<int>(std::ceilf(Param::TimeFramesF(m.combPlusDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS)));
   assert(s.maxDelay <= COMB_DELAY_MAX_SAMPLES);
+  assert(s.minDelay > 0 && s.minDelay <= s.maxDelay);
+  assert(s.plusDelay > 0 && s.plusDelay <= s.maxDelay);
 }
 
 static FloatSample
