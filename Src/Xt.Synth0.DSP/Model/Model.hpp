@@ -3,8 +3,6 @@
 
 #include <cstdint>
 
-#define XTS_MAX_SAMPLE_RATE 192000
-
 #define XTS_ALIGN alignas(8)
 #define XTS_COMBINE_(X,Y) X##Y
 #define XTS_COMBINE(X,Y) XTS_COMBINE_(X,Y)

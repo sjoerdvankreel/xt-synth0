@@ -11,9 +11,6 @@
 #include <algorithm>
 #include <cassert>
 
-#define MIN_HOLD_MS 0.0f
-#define MAX_HOLD_MS 3000.0f
-
 namespace Xts {
 
 class PlotDSP
@@ -106,8 +103,8 @@ void PlotDSP::RenderStaged(
   output.stereo = (flags & PlotStereo) != 0;
   output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
   bool noResample = (flags & PlotNoResample) != 0;
-  float fhold = Param::TimeFramesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  float releaseSamples = envModel.sync ? Param::StepFramesF(envModel.rStp, input.bpm, input.rate) : Param::TimeFramesF(envModel.r, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  float fhold = Param::TimeFramesF(hold, input.rate);
+  float releaseSamples = envModel.sync ? Param::StepFramesF(input.bpm, input.rate, envModel.rStp) : Param::TimeFramesF(envModel.r, input.rate);
   output.rate = output.spec || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
   fhold *= output.rate / input.rate;
   *output.vSplits = output.stereo? StereoVSPlits: (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;

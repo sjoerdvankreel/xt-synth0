@@ -51,17 +51,9 @@ namespace Xt.Synth0.Model
             _ => throw new InvalidOperationException()
         };
 
-        public string Range(bool hex)
-        {
-            bool lin = Type != ParamType.Time;
-            string min = hex ? Min.ToString("X2") : Min.ToString();
-            string max = hex ? Max.ToString("X2") : Max.ToString();
-            return lin ? $"{min} .. {max}" : $"{min} ({Format(Min)}) .. {max} ({Format(Max)})";
-        }
-
         string FormatTime(int value)
         {
-            double ms = _rangeMin.Value + (_rangeMax.Value - _rangeMin.Value) * (value / 255.0) * (value / 255.0);
+            double ms = (value / 2.55) * (value / 2.55);
             if (ms < 1000.0) return $"{ms.ToString("N0")}m";
             if (ms < 10000.0) return $"{(ms / 1000.0).ToString("N1")}s";
             if (ms == 10000.0) return "10s";
@@ -78,6 +70,14 @@ namespace Xt.Synth0.Model
             if (hz < 10000.0) return $"{(hz / 1000.0).ToString("N1")}k";
             if (hz == 10000.0) return "10k";
             throw new InvalidOperationException();
+        }
+
+        public string Range(bool hex)
+        {
+            bool lin = Type != ParamType.Time;
+            string min = hex ? Min.ToString("X2") : Min.ToString();
+            string max = hex ? Max.ToString("X2") : Max.ToString();
+            return lin ? $"{min} .. {max}" : $"{min} ({Format(Min)}) .. {max} ({Format(Max)})";
         }
 
         static string StoreEnum<TEnum>(int value) where TEnum : struct, Enum
@@ -131,10 +131,10 @@ namespace Xt.Synth0.Model
             description, 0, 1, @default ? 1 : 0, null, null, null, null, null, relevance);
 
         internal static ParamInfo Time(
-            Address address, int subGroup, string id, string name, string description, 
-            int @default, double minMs, double maxMs, IRelevance relevance = null)
+            Address address, int subGroup, string id, string name,
+            string description, int min, int max, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Time, address, subGroup, id, name,
-            description, 0, 255, @default, minMs, maxMs, null, null, null, relevance);
+            description, min, max, @default, null, null, null, null, null, relevance);
 
         internal static ParamInfo Select(
             Address address, int subGroup, string id, string name,

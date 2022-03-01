@@ -7,9 +7,6 @@
 #include <cmath>
 #include <cassert>
 
-#define MIN_TIME_MS 0.0f
-#define MAX_TIME_MS 10000.0f
-
 namespace Xts {
 
 static const double MaxEnv = 0.99;
@@ -104,11 +101,11 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
   EnvParams result;
   bool sync = model.sync != 0;
   result.s = Param::Level(model.s);
-  result.a = sync ? Param::StepFramesI(model.aStp, bpm, rate) : Param::TimeFramesI(model.a, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.d = sync ? Param::StepFramesI(model.dStp, bpm, rate) : Param::TimeFramesI(model.d, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.r = sync ? Param::StepFramesI(model.rStp, bpm, rate) : Param::TimeFramesI(model.r, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.dly = sync ? Param::StepFramesI(model.dlyStp, bpm, rate) : Param::TimeFramesI(model.dly, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.hld = sync ? Param::StepFramesI(model.hldStp, bpm, rate) : Param::TimeFramesI(model.hld, rate, MIN_TIME_MS, MAX_TIME_MS);
+  result.a = sync ? Param::StepFramesI(bpm, rate, model.aStp) : Param::TimeFramesI(model.a, rate);
+  result.d = sync ? Param::StepFramesI(bpm, rate, model.dStp) : Param::TimeFramesI(model.d, rate);
+  result.r = sync ? Param::StepFramesI(bpm, rate, model.rStp) : Param::TimeFramesI(model.r, rate);
+  result.dly = sync ? Param::StepFramesI(bpm, rate, model.dlyStp) : Param::TimeFramesI(model.dly, rate);
+  result.hld = sync ? Param::StepFramesI(bpm, rate, model.hldStp) : Param::TimeFramesI(model.hld, rate);
   return result;
 }
 

@@ -9,9 +9,6 @@ namespace Xt.Synth0.Model
 
     public unsafe sealed class EnvModel : IUIParamGroupModel
     {
-        const double MinTimeMs = 0.0;
-        const double MaxTimeMs = 10000.0;
-
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
@@ -75,10 +72,10 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo RStpInfo = ParamInfo.Step(p => &((Native*)p)->rStp, 1, nameof(RStp), "R", "Release steps", 0, 15, RelevanceSync);
         static readonly ParamInfo HldStpInfo = ParamInfo.Step(p => &((Native*)p)->hldStp, 2, nameof(HldStp), "Hld", "Hold steps", 0, 0, RelevanceSync);
         static readonly ParamInfo DlyStpInfo = ParamInfo.Step(p => &((Native*)p)->dlyStp, 2, nameof(DlyStp), "Dly", "Delay steps", 0, 0, RelevanceSync);
-        static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, 1, nameof(D), nameof(D), "Decay milliseconds", 18, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, 1, nameof(A), nameof(A), "Attack milliseconds", 7, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, 1, nameof(R), nameof(R), "Release milliseconds", 36, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, 2, nameof(Hld), nameof(Hld), "Hold milliseconds", 0, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, 2, nameof(Dly), nameof(Dly), "Delay milliseconds", 0, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo DInfo = ParamInfo.Time(p => &((Native*)p)->d, 1, nameof(D), nameof(D), "Decay milliseconds", 0, 255, 18, RelevanceTime);
+        static readonly ParamInfo AInfo = ParamInfo.Time(p => &((Native*)p)->a, 1, nameof(A), nameof(A), "Attack milliseconds", 0, 255, 7, RelevanceTime);
+        static readonly ParamInfo RInfo = ParamInfo.Time(p => &((Native*)p)->r, 1, nameof(R), nameof(R), "Release milliseconds", 0, 255, 36, RelevanceTime);
+        static readonly ParamInfo HldInfo = ParamInfo.Time(p => &((Native*)p)->hld, 2, nameof(Hld), nameof(Hld), "Hold milliseconds", 0, 255, 0, RelevanceTime);
+        static readonly ParamInfo DlyInfo = ParamInfo.Time(p => &((Native*)p)->dly, 2, nameof(Dly), nameof(Dly), "Delay milliseconds", 0, 255, 0, RelevanceTime);
     }
 }
