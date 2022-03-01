@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <cassert>
 
-#define MIN_HOLD_MS 0.0f
+#define MIN_HOLD_MS 1.0f
 #define MAX_HOLD_MS 3000.0f
 
 namespace Xts {
