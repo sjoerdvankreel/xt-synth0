@@ -140,10 +140,12 @@ InitComb(FilterModel const& m, float rate, CombState& s)
   std::memset(&s.y, 0, sizeof(s.y));
   s.minGain = Param::Mix(m.combMinGain);
   s.plusGain = Param::Mix(m.combPlusGain);
+  s.maxDelay = static_cast<int>(std::ceilf(XTS_COMB_MAX_DELAY_MS * rate / 1000.0f));
   s.minDelay = Param::TimeFramesI(m.combMinDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS);
   s.plusDelay = Param::TimeFramesI(m.combPlusDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS);
-  assert(s.minDelay < COMB_DELAY_MAX_SAMPLES);
-  assert(s.plusDelay < COMB_DELAY_MAX_SAMPLES);
+  assert(s.minDelay <= s.maxDelay);
+  assert(s.plusDelay <= s.maxDelay);
+  assert(s.maxDelay <= COMB_DELAY_MAX_SAMPLES);
 }
 
 static FloatSample
@@ -152,8 +154,8 @@ GenerateComb(FloatSample audio, CombState& s)
   s.y[0].Clear();
   s.x[0] = audio;
   s.y[0] = s.x[0] + s.x[s.plusDelay] * s.plusGain + s.y[s.minDelay] * s.minGain;
-  std::memmove(&s.x[1], &s.x[0], sizeof(s.x) - sizeof(s.x[0]));
-  std::memmove(&s.y[1], &s.y[0], sizeof(s.y) - sizeof(s.y[0]));
+  std::memmove(&s.x[1], &s.x[0], (s.maxDelay - 1) * sizeof(s.x[0]));
+  std::memmove(&s.y[1], &s.y[0], (s.maxDelay - 1) * sizeof(s.y[0]));
   return s.y[0];
 }
 

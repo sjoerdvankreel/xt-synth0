@@ -9,12 +9,12 @@
 #include <DSP/AudioSample.hpp>
 
 #define XTS_COMB_MIN_DELAY_MS 0.0f
-#define XTS_COMB_MAX_DELAY_MS 10.0f
+#define XTS_COMB_MAX_DELAY_MS 5.0f
 
 namespace Xts {
 
-static constexpr int COMB_DELAY_MAX_SAMPLES 
-= static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f);
+static constexpr int COMB_DELAY_MAX_SAMPLES = 
+static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f + 1.0f);
 
 struct BiquadState
 {
@@ -26,6 +26,7 @@ struct BiquadState
 
 struct CombState
 {
+  int maxDelay;
   int minDelay;
   int plusDelay;
   float minGain;
