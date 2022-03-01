@@ -1,15 +1,20 @@
 #ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
+#include <DSP/Param.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
 #include <Model/DSPModel.hpp>
 #include <Model/SynthModel.hpp>
 #include <DSP/AudioSample.hpp>
 
-#define XTS_MAX_COMB_DELAY 256
+#define XTS_COMB_MIN_DELAY_MS 0.0f
+#define XTS_COMB_MAX_DELAY_MS 10.0f
 
 namespace Xts {
+
+static constexpr int COMB_DELAY_MAX_SAMPLES 
+= static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f);
 
 struct BiquadState
 {
@@ -25,8 +30,8 @@ struct CombState
   int plusDelay;
   float minGain;
   float plusGain;
-  FloatSample x[XTS_MAX_COMB_DELAY];
-  FloatSample y[XTS_MAX_COMB_DELAY];
+  FloatSample x[COMB_DELAY_MAX_SAMPLES];
+  FloatSample y[COMB_DELAY_MAX_SAMPLES];
 };
 
 union FilterState

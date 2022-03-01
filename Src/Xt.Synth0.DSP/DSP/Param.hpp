@@ -2,6 +2,7 @@
 #define XTS_DSP_PARAM_HPP
 
 #include <Model/SynthModel.hpp>
+#include <cmath>
 
 namespace Xts { namespace Param {
 
@@ -21,17 +22,17 @@ inline float
 StepFramesF(int val, float bpm, float rate)
 { return rate * 60.0f / bpm * SyncSteps()[val].num / SyncSteps()[val].den; }
 
-inline int 
+inline int
 StepFramesI(int val, float bpm, float rate)
 { return static_cast<int>(StepFramesF(val, bpm, rate)); }
 
-inline float 
+inline float
 TimeFramesF(int val, float rate, float minMs, float maxMs)
 { return (minMs + (maxMs - minMs) * (val / 255.0f) * (val / 255.0f)) * rate / 1000.0f; }
 
-inline int 
+inline int
 TimeFramesI(int val, float rate, float minMs, float maxMs)
-{ return static_cast<int>(TimeFramesF(val, rate, minMs, maxMs)); }
+{ return static_cast<int>(std::roundf(TimeFramesF(val, rate, minMs, maxMs))); }
 
 } // namespace Param
 } // namespace Xts
