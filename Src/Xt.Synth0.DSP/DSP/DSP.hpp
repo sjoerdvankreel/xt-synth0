@@ -17,7 +17,5 @@ float Modulate(float val, bool bip, float amt, CvSample cv);
 CvSample ModulationInput(CvState const& cv, ModSource src);
 ModInput ModulationInput(CvState const& cv, ModSource src1, ModSource src2);
 
-void Fft(std::vector<float> const& x, std::vector<std::complex<float>>& fft, std::vector<std::complex<float>>& scratch);
-
 } // namespace Xts
 #endif // XTS_DSP_HPP
