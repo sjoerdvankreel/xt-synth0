@@ -14,9 +14,9 @@ namespace Xts {
 
 typedef int PlotFlags;
 inline constexpr PlotFlags PlotNone = 0x0;
-inline constexpr PlotFlags PlotSpec = 0x1;
-inline constexpr PlotFlags PlotStereo = 0x2;
-inline constexpr PlotFlags PlotBipolar = 0x4;
+inline constexpr PlotFlags PlotStereo = 0x1;
+inline constexpr PlotFlags PlotBipolar = 0x2;
+inline constexpr PlotFlags PlotSpectrum = 0x4;
 inline constexpr PlotFlags PlotAutoRange = 0x8;
 inline constexpr PlotFlags PlotNoResample = 0x10;
 
@@ -32,8 +32,8 @@ struct PlotInput
 
 struct PlotOutput
 {
-  bool clip, spec, stereo;
-  float freq, rate, min, max;
+  bool clip, spectrum, stereo;
+  float frequency, rate, min, max;
   std::vector<float>* lSamples;
   std::vector<float>* rSamples;
   std::vector<HSplit>* hSplits;

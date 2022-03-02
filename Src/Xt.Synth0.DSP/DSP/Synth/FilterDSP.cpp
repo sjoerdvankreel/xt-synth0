@@ -184,29 +184,34 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 }
 
 void
-FilterDSP::Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& audioModel, bool spec, int index, PlotInput const& input, PlotOutput& output)
+FilterDSP::Plot(FilterPlotState* state)
 {
-  const int cycles = 5;
-  if (!model.on) return;
-  PlotFlags flags = PlotNone;
-  flags |= PlotBipolar;
-  flags |= PlotAutoRange;
-  flags |= spec ? PlotSpec : 0;
-  float freq = MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C));
+  if (!state->model->on) return;
+
+  CycledPlotState cycled;
+  cycled.cycles = 5;
+  cycled.input = state->input;
+  cycled.output = state->output;
+  cycled.flags = PlotBipolar | PlotAutoRange;
+  if (state->spectrum) cycled.flags |= PlotSpectrum;
+  cycled.frequency = MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C));
+
   auto factory = [&](float rate) 
   { 
-    CvDSP cv(&cvModel, 1.0f, input.bpm, rate);
-    AudioDSP audio(& audioModel, 4, UnitNote::C, rate);
-    FilterDSP filter(&model, index, rate);
+    CvDSP cv(state->cvModel, 1.0f, state->input->bpm, rate);
+    AudioDSP audio(state->audioModel, 4, UnitNote::C, rate);
+    FilterDSP filter(state->model, state->index, rate);
     return std::make_tuple(cv, audio, filter);
   };
+
   auto next = [](std::tuple<CvDSP, AudioDSP, FilterDSP>& state) 
   { 
     auto const& cv = std::get<CvDSP>(state).Next();
     auto const& audio = std::get<AudioDSP>(state).Next(cv);
     return std::get<FilterDSP>(state).Next(cv, audio).Mono(); 
   };
-  PlotDSP::RenderCycled(cycles, freq, flags, input, output, factory, next);
+
+  PlotDSP::RenderCycled(&cycled, factory, next);
 }
 
 } // namespace Xts

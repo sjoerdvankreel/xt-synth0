@@ -16,6 +16,15 @@
 
 namespace Xts {
 
+struct CycledPlotState
+{
+  int cycles;
+  float frequency;
+  PlotFlags flags;
+  PlotOutput* output;
+  PlotInput const* input;
+};
+
 class PlotDSP
 {
   static constexpr wchar_t UnicodePi = L'\u03C0';
@@ -28,10 +37,7 @@ class PlotDSP
 
 public:
   template <class Factory, class Next>
-  static void RenderCycled(
-    int cycles, float freq, PlotFlags flags,
-    PlotInput const& input, PlotOutput& output, 
-    Factory factory, Next next);
+  static void RenderCycled(CycledPlotState* state, Factory factory, Next next);
 
   template <
     class Factory, class Next, class Left, class Right, 
@@ -45,49 +51,47 @@ public:
 };
 
 template <class Factory, class Next>
-void PlotDSP::RenderCycled(
-  int cycles, float freq, PlotFlags flags,
-  PlotInput const& input, PlotOutput& output,
-  Factory factory, Next next)
+void
+PlotDSP::RenderCycled(CycledPlotState* state, Factory factory, Next next)
 {
-  assert((flags & PlotStereo) == 0);
-  assert((flags & PlotNoResample) == 0);
+  assert((state->flags & PlotStereo) == 0);
+  assert((state->flags & PlotNoResample) == 0);
 
   float max = 1.0f;
-  output.max = 1.0f;
-  output.freq = freq;
-  output.clip = false;
-  output.stereo = false;
-  output.spec = (flags & PlotSpec) != 0;
-  output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
-  float idealRate = output.freq * input.pixels / cycles;
-  float cappedRate = std::min(input.rate, idealRate);
-  output.rate = output.spec? input.rate : cappedRate;
+  state->output->max = 1.0f;
+  state->output->frequency = state->frequency;
+  state->output->clip = false;
+  state->output->stereo = false;
+  state->output->spectrum = (state->flags & PlotSpectrum) != 0;
+  state->output->min = (state->flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
+  float idealRate = state->output->frequency * state->input->pixels / state->cycles;
+  float cappedRate = std::min(state->input->rate, idealRate);
+  state->output->rate = state->output->spectrum? state->input->rate : cappedRate;
 
-  auto state = factory(output.rate);
-  float regular = (output.rate * cycles / output.freq) + 1.0f;
-  float fsamples = output.spec ? output.rate : regular;
+  auto dsp = factory(state->output->rate);
+  float regular = (state->output->rate * state->cycles / state->output->frequency) + 1.0f;
+  float fsamples = state->output->spectrum ? state->output->rate : regular;
   int samples = static_cast<int>(std::ceilf(fsamples));
   for (int i = 0; i < samples; i++)
   {
-    float sample = next(state);
+    float sample = next(dsp);
     max = std::max(max, std::fabs(sample));
-    output.lSamples->push_back(sample);
+    state->output->lSamples->push_back(sample);
   }
 
-  output.hSplits->emplace_back(samples, L"");
-  for (int i = 0; i < cycles * 2; i++)
-    output.hSplits->emplace_back(samples * i / (cycles * 2), std::to_wstring(i) + UnicodePi);
-  if ((flags & PlotAutoRange) == 0)
+  state->output->hSplits->emplace_back(samples, L"");
+  for (int i = 0; i < state->cycles * 2; i++)
+    state->output->hSplits->emplace_back(samples * i / (state->cycles * 2), std::to_wstring(i) + UnicodePi);
+  if ((state->flags & PlotAutoRange) == 0)
   {
     assert(max <= 1.0f);
-    *output.vSplits = (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
+    *(state->output->vSplits) = (state->flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
     return;
   }
   
-  assert((flags & PlotBipolar) != 0);
-  for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
-  *output.vSplits = MakeBiVSplits(max);
+  assert((state->flags & PlotBipolar) != 0);
+  for (int i = 0; i < samples; i++) (*state->output->lSamples)[i] /= max;
+  *state->output->vSplits = MakeBiVSplits(max);
 }
 
 template <
@@ -102,13 +106,13 @@ void PlotDSP::RenderStaged(
 
   output.max = 1.0f;
   output.clip = false;
-  output.spec = (flags & PlotSpec) != 0;
+  output.spectrum = (flags & PlotSpectrum) != 0;
   output.stereo = (flags & PlotStereo) != 0;
   output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
   bool noResample = (flags & PlotNoResample) != 0;
   float fhold = Param::TimeFramesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   float releaseSamples = envModel.sync ? Param::StepFramesF(envModel.rStp, input.bpm, input.rate) : Param::TimeFramesF(envModel.r, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  output.rate = output.spec || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
+  output.rate = output.spectrum || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
   fhold *= output.rate / input.rate;
   *output.vSplits = output.stereo? StereoVSPlits: (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
 

@@ -116,9 +116,9 @@ XtsPlotDSPRender(PlotState* state)
   state->min = out.min;
   state->max = out.max;
   state->clip = out.clip;
-  state->freq = out.freq;
+  state->freq = out.frequency;
   state->rate = out.rate;
-  state->spec = out.spec;
+  state->spec = out.spectrum;
   state->stereo = out.stereo != 0;
   state->lSamples = state->lSampleData->data();
   state->rSamples = state->rSampleData->data();

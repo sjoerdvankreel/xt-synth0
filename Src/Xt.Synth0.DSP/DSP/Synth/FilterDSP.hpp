@@ -17,6 +17,17 @@ namespace Xts {
 static constexpr int COMB_DELAY_MAX_SAMPLES = 
 static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f + 1.0f);
 
+struct FilterPlotState
+{
+  int index;
+  bool spectrum;
+  PlotOutput* output;
+  PlotInput const* input;
+  CvModel const* cvModel;
+  FilterModel const* model;
+  AudioModel const* audioModel;
+};
+
 struct BiquadState
 {
   double a[3];
@@ -55,9 +66,9 @@ public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);
 public:
+  static void Plot(FilterPlotState* state);
   FloatSample Output() const { return _output; };
   FloatSample Next(CvState const& cv, AudioState const& audio);
-  static void Plot(FilterModel const& model, CvModel const& cvModel, AudioModel const& AudioModel, bool spec, int index, PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts

@@ -6,6 +6,14 @@
 
 namespace Xts {
 
+struct LfoPlotState
+{
+  bool spectrum;
+  PlotOutput* output;
+  LfoModel const* model;
+  PlotInput const* input;
+};
+
 class LfoDSP
 {
   double _phase;
@@ -21,7 +29,7 @@ private:
 public:
   CvSample Next();
   CvSample Output() const { return _output; }
-  static void Plot(LfoModel const& model, bool spec, PlotInput const& input, PlotOutput& output);
+  static void Plot(LfoPlotState* state);
 };
 
 } // namespace Xts

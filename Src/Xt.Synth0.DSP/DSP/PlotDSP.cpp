@@ -162,6 +162,48 @@ Spectrum(
   for (size_t i = 0; i < x.size(); i++) x[i] = max == 0.0f? 0.0f: x[i] / max;
 }
 
+template <class T>
+static int
+GroupIndex(PlotType type, T base)
+{ return static_cast<int>(type) - static_cast<int>(base); }
+
+static void
+RenderLfo(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  LfoPlotState state;
+  state.input = &input;
+  state.output = &output;
+  state.spectrum = model.plot.spec;
+  state.model = &model.cv.lfos[GroupIndex(model.plot.type, PlotType::LFO1)];
+  LfoDSP::Plot(&state);
+}
+
+static void
+RenderUnit(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  UnitPlotState state;
+  state.input = &input;
+  state.output = &output;
+  state.cvModel = &model.cv;
+  state.spectrum = model.plot.spec;
+  state.model = &model.audio.units[GroupIndex(model.plot.type, PlotType::Unit1)];
+  UnitDSP::Plot(&state);
+}
+
+static void
+RenderFilter(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  FilterPlotState state;
+  state.input = &input;
+  state.output = &output;
+  state.cvModel = &model.cv;
+  state.audioModel = &model.audio;
+  state.spectrum = model.plot.spec;
+  state.index = GroupIndex(model.plot.type, PlotType::Filt1);
+  state.model = &model.audio.filts[state.index];
+  FilterDSP::Plot(&state);
+}
+
 void
 PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
@@ -183,25 +225,14 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
     auto env = static_cast<int>(PlotType::Env1);
     EnvDSP::Plot(model.cv.envs[index - env], hold, input, output);
     break; }
-  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: {
-    auto lfo = static_cast<int>(PlotType::LFO1);
-    LfoDSP::Plot(model.cv.lfos[index - lfo], model.plot.spec, input, output);
-    break; }
-  case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: {
-    auto unit = static_cast<int>(PlotType::Unit1);
-    UnitDSP::Plot(model.audio.units[index - unit], model.cv, model.plot.spec, input, output);
-    break; }
-  case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: {
-    auto filt = static_cast<int>(PlotType::Filt1);
-    FilterDSP::Plot(model.audio.filts[index - filt], model.cv, model.audio, model.plot.spec, index - filt, input, output);
-    break; }
-  default: {
-    assert(false);
-    break; }
+  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: RenderLfo(model, input, output); break;
+  case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: RenderUnit(model, input, output); break;
+  case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: RenderFilter(model, input, output); break;
+  default: assert(false); break;
   }  
   
   assert(output.rate <= input.rate);  
-  if(!output.spec) return;  
+  if(!output.spectrum) return;  
   output.min = 0.0f;
   output.max = 1.0f;
 

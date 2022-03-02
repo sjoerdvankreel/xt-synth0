@@ -60,16 +60,22 @@ LfoDSP::Generate() const
 }
 
 void
-LfoDSP::Plot(LfoModel const& model, bool spec, PlotInput const& input, PlotOutput& output)
+LfoDSP::Plot(LfoPlotState* state)
 {
-	if (!model.on) return;
-  PlotFlags flags = PlotNone;
-  flags |= spec ? PlotSpec : 0;
-  flags |= IsBipolar(model.plty)? PlotBipolar: 0;
-  float freq = Freq(model, input.bpm, input.rate);
+	if (!state->model->on) return;
+
+  CycledPlotState cycled;
+  cycled.cycles = 1;
+  cycled.flags = PlotNone;
+  cycled.input = state->input;
+  cycled.output = state->output;
+  if(state->spectrum) cycled.flags |= PlotSpectrum;
+  if(IsBipolar(state->model->plty)) cycled.flags |= PlotBipolar;
+  cycled.frequency = Freq(*state->model, state->input->bpm, state->input->rate);
+
   auto next = [](LfoDSP& dsp) { return dsp.Next().value; };
-  auto factory = [&](float rate) { return LfoDSP(&model, input.bpm, rate); };
-  PlotDSP::RenderCycled(1, freq, flags, input, output, factory, next);
+  auto factory = [&](float rate) { return LfoDSP(state->model, state->input->bpm, rate); };
+  PlotDSP::RenderCycled(& cycled, factory, next);
 }
 
 } // namespace Xts

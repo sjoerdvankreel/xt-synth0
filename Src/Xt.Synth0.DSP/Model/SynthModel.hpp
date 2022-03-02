@@ -25,10 +25,9 @@ XTS_CHECK_SIZE(VoiceBinding, 1648);
 enum class PlotType { Synth, Amp, Env1, Env2, Env3, LFO1, LFO2, LFO3, Unit1, Unit2, Unit3, Filt1, Filt2, Filt3 };
 struct XTS_ALIGN PlotModel
 {
-  friend class PlotDSP;
   PlotModel() = default;
   PlotModel(PlotModel const&) = delete;
-private:
+
   XtsBool on, spec;
   PlotType type;
   int32_t hold;
@@ -110,11 +109,9 @@ XTS_CHECK_SIZE(AmpModel, 56);
 
 struct XTS_ALIGN CvModel
 {
-  friend class CvDSP;
-  friend class PlotDSP;
   CvModel() = default;
   CvModel(CvModel const&) = delete;
-private:
+
   LfoModel lfos[LfoCount];
   EnvModel envs[EnvelopeCount];
 };
@@ -122,11 +119,9 @@ XTS_CHECK_SIZE(CvModel, 288);
 
 struct XTS_ALIGN AudioModel
 {
-  friend class PlotDSP;
-  friend class AudioDSP;
   AudioModel() = default;
   AudioModel(AudioModel const&) = delete;
-private:
+
   UnitModel units[UnitCount];
   FilterModel filts[FilterCount];
 };
@@ -134,11 +129,9 @@ XTS_CHECK_SIZE(AudioModel, 528);
 
 struct XTS_ALIGN SynthModel
 {
-  friend class PlotDSP;
-  friend class SynthDSP;
   SynthModel() = default;
   SynthModel(SynthModel const&) = delete;
-private:
+
   CvModel cv;
   AmpModel amp;
   PlotModel plot;

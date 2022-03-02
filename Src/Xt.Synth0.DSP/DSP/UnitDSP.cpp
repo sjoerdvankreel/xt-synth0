@@ -215,17 +215,32 @@ UnitDSP::GenerateAdd(float phase, float freq, ModInput const& mod) const
 }
 
 void
-UnitDSP::Plot(UnitModel const& model, CvModel const& cvModel, bool spec, PlotInput const& input, PlotOutput& output)
+UnitDSP::Plot(UnitPlotState* state)
 {
-  const int cycles = 5;
-  if (!model.on) return;
-  PlotFlags flags = PlotNone;
-  flags |= PlotBipolar;
-  flags |= spec ? PlotSpec : 0;
-  float freq = Freq(model, 4, UnitNote::C);
-  auto next = [](std::tuple<CvDSP, UnitDSP>& state) { return std::get<UnitDSP>(state).Next(std::get<CvDSP>(state).Next()).Mono(); };
-  auto factory = [&](float rate) { return std::make_tuple(CvDSP(&cvModel, 1.0f, input.bpm, rate), UnitDSP(&model, 4, UnitNote::C, rate)); };
-  PlotDSP::RenderCycled(cycles, freq, flags, input, output, factory, next);
+  if (!state->model->on) return;
+
+  CycledPlotState cycled;
+  cycled.cycles = 5;
+  cycled.flags = PlotBipolar;
+  cycled.input = state->input;
+  cycled.output = state->output;
+  if (state->spectrum) cycled.flags |= PlotSpectrum;
+  cycled.frequency = Freq(*state->model, 4, UnitNote::C);
+
+  auto next = [](std::tuple<CvDSP, UnitDSP>& state) 
+  { 
+    auto const& cv = std::get<CvDSP>(state).Next();
+    return std::get<UnitDSP>(state).Next(cv).Mono(); 
+  };
+
+  auto factory = [&](float rate)
+  { 
+    UnitDSP unit(state->model, 4, UnitNote::C, rate);
+    CvDSP cv(state->cvModel, 1.0f, state->input->bpm, rate);
+    return std::make_tuple(cv, unit); 
+  };
+
+  PlotDSP::RenderCycled(&cycled, factory, next);
 }
 
 } // namespace Xts

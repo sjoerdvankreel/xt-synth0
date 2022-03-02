@@ -7,6 +7,15 @@
 
 namespace Xts {
 
+struct UnitPlotState
+{
+  bool spectrum;
+  PlotOutput* output;
+  UnitModel const* model;
+  CvModel const* cvModel;
+  PlotInput const* input;
+};
+
 class UnitDSP
 {
   FloatSample _output;
@@ -27,7 +36,7 @@ private:
 public:
   FloatSample Next(CvState const& cv);
   FloatSample const Output() const { return _output; }
-  static void Plot(UnitModel const& model, CvModel const& cvModel, bool spec, PlotInput const& input, PlotOutput& output);
+  static void Plot(UnitPlotState* state);
 };
 
 } // namespace Xts
