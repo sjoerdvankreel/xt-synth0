@@ -1,11 +1,9 @@
 #ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
+#include <Model/DSPModel.hpp>
 #include <DSP/DelayBuffer.hpp>
 #include <DSP/AudioSample.hpp>
-#include <Model/DSPModel.hpp>
-#include <Model/Synth/CvModel.hpp>
-#include <Model/Synth/AudioModel.hpp>
 
 #define XTS_COMB_MIN_DELAY_MS 0.0f
 #define XTS_COMB_MAX_DELAY_MS 5.0f
@@ -21,9 +19,9 @@ struct FilterPlotState
   bool spectrum;
   PlotOutput* output;
   PlotInput const* input;
-  CvModel const* cvModel;
-  FilterModel const* model;
-  AudioModel const* audioModel;
+  struct CvModel const* cvModel;
+  struct FilterModel const* model;
+  struct AudioModel const* audioModel;
 };
 
 struct BiquadState
