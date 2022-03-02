@@ -103,6 +103,9 @@
     <ClInclude Include="Model\Synth\UnitModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Synth\CvModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">

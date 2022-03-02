@@ -1,6 +1,7 @@
 #ifndef XTS_SYNTH_MODEL_HPP
 #define XTS_SYNTH_MODEL_HPP
 
+#include <Model/Synth/CvModel.hpp>
 #include <Model/Synth/ModModel.hpp>
 #include <Model/Synth/LfoModel.hpp>
 #include <Model/Synth/PlotModel.hpp>
@@ -43,16 +44,6 @@ private:
   int32_t lvl, pan, lvlAmt, panAmt, pad__;
 };
 XTS_CHECK_SIZE(AmpModel, 56);
-
-struct XTS_ALIGN CvModel
-{
-  CvModel() = default;
-  CvModel(CvModel const&) = delete;
-
-  LfoModel lfos[LfoCount];
-  EnvModel envs[EnvelopeCount];
-};
-XTS_CHECK_SIZE(CvModel, 288);
 
 struct XTS_ALIGN AudioModel
 {
