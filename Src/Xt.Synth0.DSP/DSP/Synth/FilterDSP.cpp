@@ -105,8 +105,8 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
   double alpha;
   double sinw0;
   double cosw0;
-  std::memset(&s.x, 0, sizeof(s.x));
-  std::memset(&s.y, 0, sizeof(s.y));
+  s.x.Clear();
+  s.y.Clear();
   BiquadParameters(m, rate, sinw0, cosw0, alpha);
   switch (m.biquadType)
   {

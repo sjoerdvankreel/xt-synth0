@@ -12,15 +12,10 @@ class DelayBuffer
   T _buffer[N];
   size_t _head;
 public:
-  DelayBuffer();
+  void Clear();
   void Push(T val);
   T Get(size_t pos) const;
 };
-
-template <class T, size_t N>
-inline 
-DelayBuffer<T, N>::DelayBuffer()
-{ std::memset(_buffer, 0, sizeof(_buffer)); }
 
 template <class T, size_t N>
 inline void
@@ -29,6 +24,11 @@ DelayBuffer<T, N>::Push(T val)
   _buffer[_head++] = val;
   _head %= N;
 }
+
+template <class T, size_t N>
+inline void
+DelayBuffer<T, N>::Clear()
+{ std::memset(_buffer, 0, sizeof(_buffer)); }
 
 template <class T, size_t N>
 inline T 

@@ -40,7 +40,6 @@ union FilterState
 {
   CombState comb;
   BiquadState biquad;
-  FilterState() {}
 };
 
 class FilterDSP
