@@ -88,6 +88,9 @@
     <ClInclude Include="DSP\Utility.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\DelayBuffer.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">

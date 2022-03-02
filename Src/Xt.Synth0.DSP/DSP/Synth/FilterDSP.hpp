@@ -2,6 +2,7 @@
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
 #include <DSP/Param.hpp>
+#include <DSP/DelayBuffer.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
 #include <Model/DSPModel.hpp>
@@ -20,8 +21,8 @@ struct BiquadState
 {
   double a[3];
   double b[3];
-  DoubleSample x[3];
-  DoubleSample y[3];
+  DelayBuffer<DoubleSample, 3> x;
+  DelayBuffer<DoubleSample, 3> y;
 };
 
 struct CombState
@@ -39,6 +40,7 @@ union FilterState
 {
   CombState comb;
   BiquadState biquad;
+  FilterState() {}
 };
 
 class FilterDSP

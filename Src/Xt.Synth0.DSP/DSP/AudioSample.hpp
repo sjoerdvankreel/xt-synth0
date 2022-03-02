@@ -1,6 +1,9 @@
 #ifndef XTS_DSP_AUDIO_SAMPLE_HPP
 #define XTS_DSP_AUDIO_SAMPLE_HPP
 
+#include <cmath>
+#include <cassert>
+
 namespace Xts {
 
 template <class T>
@@ -11,6 +14,7 @@ struct AudioSample
 
   void Clear();
   T Mono() const;
+  AudioSample<T> Sanity() const;
   AudioSample<float> ToFloat() const;
   AudioSample<double> ToDouble() const;
   AudioSample& operator+=(AudioSample s);
@@ -38,6 +42,17 @@ template <class T>
 inline AudioSample<T>
 operator*(T x, AudioSample<T> y)
 { return { x * y.left, x * y.right}; }
+
+template <class T>
+inline AudioSample<T>
+AudioSample<T>::Sanity() const
+{
+  assert(std::fpclassify(left) != FP_SUBNORMAL);
+  assert(std::fpclassify(right) != FP_SUBNORMAL);
+  assert(!std::isnan(left) && !std::isnan(right));
+  assert(!std::isinf(left) && !std::isinf(right));
+  return *this;
+}
 
 template <class T>
 inline AudioSample<T>

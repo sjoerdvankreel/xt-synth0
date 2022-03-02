@@ -123,14 +123,9 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
 static FloatSample
 GenerateBiquad(FloatSample audio, BiquadState& s)
 {
-  s.y[0].Clear();
-  s.x[0] = audio.ToDouble();
-  s.y[0] = s.x[0] * s.b[0] + s.x[1] * s.b[1] + s.x[2] * s.b[2] - s.y[1] * s.a[1] - s.y[2] * s.a[2];
-  s.x[2] = s.x[1];
-  s.x[1] = s.x[0];
-  s.y[2] = s.y[1];
-  s.y[1] = s.y[0];
-  return s.y[0].ToFloat();
+  s.x.Push(audio.ToDouble());
+  s.y.Push(s.x.Get(0) * s.b[0] + s.x.Get(1) * s.b[1] + s.x.Get(2) * s.b[2] - s.y.Get(0) * s.a[1] - s.y.Get(1) * s.a[2]);
+  return s.y.Get(0).ToFloat().Sanity();
 }
 
 static void
