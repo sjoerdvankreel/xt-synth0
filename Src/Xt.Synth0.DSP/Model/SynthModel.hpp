@@ -6,6 +6,7 @@
 #include <Model/Synth/LfoModel.hpp>
 #include <Model/Synth/PlotModel.hpp>
 #include <Model/Synth/UnitModel.hpp>
+#include <Model/Synth/AudioModel.hpp>
 #include <Model/Synth/FilterModel.hpp>
 #include <Model/Synth/EnvelopeModel.hpp>
 #include "Model.hpp"
@@ -44,16 +45,6 @@ private:
   int32_t lvl, pan, lvlAmt, panAmt, pad__;
 };
 XTS_CHECK_SIZE(AmpModel, 56);
-
-struct XTS_ALIGN AudioModel
-{
-  AudioModel() = default;
-  AudioModel(AudioModel const&) = delete;
-
-  UnitModel units[UnitCount];
-  FilterModel filts[FilterCount];
-};
-XTS_CHECK_SIZE(AudioModel, 528);
 
 struct XTS_ALIGN SynthModel
 {

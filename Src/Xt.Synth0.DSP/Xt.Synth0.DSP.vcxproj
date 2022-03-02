@@ -34,6 +34,7 @@
     <ClInclude Include="Model\Model.hpp" />
     <ClInclude Include="Model\SeqModel.hpp" />
     <ClInclude Include="Model\SynthModel.hpp" />
+    <ClInclude Include="Model\Synth\AudioModel.hpp" />
     <ClInclude Include="Model\Synth\CvModel.hpp" />
     <ClInclude Include="Model\Synth\EnvelopeModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
