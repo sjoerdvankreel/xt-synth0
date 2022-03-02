@@ -40,3 +40,4 @@ fix min/max range for time params
 paraminfobuilder
 handle stream stopped with error
 delay memory in ringbuffer
+audio regtests wavewriter
