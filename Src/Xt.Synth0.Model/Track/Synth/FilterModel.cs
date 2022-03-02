@@ -4,19 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum FilterType
-    {
-        Biquad,
-        Comb
-    };
-
-    public enum BiquadType
-    {
-        LPF,
-        HPF,
-        BPF,
-        BSF
-    };
+    public enum FilterType { Biquad, Comb };
+    public enum BiquadType { LPF, HPF, BPF, BSF };
 
     public enum FilterModTarget
     {

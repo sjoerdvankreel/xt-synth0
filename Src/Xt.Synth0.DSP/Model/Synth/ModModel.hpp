@@ -8,19 +8,12 @@ namespace Xts {
 enum class ModSource
 {
   Velo, 
-  Env1, 
-  Env2, 
-  Env3, 
-  LFO1, 
-  LFO2, 
-  LFO3 
+  Env1, Env2, Env3, 
+  LFO1, LFO2, LFO3 
 };
 
 struct XTS_ALIGN ModModel
 {
-  ModModel() = default;
-  ModModel(ModModel const&) = delete;
-
   int32_t amount;
   int32_t target;
   ModSource source;

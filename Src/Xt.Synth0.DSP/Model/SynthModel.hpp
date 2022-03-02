@@ -2,6 +2,7 @@
 #define XTS_SYNTH_MODEL_HPP
 
 #include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/PlotModel.hpp>
 #include <Model/Synth/FilterModel.hpp>
 #include "Model.hpp"
 #include <cstdint>
@@ -21,18 +22,6 @@ struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
 XTS_CHECK_SIZE(VoiceBinding, 1648);
-
-enum class PlotType { Synth, Amp, Env1, Env2, Env3, LFO1, LFO2, LFO3, Unit1, Unit2, Unit3, Filt1, Filt2, Filt3 };
-struct XTS_ALIGN PlotModel
-{
-  PlotModel() = default;
-  PlotModel(PlotModel const&) = delete;
-
-  XtsBool on, spec;
-  PlotType type;
-  int32_t hold;
-};
-XTS_CHECK_SIZE(PlotModel, 16);
 
 enum class LfoType { Sin, Saw, Sqr, Tri };
 enum class LfoPolarity { Uni, UniInv, Bi, BiInv };

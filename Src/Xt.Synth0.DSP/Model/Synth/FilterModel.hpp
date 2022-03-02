@@ -6,19 +6,8 @@
 
 namespace Xts {
 
-enum class FilterType 
-{ 
-  Biquad, 
-  Comb 
-};
-
-enum class BiquadType 
-{ 
-  LPF, 
-  HPF, 
-  BPF, 
-  BSF 
-};
+enum class FilterType { Biquad, Comb };
+enum class BiquadType { LPF, HPF, BPF, BSF };
 
 enum class FilterModTarget
 { 
@@ -32,9 +21,6 @@ enum class FilterModTarget
 
 struct XTS_ALIGN FilterModel
 {
-  FilterModel() = default;
-  FilterModel(FilterModel const&) = delete;
-
   XtsBool on;
   FilterType type;
 

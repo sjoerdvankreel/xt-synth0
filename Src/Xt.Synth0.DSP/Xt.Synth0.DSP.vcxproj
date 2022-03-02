@@ -36,6 +36,7 @@
     <ClInclude Include="Model\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
     <ClInclude Include="Model\Synth\ModModel.hpp" />
+    <ClInclude Include="Model\Synth\PlotModel.hpp" />
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>

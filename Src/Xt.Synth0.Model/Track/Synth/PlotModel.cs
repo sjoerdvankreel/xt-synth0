@@ -4,7 +4,14 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum PlotType { Synth, Amp, Env1, Env2, Env3, LFO1, LFO2, LFO3, Unit1, Unit2, Unit3, Filt1, Filt2, Filt3 }
+    public enum PlotType 
+    { 
+        Synth, Amp, 
+        Env1, Env2, Env3, 
+        LFO1, LFO2, LFO3, 
+        Unit1, Unit2, Unit3, 
+        Filt1, Filt2, Filt3 
+    }
 
     public unsafe sealed class PlotModel : IUIParamGroupModel
     {
