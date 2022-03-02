@@ -9,8 +9,8 @@
 #include <Model/SynthModel.hpp>
 #include <DSP/AudioSample.hpp>
 
+#define XTS_COMB_MIN_DELAY_MS 0.0f
 #define XTS_COMB_MAX_DELAY_MS 5.0f
-#define XTS_COMB_MIN_DELAY_MS 0.01f
 
 namespace Xts {
 
@@ -27,13 +27,12 @@ struct BiquadState
 
 struct CombState
 {
-  int maxDelay;
   int minDelay;
   int plusDelay;
   float minGain;
   float plusGain;
-  FloatSample x[COMB_DELAY_MAX_SAMPLES];
-  FloatSample y[COMB_DELAY_MAX_SAMPLES];
+  DelayBuffer<FloatSample, COMB_DELAY_MAX_SAMPLES> x;
+  DelayBuffer<FloatSample, COMB_DELAY_MAX_SAMPLES> y;
 };
 
 union FilterState

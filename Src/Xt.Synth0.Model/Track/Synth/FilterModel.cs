@@ -31,7 +31,7 @@ namespace Xt.Synth0.Model
     public unsafe sealed class FilterModel : IUIParamGroupModel
     {
         const double CombMaxDelayMs = 5.0;
-        const double CombMinDelayMs = 0.01;
+        const double CombMinDelayMs = 0.0;
         const double BiquadMinFreqHz = 20.0;
         const double BiquadMaxFreqHz = 10000.0;
 
