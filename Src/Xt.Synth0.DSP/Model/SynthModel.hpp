@@ -3,6 +3,7 @@
 
 #include <Model/Synth/CvModel.hpp>
 #include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/AmpModel.hpp>
 #include <Model/Synth/LfoModel.hpp>
 #include <Model/Synth/PlotModel.hpp>
 #include <Model/Synth/UnitModel.hpp>
@@ -27,24 +28,6 @@ struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
 XTS_CHECK_SIZE(VoiceBinding, 1648);
-
-enum class AmpLfo { LFO1, LFO2, LFO3 };
-enum class AmpEnv { Env1, Env2, Env3 };
-struct XTS_ALIGN AmpModel
-{
-  friend class AmpDSP;
-  friend class PlotDSP;
-  AmpModel() = default;
-  AmpModel(AmpModel const&) = delete;
-private:
-  AmpEnv envSrc;
-  AmpLfo lvlSrc;
-  ModSource panSrc;
-  int32_t units[UnitCount];
-  int32_t flts[FilterCount];
-  int32_t lvl, pan, lvlAmt, panAmt, pad__;
-};
-XTS_CHECK_SIZE(AmpModel, 56);
 
 struct XTS_ALIGN SynthModel
 {

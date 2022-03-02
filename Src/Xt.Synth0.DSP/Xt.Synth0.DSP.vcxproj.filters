@@ -109,6 +109,9 @@
     <ClInclude Include="Model\Synth\AudioModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Synth\AmpModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
