@@ -41,3 +41,4 @@ paraminfobuilder
 handle stream stopped with error
 delay memory in ringbuffer
 audio regtests wavewriter
+envelope->env

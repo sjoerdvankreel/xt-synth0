@@ -2,8 +2,6 @@
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
 #include <DSP/DelayBuffer.hpp>
-#include <DSP/Synth/CvState.hpp>
-#include <DSP/Synth/AudioState.hpp>
 #include <Model/DSPModel.hpp>
 #include <Model/SynthModel.hpp>
 #include <DSP/AudioSample.hpp>
@@ -67,7 +65,7 @@ public:
 public:
   static void Plot(FilterPlotState* state);
   FloatSample Output() const { return _output; };
-  FloatSample Next(CvState const& cv, AudioState const& audio);
+  FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
 };
 
 } // namespace Xts
