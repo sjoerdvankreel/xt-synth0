@@ -4,6 +4,7 @@
 #include "DSP.hpp"
 #include "CvDSP.hpp"
 #include "AudioDSP.hpp"
+#include <Model/Synth/Config.hpp>
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
@@ -14,8 +15,8 @@ class AmpDSP
   float _amp;
   FloatSample _output;
   AmpModel const* _model;
-  float _units[UnitCount];
-  float _flts[FilterCount];
+  float _units[XTS_SYNTH_UNIT_COUNT];
+  float _flts[XTS_SYNTH_FILTER_COUNT];
   float _pan, _lvlAmt, _panAmt, _lvl;
 public:
   AmpDSP() = default;

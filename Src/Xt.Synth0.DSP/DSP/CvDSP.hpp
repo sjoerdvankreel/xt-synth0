@@ -1,6 +1,7 @@
 #ifndef XTS_CV_DSP_HPP
 #define XTS_CV_DSP_HPP
 
+#include <Model/Synth/Config.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include "LfoDSP.hpp"
 #include "EnvDSP.hpp"
@@ -12,8 +13,8 @@ namespace Xts {
 class CvDSP
 {
   CvState _output;
-  LfoDSP _lfos[LfoCount];
-  EnvDSP _envs[EnvelopeCount];
+  LfoDSP _lfos[XTS_SYNTH_LFO_COUNT];
+  EnvDSP _envs[XTS_SYNTH_ENV_COUNT];
 public:
   CvDSP() = default;
   CvDSP(CvModel const* model, float velo, float bpm, float rate);

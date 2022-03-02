@@ -3,13 +3,14 @@
 
 #include <Model/Model.hpp>
 #include <DSP/AudioSample.hpp>
+#include <Model/Synth/Config.hpp>
 
 namespace Xts {
 
 struct AudioState
 {
-  FloatSample units[UnitCount];
-  FloatSample filters[FilterCount];
+  FloatSample units[XTS_SYNTH_UNIT_COUNT];
+  FloatSample filters[XTS_SYNTH_FILTER_COUNT];
 };
 
 } // namespace Xts

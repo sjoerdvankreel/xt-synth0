@@ -1,7 +1,7 @@
 #ifndef XTS_MODEL_SYNTH_FILTER_MODEL_HPP
 #define XTS_MODEL_SYNTH_FILTER_MODEL_HPP
 
-#include <Model/Model.hpp>
+#include <Model/Synth/Config.hpp>
 #include <Model/Synth/ModModel.hpp>
 
 namespace Xts {
@@ -11,12 +11,12 @@ enum class BiquadType { LPF, HPF, BPF, BSF };
 
 enum class FilterModTarget
 { 
-  BiquadFrequency, 
-  BiquadResonance, 
-  CombMinGain, 
-  CombPlusGain, 
-  CombMinDelay, 
-  CombPlusDelay 
+  CombMinGain,
+  CombPlusGain,
+  CombMinDelay,
+  CombPlusDelay,
+  BiquadFrequency,
+  BiquadResonance
 };
 
 struct XTS_ALIGN FilterModel
@@ -36,8 +36,8 @@ struct XTS_ALIGN FilterModel
 
   ModModel mod1;
   ModModel mod2;
-  int32_t unitAmount[UnitCount];
-  int32_t filterAmount[FilterCount];
+  int32_t unitAmount[XTS_SYNTH_UNIT_COUNT];
+  int32_t filterAmount[XTS_SYNTH_FILTER_COUNT];
 };
 XTS_CHECK_SIZE(FilterModel, 96);
 

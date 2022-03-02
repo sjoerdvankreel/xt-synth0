@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="DSP\AudioDSP.hpp" />
     <ClInclude Include="DSP\AudioSample.hpp" />
+    <ClInclude Include="DSP\Config.hpp" />
     <ClInclude Include="DSP\CvDSP.hpp" />
     <ClInclude Include="DSP\DelayBuffer.hpp" />
     <ClInclude Include="DSP\DSP.hpp" />
@@ -36,12 +37,14 @@
     <ClInclude Include="Model\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
     <ClInclude Include="Model\Synth\AudioModel.hpp" />
+    <ClInclude Include="Model\Synth\Config.hpp" />
     <ClInclude Include="Model\Synth\CvModel.hpp" />
     <ClInclude Include="Model\Synth\EnvelopeModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
     <ClInclude Include="Model\Synth\LfoModel.hpp" />
     <ClInclude Include="Model\Synth\ModModel.hpp" />
     <ClInclude Include="Model\Synth\PlotModel.hpp" />
+    <ClInclude Include="Model\Synth\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\UnitModel.hpp" />
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>

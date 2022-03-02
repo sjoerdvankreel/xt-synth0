@@ -16,9 +16,9 @@ _lvlAmt(Param::Mix(model->lvlAmt)),
 _panAmt(Param::Mix(model->panAmt)),
 _lvl(Param::Level(model->lvl) * velo)
 {
-  for(int i = 0; i < UnitCount; i++) 
+  for(int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++)
     _units[i] = Param::Level(model->units[i]);
-  for(int i = 0; i < FilterCount; i++) 
+  for(int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++)
     _flts[i] = Param::Level(model->flts[i]);
 }
 
@@ -36,9 +36,9 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   float panMix = BipolarToUnipolar1(Modulate(_pan, true, _panAmt, mod));
   FloatSample pan = { (1.0f - panMix) * _amp, panMix * _amp };
 
-  for (int i = 0; i < UnitCount; i++) 
+  for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++)
     _output += audio.units[i] * pan * _units[i];
-  for (int i = 0; i < FilterCount; i++) 
+  for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++)
     _output += audio.filters[i] * pan * _flts[i];  
 
   assert(!std::isnan(_output.left));

@@ -1,5 +1,5 @@
-#ifndef XTS_DSP_MODEL_HPP
-#define XTS_DSP_MODEL_HPP
+#ifndef XTS_DSP_DSP_MODEL_HPP
+#define XTS_DSP_DSP_MODEL_HPP
 
 #include <DSP/AudioSample.hpp>
 #include <DSP/Synth/CvSample.hpp>
@@ -43,4 +43,4 @@ struct PlotOutput
 };
 
 } // namespace Xts
-#endif // XTS_DSP_MODEL_HPP
+#endif // XTS_DSP_DSP_MODEL_HPP
