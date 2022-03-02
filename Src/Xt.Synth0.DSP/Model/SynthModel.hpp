@@ -2,6 +2,7 @@
 #define XTS_SYNTH_MODEL_HPP
 
 #include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/LfoModel.hpp>
 #include <Model/Synth/PlotModel.hpp>
 #include <Model/Synth/FilterModel.hpp>
 #include "Model.hpp"
@@ -22,21 +23,6 @@ struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
 XTS_CHECK_SIZE(VoiceBinding, 1648);
-
-enum class LfoType { Sin, Saw, Sqr, Tri };
-enum class LfoPolarity { Uni, UniInv, Bi, BiInv };
-struct XTS_ALIGN LfoModel
-{
-  friend class LfoDSP;
-  LfoModel() = default;
-  LfoModel(LfoModel const&) = delete;
-private:
-  LfoType type;
-  LfoPolarity plty;
-  XtsBool on, sync;
-  int32_t frq, step;
-};
-XTS_CHECK_SIZE(LfoModel, 24);
 
 enum class EnvType { DAHDSR, DAHDR };
 enum class SlopeType { Lin, Log, Inv, Sin, Cos };

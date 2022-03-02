@@ -35,6 +35,7 @@
     <ClInclude Include="Model\SeqModel.hpp" />
     <ClInclude Include="Model\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
+    <ClInclude Include="Model\Synth\LfoModel.hpp" />
     <ClInclude Include="Model\Synth\ModModel.hpp" />
     <ClInclude Include="Model\Synth\PlotModel.hpp" />
     <ClInclude Include="Xts.hpp" />
