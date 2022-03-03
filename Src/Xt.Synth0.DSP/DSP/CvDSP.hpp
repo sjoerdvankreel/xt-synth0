@@ -20,10 +20,10 @@ public:
   CvDSP(CvModel const* model, float velo, float bpm, float rate);
 public:
   CvState const& Next();
-  EnvelopeSample ReleaseAll(int env);
+  EnvSample ReleaseAll(int env);
   CvState const& Output() const { return _output; };
   bool End(int env) const { return _envs[env].End(); }
-  EnvelopeSample EnvOutput(int env) const { return _envs[env].Output(); };
+  EnvSample EnvOutput(int env) const { return _envs[env].Output(); };
 };
 
 } // namespace Xts

@@ -3,7 +3,7 @@
 
 #include <Model/Synth/Config.hpp>
 #include <Model/Synth/LfoModel.hpp>
-#include <Model/Synth/EnvelopeModel.hpp>
+#include <Model/Synth/EnvModel.hpp>
 
 namespace Xts {
 

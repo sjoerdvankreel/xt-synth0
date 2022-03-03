@@ -21,24 +21,13 @@ filter aliasing caused by modulation (filter lfos? oversample?)
 show routing in ui
 make it faster
 if(unit1>0 etc)
-24db/oct filters
-comb filters
 dont need to recalc filter parameters per voice
 plot filter freq response
 more filter types
 more unit types
 less resonance/depend on filttype ?
 filter keyboard track
-double precision biquad
 filter modulation - how ?
-check denormals
-sanity checks
-parammix, paramlevel, paramfreqs
 cleanup native includes / split files / etc
-check epsilon value
-fix min/max range for time params
 paraminfobuilder
 handle stream stopped with error
-delay memory in ringbuffer
-audio regtests wavewriter
-envelope->env

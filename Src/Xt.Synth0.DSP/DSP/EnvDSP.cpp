@@ -22,41 +22,41 @@ _slp(0.0), _lin(0.0), _log(0.0)
 {
   _output.value = 0.0f;
   _output.switchedStage = false;
-  _output.stage = EnvelopeStage::Delay;
-  NextStage(!_model->on ? EnvelopeStage::Sustain : EnvelopeStage::Delay);
+  _output.stage = EnvStage::Delay;
+  NextStage(!_model->on ? EnvStage::Sustain : EnvStage::Delay);
   CycleStage(model->type);
 }
 
-EnvelopeSample
+EnvSample
 EnvDSP::Release()
 {
-  if (_model->on && _output.stage >= EnvelopeStage::Release)
+  if (_model->on && _output.stage >= EnvStage::Release)
     return Output();
-  NextStage(!_model->on ? EnvelopeStage::End : EnvelopeStage::Release);
+  NextStage(!_model->on ? EnvStage::End : EnvStage::Release);
   CycleStage(_model->type);
   return Output();
 }
 
-EnvelopeSample
+EnvSample
 EnvDSP::Output() const 
 {
-  EnvelopeSample result = _output;
+  EnvSample result = _output;
   result.value = _model->on && _model->inv ? 1.0f - _output.value : _output.value; 
   return result;
 }
 
-EnvelopeSample
+EnvSample
 EnvDSP::Next()
 {
   _output.value = 0.0f;
   _output.switchedStage = false;
   const float threshold = 1.0E-5f;
-  if (!_model->on || _output.stage == EnvelopeStage::End) return Output();
+  if (!_model->on || _output.stage == EnvStage::End) return Output();
   _output.value = Generate();
   assert(0.0f <= _output.value && _output.value <= 1.0f);
-  if (_output.stage != EnvelopeStage::End) _pos++;
-  if (_output.stage < EnvelopeStage::Release) _max = _output.value;
-  if (_output.stage > EnvelopeStage::Attack && _output.value <= threshold) NextStage(EnvelopeStage::End);
+  if (_output.stage != EnvStage::End) _pos++;
+  if (_output.stage < EnvStage::Release) _max = _output.value;
+  if (_output.stage > EnvStage::Attack && _output.value <= threshold) NextStage(EnvStage::End);
   CycleStage(_model->type);
   return Output();
 }
@@ -66,12 +66,12 @@ EnvDSP::Generate()
 {
   switch (_output.stage)
   {
-  case EnvelopeStage::Delay: return 0.0f;
-  case EnvelopeStage::Hold: return 1.0f;
-  case EnvelopeStage::Sustain: return _params.s;
-  case EnvelopeStage::Attack: return Generate(0.0, 1.0, _model->aSlp);
-  case EnvelopeStage::Release: return Generate(_max, 0.0, _model->rSlp);
-  case EnvelopeStage::Decay: return Generate(1.0, _params.s, _model->dSlp);
+  case EnvStage::Delay: return 0.0f;
+  case EnvStage::Hold: return 1.0f;
+  case EnvStage::Sustain: return _params.s;
+  case EnvStage::Attack: return Generate(0.0, 1.0, _model->aSlp);
+  case EnvStage::Release: return Generate(_max, 0.0, _model->rSlp);
+  case EnvStage::Decay: return Generate(1.0, _params.s, _model->dSlp);
   default: assert(false); return 0.0f;
   }
 }
@@ -115,17 +115,17 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
 void
 EnvDSP::CycleStage(EnvType type)
 {
-  if (_output.stage == EnvelopeStage::Delay && _pos >= _params.dly) NextStage(EnvelopeStage::Attack);
-  if (_output.stage == EnvelopeStage::Attack && _pos >= _params.a) NextStage(EnvelopeStage::Hold);
-  if (_output.stage == EnvelopeStage::Hold && _pos >= _params.hld) NextStage(EnvelopeStage::Decay);
-  if (_output.stage == EnvelopeStage::Decay && _pos >= _params.d) NextStage(EnvelopeStage::Sustain);
-  if (_output.stage == EnvelopeStage::Sustain && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
-  if (_output.stage == EnvelopeStage::Sustain && type == EnvType::DAHDR) NextStage(EnvelopeStage::Release);
-  if (_output.stage == EnvelopeStage::Release && _pos >= _params.r) NextStage(EnvelopeStage::End);
+  if (_output.stage == EnvStage::Delay && _pos >= _params.dly) NextStage(EnvStage::Attack);
+  if (_output.stage == EnvStage::Attack && _pos >= _params.a) NextStage(EnvStage::Hold);
+  if (_output.stage == EnvStage::Hold && _pos >= _params.hld) NextStage(EnvStage::Decay);
+  if (_output.stage == EnvStage::Decay && _pos >= _params.d) NextStage(EnvStage::Sustain);
+  if (_output.stage == EnvStage::Sustain && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
+  if (_output.stage == EnvStage::Sustain && type == EnvType::DAHDR) NextStage(EnvStage::Release);
+  if (_output.stage == EnvStage::Release && _pos >= _params.r) NextStage(EnvStage::End);
 }
 
 void
-EnvDSP::NextStage(EnvelopeStage stage)
+EnvDSP::NextStage(EnvStage stage)
 {
   int len;
   SlopeType type;
@@ -134,9 +134,9 @@ EnvDSP::NextStage(EnvelopeStage stage)
   _output.switchedStage = true;
   switch (stage)
   {
-  case EnvelopeStage::Attack: len = _params.a; type = _model->aSlp; break;
-  case EnvelopeStage::Decay: len = _params.d; type = _model->dSlp; break;
-  case EnvelopeStage::Release: len = _params.r; type = _model->rSlp; break;
+  case EnvStage::Attack: len = _params.a; type = _model->aSlp; break;
+  case EnvStage::Decay: len = _params.d; type = _model->dSlp; break;
+  case EnvStage::Release: len = _params.r; type = _model->rSlp; break;
   default: len = -1; type = SlopeType::Lin;  break;
   }
   if (len == -1) return;

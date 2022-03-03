@@ -22,12 +22,12 @@ namespace Xt.Synth0.Model
 		[IgnoreMember]
 		public ThemeGroup ThemeGroup => ThemeGroup.Settings;
 
-		string _envelopeColor = "#40E0C0";
-		[Key(nameof(EnvelopeColor))]
-		public string EnvelopeColor
+		string _envColor = "#40E0C0";
+		[Key(nameof(EnvColor))]
+		public string EnvColor
 		{
-			get => _envelopeColor;
-			set => Set(ref _envelopeColor, value);
+			get => _envColor;
+			set => Set(ref _envColor, value);
 		}
 
 		string _lfoColor = "#FF8040";
@@ -177,14 +177,14 @@ namespace Xt.Synth0.Model
 		public void CopyTo(SettingsModel settings)
 		{
 			settings.LfoColor = LfoColor;
-			settings.PlotColor = PlotColor;
+            settings.EnvColor = EnvColor;
+            settings.AmpColor = AmpColor;
+            settings.PlotColor = PlotColor;
 			settings.UnitColor = UnitColor;
-			settings.AmpColor = AmpColor;
 			settings.FilterColor = FilterColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
 			settings.SettingsColor = SettingsColor;
-			settings.EnvelopeColor = EnvelopeColor;
 
 			settings.BitDepth = BitDepth;
 			settings.DeviceType = DeviceType;

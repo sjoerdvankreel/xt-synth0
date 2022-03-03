@@ -68,9 +68,9 @@ namespace Xt.Synth0.UI
 		{
 			ThemeGroup.Amp => settings.AmpColor,
 			ThemeGroup.Lfo => settings.LfoColor,
-			ThemeGroup.Plot => settings.PlotColor,
+            ThemeGroup.Env => settings.EnvColor,
+            ThemeGroup.Plot => settings.PlotColor,
 			ThemeGroup.Unit => settings.UnitColor,
-			ThemeGroup.Env => settings.EnvelopeColor,
 			ThemeGroup.Filter => settings.FilterColor,
 			ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,

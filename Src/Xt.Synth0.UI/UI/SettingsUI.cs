@@ -46,20 +46,20 @@ namespace Xt.Synth0.UI
             result.Add(MakeThemeColor(settings, nameof(settings.AmpColor), new(0, 1)));
             result.Add(Create.Label("LFO", new(1, 0)));
             result.Add(MakeThemeColor(settings, nameof(settings.LfoColor), new(1, 1)));
-            result.Add(Create.Label("Plot", new(2, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.PlotColor), new(2, 1)));
-            result.Add(Create.Label("Unit", new(3, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(3, 1)));
-            result.Add(Create.Label("Filter", new(4, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(4, 1)));
-            result.Add(Create.Label("Pattern", new(5, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(5, 1)));
-            result.Add(Create.Label("Control", new(6, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(6, 1)));
-            result.Add(Create.Label("Settings", new(7, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(7, 1)));
-            result.Add(Create.Label("Envelope", new(8, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.EnvelopeColor), new(8, 1)));
+            result.Add(Create.Label("Env", new(2, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.EnvColor), new(2, 1)));
+            result.Add(Create.Label("Plot", new(3, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.PlotColor), new(3, 1)));
+            result.Add(Create.Label("Unit", new(4, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(4, 1)));
+            result.Add(Create.Label("Filter", new(5, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(5, 1)));
+            result.Add(Create.Label("Pattern", new(6, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(6, 1)));
+            result.Add(Create.Label("Control", new(7, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(7, 1)));
+            result.Add(Create.Label("Settings", new(8, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(8, 1)));
             return result;
         }
 

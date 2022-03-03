@@ -3,7 +3,7 @@
 
 #include <Model/Synth/Config.hpp>
 #include <DSP/Synth/CvSample.hpp>
-#include <DSP/Synth/EnvelopeSample.hpp>
+#include <DSP/Synth/EnvSample.hpp>
 
 namespace Xts {
 
@@ -11,7 +11,7 @@ struct CvState
 { 
   float velocity;
   CvSample lfos[XTS_SYNTH_LFO_COUNT];
-  EnvelopeSample envelopes[XTS_SYNTH_ENV_COUNT];
+  EnvSample envs[XTS_SYNTH_ENV_COUNT];
 };
 
 } // namespace Xts

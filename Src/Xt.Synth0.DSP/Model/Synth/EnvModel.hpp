@@ -1,5 +1,5 @@
-#ifndef XTS_MODEL_SYNTH_ENVELOPE_MODEL_HPP
-#define XTS_MODEL_SYNTH_ENVELOPE_MODEL_HPP
+#ifndef XTS_MODEL_SYNTH_ENV_MODEL_HPP
+#define XTS_MODEL_SYNTH_ENV_MODEL_HPP
 
 #include <Model/Model.hpp>
 
@@ -18,4 +18,4 @@ struct XTS_ALIGN EnvModel
 XTS_CHECK_SIZE(EnvModel, 72);
 
 } // namespace Xts
-#endif // XTS_MODEL_SYNTH_ENVELOPE_MODEL_HPP
+#endif // XTS_MODEL_SYNTH_ENV_MODEL_HPP

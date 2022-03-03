@@ -3,7 +3,7 @@
 
 #include <DSP/AudioSample.hpp>
 #include <DSP/Synth/CvSample.hpp>
-#include <DSP/Synth/EnvelopeSample.hpp>
+#include <DSP/Synth/EnvSample.hpp>
 #include "Model.hpp"
 #include <vector>
 #include <string>

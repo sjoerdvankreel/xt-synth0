@@ -30,7 +30,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   CvSample lvlLfo = cv.lfos[static_cast<int>(_model->lvlSrc)];
   float lvl = Modulate(_lvl, false, _lvlAmt, lvlLfo);
   int envSrc = static_cast<int>(_model->envSrc);
-  _amp = cv.envelopes[static_cast<int>(_model->envSrc)].value * lvl;
+  _amp = cv.envs[static_cast<int>(_model->envSrc)].value * lvl;
   
   CvSample mod = ModulationInput(cv, _model->panSrc);
   float panMix = BipolarToUnipolar1(Modulate(_pan, true, _panAmt, mod));

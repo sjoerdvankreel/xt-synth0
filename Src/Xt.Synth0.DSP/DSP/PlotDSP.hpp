@@ -32,7 +32,7 @@ class PlotDSP
   static std::vector<VSplit> BiVSPlits;
   static std::vector<VSplit> UniVSPlits;
   static std::vector<VSplit> StereoVSPlits;
-  static std::wstring FormatEnv(EnvelopeStage stage);
+  static std::wstring FormatEnv(EnvStage stage);
   static std::vector<VSplit> MakeBiVSplits(float max);
 
 public:

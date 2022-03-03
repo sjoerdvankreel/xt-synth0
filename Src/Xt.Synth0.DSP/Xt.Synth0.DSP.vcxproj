@@ -27,7 +27,7 @@
     <ClInclude Include="DSP\Synth\AudioState.hpp" />
     <ClInclude Include="DSP\Synth\CvSample.hpp" />
     <ClInclude Include="DSP\Synth\CvState.hpp" />
-    <ClInclude Include="DSP\Synth\EnvelopeSample.hpp" />
+    <ClInclude Include="DSP\Synth\EnvSample.hpp" />
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\UnitDSP.hpp" />
     <ClInclude Include="DSP\Utility.hpp" />
@@ -39,7 +39,7 @@
     <ClInclude Include="Model\Synth\AudioModel.hpp" />
     <ClInclude Include="Model\Synth\Config.hpp" />
     <ClInclude Include="Model\Synth\CvModel.hpp" />
-    <ClInclude Include="Model\Synth\EnvelopeModel.hpp" />
+    <ClInclude Include="Model\Synth\EnvModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
     <ClInclude Include="Model\Synth\LfoModel.hpp" />
     <ClInclude Include="Model\Synth\ModModel.hpp" />

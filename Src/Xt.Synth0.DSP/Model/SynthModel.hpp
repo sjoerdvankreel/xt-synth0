@@ -9,7 +9,7 @@
 #include <Model/Synth/UnitModel.hpp>
 #include <Model/Synth/AudioModel.hpp>
 #include <Model/Synth/FilterModel.hpp>
-#include <Model/Synth/EnvelopeModel.hpp>
+#include <Model/Synth/EnvModel.hpp>
 #include <Model/Synth/SyncStepModel.hpp>
 #include "Model.hpp"
 #include <cstdint>

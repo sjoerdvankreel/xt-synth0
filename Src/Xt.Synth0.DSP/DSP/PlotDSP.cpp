@@ -69,17 +69,17 @@ PlotDSP::MakeBiVSplits(float max)
 }
 
 std::wstring
-PlotDSP::FormatEnv(EnvelopeStage stage)
+PlotDSP::FormatEnv(EnvStage stage)
 {
   switch (stage)
   {
-  case EnvelopeStage::Attack: return L"A";
-  case EnvelopeStage::Decay: return L"D";
-  case EnvelopeStage::Sustain: return L"S";
-  case EnvelopeStage::Release: return L"R";
-  case EnvelopeStage::Delay: return L"D";
-  case EnvelopeStage::Hold: return L"H";
-  case EnvelopeStage::End: return L"";
+  case EnvStage::Attack: return L"A";
+  case EnvStage::Decay: return L"D";
+  case EnvStage::Sustain: return L"S";
+  case EnvStage::Release: return L"R";
+  case EnvStage::Delay: return L"D";
+  case EnvStage::Hold: return L"H";
+  case EnvStage::End: return L"";
   default: assert(false); return L"";
   }
 }

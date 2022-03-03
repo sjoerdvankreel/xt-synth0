@@ -2,7 +2,7 @@
 
 namespace Xts {
 
-EnvelopeSample
+EnvSample
 CvDSP::ReleaseAll(int env)
 { 
   for (int i = 0; i < XTS_SYNTH_ENV_COUNT; i++)
@@ -16,7 +16,7 @@ CvDSP::Next()
   for (int i = 0; i < XTS_SYNTH_LFO_COUNT; i++)
     _output.lfos[i] = _lfos[i].Next();
   for (int i = 0; i < XTS_SYNTH_ENV_COUNT; i++)
-    _output.envelopes[i] = _envs[i].Next();
+    _output.envs[i] = _envs[i].Next();
   return Output();
 }
 
