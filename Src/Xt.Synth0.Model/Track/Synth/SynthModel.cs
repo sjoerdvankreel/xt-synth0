@@ -15,20 +15,6 @@ namespace Xt.Synth0.Model
 
 	public unsafe sealed class SynthModel : MainModel
 	{
-		static int GCD(int a, int b)
-		{
-			while (b > 0) { int rem = a % b; a = b; b = rem; }
-			return a;
-		}
-
-		static readonly int[] BaseSteps = { 1, 2, 3, 4, 6, 9, 16 };
-		static IEnumerable<Native.SyncStep> Cartesian()
-		=> BaseSteps.SelectMany(n => BaseSteps.Select(d => new Native.SyncStep { num = n, den = d }));
-		static IEnumerable<Native.SyncStep> AllSteps() => Cartesian()
-		.Concat(new[] { new Native.SyncStep { num = 0, den = 1 } })
-		.Concat(Cartesian().Where(s => s.val < 1.0f).Select(s => new Native.SyncStep { num = s.num + s.den, den = s.den }));
-		public static readonly Native.SyncStep[] SyncSteps = AllSteps().Select(s => s.Simplify()).Distinct().OrderBy(s => s.val).ToArray();
-
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
 		{
@@ -65,18 +51,6 @@ namespace Xt.Synth0.Model
                 internal int source;
                 internal int pad__;
             };
-
-            [StructLayout(LayoutKind.Sequential, Pack = 8)]
-			public struct SyncStep
-			{
-				internal int num, den;
-				internal float val => num / (float)den;
-
-				public override string ToString() => $"{num}/{den}";
-				public override int GetHashCode() => num + 37 * den;
-				public override bool Equals(object obj) => ((SyncStep)obj).num == num && ((SyncStep)obj).den == den;
-				internal SyncStep Simplify() => new SyncStep { num = num / GCD(num, den), den = den / GCD(num, den) };
-			}
 		}
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }

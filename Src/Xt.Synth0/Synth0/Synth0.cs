@@ -27,9 +27,9 @@ namespace Xt.Synth0
 			{
 				Xt.Synth0.Model.Model.MainThreadId = Thread.CurrentThread.ManagedThreadId;
 				var infos = Model.Track.Synth.ParamInfos();
-				fixed (SynthModel.Native.SyncStep* steps = SynthModel.SyncSteps)
+				fixed (SyncStepModel.Native* steps = SyncStepModel.Steps)
 				fixed (SynthModel.Native.ParamInfo* pis = infos)
-					Native.XtsSynthModelInit(pis, infos.Length, steps, SynthModel.SyncSteps.Length);
+					Native.XtsSynthModelInit(pis, infos.Length, steps, SyncStepModel.Steps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
 				_nativePlotBinding = Native.XtsVoiceBindingCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();

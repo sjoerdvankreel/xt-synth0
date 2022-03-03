@@ -15,11 +15,11 @@
 namespace Xts {
 class SeqDSP;
 class PlotDSP;
-struct SyncStep;
 struct SeqModel;
 struct ParamInfo;
 struct SynthModel;
 struct VoiceBinding;
+struct SyncStepModel;
 } // namespace Xts
 
 struct XTS_ALIGN SeqState
@@ -83,7 +83,7 @@ XTS_EXPORT void XTS_CALL XtsVoiceBindingDestroy(Xts::VoiceBinding* binding);
 
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(PlotState* state);
 XTS_EXPORT void XTS_CALL XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state);
-XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStep* steps, int32_t stepCount);
+XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount);
 XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth, Xts::VoiceBinding const* binding);
 
 #endif // XTS_HPP

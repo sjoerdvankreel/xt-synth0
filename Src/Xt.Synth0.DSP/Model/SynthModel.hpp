@@ -10,20 +10,16 @@
 #include <Model/Synth/AudioModel.hpp>
 #include <Model/Synth/FilterModel.hpp>
 #include <Model/Synth/EnvelopeModel.hpp>
+#include <Model/Synth/SyncStepModel.hpp>
 #include "Model.hpp"
 #include <cstdint>
 
 namespace Xts {
 
-struct SyncStep* SyncSteps();
 struct ParamInfo* ParamInfos();
 
 void SynthModelInit(
-  struct ParamInfo* infos, int32_t infoCount,
-  struct SyncStep* steps, int32_t stepCount);
-
-struct XTS_ALIGN SyncStep { int32_t num, den; };
-XTS_CHECK_SIZE(SyncStep, 8);
+  struct ParamInfo* infos, int32_t infoCount);
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };

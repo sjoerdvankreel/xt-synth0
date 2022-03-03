@@ -44,6 +44,7 @@
     <ClInclude Include="Model\Synth\LfoModel.hpp" />
     <ClInclude Include="Model\Synth\ModModel.hpp" />
     <ClInclude Include="Model\Synth\PlotModel.hpp" />
+    <ClInclude Include="Model\Synth\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\UnitModel.hpp" />
     <ClInclude Include="Xts.hpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="DSP\UnitDSP.cpp" />
     <ClCompile Include="DSP\Utility.cpp" />
     <ClCompile Include="Model\SynthModel.cpp" />
+    <ClCompile Include="Model\Synth\SyncStepModel.cpp" />
     <ClCompile Include="Xts.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

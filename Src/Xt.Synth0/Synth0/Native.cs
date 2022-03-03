@@ -66,7 +66,7 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDSPRender(PlotState* state);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPRender(IntPtr dsp, SeqState* state);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(
-			SynthModel.Native.ParamInfo* infos, int infoCount, SynthModel.Native.SyncStep* steps, int stepCount);
+			SynthModel.Native.ParamInfo* infos, int infoCount, SyncStepModel.Native* steps, int stepCount);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPInit(
 			IntPtr dsp, SeqModel.Native* model, SynthModel.Native* synth, SynthModel.Native.VoiceBinding* binding);
 	}

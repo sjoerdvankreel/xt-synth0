@@ -18,8 +18,12 @@ Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel
 Xts::VoiceBinding* XTS_CALL XtsVoiceBindingCreate(void) { return new Xts::VoiceBinding; }
 
 void XTS_CALL 
-XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStep* steps, int32_t stepCount)
-{ Xts::SynthModelInit(infos, infoCount, steps, stepCount); }
+XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount)
+{ 
+  Xts::SynthModelInit(infos, infoCount);
+  Xts::SyncStepModel::Init(steps, static_cast<size_t>(stepCount));
+}
+
 void XTS_CALL
 XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth, Xts::VoiceBinding const* binding)
 { dsp->Init(model, synth, binding); }

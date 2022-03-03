@@ -121,6 +121,9 @@
     <ClInclude Include="DSP\Config.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Synth\SyncStepModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -162,6 +165,9 @@
     </ClCompile>
     <ClCompile Include="DSP\Utility.cpp">
       <Filter>DSP</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Synth\SyncStepModel.cpp">
+      <Filter>Model\Synth</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

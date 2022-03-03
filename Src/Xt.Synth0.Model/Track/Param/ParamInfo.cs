@@ -156,7 +156,7 @@ namespace Xt.Synth0.Model
             Address address, int subGroup, string id, string name,
             string description, int min, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, min,
-            SynthModel.SyncSteps.Length - 1, @default, null, null, null, null, val => SynthModel.SyncSteps[val].ToString(), relevance);
+            SyncStepModel.Steps.Length - 1, @default, null, null, null, null, val => SyncStepModel.Steps[val].ToString(), relevance);
 
         internal static ParamInfo List<TEnum>(
             Address address, int subGroup, string id, string name,

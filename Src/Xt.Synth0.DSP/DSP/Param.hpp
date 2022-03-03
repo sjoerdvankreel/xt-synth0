@@ -19,20 +19,20 @@ Frequency(int val, float minHz, float maxHz)
 { return minHz + (maxHz - minHz) * (val / 255.0f) * (val / 255.0f); }
 
 inline float
-StepFramesF(int val, float bpm, float rate)
-{ return rate * 60.0f / bpm * SyncSteps()[val].num / SyncSteps()[val].den; }
-
-inline int
-StepFramesI(int val, float bpm, float rate)
-{ return static_cast<int>(StepFramesF(val, bpm, rate)); }
-
-inline float
 TimeFramesF(int val, float rate, float minMs, float maxMs)
 { return (minMs + (maxMs - minMs) * (val / 255.0f) * (val / 255.0f)) * rate / 1000.0f; }
 
 inline int
 TimeFramesI(int val, float rate, float minMs, float maxMs)
 { return static_cast<int>(std::roundf(TimeFramesF(val, rate, minMs, maxMs))); }
+
+inline float
+StepFramesF(int val, float bpm, float rate)
+{ return rate * 60.0f / bpm * SyncStepModel::Steps()[val].numerator / SyncStepModel::Steps()[val].denominator; }
+
+inline int
+StepFramesI(int val, float bpm, float rate)
+{ return static_cast<int>(StepFramesF(val, bpm, rate)); }
 
 } // namespace Param
 } // namespace Xts
