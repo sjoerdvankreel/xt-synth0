@@ -1,5 +1,6 @@
 #include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/Param.hpp>
+#include <DSP/CvDSP.hpp>
 #include <DSP/Utility.hpp>
 #include <DSP/PlotDSP.hpp>
 #include <DSP/AudioDSP.hpp>
