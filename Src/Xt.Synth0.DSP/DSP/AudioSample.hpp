@@ -33,8 +33,8 @@ template <class T>
 inline AudioSample<T>
 AudioSample<T>::Sanity() const
 {
-  BipolarSanity(left);
-  BipolarSanity(right);
+  Xts::Sanity(left);
+  Xts::Sanity(right);
   return *this;
 }
 

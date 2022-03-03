@@ -119,8 +119,8 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
   case BiquadType::BPF: InitBiquadBPF(sinw0, cosw0, alpha, s); break;
   default: assert(false); break;
   }
-  for(int i = 0; i < 3; i++) s.b[i] = BipolarSanity(s.b[i] / s.a[0]);
-  for(int i = 1; i < 3; i++) s.a[i] = BipolarSanity(s.a[i] / s.a[0]);
+  for(int i = 0; i < 3; i++) s.b[i] = Sanity(s.b[i] / s.a[0]);
+  for(int i = 1; i < 3; i++) s.a[i] = Sanity(s.a[i] / s.a[0]);
 }
 
 static FloatSample
