@@ -1,6 +1,6 @@
 #include "DSP.hpp"
 #include "AmpDSP.hpp"
-#include <DSP/Synth/EnvDSP.hpp>
+#include "EnvDSP.hpp"
 #include "UnitDSP.hpp"
 #include "PlotDSP.hpp"
 #include "SynthDSP.hpp"

@@ -31,6 +31,9 @@
       <Filter>DSP</Filter>
     </ClInclude>
     <ClInclude Include="Xts.hpp" />
+    <ClInclude Include="DSP\EnvDSP.hpp">
+      <Filter>DSP</Filter>
+    </ClInclude>
     <ClInclude Include="DSP\PlotDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
@@ -121,9 +124,6 @@
     <ClInclude Include="DSP\Synth\LfoDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\EnvDSP.hpp">
-      <Filter>DSP\Synth</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -136,6 +136,9 @@
       <Filter>DSP</Filter>
     </ClCompile>
     <ClCompile Include="Xts.cpp" />
+    <ClCompile Include="DSP\EnvDSP.cpp">
+      <Filter>DSP</Filter>
+    </ClCompile>
     <ClCompile Include="DSP\PlotDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
@@ -161,9 +164,6 @@
       <Filter>Model\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\LfoDSP.cpp">
-      <Filter>DSP\Synth</Filter>
-    </ClCompile>
-    <ClCompile Include="DSP\Synth\EnvDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
   </ItemGroup>
