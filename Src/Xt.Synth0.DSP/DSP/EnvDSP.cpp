@@ -41,7 +41,7 @@ EnvSample
 EnvDSP::Output() const 
 {
   EnvSample result = _output;
-  result.value = _model->on && _model->inv ? 1.0f - _output.value : _output.value; 
+  result.value = _model->on && _model->invert ? 1.0f - _output.value : _output.value; 
   return result;
 }
 
@@ -69,9 +69,9 @@ EnvDSP::Generate()
   case EnvStage::Delay: return 0.0f;
   case EnvStage::Hold: return 1.0f;
   case EnvStage::Sustain: return _params.s;
-  case EnvStage::Attack: return Generate(0.0, 1.0, _model->aSlp);
-  case EnvStage::Release: return Generate(_max, 0.0, _model->rSlp);
-  case EnvStage::Decay: return Generate(1.0, _params.s, _model->dSlp);
+  case EnvStage::Attack: return Generate(0.0, 1.0, _model->attackSlope);
+  case EnvStage::Release: return Generate(_max, 0.0, _model->releaseSlope);
+  case EnvStage::Decay: return Generate(1.0, _params.s, _model->decaySlope);
   default: assert(false); return 0.0f;
   }
 }
@@ -103,12 +103,12 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
 {
   EnvParams result;
   bool sync = model.sync != 0;
-  result.s = Param::Level(model.s);
-  result.a = sync ? Param::StepFramesI(model.aStp, bpm, rate) : Param::TimeFramesI(model.a, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.d = sync ? Param::StepFramesI(model.dStp, bpm, rate) : Param::TimeFramesI(model.d, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.r = sync ? Param::StepFramesI(model.rStp, bpm, rate) : Param::TimeFramesI(model.r, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.dly = sync ? Param::StepFramesI(model.dlyStp, bpm, rate) : Param::TimeFramesI(model.dly, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.hld = sync ? Param::StepFramesI(model.hldStp, bpm, rate) : Param::TimeFramesI(model.hld, rate, MIN_TIME_MS, MAX_TIME_MS);
+  result.s = Param::Level(model.sustain);
+  result.a = sync ? Param::StepFramesI(model.attackStep, bpm, rate) : Param::TimeFramesI(model.attackTime, rate, MIN_TIME_MS, MAX_TIME_MS);
+  result.d = sync ? Param::StepFramesI(model.decayStep, bpm, rate) : Param::TimeFramesI(model.decayTime, rate, MIN_TIME_MS, MAX_TIME_MS);
+  result.r = sync ? Param::StepFramesI(model.releaseStep, bpm, rate) : Param::TimeFramesI(model.releaseTime, rate, MIN_TIME_MS, MAX_TIME_MS);
+  result.dly = sync ? Param::StepFramesI(model.delayStep, bpm, rate) : Param::TimeFramesI(model.delayTime, rate, MIN_TIME_MS, MAX_TIME_MS);
+  result.hld = sync ? Param::StepFramesI(model.holdStep, bpm, rate) : Param::TimeFramesI(model.holdTime, rate, MIN_TIME_MS, MAX_TIME_MS);
   return result;
 }
 
@@ -134,9 +134,9 @@ EnvDSP::NextStage(EnvStage stage)
   _output.switchedStage = true;
   switch (stage)
   {
-  case EnvStage::Attack: len = _params.a; type = _model->aSlp; break;
-  case EnvStage::Decay: len = _params.d; type = _model->dSlp; break;
-  case EnvStage::Release: len = _params.r; type = _model->rSlp; break;
+  case EnvStage::Attack: len = _params.a; type = _model->attackSlope; break;
+  case EnvStage::Decay: len = _params.d; type = _model->decaySlope; break;
+  case EnvStage::Release: len = _params.r; type = _model->releaseSlope; break;
   default: len = -1; type = SlopeType::Lin;  break;
   }
   if (len == -1) return;

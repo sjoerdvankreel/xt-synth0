@@ -59,7 +59,7 @@ namespace Xt.Synth0.Model
         public Param Sync { get; } = new(SyncInfo);
         public Param Step { get; } = new(StepInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
-        static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 0, nameof(Sync), "Sync", "Sync to beat", false);
+        static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 0, nameof(Sync), "Sync", "Beat sync", false);
         static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, 1, nameof(Step), "Step", "Rate steps", 1, 7, RelevanceSync);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->frequency, 1, nameof(Frequency), "Frq", "Frequency", 0, MinFreqHz, MaxFreqHz, RelevanceTime);
     }

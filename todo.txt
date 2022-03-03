@@ -32,3 +32,4 @@ cleanup native includes / split files / etc
 paraminfobuilder
 handle stream stopped with error
 drop epstozero?
+sin+cos env slopes?
