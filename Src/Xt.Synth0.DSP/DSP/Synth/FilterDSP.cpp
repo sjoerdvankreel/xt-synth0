@@ -199,19 +199,22 @@ FilterDSP::Plot(FilterPlotState* state)
   if (state->spectrum) cycled.flags |= PlotSpectrum;
   cycled.frequency = MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C));
 
-  auto next = [](std::tuple<CvDSP, AudioDSP, std::shared_ptr<FilterDSP>>& state)
-  {
-    auto const& cv = std::get<CvDSP>(state).Next();
-    auto const& audio = std::get<AudioDSP>(state).Next(cv);
-    return std::get<std::shared_ptr<FilterDSP>>(state)->Next(cv, audio).Mono();
-  };
-
   auto factory = [&](float rate) 
   { 
-    CvDSP cv(state->cvModel, 1.0f, state->input->bpm, rate);
-    AudioDSP audio(state->audioModel, 4, UnitNote::C, rate);
-    std::shared_ptr<FilterDSP> filter = std::make_shared<FilterDSP>(state->model, state->index, rate);
-    return std::make_tuple(cv, audio, filter);
+    return std::make_tuple(
+      std::make_shared<CvDSP>(state->cvModel, 1.0f, state->input->bpm, rate),
+      std::make_shared<AudioDSP>(state->audioModel, 4, UnitNote::C, rate),
+      std::make_shared<FilterDSP>(state->model, state->index, rate));
+  };
+
+  auto next = [](std::tuple<
+    std::shared_ptr<CvDSP>, 
+    std::shared_ptr<AudioDSP>, 
+    std::shared_ptr<FilterDSP>>& state)
+  {
+    auto const& cv = std::get<std::shared_ptr<CvDSP>>(state)->Next();
+    auto const& audio = std::get<std::shared_ptr<AudioDSP>>(state)->Next(cv);
+    return std::get<std::shared_ptr<FilterDSP>>(state)->Next(cv, audio).Mono();
   };
 
   PlotDSP::RenderCycled(&cycled, factory, next);
