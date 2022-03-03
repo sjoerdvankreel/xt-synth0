@@ -1,8 +1,4 @@
-#include "DSP.hpp"
-#include "EnvDSP.hpp"
-#include "PlotDSP.hpp"
-#include <DSP/Param.hpp>
-#include <DSP/Utility.hpp>
+#include <DSP/Synth/EnvDSP.hpp>
 
 #include <cmath>
 #include <cassert>
@@ -12,7 +8,7 @@
 
 namespace Xts {
 
-static const double MaxEnv = 0.99;
+static const double MaxValue = 0.99;
 
 EnvDSP::
 EnvDSP(EnvModel const* model, float bpm, float rate) :
