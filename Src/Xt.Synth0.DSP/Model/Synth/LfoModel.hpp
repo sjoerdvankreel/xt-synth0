@@ -6,18 +6,19 @@
 namespace Xts {
 
 enum class LfoType { Sin, Saw, Sqr, Tri };
-enum class LfoPolarity { Unipolar, UnipolarInv, Bipolar, BipolarInv };
 
 struct XTS_ALIGN LfoModel
 {
   XtsBool on;
-  XtsBool sync;
   LfoType type;
+  XtsBool sync;
+  XtsBool invert;
+  XtsBool unipolar;
   int32_t step;
   int32_t frequency;
-  LfoPolarity polarity;
+  int32_t pad__;
 };
-XTS_CHECK_SIZE(LfoModel, 24);
+XTS_CHECK_SIZE(LfoModel, 32);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_LFO_MODEL_HPP

@@ -10,32 +10,6 @@
 
 namespace Xts {
 
-static inline bool
-IsBipolar(LfoPolarity p)
-{ 
-  switch (p)
-  {
-  case LfoPolarity::Bipolar:
-  case LfoPolarity::BipolarInv:
-    return true;
-  default:
-    return false;
-  }
-}
-
-static inline bool
-IsInverted(LfoPolarity p)
-{
-  switch (p)
-  {
-  case LfoPolarity::BipolarInv:
-  case LfoPolarity::UnipolarInv:
-    return true;
-  default:
-    return false;
-  }
-}
-
 CvSample
 LfoDSP::Next()
 {
@@ -60,10 +34,10 @@ LfoDSP()
 {
   _phase = 0.0;
   _model = model;
-  _output.bipolar = IsBipolar(_model->polarity);
+  _output.bipolar = model->unipolar == 0;
+  _base = model->unipolar == 0 ? 0.0f: 0.5f;
   _increment = Frequency(*_model, bpm, rate) / rate;
-  _base = IsBipolar(_model->polarity) ? 0.0f : 0.5f;
-  _factor = (IsInverted(_model->polarity) ? -1.0f : 1.0f) * (1.0f - _base);
+  _factor = (model->invert ? -1.0f : 1.0f) * (1.0f - _base);
 }
 
 float
@@ -93,7 +67,7 @@ LfoDSP::Plot(LfoPlotState* state)
   cycled.input = state->input;
   cycled.output = state->output;
   if(state->spectrum) cycled.flags |= PlotSpectrum;
-  if(IsBipolar(state->model->polarity)) cycled.flags |= PlotBipolar;
+  if(state->model->unipolar == 0) cycled.flags |= PlotBipolar;
   cycled.frequency = Frequency(*state->model, state->input->bpm, state->input->rate);
 
   auto next = [](LfoDSP& dsp) { return dsp.Next().value; };

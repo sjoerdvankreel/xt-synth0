@@ -18,7 +18,7 @@ constexpr XtsBool XtsFalse = 0;
 namespace Xts {
 
 constexpr int SpecHold = 81;
-constexpr int ParamCount = 206;
+constexpr int ParamCount = 209;
 
 constexpr int MaxFxs = 3;
 constexpr int MaxLpb = 16;

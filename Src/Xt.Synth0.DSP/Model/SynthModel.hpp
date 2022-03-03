@@ -23,7 +23,7 @@ void SynthModelInit(
 struct XTS_ALIGN ParamInfo { int32_t min, max; };
 XTS_CHECK_SIZE(ParamInfo, 8);
 struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
-XTS_CHECK_SIZE(VoiceBinding, 1648);
+XTS_CHECK_SIZE(VoiceBinding, 1672);
 
 struct XTS_ALIGN SynthModel
 {
@@ -35,7 +35,7 @@ struct XTS_ALIGN SynthModel
   PlotModel plot;
   AudioModel audio;
 };
-XTS_CHECK_SIZE(SynthModel, 888);
+XTS_CHECK_SIZE(SynthModel, 912);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

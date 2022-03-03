@@ -12,7 +12,7 @@ struct XTS_ALIGN CvModel
   LfoModel lfos[XTS_SYNTH_LFO_COUNT];
   EnvModel envs[XTS_SYNTH_ENV_COUNT];
 };
-XTS_CHECK_SIZE(CvModel, 288);
+XTS_CHECK_SIZE(CvModel, 312);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_CV_MODEL_HPP
