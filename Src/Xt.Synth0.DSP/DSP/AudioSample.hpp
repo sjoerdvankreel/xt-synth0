@@ -1,6 +1,7 @@
 #ifndef XTS_DSP_AUDIO_SAMPLE_HPP
 #define XTS_DSP_AUDIO_SAMPLE_HPP
 
+#include <DSP/Utility.hpp>
 #include <cmath>
 #include <cassert>
 
@@ -29,6 +30,15 @@ AudioSample<T>::Mono() const
 { return left + right; }
 
 template <class T>
+inline AudioSample<T>
+AudioSample<T>::Sanity() const
+{
+  BipolarSanity(left);
+  BipolarSanity(right);
+  return *this;
+}
+
+template <class T>
 inline void
 AudioSample<T>::Clear()
 { left = right = static_cast<T>(0.0); }
@@ -41,18 +51,7 @@ operator*(AudioSample<T> x, T y)
 template <class T>
 inline AudioSample<T>
 operator*(T x, AudioSample<T> y)
-{ return { x * y.left, x * y.right}; }
-
-template <class T>
-inline AudioSample<T>
-AudioSample<T>::Sanity() const
-{
-  assert(std::fpclassify(left) != FP_SUBNORMAL);
-  assert(std::fpclassify(right) != FP_SUBNORMAL);
-  assert(!std::isnan(left) && !std::isnan(right));
-  assert(!std::isinf(left) && !std::isinf(right));
-  return *this;
-}
+{ return { x * y.left, x * y.right }; }
 
 template <class T>
 inline AudioSample<T>

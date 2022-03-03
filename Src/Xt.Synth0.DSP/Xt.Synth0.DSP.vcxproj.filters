@@ -49,9 +49,6 @@
     <ClInclude Include="DSP\AmpDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\LfoDSP.hpp">
-      <Filter>DSP</Filter>
-    </ClInclude>
     <ClInclude Include="DSP\CvDSP.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
@@ -124,6 +121,9 @@
     <ClInclude Include="Model\Synth\SyncStepModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Synth\LfoDSP.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -145,9 +145,6 @@
     <ClCompile Include="DSP\AmpDSP.cpp">
       <Filter>DSP</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\LfoDSP.cpp">
-      <Filter>DSP</Filter>
-    </ClCompile>
     <ClCompile Include="Model\SynthModel.cpp">
       <Filter>Model</Filter>
     </ClCompile>
@@ -163,11 +160,11 @@
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\Utility.cpp">
-      <Filter>DSP</Filter>
-    </ClCompile>
     <ClCompile Include="Model\Synth\SyncStepModel.cpp">
       <Filter>Model\Synth</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\Synth\LfoDSP.cpp">
+      <Filter>DSP\Synth</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

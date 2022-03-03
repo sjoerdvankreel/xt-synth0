@@ -3,7 +3,7 @@
 
 #include <Model/Synth/Config.hpp>
 #include <DSP/Synth/CvState.hpp>
-#include "LfoDSP.hpp"
+#include <DSP/Synth/LfoDSP.hpp>
 #include "EnvDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"

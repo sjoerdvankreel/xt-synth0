@@ -63,10 +63,14 @@ public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);
 public:
+  FloatSample Output() const;
   static void Plot(FilterPlotState* state);
-  FloatSample Output() const { return _output; };
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
 };
+
+inline FloatSample
+FilterDSP::Output() const
+{ return _output; }
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_FILTER_DSP_HPP

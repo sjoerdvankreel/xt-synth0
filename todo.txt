@@ -31,3 +31,4 @@ filter modulation - how ?
 cleanup native includes / split files / etc
 paraminfobuilder
 handle stream stopped with error
+drop epstozero?

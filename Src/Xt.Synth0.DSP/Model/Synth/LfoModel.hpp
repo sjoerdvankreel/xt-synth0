@@ -6,14 +6,16 @@
 namespace Xts {
 
 enum class LfoType { Sin, Saw, Sqr, Tri };
-enum class LfoPolarity { Uni, UniInv, Bi, BiInv };
+enum class LfoPolarity { Unipolar, UnipolarInv, Bipolar, BipolarInv };
 
 struct XTS_ALIGN LfoModel
 {
+  XtsBool on;
+  XtsBool sync;
   LfoType type;
-  LfoPolarity plty;
-  XtsBool on, sync;
-  int32_t frq, step;
+  int32_t step;
+  int32_t frequency;
+  LfoPolarity polarity;
 };
 XTS_CHECK_SIZE(LfoModel, 24);
 

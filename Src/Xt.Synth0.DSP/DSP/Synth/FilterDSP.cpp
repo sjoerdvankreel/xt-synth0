@@ -5,6 +5,7 @@
 #include <DSP/PlotDSP.hpp>
 #include <DSP/AudioDSP.hpp>
 
+#include <memory>
 #include <cstring>
 #include <cassert>
 
@@ -118,8 +119,8 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
   case BiquadType::BPF: InitBiquadBPF(sinw0, cosw0, alpha, s); break;
   default: assert(false); break;
   }
-  for(int i = 0; i < 3; i++) s.b[i] /= s.a[0];
-  for(int i = 1; i < 3; i++) s.a[i] /= s.a[0];
+  for(int i = 0; i < 3; i++) s.b[i] = BipolarSanity(s.b[i] / s.a[0]);
+  for(int i = 1; i < 3; i++) s.a[i] = BipolarSanity(s.a[i] / s.a[0]);
 }
 
 static FloatSample
@@ -148,7 +149,7 @@ GenerateComb(FloatSample audio, CombState& s)
 {
   s.y.Push(audio + s.x.Get(s.plusDelay) * s.plusGain + s.y.Get(s.minDelay) * s.minGain);
   s.x.Push(audio);
-  return s.y.Get(0);
+  return s.y.Get(0).Sanity();
 }
 
 FilterDSP::
@@ -182,7 +183,7 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   case FilterType::Biquad: _output = GenerateBiquad(_output, _state.biquad); break;
   default: assert(false); break;
   }
-  return _output;
+  return _output.Sanity();
 }
 
 void
@@ -198,19 +199,19 @@ FilterDSP::Plot(FilterPlotState* state)
   if (state->spectrum) cycled.flags |= PlotSpectrum;
   cycled.frequency = MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C));
 
+  auto next = [](std::tuple<CvDSP, AudioDSP, std::shared_ptr<FilterDSP>>& state)
+  {
+    auto const& cv = std::get<CvDSP>(state).Next();
+    auto const& audio = std::get<AudioDSP>(state).Next(cv);
+    return std::get<std::shared_ptr<FilterDSP>>(state)->Next(cv, audio).Mono();
+  };
+
   auto factory = [&](float rate) 
   { 
     CvDSP cv(state->cvModel, 1.0f, state->input->bpm, rate);
     AudioDSP audio(state->audioModel, 4, UnitNote::C, rate);
-    FilterDSP filter(state->model, state->index, rate);
+    std::shared_ptr<FilterDSP> filter = std::make_shared<FilterDSP>(state->model, state->index, rate);
     return std::make_tuple(cv, audio, filter);
-  };
-
-  auto next = [](std::tuple<CvDSP, AudioDSP, FilterDSP>& state) 
-  { 
-    auto const& cv = std::get<CvDSP>(state).Next();
-    auto const& audio = std::get<AudioDSP>(state).Next(cv);
-    return std::get<FilterDSP>(state).Next(cv, audio).Mono(); 
   };
 
   PlotDSP::RenderCycled(&cycled, factory, next);
