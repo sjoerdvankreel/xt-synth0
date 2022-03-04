@@ -1,5 +1,6 @@
 #include <DSP/Synth/EnvDSP.hpp>
 #include <DSP/Param.hpp>
+#include <DSP/PlotDSP.hpp>
 
 #include <cmath>
 #include <cassert>
@@ -173,16 +174,24 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
 }
 
 void
-EnvDSP::Plot(EnvModel const& model, int hold, PlotInput const& input, PlotOutput& output)
+EnvDSP::Plot(EnvPlotState* state)
 {
-  if(!model.on) return;
+  if(!state->model->on) return;
+
+  StagedPlotState staged;
+  staged.flags = PlotNone;
+  staged.env = state->model;
+  staged.hold = state->hold;
+  staged.input = state->input;
+  staged.output = state->output;
+
   auto next = [](EnvDSP& dsp) { dsp.Next(); };
   auto end = [](EnvDSP const& dsp) { return dsp.End(); };
   auto release = [](EnvDSP& dsp) { return dsp.Release(); };
   auto val = [](EnvDSP const& dsp) { return dsp.Output().value; };
   auto envOutput = [](EnvDSP const& dsp) { return dsp.Output(); };
-  auto factory = [&](float rate) { return EnvDSP(&model, input.bpm, rate); };
-  PlotDSP::RenderStaged(hold, 0, model, input, output, factory, next, val, val, envOutput, release, end);
+  auto factory = [&](float rate) { return EnvDSP(state->model, state->input->bpm, rate); };
+  PlotDSP::RenderStaged(&staged, factory, next, val, val, envOutput, release, end);
 }
 
 } // namespace Xts

@@ -25,6 +25,15 @@ struct CycledPlotState
   PlotInput const* input;
 };
 
+struct StagedPlotState
+{
+  int hold;
+  PlotFlags flags;
+  PlotOutput* output;
+  EnvModel const* env;
+  PlotInput const* input;
+};
+
 class PlotDSP
 {
   static constexpr wchar_t UnicodePi = L'\u03C0';
@@ -43,8 +52,7 @@ public:
     class Factory, class Next, class Left, class Right, 
     class EnvOutput, class Release, class End>
   static void RenderStaged(
-    int hold, PlotFlags flags,
-    EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
+    StagedPlotState* state,
     Factory factory, Next next, Left left, Right right, EnvOutput envOutput, Release release, End end);
 
   static void Render(SynthModel const& model, PlotInput const& input, PlotOutput& output);
@@ -98,40 +106,39 @@ template <
   class Factory, class Next, class Left, class Right, 
   class EnvOutput, class Release, class End>
 void PlotDSP::RenderStaged(
-  int hold, PlotFlags flags,
-  EnvModel const& envModel, PlotInput const& input, PlotOutput& output,
+  StagedPlotState* state,
   Factory factory, Next next, Left left, Right right, EnvOutput envOutput, Release release, End end)
 {
-  assert((flags & PlotAutoRange) == 0);
+  assert((state->flags & PlotAutoRange) == 0);
 
-  output.max = 1.0f;
-  output.clip = false;
-  output.spectrum = (flags & PlotSpectrum) != 0;
-  output.stereo = (flags & PlotStereo) != 0;
-  output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
-  bool noResample = (flags & PlotNoResample) != 0;
-  float fhold = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  float releaseSamples = Param::SamplesF(envModel.sync, envModel.releaseTime, envModel.releaseStep, input.bpm, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  output.rate = output.spectrum || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
-  fhold *= output.rate / input.rate;
-  *output.vSplits = output.stereo? StereoVSPlits: (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
+  state->output->max = 1.0f;
+  state->output->clip = false;
+  state->output->spectrum = (state->flags & PlotSpectrum) != 0;
+  state->output->stereo = (state->flags & PlotStereo) != 0;
+  state->output->min = (state->flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
+  bool noResample = (state->flags & PlotNoResample) != 0;
+  float fhold = Param::TimeSamplesF(state->hold, state->input->rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  float releaseSamples = Param::SamplesF(state->env->sync, state->env->releaseTime, state->env->releaseStep, state->input->bpm, state->input->rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  state->output->rate = state->output->spectrum || noResample ? state->input->rate : state->input->rate * state->input->pixels / (fhold + releaseSamples);
+  fhold *= state->output->rate / state->input->rate;
+  *(state->output->vSplits) = state->output->stereo? StereoVSPlits: (state->flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
 
   int h = 0;
   int i = 0;
-  auto state = factory(output.rate);
-  while (!end(state))
+  auto dsp = factory(state->output->rate);
+  while (!end(dsp))
   {
     if (h++ == static_cast<int>(fhold))
-      output.hSplits->emplace_back(i, FormatEnv(release(state).stage));
-    next(state);
-    float l = left(state);
-    output.clip |= Clip(l);
-    output.lSamples->push_back(l);
-    float r = output.stereo? right(state): 0.0f;
-    output.clip |= Clip(r);
-    output.rSamples->push_back(r);
-    if (i == 0 || envOutput(state).switchedStage)
-      output.hSplits->emplace_back(i, FormatEnv(envOutput(state).stage));
+      state->output->hSplits->emplace_back(i, FormatEnv(release(dsp).stage));
+    next(dsp);
+    float l = left(dsp);
+    state->output->clip |= Clip(l);
+    state->output->lSamples->push_back(l);
+    float r = state->output->stereo? right(dsp): 0.0f;
+    state->output->clip |= Clip(r);
+    state->output->rSamples->push_back(r);
+    if (i == 0 || envOutput(dsp).switchedStage)
+      state->output->hSplits->emplace_back(i, FormatEnv(envOutput(dsp).stage));
     i++;
   }
 }
