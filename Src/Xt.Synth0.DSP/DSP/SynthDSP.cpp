@@ -12,6 +12,14 @@ _audio(&model->audio, oct, note, rate) {}
 void
 SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, bool spec, int hold, PlotInput const& input, PlotOutput& output)
 {
+  StagedPlotState staged;
+  staged.env = &envModel;
+  staged.flags = PlotStereo | PlotBipolar | PlotNoResample;
+  if (spec) staged.flags |= PlotSpectrum;
+  staged.hold = hold;
+  staged.input = &input;
+  staged.output = &output;
+
   auto next = [](SynthDSP& dsp) { dsp.Next(); };
   auto end = [](SynthDSP const& dsp) { return dsp.End(); };
   auto release = [](SynthDSP& dsp) { return dsp.Release(); };
@@ -20,8 +28,8 @@ SynthDSP::Plot(SynthModel const& model, EnvModel const& envModel, bool spec, int
   auto envOutput = [](SynthDSP const& dsp) { return dsp._cv.EnvOutput(dsp._amp.Env()); };
   auto factory = [&](float rate) { return SynthDSP(&model, 4, UnitNote::C, 1.0f, input.bpm, rate); };
   PlotFlags flags = PlotStereo | PlotBipolar | PlotNoResample;
-  if (spec) flags |= PlotSpectrum;
-  PlotDSP::RenderStaged(hold, flags, envModel, input, output, factory, next, left, right, envOutput, release, end);
+  
+  PlotDSP::RenderStaged(&staged, factory, next, left, right, envOutput, release, end);
 }
 
 } // namespace Xts
