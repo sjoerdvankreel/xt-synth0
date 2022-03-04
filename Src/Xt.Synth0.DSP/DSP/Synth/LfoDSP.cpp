@@ -24,7 +24,7 @@ LfoDSP::Next()
 float
 LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
 {
-	if (model.sync) return rate / Param::StepFramesF(model.step, bpm, rate);
+	if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
 	return Param::Frequency(model.frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
 }
 

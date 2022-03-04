@@ -110,8 +110,8 @@ void PlotDSP::RenderStaged(
   output.stereo = (flags & PlotStereo) != 0;
   output.min = (flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
   bool noResample = (flags & PlotNoResample) != 0;
-  float fhold = Param::TimeFramesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  float releaseSamples = envModel.sync ? Param::StepFramesF(envModel.releaseStep, input.bpm, input.rate) : Param::TimeFramesF(envModel.releaseTime, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  float fhold = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  float releaseSamples = Param::SamplesF(envModel.sync, envModel.releaseTime, envModel.releaseStep, input.bpm, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   output.rate = output.spectrum || noResample ? input.rate : input.rate * input.pixels / (fhold + releaseSamples);
   fhold *= output.rate / input.rate;
   *output.vSplits = output.stereo? StereoVSPlits: (flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;

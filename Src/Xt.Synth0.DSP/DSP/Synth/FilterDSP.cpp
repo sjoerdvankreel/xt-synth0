@@ -138,8 +138,8 @@ InitComb(FilterModel const& m, float rate, CombState& s)
   s.y.Clear();
   s.minGain = Param::Mix(m.combMinGain);
   s.plusGain = Param::Mix(m.combPlusGain);
-  s.minDelay = static_cast<int>(Param::TimeFramesF(m.combMinDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
-  s.plusDelay = static_cast<int>(Param::TimeFramesF(m.combPlusDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
+  s.minDelay = static_cast<int>(Param::TimeSamplesF(m.combMinDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
+  s.plusDelay = static_cast<int>(Param::TimeSamplesF(m.combPlusDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
   assert(s.minDelay < COMB_DELAY_MAX_SAMPLES);
   assert(s.plusDelay < COMB_DELAY_MAX_SAMPLES);
 }

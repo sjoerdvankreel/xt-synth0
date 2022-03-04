@@ -235,6 +235,17 @@ RenderFilter(SynthModel const& model, PlotInput const& input, PlotOutput& output
   FilterDSP::Plot(&state);
 }
 
+static void
+RenderEnv(SynthModel const& model, int hold, PlotInput const& input, PlotOutput& output)
+{
+  EnvPlotState state;
+  state.hold = hold;
+  state.input = &input;
+  state.output = &output;
+  state.model = &model.cv.envs[GroupIndex(model.plot.type, PlotType::Env1)];
+  EnvDSP::Plot(&state);
+}
+
 void
 PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
@@ -252,13 +263,10 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   case PlotType::Amp: {
     AmpDSP::Plot(model.amp, envModel, model.cv, hold, input, output);
     break; }
-  case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: {
-    auto env = static_cast<int>(PlotType::Env1);
-    EnvDSP::Plot(model.cv.envs[index - env], hold, input, output);
-    break; }
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: RenderLfo(model, input, output); break;
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: RenderUnit(model, input, output); break;
   case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: RenderFilter(model, input, output); break;
+  case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: RenderEnv(model, hold, input, output); break;
   default: assert(false); break;
   }  
   

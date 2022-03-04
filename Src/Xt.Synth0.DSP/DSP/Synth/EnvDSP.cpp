@@ -1,58 +1,119 @@
 #include <DSP/Synth/EnvDSP.hpp>
+#include <DSP/Param.hpp>
 
 #include <cmath>
 #include <cassert>
+#include <algorithm>
 
-#define MIN_TIME_MS 0.0f
-#define MAX_TIME_MS 10000.0f
+#define ENV_MAX_VALUE 0.99
+#define ENV_THRESHOLD 1e-5f
+
+#define ENV_MIN_TIME_MS 0.0f
+#define ENV_MAX_TIME_MS 10000.0f
 
 namespace Xts {
 
-static const double MaxValue = 0.99;
+static inline float
+GenerateStage(float from, float base, float range, SlopeType slope)
+{
+  switch (slope)
+  {
+  case SlopeType::Lin: return from + base * range;
+  case SlopeType::Log: return from + (base - 1.0f) * range;
+  case SlopeType::Inv: return from + (2.0f - base * 2.0f) * range;
+  case SlopeType::Sin: return from + std::sinf(base * PIF * 0.5f) * range;
+  case SlopeType::Cos: return from + (1.0f - std::cosf(base * PIF * 0.5f)) * range;
+  default: assert(false); return 0.0f;
+  }
+}
+
+static inline double
+Increment(double base, double increment, SlopeType type)
+{
+  switch (type)
+  {
+  case SlopeType::Log: return base * increment;
+  case SlopeType::Inv: return base / increment;
+  case SlopeType::Lin: case SlopeType::Sin: case SlopeType::Cos: return base + increment;
+  default: assert(false); return 0.0;
+  }
+}
+
+static bool
+InitStage(EnvModel const& model, EnvParams const& params, EnvStage stage, int& length, SlopeType& type)
+{
+  switch (stage)
+  {
+  case EnvStage::Decay: type = model.decaySlope; length = params.decaySamples; return true;
+  case EnvStage::Attack: type = model.attackSlope; length = params.attackSamples; return true;
+  case EnvStage::Release: type = model.releaseSlope; length = params.releaseSamples; return true;
+  default: return false;
+  }
+}
+
+static void
+InitSlope(SlopeType type, int length, double& base, double& increment)
+{
+  switch (type)
+  {
+  case SlopeType::Log: case SlopeType::Inv: base = 1.0, increment = std::pow(1.0 + ENV_MAX_VALUE, 1.0 / length); break;
+  case SlopeType::Lin: case SlopeType::Sin: case SlopeType::Cos: base = 0.0, increment = ENV_MAX_VALUE / length; break;
+  default: assert(false); break;
+  }
+}
 
 EnvDSP::
-EnvDSP(EnvModel const* model, float bpm, float rate) :
-_pos(0), _max(0.0f), _output(),
-_params(Params(*model, bpm, rate)), _model(model),
-_slp(0.0), _lin(0.0), _log(0.0)
+EnvDSP(EnvModel const* model, float bpm, float rate):
+EnvDSP()
 {
+  _pos = 0;
+  _max = 0.0f;
+  _base = 0.0;
+  _model = model;
+  _increment = 0.0;
   _output.value = 0.0f;
   _output.switchedStage = false;
   _output.stage = EnvStage::Delay;
+  _params = Params(*model, bpm, rate);
   NextStage(!_model->on ? EnvStage::Sustain : EnvStage::Delay);
   CycleStage(model->type);
+}
+
+float
+EnvDSP::Generate(float from, float to, SlopeType type)
+{
+  float range = to - from;
+  float base = static_cast<float>(_base);
+  _base = Increment(_base, _increment, type);
+  return GenerateStage(from, base, range, type);
+}
+
+void
+EnvDSP::NextStage(EnvStage stage)
+{
+  int length;
+  SlopeType type;
+
+  _pos = 0;
+  _output.stage = stage;
+  _output.switchedStage = true;
+  if (!InitStage(*_model, _params, stage, length, type)) return;
+  InitSlope(type, length, _base, _increment);
+}
+
+EnvSample
+EnvDSP::Output() const
+{
+  EnvSample result = _output;
+  if (_model->on && _model->invert) result.value = 1.0f - result.value;
+  return result;
 }
 
 EnvSample
 EnvDSP::Release()
 {
-  if (_model->on && _output.stage >= EnvStage::Release)
-    return Output();
+  if (_model->on && _output.stage >= EnvStage::Release) return Output();
   NextStage(!_model->on ? EnvStage::End : EnvStage::Release);
-  CycleStage(_model->type);
-  return Output();
-}
-
-EnvSample
-EnvDSP::Output() const 
-{
-  EnvSample result = _output;
-  result.value = _model->on && _model->invert ? 1.0f - _output.value : _output.value; 
-  return result;
-}
-
-EnvSample
-EnvDSP::Next()
-{
-  _output.value = 0.0f;
-  _output.switchedStage = false;
-  const float threshold = 1.0E-5f;
-  if (!_model->on || _output.stage == EnvStage::End) return Output();
-  _output.value = Generate();
-  assert(0.0f <= _output.value && _output.value <= 1.0f);
-  if (_output.stage != EnvStage::End) _pos++;
-  if (_output.stage < EnvStage::Release) _max = _output.value;
-  if (_output.stage > EnvStage::Attack && _output.value <= threshold) NextStage(EnvStage::End);
   CycleStage(_model->type);
   return Output();
 }
@@ -62,86 +123,53 @@ EnvDSP::Generate()
 {
   switch (_output.stage)
   {
-  case EnvStage::Delay: return 0.0f;
   case EnvStage::Hold: return 1.0f;
-  case EnvStage::Sustain: return _params.s;
+  case EnvStage::Delay: return 0.0f;
+  case EnvStage::Sustain: return _params.sustain;
   case EnvStage::Attack: return Generate(0.0, 1.0, _model->attackSlope);
   case EnvStage::Release: return Generate(_max, 0.0, _model->releaseSlope);
-  case EnvStage::Decay: return Generate(1.0, _params.s, _model->decaySlope);
+  case EnvStage::Decay: return Generate(1.0, _params.sustain, _model->decaySlope);
   default: assert(false); return 0.0f;
   }
 }
 
-float
-EnvDSP::Generate(float from, float to, SlopeType type)
+EnvSample
+EnvDSP::Next()
 {
-  float val = 0.0f;
-  float range = to - from;
-  float slp = static_cast<float>(_slp);
-  switch (type)
-  {
-  case SlopeType::Lin: val = from + slp * range; _slp += _lin; break;
-  case SlopeType::Log: val = from + (slp - 1.0f) * range; _slp *= _log; break;
-  case SlopeType::Inv: val = from + (2.0f - slp * 2.0f) * range; _slp /= _log; break;
-  case SlopeType::Sin: val = from + std::sinf(slp * PIF * 0.5f) * range; _slp += _lin;  break;
-  case SlopeType::Cos: val = from + (1.0f - std::cosf(slp * PIF * 0.5f)) * range; _slp += _lin; break;
-  default: assert(false); break;
-  }
-  assert(to < from || from <= val && val <= to);
-  assert(to >= from || to <= val && val <= from);
-  assert(type == SlopeType::Log || 0.0 <= _slp && _slp <= 1.0);
-  assert(type != SlopeType::Log || 1.0 <= _slp && _slp <= 2.0);
-  return val;
+  _output.value = 0.0f;
+  _output.switchedStage = false;
+  if (!_model->on || _output.stage == EnvStage::End) return Output();
+  _output.value = Generate();
+  if (_output.stage != EnvStage::End) _pos++;
+  if (_output.stage < EnvStage::Release) _max = _output.value;
+  if (_output.stage > EnvStage::Attack && _output.value <= ENV_THRESHOLD) NextStage(EnvStage::End);
+  CycleStage(_model->type);
+  return Output().Sanity();
+}
+
+void
+EnvDSP::CycleStage(EnvType type)
+{
+  if (_output.stage == EnvStage::Delay && _pos >= _params.delaySamples) NextStage(EnvStage::Attack);
+  if (_output.stage == EnvStage::Attack && _pos >= _params.attackSamples) NextStage(EnvStage::Hold);
+  if (_output.stage == EnvStage::Hold && _pos >= _params.holdSamples) NextStage(EnvStage::Decay);
+  if (_output.stage == EnvStage::Decay && _pos >= _params.decaySamples) NextStage(EnvStage::Sustain);
+  if (_output.stage == EnvStage::Sustain && type == EnvType::DAHDR) _max = std::max(_max, _params.sustain);
+  if (_output.stage == EnvStage::Sustain && type == EnvType::DAHDR) NextStage(EnvStage::Release);
+  if (_output.stage == EnvStage::Release && _pos >= _params.releaseSamples) NextStage(EnvStage::End);
 }
 
 EnvParams
 EnvDSP::Params(EnvModel const& model, float bpm, float rate)
 {
   EnvParams result;
-  bool sync = model.sync != 0;
-  result.s = Param::Level(model.sustain);
-  result.a = sync ? Param::StepFramesI(model.attackStep, bpm, rate) : Param::TimeFramesI(model.attackTime, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.d = sync ? Param::StepFramesI(model.decayStep, bpm, rate) : Param::TimeFramesI(model.decayTime, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.r = sync ? Param::StepFramesI(model.releaseStep, bpm, rate) : Param::TimeFramesI(model.releaseTime, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.dly = sync ? Param::StepFramesI(model.delayStep, bpm, rate) : Param::TimeFramesI(model.delayTime, rate, MIN_TIME_MS, MAX_TIME_MS);
-  result.hld = sync ? Param::StepFramesI(model.holdStep, bpm, rate) : Param::TimeFramesI(model.holdTime, rate, MIN_TIME_MS, MAX_TIME_MS);
+  result.sustain = Param::Level(model.sustain);
+  result.holdSamples = Param::SamplesI(model.sync, model.holdTime, model.holdStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
+  result.delaySamples = Param::SamplesI(model.sync, model.delayTime, model.delayStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
+  result.decaySamples = Param::SamplesI(model.sync, model.decayTime, model.decayStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
+  result.attackSamples = Param::SamplesI(model.sync, model.attackTime, model.attackStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
+  result.releaseSamples = Param::SamplesI(model.sync, model.releaseTime, model.releaseStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
   return result;
-}
-
-void
-EnvDSP::CycleStage(EnvType type)
-{
-  if (_output.stage == EnvStage::Delay && _pos >= _params.dly) NextStage(EnvStage::Attack);
-  if (_output.stage == EnvStage::Attack && _pos >= _params.a) NextStage(EnvStage::Hold);
-  if (_output.stage == EnvStage::Hold && _pos >= _params.hld) NextStage(EnvStage::Decay);
-  if (_output.stage == EnvStage::Decay && _pos >= _params.d) NextStage(EnvStage::Sustain);
-  if (_output.stage == EnvStage::Sustain && type == EnvType::DAHDR) _max = std::max(_max, _params.s);
-  if (_output.stage == EnvStage::Sustain && type == EnvType::DAHDR) NextStage(EnvStage::Release);
-  if (_output.stage == EnvStage::Release && _pos >= _params.r) NextStage(EnvStage::End);
-}
-
-void
-EnvDSP::NextStage(EnvStage stage)
-{
-  int len;
-  SlopeType type;
-  _pos = 0;
-  _output.stage = stage;
-  _output.switchedStage = true;
-  switch (stage)
-  {
-  case EnvStage::Attack: len = _params.a; type = _model->attackSlope; break;
-  case EnvStage::Decay: len = _params.d; type = _model->decaySlope; break;
-  case EnvStage::Release: len = _params.r; type = _model->releaseSlope; break;
-  default: len = -1; type = SlopeType::Lin;  break;
-  }
-  if (len == -1) return;
-  switch (type)
-  {
-  case SlopeType::Lin: case SlopeType::Sin: case SlopeType::Cos: _slp = 0.0, _lin = MaxEnv / len; break;
-  case SlopeType::Log: case SlopeType::Inv: _slp = 1.0, _log = std::pow(1.0 + MaxEnv, 1.0 / len); break;
-  default: assert(false); break;
-  }
 }
 
 void

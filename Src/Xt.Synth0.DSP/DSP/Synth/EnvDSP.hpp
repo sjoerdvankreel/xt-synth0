@@ -28,12 +28,11 @@ class EnvDSP
 {
   int _pos;
   float _max;
-  double _value;
+  double _base;
+  double _increment;
   EnvSample _output;
   EnvParams _params;
   EnvModel const* _model;
-  double _linearIncrement;
-  double _logarithmicIncrement;
 public:
   bool End() const;
   EnvSample Next();
