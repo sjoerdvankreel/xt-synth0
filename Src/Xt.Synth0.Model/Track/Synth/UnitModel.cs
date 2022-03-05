@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum BlepType { Saw, Pulse, Triangle }
-    public enum UnitType { Sine, Additive, PolyBlep }
+    public enum UnitType { Sin, Add, Blep }
+    public enum BlepType { Saw, Pulse, Tri }
     public enum UnitModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase }
     public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
 
@@ -59,17 +59,14 @@ namespace Xt.Synth0.Model
         };
 
         internal UnitModel(int index) => Index = index;
+        static readonly string[] Notes = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
-        static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep" };
-        static readonly string[] BlepTypeNames = new[] { "Saw", "Pulse", "Tri " };
-        static readonly string[] NoteNames = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
-
-        static readonly IRelevance RelevanceAdditive = Relevance.Param(
-            (UnitModel m) => m.Type, (UnitType t) => t == UnitType.Additive);
+        static readonly IRelevance RelevanceAdd = Relevance.Param(
+            (UnitModel m) => m.Type, (UnitType t) => t == UnitType.Add);
         static readonly IRelevance RelevanceBlep = Relevance.Param(
-            (UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
+            (UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep);
         static readonly IRelevance RelevancePw = Relevance.All(
-            Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep),
+            Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Blep),
             Relevance.Param((UnitModel m) => m.BlepType, (BlepType t) => t != Synth0.Model.BlepType.Saw));
 
         static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, 0, nameof(Dtn), nameof(Dtn), "Detune");
@@ -79,17 +76,17 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), nameof(On), "Enabled", false);
         static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), nameof(Amp), "Amplitude", 255);
         static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, 0, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), nameof(Type), "Type", UnitTypeNames);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), nameof(Type), "Type");
         static readonly ParamInfo PwInfo = ParamInfo.Level(p => &((Native*)p)->pw, 1, nameof(Pw), "PW", "Pulse width", 0, RelevancePw);
         static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src1, 2, nameof(Src1), "Source", "Mod 1 source");
         static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->src2, 2, nameof(Src2), "Source", "Mod 2 source");
         static readonly ParamInfo Tgt1Info = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->tgt1, 2, nameof(Tgt1), "Target", "Mod 1 target");
         static readonly ParamInfo Tgt2Info = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->tgt2, 2, nameof(Tgt2), "Target", "Mod 2 target");
-        static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", NoteNames);
-        static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, 1, nameof(AddRoll), "Roll", "Additive rolloff", RelevanceAdditive);
-        static readonly ParamInfo AddSubInfo = ParamInfo.Toggle(p => &((Native*)p)->addSub, 0, nameof(AddSub), "Sub", "Additive subtract", false, RelevanceAdditive);
-        static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, 1, nameof(AddStep), "Step", "Additive step", 1, 32, 1, RelevanceAdditive);
-        static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 0, nameof(BlepType), "Type", "Blep type", BlepTypeNames, RelevanceBlep);
-        static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, 1, nameof(AddParts), "Parts", "Additive partials", 1, 32, 1, RelevanceAdditive);
+        static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", Notes);
+        static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, 1, nameof(AddRoll), "Roll", "Additive rolloff", RelevanceAdd);
+        static readonly ParamInfo AddSubInfo = ParamInfo.Toggle(p => &((Native*)p)->addSub, 0, nameof(AddSub), "Sub", "Additive subtract", false, RelevanceAdd);
+        static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, 1, nameof(AddStep), "Step", "Additive step", 1, 32, 1, RelevanceAdd);
+        static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 0, nameof(BlepType), "Type", "Blep type", null, RelevanceBlep);
+        static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, 1, nameof(AddParts), "Parts", "Additive partials", 1, 32, 1, RelevanceAdd);
     }
 }

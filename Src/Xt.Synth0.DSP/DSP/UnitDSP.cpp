@@ -118,9 +118,9 @@ UnitDSP::Generate(float phase, float freq, ModInput const& mod)
 {
   switch (_model->type)
   {
-  case UnitType::Sine: return std::sinf(phase * 2.0f * PIF);
-  case UnitType::Additive: return GenerateAdd(phase, freq, mod);
-  case UnitType::PolyBlep: return GenerateBlep(phase, freq, mod);
+  case UnitType::Sin: return std::sinf(phase * 2.0f * PIF);
+  case UnitType::Add: return GenerateAdd(phase, freq, mod);
+  case UnitType::Blep: return GenerateBlep(phase, freq, mod);
   default: assert(false); return 0.0f;
   }
 }
@@ -150,7 +150,7 @@ UnitDSP::GenerateBlep(float phase, float freq, ModInput const& mod)
     return result;
   }
 
-  if(_model->blepType != BlepType::Triangle) return assert(false), 0.0f;
+  if(_model->blepType != BlepType::Tri) return assert(false), 0.0f;
   float saw = GenerateBlepSaw(phase + 0.25f, inc);
   float pulse = (saw - GenerateBlepSaw(pwPhase + 0.25f, inc)) * 0.5f;
   _blepTri = (1.0 - BlepLeaky) * _blepTri + inc * pulse;
