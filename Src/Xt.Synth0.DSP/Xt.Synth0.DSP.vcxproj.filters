@@ -124,6 +124,9 @@
     <ClInclude Include="DSP\Synth\CvDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Synth\ModDSP.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -164,6 +167,9 @@
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\CvDSP.cpp">
+      <Filter>DSP\Synth</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\Synth\ModDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
   </ItemGroup>
