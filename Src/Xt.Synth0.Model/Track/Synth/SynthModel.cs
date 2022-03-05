@@ -35,15 +35,6 @@ namespace Xt.Synth0.Model
                 internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
                 internal fixed byte filts[Model.FilterCount * FilterModel.Native.Size];
             }
-
-            [StructLayout(LayoutKind.Sequential, Pack = 8)]
-            internal ref struct ModModel
-            {
-                internal int amount;
-                internal int target;
-                internal int source;
-                internal int pad__;
-            };
 		}
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }

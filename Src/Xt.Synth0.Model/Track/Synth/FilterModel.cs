@@ -63,8 +63,8 @@ namespace Xt.Synth0.Model
             internal int biquadFrequency;
             internal int pad__;
 
-            internal SynthModel.Native.ModModel mod1;
-            internal SynthModel.Native.ModModel mod2;
+            internal ModModel.Native mod1;
+            internal ModModel.Native mod2;
             internal fixed int unitAmount[Model.UnitCount];
             internal fixed int filterAmount[Model.FilterCount];
         };
