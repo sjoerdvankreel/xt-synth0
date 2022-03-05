@@ -35,7 +35,7 @@ struct XTS_ALIGN SynthModel
   PlotModel plot;
   AudioModel audio;
 };
-XTS_CHECK_SIZE(SynthModel, 936);
+XTS_CHECK_SIZE(SynthModel, 912);
 
 } // namespace Xts
 #endif // XTS_SYNTH_MODEL_HPP

@@ -22,12 +22,13 @@ private:
   UnitNote note;
   XtsBool addSub;
   BlepType blepType;
+  int32_t amt1, amt2;
+  ModSource src1, src2;
+  UnitModTarget tgt1, tgt2;
   int32_t amp, pan, oct, dtn, pw;
-  ModModel<UnitModTarget> mod1;
-  ModModel<UnitModTarget> mod2;
   int32_t addParts, addStep, addRoll, pad__;
 };
-XTS_CHECK_SIZE(UnitModel, 88);
+XTS_CHECK_SIZE(UnitModel, 80);
 
 
 } // namespace Xts
