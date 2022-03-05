@@ -126,9 +126,9 @@ void PlotDSP::RenderStaged(
   int h = 0;
   int i = 0;
   auto dsp = factory(state->output->rate);
-  while (!end(dsp))
+  while ((!state->output->spectrum && !end(dsp)) || (state->output->spectrum && i < static_cast<int>(state->output->rate)))
   {
-    if (h++ == static_cast<int>(fhold))
+    if (!state->output->spectrum && h++ == static_cast<int>(fhold))
       state->output->hSplits->emplace_back(i, FormatEnv(release(dsp).stage));
     next(dsp);
     float l = left(dsp);
