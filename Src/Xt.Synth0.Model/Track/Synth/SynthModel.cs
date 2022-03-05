@@ -18,7 +18,7 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
 		{
-            internal CvModel cv;
+            internal CvModel.Native cv;
             internal AmpModel.Native amp;
 			internal PlotModel.Native plot;
             internal AudioModel audio;
@@ -28,13 +28,6 @@ namespace Xt.Synth0.Model
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public ref struct VoiceBinding { internal fixed byte @params[Model.ParamCount * 8]; }
-
-			[StructLayout(LayoutKind.Sequential, Pack = 8)]
-            internal ref struct CvModel
-            {
-				internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
-				internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
-			}
 
             [StructLayout(LayoutKind.Sequential, Pack = 8)]
             internal ref struct AudioModel

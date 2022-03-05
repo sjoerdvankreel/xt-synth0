@@ -1,7 +1,7 @@
 #ifndef XTS_UNIT_DSP_HPP
 #define XTS_UNIT_DSP_HPP
 
-#include "CvDSP.hpp"
+#include <DSP/Synth/CvDSP.hpp>
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
