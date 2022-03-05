@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
 {
 	public enum ModSource 
     { 
-        Velo, 
+        Velocity, 
         Env1, Env2, Env3, 
         LFO1, LFO2, LFO3 
     }
