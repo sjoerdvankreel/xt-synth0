@@ -277,6 +277,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
 
   if (output.lSamples->empty()) return;  
   output.lSamples->resize(NextPowerOf2(output.lSamples->size()));
+  assert(output.lSamples->size() >= static_cast<size_t>(output.rate));
   Spectrum(*output.lSamples, *output.fftData, *output.fftScratch, output.rate);
   SpectrumHSplits(*output.hSplits);
   
