@@ -6,8 +6,18 @@ namespace Xt.Synth0.Model
 {
     public enum BlepType { Saw, Pulse, Triangle }
     public enum UnitType { Sine, Additive, PolyBlep }
-    public enum UnitModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase }
     public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
+    
+    public enum UnitModTarget
+    {
+        Amp,
+        Phase,
+        Pitch,
+        Panning,
+        Frequency,
+        BlepPulseWidth,
+        AdditiveRolloff
+    }
 
     public unsafe sealed class UnitModel : IUIParamGroupModel
     {
@@ -61,6 +71,7 @@ namespace Xt.Synth0.Model
 
         static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep" };
         static readonly string[] BlepTypeNames = new[] { "Saw", "Pulse", "Tri " };
+        static readonly string[] ModTargetNames = new[] { "Amp", "Phase", "Pitch", "Pan", "Freq", "PW", "Roll" };
         static readonly string[] NoteNames = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
         static readonly IRelevance RelevanceBlep = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
@@ -103,14 +114,14 @@ namespace Xt.Synth0.Model
         public Param Mod1Target { get; } = new(Mod1TargetInfo);
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
         static readonly ParamInfo Mod1AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mod1.amount, 2, nameof(Mod1Amount), "Amt", "Mod 1 amount");
-        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mod1.source, 2, nameof(Mod1Source), "Src", "Mod 1 source");
-        static readonly ParamInfo Mod1TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod1.target, 2, nameof(Mod1Target), "Tgt", "Mod 1 target");
+        static readonly ParamInfo Mod1TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod1.target, 2, nameof(Mod1Target), "Tgt", "Mod 1 target", ModTargetNames);
+        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mod1.source, 2, nameof(Mod1Source), "Src", "Mod 1 source", ModModel.ModSourceNames);
 
         public Param Mod2Source { get; } = new(Mod2SourceInfo);
         public Param Mod2Target { get; } = new(Mod2TargetInfo);
         public Param Mod2Amount { get; } = new(Mod2AmountInfo);
         static readonly ParamInfo Mod2AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mod2.amount, 2, nameof(Mod2Amount), "Amt", "Mod 2 amount");
-        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mod2.source, 2, nameof(Mod2Source), "Src", "Mod 2 source");
-        static readonly ParamInfo Mod2TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod2.target, 2, nameof(Mod2Target), "Tgt", "Mod 2 target");
+        static readonly ParamInfo Mod2TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod2.target, 2, nameof(Mod2Target), "Tgt", "Mod 2 target", ModTargetNames);
+        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mod2.source, 2, nameof(Mod2Source), "Src", "Mod 2 source", ModModel.ModSourceNames);
     }
 }

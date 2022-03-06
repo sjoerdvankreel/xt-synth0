@@ -8,8 +8,18 @@ namespace Xts {
 
 enum class BlepType { Saw, Pulse, Triangle };
 enum class UnitType { Sine, Additive, PolyBlep };
-enum class UnitModTarget { Amp, Pan, Pw, Roll, Freq, Pitch, Phase };
 enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
+
+enum class UnitModTarget 
+{ 
+  Amp, 
+  Phase, 
+  Pitch, 
+  Panning,
+  Frequency,
+  BlepPulseWidth, 
+  AdditiveRolloff 
+};
 
 struct XTS_ALIGN UnitModel
 {
