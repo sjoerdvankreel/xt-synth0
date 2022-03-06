@@ -32,8 +32,8 @@ namespace Xt.Synth0.Model
             [StructLayout(LayoutKind.Sequential, Pack = 8)]
             internal ref struct AudioModel
             {
-                internal fixed byte units[Model.UnitCount * UnitModel.Native.Size];
-                internal fixed byte filts[Model.FilterCount * FilterModel.Native.Size];
+                internal fixed byte units[SynthConfig.UnitCount * UnitModel.Native.Size];
+                internal fixed byte filts[SynthConfig.FilterCount * FilterModel.Native.Size];
             }
 		}
 
@@ -46,10 +46,10 @@ namespace Xt.Synth0.Model
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
 		public IReadOnlyList<FilterModel> Filters = new ReadOnlyCollection<FilterModel>(MakeFilters());
 
-		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, Model.LfoCount).Select(i => new LfoModel(i)).ToList();
-		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, Model.EnvCount).Select(i => new EnvModel(i)).ToList();
-		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, Model.UnitCount).Select(i => new UnitModel(i)).ToList();
-		static IList<FilterModel> MakeFilters() => Enumerable.Range(0, Model.FilterCount).Select(i => new FilterModel(i)).ToList();
+		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, SynthConfig.LfoCount).Select(i => new LfoModel(i)).ToList();
+		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, SynthConfig.EnvCount).Select(i => new EnvModel(i)).ToList();
+		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, SynthConfig.UnitCount).Select(i => new UnitModel(i)).ToList();
+		static IList<FilterModel> MakeFilters() => Enumerable.Range(0, SynthConfig.FilterCount).Select(i => new FilterModel(i)).ToList();
 
 		public override int Index => 0;
 		public override string Id => "8D6AB9FB-19DB-4F77-B56C-9E72AB67341F";

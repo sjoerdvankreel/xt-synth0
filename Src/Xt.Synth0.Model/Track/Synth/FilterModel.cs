@@ -65,8 +65,8 @@ namespace Xt.Synth0.Model
 
             internal ModModel.Native mod1;
             internal ModModel.Native mod2;
-            internal fixed int unitAmount[Model.UnitCount];
-            internal fixed int filterAmount[Model.FilterCount];
+            internal fixed int unitAmount[SynthConfig.UnitCount];
+            internal fixed int filterAmount[SynthConfig.FilterCount];
         };
 
         static readonly string[] TypeNames = { "Biqd", "Comb" };

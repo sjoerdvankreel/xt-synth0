@@ -7,8 +7,8 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal fixed byte lfos[Model.LfoCount * LfoModel.Native.Size];
-            internal fixed byte envs[Model.EnvCount * EnvModel.Native.Size];
+            internal fixed byte lfos[SynthConfig.LfoCount * LfoModel.Native.Size];
+            internal fixed byte envs[SynthConfig.EnvCount * EnvModel.Native.Size];
         }
     }
 }

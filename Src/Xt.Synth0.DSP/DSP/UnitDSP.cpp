@@ -1,4 +1,4 @@
-#include "DSP.hpp"
+#include <DSP/Synth/ModDSP.hpp>
 #include "UnitDSP.hpp"
 #include "PlotDSP.hpp"
 #include <DSP/Param.hpp>

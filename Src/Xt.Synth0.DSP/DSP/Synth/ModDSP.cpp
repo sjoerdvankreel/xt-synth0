@@ -37,27 +37,19 @@ ModulatorOutput(ModSource source, CvState const& cv)
 }
 
 float
-ModDSP::Modulate(CvSample sample, CvState const& cv)
-{
-  if(_amount == 0.0f) return sample.value;
-
-}
-
-
-
-float
-Modulate(float val, bool bip, float amt, CvSample cv)
+ModDSP::Modulate(CvSample carrier, CvState const& cv)
 {
   float range = 0.0f;
-  if (amt == 0.0f) return val;
-  if (!cv.bipolar && amt > 0.0f) range = 1.0f - val;
-  if (!cv.bipolar && !bip && amt < 0.0f) range = val;
-  if (!cv.bipolar && bip && amt < 0.0f) range = 1.0f + val;
-  if (cv.bipolar && bip) range = 1.0f - std::fabs(val);
-  if (cv.bipolar && !bip) range = 0.5f - std::fabs(val - 0.5f);
-  float result = val + cv.value * amt * range;
-  assert(bip || 0.0f <= result && result <= 1.0f);
-  assert(!bip || -1.0f <= result && result <= 1.0f);
+  if(_amount == 0.0f) return carrier.value;
+  CvSample modulator = ModulatorOutput(_source, cv);
+  if (!modulator.bipolar && _amount > 0.0f) range = 1.0f - carrier.value;
+  if (!modulator.bipolar && !carrier.bipolar && _amount < 0.0f) range = carrier.value;
+  if (!modulator.bipolar && carrier.bipolar && _amount < 0.0f) range = 1.0f + carrier.value;
+  if (modulator.bipolar && carrier.bipolar) range = 1.0f - std::fabs(carrier.value);
+  if (modulator.bipolar && !carrier.bipolar) range = 0.5f - std::fabs(carrier.value - 0.5f);
+  float result = carrier.value + modulator.value * _amount * range;
+  if(carrier.bipolar) BipolarSanity(result);
+  else UnipolarSanity(result);
   return result;
 }
 

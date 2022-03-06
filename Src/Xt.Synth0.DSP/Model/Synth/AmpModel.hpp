@@ -6,21 +6,23 @@
 
 namespace Xts {
 
-enum class AmpLfo { LFO1, LFO2, LFO3 };
-enum class AmpEnv { Env1, Env2, Env3 };
+enum class AmpLfoSource { LFO1, LFO2, LFO3 };
+enum class AmpEnvSource { Env1, Env2, Env3 };
+
 struct XTS_ALIGN AmpModel
 {
-  friend class AmpDSP;
-  friend class PlotDSP;
-  AmpModel() = default;
-  AmpModel(AmpModel const&) = delete;
-private:
-  AmpEnv envSrc;
-  AmpLfo lvlSrc;
-  ModSource panSrc;
-  int32_t units[XTS_SYNTH_UNIT_COUNT];
-  int32_t flts[XTS_SYNTH_FILTER_COUNT];
-  int32_t lvl, pan, lvlAmt, panAmt, pad__;
+  int32_t panning;
+  int32_t panModAmount;
+  ModSource panModSource;
+  int32_t pad__;
+
+  int32_t amp;
+  int32_t ampLfoAmount;
+  AmpLfoSource ampLfoSource;
+  AmpEnvSource ampEnvSource;
+
+  int32_t unitAmount[XTS_SYNTH_UNIT_COUNT];
+  int32_t filterAmount[XTS_SYNTH_FILTER_COUNT];
 };
 XTS_CHECK_SIZE(AmpModel, 56);
 
