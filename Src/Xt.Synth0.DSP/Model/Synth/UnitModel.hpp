@@ -13,22 +13,28 @@ enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, 
 
 struct XTS_ALIGN UnitModel
 {
-  friend class UnitDSP;
-  UnitModel() = default;
-  UnitModel(UnitModel const&) = delete;
-private:
   XtsBool on;
   UnitType type;
+  int32_t amp;
+  int32_t panning;
+
   UnitNote note;
-  XtsBool addSub;
+  int32_t octave;
+  int32_t detune;
+  int32_t pad__;
+
   BlepType blepType;
-  int32_t amp, pan, oct, dtn, pw;
+  int32_t pulseWidth;
+
+  XtsBool additiveSub;
+  int32_t additiveStep;
+  int32_t additiveRolloff;
+  int32_t additivePartials;
+
   ModModel<UnitModTarget> mod1;
   ModModel<UnitModTarget> mod2;
-  int32_t addParts, addStep, addRoll, pad__;
 };
 XTS_CHECK_SIZE(UnitModel, 88);
-
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_UNIT_MODEL_HPP

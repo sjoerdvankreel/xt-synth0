@@ -11,90 +11,106 @@ namespace Xt.Synth0.Model
 
     public unsafe sealed class UnitModel : IUIParamGroupModel
     {
+        public int Index { get; }
+        internal UnitModel(int index) => Index = index;
+
+        public int Columns => 4;
+        public Param Enabled => On;
+        public ThemeGroup ThemeGroup => ThemeGroup.Unit;
+
+        public string Name => $"Unit {Index + 1}";
+        public string Id => "3DACD0A4-9688-4FA9-9CA3-B8A0E49A45E5";
+        public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
+        public void* Address(void* parent) => &((SynthModel.Native*)parent)->audio.units[Index * Native.Size];
+
+        public IDictionary<Param, int> Layout => new Dictionary<Param, int>
+        {
+            { On, -1 },
+            { Type, 0 }, { AdditiveSub, 1 }, { BlepType, 1 }, { Amp, 2 }, { Panning, 3 },
+            { AdditivePartials, 4 }, { AdditiveStep, 5 }, { AdditiveRolloff, 6 }, { PulseWidth, 6 }, { Octave, 7 },
+            { Mod1Source, 8 }, { Mod1Target, 9 }, { Mod1Amount, 10 }, { Note, 11 },
+            { Mod2Source, 12 },  { Mod2Target, 13 }, { Mod2Amount, 14}, { Detune, 15 }
+        };
+
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
             internal const int Size = 88;
+
             internal int on;
             internal int type;
+            internal int amp;
+            internal int panning;
+
             internal int note;
-            internal int addSub;
+            internal int octave;
+            internal int detune;
+            internal int pad__;
+
             internal int blepType;
-            internal int amp, pan, oct, dtn, pw;
+            internal int pulseWidth;
+
+            internal int additiveSub;
+            internal int additiveStep;
+            internal int additiveRolloff;
+            internal int additivePartials;
+
             internal ModModel.Native mod1;
             internal ModModel.Native mod2;
-            internal int addParts, addStep, addRoll, pad__;
         }
-
-        public Param On { get; } = new(OnInfo);
-        public Param Pw { get; } = new(PwInfo);
-        public Param Oct { get; } = new(OctInfo);
-        public Param Amp { get; } = new(AmpInfo);
-        public Param Pan { get; } = new(PanInfo);
-        public Param Dtn { get; } = new(DtnInfo);
-        public Param Note { get; } = new(NoteInfo);
-        public Param Type { get; } = new(TypeInfo);
-        public Param Src1 { get; } = new(Src1Info);
-        public Param Tgt1 { get; } = new(Tgt1Info);
-        public Param Amt1 { get; } = new(Amt1Info);
-        public Param Src2 { get; } = new(Src2Info);
-        public Param Tgt2 { get; } = new(Tgt2Info);
-        public Param Amt2 { get; } = new(Amt2Info);
-        public Param AddSub { get; } = new(AddSubInfo);
-        public Param AddStep { get; } = new(AddStepInfo);
-        public Param AddRoll { get; } = new(AddRollInfo);
-        public Param AddParts { get; } = new(AddPartsInfo);
-        public Param BlepType { get; } = new(BlepTypeInfo);
-
-        public int Columns => 4;
-        public int Index { get; }
-        public Param Enabled => On;
-        public string Name => $"Unit {Index + 1}";
-        public ThemeGroup ThemeGroup => ThemeGroup.Unit;
-        public string Id => "3DACD0A4-9688-4FA9-9CA3-B8A0E49A45E5";
-        public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => &((SynthModel.Native*)parent)->audio.units[Index * Native.Size];
-        public IDictionary<Param, int> Layout => new Dictionary<Param, int>
-        {
-            { On, -1 },
-            { Type, 0 }, { AddSub, 1 }, { BlepType, 1 }, { Amp, 2 }, { Pan, 3 },
-            { AddParts, 4 }, { AddStep, 5 }, { AddRoll, 6 }, { Pw, 6 }, { Oct, 7 },
-            { Src1, 8 }, { Tgt1, 9 }, { Amt1, 10 }, { Note, 11 },
-            { Src2, 12 },  { Tgt2, 13 }, { Amt2, 14}, { Dtn, 15 }
-        };
-
-        internal UnitModel(int index) => Index = index;
 
         static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep" };
         static readonly string[] BlepTypeNames = new[] { "Saw", "Pulse", "Tri " };
         static readonly string[] NoteNames = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
-        static readonly IRelevance RelevanceAdditive = Relevance.Param(
-            (UnitModel m) => m.Type, (UnitType t) => t == UnitType.Additive);
-        static readonly IRelevance RelevanceBlep = Relevance.Param(
-            (UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
-        static readonly IRelevance RelevancePw = Relevance.All(
+        static readonly IRelevance RelevanceBlep = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
+        static readonly IRelevance RelevanceAdditive = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Additive);
+        static readonly IRelevance RelevancePulseWidth = Relevance.All(
             Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep),
             Relevance.Param((UnitModel m) => m.BlepType, (BlepType t) => t != Synth0.Model.BlepType.Saw));
 
-        static readonly ParamInfo DtnInfo = ParamInfo.Mix(p => &((Native*)p)->dtn, 0, nameof(Dtn), nameof(Dtn), "Detune");
-        static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 0, nameof(Pan), nameof(Pan), "Panning");
-        static readonly ParamInfo Amt1Info = ParamInfo.Mix(p => &((Native*)p)->mod1.amount, 2, nameof(Amt1), "Amt", "Mod 1 amount");
-        static readonly ParamInfo Amt2Info = ParamInfo.Mix(p => &((Native*)p)->mod2.amount, 2, nameof(Amt2), "Amt", "Mod 2 amount");
-        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), nameof(On), "Enabled", false);
-        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), nameof(Amp), "Amplitude", 255);
-        static readonly ParamInfo OctInfo = ParamInfo.Select(p => &((Native*)p)->oct, 0, nameof(Oct), nameof(Oct), "Octave", 0, 9, 4);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), nameof(Type), "Type", UnitTypeNames);
-        static readonly ParamInfo PwInfo = ParamInfo.Level(p => &((Native*)p)->pw, 1, nameof(Pw), "PW", "Pulse width", 0, RelevancePw);
-        static readonly ParamInfo Src1Info = ParamInfo.List<ModSource>(p => &((Native*)p)->mod1.source, 2, nameof(Src1), "Source", "Mod 1 source");
-        static readonly ParamInfo Src2Info = ParamInfo.List<ModSource>(p => &((Native*)p)->mod2.source, 2, nameof(Src2), "Source", "Mod 2 source");
-        static readonly ParamInfo Tgt1Info = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod1.target, 2, nameof(Tgt1), "Target", "Mod 1 target");
-        static readonly ParamInfo Tgt2Info = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod2.target, 2, nameof(Tgt2), "Target", "Mod 2 target");
+        public Param On { get; } = new(OnInfo);
+        public Param Amp { get; } = new(AmpInfo);
+        public Param Type { get; } = new(TypeInfo);
+        public Param Panning { get; } = new(PanningInfo);
+        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false);
+        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), "Amp", "Amplitude", 255);
+        static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning");
+        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type", UnitTypeNames);
+
+        public Param Note { get; } = new(NoteInfo);
+        public Param Octave { get; } = new(OctaveInfo);
+        public Param Detune { get; } = new(DetuneInfo);
+        static readonly ParamInfo DetuneInfo = ParamInfo.Mix(p => &((Native*)p)->detune, 0, nameof(Detune), "Dtn", "Detune");
+        static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 0, nameof(Octave), "Oct", "Octave", 0, 9, 4);
         static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", NoteNames);
-        static readonly ParamInfo AddRollInfo = ParamInfo.Mix(p => &((Native*)p)->addRoll, 1, nameof(AddRoll), "Roll", "Additive rolloff", RelevanceAdditive);
-        static readonly ParamInfo AddSubInfo = ParamInfo.Toggle(p => &((Native*)p)->addSub, 0, nameof(AddSub), "Sub", "Additive subtract", false, RelevanceAdditive);
-        static readonly ParamInfo AddStepInfo = ParamInfo.Select(p => &((Native*)p)->addStep, 1, nameof(AddStep), "Step", "Additive step", 1, 32, 1, RelevanceAdditive);
+
+        public Param BlepType { get; } = new(BlepTypeInfo);
+        public Param PulseWidth { get; } = new(PulseWidthInfo);
+        static readonly ParamInfo PulseWidthInfo = ParamInfo.Level(p => &((Native*)p)->pulseWidth, 1, nameof(PulseWidth), "PW", "Pulse width", 0, RelevancePulseWidth);
         static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 0, nameof(BlepType), "Type", "Blep type", BlepTypeNames, RelevanceBlep);
-        static readonly ParamInfo AddPartsInfo = ParamInfo.Select(p => &((Native*)p)->addParts, 1, nameof(AddParts), "Parts", "Additive partials", 1, 32, 1, RelevanceAdditive);
+
+        public Param AdditiveSub { get; } = new(AdditiveSubInfo);
+        public Param AdditiveStep { get; } = new(AdditiveStepInfo);
+        public Param AdditiveRolloff { get; } = new(AdditiveRolloffInfo);
+        public Param AdditivePartials { get; } = new(AdditivePartialsInfo);
+        static readonly ParamInfo AdditiveSubInfo = ParamInfo.Toggle(p => &((Native*)p)->additiveSub, 0, nameof(AdditiveSub), "Sub", "Additive subtract", false, RelevanceAdditive);
+        static readonly ParamInfo AdditiveRolloffInfo = ParamInfo.Mix(p => &((Native*)p)->additiveRolloff, 1, nameof(AdditiveRolloff), "Roll", "Additive rolloff", RelevanceAdditive);
+        static readonly ParamInfo AdditiveStepInfo = ParamInfo.Select(p => &((Native*)p)->additiveStep, 1, nameof(AdditiveStep), "Step", "Additive step", 1, 32, 1, RelevanceAdditive);
+        static readonly ParamInfo AdditivePartialsInfo = ParamInfo.Select(p => &((Native*)p)->additivePartials, 1, nameof(AdditivePartials), "Parts", "Additive partials", 1, 32, 1, RelevanceAdditive);
+
+        public Param Mod1Source { get; } = new(Mod1SourceInfo);
+        public Param Mod1Target { get; } = new(Mod1TargetInfo);
+        public Param Mod1Amount { get; } = new(Mod1AmountInfo);
+        static readonly ParamInfo Mod1AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mod1.amount, 2, nameof(Mod1Amount), "Amt", "Mod 1 amount");
+        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mod1.source, 2, nameof(Mod1Source), "Src", "Mod 1 source");
+        static readonly ParamInfo Mod1TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod1.target, 2, nameof(Mod1Target), "Tgt", "Mod 1 target");
+
+        public Param Mod2Source { get; } = new(Mod2SourceInfo);
+        public Param Mod2Target { get; } = new(Mod2TargetInfo);
+        public Param Mod2Amount { get; } = new(Mod2AmountInfo);
+        static readonly ParamInfo Mod2AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mod2.amount, 2, nameof(Mod2Amount), "Amt", "Mod 2 amount");
+        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mod2.source, 2, nameof(Mod2Source), "Src", "Mod 2 source");
+        static readonly ParamInfo Mod2TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mod2.target, 2, nameof(Mod2Target), "Tgt", "Mod 2 target");
     }
 }

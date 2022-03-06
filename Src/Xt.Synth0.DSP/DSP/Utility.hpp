@@ -7,7 +7,6 @@
 
 namespace Xts {
 
-inline constexpr float Epsilon = 1e-4f;
 inline constexpr float PIF = 3.14159265358979323846f;
 inline constexpr double PID = 3.14159265358979323846;
 
@@ -18,10 +17,6 @@ BipolarToUnipolar2(float val)
 inline float 
 BipolarToUnipolar1(float val)
 { return (val + 1.0f) * 0.5f; }
-
-inline float 
-EpsilonToZero(float val)
-{ return -Epsilon <= val && val <= Epsilon? 0.0f: val; }
 
 inline float
 MidiNoteFrequency(float note)

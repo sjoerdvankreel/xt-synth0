@@ -29,7 +29,7 @@
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\LfoDSP.hpp" />
     <ClInclude Include="DSP\Synth\ModDSP.hpp" />
-    <ClInclude Include="DSP\UnitDSP.hpp" />
+    <ClInclude Include="DSP\Synth\UnitDSP.hpp" />
     <ClInclude Include="DSP\Utility.hpp" />
     <ClInclude Include="Model\DSPModel.hpp" />
     <ClInclude Include="Model\Model.hpp" />
@@ -60,7 +60,7 @@
     <ClCompile Include="DSP\Synth\FilterDSP.cpp" />
     <ClCompile Include="DSP\Synth\LfoDSP.cpp" />
     <ClCompile Include="DSP\Synth\ModDSP.cpp" />
-    <ClCompile Include="DSP\UnitDSP.cpp" />
+    <ClCompile Include="DSP\Synth\UnitDSP.cpp" />
     <ClCompile Include="Model\SynthModel.cpp" />
     <ClCompile Include="Model\Synth\SyncStepModel.cpp" />
     <ClCompile Include="Xts.cpp" />
