@@ -2,7 +2,7 @@
 #define XTS_SYNTH_DSP_HPP
 
 #include <DSP/Synth/CvDSP.hpp>
-#include "AmpDSP.hpp"
+#include <DSP/Synth/AmpDSP.hpp>
 #include "AudioDSP.hpp"
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"

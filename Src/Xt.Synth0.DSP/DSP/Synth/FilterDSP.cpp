@@ -202,8 +202,8 @@ FilterDSP::Plot(FilterPlotState* state)
   auto factory = [&](float rate) 
   { 
     return std::make_tuple(
-      std::make_shared<CvDSP>(state->cvModel, 1.0f, state->input->bpm, rate),
-      std::make_shared<AudioDSP>(state->audioModel, 4, UnitNote::C, rate),
+      std::make_shared<CvDSP>(state->cv, 1.0f, state->input->bpm, rate),
+      std::make_shared<AudioDSP>(state->audio, 4, UnitNote::C, rate),
       std::make_shared<FilterDSP>(state->model, state->index, rate));
   };
 

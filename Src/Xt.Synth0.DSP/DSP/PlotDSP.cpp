@@ -1,5 +1,5 @@
 #include <DSP/Synth/ModDSP.hpp>
-#include "AmpDSP.hpp"
+#include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/EnvDSP.hpp>
 #include "UnitDSP.hpp"
 #include "PlotDSP.hpp"
@@ -225,10 +225,10 @@ static void
 RenderFilter(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   FilterPlotState state;
+  state.cv = &model.cv;
   state.input = &input;
   state.output = &output;
-  state.cvModel = &model.cv;
-  state.audioModel = &model.audio;
+  state.audio = &model.audio;
   state.spectrum = model.plot.spec;
   state.index = GroupIndex(model.plot.type, PlotType::Filt1);
   state.model = &model.audio.filts[state.index];
@@ -246,12 +246,25 @@ RenderEnv(SynthModel const& model, int hold, PlotInput const& input, PlotOutput&
   EnvDSP::Plot(&state);
 }
 
+static void
+RenderAmp(SynthModel const& model, int hold, PlotInput const& input, PlotOutput& output)
+{
+  AmpPlotState state;
+  state.hold = hold;
+  state.cv = &model.cv;
+  state.input = &input;
+  state.output = &output;
+  state.model = &model.amp;
+  state.env = &model.cv.envs[static_cast<int>(model.amp.ampEnvSource)];
+  AmpDSP::Plot(&state);
+}
+
 void
 PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   auto type = model.plot.type;
   auto index = static_cast<int>(type);
-  int ampEnv = static_cast<int>(model.amp.envSrc);
+  int ampEnv = static_cast<int>(model.amp.ampEnvSource);
   EnvModel const& envModel = model.cv.envs[ampEnv];
   int hold = model.plot.spec && (model.plot.type == PlotType::Synth || model.plot.type >= PlotType::LFO1)? SpecHold: model.plot.hold;
 
@@ -260,9 +273,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   case PlotType::Synth: {
     SynthDSP::Plot(model, envModel, model.plot.spec, hold, input, output);
     break; }
-  case PlotType::Amp: {
-    AmpDSP::Plot(model.amp, envModel, model.cv, hold, input, output);
-    break; }
+  case PlotType::Amp: RenderAmp(model, hold, input, output);
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: RenderLfo(model, input, output); break;
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: RenderUnit(model, input, output); break;
   case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: RenderFilter(model, input, output); break;

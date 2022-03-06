@@ -18,11 +18,11 @@ struct FilterPlotState
 {
   int index;
   bool spectrum;
+  struct CvModel const* cv;
   struct PlotOutput* output;
   struct PlotInput const* input;
-  struct CvModel const* cvModel;
+  struct AudioModel const* audio;
   struct FilterModel const* model;
-  struct AudioModel const* audioModel;
 };
 
 struct BiquadState
