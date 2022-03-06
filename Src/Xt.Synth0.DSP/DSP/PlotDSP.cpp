@@ -1,7 +1,7 @@
 #include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/EnvDSP.hpp>
-#include "UnitDSP.hpp"
+#include <DSP/Synth/UnitDSP.hpp>
 #include "PlotDSP.hpp"
 #include "SynthDSP.hpp"
 #include <DSP/Utility.hpp>
@@ -213,9 +213,9 @@ static void
 RenderUnit(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   UnitPlotState state;
+  state.cv = &model.cv;
   state.input = &input;
   state.output = &output;
-  state.cvModel = &model.cv;
   state.spectrum = model.plot.spec;
   state.model = &model.audio.units[GroupIndex(model.plot.type, PlotType::Unit1)];
   UnitDSP::Plot(&state);

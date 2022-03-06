@@ -40,9 +40,9 @@ FloatSample
 AmpDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
-  float lfo = _ampMod.Modulate({ _amp, false }, cv);
+  float lfo = _ampMod.Modulate({ _amp, false }, _ampMod.Modulator(cv));
   _level = cv.envs[Env()].value * lfo;
-  float pan = BipolarToUnipolar1(_panMod.Modulate({_panning, true}, cv));
+  float pan = BipolarToUnipolar1(_panMod.Modulate({_panning, true}, _panMod.Modulator(cv)));
   FloatSample panned = { (1.0f - pan) * _level, pan * _level };
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * pan * _unitAmount[i];
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _output += audio.filters[i] * pan * _filterAmount[i];  

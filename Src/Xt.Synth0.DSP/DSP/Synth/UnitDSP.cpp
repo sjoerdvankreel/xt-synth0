@@ -1,70 +1,68 @@
-#include <DSP/Synth/ModDSP.hpp>
-#include "UnitDSP.hpp"
-#include "PlotDSP.hpp"
+#include <DSP/Synth/UnitDSP.hpp>
 #include <DSP/Param.hpp>
+#include <DSP/Utility.hpp>
+#include <DSP/PlotDSP.hpp>
 
 #include <cmath>
 #include <cassert>
 #include <immintrin.h>
 
-namespace Xts {
-
-static const float MaxPw = 0.975f;
+#define BLEP_MAX_PW 0.975f
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
+// https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
+
+namespace Xts {
+
 static float
-GenerateBlepSaw(float phase, float inc)
+Frequency(UnitModel const& model, int octave, UnitNote note)
 {
+  float cent = Param::Mix(model.detune) * 0.5f;
+  int key = octave * 12 + static_cast<int>(note);
+  int base = 4 * 12 + static_cast<int>(UnitNote::C);
+  int unit = (model.octave + 1) * 12 + static_cast<int>(model.note);
+  return MidiNoteFrequency(unit + key - base + cent);
+}
+
+static float
+GeneratePolyBlepSaw(float phase, float increment)
+{
+  float blep;
   if (phase >= 1.0f) phase -= 1.0f;
   float saw = 2.0f * phase - 1.0f;
-  if(phase < inc) 
-  {
-    float blep = phase / inc;
-    return saw - ((2.0f - blep) * blep - 1.0f);
-  }
-  if(phase >= 1.0f - inc)
-  {
-    float blep = (phase - 1.0f) / inc;
-    return saw - ((blep + 2.0f) * blep + 1.0f);
-  }
+  if(phase < increment) return blep = phase / increment, saw - ((2.0f - blep) * blep - 1.0f);
+  if(phase >= 1.0f - increment) return blep = (phase - 1.0f) / increment, saw - ((blep + 2.0f) * blep + 1.0f);
   return saw;
 }
 
 UnitDSP::
-UnitDSP(UnitModel const* model, int oct, UnitNote note, float rate):
-_output(),
-_model(model),
-_phase(0.0), _blepTri(0.0),
-_rate(rate),
-_pan(Param::Mix(model->pan)),
-_amt1(Param::Mix(model->amt1)),
-_amt2(Param::Mix(model->amt2)),
-_amp(Param::Level(model->amp)),
-_roll(Param::Mix(model->addRoll)),
-_pw(Param::Level(model->pw) * MaxPw),
-_freq(Freq(*model, oct, note)) {}
-
-float
-UnitDSP::Freq(UnitModel const& model, int oct, UnitNote note)
+UnitDSP(UnitModel const* model, int octave, UnitNote note, float rate) :
+UnitDSP()
 {
-  float cent = Param::Mix(model.dtn) * 0.5f;
-  int base = 4 * 12 + static_cast<int>(UnitNote::C);
-  int key = oct * 12 + static_cast<int>(note);
-  int unit = (model.oct + 1) * 12 + static_cast<int>(model.note);
-  return MidiNoteFrequency(unit + key - base + cent);
+  _phase = 0.0;
+  _rate = rate;
+  _model = model;
+  _blepTriangle = 0.0;
+  _output = FloatSample();
+  _mod1 = ModDSP(model->mod1);
+  _mod2 = ModDSP(model->mod2);
+  _amp = Param::Level(model->amp);
+  _panning = Param::Mix(model->panning);
+  _frequency = Frequency(*model, octave, note);
+  _blepPulseWidth = Param::Level(model->blepPulseWidth);
+  _additiveRolloff = Param::Mix(model->additiveRolloff);
 }
 
-float 
-UnitDSP::Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const
+float
+UnitDSP::Modulate(UnitModTarget target, CvSample carrier, CvState const& cv) const
 {
-  if (_model->tgt1 == tgt) val = Modulate(val, bip, _amt1, mod.cv1);
-  if (_model->tgt2 == tgt) val = Modulate(val, bip, _amt2, mod.cv2);
-  return val;
+  if (_model->mod1.target == target) carrier.value = _mod1.Modulate(carrier, cv);
+  if (_model->mod2.target == target) carrier.value = _mod2.Modulate(carrier, cv);
+  return carrier.value;
 }
 
-// https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 float
-UnitDSP::ModPhase(ModInput const& mod) const
+UnitDSP::ModulatePhase(ModInput const& mod) const
 {
   float phase = static_cast<float>(_phase);
   float base1 = mod.cv1.bipolar ? 0.5f : _amt1 >= 0.0f ? 0.0f : 1.0f;
@@ -76,7 +74,6 @@ UnitDSP::ModPhase(ModInput const& mod) const
   return result;
 }
 
-// https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 float
 UnitDSP::ModFreq(ModInput const& mod) const
 {
@@ -114,7 +111,7 @@ UnitDSP::Next(CvState const& cv)
 }
 
 float
-UnitDSP::Generate(float phase, float freq, ModInput const& mod)
+UnitDSP::Generate(float phase, float frequency, ModInput const& mod)
 {
   switch (_model->type)
   {
@@ -125,7 +122,6 @@ UnitDSP::Generate(float phase, float freq, ModInput const& mod)
   }
 }
 
-// http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 float
 UnitDSP::GenerateBlep(float phase, float freq, ModInput const& mod)
 {

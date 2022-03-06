@@ -1,43 +1,52 @@
-#ifndef XTS_UNIT_DSP_HPP
-#define XTS_UNIT_DSP_HPP
+#ifndef XTS_DSP_SYNTH_UNIT_DSP_HPP
+#define XTS_DSP_SYNTH_UNIT_DSP_HPP
 
-#include <DSP/Synth/CvDSP.hpp>
-#include "../Model/DSPModel.hpp"
-#include "../Model/SynthModel.hpp"
+#include <DSP/AudioSample.hpp>
+#include <DSP/Synth/ModDSP.hpp>
+#include <Model/Synth/UnitModel.hpp>
 
 namespace Xts {
 
 struct UnitPlotState
 {
   bool spectrum;
-  PlotOutput* output;
-  UnitModel const* model;
-  CvModel const* cvModel;
-  PlotInput const* input;
+  struct CvModel const* cv;
+  struct PlotOutput* output;
+  struct UnitModel const* model;
+  struct PlotInput const* input;
 };
 
 class UnitDSP
 {
+  float _amp;
+  float _rate;
+  float _panning;
+  float _frequency;
+  float _blepPulseWidth;
+  float _additiveRolloff;
+  ModDSP _mod1;
+  ModDSP _mod2;
+  double _phase;
+  double _blepTriangle;
   FloatSample _output;
   UnitModel const* _model;
-  double _phase, _blepTri;
-  float _rate, _pan, _amt1, _amt2, _amp, _roll, _pw, _freq;
+public:
+  FloatSample Output() const;
+  static void Plot(UnitPlotState* state);
+  FloatSample Next(struct CvState const& cv);
 public:
   UnitDSP() = default;
-  UnitDSP(UnitModel const* model, int oct, UnitNote note, float rate);
+  UnitDSP(UnitModel const* model, int octave, UnitNote note, float rate);
 private:
-  static float Freq(UnitModel const& model, int oct, UnitNote note);
-  float ModFreq(ModInput const& mod) const;
-  float ModPhase(ModInput const& mod) const;
-  float Generate(float phase, float freq, ModInput const& mod);
-  float GenerateBlep(float phase, float freq, ModInput const& mod);
-  float GenerateAdd(float phase, float freq, ModInput const& mod) const;
-  float Mod(UnitModTarget tgt, float val, bool bip, ModInput const& mod) const;
-public:
-  FloatSample Next(CvState const& cv);
-  FloatSample const Output() const { return _output; }
-  static void Plot(UnitPlotState* state);
+  float Generate(float phase, float frequency);
+  float GenerateBlep(float phase, float frequency);
+  float GenerateAdditive(float phase, float frequency) const;
+  float Modulate(UnitModTarget target, CvSample carrier, CvState const& cv) const;
 };
 
+inline FloatSample
+UnitDSP::Output() const
+{ return _output; }
+
 } // namespace Xts
-#endif // XTS_UNIT_DSP_HPP
+#endif // XTS_DSP_SYNTH_UNIT_DSP_HPP

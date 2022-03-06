@@ -27,7 +27,7 @@ namespace Xt.Synth0.Model
         {
             { On, -1 },
             { Type, 0 }, { AdditiveSub, 1 }, { BlepType, 1 }, { Amp, 2 }, { Panning, 3 },
-            { AdditivePartials, 4 }, { AdditiveStep, 5 }, { AdditiveRolloff, 6 }, { PulseWidth, 6 }, { Octave, 7 },
+            { AdditivePartials, 4 }, { AdditiveStep, 5 }, { AdditiveRolloff, 6 }, { BlepPulseWidth, 6 }, { Octave, 7 },
             { Mod1Source, 8 }, { Mod1Target, 9 }, { Mod1Amount, 10 }, { Note, 11 },
             { Mod2Source, 12 },  { Mod2Target, 13 }, { Mod2Amount, 14}, { Detune, 15 }
         };
@@ -48,7 +48,7 @@ namespace Xt.Synth0.Model
             internal int pad__;
 
             internal int blepType;
-            internal int pulseWidth;
+            internal int blepPulseWidth;
 
             internal int additiveSub;
             internal int additiveStep;
@@ -86,9 +86,9 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", NoteNames);
 
         public Param BlepType { get; } = new(BlepTypeInfo);
-        public Param PulseWidth { get; } = new(PulseWidthInfo);
-        static readonly ParamInfo PulseWidthInfo = ParamInfo.Level(p => &((Native*)p)->pulseWidth, 1, nameof(PulseWidth), "PW", "Pulse width", 0, RelevancePulseWidth);
+        public Param BlepPulseWidth { get; } = new(BlepPulseWidthInfo);
         static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 0, nameof(BlepType), "Type", "Blep type", BlepTypeNames, RelevanceBlep);
+        static readonly ParamInfo BlepPulseWidthInfo = ParamInfo.Level(p => &((Native*)p)->blepPulseWidth, 1, nameof(BlepPulseWidth), "PW", "Pulse width", 0, RelevancePulseWidth);
 
         public Param AdditiveSub { get; } = new(AdditiveSubInfo);
         public Param AdditiveStep { get; } = new(AdditiveStepInfo);

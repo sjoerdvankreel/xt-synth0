@@ -20,7 +20,6 @@ inline constexpr PlotFlags PlotSpectrum = 0x4;
 inline constexpr PlotFlags PlotAutoRange = 0x8;
 inline constexpr PlotFlags PlotNoResample = 0x10;
 
-struct ModInput { CvSample cv1; CvSample cv2; };
 struct HSplit { int pos; std::wstring marker; };
 struct VSplit { float pos; std::wstring marker; };
 

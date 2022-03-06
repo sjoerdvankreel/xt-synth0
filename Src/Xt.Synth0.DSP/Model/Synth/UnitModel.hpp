@@ -24,7 +24,7 @@ struct XTS_ALIGN UnitModel
   int32_t pad__;
 
   BlepType blepType;
-  int32_t pulseWidth;
+  int32_t blepPulseWidth;
 
   XtsBool additiveSub;
   int32_t additiveStep;

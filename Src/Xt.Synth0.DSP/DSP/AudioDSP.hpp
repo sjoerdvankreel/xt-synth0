@@ -1,7 +1,7 @@
 #ifndef XTS_AUDIO_DSP_HPP
 #define XTS_AUDIO_DSP_HPP
 
-#include "UnitDSP.hpp"
+#include <DSP/Synth/UnitDSP.hpp>
 #include <Model/Synth/Config.hpp>
 #include <DSP/Synth/AudioState.hpp>
 #include <DSP/Synth/FilterDSP.hpp>

@@ -27,21 +27,20 @@ ModulatorValue(ModSource source, CvState const& cv)
   }
 }
 
-static CvSample
-ModulatorOutput(ModSource source, CvState const& cv)
+CvSample
+ModDSP::Modulator(CvState const& cv) const
 {
   CvSample result;
-  result.value = ModulatorValue(source, cv);
-  result.bipolar = ModulatorIsBipolar(source, cv);
+  result.value = ModulatorValue(_source, cv);
+  result.bipolar = ModulatorIsBipolar(_source, cv);
   return result.Sanity();
 }
 
 float
-ModDSP::Modulate(CvSample carrier, CvState const& cv)
+ModDSP::Modulate(CvSample carrier, CvSample modulator) const
 {
   float range = 0.0f;
   if(_amount == 0.0f) return carrier.value;
-  CvSample modulator = ModulatorOutput(_source, cv);
   if (!modulator.bipolar && _amount > 0.0f) range = 1.0f - carrier.value;
   if (!modulator.bipolar && !carrier.bipolar && _amount < 0.0f) range = carrier.value;
   if (!modulator.bipolar && carrier.bipolar && _amount < 0.0f) range = 1.0f + carrier.value;
