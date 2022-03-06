@@ -273,7 +273,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   case PlotType::Synth: {
     SynthDSP::Plot(model, envModel, model.plot.spec, hold, input, output);
     break; }
-  case PlotType::Amp: RenderAmp(model, hold, input, output);
+  case PlotType::Amp: RenderAmp(model, hold, input, output); break;
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: RenderLfo(model, input, output); break;
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: RenderUnit(model, input, output); break;
   case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: RenderFilter(model, input, output); break;
