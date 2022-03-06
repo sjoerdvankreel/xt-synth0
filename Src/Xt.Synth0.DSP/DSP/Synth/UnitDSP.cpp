@@ -100,10 +100,11 @@ UnitDSP::ModulateFrequency(CvSample modulator1, CvSample modulator2) const
   float result = _frequency;
   float pitchRange = 0.02930223f;
   float frequencyRange = FREQ_MOD_MAX_HZ - FREQ_MOD_MIN_HZ;
-  float frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(_frequency, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
+  float frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(result, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
   if (_model->mod1.target == UnitModTarget::Pitch) result *= 1.0f + _mod1.Modulate({ 0.0f, true }, modulator1) * pitchRange;
-  if (_model->mod2.target == UnitModTarget::Pitch) result *= 1.0f + _mod2.Modulate({ 0.0f, true }, modulator2) * pitchRange;
   if (_model->mod1.target == UnitModTarget::Frequency) result = FREQ_MOD_MIN_HZ + _mod1.Modulate({ frequencyBase, false }, modulator1) * frequencyRange;
+  frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(result, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
+  if (_model->mod2.target == UnitModTarget::Pitch) result *= 1.0f + _mod2.Modulate({ 0.0f, true }, modulator2) * pitchRange;
   if (_model->mod2.target == UnitModTarget::Frequency) result = FREQ_MOD_MIN_HZ + _mod2.Modulate({ frequencyBase, false }, modulator2) * frequencyRange;
   assert(result > 0.0f);
   return Sanity(result);
