@@ -35,3 +35,4 @@ drop epstozero?
 sin+cos env slopes?
 dump stacktraces to disk
 plot on is less cpu wtf
+test freqmod

@@ -38,10 +38,12 @@ public:
   UnitDSP() = default;
   UnitDSP(UnitModel const* model, int octave, UnitNote note, float rate);
 private:
-  float Generate(float phase, float frequency);
-  float GenerateBlep(float phase, float frequency);
-  float GenerateAdditive(float phase, float frequency) const;
-  float Modulate(UnitModTarget target, CvSample carrier, CvState const& cv) const;
+  float ModulatePhase(CvSample modulator1, CvSample modulator2) const;
+  float ModulateFrequency(CvSample modulator1, CvSample modulator2) const;
+  float Generate(float phase, float frequency, CvSample modulator1, CvSample modulator2);
+  float GeneratePolyBlep(float phase, float frequency, CvSample modulator1, CvSample modulator2);
+  float GenerateAdditive(float phase, float frequency, CvSample modulator1, CvSample modulator2) const;
+  float Modulate(UnitModTarget target, CvSample carrier, CvSample modulator1, CvSample modulator2) const;
 };
 
 inline FloatSample
