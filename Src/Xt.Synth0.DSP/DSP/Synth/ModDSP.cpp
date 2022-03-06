@@ -39,17 +39,19 @@ ModDSP::Modulator(CvState const& cv) const
 float
 ModDSP::Modulate(CvSample carrier, CvSample modulator) const
 {
-  float range = 0.0f;
+  double range = 0.0f;
   if(_amount == 0.0f) return carrier.value;
-  if (!modulator.bipolar && _amount > 0.0f) range = 1.0f - carrier.value;
-  if (!modulator.bipolar && !carrier.bipolar && _amount < 0.0f) range = carrier.value;
-  if (!modulator.bipolar && carrier.bipolar && _amount < 0.0f) range = 1.0f + carrier.value;
-  if (modulator.bipolar && carrier.bipolar) range = 1.0f - std::fabs(carrier.value);
-  if (modulator.bipolar && !carrier.bipolar) range = 0.5f - std::fabs(carrier.value - 0.5f);
-  float result = carrier.value + modulator.value * _amount * range;
+  double carrierValue = EpsilonToZero(carrier.value);
+  double modulatorValue = EpsilonToZero(modulator.value);
+  if (!modulator.bipolar && _amount > 0.0f) range = 1.0 - carrierValue;
+  if (!modulator.bipolar && !carrier.bipolar && _amount < 0.0f) range = carrierValue;
+  if (!modulator.bipolar && carrier.bipolar && _amount < 0.0f) range = 1.0 + carrierValue;
+  if (modulator.bipolar && carrier.bipolar) range = 1.0 - std::fabs(carrierValue);
+  if (modulator.bipolar && !carrier.bipolar) range = 0.5 - std::fabs(carrierValue - 0.5f);
+  double result = carrierValue + modulatorValue * _amount * range;
   if(carrier.bipolar) BipolarSanity(result);
   else UnipolarSanity(result);
-  return result;
+  return static_cast<float>(result);
 }
 
 } // namespace Xts
