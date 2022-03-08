@@ -65,7 +65,7 @@ namespace Xt.Synth0
 		static void OnSynthParamChanged(object sender, ParamChangedEventArgs e)
 		{
 			if (!Model.Stream.IsRunning) return;
-			var value = Model.Track.Synth.Params[e.Index].Value;
+			var value = Model.Track.Synth.GetParam(e.Index);
 			AutomationQueue.EnqueueUI(e.Index, value);
 		}
 
@@ -139,10 +139,18 @@ namespace Xt.Synth0
 
 		static void OnDispatcherInactive(object sender, EventArgs e)
 		{
-			var @params = Model.Track.Synth.Params;
+            var model = Model.Track.Synth;
 			var actions = AutomationQueue.DequeueAudio(out var count);
-			for (int i = 0; i < count; i++)
-				@params[actions[i].Param].Value = @actions[i].Value;
+            model.BeginUpdate();
+            try
+            {
+                for (int i = 0; i < count; i++)
+                    model.SetParam(actions[i].Param, @actions[i].Value);
+            }
+            finally
+            {
+                model.EndUpdate();
+            }
 		}
 
 		static void OnError(Exception error)
