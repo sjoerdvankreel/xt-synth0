@@ -15,15 +15,18 @@ namespace Xt.Synth0.Model
         public int Value
         {
             get => _value;
-            set { if (SetValue(value)) PropertyChanged?.Invoke(this, EventArgs); }
+            set
+            {
+                if (_value == value) return;
+                SetValue(value);
+                PropertyChanged?.Invoke(this, EventArgs);
+            }
         }
 
-        internal bool SetValue(int value)
+        internal void SetValue(int value)
         {
-            if (_value == value) return false;
             if (value < Info.Min || value > Info.Max) throw new ArgumentException();
             _value = value;
-            return true;
         }
     }
 }
