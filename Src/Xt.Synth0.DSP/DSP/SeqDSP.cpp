@@ -188,7 +188,7 @@ SeqDSP::Trigger(SeqInput const& input)
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-      _dsps[voice] = SynthDSP(& _synths[voice], key.oct, unote, Param::Level(key.amp), bpm, input.rate);
+      new (&_dsps[voice]) SynthDSP(&_synths[voice], key.oct, unote, Param::Level(key.amp), bpm, input.rate);
     }
   }
   return result;
