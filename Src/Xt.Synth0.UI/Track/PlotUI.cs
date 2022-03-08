@@ -22,8 +22,18 @@ namespace Xt.Synth0.UI
             internal PointCollection r;
         }
 
+        static Action _update;
+        static bool _updating = false;
+        public static void BeginUpdate() => _updating = true;
+
         static readonly RequestPlotDataEventArgs Args = new();
         public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
+
+        public static void EndUpdate()
+        {
+            _updating = false;
+            _update();
+        }
 
         static FrameworkElement MakeOff()
         {
@@ -77,12 +87,13 @@ namespace Xt.Synth0.UI
         {
             var synth = app.Track.Synth;
             var dock = new DockPanel();
-            var content = dock.Add(new ContentControl());
             var result = Create.ThemedContent(dock);
-            synth.ParamChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
-            content.SizeChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
-            app.Settings.PropertyChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
-            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
+            var content = dock.Add(new ContentControl());
+            _update = () => Update(app, text, content, foreground1, foreground2);
+            synth.ParamChanged += (s, e) => _update();
+            content.SizeChanged += (s, e) => _update();
+            app.Settings.PropertyChanged += (s, e) => _update();
+            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => _update();
             result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
             result.BorderThickness = new(GroupUI.BorderThickness, 0.0, GroupUI.BorderThickness, GroupUI.BorderThickness);
             return result;
@@ -176,6 +187,7 @@ namespace Xt.Synth0.UI
 
         static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2)
         {
+            if (_updating) return;
             var plot = app.Track.Synth.Plot;
             if (plot.On.Value == 0)
             {

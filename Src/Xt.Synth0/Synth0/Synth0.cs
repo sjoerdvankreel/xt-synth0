@@ -115,7 +115,15 @@ namespace Xt.Synth0
 		static void Load(MainWindow window, string path)
 		{
 			if (path == null) return;
-			IO.LoadFile(path).CopyTo(Model.Track);
+            try
+            {
+                PlotUI.BeginUpdate();
+                IO.LoadFile(path).CopyTo(Model.Track);
+            }
+            finally
+            {
+                PlotUI.EndUpdate();
+            }
 			window.SetClean(path);
 			Model.Settings.AddRecentFile(path);
 			IO.SaveSettings(Model.Settings);
