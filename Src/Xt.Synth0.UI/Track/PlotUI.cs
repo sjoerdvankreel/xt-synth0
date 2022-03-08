@@ -22,17 +22,19 @@ namespace Xt.Synth0.UI
             internal PointCollection r;
         }
 
-        static Action _update;
+        static Action<bool> _update;
         static bool _updating = false;
+        public static void ForceUpdate() => _update(true);
         public static void BeginUpdate() => _updating = true;
 
+        static readonly FrameworkElement Off = MakeOff();
         static readonly RequestPlotDataEventArgs Args = new();
         public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 
         public static void EndUpdate()
         {
             _updating = false;
-            _update();
+            _update(false);
         }
 
         static FrameworkElement MakeOff()
@@ -89,11 +91,11 @@ namespace Xt.Synth0.UI
             var dock = new DockPanel();
             var result = Create.ThemedContent(dock);
             var content = dock.Add(new ContentControl());
-            _update = () => Update(app, text, content, foreground1, foreground2);
-            synth.ParamChanged += (s, e) => _update();
-            content.SizeChanged += (s, e) => _update();
-            app.Settings.PropertyChanged += (s, e) => _update();
-            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => _update();
+            _update = force => Update(app, text, content, foreground1, foreground2, force);
+            synth.ParamChanged += (s, e) => _update(false);
+            content.SizeChanged += (s, e) => _update(false);
+            app.Settings.PropertyChanged += (s, e) => _update(false);
+            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => _update(false);
             result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
             result.BorderThickness = new(GroupUI.BorderThickness, 0.0, GroupUI.BorderThickness, GroupUI.BorderThickness);
             return result;
@@ -185,21 +187,22 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2)
+        static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2, bool force)
         {
             if (_updating) return;
+            if (app.Stream.IsRunning && !force) return;
             var plot = app.Track.Synth.Plot;
             if (plot.On.Value == 0)
             {
                 text.Text = null;
-                container.Content = MakeOff();
+                container.Content = Off;
                 return;
             }
             int w = (int)container.ActualWidth;
             double h = container.ActualHeight;
             Args.Pixels = w - PadLeft;
             RequestPlotData?.Invoke(null, Args);
-            container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max, foreground1, foreground2) : MakeOff();
+            container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max, foreground1, foreground2) : Off;
             text.Text = null;
             if (Args.LSamples.Count == 0) return;
             string header = $"{Args.LSamples.Count} samples";

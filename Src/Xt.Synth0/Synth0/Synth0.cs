@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -12,9 +13,13 @@ namespace Xt.Synth0
 {
 	static class Synth0
 	{
-		static AudioEngine _engine;
-		static readonly AppModel Model = new AppModel();
-		static readonly DateTime StartTime = DateTime.Now;
+        static AudioEngine _engine;
+        static readonly AppModel Model = new AppModel();
+        static readonly DateTime StartTime = DateTime.Now;
+
+        const double AudioUpdateFps = 30.0;
+        static long _lastAudioUpdateMs = 0;
+        static readonly Stopwatch _audioUpdateTimer = new Stopwatch();
 
 		static unsafe Native.PlotState* _nativePlotState;
 		static unsafe SynthModel.Native* _nativePlotSynthModel;
@@ -25,7 +30,8 @@ namespace Xt.Synth0
 		{
 			try
 			{
-				Xt.Synth0.Model.Model.MainThreadId = Thread.CurrentThread.ManagedThreadId;
+                _audioUpdateTimer.Start();
+                Xt.Synth0.Model.Model.MainThreadId = Thread.CurrentThread.ManagedThreadId;
 				var infos = Model.Track.Synth.ParamInfos();
 				fixed (SyncStepModel.Native* steps = SyncStepModel.Steps)
 				fixed (SynthModel.Native.ParamInfo* pis = infos)
@@ -56,9 +62,9 @@ namespace Xt.Synth0
 			app.Startup += OnAppStartup;
 			PlotUI.RequestPlotData += OnRequestPlotData;
 			PatternKeyUI.RequestPlayNote += OnRequestPlayNote;
-			app.Dispatcher.Hooks.DispatcherInactive += OnDispatcherInactive;
+            Model.Track.Synth.ParamChanged += OnSynthParamChanged;
+            app.Dispatcher.Hooks.DispatcherInactive += OnDispatcherInactive;
 			app.DispatcherUnhandledException += OnDispatcherUnhandledException;
-			Model.Track.Synth.ParamChanged += OnSynthParamChanged;
 			app.Run(CreateWindow());
 		}
 
@@ -145,13 +151,6 @@ namespace Xt.Synth0
 			e.Handled = true;
 		}
 
-		static void OnDispatcherInactive(object sender, EventArgs e)
-		{
-			var @params = Model.Track.Synth.Params;
-			foreach(var action in AutomationQueue.DequeueAudio())
-				@params[action.Param].Value = action.Value;
-		}
-
 		static void OnError(Exception error)
 		{
 			string message = error.Message;
@@ -162,9 +161,23 @@ namespace Xt.Synth0
 			var showError = new Action(() => MessageBox.Show(window, message,
 				"Error", MessageBoxButton.OK, MessageBoxImage.Error));
 			window.Dispatcher.BeginInvoke(showError);
-		}
+        }
 
-		static bool SaveUnsavedChanges(MainWindow window)
+        static void OnDispatcherInactive(object sender, EventArgs e)
+        {
+            if (_audioUpdateTimer.ElapsedMilliseconds < _lastAudioUpdateMs + 1000.0 / AudioUpdateFps) return;
+            var @params = Model.Track.Synth.Params;
+            var queue = AutomationQueue.DequeueAudio();
+            if (queue.Count > 0)
+            {
+                foreach (var action in queue)
+                    @params[action.Param].Value = action.Value;
+                PlotUI.ForceUpdate();
+            }
+            _lastAudioUpdateMs = _audioUpdateTimer.ElapsedMilliseconds;
+        }
+
+        static bool SaveUnsavedChanges(MainWindow window)
 		{
 			if (!window.IsDirty) return true;
 			var result = MessageBox.Show(window, "Save changes?",
