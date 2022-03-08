@@ -41,7 +41,10 @@ namespace Xt.Synth0.UI
             var text = new TextBlock();
             var plot = app.Track.Synth.Plot;
             text.VerticalAlignment = VerticalAlignment.Center;
-            var result = Create.ThemedGroup(app.Settings, plot, MakeContent(app, text));
+            var resources = Utility.GetThemeResources(app.Settings, plot.ThemeGroup);
+            var foreground1 = (Brush)resources[Utility.Foreground1Key];
+            var foreground2 = (Brush)resources[Utility.Foreground2Key];
+            var result = Create.ThemedGroup(app.Settings, plot, MakeContent(app, text, foreground1, foreground2));
             var wrap = new WrapPanel();
             wrap.Add(Create.Text(plot.Name));
             var enabled = wrap.Add(ParamUI.MakeControl(app, plot.ThemeGroup, plot.Enabled));
@@ -51,13 +54,13 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement MakeContent(AppModel app, TextBlock text)
+        static UIElement MakeContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
         {
             var result = new Grid();
             var dock = new DockPanel();
             var plot = app.Track.Synth.Plot;
             dock.Add(GroupUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
-            dock.Add(MakePlotContent(app, text), Dock.Top);
+            dock.Add(MakePlotContent(app, text, foreground1, foreground2), Dock.Top);
             var conv = new VisibilityConverter<int>(true, 1);
             var binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
             dock.SetBinding(UIElement.VisibilityProperty, binding);
@@ -70,16 +73,16 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement MakePlotContent(AppModel app, TextBlock text)
+        static UIElement MakePlotContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
         {
             var synth = app.Track.Synth;
             var dock = new DockPanel();
             var content = dock.Add(new ContentControl());
             var result = Create.ThemedContent(dock);
-            synth.ParamChanged += (s, e) => Update(app, text, content);
-            content.SizeChanged += (s, e) => Update(app, text, content);
-            app.Settings.PropertyChanged += (s, e) => Update(app, text, content);
-            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => Update(app, text, content);
+            synth.ParamChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
+            content.SizeChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
+            app.Settings.PropertyChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
+            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => Update(app, text, content, foreground1, foreground2);
             result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
             result.BorderThickness = new(GroupUI.BorderThickness, 0.0, GroupUI.BorderThickness, GroupUI.BorderThickness);
             return result;
@@ -123,18 +126,18 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static void PlotProperties(Shape shape)
+        static void PlotProperties(Shape shape, Brush foreground1)
         {
             shape.Opacity = 0.67;
-            shape.SetResourceReference(Shape.StrokeProperty, Utility.Foreground1Key);
+            shape.Stroke = foreground1;
         }
 
-        static UIElement PlotLine(PointCollection data)
+        static UIElement PlotLine(PointCollection data, Brush foreground1)
         {
             var result = new Polyline();
             result.Points = data;
             result.StrokeThickness = 1.5;
-            PlotProperties(result);
+            PlotProperties(result, foreground1);
             return result;
         }
 
@@ -146,7 +149,7 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement Split(double x1, double x2, double y1, double y2)
+        static UIElement Split(double x1, double x2, double y1, double y2, Brush foreground2)
         {
             var result = new Line();
             result.X1 = x1;
@@ -154,12 +157,12 @@ namespace Xt.Synth0.UI
             result.Y1 = y1;
             result.Y2 = y2;
             result.Opacity = 0.5f;
+            result.Stroke = foreground2;
             result.StrokeDashArray = new DoubleCollection(new[] { 4.0, 2.0 });
-            result.SetResourceReference(Shape.StrokeProperty, Utility.Foreground2Key);
             return result;
         }
 
-        static UIElement PlotBar(Point p, double h, double stroke, double @base)
+        static UIElement PlotBar(Point p, double h, double stroke, double @base, Brush foreground1)
         {
             var result = new Line();
             result.X1 = p.X;
@@ -167,11 +170,11 @@ namespace Xt.Synth0.UI
             result.Y2 = p.Y;
             result.Y1 = (h - PadBottom) * @base + VPadText;
             result.StrokeThickness = stroke;
-            PlotProperties(result);
+            PlotProperties(result, foreground1);
             return result;
         }
 
-        static void Update(AppModel app, TextBlock text, ContentControl container)
+        static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2)
         {
             var plot = app.Track.Synth.Plot;
             if (plot.On.Value == 0)
@@ -184,7 +187,7 @@ namespace Xt.Synth0.UI
             double h = container.ActualHeight;
             Args.Pixels = w - PadLeft;
             RequestPlotData?.Invoke(null, Args);
-            container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max) : MakeOff();
+            container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max, foreground1, foreground2) : MakeOff();
             text.Text = null;
             if (Args.LSamples.Count == 0) return;
             string header = $"{Args.LSamples.Count} samples";
@@ -193,7 +196,7 @@ namespace Xt.Synth0.UI
             text.Text = header;
         }
 
-        static UIElement Plot(int w, double h, float min, float max)
+        static UIElement Plot(int w, double h, float min, float max, Brush foreground1, Brush foreground2)
         {
             var result = new Canvas();
             double hPad = h - PadBottom;
@@ -205,7 +208,7 @@ namespace Xt.Synth0.UI
             {
                 double pos = (Args.VSplitVals[i] - min) / (max - min);
                 double y = VPadText + pos * hPad;
-                result.Add(Split(PadLeft, w, y, y));
+                result.Add(Split(PadLeft, w, y, y, foreground2));
                 result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i].PadLeft(4)));
             }
 
@@ -213,21 +216,21 @@ namespace Xt.Synth0.UI
             {
                 double pos = Args.HSplitVals[i] / (Args.LSamples.Count - 1.0);
                 double l = PadLeft + pos * (w - PadLeft);
-                result.Add(Split(l, l, VPadText, VPadText + h - PadBottom));
+                result.Add(Split(l, l, VPadText, VPadText + h - PadBottom, foreground2));
                 result.Add(Marker(l - HPadText, h - PadBottom + VPadText, Args.HSplitMarkers[i]));
             }
 
             if (!Args.Spectrum)
             {
-                result.Add(PlotLine(data.l));
-                if (Args.Stereo) result.Add(PlotLine(data.r));
+                result.Add(PlotLine(data.l, foreground1));
+                if (Args.Stereo) result.Add(PlotLine(data.r, foreground1));
             }
             else
                 for (int i = 0; i < data.l.Count; i++)
                 {
                     double @baseL = Args.Stereo ? 0.5 : 1.0;
-                    result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, @baseL));
-                    if (Args.Stereo) result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count, 1.0));
+                    result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, @baseL, foreground1));
+                    if (Args.Stereo) result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count, 1.0, foreground1));
                 }
             return result;
         }
