@@ -45,7 +45,6 @@
     <ClInclude Include="Model\Synth\ModModel.hpp" />
     <ClInclude Include="Model\Synth\PlotModel.hpp" />
     <ClInclude Include="Model\Synth\SyncStepModel.hpp" />
-    <ClInclude Include="Model\Synth\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\UnitModel.hpp" />
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
