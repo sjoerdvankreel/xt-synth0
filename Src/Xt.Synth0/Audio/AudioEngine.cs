@@ -133,7 +133,7 @@ namespace Xt.Synth0
             _stopStream = StopStream;
             _dispatchToUI = dispatchToUI;
             _copyStreamToUI = CopyStreamToUI;
-            _automationValues = new int[_originalSynth.ParamCount];
+            _automationValues = new int[_originalSynth.Params.Count];
 
             _nativeDSP = Native.XtsSeqDSPCreate();
             _nativeState = Native.XtsSeqStateCreate();
@@ -431,28 +431,22 @@ namespace Xt.Synth0
 
         void BeginAutomation()
         {
+            var @params = _localSynth.Params;
             var actions = AutomationQueue.DequeueUI(out var count);
-            _localSynth.BeginUpdate();
-            try
-            {
-                for (int i = 0; i < count; i++)
-                    _localSynth.SetParam(actions[i].Param, @actions[i].Value);
-            }
-            finally
-            {
-                _localSynth.EndUpdate();
-            }
-            for (int i = 0; i < _localSynth.ParamCount; i++)
-                _automationValues[i] = _localSynth.GetParam(i);
+            for (int i = 0; i < count; i++)
+                @params[actions[i].Param].Value = @actions[i].Value;
+            for (int i = 0; i < @params.Count; i++)
+                _automationValues[i] = @params[i].Value;
             _localSynth.ToNative(_nativeBinding);
         }
 
         void EndAutomation()
         {
             _localSynth.FromNative(_nativeBinding);
-            for (int i = 0; i < _localSynth.ParamCount; i++)
-                if (_localSynth.GetParam(i) != _automationValues[i])
-                    AutomationQueue.EnqueueAudio(i, _localSynth.GetParam(i));
+            var @params = _localSynth.Params;
+            for (int i = 0; i < @params.Count; i++)
+                if (@params[i].Value != _automationValues[i])
+                    AutomationQueue.EnqueueAudio(i, @params[i].Value);
         }
 
         internal unsafe void OnBuffer(in XtBuffer buffer, in XtFormat format)

@@ -7,8 +7,7 @@ namespace Xt.Synth0.Model
 {
 	public unsafe abstract class MainModel : IGroupContainerModel
 	{
-        bool _updating = false;
-		protected IReadOnlyList<Param> Params { get; }
+		public IReadOnlyList<Param> Params { get; }
 		public event EventHandler<ParamChangedEventArgs> ParamChanged;
 
 		public abstract int Index { get; }
@@ -17,9 +16,11 @@ namespace Xt.Synth0.Model
 		public abstract IReadOnlyList<IGroupContainerModel> Children { get; }
 		public void* Address(void* parent) => throw new NotSupportedException();
 
-        public int ParamCount => Params.Count;
-        public void BeginUpdate() => _updating = true;
-        public int GetParam(int index) => Params[index].Value;
+		public void CopyTo(MainModel main)
+		{
+			for (int p = 0; p < Params.Count; p++)
+				main.Params[p].Value = Params[p].Value;
+		}
 
 		protected MainModel()
 		{
@@ -29,35 +30,9 @@ namespace Xt.Synth0.Model
 				var args = new ParamChangedEventArgs(p);
 				Params[p].PropertyChanged += (s, e) => ParamChanged?.Invoke(this, args);
 			}
-        }
+		}
 
-        public void SetParam(int index, int value)
-        {
-            if (!_updating) throw new InvalidOperationException();
-            Params[index].SetValue(value);
-        }
-
-        public void EndUpdate()
-        {
-            _updating = false;
-            ParamChanged?.Invoke(this, new ParamChangedEventArgs(-1));
-        }
-
-        public void CopyTo(MainModel main)
-        {
-            main.BeginUpdate();
-            try
-            {
-                for (int p = 0; p < ParamCount; p++)
-                    main.SetParam(p, GetParam(p));
-            }
-            finally
-            {
-                main.EndUpdate();
-            }
-        }
-
-        protected IList<(IParamGroupModel Group, Param Param)> ListParams(IGroupContainerModel container)
+		protected IList<(IParamGroupModel Group, Param Param)> ListParams(IGroupContainerModel container)
 		{
 			var result = new List<(IParamGroupModel, Param)>();
 			for (int i = 0; i < container.Groups.Count; i++)
