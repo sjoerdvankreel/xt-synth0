@@ -3,7 +3,7 @@
 
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
-#include "AudioDSP.hpp"
+#include <DSP/Synth/AudioDSP.hpp>
 #include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 

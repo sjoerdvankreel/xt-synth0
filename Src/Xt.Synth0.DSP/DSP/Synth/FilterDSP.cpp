@@ -1,8 +1,8 @@
 #include <DSP/Synth/FilterDSP.hpp>
+#include <DSP/Synth/AudioDSP.hpp>
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
 #include <DSP/PlotDSP.hpp>
-#include <DSP/AudioDSP.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 
 #include <memory>
