@@ -1,5 +1,4 @@
 hard sync
-dont plot too often (throttle)
 sampler
 automation groups
 detach sequencer
@@ -25,14 +24,9 @@ dont need to recalc filter parameters per voice
 plot filter freq response
 more filter types
 more unit types
-less resonance/depend on filttype ?
 filter keyboard track
 filter modulation - how ?
 cleanup native includes / split files / etc
 paraminfobuilder
 handle stream stopped with error
-drop epstozero?
 sin+cos env slopes?
-dump stacktraces to disk
-plot on is less cpu wtf
-test freqmod
