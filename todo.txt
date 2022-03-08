@@ -30,3 +30,4 @@ cleanup native includes / split files / etc
 paraminfobuilder
 handle stream stopped with error
 sin+cos env slopes?
+thread processor core affinity
