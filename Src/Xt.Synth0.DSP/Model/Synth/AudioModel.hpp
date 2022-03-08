@@ -11,7 +11,7 @@ namespace Xts {
 struct XTS_ALIGN AudioModel
 {
   UnitModel units[XTS_SYNTH_UNIT_COUNT];
-  FilterModel filts[XTS_SYNTH_FILTER_COUNT];
+  FilterModel filters[XTS_SYNTH_FILTER_COUNT];
 };
 XTS_CHECK_SIZE(AudioModel, 552);
 

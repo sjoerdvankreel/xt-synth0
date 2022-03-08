@@ -14,20 +14,13 @@ namespace Xt.Synth0.Model
             internal CvModel.Native cv;
             internal AmpModel.Native amp;
 			internal PlotModel.Native plot;
-            internal AudioModel audio;
+            internal AudioModel.Native audio;
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public struct ParamInfo { public int min, max; }
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
 			public ref struct VoiceBinding { internal fixed byte @params[Model.ParamCount * 8]; }
-
-            [StructLayout(LayoutKind.Sequential, Pack = 8)]
-            internal ref struct AudioModel
-            {
-                internal fixed byte units[SynthConfig.UnitCount * UnitModel.Native.Size];
-                internal fixed byte filts[SynthConfig.FilterCount * FilterModel.Native.Size];
-            }
 		}
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }

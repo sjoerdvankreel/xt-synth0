@@ -19,7 +19,7 @@ AudioDSP(AudioModel const* model, int oct, UnitNote note, float rate):
 _output(), _units(), _flts()
 {
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++)
-    _flts[i] = FilterDSP(&model->filts[i], i, rate);
+    _flts[i] = FilterDSP(&model->filters[i], i, rate);
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++)
     _units[i] = UnitDSP(&model->units[i], oct, note, rate);
 }

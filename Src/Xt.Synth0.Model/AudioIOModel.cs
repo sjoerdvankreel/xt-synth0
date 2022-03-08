@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Xt.Synth0.Model
 {
-	public static class AudioModel
+	public static class AudioIOModel
 	{
 		public static int ToInt(this SampleRate rate) => rate switch
 		{

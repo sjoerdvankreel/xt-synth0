@@ -294,9 +294,9 @@ namespace Xt.Synth0
 			var logger = (string msg) => IO.LogError(StartTime, msg, null);
 			Action<Action> dispatchToUI = a => Application.Current?.Dispatcher.BeginInvoke(a);
 			var result = AudioEngine.Create(helper.Handle, Model.Settings, Model.Track.Synth, logger, dispatchToUI);
-			AudioModel.AddAsioDevices(result.AsioDevices);
-			AudioModel.AddWasapiDevices(result.WasapiDevices);
-			AudioModel.AddDSoundDevices(result.DSoundDevices);
+			AudioIOModel.AddAsioDevices(result.AsioDevices);
+			AudioIOModel.AddWasapiDevices(result.WasapiDevices);
+			AudioIOModel.AddDSoundDevices(result.DSoundDevices);
 			return result;
 		}
 	}

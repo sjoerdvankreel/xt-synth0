@@ -231,7 +231,7 @@ RenderFilter(SynthModel const& model, PlotInput const& input, PlotOutput& output
   state.audio = &model.audio;
   state.spectrum = model.plot.spec;
   state.index = GroupIndex(model.plot.type, PlotType::Filt1);
-  state.model = &model.audio.filts[state.index];
+  state.model = &model.audio.filters[state.index];
   FilterDSP::Plot(&state);
 }
 

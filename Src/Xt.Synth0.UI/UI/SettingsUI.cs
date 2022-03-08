@@ -203,7 +203,7 @@ namespace Xt.Synth0.UI
         static UIElement MakeDeviceType(SettingsModel settings, Cell cell)
         {
             var result = Create.Element<ComboBox>(cell);
-            result.ItemsSource = AudioModel.DeviceTypes;
+            result.ItemsSource = AudioIOModel.DeviceTypes;
             var binding = Bind.To(settings, nameof(settings.DeviceType));
             result.SetBinding(Selector.SelectedValueProperty, binding);
             result.SelectedValuePath = nameof(EnumModel<DeviceType>.Enum);
@@ -214,7 +214,7 @@ namespace Xt.Synth0.UI
         {
             var result = MakeDevice(settings, DeviceType.Asio,
                 nameof(SettingsModel.AsioDeviceId), cell);
-            result.ItemsSource = AudioModel.AsioDevices;
+            result.ItemsSource = AudioIOModel.AsioDevices;
             return result;
         }
 
@@ -222,7 +222,7 @@ namespace Xt.Synth0.UI
         {
             var result = MakeDevice(settings, DeviceType.Wasapi,
                 nameof(SettingsModel.WasapiDeviceId), cell);
-            result.ItemsSource = AudioModel.WasapiDevices;
+            result.ItemsSource = AudioIOModel.WasapiDevices;
             return result;
         }
 
@@ -230,14 +230,14 @@ namespace Xt.Synth0.UI
         {
             var result = MakeDevice(settings, DeviceType.DSound,
                 nameof(SettingsModel.DSoundDeviceId), cell);
-            result.ItemsSource = AudioModel.DSoundDevices;
+            result.ItemsSource = AudioIOModel.DSoundDevices;
             return result;
         }
 
         static UIElement MakeBufferSize(SettingsModel settings, Cell cell)
         {
             var result = MakeCombo(cell, LeftControlWidth);
-            result.ItemsSource = AudioModel.BufferSizes;
+            result.ItemsSource = AudioIOModel.BufferSizes;
             var binding = Bind.To(settings, nameof(settings.BufferSize));
             result.SetBinding(Selector.SelectedValueProperty, binding);
             result.SelectedValuePath = nameof(EnumModel<BufferSize>.Enum);
@@ -247,7 +247,7 @@ namespace Xt.Synth0.UI
         static UIElement MakeBitDepth(SettingsModel settings, Cell cell)
         {
             var result = MakeCombo(cell, LeftControlWidth);
-            result.ItemsSource = AudioModel.BitDepths;
+            result.ItemsSource = AudioIOModel.BitDepths;
             var binding = Bind.To(settings, nameof(settings.BitDepth));
             result.SetBinding(Selector.SelectedValueProperty, binding);
             result.SelectedValuePath = nameof(EnumModel<BitDepth>.Enum);
@@ -257,7 +257,7 @@ namespace Xt.Synth0.UI
         static UIElement MakeSampleRate(SettingsModel settings, Cell cell)
         {
             var result = MakeCombo(cell, LeftControlWidth);
-            result.ItemsSource = AudioModel.SampleRates;
+            result.ItemsSource = AudioIOModel.SampleRates;
             var binding = Bind.To(settings, nameof(settings.SampleRate));
             result.SetBinding(Selector.SelectedValueProperty, binding);
             result.SelectedValuePath = nameof(EnumModel<SampleRate>.Enum);
