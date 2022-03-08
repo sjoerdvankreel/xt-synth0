@@ -1,13 +1,14 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Xt.Synth0
 {
 	static class AutomationQueue
 	{
-		const int MaxActions = 32;
-		static readonly AutomationAction[] UIActions = new AutomationAction[MaxActions];
-		static readonly AutomationAction[] AudioActions = new AutomationAction[MaxActions];
-		static readonly ConcurrentQueue<AutomationAction> UIQueue = new ConcurrentQueue<AutomationAction>();
+        const int InitialCapacity = 32;
+		static readonly List<AutomationAction> UIActions = new List<AutomationAction>(InitialCapacity);
+		static readonly List<AutomationAction> AudioActions = new List<AutomationAction>(InitialCapacity);
+        static readonly ConcurrentQueue<AutomationAction> UIQueue = new ConcurrentQueue<AutomationAction>();
 		static readonly ConcurrentQueue<AutomationAction> AudioQueue = new ConcurrentQueue<AutomationAction>();
 
 		internal static void EnqueueUI(int param, int value)
@@ -21,21 +22,19 @@ namespace Xt.Synth0
 			AudioQueue.Clear();
 		}
 
-		internal static AutomationAction[] DequeueUI(out int count)
+		internal static IReadOnlyList<AutomationAction> DequeueUI()
 		{
-			int i = 0;
-			while (UIQueue.TryDequeue(out var action))
-				UIActions[i++] = action;
-			count = i;
+            UIActions.Clear();
+            while (UIQueue.TryDequeue(out var action))
+                UIActions.Add(action);
 			return UIActions;
 		}
 
-		internal static AutomationAction[] DequeueAudio(out int count)
+		internal static IReadOnlyList<AutomationAction> DequeueAudio()
 		{
-			int i = 0;
-			while (AudioQueue.TryDequeue(out var action))
-				AudioActions[i++] = action;
-			count = i;
+            AudioActions.Clear();
+            while (AudioQueue.TryDequeue(out var action))
+                AudioActions.Add(action);
 			return AudioActions;
 		}
 	}

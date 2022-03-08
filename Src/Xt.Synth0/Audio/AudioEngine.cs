@@ -432,9 +432,8 @@ namespace Xt.Synth0
         void BeginAutomation()
         {
             var @params = _localSynth.Params;
-            var actions = AutomationQueue.DequeueUI(out var count);
-            for (int i = 0; i < count; i++)
-                @params[actions[i].Param].Value = @actions[i].Value;
+            foreach (var action in AutomationQueue.DequeueUI())
+                @params[action.Param].Value = action.Value;
             for (int i = 0; i < @params.Count; i++)
                 _automationValues[i] = @params[i].Value;
             _localSynth.ToNative(_nativeBinding);

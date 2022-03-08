@@ -148,9 +148,8 @@ namespace Xt.Synth0
 		static void OnDispatcherInactive(object sender, EventArgs e)
 		{
 			var @params = Model.Track.Synth.Params;
-			var actions = AutomationQueue.DequeueAudio(out var count);
-			for (int i = 0; i < count; i++)
-				@params[actions[i].Param].Value = @actions[i].Value;
+			foreach(var action in AutomationQueue.DequeueAudio())
+				@params[action.Param].Value = action.Value;
 		}
 
 		static void OnError(Exception error)
