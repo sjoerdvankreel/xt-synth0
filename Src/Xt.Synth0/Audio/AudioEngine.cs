@@ -451,7 +451,7 @@ namespace Xt.Synth0
         internal unsafe void OnBuffer(in XtBuffer buffer, in XtFormat format)
         {
             _stopwatch.Restart();
-            BeginAutomation();
+          //  BeginAutomation();
             int rate = format.mix.rate;
             var state = _nativeState;
             state->rate = rate;
@@ -460,18 +460,18 @@ namespace Xt.Synth0
             state->seq = _nativeSeq;
             state->synth = _nativeSynth;
             Native.XtsSeqDSPRender(_nativeDSP, state);
-            EndAutomation();
-            long pos = _nativeState->pos;
+            //EndAutomation();
+            //long pos = _nativeState->pos;
             CopyBuffer(in buffer, in format);
-            ResetWarnings(rate, pos);
-            _localStream.CurrentRow = _nativeState->row;
-            _stopwatch.Stop();
-            UpdateCpuUsage(buffer.frames, rate, pos);
-            bool clip = state->clip != 0;
-            bool exhausted = state->exhausted != 0;
-            UpdateStreamInfo(buffer.frames, rate, state->voices, clip, exhausted, pos);
-            if (state->end != 0) _dispatchToUI(_stopStream);
-            else _dispatchToUI(_copyStreamToUI);
+            //ResetWarnings(rate, pos);
+            //_localStream.CurrentRow = _nativeState->row;
+            //_stopwatch.Stop();
+            //UpdateCpuUsage(buffer.frames, rate, pos);
+            //bool clip = state->clip != 0;
+            //bool exhausted = state->exhausted != 0;
+            //UpdateStreamInfo(buffer.frames, rate, state->voices, clip, exhausted, pos);
+            //if (state->end != 0) _dispatchToUI(_stopStream);
+            //else _dispatchToUI(_copyStreamToUI);
         }
 
         internal void OnRunning(bool running, ulong error)
