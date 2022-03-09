@@ -134,7 +134,8 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
     if (i == 0 || EnvOutput().switchedStage) 
       output.hSplits->emplace_back(i, FormatEnv(EnvOutput().stage));
     done |= !output.spectrum && End();
-    done |= output.spectrum && i++ == static_cast<int>(output.rate);
+    done |= output.spectrum && i == static_cast<int>(output.rate);
+    i++;
   }
 }
 
