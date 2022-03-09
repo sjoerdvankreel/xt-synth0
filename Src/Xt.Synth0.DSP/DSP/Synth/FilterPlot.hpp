@@ -25,6 +25,7 @@ public:
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 public:
   float Frequency(float bpm, float rate) const { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
+public:
   FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter, int index) : _index(index), _cv(cv), _audio(audio), _filter(filter) {}
 };
 

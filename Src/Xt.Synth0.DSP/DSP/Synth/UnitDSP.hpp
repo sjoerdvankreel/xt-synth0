@@ -46,8 +46,9 @@ public PeriodicPlot
   struct CvModel const* _cv;
   struct UnitModel const* _unit;
 public:
+  UnitPlot(struct CvModel const* cv, struct UnitModel const* unit) : _cv(cv), _unit(unit) {}
+public:
   float Next() { return _unitDsp.Next(_cvDsp.Next()).Mono(); }
-  UnitPlot(struct CvModel const* cv, struct UnitModel const* unit): _cv(cv), _unit(unit) {}
   float Frequency(float bpm, float rate) const { return UnitDSP::Frequency(*_unit, 4, UnitNote::C); }
 public:
   PeriodicParams Params() const;

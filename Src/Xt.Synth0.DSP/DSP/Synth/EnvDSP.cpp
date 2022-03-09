@@ -1,5 +1,4 @@
 #include <DSP/Synth/EnvDSP.hpp>
-#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Param.hpp>
 
 #include <cmath>
@@ -14,27 +13,33 @@
 
 namespace Xts {
 
-class EnvPlot: public StagedPlot
+StagedParams
+EnvPlot::Params() const
 {
-  EnvDSP _dsp;
-  EnvModel const* _model;
-public:
-  EnvPlot(EnvModel const* model): _model(model) {}
+  StagedParams result;
+  result.stereo = false;
+  result.bipolar = false;
+  result.allowResample = true;
+  return result;
+}
 
-  void Next() { _dsp.Next(); };
-  float Right() const { return 0.0f; }
-  bool Stereo() const { return false; }
-  bool Bipolar() const { return false; }
-  bool End() const { return _dsp.End(); }
-  bool AllowResample() const { return true; }
-  EnvSample Release() { return _dsp.Release(); };
-  float Left() const { return _dsp.Output().value; }
-  EnvSample EnvOutput() const { return _dsp.Output(); }
-  void Init(float bpm, float rate) { _dsp = EnvDSP(_model, bpm, rate); }
+float
+EnvPlot::ReleaseSamples(float bpm, float rate) const
+{
+  XtsBool sync = _model->sync;
+  int32_t time = _model->releaseTime;
+  int32_t step = _model->releaseStep;
+  return Param::SamplesF(sync, time, step, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
+}
 
-  float ReleaseSamples(float bpm, float rate) const
-  { return Param::SamplesF(_model->sync, _model->releaseTime, _model->releaseStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS); }
-};
+void 
+EnvPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  int base = static_cast<int>(PlotType::Env1);
+  int type = static_cast<int>(model.plot.type);
+  EnvModel const* env = &model.cv.envs[type - base];
+  if (env->on) EnvPlot(env).RenderCore(input, model.plot.hold, output);
+}
 
 static inline float
 GenerateStage(float from, float base, float range, SlopeType slope)
@@ -139,15 +144,6 @@ EnvDSP::Release()
   NextStage(!_model->on ? EnvStage::End : EnvStage::Release);
   CycleStage(_model->type);
   return Output();
-}
-
-void
-EnvDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  int base = static_cast<int>(PlotType::Env1);
-  int type = static_cast<int>(model.plot.type);
-  EnvModel const* env = &model.cv.envs[type - base];
-  if (env->on) EnvPlot(env).Render(input, model.plot.hold, output);
 }
 
 float

@@ -32,8 +32,9 @@ public PeriodicPlot
   LfoDSP _dsp;
   LfoModel const* _model;
 public:
-  float Next() { return _dsp.Next().value; }
   LfoPlot(LfoModel const* model) : _model(model) {}
+public:
+  float Next() { return _dsp.Next().value; }
   void Init(float bpm, float rate) { new(&_dsp) LfoDSP(_model, bpm, rate); }
   float Frequency(float bpm, float rate) const { return LfoDSP::Frequency(*_model, bpm, rate); }
 public:
