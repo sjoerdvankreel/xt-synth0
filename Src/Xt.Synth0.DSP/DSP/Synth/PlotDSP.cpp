@@ -85,12 +85,6 @@ Spectrum(
 void
 PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  auto type = model.plot.type;
-  auto index = static_cast<int>(type);
-  int ampEnv = static_cast<int>(model.amp.ampEnvSource);
-  EnvModel const& envModel = model.cv.envs[ampEnv];
-  int hold = model.plot.spec && (model.plot.type == PlotType::Synth || model.plot.type >= PlotType::LFO1)? SpecHold: model.plot.hold;
-
   switch(model.plot.type)
   {
   case PlotType::Amp: AmpPlot::Render(model, input, output); break;
