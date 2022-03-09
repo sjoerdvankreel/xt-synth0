@@ -1,5 +1,5 @@
-#include <DSP/Synth/EnvDSP.hpp>
 #include <DSP/Param.hpp>
+#include <DSP/Synth/EnvDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
 #include <cmath>

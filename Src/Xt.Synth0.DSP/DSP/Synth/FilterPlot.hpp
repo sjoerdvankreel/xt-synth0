@@ -28,13 +28,16 @@ public:
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
+inline FilterPlot::
+FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter, int index) : 
+_index(index), 
+_cv(cv), 
+_audio(audio), 
+_filter(filter) {}
+
 inline float
 FilterPlot::Frequency(float bpm, float rate) const 
 { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
-
-inline FilterPlot::
-FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter, int index) : 
-_index(index), _cv(cv), _audio(audio), _filter(filter) {}
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_FILTER_PLOT_HPP

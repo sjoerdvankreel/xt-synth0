@@ -1,5 +1,5 @@
-#include <DSP/Synth/AudioDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
+#include <DSP/Synth/AudioDSP.hpp>
 #include <Model/Synth/AudioModel.hpp>
 
 #include <cassert>
