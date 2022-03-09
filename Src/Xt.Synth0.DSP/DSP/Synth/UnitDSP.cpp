@@ -43,8 +43,11 @@ public:
   bool Bipolar() const { return true; }
   bool AutoRange() const { return false; }
   float Next() { return _unitDsp.Next(_cvDsp.Next()).Mono(); }
-  float Frequency(float bpm, float rate) const { return Xts::Frequency(*_unit, 4, UnitNote::C); }
-  void Init(float bpm, float rate) { _cvDsp = CvDSP(_cv, 1.0, bpm, rate); _unitDsp = UnitDSP(_unit, 4, UnitNote::C, rate); }
+
+  float Frequency(float bpm, float rate) const 
+  { return Xts::Frequency(*_unit, 4, UnitNote::C); }
+  void Init(float bpm, float rate) 
+  { _cvDsp = CvDSP(_cv, 1.0, bpm, rate); _unitDsp = UnitDSP(_unit, 4, UnitNote::C, rate); }
 };
 
 static __m256

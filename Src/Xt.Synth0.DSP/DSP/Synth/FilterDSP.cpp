@@ -25,30 +25,41 @@ namespace Xts {
 
 class FilterPlot : public CycledPlot
 {
-  CvDSP _cv;
-  AudioDSP _audio;
-  FilterDSP _filter;
+  int _index;
+  CvDSP _cvDsp;
+  AudioDSP _audioDsp;
+  FilterDSP _filterDsp;
+  CvModel const* _cv;
+  AudioModel const* _audio;
+  FilterModel const* _filter;
 public:
-  FilterPlot(CvDSP const& cv, AudioDSP const& audio, FilterDSP const& filter):
+  FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter):
   _cv(cv), _audio(audio), _filter(filter) {}
 
   float Next();
+  void Init(float bpm, float rate);
+
   int Cycles() const { return 5; }
   bool Bipolar() const { return true; }
-  bool AutoRange() const { return true; }
-  
+  bool AutoRange() const { return true; }  
   float Frequency(float bpm, float rate) const 
   { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
-  std::unique_ptr<CycledPlot> Reset(float bpm, float rate) 
-  { return std::make_unique<FilterPlot>(CvDSP(_cv), AudioDSP(_audio), FilterDSP(_filter, rate)); }
 };
 
 float
 FilterPlot::Next()
 {
-  auto const& cv = _cv.Next();
-  auto const& audio = _audio.Next(cv);
-  return _filter.Next(cv, audio).Mono();
+  auto const& cv = _cvDsp.Next();
+  auto const& audio = _audioDsp.Next(cv);
+  return _filterDsp.Next(cv, audio).Mono();
+}
+
+void
+FilterPlot::Init(float bpm, float rate)
+{
+  _cvDsp = CvDSP(_cv, 1.0f, bpm, rate);
+  _filterDsp = FilterDSP(_filter, _index, rate);
+  _audioDsp = AudioDSP(_audio, 4, UnitNote::C, rate);
 }
 
 static void
@@ -199,6 +210,15 @@ FilterDSP()
   }
 }
 
+void
+FilterDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  int type = static_cast<int>(model.plot.type);
+  int index = type - static_cast<int>(PlotType::Filt1);
+  FilterModel const* filter = &model.audio.filters[index];
+  if (filter->on) FilterPlot(&model.cv, &model.audio, filter).Render(input, output);
+}
+
 FloatSample
 FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
@@ -213,19 +233,6 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   default: assert(false); break;
   }
   return _output.Sanity();
-}
-
-void
-FilterDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  int type = static_cast<int>(model.plot.type);
-  int index = type - static_cast<int>(PlotType::Filt1);
-  FilterModel const* filter = &model.audio.filters[index];
-  if (!filter->on) return;
-  auto dsp = FilterDSP(filter, index, input.rate);
-  auto cv = CvDSP(&model.cv, 1.0f, input.bpm, input.rate);
-  auto audio = AudioDSP(&model.audio, 4, UnitNote::C, input.rate);
-  FilterPlot(cv, audio, dsp).Render(input, output);
 }
 
 } // namespace Xts
