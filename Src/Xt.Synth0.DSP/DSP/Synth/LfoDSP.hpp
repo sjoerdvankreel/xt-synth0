@@ -17,11 +17,11 @@ private:
   float Generate() const;
 public:
   LfoDSP() = default;
+  LfoDSP(LfoDSP const& dsp, float bpm, float rate);
   LfoDSP(LfoModel const* model, float bpm, float rate);
 public:
   CvSample Next();
   CvSample Output() const;
-  LfoDSP Reset(float bpm, float rate) const;
   float Frequency(float bpm, float rate) const;
   static void Plot(struct SynthModel const* model, struct PlotInput const& input, struct PlotOutput& output);
 };
@@ -30,9 +30,9 @@ inline CvSample
 LfoDSP::Output() const 
 { return _output; }
 
-inline LfoDSP 
-LfoDSP::Reset(float bpm, float rate) const 
-{ return LfoDSP(_model, bpm, rate); }
+inline LfoDSP::
+LfoDSP(LfoDSP const& dsp, float bpm, float rate):
+LfoDSP(dsp._model, bpm, rate) {}
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_LFO_DSP_HPP

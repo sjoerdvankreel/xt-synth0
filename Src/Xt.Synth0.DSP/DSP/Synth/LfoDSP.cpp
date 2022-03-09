@@ -27,7 +27,7 @@ public:
   float Frequency(float bpm, float rate) const 
   { return _lfo.Frequency(bpm, rate); }  
   std::unique_ptr<CycledPlot> Reset(float bpm, float rate) 
-  { return std::make_unique<LfoPlot>(_lfo.Reset(bpm, rate)); }
+  { return std::make_unique<LfoPlot>(LfoDSP(_lfo, bpm, rate)); }
 };
 
 CvSample

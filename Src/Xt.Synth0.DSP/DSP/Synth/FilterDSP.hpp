@@ -5,7 +5,6 @@
 #include <DSP/DelayBuffer.hpp>
 #include <DSP/AudioSample.hpp>
 #include <Model/Synth/Config.hpp>
-#include <Model/Synth/FilterModel.hpp>
 
 #define XTS_COMB_MIN_DELAY_MS 0.0f
 #define XTS_COMB_MAX_DELAY_MS 5.0f
@@ -14,17 +13,6 @@ namespace Xts {
 
 static constexpr int COMB_DELAY_MAX_SAMPLES = 
 static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f + 1.0f);
-
-struct FilterPlotState
-{
-  int index;
-  bool spectrum;
-  struct CvModel const* cv;
-  struct PlotOutput* output;
-  struct PlotInput const* input;
-  struct AudioModel const* audio;
-  struct FilterModel const* model;
-};
 
 struct BiquadState
 {
@@ -57,7 +45,7 @@ class FilterDSP
   float _modAmount2;
   FilterState _state;
   FloatSample _output;
-  FilterModel const* _model;
+  struct FilterModel const* _model;
   float _unitAmount[XTS_SYNTH_UNIT_COUNT];
   float _filterAmount[XTS_SYNTH_FILTER_COUNT];
 public:
@@ -65,8 +53,8 @@ public:
   FilterDSP(FilterModel const* model, int index, float rate);
 public:
   FloatSample Output() const;
-  static void Plot(FilterPlotState* state);
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
+  static void Plot(struct SynthModel const* model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 inline FloatSample
