@@ -125,28 +125,29 @@ SpectrumVSplitsStereo(std::vector<VSplit>& vSplits)
 }
 
 static void
-InitCycled(CycledPlot* plot, PlotInput const& input, PlotOutput& output)
+InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output)
 {
+  auto params = plot->Params();
   output.max = 1.0f;
   output.clip = false;
   output.stereo = false;
   output.rate = input.rate;
   output.spectrum = input.spectrum;
-  output.min = plot->Bipolar() ? -1.0f : 0.0f;
+  output.min = params.bipolar ? -1.0f : 0.0f;
   output.frequency = plot->Frequency(input.bpm, input.rate);
-  if(input.spectrum || !plot->AllowResample()) return;
-  output.rate = std::min(input.rate, output.frequency * input.pixels / plot->Cycles());
+  if(input.spectrum || !params.allowResample) return;
+  output.rate = std::min(input.rate, output.frequency * input.pixels / params.periods);
 }
 
 void
-CycledPlot::Render(PlotInput const& input, PlotOutput& output)
+PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
 {
-  Init(input.bpm, input.rate);
-  InitCycled(this, input, output);
-
   float max = 1.0f;
+  auto params = Params();
+  Init(input.bpm, input.rate);
+  InitPeriodic(this, input, output);
   Init(input.bpm, output.rate);
-  float length = (output.rate * Cycles() / output.frequency) + 1.0f;
+  float length = (output.rate * params.periods / output.frequency) + 1.0f;
   int samples = static_cast<int>(std::ceilf(input.spectrum? output.rate: length));
   
   for (int i = 0; i < samples; i++)
@@ -157,16 +158,16 @@ CycledPlot::Render(PlotInput const& input, PlotOutput& output)
   }
 
   output.hSplits->emplace_back(samples, L"");
-  for (int i = 0; i < Cycles() * 2; i++)
-    output.hSplits->emplace_back(samples * i / (Cycles() * 2), std::to_wstring(i) + UnicodePi);
-  if (!AutoRange())
+  for (int i = 0; i < params.periods * 2; i++)
+    output.hSplits->emplace_back(samples * i / (params.periods * 2), std::to_wstring(i) + UnicodePi);
+  if (!params.autoRange)
   {
     assert(max <= 1.0f);
-    *(output.vSplits) = Bipolar() ? BiVSPlits : UniVSPlits;
+    *(output.vSplits) = params.bipolar ? BiVSPlits : UniVSPlits;
     return;
   }
 
-  assert(Bipolar());
+  assert(params.bipolar);
   for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
   *output.vSplits = MakeBiVSplits(max);
 }

@@ -32,18 +32,23 @@ struct PlotOutput
   std::vector<std::complex<float>>* fftScratch;
 };
 
-class CycledPlot
+struct PeriodicParams
+{
+  int periods;
+  bool bipolar;
+  bool autoRange;
+  bool allowResample;
+};
+
+class PeriodicPlot
 {
 public:
-  virtual ~CycledPlot() {}
   virtual float Next() = 0;
+  virtual PeriodicParams Params() const = 0;
   virtual void Init(float bpm, float rate) = 0;
-
-  virtual int Cycles() const = 0;
-  virtual bool Bipolar() const = 0;
-  virtual bool AutoRange() const = 0;
-  virtual bool AllowResample() const = 0;
   virtual float Frequency(float bpm, float rate) const = 0;
+
+  virtual ~PeriodicPlot() {}
   void RenderCore(PlotInput const& input, PlotOutput& output);
 };
 

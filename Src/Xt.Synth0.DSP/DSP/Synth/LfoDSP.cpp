@@ -11,6 +11,26 @@
 
 namespace Xts {
 
+PeriodicParams
+LfoPlot::Params() const
+{
+  PeriodicParams result;
+  result.periods = 1;
+  result.autoRange = false;
+  result.allowResample = true;
+  result.bipolar = _model->unipolar == 0;
+  return result;
+}
+
+void
+LfoPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  int base = static_cast<int>(PlotType::LFO1);
+  int type = static_cast<int>(model.plot.type);
+  LfoModel const* lfo = &model.cv.lfos[type - base];
+  if (lfo->on) LfoPlot(lfo).RenderCore(input, output);
+}
+
 CvSample
 LfoDSP::Next()
 {
@@ -55,15 +75,6 @@ LfoDSP::Generate() const
 	}
 	float tri = phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f;
 	return _base + _factor * tri * 4.0f;
-}
-
-void
-LfoPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  int base = static_cast<int>(PlotType::LFO1);
-  int type = static_cast<int>(model.plot.type);
-  LfoModel const* lfo = &model.cv.lfos[type - base];
-  if (lfo->on) LfoPlot(lfo).RenderCore(input, output);
 }
 
 } // namespace Xts
