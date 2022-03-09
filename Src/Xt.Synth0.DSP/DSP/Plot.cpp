@@ -130,7 +130,8 @@ InitCycled(CycledPlot* plot, PlotInput const& input, PlotOutput& output)
   output.spectrum = input.spectrum;
   output.min = plot->Bipolar() ? -1.0f : 0.0f;
   output.frequency = plot->Frequency(input.bpm, input.rate);
-  if(!input.spectrum) output.rate = std::min(input.rate, output.frequency * input.pixels / plot->Cycles());
+  if(input.spectrum || !plot->AllowResample()) return;
+  output.rate = std::min(input.rate, output.frequency * input.pixels / plot->Cycles());
 }
 
 void

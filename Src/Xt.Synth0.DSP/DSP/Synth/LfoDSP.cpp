@@ -22,16 +22,17 @@ Frequency(LfoModel const& model, float bpm, float rate)
 
 class LfoPlot : public CycledPlot
 {
-  LfoDSP _lfo;
+  LfoDSP _dsp;
   LfoModel const* _model;
 public:
   LfoPlot(LfoModel const* model): _model(model) {}
 
   int Cycles() const { return 1; }
   bool AutoRange() const { return false; }
-  float Next() { return _lfo.Next().value; }
+  float Next() { return _dsp.Next().value; }
+  bool AllowResample() const { return true; }
   bool Bipolar() const { return _model->unipolar == 0; }  
-  void Init(float bpm, float rate) { _lfo = LfoDSP(_model, bpm, rate); }
+  void Init(float bpm, float rate) { new(&_dsp) LfoDSP(_model, bpm, rate); }
   float Frequency(float bpm, float rate) const { return Xts::Frequency(*_model, bpm, rate); }
 };
 

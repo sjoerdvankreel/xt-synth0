@@ -42,8 +42,8 @@ public:
   int Cycles() const { return 5; }
   bool Bipolar() const { return true; }
   bool AutoRange() const { return true; }  
-  float Frequency(float bpm, float rate) const 
-  { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
+  bool AllowResample() const { return false; }
+  float Frequency(float bpm, float rate) const { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
 };
 
 float
@@ -57,9 +57,9 @@ FilterPlot::Next()
 void
 FilterPlot::Init(float bpm, float rate)
 {
-  _cvDsp = CvDSP(_cv, 1.0f, bpm, rate);
-  _filterDsp = FilterDSP(_filter, _index, rate);
-  _audioDsp = AudioDSP(_audio, 4, UnitNote::C, rate);
+  new(&_cvDsp) CvDSP(_cv, 1.0f, bpm, rate);
+  new(&_filterDsp) FilterDSP(_filter, _index, rate);
+  new(&_audioDsp) AudioDSP(_audio, 4, UnitNote::C, rate);
 }
 
 static void
