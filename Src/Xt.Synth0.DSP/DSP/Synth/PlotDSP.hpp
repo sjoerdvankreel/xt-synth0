@@ -5,6 +5,7 @@
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
 #include <DSP/EnvSample.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 #include <string>
 #include <vector>

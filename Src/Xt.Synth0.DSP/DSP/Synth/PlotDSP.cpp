@@ -5,7 +5,7 @@
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
 #include <DSP/Synth/FilterDSP.hpp>
-#include <DSP/SynthDSP.hpp>
+#include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Utility.hpp>
 
 #include <iomanip>
@@ -80,35 +80,6 @@ Spectrum(
   }    
   for (size_t i = 0; i < x.size(); i++) max = std::max(x[i], max);
   for (size_t i = 0; i < x.size(); i++) x[i] = max == 0.0f? 0.0f: x[i] / max;
-}
-
-template <class T>
-static int
-GroupIndex(PlotType type, T base)
-{ return static_cast<int>(type) - static_cast<int>(base); }
-
-static void
-RenderEnv(SynthModel const& model, int hold, PlotInput const& input, PlotOutput& output)
-{
-  EnvPlotState state;
-  state.hold = hold;
-  state.input = &input;
-  state.output = &output;
-  state.model = &model.cv.envs[GroupIndex(model.plot.type, PlotType::Env1)];
-  EnvDSP::Plot(&state);
-}
-
-static void
-RenderAmp(SynthModel const& model, int hold, PlotInput const& input, PlotOutput& output)
-{
-  AmpPlotState state;
-  state.hold = hold;
-  state.cv = &model.cv;
-  state.input = &input;
-  state.output = &output;
-  state.model = &model.amp;
-  state.env = &model.cv.envs[static_cast<int>(model.amp.ampEnvSource)];
-  AmpDSP::Plot(&state);
 }
 
 void

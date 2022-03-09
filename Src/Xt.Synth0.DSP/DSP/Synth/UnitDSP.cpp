@@ -1,11 +1,11 @@
-#include <DSP/Synth/UnitDSP.hpp>
-#include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Plot.hpp>
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
+#include <DSP/Synth/CvDSP.hpp>
+#include <DSP/Synth/UnitDSP.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 #include <cmath>
-#include <tuple>
 #include <cassert>
 #include <immintrin.h>
 
