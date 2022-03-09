@@ -301,4 +301,48 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   Spectrum(*output.rSamples, *output.fftData, *output.fftScratch, output.rate);
 }
 
+void
+PlotDSP::RenderCycled(CycledPlotState* state)
+{
+  assert((state->flags & PlotStereo) == 0);
+  assert((state->flags & PlotNoResample) == 0);
+
+  float max = 1.0f;
+  state->output->max = 1.0f;
+  state->output->frequency = state->frequency;
+  state->output->clip = false;
+  state->output->stereo = false;
+  state->output->spectrum = (state->flags & PlotSpectrum) != 0;
+  state->output->min = (state->flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
+  float idealRate = state->output->frequency * state->input->pixels / state->cycles;
+  float cappedRate = std::min(state->input->rate, idealRate);
+  state->output->rate = state->output->spectrum ? state->input->rate : cappedRate;
+
+  void* dsp = state->dspCreate(state->output->rate, state->context);
+  float regular = (state->output->rate * state->cycles / state->output->frequency) + 1.0f;
+  float fsamples = state->output->spectrum ? state->output->rate : regular;
+  int samples = static_cast<int>(std::ceilf(fsamples));
+  for (int i = 0; i < samples; i++)
+  {
+    float sample = state->dspNext(dsp);
+    max = std::max(max, std::fabs(sample));
+    state->output->lSamples->push_back(sample);
+  }
+  state->dspDestroy(dsp);
+
+  state->output->hSplits->emplace_back(samples, L"");
+  for (int i = 0; i < state->cycles * 2; i++)
+    state->output->hSplits->emplace_back(samples * i / (state->cycles * 2), std::to_wstring(i) + UnicodePi);
+  if ((state->flags & PlotAutoRange) == 0)
+  {
+    assert(max <= 1.0f);
+    *(state->output->vSplits) = (state->flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
+    return;
+  }
+
+  assert((state->flags & PlotBipolar) != 0);
+  for (int i = 0; i < samples; i++) (*state->output->lSamples)[i] /= max;
+  *state->output->vSplits = MakeBiVSplits(max);
+}
+
 } // namespace Xts

@@ -5,6 +5,7 @@
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
 
+#include <tuple>
 #include <memory>
 #include <cstring>
 #include <cassert>
@@ -21,6 +22,37 @@
 // https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
 
 namespace Xts {
+
+struct FilterPlotDSP
+{
+  CvDSP cv;
+  AudioDSP audio;
+  FilterDSP filter;
+};
+
+static void
+PlotDSPDestroy(void* dsp)
+{ delete static_cast<FilterPlotDSP*>(dsp); }
+
+static float
+PlotDSPNext(void* dsp)
+{
+  FilterPlotDSP* filter = static_cast<FilterPlotDSP*>(dsp);
+  auto const& cv = filter->cv.Next();
+  auto const& audio = filter->audio.Next(cv);
+  return filter->filter.Next(cv, audio).Mono();
+}
+
+static void*
+PlotDSPCreate(float rate, void* context)
+{
+  FilterPlotDSP* result = new FilterPlotDSP;
+  FilterPlotState* state = static_cast<FilterPlotState*>(context);
+  result->cv = CvDSP(state->cv, 1.0f, state->input->bpm, rate);
+  result->audio = AudioDSP(state->audio, 4, UnitNote::C, rate);
+  result->filter = FilterDSP(state->model, state->index, rate);
+  return result;
+}
 
 static void
 InitBiquadLPF(double cosw0, double alpha, BiquadState& s)
@@ -193,31 +225,16 @@ FilterDSP::Plot(FilterPlotState* state)
 
   CycledPlotState cycled;
   cycled.cycles = 5;
+  cycled.context = state;
   cycled.input = state->input;
   cycled.output = state->output;
+  cycled.dspNext = PlotDSPNext;
+  cycled.dspCreate = PlotDSPCreate;
+  cycled.dspDestroy = PlotDSPDestroy;
   cycled.flags = PlotBipolar | PlotAutoRange;
-  if (state->spectrum) cycled.flags |= PlotSpectrum;
   cycled.frequency = MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C));
-
-  auto factory = [&](float rate) 
-  { 
-    return std::make_tuple(
-      std::make_shared<CvDSP>(state->cv, 1.0f, state->input->bpm, rate),
-      std::make_shared<AudioDSP>(state->audio, 4, UnitNote::C, rate),
-      std::make_shared<FilterDSP>(state->model, state->index, rate));
-  };
-
-  auto next = [](std::tuple<
-    std::shared_ptr<CvDSP>, 
-    std::shared_ptr<AudioDSP>, 
-    std::shared_ptr<FilterDSP>>& state)
-  {
-    auto const& cv = std::get<std::shared_ptr<CvDSP>>(state)->Next();
-    auto const& audio = std::get<std::shared_ptr<AudioDSP>>(state)->Next(cv);
-    return std::get<std::shared_ptr<FilterDSP>>(state)->Next(cv, audio).Mono();
-  };
-
-  PlotDSP::RenderCycled(&cycled, factory, next);
+  if (state->spectrum) cycled.flags |= PlotSpectrum;
+  PlotDSP::RenderCycled(&cycled);
 }
 
 } // namespace Xts

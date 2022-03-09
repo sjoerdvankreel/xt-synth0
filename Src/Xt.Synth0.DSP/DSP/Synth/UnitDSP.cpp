@@ -5,6 +5,7 @@
 #include <DSP/Utility.hpp>
 
 #include <cmath>
+#include <tuple>
 #include <cassert>
 #include <immintrin.h>
 
@@ -17,6 +18,33 @@
 // https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 
 namespace Xts {
+
+struct UnitPlotDSP
+{
+  CvDSP cv;
+  UnitDSP unit;
+};
+
+static void
+PlotDSPDestroy(void* dsp)
+{ delete static_cast<UnitPlotDSP*>(dsp); }
+
+static float
+PlotDSPNext(void* dsp)
+{
+  UnitPlotDSP* unit = static_cast<UnitPlotDSP*>(dsp);
+  return unit->unit.Next(unit->cv.Next()).Mono();
+}
+
+static void*
+PlotDSPCreate(float rate, void* context)
+{
+  UnitPlotDSP* result = new UnitPlotDSP;
+  UnitPlotState* state = static_cast<UnitPlotState*>(context);
+  result->unit = UnitDSP(state->model, 4, UnitNote::C, rate);
+  result->cv = CvDSP(state->cv, 1.0f, state->input->bpm, rate);
+  return result;
+}
 
 static __m256
 AdditivePartialRolloffs(__m256 indices, float rolloff)
@@ -73,6 +101,24 @@ UnitDSP()
   _frequency = Frequency(*model, octave, note);
   _blepPulseWidth = Param::Level(model->blepPulseWidth);
   _additiveRolloff = Param::Mix(model->additiveRolloff);
+}
+
+void
+UnitDSP::Plot(UnitPlotState* state)
+{
+  if (!state->model->on) return;
+  CycledPlotState cycled;
+  cycled.cycles = 5;
+  cycled.context = state;
+  cycled.flags = PlotBipolar;
+  cycled.input = state->input;
+  cycled.output = state->output;
+  cycled.dspNext = PlotDSPNext;
+  cycled.dspCreate = PlotDSPCreate;
+  cycled.dspDestroy = PlotDSPDestroy;
+  cycled.frequency = Frequency(*state->model, 4, UnitNote::C);
+  if (state->spectrum) cycled.flags |= PlotSpectrum;
+  PlotDSP::RenderCycled(&cycled);
 }
 
 float
@@ -215,24 +261,6 @@ UnitDSP::GenerateAdditive(float phase, float frequency, CvSample modulator1, CvS
 	  result += results.m256_f32[7 - i];
   }
   return BipolarSanity(any? result / limit: 0.0f);
-}
-
-void
-UnitDSP::Plot(UnitPlotState* state)
-{
-  if (!state->model->on) return;
-
-  CycledPlotState cycled;
-  cycled.cycles = 5;
-  cycled.flags = PlotBipolar;
-  cycled.input = state->input;
-  cycled.output = state->output;
-  if (state->spectrum) cycled.flags |= PlotSpectrum;
-  cycled.frequency = Frequency(*state->model, 4, UnitNote::C);
-
-  auto next = [](std::tuple<CvDSP, UnitDSP>& state) { return std::get<UnitDSP>(state).Next(std::get<CvDSP>(state).Next()).Mono(); };
-  auto factory = [&](float rate) { return std::make_tuple(CvDSP(state->cv, 1.0f, state->input->bpm, rate), UnitDSP(state->model, 4, UnitNote::C, rate)); };
-  PlotDSP::RenderCycled(&cycled, factory, next);
 }
 
 } // namespace Xts

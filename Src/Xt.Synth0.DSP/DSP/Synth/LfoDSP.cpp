@@ -10,6 +10,21 @@
 
 namespace Xts {
 
+static void
+PlotDSPDestroy(void* dsp)
+{ delete static_cast<LfoDSP*>(dsp); }
+
+static float
+PlotDSPNext(void* dsp)
+{ return static_cast<LfoDSP*>(dsp)->Next().value; }
+
+static void*
+PlotDSPCreate(float rate, void* context)
+{
+  auto state = static_cast<LfoPlotState*>(context);
+  return new LfoDSP(state->model, state->input->bpm, rate);
+}
+
 CvSample
 LfoDSP::Next()
 {
@@ -19,13 +34,6 @@ LfoDSP::Next()
   _phase += _increment;
   _phase -= std::floor(_phase);
   return Output().Sanity();
-}
-
-float
-LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
-{
-	if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
-	return Param::Frequency(model.frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
 }
 
 LfoDSP::
@@ -38,6 +46,32 @@ LfoDSP()
   _base = model->unipolar == 0 ? 0.0f: 0.5f;
   _increment = Frequency(*_model, bpm, rate) / rate;
   _factor = (model->invert ? -1.0f : 1.0f) * (1.0f - _base);
+}
+
+float
+LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
+{
+  if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
+  return Param::Frequency(model.frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
+}
+
+void
+LfoDSP::Plot(LfoPlotState* state)
+{
+  if (!state->model->on) return;
+  CycledPlotState cycled;
+  cycled.cycles = 1;
+  cycled.context = state;
+  cycled.flags = PlotNone;
+  cycled.input = state->input;
+  cycled.output = state->output;
+  cycled.dspNext = PlotDSPNext;
+  cycled.dspCreate = PlotDSPCreate;
+  cycled.dspDestroy = PlotDSPDestroy;
+  if (state->spectrum) cycled.flags |= PlotSpectrum;
+  if (state->model->unipolar == 0) cycled.flags |= PlotBipolar;
+  cycled.frequency = Frequency(*state->model, state->input->bpm, state->input->rate);
+  PlotDSP::RenderCycled(&cycled);
 }
 
 float
@@ -54,25 +88,6 @@ LfoDSP::Generate() const
 	}
 	float tri = phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f;
 	return _base + _factor * tri * 4.0f;
-}
-
-void
-LfoDSP::Plot(LfoPlotState* state)
-{
-	if (!state->model->on) return;
-
-  CycledPlotState cycled;
-  cycled.cycles = 1;
-  cycled.flags = PlotNone;
-  cycled.input = state->input;
-  cycled.output = state->output;
-  if(state->spectrum) cycled.flags |= PlotSpectrum;
-  if(state->model->unipolar == 0) cycled.flags |= PlotBipolar;
-  cycled.frequency = Frequency(*state->model, state->input->bpm, state->input->rate);
-
-  auto next = [](LfoDSP& dsp) { return dsp.Next().value; };
-  auto factory = [&](float rate) { return LfoDSP(state->model, state->input->bpm, rate); };
-  PlotDSP::RenderCycled(& cycled, factory, next);
 }
 
 } // namespace Xts
