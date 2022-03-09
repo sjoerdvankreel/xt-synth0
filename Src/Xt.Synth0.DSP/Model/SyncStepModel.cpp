@@ -1,4 +1,4 @@
-#include <Model/Synth/SyncStepModel.hpp>
+#include <Model/SyncStepModel.hpp>
 
 namespace Xts {
 

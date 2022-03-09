@@ -1,20 +1,18 @@
-#include <DSP/Synth/PlotDSP.hpp>
-#include <DSP/Synth/ModDSP.hpp>
+#include <DSP/Utility.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/EnvDSP.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
+#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
-#include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/Synth/SynthDSP.hpp>
-#include <DSP/Utility.hpp>
-
-#include <iomanip>
-#include <sstream>
+#include <DSP/Synth/FilterPlot.hpp>
 
 namespace Xts {
 
 // https://stackoverflow.com/questions/604453/analyze-audio-using-fast-fourier-transform
 // https://dsp.stackexchange.com/questions/46692/calculating-1-3-octave-spectrum-from-fft-dft
+
+/*
 static float
 Power(std::vector<std::complex<float>>& fft, float rate, int oct, int note)
 {
@@ -82,6 +80,8 @@ Spectrum(
   for (size_t i = 0; i < x.size(); i++) x[i] = max == 0.0f? 0.0f: x[i] / max;
 }
 
+*/
+
 void
 PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
@@ -93,19 +93,19 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
 
   switch(model.plot.type)
   {
-  case PlotType::Synth: {
-    SynthDSP::Plot(model, envModel, model.plot.spec, hold, input, output);
-    break; }
-  case PlotType::Amp: RenderAmp(model, hold, input, output); break;
-  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: LfoDSP::Plot(model, input, output); break;
-  case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: UnitDSP::Plot(model, input, output); break;
-  case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: FilterDSP::Plot(model, input, output); break;
-  case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: RenderEnv(model, hold, input, output); break;
+  case PlotType::Amp: AmpPlot::Render(model, input, output); break;
+  case PlotType::Synth: SynthPlot::Render(model, input, output); break;
+  case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: EnvPlot::Render(model, input, output); break;
+  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: LfoPlot::Render(model, input, output); break;
+  case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: UnitPlot::Render(model, input, output); break;
+  case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: FilterPlot::Render(model, input, output); break;
   default: assert(false); break;
   }  
   
   assert(output.rate <= input.rate);  
   if(!output.spectrum) return;  
+
+  /*
   output.min = 0.0f;
   output.max = 1.0f;
 
@@ -123,6 +123,7 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   //SpectrumVSplitsStereo(*output.vSplits);
   output.rSamples->resize(NextPowerOf2(output.rSamples->size()));
   Spectrum(*output.rSamples, *output.fftData, *output.fftScratch, output.rate);
+  */
 }
 
 

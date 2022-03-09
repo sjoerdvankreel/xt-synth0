@@ -2,7 +2,7 @@
 #define XTS_HPP
 
 #include "Model/Model.hpp"
-#include <DSP/Synth/PlotDSP.hpp>
+#include <DSP/Plot.hpp>
 
 #include <vector>
 #include <memory>
