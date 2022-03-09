@@ -1,6 +1,6 @@
 #include <DSP/Synth/UnitDSP.hpp>
-#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/CvDSP.hpp>
+#include <DSP/Plot.hpp>
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
 
@@ -19,32 +19,24 @@
 
 namespace Xts {
 
-struct UnitPlotDSP
+class UnitPlot : public CycledPlot
 {
-  CvDSP cv;
-  UnitDSP unit;
+  CvDSP _cv;
+  UnitDSP _unit;
+public:
+  UnitPlot(CvDSP const& cv, UnitDSP const& unit):
+  _cv(cv), _unit(unit) {}
+
+  int Cycles() const { return 5; }
+  bool Bipolar() const { return true; }
+  bool AutoRange() const { return false; }
+  float Next() { return _unit.Next(_cv.Next()).Mono(); }
+  
+  float Frequency(float bpm, float rate) const 
+  { return _unit.Frequency(4, UnitNote::C); }
+  std::unique_ptr<CycledPlot> Reset(float bpm, float rate) 
+  { return std::make_unique<UnitPlot>(CvDSP(_cv), UnitDSP(_unit)); }
 };
-
-static void
-PlotDSPDestroy(void* dsp)
-{ delete static_cast<UnitPlotDSP*>(dsp); }
-
-static float
-PlotDSPNext(void* dsp)
-{
-  UnitPlotDSP* unit = static_cast<UnitPlotDSP*>(dsp);
-  return unit->unit.Next(unit->cv.Next()).Mono();
-}
-
-static void*
-PlotDSPCreate(float rate, void* context)
-{
-  UnitPlotDSP* result = new UnitPlotDSP;
-  UnitPlotState* state = static_cast<UnitPlotState*>(context);
-  new(&result->unit) UnitDSP(state->model, 4, UnitNote::C, rate);
-  new(&result->cv) CvDSP(state->cv, 1.0f, state->input->bpm, rate);
-  return result;
-}
 
 static __m256
 AdditivePartialRolloffs(__m256 indices, float rolloff)
@@ -62,16 +54,6 @@ AdditivePartialRolloffs(__m256 indices, float rolloff)
   result = _mm256_sub_ps(indices, ones);
   result = _mm256_mul_ps(result, _mm256_add_ps(rolloffs, ones));
   return _mm256_add_ps(ones, result);
-}
-
-static float
-Frequency(UnitModel const& model, int octave, UnitNote note)
-{
-  float cent = Param::Mix(model.detune) * 0.5f;
-  int key = octave * 12 + static_cast<int>(note);
-  int base = 4 * 12 + static_cast<int>(UnitNote::C);
-  int unit = (model.octave + 1) * 12 + static_cast<int>(model.note);
-  return MidiNoteFrequency(unit + key - base + cent);
 }
 
 static float
@@ -97,28 +79,29 @@ UnitDSP()
   _mod1 = ModDSP(model->mod1);
   _mod2 = ModDSP(model->mod2);
   _amp = Param::Level(model->amp);
+  _frequency = Frequency(octave, note);
   _panning = Param::Mix(model->panning);
-  _frequency = Frequency(*model, octave, note);
   _blepPulseWidth = Param::Level(model->blepPulseWidth);
   _additiveRolloff = Param::Mix(model->additiveRolloff);
 }
 
-void
-UnitDSP::Plot(UnitPlotState* state)
+float
+UnitDSP::Frequency(int octave, UnitNote note) const
 {
-  if (!state->model->on) return;
-  CycledPlotState cycled;
-  cycled.cycles = 5;
-  cycled.context = state;
-  cycled.flags = PlotBipolar;
-  cycled.input = state->input;
-  cycled.output = state->output;
-  cycled.dspNext = PlotDSPNext;
-  cycled.dspCreate = PlotDSPCreate;
-  cycled.dspDestroy = PlotDSPDestroy;
-  cycled.frequency = Frequency(*state->model, 4, UnitNote::C);
-  if (state->spectrum) cycled.flags |= PlotSpectrum;
-  PlotDSP::RenderCycled(&cycled);
+  float cent = Param::Mix(_model->detune) * 0.5f;
+  int key = octave * 12 + static_cast<int>(note);
+  int base = 4 * 12 + static_cast<int>(UnitNote::C);
+  int unit = (_model->octave + 1) * 12 + static_cast<int>(_model->note);
+  return MidiNoteFrequency(unit + key - base + cent);
+}
+
+void
+UnitDSP::Plot(SynthModel const* model, PlotInput const& input, PlotOutput& output)
+{
+  int base = static_cast<int>(PlotType::Unit1);
+  int type = static_cast<int>(model->plot.type);
+  UnitModel const* unit = &model->audio.units[type - base];
+  if (unit->on) std::make_unique<UnitPlot>(CvDSP(&model->cv, 1.0f, input.bpm, input.rate), UnitDSP(unit, 4, UnitNote::C, input.rate))->Render(input, output);
 }
 
 float

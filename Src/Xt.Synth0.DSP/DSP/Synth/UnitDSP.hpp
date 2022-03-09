@@ -3,18 +3,8 @@
 
 #include <DSP/AudioSample.hpp>
 #include <DSP/Synth/ModDSP.hpp>
-#include <Model/Synth/UnitModel.hpp>
 
 namespace Xts {
-
-struct UnitPlotState
-{
-  bool spectrum;
-  struct CvModel const* cv;
-  struct PlotOutput* output;
-  struct UnitModel const* model;
-  struct PlotInput const* input;
-};
 
 class UnitDSP
 {
@@ -29,14 +19,10 @@ class UnitDSP
   double _phase;
   double _blepTriangle;
   FloatSample _output;
-  UnitModel const* _model;
-public:
-  FloatSample Output() const;
-  static void Plot(UnitPlotState* state);
-  FloatSample Next(struct CvState const& cv);
+  struct UnitModel const* _model;
 public:
   UnitDSP() = default;
-  UnitDSP(UnitModel const* model, int octave, UnitNote note, float rate);
+  UnitDSP(struct UnitModel const* model, int octave, UnitNote note, float rate);
 private:
   float ModulatePhase(CvSample modulator1, CvSample modulator2) const;
   float ModulateFrequency(CvSample modulator1, CvSample modulator2) const;
@@ -44,6 +30,11 @@ private:
   float GeneratePolyBlep(float phase, float frequency, CvSample modulator1, CvSample modulator2);
   float GenerateAdditive(float phase, float frequency, CvSample modulator1, CvSample modulator2) const;
   float Modulate(UnitModTarget target, CvSample carrier, CvSample modulator1, CvSample modulator2) const;
+public:
+  FloatSample Output() const;
+  FloatSample Next(struct CvState const& cv);
+  float Frequency(int octave, UnitNote note) const;
+  static void Plot(struct SynthModel const* model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 inline FloatSample

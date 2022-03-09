@@ -26,12 +26,12 @@ public:
   static void Plot(struct SynthModel const* model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
-inline CvSample
-LfoDSP::Output() const
+inline CvSample 
+LfoDSP::Output() const 
 { return _output; }
 
-inline LfoDSP
-LfoDSP::Reset(float bpm, float rate) const
+inline LfoDSP 
+LfoDSP::Reset(float bpm, float rate) const 
 { return LfoDSP(_model, bpm, rate); }
 
 } // namespace Xts
