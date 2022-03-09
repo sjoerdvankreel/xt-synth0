@@ -1,7 +1,7 @@
 #ifndef XTS_DSP_SYNTH_ENV_DSP_HPP
 #define XTS_DSP_SYNTH_ENV_DSP_HPP
 
-#include <DSP/Synth/EnvSample.hpp>
+#include <DSP/EnvSample.hpp>
 #include <Model/Synth/EnvModel.hpp>
 
 namespace Xts {

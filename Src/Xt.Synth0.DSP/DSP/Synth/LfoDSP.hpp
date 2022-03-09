@@ -1,18 +1,9 @@
 #ifndef XTS_DSP_SYNTH_LFO_DSP_HPP
 #define XTS_DSP_SYNTH_LFO_DSP_HPP
 
-#include <DSP/Synth/CvSample.hpp>
-#include <Model/Synth/LfoModel.hpp>
+#include <DSP/CvSample.hpp>
 
 namespace Xts {
-
-struct LfoPlotState
-{
-  bool spectrum;
-  LfoModel const* model;
-  struct PlotOutput* output;
-  struct PlotInput const* input;
-};
 
 class LfoDSP
 {
@@ -21,22 +12,27 @@ class LfoDSP
   float _factor;
   float _increment;
   CvSample _output;
-  LfoModel const* _model;
-public:
-  CvSample Next();
-  CvSample Output() const;
-  static void Plot(LfoPlotState* state);
+  struct LfoModel const* _model;
+private:
+  float Generate() const;
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, float bpm, float rate);
-private:
-  float Generate() const;
-  static float Frequency(LfoModel const& model, float bpm, float rate);
+public:
+  CvSample Next();
+  CvSample Output() const;
+  LfoDSP Reset(float bpm, float rate) const;
+  float Frequency(float bpm, float rate) const;
+  static void Plot(struct SynthModel const* model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 inline CvSample
 LfoDSP::Output() const
 { return _output; }
+
+inline LfoDSP
+LfoDSP::Reset(float bpm, float rate) const
+{ return LfoDSP(_model, bpm, rate); }
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_LFO_DSP_HPP

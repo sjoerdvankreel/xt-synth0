@@ -13,116 +13,6 @@
 
 namespace Xts {
 
-static std::wstring
-VSplitMarker(float val, float max)
-{
-  float absval = std::fabs(val);
-  std::wstring result = val == 0.0f ? L"" : val > 0.0f ? L"+" : L"-";
-  if(max >= 10)
-  { 
-    int ival = static_cast<int>(std::roundf(absval));
-    return result + std::to_wstring(ival);
-  }
-  std::wstringstream str;
-  str << std::fixed << std::setprecision(1) << absval;
-  return result + str.str();
-}
-
-std::vector<VSplit> 
-PlotDSP::BiVSPlits = {
-  { -1.0f, L"+1.0" },
-  { -0.5f, L"+0.5" },
-  { 0.0f, L"0.0" },
-  { 0.5f, L"-0.5" },
-  { 1.0f, L"-1.0" }
-};
-
-std::vector<VSplit> 
-PlotDSP::UniVSPlits = {
-  { 0.0f, L"1.0" },
-  { 0.25f, L".75" },
-  { 0.5f, L"0.5" },
-  { 0.75f, L".25" },
-  { 1.0f, L"0.0" }
-};
-
-std::vector<VSplit>
-PlotDSP::StereoVSPlits = {
-  { -1.0f, L"+1.0" },
-  { -0.5f, L"L" },
-  { 0.0f, L"-/+1" },
-  { 0.5f, L"R" },
-  { 1.0f, L"-1.0" }
-};
-
-std::vector<VSplit> 
-PlotDSP::MakeBiVSplits(float max)
-{
-  std::vector<VSplit> result;
-  result.emplace_back(-1.0f, VSplitMarker(max, max));
-  result.emplace_back(-0.5f, VSplitMarker(max / 2.0f, max));
-  result.emplace_back(-0.0f, L"0");
-  result.emplace_back(0.5f, VSplitMarker(-max / 2.0f, max));
-  result.emplace_back(1.0f, VSplitMarker(-max, max));
-  return result;
-}
-
-std::wstring
-PlotDSP::FormatEnv(EnvStage stage)
-{
-  switch (stage)
-  {
-  case EnvStage::Attack: return L"A";
-  case EnvStage::Decay: return L"D";
-  case EnvStage::Sustain: return L"S";
-  case EnvStage::Release: return L"R";
-  case EnvStage::Delay: return L"D";
-  case EnvStage::Hold: return L"H";
-  case EnvStage::End: return L"";
-  default: assert(false); return L"";
-  }
-}
-
-static void
-SpectrumHSplits(std::vector<HSplit>& hSplits)
-{
-  hSplits.clear();
-  for (int oct = 0; oct < 12; oct++)
-  {
-    std::wstring marker = oct >= 2 ? std::to_wstring(oct - 2) : L"";
-    hSplits.emplace_back(HSplit(oct * 12, marker));
-  }
-  hSplits.emplace_back(HSplit(143, L""));
-}
-
-static void
-SpectrumVSplitsMono(std::vector<VSplit>& vSplits)
-{
-  vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L".50");
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".25");
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 32.0f), L"");
-  vSplits.emplace_back(1.0f, L"0.0");
-}
-
-static void
-SpectrumVSplitsStereo(std::vector<VSplit>& vSplits)
-{
-  vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
-  vSplits.emplace_back(1.0f - (3.0f / 4.0f), L".50");
-  vSplits.emplace_back(1.0f - (5.0f / 8.0f), L".25");
-  vSplits.emplace_back(1.0f - (9.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L"0/1");
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".50");
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L".25");
-  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f, L"0.0");
-}
-
 // https://stackoverflow.com/questions/604453/analyze-audio-using-fast-fourier-transform
 // https://dsp.stackexchange.com/questions/46692/calculating-1-3-octave-spectrum-from-fft-dft
 static float
@@ -289,60 +179,18 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
   output.lSamples->resize(NextPowerOf2(output.lSamples->size()));
   assert(output.lSamples->size() >= static_cast<size_t>(output.rate));
   Spectrum(*output.lSamples, *output.fftData, *output.fftScratch, output.rate);
-  SpectrumHSplits(*output.hSplits);
+  //SpectrumHSplits(*output.hSplits);
   
   if (!output.stereo)
   {
-    SpectrumVSplitsMono(*output.vSplits);
+    //SpectrumVSplitsMono(*output.vSplits);
     return;
   }
-  SpectrumVSplitsStereo(*output.vSplits);
+  //SpectrumVSplitsStereo(*output.vSplits);
   output.rSamples->resize(NextPowerOf2(output.rSamples->size()));
   Spectrum(*output.rSamples, *output.fftData, *output.fftScratch, output.rate);
 }
 
-void
-PlotDSP::RenderCycled(CycledPlotState* state)
-{
-  assert((state->flags & PlotStereo) == 0);
-  assert((state->flags & PlotNoResample) == 0);
 
-  float max = 1.0f;
-  state->output->max = 1.0f;
-  state->output->frequency = state->frequency;
-  state->output->clip = false;
-  state->output->stereo = false;
-  state->output->spectrum = (state->flags & PlotSpectrum) != 0;
-  state->output->min = (state->flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
-  float idealRate = state->output->frequency * state->input->pixels / state->cycles;
-  float cappedRate = std::min(state->input->rate, idealRate);
-  state->output->rate = state->output->spectrum ? state->input->rate : cappedRate;
-
-  void* dsp = state->dspCreate(state->output->rate, state->context);
-  float regular = (state->output->rate * state->cycles / state->output->frequency) + 1.0f;
-  float fsamples = state->output->spectrum ? state->output->rate : regular;
-  int samples = static_cast<int>(std::ceilf(fsamples));
-  for (int i = 0; i < samples; i++)
-  {
-    float sample = state->dspNext(dsp);
-    max = std::max(max, std::fabs(sample));
-    state->output->lSamples->push_back(sample);
-  }
-  state->dspDestroy(dsp);
-
-  state->output->hSplits->emplace_back(samples, L"");
-  for (int i = 0; i < state->cycles * 2; i++)
-    state->output->hSplits->emplace_back(samples * i / (state->cycles * 2), std::to_wstring(i) + UnicodePi);
-  if ((state->flags & PlotAutoRange) == 0)
-  {
-    assert(max <= 1.0f);
-    *(state->output->vSplits) = (state->flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
-    return;
-  }
-
-  assert((state->flags & PlotBipolar) != 0);
-  for (int i = 0; i < samples; i++) (*state->output->lSamples)[i] /= max;
-  *state->output->vSplits = MakeBiVSplits(max);
-}
 
 } // namespace Xts

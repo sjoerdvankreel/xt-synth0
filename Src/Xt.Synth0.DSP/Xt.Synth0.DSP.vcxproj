@@ -13,18 +13,19 @@
   <ItemGroup>
     <ClInclude Include="DSP\AudioSample.hpp" />
     <ClInclude Include="DSP\Config.hpp" />
+    <ClInclude Include="DSP\CvSample.hpp" />
     <ClInclude Include="DSP\DelayBuffer.hpp" />
+    <ClInclude Include="DSP\EnvSample.hpp" />
     <ClInclude Include="DSP\Param.hpp" />
+    <ClInclude Include="DSP\Plot.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
     <ClInclude Include="DSP\SynthDSP.hpp" />
     <ClInclude Include="DSP\Synth\AmpDSP.hpp" />
     <ClInclude Include="DSP\Synth\AudioDSP.hpp" />
     <ClInclude Include="DSP\Synth\AudioState.hpp" />
     <ClInclude Include="DSP\Synth\CvDSP.hpp" />
-    <ClInclude Include="DSP\Synth\CvSample.hpp" />
     <ClInclude Include="DSP\Synth\CvState.hpp" />
     <ClInclude Include="DSP\Synth\EnvDSP.hpp" />
-    <ClInclude Include="DSP\Synth\EnvSample.hpp" />
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\LfoDSP.hpp" />
     <ClInclude Include="DSP\Synth\ModDSP.hpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DSP\Plot.cpp" />
     <ClCompile Include="DSP\SeqDSP.cpp" />
     <ClCompile Include="DSP\SynthDSP.cpp" />
     <ClCompile Include="DSP\Synth\AmpDSP.cpp" />

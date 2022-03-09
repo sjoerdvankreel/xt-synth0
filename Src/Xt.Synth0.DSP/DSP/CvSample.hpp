@@ -1,5 +1,5 @@
-#ifndef XTS_DSP_SYNTH_CV_SAMPLE_HPP
-#define XTS_DSP_SYNTH_CV_SAMPLE_HPP
+#ifndef XTS_DSP_CV_SAMPLE_HPP
+#define XTS_DSP_CV_SAMPLE_HPP
 
 #include <DSP/Utility.hpp>
 
@@ -21,4 +21,4 @@ CvSample::Sanity() const
 }
 
 } // namespace Xts
-#endif // XTS_DSP_SYNTH_CV_SAMPLE_HPP
+#endif // XTS_DSP_CV_SAMPLE_HPP

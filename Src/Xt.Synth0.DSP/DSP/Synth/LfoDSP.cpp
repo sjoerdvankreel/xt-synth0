@@ -1,8 +1,11 @@
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/PlotDSP.hpp>
+#include <DSP/Plot.hpp>
 #include <DSP/Param.hpp>
+#include <Model/SynthModel.hpp>
 
 #include <cmath>
+#include <memory>
 #include <cassert>
 
 #define MIN_FREQ_HZ 0.1f
@@ -10,20 +13,22 @@
 
 namespace Xts {
 
-static void
-PlotDSPDestroy(void* dsp)
-{ delete static_cast<LfoDSP*>(dsp); }
-
-static float
-PlotDSPNext(void* dsp)
-{ return static_cast<LfoDSP*>(dsp)->Next().value; }
-
-static void*
-PlotDSPCreate(float rate, void* context)
+class LfoPlot : public CycledPlot
 {
-  auto state = static_cast<LfoPlotState*>(context);
-  return new LfoDSP(state->model, state->input->bpm, rate);
-}
+  LfoDSP _lfo;
+public:
+  LfoPlot(LfoDSP const& lfo): _lfo(lfo) {}
+
+  int Cycles() const { return 1; }
+  bool AutoRange() const { return false; }
+  float Next() { return _lfo.Next().value; }
+  bool Bipolar() const { return _lfo.Output().bipolar; }
+  
+  float Frequency(float bpm, float rate) const 
+  { return _lfo.Frequency(bpm, rate); }  
+  std::unique_ptr<CycledPlot> Reset(float bpm, float rate) 
+  { return std::make_unique<LfoPlot>(_lfo.Reset(bpm, rate)); }
+};
 
 CvSample
 LfoDSP::Next()
@@ -43,35 +48,16 @@ LfoDSP()
   _phase = 0.0;
   _model = model;
   _output.bipolar = model->unipolar == 0;
+  _increment = Frequency(bpm, rate) / rate;
   _base = model->unipolar == 0 ? 0.0f: 0.5f;
-  _increment = Frequency(*_model, bpm, rate) / rate;
   _factor = (model->invert ? -1.0f : 1.0f) * (1.0f - _base);
 }
 
 float
-LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
+LfoDSP::Frequency(float bpm, float rate) const
 {
-  if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
-  return Param::Frequency(model.frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
-}
-
-void
-LfoDSP::Plot(LfoPlotState* state)
-{
-  if (!state->model->on) return;
-  CycledPlotState cycled;
-  cycled.cycles = 1;
-  cycled.context = state;
-  cycled.flags = PlotNone;
-  cycled.input = state->input;
-  cycled.output = state->output;
-  cycled.dspNext = PlotDSPNext;
-  cycled.dspCreate = PlotDSPCreate;
-  cycled.dspDestroy = PlotDSPDestroy;
-  if (state->spectrum) cycled.flags |= PlotSpectrum;
-  if (state->model->unipolar == 0) cycled.flags |= PlotBipolar;
-  cycled.frequency = Frequency(*state->model, state->input->bpm, state->input->rate);
-  PlotDSP::RenderCycled(&cycled);
+  if (_model->sync) return rate / Param::StepSamplesF(_model->step, bpm, rate);
+  return Param::Frequency(_model->frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
 }
 
 float
@@ -88,6 +74,15 @@ LfoDSP::Generate() const
 	}
 	float tri = phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f;
 	return _base + _factor * tri * 4.0f;
+}
+
+void
+LfoDSP::Plot(SynthModel const* model, PlotInput const& input, PlotOutput& output)
+{
+  int base = static_cast<int>(PlotType::LFO1);
+  int type = static_cast<int>(model->plot.type);
+  LfoModel const* lfo = &model->cv.lfos[type - base];
+  if (lfo->on) std::make_unique<LfoPlot>(LfoDSP(lfo, input.bpm, input.rate))->Render(input, output);
 }
 
 } // namespace Xts
