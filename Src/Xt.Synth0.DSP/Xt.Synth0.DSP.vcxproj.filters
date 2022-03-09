@@ -130,6 +130,9 @@
     <ClInclude Include="Model\Shared\SyncStepModel.hpp">
       <Filter>Model\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Shared\Spectrum.hpp">
+      <Filter>DSP\Shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
@@ -174,6 +177,9 @@
     </ClCompile>
     <ClCompile Include="Model\Shared\SyncStepModel.cpp">
       <Filter>Model\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\Shared\Spectrum.cpp">
+      <Filter>DSP\Shared</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
-#include <DSP/Plot.hpp>
-#include <DSP/Param.hpp>
-#include <DSP/Utility.hpp>
+#include <DSP/Shared/Plot.hpp>
+#include <DSP/Shared/Param.hpp>
+#include <DSP/Shared/Utility.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>

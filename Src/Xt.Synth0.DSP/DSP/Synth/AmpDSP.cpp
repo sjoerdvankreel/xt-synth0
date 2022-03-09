@@ -1,4 +1,4 @@
-#include <DSP/Param.hpp>
+#include <DSP/Shared/Param.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>

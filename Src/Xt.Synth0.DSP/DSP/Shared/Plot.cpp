@@ -12,25 +12,13 @@
 
 namespace Xts {
 
+static std::wstring
+VSplitMarker(float val, float max);
+
 static constexpr wchar_t UnicodePi = L'\u03C0';
 
-/*static*/ std::wstring
-VSplitMarker(float val, float max)
-{
-  float absval = std::fabs(val);
-  std::wstring result = val == 0.0f ? L"" : val > 0.0f ? L"+" : L"-";
-  if(max >= 10)
-  { 
-    int ival = static_cast<int>(std::roundf(absval));
-    return result + std::to_wstring(ival);
-  }
-  std::wstringstream str;
-  str << std::fixed << std::setprecision(1) << absval;
-  return result + str.str();
-}
-
-/*static*/ std::vector<VSplit>
-BiVSPlits = {
+static std::vector<VSplit>
+BipolarVSPlits = {
   { -1.0f, L"+1.0" },
   { -0.5f, L"+0.5" },
   { 0.0f, L"0.0" },
@@ -38,8 +26,8 @@ BiVSPlits = {
   { 1.0f, L"-1.0" }
 };
 
-/*static*/ std::vector<VSplit>
-UniVSPlits = {
+static std::vector<VSplit>
+UnipolarVSPlits = {
   { 0.0f, L"1.0" },
   { 0.25f, L".75" },
   { 0.5f, L"0.5" },
@@ -47,7 +35,7 @@ UniVSPlits = {
   { 1.0f, L"0.0" }
 };
 
-/*static*/ std::vector<VSplit>
+static std::vector<VSplit>
 StereoVSPlits = {
   { -1.0f, L"+1.0" },
   { -0.5f, L"L" },
@@ -56,8 +44,24 @@ StereoVSPlits = {
   { 1.0f, L"-1.0" }
 };
 
-/*static*/ std::vector<VSplit>
-MakeBiVSplits(float max)
+static std::wstring
+FormatEnv(EnvStage stage)
+{
+  switch (stage)
+  {
+  case EnvStage::End: return L"";
+  case EnvStage::Hold: return L"H";
+  case EnvStage::Delay: return L"D";
+  case EnvStage::Decay: return L"D";
+  case EnvStage::Attack: return L"A";
+  case EnvStage::Sustain: return L"S";
+  case EnvStage::Release: return L"R";
+  default: assert(false); return L"";
+  }
+}
+
+static std::vector<VSplit>
+MakeBipolarVSplits(float max)
 {
   std::vector<VSplit> result;
   result.emplace_back(-1.0f, VSplitMarker(max, max));
@@ -68,60 +72,15 @@ MakeBiVSplits(float max)
   return result;
 }
 
-/*static*/ std::wstring
-FormatEnv(EnvStage stage)
+static std::wstring
+VSplitMarker(float val, float max)
 {
-  switch (stage)
-  {
-  case EnvStage::Attack: return L"A";
-  case EnvStage::Decay: return L"D";
-  case EnvStage::Sustain: return L"S";
-  case EnvStage::Release: return L"R";
-  case EnvStage::Delay: return L"D";
-  case EnvStage::Hold: return L"H";
-  case EnvStage::End: return L"";
-  default: assert(false); return L"";
-  }
-}
-
-static void
-SpectrumHSplits(std::vector<HSplit>& hSplits)
-{
-  hSplits.clear();
-  for (int oct = 0; oct < 12; oct++)
-  {
-    std::wstring marker = oct >= 2 ? std::to_wstring(oct - 2) : L"";
-    hSplits.emplace_back(HSplit(oct * 12, marker));
-  }
-  hSplits.emplace_back(HSplit(143, L""));
-}
-
-static void
-SpectrumVSplitsMono(std::vector<VSplit>& vSplits)
-{
-  vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L".50");
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".25");
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 32.0f), L"");
-  vSplits.emplace_back(1.0f, L"0.0");
-}
-
-static void
-SpectrumVSplitsStereo(std::vector<VSplit>& vSplits)
-{
-  vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
-  vSplits.emplace_back(1.0f - (3.0f / 4.0f), L".50");
-  vSplits.emplace_back(1.0f - (5.0f / 8.0f), L".25");
-  vSplits.emplace_back(1.0f - (9.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L"0/1");
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".50");
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L".25");
-  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f, L"0.0");
+  float absval = std::fabs(val);
+  std::wstring result = val == 0.0f ? L"" : val > 0.0f ? L"+" : L"-";
+  if(max >= 10) return result + std::to_wstring(static_cast<int>(std::roundf(absval)));
+  std::wstringstream str;
+  str << std::fixed << std::setprecision(1) << absval;
+  return result + str.str();
 }
 
 static void
@@ -137,6 +96,21 @@ InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output)
   output.frequency = plot->Frequency(input.bpm, input.rate);
   if(input.spectrum || !params.allowResample) return;
   output.rate = std::min(input.rate, output.frequency * input.pixels / params.periods);
+}
+
+static void
+InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& output)
+{
+  auto params = plot->Params();
+  output.max = 1.0f;
+  output.clip = false;
+  output.rate = input.rate;
+  output.stereo = params.stereo;
+  output.spectrum = input.spectrum;
+  output.min = params.bipolar ? -1.0f : 0.0f;
+  if (output.spectrum || !params.allowResample) return;
+  float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
 }
 
 void
@@ -163,28 +137,13 @@ PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
   if (!params.autoRange)
   {
     assert(max <= 1.0f);
-    *(output.vSplits) = params.bipolar ? BiVSPlits : UniVSPlits;
+    *(output.vSplits) = params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
     return;
   }
 
   assert(params.bipolar);
   for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
-  *output.vSplits = MakeBiVSplits(max);
-}
-
-static void
-InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& output)
-{
-  auto params = plot->Params();
-  output.max = 1.0f;
-  output.clip = false;
-  output.rate = input.rate;
-  output.stereo = params.stereo;
-  output.spectrum = input.spectrum;
-  output.min = params.bipolar ? -1.0f : 0.0f;
-  if(output.spectrum || !params.allowResample) return;
-  float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
+  *output.vSplits = MakeBipolarVSplits(max);
 }
 
 void 
