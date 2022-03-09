@@ -1,9 +1,9 @@
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
+#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/AudioState.hpp>
 #include <DSP/Param.hpp>
-#include <DSP/PlotDSP.hpp>
 
 #include <cassert>
 

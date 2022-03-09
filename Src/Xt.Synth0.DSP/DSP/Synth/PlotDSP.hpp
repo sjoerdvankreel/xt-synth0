@@ -1,20 +1,50 @@
-#ifndef XTS_PLOT_DSP_HPP
-#define XTS_PLOT_DSP_HPP
+#ifndef XTS_DSP_SYNTH_PLOT_DSP_HPP
+#define XTS_DSP_SYNTH_PLOT_DSP_HPP
 
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
-#include "../Model/DSPModel.hpp"
-#include "../Model/SynthModel.hpp"
+#include <DSP/Synth/EnvSample.hpp>
 
 #include <string>
 #include <vector>
-#include <algorithm>
 #include <cassert>
+#include <cstdint>
+#include <complex>
+#include <algorithm>
 
-#define MIN_HOLD_MS 1.0f
-#define MAX_HOLD_MS 3000.0f
+#define XTS_PLOT_MIN_HOLD_MS 1.0f
+#define XTS_PLOT_MAX_HOLD_MS 3000.0f
 
 namespace Xts {
+
+typedef int PlotFlags;
+inline constexpr PlotFlags PlotNone = 0x0;
+inline constexpr PlotFlags PlotStereo = 0x1;
+inline constexpr PlotFlags PlotBipolar = 0x2;
+inline constexpr PlotFlags PlotSpectrum = 0x4;
+inline constexpr PlotFlags PlotAutoRange = 0x8;
+inline constexpr PlotFlags PlotNoResample = 0x10;
+
+struct HSplit { int pos; std::wstring marker; };
+struct VSplit { float pos; std::wstring marker; };
+
+struct PlotInput
+{
+  int32_t hold;
+  float bpm, rate, pixels;
+};
+
+struct PlotOutput
+{
+  bool clip, spectrum, stereo;
+  float frequency, rate, min, max;
+  std::vector<float>* lSamples;
+  std::vector<float>* rSamples;
+  std::vector<HSplit>* hSplits;
+  std::vector<VSplit>* vSplits;
+  std::vector<std::complex<float>>* fftData;
+  std::vector<std::complex<float>>* fftScratch;
+};
 
 struct CycledPlotState
 {
@@ -117,8 +147,8 @@ void PlotDSP::RenderStaged(
   state->output->stereo = (state->flags & PlotStereo) != 0;
   state->output->min = (state->flags & PlotBipolar) != 0 ? -1.0f : 0.0f;
   bool noResample = (state->flags & PlotNoResample) != 0;
-  float fhold = Param::TimeSamplesF(state->hold, state->input->rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  float releaseSamples = Param::SamplesF(state->env->sync, state->env->releaseTime, state->env->releaseStep, state->input->bpm, state->input->rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  float fhold = Param::TimeSamplesF(state->hold, state->input->rate, XTS_PLOT_MIN_HOLD_MS, XTS_PLOT_MAX_HOLD_MS);
+  float releaseSamples = Param::SamplesF(state->env->sync, state->env->releaseTime, state->env->releaseStep, state->input->bpm, state->input->rate, XTS_PLOT_MIN_HOLD_MS, XTS_PLOT_MAX_HOLD_MS);
   state->output->rate = state->output->spectrum || noResample ? state->input->rate : state->input->rate * state->input->pixels / (fhold + releaseSamples);
   fhold *= state->output->rate / state->input->rate;
   *(state->output->vSplits) = state->output->stereo? StereoVSPlits: (state->flags & PlotBipolar) != 0 ? BiVSPlits : UniVSPlits;
@@ -144,4 +174,4 @@ void PlotDSP::RenderStaged(
 }
 
 } // namespace Xts
-#endif // XTS_PLOT_DSP_HPP
+#endif // XTS_DSP_SYNTH_PLOT_DSP_HPP

@@ -4,7 +4,6 @@
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
-#include "../Model/DSPModel.hpp"
 #include "../Model/SynthModel.hpp"
 
 namespace Xts {
@@ -23,7 +22,7 @@ public:
   EnvSample Release() { return _cv.ReleaseAll(_amp.Env()); }
   FloatSample Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };
   FloatSample Next() { _cv.Next(); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
-  static void Plot(SynthModel const& model, EnvModel const& envModel, bool spec, int hold, PlotInput const& input, PlotOutput& output);
+  static void Plot(SynthModel const& model, EnvModel const& envModel, bool spec, int hold, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 } // namespace Xts

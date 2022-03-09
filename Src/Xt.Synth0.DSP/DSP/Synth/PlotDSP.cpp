@@ -1,14 +1,13 @@
+#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/EnvDSP.hpp>
+#include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
-#include "PlotDSP.hpp"
-#include "SynthDSP.hpp"
+#include <DSP/Synth/FilterDSP.hpp>
+#include <DSP/SynthDSP.hpp>
 #include <DSP/Utility.hpp>
 
-#include <vector>
-#include <complex>
-#include <cassert>
 #include <iomanip>
 #include <sstream>
 

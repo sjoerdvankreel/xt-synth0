@@ -1,6 +1,6 @@
 #include <DSP/Synth/LfoDSP.hpp>
+#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Param.hpp>
-#include <DSP/PlotDSP.hpp>
 
 #include <cmath>
 #include <cassert>

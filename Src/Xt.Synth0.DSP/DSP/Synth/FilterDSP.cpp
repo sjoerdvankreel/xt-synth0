@@ -1,9 +1,9 @@
 #include <DSP/Synth/FilterDSP.hpp>
+#include <DSP/Synth/CvDSP.hpp>
+#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
-#include <DSP/PlotDSP.hpp>
-#include <DSP/Synth/CvDSP.hpp>
 
 #include <memory>
 #include <cstring>

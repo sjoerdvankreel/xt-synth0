@@ -1,5 +1,5 @@
 #include "SynthDSP.hpp"
-#include "PlotDSP.hpp"
+#include <DSP/Synth/PlotDSP.hpp>
 
 namespace Xts {
 
