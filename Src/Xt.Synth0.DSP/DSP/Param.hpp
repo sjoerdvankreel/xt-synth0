@@ -1,7 +1,7 @@
 #ifndef XTS_DSP_PARAM_HPP
 #define XTS_DSP_PARAM_HPP
 
-#include <Model/SynthModel.hpp>
+#include <Model/SyncStepModel.hpp>
 #include <cmath>
 
 namespace Xts { namespace Param {

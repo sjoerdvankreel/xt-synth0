@@ -33,6 +33,7 @@ public:
   EnvSample Next();
   EnvSample Release();
   EnvSample Output() const;
+  EnvModel const& Model() const { return *_model; }
   bool End() const { return _output.stage == EnvStage::End; }
 private:
   float Generate();

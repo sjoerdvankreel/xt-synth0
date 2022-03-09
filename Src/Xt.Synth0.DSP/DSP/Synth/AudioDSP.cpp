@@ -1,5 +1,7 @@
 #include <DSP/Synth/AudioDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
+#include <Model/Synth/AudioModel.hpp>
+
 #include <cassert>
 
 namespace Xts {

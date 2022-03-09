@@ -1,8 +1,8 @@
 #include "Xts.hpp"
 #include "DSP/SeqDSP.hpp"
 #include "Model/SeqModel.hpp"
-#include "Model/SynthModel.hpp"
 #include <DSP/Synth/PlotDSP.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp) { delete dsp; }
 void XTS_CALL XtsSeqStateDestroy(SeqState* state) { delete state; }

@@ -1,7 +1,8 @@
+#include <DSP/Param.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
-#include <DSP/Param.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 #include <cassert>
 

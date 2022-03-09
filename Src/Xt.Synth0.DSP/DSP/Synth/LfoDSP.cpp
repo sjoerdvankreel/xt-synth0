@@ -1,6 +1,5 @@
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Param.hpp>
-#include <Model/SynthModel.hpp>
 
 #include <cmath>
 #include <memory>

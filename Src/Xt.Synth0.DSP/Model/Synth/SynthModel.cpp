@@ -1,4 +1,4 @@
-#include "SynthModel.hpp"
+#include <Model/Synth/SynthModel.hpp>
 #include <vector>
 #include <cassert>
 

@@ -8,6 +8,7 @@
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
 #include <Model/Synth/Config.hpp>
+#include <Model/Synth/AmpModel.hpp>
 
 namespace Xts {
 
@@ -19,12 +20,12 @@ class AmpDSP
   ModDSP _ampMod;
   ModDSP _panMod;
   FloatSample _output;
-  struct AmpModel const* _model;
+  AmpModel const* _model;
   float _unitAmount[XTS_SYNTH_UNIT_COUNT];
   float _filterAmount[XTS_SYNTH_FILTER_COUNT];
 public:
   AmpDSP() = default;
-  AmpDSP(struct AmpModel const* model, float velocity);
+  AmpDSP(AmpModel const* model, float velocity);
 public:
   float Level() const { return _level; }
   FloatSample Output() const { return _output; };
@@ -37,8 +38,8 @@ public StagedPlot
 {
   CvDSP _cvDsp;
   AmpDSP _ampDsp;
-  struct CvModel const* _cv;
-  struct AmpModel const* _amp;
+  CvModel const* _cv;
+  AmpModel const* _amp;
 public:
   AmpPlot(CvModel const* cv, AmpModel const* amp);
 public:

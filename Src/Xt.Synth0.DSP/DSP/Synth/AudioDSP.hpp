@@ -18,7 +18,7 @@ public:
   AudioState const& Output() const { return _output; };
 public:
   AudioDSP() = default;
-  AudioDSP(AudioModel const* model, int octave, UnitNote note, float rate);
+  AudioDSP(struct AudioModel const* model, int octave, UnitNote note, float rate);
 };
 
 } // namespace Xts

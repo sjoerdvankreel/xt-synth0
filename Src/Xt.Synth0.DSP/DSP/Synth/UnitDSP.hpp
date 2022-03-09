@@ -5,6 +5,7 @@
 #include <DSP/AudioSample.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/ModDSP.hpp>
+#include <Model/Synth/UnitModel.hpp>
 
 namespace Xts {
 

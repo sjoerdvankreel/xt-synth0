@@ -1,9 +1,9 @@
 #ifndef XTS_SEQ_DSP_HPP
 #define XTS_SEQ_DSP_HPP
 
-#include "SynthDSP.hpp"
+#include <DSP/Synth/SynthDSP.hpp>
+#include <Model/Synth/SynthModel.hpp>
 #include "../Model/SeqModel.hpp"
-#include "../Model/SynthModel.hpp"
 #include <cstdint>
 
 namespace Xts {
