@@ -30,7 +30,7 @@ public:
   int Cycles() const { return 1; }
   bool AutoRange() const { return false; }
   float Next() { return _lfo.Next().value; }
-  bool Bipolar() const { return _model->unipolar != 0; }  
+  bool Bipolar() const { return _model->unipolar == 0; }  
   void Init(float bpm, float rate) { _lfo = LfoDSP(_model, bpm, rate); }
   float Frequency(float bpm, float rate) const { return Xts::Frequency(*_model, bpm, rate); }
 };
