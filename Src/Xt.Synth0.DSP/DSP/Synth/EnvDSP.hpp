@@ -57,9 +57,10 @@ public:
   float Left() const { return _dsp.Output().value; }
   EnvSample EnvOutput() const { return _dsp.Output(); }
   void Init(float bpm, float rate) { _dsp = EnvDSP(_model, bpm, rate); }
+  float ReleaseSamples(float bpm, float rate) const { return ReleaseSamples(*_model, bpm, rate); }
 public:
   StagedParams Params() const;
-  float ReleaseSamples(float bpm, float rate) const;
+  static float ReleaseSamples(EnvModel const& model, float bpm, float rate);
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 

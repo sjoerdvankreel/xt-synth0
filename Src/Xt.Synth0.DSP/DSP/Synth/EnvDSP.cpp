@@ -24,11 +24,11 @@ EnvPlot::Params() const
 }
 
 float
-EnvPlot::ReleaseSamples(float bpm, float rate) const
+EnvPlot::ReleaseSamples(EnvModel const& model, float bpm, float rate)
 {
-  XtsBool sync = _model->sync;
-  int32_t time = _model->releaseTime;
-  int32_t step = _model->releaseStep;
+  XtsBool sync = model.sync;
+  int32_t time = model.releaseTime;
+  int32_t step = model.releaseStep;
   return Param::SamplesF(sync, time, step, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
 }
 

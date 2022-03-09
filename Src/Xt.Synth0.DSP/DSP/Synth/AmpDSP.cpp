@@ -1,7 +1,5 @@
 #include <DSP/Synth/AmpDSP.hpp>
-#include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
-#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/AudioState.hpp>
 #include <DSP/Param.hpp>
 
@@ -9,40 +7,29 @@
 
 namespace Xts {
 
-
-
-  auto val = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<AmpDSP>(state)._level; };
-  auto next = [](std::tuple<CvDSP, AmpDSP>& state) { std::get<AmpDSP>(state).Next(std::get<CvDSP>(state).Next(), {}); };
-  auto end = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).End(std::get<AmpDSP>(state).Env()); };
-  auto release = [](std::tuple<CvDSP, AmpDSP>& state) { return std::get<CvDSP>(state).ReleaseAll(std::get<AmpDSP>(state).Env()); };
-  auto factory = [&](float rate) { return std::make_tuple(CvDSP(state->cv, 1.0f, state->input->bpm, rate), AmpDSP(state->model, 1.0f)); };
-  auto envOutput = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).EnvOutput(std::get<AmpDSP>(state).Env()); };
-  return PlotDSP::RenderStaged(&staged, factory, next, val, val, envOutput, release, end);
-
-class AmpPlot: public StagedPlot
+StagedParams 
+AmpPlot::Params() const
 {
-  CvDSP _cvDsp;
-  AmpDSP _ampDSP;
-  CvModel const* _cv;
-  AmpModel const* _amp;
-public:
-  AmpPlot(CvModel const* cv, AmpModel const* amp):
-  _cv(cv), _amp(amp) {}
+  StagedParams result;
+  result.stereo = false;
+  result.bipolar = false;
+  result.allowResample = true;
+  return result;
+}
 
-  void Next() { _dsp.Next(); };
-  float Right() const { return 0.0f; }
-  bool Stereo() const { return false; }
-  bool Bipolar() const { return false; }
-  bool End() const { return _dsp.End(); }
-  bool AllowResample() const { return true; }
-  EnvSample Release() { return _dsp.Release(); };
-  float Left() const { return _dsp.Output().value; }
-  EnvSample EnvOutput() const { return _dsp.Output(); }
-  void Init(float bpm, float rate) { _dsp = EnvDSP(_model, bpm, rate); }
+void 
+AmpPlot::Init(float bpm, float rate)
+{
+  new(&_ampDsp) AmpDSP(_amp, 1.0f);
+  new(&_cvDsp) CvDSP(_cv, 1.0f, bpm, rate);
+}
 
-  float ReleaseSamples(float bpm, float rate) const
-  { return Param::SamplesF(_model->sync, _model->releaseTime, _model->releaseStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS); }
-};
+void 
+AmpPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  auto plot = AmpPlot(&model.cv, &model.amp);
+  plot.RenderCore(input, model.plot.hold, output);
+}
 
 static ModSource
 ToModSource(AmpLfoSource source)
