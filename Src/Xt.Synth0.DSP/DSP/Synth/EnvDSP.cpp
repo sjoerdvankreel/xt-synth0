@@ -14,6 +14,28 @@
 
 namespace Xts {
 
+class EnvPlot: public StagedPlot
+{
+  EnvDSP _dsp;
+  EnvModel const* _model;
+public:
+  EnvPlot(EnvModel const* model): _model(model) {}
+
+  void Next() { _dsp.Next(); };
+  float Right() const { return 0.0f; }
+  bool Stereo() const { return false; }
+  bool Bipolar() const { return false; }
+  bool End() const { return _dsp.End(); }
+  bool AllowResample() const { return true; }
+  EnvSample Release() { return _dsp.Release(); };
+  float Left() const { return _dsp.Output().value; }
+  EnvSample EnvOutput() const { return _dsp.Output(); }
+  void Init(float bpm, float rate) { _dsp = EnvDSP(_model, bpm, rate); }
+
+  float ReleaseSamples(float bpm, float rate) const
+  { return Param::SamplesF(_model->sync, _model->releaseTime, _model->releaseStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS); }
+};
+
 static inline float
 GenerateStage(float from, float base, float range, SlopeType slope)
 {
@@ -119,6 +141,15 @@ EnvDSP::Release()
   return Output();
 }
 
+void
+EnvDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  int base = static_cast<int>(PlotType::Env1);
+  int type = static_cast<int>(model.plot.type);
+  EnvModel const* env = &model.cv.envs[type - base];
+  if (env->on) EnvPlot(env).Render(input, model.plot.hold, output);
+}
+
 float
 EnvDSP::Generate()
 {
@@ -171,27 +202,6 @@ EnvDSP::Params(EnvModel const& model, float bpm, float rate)
   result.attackSamples = Param::SamplesI(model.sync, model.attackTime, model.attackStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
   result.releaseSamples = Param::SamplesI(model.sync, model.releaseTime, model.releaseStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS);
   return result;
-}
-
-void
-EnvDSP::Plot(EnvPlotState* state)
-{
-  if(!state->model->on) return;
-
-  StagedPlotState staged;
-  staged.flags = PlotNone;
-  staged.env = state->model;
-  staged.hold = state->hold;
-  staged.input = state->input;
-  staged.output = state->output;
-
-  auto next = [](EnvDSP& dsp) { dsp.Next(); };
-  auto end = [](EnvDSP const& dsp) { return dsp.End(); };
-  auto release = [](EnvDSP& dsp) { return dsp.Release(); };
-  auto val = [](EnvDSP const& dsp) { return dsp.Output().value; };
-  auto envOutput = [](EnvDSP const& dsp) { return dsp.Output(); };
-  auto factory = [&](float rate) { return EnvDSP(state->model, state->input->bpm, rate); };
-  PlotDSP::RenderStaged(&staged, factory, next, val, val, envOutput, release, end);
 }
 
 } // namespace Xts

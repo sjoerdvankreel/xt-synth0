@@ -51,6 +51,11 @@ public:
 class StagedPlot
 {
 public:
+  virtual ~StagedPlot() {}
+  virtual void Next() = 0;
+  virtual EnvSample Release() = 0;
+  virtual void Init(float bpm, float rate) = 0;
+
   virtual bool End() const = 0;
   virtual float Left() const = 0;
   virtual float Right() const = 0;
@@ -58,12 +63,7 @@ public:
   virtual bool Bipolar() const = 0;
   virtual bool AllowResample() const = 0;
   virtual EnvSample EnvOutput() const = 0;
-  virtual float ReleaseSamples() const = 0;
-
-  virtual ~StagedPlot() {}
-  virtual void Next() = 0;
-  virtual EnvSample Release() = 0;
-  virtual void Init(float bpm, float rate) = 0;
+  virtual float ReleaseSamples(float bpm, float rate) const = 0;
 
   void Render(PlotInput const& input, int hold, PlotOutput& output);
 };

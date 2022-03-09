@@ -16,14 +16,6 @@ struct EnvParams
   int releaseSamples;
 };
 
-struct EnvPlotState
-{
-  int hold;
-  EnvModel const* model;
-  struct PlotOutput* output;
-  struct PlotInput const* input;
-};
-
 class EnvDSP
 {
   int _pos;
@@ -32,22 +24,22 @@ class EnvDSP
   double _increment;
   EnvSample _output;
   EnvParams _params;
-  EnvModel const* _model;
-public:
-  bool End() const;
-  EnvSample Next();
-  EnvSample Release();
-  EnvSample Output() const;
-  static void Plot(EnvPlotState* state);
+  struct EnvModel const* _model;
 public:
   EnvDSP() = default;
-  EnvDSP(EnvModel const* model, float bpm, float rate);
+  EnvDSP(struct EnvModel const* model, float bpm, float rate);
 private:
   float Generate();
   void CycleStage(EnvType type);
   void NextStage(EnvStage stage);
   float Generate(float from, float to, SlopeType type);
-  static EnvParams Params(EnvModel const& model, float bpm, float rate);
+  static EnvParams Params(struct EnvModel const& model, float bpm, float rate);
+public:
+  bool End() const;
+  EnvSample Next();
+  EnvSample Release();
+  EnvSample Output() const;
+  static void Plot(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 inline bool

@@ -182,7 +182,7 @@ InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& outpu
   output.min = plot->Bipolar() ? -1.0f : 0.0f;
   if(output.spectrum || !plot->AllowResample()) return;
   float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples());
+  output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
 }
 
 void 
