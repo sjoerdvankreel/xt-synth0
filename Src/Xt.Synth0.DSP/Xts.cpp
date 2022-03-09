@@ -114,7 +114,7 @@ XtsPlotDSPRender(PlotState* state)
   in.rate = state->rate;
   in.bpm = static_cast<float>(state->bpm);
   in.pixels = static_cast<float>(state->pixels);
-  Xts::PlotDSP::Render(*state->synth, in, out);
+  Xts::SynthPlotRender(*state->synth, in, out);
 
   state->min = out.min;
   state->max = out.max;

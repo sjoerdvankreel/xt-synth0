@@ -83,7 +83,7 @@ Spectrum(
 */
 
 void
-PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   switch(model.plot.type)
   {
