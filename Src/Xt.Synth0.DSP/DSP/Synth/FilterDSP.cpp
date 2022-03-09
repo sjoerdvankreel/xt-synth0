@@ -52,7 +52,7 @@ void
 FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   int type = static_cast<int>(model.plot.type);
-  int index = type - static_cast<int>(PlotType::Filt1);
+  int index = type - static_cast<int>(PlotType::Filter1);
   FilterModel const* filter = &model.audio.filters[index];
   if (filter->on) std::make_unique<FilterPlot>(&model.cv, &model.audio, filter, index)->RenderCore(input, output);
 }

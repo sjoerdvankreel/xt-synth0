@@ -9,8 +9,8 @@ namespace Xt.Synth0.Model
         Synth, Amp, 
         Env1, Env2, Env3, 
         LFO1, LFO2, LFO3, 
-        Unit1, Unit2, Unit3, 
-        Filt1, Filt2, Filt3 
+        Unit1, Unit2, Unit3,
+        Filter1, Filter2, Filter3
     }
 
     public unsafe sealed class PlotModel : IUIParamGroupModel
