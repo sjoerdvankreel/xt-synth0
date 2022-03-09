@@ -175,19 +175,20 @@ PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
 static void
 InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& output)
 {
+  auto params = plot->Params();
   output.max = 1.0f;
   output.clip = false;
   output.rate = input.rate;
-  output.stereo = plot->Stereo();
+  output.stereo = params.stereo;
   output.spectrum = input.spectrum;
-  output.min = plot->Bipolar() ? -1.0f : 0.0f;
-  if(output.spectrum || !plot->AllowResample()) return;
+  output.min = params.bipolar ? -1.0f : 0.0f;
+  if(output.spectrum || !params.allowResample) return;
   float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
 }
 
 void 
-StagedPlot::Render(PlotInput const& input, int hold, PlotOutput& output)
+StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
 {
   Init(input.bpm, input.rate);
   InitStaged(this, input, hold, output);

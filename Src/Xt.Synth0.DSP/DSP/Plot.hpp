@@ -32,6 +32,13 @@ struct PlotOutput
   std::vector<std::complex<float>>* fftScratch;
 };
 
+struct StagedParams
+{
+  bool stereo;
+  bool bipolar;
+  bool allowResample;
+};
+
 struct PeriodicParams
 {
   int periods;
@@ -63,13 +70,11 @@ public:
   virtual bool End() const = 0;
   virtual float Left() const = 0;
   virtual float Right() const = 0;
-  virtual bool Stereo() const = 0;
-  virtual bool Bipolar() const = 0;
-  virtual bool AllowResample() const = 0;
   virtual EnvSample EnvOutput() const = 0;
+  virtual StagedParams Params() const = 0;
   virtual float ReleaseSamples(float bpm, float rate) const = 0;
 
-  void Render(PlotInput const& input, int hold, PlotOutput& output);
+  void RenderCore(PlotInput const& input, int hold, PlotOutput& output);
 };
 
 } // namespace Xts
