@@ -101,7 +101,10 @@ UnitDSP::Plot(SynthModel const* model, PlotInput const& input, PlotOutput& outpu
   int base = static_cast<int>(PlotType::Unit1);
   int type = static_cast<int>(model->plot.type);
   UnitModel const* unit = &model->audio.units[type - base];
-  if (unit->on) std::make_unique<UnitPlot>(CvDSP(&model->cv, 1.0f, input.bpm, input.rate), UnitDSP(unit, 4, UnitNote::C, input.rate))->Render(input, output);
+  if (!unit->on) return;
+  auto cv = CvDSP(&model->cv, 1.0f, input.bpm, input.rate);
+  auto dsp = UnitDSP(unit, 4, UnitNote::C, input.rate);
+  UnitPlot(cv, dsp).Render(input, output);
 }
 
 float

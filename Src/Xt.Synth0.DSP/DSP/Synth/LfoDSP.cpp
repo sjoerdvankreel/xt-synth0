@@ -82,7 +82,7 @@ LfoDSP::Plot(SynthModel const* model, PlotInput const& input, PlotOutput& output
   int base = static_cast<int>(PlotType::LFO1);
   int type = static_cast<int>(model->plot.type);
   LfoModel const* lfo = &model->cv.lfos[type - base];
-  if (lfo->on) std::make_unique<LfoPlot>(LfoDSP(lfo, input.bpm, input.rate))->Render(input, output);
+  if (lfo->on) LfoPlot(LfoDSP(lfo, input.bpm, input.rate)).Render(input, output);
 }
 
 } // namespace Xts
