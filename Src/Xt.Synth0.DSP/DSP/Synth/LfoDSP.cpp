@@ -1,6 +1,4 @@
 #include <DSP/Synth/LfoDSP.hpp>
-#include <DSP/Synth/PlotDSP.hpp>
-#include <DSP/Plot.hpp>
 #include <DSP/Param.hpp>
 #include <Model/SynthModel.hpp>
 
@@ -12,29 +10,6 @@
 #define MAX_FREQ_HZ 20.0f
 
 namespace Xts {
-
-static float
-Frequency(LfoModel const& model, float bpm, float rate)
-{
-  if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
-  return Param::Frequency(model.frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
-}
-
-class LfoPlot : public CycledPlot
-{
-  LfoDSP _dsp;
-  LfoModel const* _model;
-public:
-  LfoPlot(LfoModel const* model): _model(model) {}
-
-  int Cycles() const { return 1; }
-  bool AutoRange() const { return false; }
-  float Next() { return _dsp.Next().value; }
-  bool AllowResample() const { return true; }
-  bool Bipolar() const { return _model->unipolar == 0; }  
-  void Init(float bpm, float rate) { new(&_dsp) LfoDSP(_model, bpm, rate); }
-  float Frequency(float bpm, float rate) const { return Xts::Frequency(*_model, bpm, rate); }
-};
 
 CvSample
 LfoDSP::Next()
@@ -59,13 +34,11 @@ LfoDSP()
   _factor = (model->invert ? -1.0f : 1.0f) * (1.0f - _base);
 }
 
-void
-LfoDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+float
+LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
 {
-  int base = static_cast<int>(PlotType::LFO1);
-  int type = static_cast<int>(model.plot.type);
-  LfoModel const* lfo = &model.cv.lfos[type - base];
-  if (lfo->on) LfoPlot(lfo).Render(input, output);
+  if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
+  return Param::Frequency(model.frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
 }
 
 float
@@ -82,6 +55,15 @@ LfoDSP::Generate() const
 	}
 	float tri = phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f;
 	return _base + _factor * tri * 4.0f;
+}
+
+void
+LfoPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  int base = static_cast<int>(PlotType::LFO1);
+  int type = static_cast<int>(model.plot.type);
+  LfoModel const* lfo = &model.cv.lfos[type - base];
+  if (lfo->on) LfoPlot(lfo).RenderCore(input, output);
 }
 
 } // namespace Xts

@@ -44,8 +44,7 @@ public:
   virtual bool AutoRange() const = 0;
   virtual bool AllowResample() const = 0;
   virtual float Frequency(float bpm, float rate) const = 0;
-
-  void Render(PlotInput const& input, PlotOutput& output);
+  void RenderCore(PlotInput const& input, PlotOutput& output);
 };
 
 class StagedPlot
