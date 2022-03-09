@@ -50,6 +50,7 @@ class FilterDSP
   float _filterAmount[XTS_SYNTH_FILTER_COUNT];
 public:
   FilterDSP() = default;
+  FilterDSP(FilterDSP const& dsp, float rate);
   FilterDSP(FilterModel const* model, int index, float rate);
 public:
   FloatSample Output() const;
@@ -60,6 +61,10 @@ public:
 inline FloatSample
 FilterDSP::Output() const
 { return _output; }
+
+inline FilterDSP::
+FilterDSP(FilterDSP const& dsp, float rate):
+FilterDSP(dsp._model, dsp._index, rate) {}
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_FILTER_DSP_HPP

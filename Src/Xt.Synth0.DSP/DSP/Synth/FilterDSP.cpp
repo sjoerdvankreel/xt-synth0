@@ -40,7 +40,7 @@ public:
   float Frequency(float bpm, float rate) const 
   { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
   std::unique_ptr<CycledPlot> Reset(float bpm, float rate) 
-  { return std::make_unique<FilterPlot>(CvDSP(_cv), AudioDSP(_audio), FilterDSP(_filter)); }
+  { return std::make_unique<FilterPlot>(CvDSP(_cv), AudioDSP(_audio), FilterDSP(_filter, rate)); }
 };
 
 float
