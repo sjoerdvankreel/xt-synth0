@@ -32,12 +32,12 @@ public PeriodicPlot
   LfoDSP _dsp;
   LfoModel const* _model;
 public:
-  LfoPlot(LfoModel const* model) : _model(model) {}
-public:
-  PeriodicParams Params() const;
   float Next() { return _dsp.Next().value; }
+  LfoPlot(LfoModel const* model) : _model(model) {}
   void Init(float bpm, float rate) { new(&_dsp) LfoDSP(_model, bpm, rate); }
   float Frequency(float bpm, float rate) const { return LfoDSP::Frequency(*_model, bpm, rate); }
+public:
+  PeriodicParams Params() const;
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 

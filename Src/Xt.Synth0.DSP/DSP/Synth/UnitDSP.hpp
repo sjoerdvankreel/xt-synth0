@@ -1,7 +1,9 @@
 #ifndef XTS_DSP_SYNTH_UNIT_DSP_HPP
 #define XTS_DSP_SYNTH_UNIT_DSP_HPP
 
+#include <DSP/Plot.hpp>
 #include <DSP/AudioSample.hpp>
+#include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/ModDSP.hpp>
 
 namespace Xts {
@@ -21,6 +23,10 @@ class UnitDSP
   FloatSample _output;
   struct UnitModel const* _model;
 public:
+  FloatSample Next(struct CvState const& cv);
+  FloatSample Output() const { return _output; };
+  static float Frequency(UnitModel const& model, int octave, UnitNote note);
+public:
   UnitDSP() = default;
   UnitDSP(struct UnitModel const* model, int octave, UnitNote note, float rate);
 private:
@@ -30,15 +36,24 @@ private:
   float GeneratePolyBlep(float phase, float frequency, CvSample modulator1, CvSample modulator2);
   float GenerateAdditive(float phase, float frequency, CvSample modulator1, CvSample modulator2) const;
   float Modulate(UnitModTarget target, CvSample carrier, CvSample modulator1, CvSample modulator2) const;
-public:
-  FloatSample Output() const;
-  FloatSample Next(struct CvState const& cv);
-  static void Plot(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
-inline FloatSample
-UnitDSP::Output() const
-{ return _output; }
+class UnitPlot : 
+public PeriodicPlot
+{
+  CvDSP _cvDsp;
+  UnitDSP _unitDsp;
+  struct CvModel const* _cv;
+  struct UnitModel const* _unit;
+public:
+  float Next() { return _unitDsp.Next(_cvDsp.Next()).Mono(); }
+  UnitPlot(struct CvModel const* cv, struct UnitModel const* unit): _cv(cv), _unit(unit) {}
+  float Frequency(float bpm, float rate) const { return UnitDSP::Frequency(*_unit, 4, UnitNote::C); }
+public:
+  PeriodicParams Params() const;
+  void Init(float bpm, float rate);
+  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
+};
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_UNIT_DSP_HPP

@@ -19,40 +19,31 @@
 
 namespace Xts {
 
-static float
-Frequency(UnitModel const& model, int octave, UnitNote note)
+PeriodicParams
+UnitPlot::Params() const
 {
-  float cent = Param::Mix(model.detune) * 0.5f;
-  int key = octave * 12 + static_cast<int>(note);
-  int base = 4 * 12 + static_cast<int>(UnitNote::C);
-  int unit = (model.octave + 1) * 12 + static_cast<int>(model.note);
-  return MidiNoteFrequency(unit + key - base + cent);
+  PeriodicParams result;
+  result.periods = 5;
+  result.bipolar = true;
+  result.autoRange = false;
+  result.allowResample = true;
+  return result;
 }
-
-class UnitPlot : public CycledPlot
-{
-  CvDSP _cvDsp;
-  UnitDSP _unitDsp;
-  CvModel const* _cv;
-  UnitModel const* _unit;
-public:
-  UnitPlot(CvModel const* cv, UnitModel const* unit):
-  _cv(cv), _unit(unit) {}
-
-  void Init(float bpm, float rate);
-  int Cycles() const { return 5; }
-  bool Bipolar() const { return true; }
-  bool AutoRange() const { return false; }
-  bool AllowResample() const { return true; }
-  float Next() { return _unitDsp.Next(_cvDsp.Next()).Mono(); }
-  float Frequency(float bpm, float rate) const { return Xts::Frequency(*_unit, 4, UnitNote::C); }
-};
 
 void
 UnitPlot::Init(float bpm, float rate)
 {
   new(&_cvDsp) CvDSP(_cv, 1.0, bpm, rate);
   new(&_unitDsp) UnitDSP(_unit, 4, UnitNote::C, rate); 
+}
+
+void
+UnitPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  int base = static_cast<int>(PlotType::Unit1);
+  int type = static_cast<int>(model.plot.type);
+  UnitModel const* unit = &model.audio.units[type - base];
+  if (unit->on) UnitPlot(&model.cv, unit).RenderCore(input, output);
 }
 
 static __m256
@@ -102,13 +93,14 @@ UnitDSP()
   _additiveRolloff = Param::Mix(model->additiveRolloff);
 }
 
-void
-UnitDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+float
+UnitDSP::Frequency(UnitModel const& model, int octave, UnitNote note)
 {
-  int base = static_cast<int>(PlotType::Unit1);
-  int type = static_cast<int>(model.plot.type);
-  UnitModel const* unit = &model.audio.units[type - base];
-  if (unit->on) UnitPlot(&model.cv, unit).Render(input, output);
+  float cent = Param::Mix(model.detune) * 0.5f;
+  int key = octave * 12 + static_cast<int>(note);
+  int base = 4 * 12 + static_cast<int>(UnitNote::C);
+  int unit = (model.octave + 1) * 12 + static_cast<int>(model.note);
+  return MidiNoteFrequency(unit + key - base + cent);
 }
 
 float
