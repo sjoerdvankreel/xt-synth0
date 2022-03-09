@@ -136,31 +136,32 @@ InitCycled(CycledPlot* plot, PlotInput const& input, PlotOutput& output)
 void
 CycledPlot::Render(PlotInput const& input, PlotOutput& output)
 {
+  Init(input.bpm, input.rate);
   InitCycled(this, input, output);
 
   float max = 1.0f;
-  auto plot = Reset(input.bpm, output.rate);
-  float length = (output.rate * plot->Cycles() / output.frequency) + 1.0f;
+  Init(input.bpm, output.rate);
+  float length = (output.rate * Cycles() / output.frequency) + 1.0f;
   int samples = static_cast<int>(std::ceilf(input.spectrum? output.rate: length));
   
   for (int i = 0; i < samples; i++)
   {
-    float sample = plot->Next();
+    float sample = Next();
     max = std::max(max, std::fabs(sample));
     output.lSamples->push_back(sample);
   }
 
   output.hSplits->emplace_back(samples, L"");
-  for (int i = 0; i < plot->Cycles() * 2; i++)
-    output.hSplits->emplace_back(samples * i / (plot->Cycles() * 2), std::to_wstring(i) + UnicodePi);
-  if (!plot->AutoRange())
+  for (int i = 0; i < Cycles() * 2; i++)
+    output.hSplits->emplace_back(samples * i / (Cycles() * 2), std::to_wstring(i) + UnicodePi);
+  if (!AutoRange())
   {
     assert(max <= 1.0f);
-    *(output.vSplits) = plot->Bipolar() ? BiVSPlits : UniVSPlits;
+    *(output.vSplits) = Bipolar() ? BiVSPlits : UniVSPlits;
     return;
   }
 
-  assert(plot->Bipolar());
+  assert(Bipolar());
   for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
   *output.vSplits = MakeBiVSplits(max);
 }

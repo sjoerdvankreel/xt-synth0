@@ -42,14 +42,15 @@ class CycledPlot
 {
 public:
   virtual ~CycledPlot() {}
-  void Render(PlotInput const& input, PlotOutput& output);
-
   virtual float Next() = 0;
+  virtual void Init(float bpm, float rate) = 0;
+
   virtual int Cycles() const = 0;
   virtual bool Bipolar() const = 0;
   virtual bool AutoRange() const = 0;
   virtual float Frequency(float bpm, float rate) const = 0;
-  virtual std::unique_ptr<CycledPlot> Reset(float bpm, float rate) = 0;
+
+  void Render(PlotInput const& input, PlotOutput& output);
 };
 
 } // namespace Xts
