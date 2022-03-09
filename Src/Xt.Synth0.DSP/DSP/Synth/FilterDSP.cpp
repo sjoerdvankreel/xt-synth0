@@ -33,8 +33,8 @@ class FilterPlot : public CycledPlot
   AudioModel const* _audio;
   FilterModel const* _filter;
 public:
-  FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter):
-  _cv(cv), _audio(audio), _filter(filter) {}
+  FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter, int index):
+  _index(index), _cv(cv), _audio(audio), _filter(filter) {}
 
   float Next();
   void Init(float bpm, float rate);
@@ -216,7 +216,7 @@ FilterDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& out
   int type = static_cast<int>(model.plot.type);
   int index = type - static_cast<int>(PlotType::Filt1);
   FilterModel const* filter = &model.audio.filters[index];
-  if (filter->on) FilterPlot(&model.cv, &model.audio, filter).Render(input, output);
+  if (filter->on) FilterPlot(&model.cv, &model.audio, filter, index).Render(input, output);
 }
 
 FloatSample
