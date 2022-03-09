@@ -216,15 +216,15 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 }
 
 void
-FilterDSP::Plot(SynthModel const* model, PlotInput const& input, PlotOutput& output)
+FilterDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
-  int type = static_cast<int>(model->plot.type);
+  int type = static_cast<int>(model.plot.type);
   int index = type - static_cast<int>(PlotType::Filt1);
-  FilterModel const* filter = &model->audio.filters[index];
+  FilterModel const* filter = &model.audio.filters[index];
   if (!filter->on) return;
   auto dsp = FilterDSP(filter, index, input.rate);
-  auto cv = CvDSP(&model->cv, 1.0f, input.bpm, input.rate);
-  auto audio = AudioDSP(&model->audio, 4, UnitNote::C, input.rate);
+  auto cv = CvDSP(&model.cv, 1.0f, input.bpm, input.rate);
+  auto audio = AudioDSP(&model.audio, 4, UnitNote::C, input.rate);
   FilterPlot(cv, audio, dsp).Render(input, output);
 }
 

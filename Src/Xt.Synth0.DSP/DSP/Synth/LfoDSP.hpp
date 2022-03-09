@@ -23,7 +23,7 @@ public:
   CvSample Next();
   CvSample Output() const;
   float Frequency(float bpm, float rate) const;
-  static void Plot(struct SynthModel const* model, struct PlotInput const& input, struct PlotOutput& output);
+  static void Plot(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 inline CvSample 

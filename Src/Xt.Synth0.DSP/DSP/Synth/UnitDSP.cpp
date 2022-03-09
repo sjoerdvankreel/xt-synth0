@@ -96,13 +96,13 @@ UnitDSP::Frequency(int octave, UnitNote note) const
 }
 
 void
-UnitDSP::Plot(SynthModel const* model, PlotInput const& input, PlotOutput& output)
+UnitDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   int base = static_cast<int>(PlotType::Unit1);
-  int type = static_cast<int>(model->plot.type);
-  UnitModel const* unit = &model->audio.units[type - base];
+  int type = static_cast<int>(model.plot.type);
+  UnitModel const* unit = &model.audio.units[type - base];
   if (!unit->on) return;
-  auto cv = CvDSP(&model->cv, 1.0f, input.bpm, input.rate);
+  auto cv = CvDSP(&model.cv, 1.0f, input.bpm, input.rate);
   auto dsp = UnitDSP(unit, 4, UnitNote::C, input.rate);
   UnitPlot(cv, dsp).Render(input, output);
 }

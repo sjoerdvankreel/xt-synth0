@@ -55,7 +55,7 @@ public:
 public:
   FloatSample Output() const;
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
-  static void Plot(struct SynthModel const* model, struct PlotInput const& input, struct PlotOutput& output);
+  static void Plot(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 inline FloatSample
