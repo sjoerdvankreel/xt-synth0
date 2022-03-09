@@ -1,8 +1,8 @@
 #ifndef XTS_DSP_SYNTH_ENV_DSP_HPP
 #define XTS_DSP_SYNTH_ENV_DSP_HPP
 
-#include <DSP/Plot.hpp>
-#include <DSP/EnvSample.hpp>
+#include <DSP/Shared/Plot.hpp>
+#include <DSP/Shared/EnvSample.hpp>
 #include <Model/Synth/EnvModel.hpp>
 
 namespace Xts {

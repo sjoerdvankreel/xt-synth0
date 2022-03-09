@@ -2,8 +2,8 @@
 #define XTS_DSP_SYNTH_AUDIO_STATE_HPP
 
 #include <Model/Model.hpp>
-#include <DSP/AudioSample.hpp>
 #include <Model/Synth/Config.hpp>
+#include <DSP/Shared/AudioSample.hpp>
 
 namespace Xts {
 

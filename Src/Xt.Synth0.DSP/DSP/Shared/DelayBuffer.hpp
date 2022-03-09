@@ -1,5 +1,5 @@
-#ifndef XTS_DSP_DELAY_BUFFER_HPP
-#define XTS_DSP_DELAY_BUFFER_HPP
+#ifndef XTS_DSP_SHARED_DELAY_BUFFER_HPP
+#define XTS_DSP_SHARED_DELAY_BUFFER_HPP
 
 #include <cstring>
 #include <cassert>
@@ -39,4 +39,4 @@ DelayBuffer<T, N>::Get(size_t pos) const
 }
 
 } // namespace Xts
-#endif // XTS_DSP_DELAY_BUFFER_HPP
+#endif // XTS_DSP_SHARED_DELAY_BUFFER_HPP

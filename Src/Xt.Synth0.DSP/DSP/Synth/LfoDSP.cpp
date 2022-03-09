@@ -1,4 +1,4 @@
-#include <DSP/Param.hpp>
+#include <DSP/Shared/Param.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 

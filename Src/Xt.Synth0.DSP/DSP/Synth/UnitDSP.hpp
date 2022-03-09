@@ -1,10 +1,10 @@
 #ifndef XTS_DSP_SYNTH_UNIT_DSP_HPP
 #define XTS_DSP_SYNTH_UNIT_DSP_HPP
 
-#include <DSP/Plot.hpp>
-#include <DSP/AudioSample.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/ModDSP.hpp>
+#include <DSP/Shared/Plot.hpp>
+#include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/UnitModel.hpp>
 
 namespace Xts {

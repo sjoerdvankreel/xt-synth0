@@ -1,7 +1,7 @@
-#ifndef XTS_DSP_PLOT_HPP
-#define XTS_DSP_PLOT_HPP
+#ifndef XTS_DSP_SHARED_PLOT_HPP
+#define XTS_DSP_SHARED_PLOT_HPP
 
-#include <DSP/EnvSample.hpp>
+#include <DSP/Shared/EnvSample.hpp>
 
 #include <vector>
 #include <memory>
@@ -78,4 +78,4 @@ public:
 };
 
 } // namespace Xts
-#endif // XTS_DSP_PLOT_HPP
+#endif // XTS_DSP_SHARED_PLOT_HPP

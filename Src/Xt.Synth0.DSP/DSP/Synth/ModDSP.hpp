@@ -1,8 +1,8 @@
 #ifndef XTS_DSP_SYNTH_MOD_DSP_HPP
 #define XTS_DSP_SYNTH_MOD_DSP_HPP
 
-#include <DSP/Param.hpp>
-#include <DSP/CvSample.hpp>
+#include <DSP/Shared/Param.hpp>
+#include <DSP/Shared/CvSample.hpp>
 #include <Model/Synth/ModModel.hpp>
 #include <cstdint>
 

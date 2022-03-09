@@ -1,8 +1,8 @@
 #ifndef XTS_DSP_SYNTH_LFO_DSP_HPP
 #define XTS_DSP_SYNTH_LFO_DSP_HPP
 
-#include <DSP/Plot.hpp>
-#include <DSP/CvSample.hpp>
+#include <DSP/Shared/Plot.hpp>
+#include <DSP/Shared/CvSample.hpp>
 #include <Model/Synth/LfoModel.hpp>
 
 namespace Xts {

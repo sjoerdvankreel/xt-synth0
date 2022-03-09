@@ -1,6 +1,6 @@
-#include <DSP/Plot.hpp>
-#include <DSP/Param.hpp>
-#include <DSP/EnvSample.hpp>
+#include <DSP/Shared/Plot.hpp>
+#include <DSP/Shared/Param.hpp>
+#include <DSP/Shared/EnvSample.hpp>
 
 #include <cassert>
 #include <iomanip>

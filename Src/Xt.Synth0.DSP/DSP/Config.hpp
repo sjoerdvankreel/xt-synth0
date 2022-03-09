@@ -1,6 +1,0 @@
-#ifndef XTS_DSP_CONFIG_HPP
-#define XTS_DSP_CONFIG_HPP
-
-#define XTS_MAX_SAMPLE_RATE 192000
-
-#endif // XTS_DSP_CONFIG_HPP

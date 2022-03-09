@@ -1,7 +1,7 @@
-#ifndef XTS_DSP_ENV_SAMPLE_HPP
-#define XTS_DSP_ENV_SAMPLE_HPP
+#ifndef XTS_DSP_SHARED_ENV_SAMPLE_HPP
+#define XTS_DSP_SHARED_ENV_SAMPLE_HPP
 
-#include <DSP/Utility.hpp>
+#include <DSP/Shared/Utility.hpp>
 
 namespace Xts {
 
@@ -32,4 +32,4 @@ EnvSample::Sanity() const
 }
 
 } // namespace Xts
-#endif // XTS_DSP_ENV_SAMPLE_HPP
+#endif // XTS_DSP_SHARED_ENV_SAMPLE_HPP

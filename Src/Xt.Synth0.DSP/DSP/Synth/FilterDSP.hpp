@@ -1,9 +1,9 @@
 #ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
-#include <DSP/Config.hpp>
-#include <DSP/DelayBuffer.hpp>
-#include <DSP/AudioSample.hpp>
+#include <DSP/Shared/Config.hpp>
+#include <DSP/Shared/DelayBuffer.hpp>
+#include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/Config.hpp>
 
 #define XTS_COMB_MIN_DELAY_MS 0.0f

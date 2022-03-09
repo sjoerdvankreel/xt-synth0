@@ -1,7 +1,7 @@
 #ifndef XTS_DSP_SYNTH_FILTER_PLOT_HPP
 #define XTS_DSP_SYNTH_FILTER_PLOT_HPP
 
-#include <DSP/Plot.hpp>
+#include <DSP/Shared/Plot.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
 #include <DSP/Synth/FilterDSP.hpp>

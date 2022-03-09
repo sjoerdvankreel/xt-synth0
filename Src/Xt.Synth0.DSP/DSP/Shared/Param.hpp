@@ -1,5 +1,5 @@
-#ifndef XTS_DSP_PARAM_HPP
-#define XTS_DSP_PARAM_HPP
+#ifndef XTS_DSP_SHARED_PARAM_HPP
+#define XTS_DSP_SHARED_PARAM_HPP
 
 #include <Model/SyncStepModel.hpp>
 #include <cmath>
@@ -44,4 +44,4 @@ SamplesI(XtsBool sync, int timeVal, int stepVal, float bpm, float rate, float mi
 
 } // namespace Param
 } // namespace Xts
-#endif // XTS_DSP_PARAM_HPP
+#endif // XTS_DSP_SHARED_PARAM_HPP

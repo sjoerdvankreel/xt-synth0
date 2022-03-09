@@ -1,8 +1,8 @@
 #ifndef XTS_DSP_SYNTH_CV_STATE_HPP
 #define XTS_DSP_SYNTH_CV_STATE_HPP
 
-#include <DSP/CvSample.hpp>
-#include <DSP/EnvSample.hpp>
+#include <DSP/Shared/CvSample.hpp>
+#include <DSP/Shared/EnvSample.hpp>
 #include <Model/Synth/Config.hpp>
 
 namespace Xts {

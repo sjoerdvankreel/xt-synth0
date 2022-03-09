@@ -1,5 +1,5 @@
-#ifndef XTS_DSP_UTILITY_HPP
-#define XTS_DSP_UTILITY_HPP
+#ifndef XTS_DSP_SHARED_UTILITY_HPP
+#define XTS_DSP_SHARED_UTILITY_HPP
 
 #include <cmath>
 #include <cassert>
@@ -73,4 +73,4 @@ inline T UnipolarSanity(T val)
 }
 
 } // namespace Xts
-#endif // XTS_DSP_UTILITY_HPP
+#endif // XTS_DSP_SHARED_UTILITY_HPP

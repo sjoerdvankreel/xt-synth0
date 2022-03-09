@@ -1,5 +1,5 @@
-#include <DSP/Param.hpp>
-#include <DSP/Utility.hpp>
+#include <DSP/Shared/Param.hpp>
+#include <DSP/Shared/Utility.hpp>
 #include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/Synth/FilterPlot.hpp>
 #include <Model/Synth/SynthModel.hpp>
