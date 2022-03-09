@@ -25,10 +25,10 @@ class EnvDSP
   double _increment;
   EnvSample _output;
   EnvParams _params;
-  struct EnvModel const* _model;
+  EnvModel const* _model;
 public:
   EnvDSP() = default;
-  EnvDSP(struct EnvModel const* model, float bpm, float rate);
+  EnvDSP(EnvModel const* model, float bpm, float rate);
 public:
   EnvSample Next();
   EnvSample Release();
@@ -39,7 +39,7 @@ private:
   void CycleStage(EnvType type);
   void NextStage(EnvStage stage);
   float Generate(float from, float to, SlopeType type);
-  static EnvParams Params(struct EnvModel const& model, float bpm, float rate);
+  static EnvParams Params(EnvModel const& model, float bpm, float rate);
 };
 
 class EnvPlot: 

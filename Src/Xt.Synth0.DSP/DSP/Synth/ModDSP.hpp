@@ -18,14 +18,10 @@ public:
   ModDSP(ModModel<Target> const& model);
   ModDSP(ModSource source, int32_t amount);
 public:
-  float Amount() const;
+  float Amount() const { return _amount; };
   CvSample Modulator(struct CvState const& cv) const;
   float Modulate(CvSample carrier, CvSample modulator) const;
 };
-
-inline float
-ModDSP::Amount() const
-{ return _amount; }
 
 inline ModDSP::
 ModDSP(ModSource source, int32_t amount) :

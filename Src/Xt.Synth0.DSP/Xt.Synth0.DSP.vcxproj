@@ -19,7 +19,6 @@
     <ClInclude Include="DSP\Param.hpp" />
     <ClInclude Include="DSP\Plot.hpp" />
     <ClInclude Include="DSP\SeqDSP.hpp" />
-    <ClInclude Include="DSP\SynthDSP.hpp" />
     <ClInclude Include="DSP\Synth\AmpDSP.hpp" />
     <ClInclude Include="DSP\Synth\AudioDSP.hpp" />
     <ClInclude Include="DSP\Synth\AudioState.hpp" />
@@ -31,6 +30,7 @@
     <ClInclude Include="DSP\Synth\LfoDSP.hpp" />
     <ClInclude Include="DSP\Synth\ModDSP.hpp" />
     <ClInclude Include="DSP\Synth\PlotDSP.hpp" />
+    <ClInclude Include="DSP\Synth\SynthDSP.hpp" />
     <ClInclude Include="DSP\Synth\UnitDSP.hpp" />
     <ClInclude Include="DSP\Utility.hpp" />
     <ClInclude Include="Model\Model.hpp" />
@@ -52,7 +52,6 @@
   <ItemGroup>
     <ClCompile Include="DSP\Plot.cpp" />
     <ClCompile Include="DSP\SeqDSP.cpp" />
-    <ClCompile Include="DSP\SynthDSP.cpp" />
     <ClCompile Include="DSP\Synth\AmpDSP.cpp" />
     <ClCompile Include="DSP\Synth\AudioDSP.cpp" />
     <ClCompile Include="DSP\Synth\CvDSP.cpp" />
@@ -61,6 +60,7 @@
     <ClCompile Include="DSP\Synth\LfoDSP.cpp" />
     <ClCompile Include="DSP\Synth\ModDSP.cpp" />
     <ClCompile Include="DSP\Synth\PlotDSP.cpp" />
+    <ClCompile Include="DSP\Synth\SynthDSP.cpp" />
     <ClCompile Include="DSP\Synth\UnitDSP.cpp" />
     <ClCompile Include="Model\SynthModel.cpp" />
     <ClCompile Include="Model\Synth\SyncStepModel.cpp" />

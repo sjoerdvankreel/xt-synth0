@@ -28,8 +28,8 @@ public:
 public:
   float Level() const { return _level; }
   FloatSample Output() const { return _output; };
+  FloatSample Next(CvState const& cv, AudioState const& audio);
   int Env() const { return static_cast<int>(_model->ampEnvSource); };
-  FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
 };
 
 class AmpPlot: 
@@ -40,20 +40,28 @@ public StagedPlot
   struct CvModel const* _cv;
   struct AmpModel const* _amp;
 public:
-  AmpPlot(struct CvModel const* cv, struct AmpModel const* amp) : _cv(cv), _amp(amp) {}
-public:
-  StagedParams Params() const;
-  void Init(float bpm, float rate);
-  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
+  AmpPlot(CvModel const* cv, AmpModel const* amp);
 public:
   float Right() const { return 0.0f; }
   float Left() const { return _ampDsp.Level(); }
   void Next() { _ampDsp.Next(_cvDsp.Next(), {}); }
-  bool End() const { return _cvDsp.End(_ampDsp.Env()); }
+  bool End() const { return _cvDsp.Env(_ampDsp.Env()).End(); }
   EnvSample Release() { return _cvDsp.ReleaseAll(_ampDsp.Env()); };
-  EnvSample EnvOutput() const { return _cvDsp.EnvOutput(_ampDsp.Env()); }
-  float ReleaseSamples(float bpm, float rate) const { return EnvPlot::ReleaseSamples(_cv->envs[_ampDsp.Env()], bpm, rate); }
+  EnvSample EnvOutput() const { return _cvDsp.Env(_ampDsp.Env()).Output(); }
+public:
+  StagedParams Params() const;
+  void Init(float bpm, float rate);
+  float ReleaseSamples(float bpm, float rate) const;
+  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
+
+inline AmpPlot::
+AmpPlot(CvModel const* cv, AmpModel const* amp): 
+_cv(cv), _amp(amp) {}
+
+inline float
+AmpPlot::ReleaseSamples(float bpm, float rate) const
+{ return EnvPlot::ReleaseSamples(_cv->envs[_ampDsp.Env()], bpm, rate); }
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_AMP_DSP_HPP
