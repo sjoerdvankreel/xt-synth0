@@ -103,9 +103,6 @@
     <ClInclude Include="Model\Synth\SynthModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="Model\SyncStepModel.hpp">
-      <Filter>Model</Filter>
-    </ClInclude>
     <ClInclude Include="DSP\Shared\AudioSample.hpp">
       <Filter>DSP\Shared</Filter>
     </ClInclude>
@@ -129,6 +126,9 @@
     </ClInclude>
     <ClInclude Include="DSP\Shared\Utility.hpp">
       <Filter>DSP\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Shared\SyncStepModel.hpp">
+      <Filter>Model\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -169,11 +169,11 @@
     <ClCompile Include="Model\Synth\SynthModel.cpp">
       <Filter>Model\Synth</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SyncStepModel.cpp">
-      <Filter>Model</Filter>
-    </ClCompile>
     <ClCompile Include="DSP\Shared\Plot.cpp">
       <Filter>DSP\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Shared\SyncStepModel.cpp">
+      <Filter>Model\Shared</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
