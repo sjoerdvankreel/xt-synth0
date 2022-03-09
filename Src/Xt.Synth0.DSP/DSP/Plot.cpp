@@ -10,7 +10,7 @@ namespace Xts {
 
 static constexpr wchar_t UnicodePi = L'\u03C0';
 
-static std::wstring
+/*static*/ std::wstring
 VSplitMarker(float val, float max)
 {
   float absval = std::fabs(val);
@@ -25,7 +25,7 @@ VSplitMarker(float val, float max)
   return result + str.str();
 }
 
-static std::vector<VSplit> 
+/*static*/ std::vector<VSplit>
 BiVSPlits = {
   { -1.0f, L"+1.0" },
   { -0.5f, L"+0.5" },
@@ -34,7 +34,7 @@ BiVSPlits = {
   { 1.0f, L"-1.0" }
 };
 
-static std::vector<VSplit> 
+/*static*/ std::vector<VSplit>
 UniVSPlits = {
   { 0.0f, L"1.0" },
   { 0.25f, L".75" },
@@ -43,7 +43,7 @@ UniVSPlits = {
   { 1.0f, L"0.0" }
 };
 
-static std::vector<VSplit>
+/*static*/ std::vector<VSplit>
 StereoVSPlits = {
   { -1.0f, L"+1.0" },
   { -0.5f, L"L" },
@@ -52,7 +52,7 @@ StereoVSPlits = {
   { 1.0f, L"-1.0" }
 };
 
-static std::vector<VSplit> 
+/*static*/ std::vector<VSplit>
 MakeBiVSplits(float max)
 {
   std::vector<VSplit> result;
@@ -64,7 +64,7 @@ MakeBiVSplits(float max)
   return result;
 }
 
-static std::wstring
+/*static*/ std::wstring
 FormatEnv(EnvStage stage)
 {
   switch (stage)

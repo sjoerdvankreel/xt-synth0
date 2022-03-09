@@ -27,14 +27,16 @@ struct StagedPlotState
   PlotInput const* input;
 };
 
+
+
+extern std::vector<VSplit> BiVSPlits;
+extern std::vector<VSplit> UniVSPlits;
+extern std::vector<VSplit> StereoVSPlits;
+extern std::wstring FormatEnv(EnvStage stage);
+extern std::vector<VSplit> MakeBiVSplits(float max);
+
 class PlotDSP
 {
-
-  static std::vector<VSplit> BiVSPlits;
-  static std::vector<VSplit> UniVSPlits;
-  static std::vector<VSplit> StereoVSPlits;
-  static std::wstring FormatEnv(EnvStage stage);
-  static std::vector<VSplit> MakeBiVSplits(float max);
 
 public:
   template <

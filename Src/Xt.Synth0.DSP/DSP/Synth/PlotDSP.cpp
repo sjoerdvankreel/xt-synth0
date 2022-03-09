@@ -88,43 +88,6 @@ GroupIndex(PlotType type, T base)
 { return static_cast<int>(type) - static_cast<int>(base); }
 
 static void
-RenderLfo(SynthModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  LfoPlotState state;
-  state.input = &input;
-  state.output = &output;
-  state.spectrum = model.plot.spec;
-  state.model = &model.cv.lfos[GroupIndex(model.plot.type, PlotType::LFO1)];
-  LfoDSP::Plot(&state);
-}
-
-static void
-RenderUnit(SynthModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  UnitPlotState state;
-  state.cv = &model.cv;
-  state.input = &input;
-  state.output = &output;
-  state.spectrum = model.plot.spec;
-  state.model = &model.audio.units[GroupIndex(model.plot.type, PlotType::Unit1)];
-  UnitDSP::Plot(&state);
-}
-
-static void
-RenderFilter(SynthModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  FilterPlotState state;
-  state.cv = &model.cv;
-  state.input = &input;
-  state.output = &output;
-  state.audio = &model.audio;
-  state.spectrum = model.plot.spec;
-  state.index = GroupIndex(model.plot.type, PlotType::Filt1);
-  state.model = &model.audio.filters[state.index];
-  FilterDSP::Plot(&state);
-}
-
-static void
 RenderEnv(SynthModel const& model, int hold, PlotInput const& input, PlotOutput& output)
 {
   EnvPlotState state;
@@ -163,9 +126,9 @@ PlotDSP::Render(SynthModel const& model, PlotInput const& input, PlotOutput& out
     SynthDSP::Plot(model, envModel, model.plot.spec, hold, input, output);
     break; }
   case PlotType::Amp: RenderAmp(model, hold, input, output); break;
-  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: RenderLfo(model, input, output); break;
-  case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: RenderUnit(model, input, output); break;
-  case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: RenderFilter(model, input, output); break;
+  case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: LfoDSP::Plot(model, input, output); break;
+  case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: UnitDSP::Plot(model, input, output); break;
+  case PlotType::Filt1: case PlotType::Filt2: case PlotType::Filt3: FilterDSP::Plot(model, input, output); break;
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: RenderEnv(model, hold, input, output); break;
   default: assert(false); break;
   }  
