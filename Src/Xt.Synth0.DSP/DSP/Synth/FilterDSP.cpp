@@ -216,7 +216,7 @@ FilterDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& out
   int type = static_cast<int>(model.plot.type);
   int index = type - static_cast<int>(PlotType::Filt1);
   FilterModel const* filter = &model.audio.filters[index];
-  if (filter->on) FilterPlot(&model.cv, &model.audio, filter, index).Render(input, output);
+  if (filter->on) std::make_unique<FilterPlot>(&model.cv, &model.audio, filter, index)->Render(input, output);
 }
 
 FloatSample

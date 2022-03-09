@@ -1,19 +1,13 @@
 #ifndef XTS_DSP_PLOT_HPP
 #define XTS_DSP_PLOT_HPP
 
+#include <DSP/EnvSample.hpp>
+
 #include <vector>
 #include <memory>
 #include <complex>
 
 namespace Xts {
-
-typedef int PlotFlags;
-inline constexpr PlotFlags PlotNone = 0x0;
-inline constexpr PlotFlags PlotStereo = 0x1;
-inline constexpr PlotFlags PlotBipolar = 0x2;
-inline constexpr PlotFlags PlotSpectrum = 0x4;
-inline constexpr PlotFlags PlotAutoRange = 0x8;
-inline constexpr PlotFlags PlotNoResample = 0x10;
 
 struct HSplit { int pos; std::wstring marker; };
 struct VSplit { float pos; std::wstring marker; };
@@ -52,6 +46,26 @@ public:
   virtual float Frequency(float bpm, float rate) const = 0;
 
   void Render(PlotInput const& input, PlotOutput& output);
+};
+
+class StagedPlot
+{
+public:
+  virtual bool End() const = 0;
+  virtual float Left() const = 0;
+  virtual float Right() const = 0;
+  virtual bool Stereo() const = 0;
+  virtual bool Bipolar() const = 0;
+  virtual bool AllowResample() const = 0;
+  virtual EnvSample EnvOutput() const = 0;
+  virtual float ReleaseSamples() const = 0;
+
+  virtual ~StagedPlot() {}
+  virtual void Next() = 0;
+  virtual EnvSample Release() = 0;
+  virtual void Init(float bpm, float rate) = 0;
+
+  void Render(PlotInput const& input, int hold, PlotOutput& output);
 };
 
 } // namespace Xts

@@ -1,10 +1,14 @@
 #include <DSP/Plot.hpp>
+#include <DSP/Param.hpp>
 #include <DSP/EnvSample.hpp>
 
 #include <cassert>
 #include <iomanip>
 #include <sstream>
 #include <algorithm>
+
+#define MIN_HOLD_MS 1.0f
+#define MAX_HOLD_MS 3000.0f
 
 namespace Xts {
 
@@ -165,6 +169,47 @@ CycledPlot::Render(PlotInput const& input, PlotOutput& output)
   assert(Bipolar());
   for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
   *output.vSplits = MakeBiVSplits(max);
+}
+
+static void
+InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& output)
+{
+  output.max = 1.0f;
+  output.clip = false;
+  output.rate = input.rate;
+  output.stereo = plot->Stereo();
+  output.spectrum = input.spectrum;
+  output.min = plot->Bipolar() ? -1.0f : 0.0f;
+  if(output.spectrum || !plot->AllowResample()) return;
+  float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples());
+}
+
+void 
+StagedPlot::Render(PlotInput const& input, int hold, PlotOutput& output)
+{
+  Init(input.bpm, input.rate);
+  InitStaged(this, input, hold, output);
+  Init(input.bpm, output.rate);
+
+  int h = 0;
+  int i = 0;
+  float holdSamples = Param::TimeSamplesF(hold, output.rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  while ((!output.spectrum && !End()) || (output.spectrum && i < static_cast<int>(output.rate)))
+  {
+    if (!output.spectrum && h++ == static_cast<int>(holdSamples))
+      output.hSplits->emplace_back(i, FormatEnv(Release().stage));
+    Next();
+    float l = Left();
+    output.clip |= Clip(l);
+    output.lSamples->push_back(l);
+    float r = output.stereo ? Right() : 0.0f;
+    output.clip |= Clip(r);
+    output.rSamples->push_back(r);
+    if (i == 0 || EnvOutput().switchedStage)
+      output.hSplits->emplace_back(i, FormatEnv(EnvOutput().stage));
+    i++;
+  }
 }
 
 } // namespace Xts
