@@ -48,9 +48,9 @@ PlotDSPCreate(float rate, void* context)
 {
   FilterPlotDSP* result = new FilterPlotDSP;
   FilterPlotState* state = static_cast<FilterPlotState*>(context);
-  result->cv = CvDSP(state->cv, 1.0f, state->input->bpm, rate);
-  result->audio = AudioDSP(state->audio, 4, UnitNote::C, rate);
-  result->filter = FilterDSP(state->model, state->index, rate);
+  new(&result->cv) CvDSP(state->cv, 1.0f, state->input->bpm, rate);
+  new(&result->audio) AudioDSP(state->audio, 4, UnitNote::C, rate);
+  new(&result->filter) FilterDSP(state->model, state->index, rate);
   return result;
 }
 
@@ -222,7 +222,6 @@ void
 FilterDSP::Plot(FilterPlotState* state)
 {
   if (!state->model->on) return;
-
   CycledPlotState cycled;
   cycled.cycles = 5;
   cycled.context = state;

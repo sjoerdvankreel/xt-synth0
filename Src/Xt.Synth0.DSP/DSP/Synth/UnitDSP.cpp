@@ -41,8 +41,8 @@ PlotDSPCreate(float rate, void* context)
 {
   UnitPlotDSP* result = new UnitPlotDSP;
   UnitPlotState* state = static_cast<UnitPlotState*>(context);
-  result->unit = UnitDSP(state->model, 4, UnitNote::C, rate);
-  result->cv = CvDSP(state->cv, 1.0f, state->input->bpm, rate);
+  new(&result->unit) UnitDSP(state->model, 4, UnitNote::C, rate);
+  new(&result->cv) CvDSP(state->cv, 1.0f, state->input->bpm, rate);
   return result;
 }
 
