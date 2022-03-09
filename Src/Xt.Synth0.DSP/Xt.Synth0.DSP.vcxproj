@@ -27,6 +27,7 @@
     <ClInclude Include="DSP\Synth\CvState.hpp" />
     <ClInclude Include="DSP\Synth\EnvDSP.hpp" />
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
+    <ClInclude Include="DSP\Synth\FilterPlot.hpp" />
     <ClInclude Include="DSP\Synth\LfoDSP.hpp" />
     <ClInclude Include="DSP\Synth\ModDSP.hpp" />
     <ClInclude Include="DSP\Synth\PlotDSP.hpp" />

@@ -1,11 +1,8 @@
 #include <DSP/Synth/FilterDSP.hpp>
-#include <DSP/Synth/CvDSP.hpp>
-#include <DSP/Synth/PlotDSP.hpp>
-#include <DSP/Synth/AudioDSP.hpp>
+#include <DSP/Synth/FilterPlot.hpp>
 #include <DSP/Param.hpp>
 #include <DSP/Utility.hpp>
 
-#include <tuple>
 #include <memory>
 #include <cstring>
 #include <cassert>
@@ -23,28 +20,16 @@
 
 namespace Xts {
 
-class FilterPlot : public CycledPlot
+PeriodicParams
+FilterPlot::Params() const
 {
-  int _index;
-  CvDSP _cvDsp;
-  AudioDSP _audioDsp;
-  FilterDSP _filterDsp;
-  CvModel const* _cv;
-  AudioModel const* _audio;
-  FilterModel const* _filter;
-public:
-  FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter, int index):
-  _index(index), _cv(cv), _audio(audio), _filter(filter) {}
-
-  float Next();
-  void Init(float bpm, float rate);
-
-  int Cycles() const { return 5; }
-  bool Bipolar() const { return true; }
-  bool AutoRange() const { return true; }  
-  bool AllowResample() const { return false; }
-  float Frequency(float bpm, float rate) const { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
-};
+  PeriodicParams result;
+  result.periods = 5;
+  result.bipolar = true;
+  result.autoRange = true;
+  result.allowResample = false;
+  return result;
+}
 
 float
 FilterPlot::Next()
@@ -60,6 +45,15 @@ FilterPlot::Init(float bpm, float rate)
   new(&_cvDsp) CvDSP(_cv, 1.0f, bpm, rate);
   new(&_filterDsp) FilterDSP(_filter, _index, rate);
   new(&_audioDsp) AudioDSP(_audio, 4, UnitNote::C, rate);
+}
+
+void
+FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+{
+  int type = static_cast<int>(model.plot.type);
+  int index = type - static_cast<int>(PlotType::Filt1);
+  FilterModel const* filter = &model.audio.filters[index];
+  if (filter->on) std::make_unique<FilterPlot>(&model.cv, &model.audio, filter, index)->RenderCore(input, output);
 }
 
 static void
@@ -208,15 +202,6 @@ FilterDSP()
   case FilterType::Biquad: InitBiquad(*model, rate, _state.biquad); break;
   default: assert(false); break;
   }
-}
-
-void
-FilterDSP::Plot(SynthModel const& model, PlotInput const& input, PlotOutput& output)
-{
-  int type = static_cast<int>(model.plot.type);
-  int index = type - static_cast<int>(PlotType::Filt1);
-  FilterModel const* filter = &model.audio.filters[index];
-  if (filter->on) std::make_unique<FilterPlot>(&model.cv, &model.audio, filter, index)->Render(input, output);
 }
 
 FloatSample

@@ -121,6 +121,9 @@
     <ClInclude Include="DSP\EnvSample.hpp">
       <Filter>DSP</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Synth\FilterPlot.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
