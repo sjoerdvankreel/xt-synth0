@@ -19,7 +19,7 @@ _amp(&model->amp, velo),
 _audio(&model->audio, oct, note, rate) {}
 
 void
-SynthPlot::Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output)
+SynthPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
 {
   auto plot = std::make_unique<SynthPlot>(&model);
   plot->RenderCore(input, model.plot.hold, output);
