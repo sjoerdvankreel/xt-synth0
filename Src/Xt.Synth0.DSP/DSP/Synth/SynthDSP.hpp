@@ -48,9 +48,5 @@ public:
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
-inline void
-SynthPlot::Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output)
-{ SynthPlot(&model).RenderCore(input, model.plot.hold, output); }
-
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_SYNTH_DSP_HPP

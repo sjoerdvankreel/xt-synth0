@@ -18,4 +18,11 @@ _cv(&model->cv, velo, bpm, rate),
 _amp(&model->amp, velo),
 _audio(&model->audio, oct, note, rate) {}
 
+void
+SynthPlot::Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output)
+{
+  auto plot = std::make_unique<SynthPlot>(&model);
+  plot->RenderCore(input, model.plot.hold, output);
+}
+
 } // namespace Xts

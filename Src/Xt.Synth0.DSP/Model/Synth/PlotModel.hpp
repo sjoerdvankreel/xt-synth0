@@ -16,9 +16,10 @@ enum class PlotType
 
 struct XTS_ALIGN PlotModel
 {
-  XtsBool on, spec;
-  PlotType type;
+  XtsBool on;
   int32_t hold;
+  PlotType type;
+  XtsBool spectrum;
 };
 XTS_CHECK_SIZE(PlotModel, 16);
 

@@ -247,7 +247,7 @@ namespace Xt.Synth0
 			_nativePlotState->pixels = e.Pixels;
 			_nativePlotState->synth = _nativePlotSynthModel;
 			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
-            _nativePlotState->spec = Model.Track.Synth.Plot.Spec.Value == 0? 0: 1;
+            _nativePlotState->spec = Model.Track.Synth.Plot.Spectrum.Value == 0? 0: 1;
             Model.Track.Synth.ToNative(_nativePlotBinding);
 			Native.XtsPlotDSPRender(_nativePlotState);
             e.Min = _nativePlotState->min;
