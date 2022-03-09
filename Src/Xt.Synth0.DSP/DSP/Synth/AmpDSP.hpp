@@ -8,16 +8,6 @@
 
 namespace Xts {
 
-struct AmpPlotState
-{
-  int hold;
-  struct CvModel const* cv;
-  struct PlotOutput* output;
-  struct EnvModel const* env;
-  struct AmpModel const* model;
-  struct PlotInput const* input;
-};
-
 class AmpDSP
 {
   float _amp;
@@ -35,8 +25,8 @@ public:
 public:
   int Env() const;
   FloatSample Output() const;
-  static void Plot(AmpPlotState* state);
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
+  static void Plot(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
 };
 
 inline FloatSample

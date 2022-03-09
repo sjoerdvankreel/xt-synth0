@@ -9,6 +9,41 @@
 
 namespace Xts {
 
+
+
+  auto val = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<AmpDSP>(state)._level; };
+  auto next = [](std::tuple<CvDSP, AmpDSP>& state) { std::get<AmpDSP>(state).Next(std::get<CvDSP>(state).Next(), {}); };
+  auto end = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).End(std::get<AmpDSP>(state).Env()); };
+  auto release = [](std::tuple<CvDSP, AmpDSP>& state) { return std::get<CvDSP>(state).ReleaseAll(std::get<AmpDSP>(state).Env()); };
+  auto factory = [&](float rate) { return std::make_tuple(CvDSP(state->cv, 1.0f, state->input->bpm, rate), AmpDSP(state->model, 1.0f)); };
+  auto envOutput = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).EnvOutput(std::get<AmpDSP>(state).Env()); };
+  return PlotDSP::RenderStaged(&staged, factory, next, val, val, envOutput, release, end);
+
+class AmpPlot: public StagedPlot
+{
+  CvDSP _cvDsp;
+  AmpDSP _ampDSP;
+  CvModel const* _cv;
+  AmpModel const* _amp;
+public:
+  AmpPlot(CvModel const* cv, AmpModel const* amp):
+  _cv(cv), _amp(amp) {}
+
+  void Next() { _dsp.Next(); };
+  float Right() const { return 0.0f; }
+  bool Stereo() const { return false; }
+  bool Bipolar() const { return false; }
+  bool End() const { return _dsp.End(); }
+  bool AllowResample() const { return true; }
+  EnvSample Release() { return _dsp.Release(); };
+  float Left() const { return _dsp.Output().value; }
+  EnvSample EnvOutput() const { return _dsp.Output(); }
+  void Init(float bpm, float rate) { _dsp = EnvDSP(_model, bpm, rate); }
+
+  float ReleaseSamples(float bpm, float rate) const
+  { return Param::SamplesF(_model->sync, _model->releaseTime, _model->releaseStep, bpm, rate, ENV_MIN_TIME_MS, ENV_MAX_TIME_MS); }
+};
+
 static ModSource
 ToModSource(AmpLfoSource source)
 {
@@ -47,25 +82,6 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * panned * _unitAmount[i];
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _output += audio.filters[i] * panned * _filterAmount[i];
   return Output().Sanity();
-}
-
-void
-AmpDSP::Plot(AmpPlotState* state)
-{
-  StagedPlotState staged;
-  staged.flags = PlotNone;
-  staged.env = state->env;
-  staged.hold = state->hold;
-  staged.input = state->input;
-  staged.output = state->output;
-
-  auto val = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<AmpDSP>(state)._level; };
-  auto next = [](std::tuple<CvDSP, AmpDSP>& state) { std::get<AmpDSP>(state).Next(std::get<CvDSP>(state).Next(), {}); };
-  auto end = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).End(std::get<AmpDSP>(state).Env()); };
-  auto release = [](std::tuple<CvDSP, AmpDSP>& state) { return std::get<CvDSP>(state).ReleaseAll(std::get<AmpDSP>(state).Env()); };
-  auto factory = [&](float rate) { return std::make_tuple(CvDSP(state->cv, 1.0f, state->input->bpm, rate), AmpDSP(state->model, 1.0f)); };
-  auto envOutput = [](std::tuple<CvDSP, AmpDSP> const& state) { return std::get<CvDSP>(state).EnvOutput(std::get<AmpDSP>(state).Env()); };
-  return PlotDSP::RenderStaged(&staged, factory, next, val, val, envOutput, release, end);
 }
 
 } // namespace Xts
