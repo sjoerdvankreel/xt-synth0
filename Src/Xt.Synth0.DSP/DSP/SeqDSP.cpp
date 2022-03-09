@@ -93,10 +93,8 @@ SeqDSP::Render(SeqInput const& input, SeqOutput& output)
   {
     auto out = Next(input, exhausted);
     output.exhausted |= exhausted;
-    output.clip |= Clip(out.left);
-    input.buffer[f * 2] = out.left;
-    output.clip |= Clip(out.right);
-    input.buffer[f * 2 + 1] = out.right;
+    input.buffer[f * 2] = Clip(out.left, output.clip);
+    input.buffer[f * 2 + 1] = Clip(out.right, output.clip);
     _pos++;
   }
   output.pos = _pos;

@@ -37,12 +37,12 @@ NextPowerOf2(uint64_t x)
   return 1ULL << result;
 }
 
-inline bool
-Clip(float& val)
+inline float
+Clip(float val, bool& clipped)
 {
-  if (val > 1.0f) return val = 1.0f, true;
-  if (val < -1.0f) return val = -1.0f, true;
-  return false;
+  if (val > 1.0f) return clipped = true, 1.0f;
+  if (val < -1.0f) return clipped = true, -1.0f;
+  return val;
 }
 
 template <class T>

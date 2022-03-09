@@ -113,6 +113,31 @@ InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& outpu
   output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
 }
 
+void 
+StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
+{
+  int h = 0;
+  int i = 0;
+  bool done = false;
+  Init(input.bpm, input.rate);
+  InitStaged(this, input, hold, output);
+  Init(input.bpm, output.rate);
+
+  float holdSamples = Param::TimeSamplesF(hold, output.rate, MIN_HOLD_MS, MAX_HOLD_MS);
+  while (!done)
+  {
+    if (!output.spectrum && h++ == static_cast<int>(holdSamples)) 
+      output.hSplits->emplace_back(i, FormatEnv(Release().stage));
+    Next();
+    output.lSamples->push_back(Clip(Left(), output.clip));
+    output.rSamples->push_back(Clip(Right(), output.clip));
+    if (i == 0 || EnvOutput().switchedStage) 
+      output.hSplits->emplace_back(i, FormatEnv(EnvOutput().stage));
+    done |= !output.spectrum && End();
+    done |= output.spectrum && i++ == static_cast<int>(output.rate);
+  }
+}
+
 void
 PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
 {
@@ -121,56 +146,27 @@ PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
   Init(input.bpm, input.rate);
   InitPeriodic(this, input, output);
   Init(input.bpm, output.rate);
+
   float length = (output.rate * params.periods / output.frequency) + 1.0f;
-  int samples = static_cast<int>(std::ceilf(input.spectrum? output.rate: length));
-  
+  int samples = static_cast<int>(std::ceilf(input.spectrum ? output.rate : length));
   for (int i = 0; i < samples; i++)
   {
     float sample = Next();
-    max = std::max(max, std::fabs(sample));
+    max = std::max(max, std::fabs(Next()));
     output.lSamples->push_back(sample);
   }
 
   output.hSplits->emplace_back(samples, L"");
   for (int i = 0; i < params.periods * 2; i++)
-    output.hSplits->emplace_back(samples * i / (params.periods * 2), std::to_wstring(i) + UnicodePi);
-  if (!params.autoRange)
   {
-    assert(max <= 1.0f);
-    *(output.vSplits) = params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
-    return;
+    int pos = samples * i / (params.periods * 2);
+    output.hSplits->emplace_back(pos, std::to_wstring(i) + UnicodePi);
   }
 
-  assert(params.bipolar);
+  *(output.vSplits) = params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
+  if (!params.autoRange) return;
   for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
   *output.vSplits = MakeBipolarVSplits(max);
-}
-
-void 
-StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
-{
-  Init(input.bpm, input.rate);
-  InitStaged(this, input, hold, output);
-  Init(input.bpm, output.rate);
-
-  int h = 0;
-  int i = 0;
-  float holdSamples = Param::TimeSamplesF(hold, output.rate, MIN_HOLD_MS, MAX_HOLD_MS);
-  while ((!output.spectrum && !End()) || (output.spectrum && i < static_cast<int>(output.rate)))
-  {
-    if (!output.spectrum && h++ == static_cast<int>(holdSamples))
-      output.hSplits->emplace_back(i, FormatEnv(Release().stage));
-    Next();
-    float l = Left();
-    output.clip |= Clip(l);
-    output.lSamples->push_back(l);
-    float r = output.stereo ? Right() : 0.0f;
-    output.clip |= Clip(r);
-    output.rSamples->push_back(r);
-    if (i == 0 || EnvOutput().switchedStage)
-      output.hSplits->emplace_back(i, FormatEnv(EnvOutput().stage));
-    i++;
-  }
 }
 
 } // namespace Xts
