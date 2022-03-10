@@ -37,6 +37,7 @@ struct StagedParams
   bool stereo;
   bool bipolar;
   bool allowResample;
+  bool allowSpectrum;
 };
 
 struct PeriodicParams

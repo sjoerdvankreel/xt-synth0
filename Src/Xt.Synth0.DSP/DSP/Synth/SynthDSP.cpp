@@ -8,6 +8,7 @@ SynthPlot::Params() const
   StagedParams result;
   result.stereo = true;
   result.bipolar = true;
+  result.allowSpectrum = true;
   result.allowResample = false;
   return result;
 }

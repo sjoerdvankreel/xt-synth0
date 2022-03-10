@@ -21,6 +21,7 @@ EnvPlot::Params() const
   result.stereo = false;
   result.bipolar = false;
   result.allowResample = true;
+  result.allowSpectrum = false;
   return result;
 }
 
