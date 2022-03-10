@@ -112,6 +112,7 @@ XtsPlotDSPRender(PlotState* state)
   out.rSamples = state->rSampleData;
   out.fftScratch = state->fftScratch;
   in.rate = state->rate;
+  in.spectrum = state->spec;
   in.bpm = static_cast<float>(state->bpm);
   in.pixels = static_cast<float>(state->pixels);
   Xts::SynthPlotRender(*state->synth, in, out);
