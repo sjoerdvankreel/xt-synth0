@@ -22,8 +22,13 @@ struct PlotInput
 
 struct PlotOutput
 {
-  bool clip, spectrum, stereo;
-  float frequency, rate, min, max;
+  bool clip;
+  bool stereo;
+  bool spectrum;
+  float min;
+  float max;
+  float rate;
+  float frequency;
   std::vector<float>* lSamples;
   std::vector<float>* rSamples;
   std::vector<HSplit>* hSplits;
