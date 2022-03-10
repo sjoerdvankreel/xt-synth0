@@ -122,6 +122,30 @@ InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& outpu
   output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
 }
 
+void
+PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
+{
+  float max = 1.0f;
+  auto params = Params();
+  Init(input.bpm, input.rate);
+  InitPeriodic(this, input, output);
+  Init(input.bpm, output.rate);
+
+  float length = (output.rate * params.periods / output.frequency) + 1.0f;
+  int samples = static_cast<int>(std::ceilf(input.spectrum ? output.rate : length));
+  int halfPeriod = samples / (params.periods * 2);
+  output.hSplits->emplace_back(samples - 1, L"");
+  for (int i = 0; i < samples; i++)
+  {
+    float sample = Next();
+    max = std::max(max, std::fabs(sample));
+    output.lSamples->push_back(sample);
+    if (i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
+      output.hSplits->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
+  }
+  if (params.autoRange) ApplyAutoRange(output, max);
+}
+
 void 
 StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
 {
@@ -146,30 +170,6 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
     done |= output.spectrum && i == static_cast<int>(output.rate);
     i++;
   }
-}
-
-void
-PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
-{
-  float max = 1.0f;
-  auto params = Params();
-  Init(input.bpm, input.rate);
-  InitPeriodic(this, input, output);
-  Init(input.bpm, output.rate);
-
-  float length = (output.rate * params.periods / output.frequency) + 1.0f;
-  int samples = static_cast<int>(std::ceilf(input.spectrum ? output.rate : length));
-  int halfPeriod = samples / (params.periods * 2);
-  output.hSplits->emplace_back(samples - 1, L"");
-  for (int i = 0; i < samples; i++)
-  {
-    float sample = Next();
-    max = std::max(max, std::fabs(sample));
-    output.lSamples->push_back(sample);
-    if(i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
-      output.hSplits->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
-  }
-  if (params.autoRange) ApplyAutoRange(output, max);
 }
 
 } // namespace Xts
