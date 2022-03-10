@@ -151,18 +151,15 @@ PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
 
   float length = (output.rate * params.periods / output.frequency) + 1.0f;
   int samples = static_cast<int>(std::ceilf(input.spectrum ? output.rate : length));
+  int halfPeriod = samples / (params.periods * 2);
+  output.hSplits->emplace_back(samples - 1, L"");
   for (int i = 0; i < samples; i++)
   {
     float sample = Next();
     max = std::max(max, std::fabs(Next()));
     output.lSamples->push_back(sample);
-  }
-
-  output.hSplits->emplace_back(samples, L"");
-  for (int i = 0; i < params.periods * 2; i++)
-  {
-    int pos = samples * i / (params.periods * 2);
-    output.hSplits->emplace_back(pos, std::to_wstring(i) + UnicodePi);
+    if(i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
+      output.hSplits->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
   }
 
   *(output.vSplits) = params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
