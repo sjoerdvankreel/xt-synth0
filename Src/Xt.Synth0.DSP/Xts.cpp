@@ -105,12 +105,12 @@ XtsPlotDSPRender(PlotState* state)
   state->hSplitMarkerData->clear();
   state->vSplitMarkerData->clear();
 
-  out.fftData = state->fftData;
+  out.fft = state->fftData;
   out.hSplits = state->hSplitData;
   out.vSplits = state->vSplitData;
-  out.lSamples = state->lSampleData;
-  out.rSamples = state->rSampleData;
-  out.fftScratch = state->fftScratch;
+  out.left = state->lSampleData;
+  out.right = state->rSampleData;
+  out.scratch = state->fftScratch;
   in.rate = state->rate;
   in.spectrum = state->spec;
   in.bpm = static_cast<float>(state->bpm);

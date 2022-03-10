@@ -113,16 +113,16 @@ TransformToSpectrum(PlotOutput& output)
 {
   output.min = 0.0f;
   output.max = 1.0f;
-  if (output.lSamples->empty()) return;
-  output.lSamples->resize(NextPowerOf2(output.lSamples->size()));
-  assert(output.lSamples->size() >= static_cast<size_t>(output.rate));
-  Spectrum(*output.lSamples, *output.fftData, *output.fftScratch, output.rate);
+  if (output.left->empty()) return;
+  output.left->resize(NextPowerOf2(output.left->size()));
+  assert(output.left->size() >= static_cast<size_t>(output.rate));
+  Spectrum(*output.left, *output.fft, *output.scratch, output.rate);
   HSplits(*output.hSplits);
   VSplitsMono(*output.vSplits);
   if (!output.stereo) return;
   VSplitsStereo(*output.vSplits);
-  output.rSamples->resize(NextPowerOf2(output.rSamples->size()));
-  Spectrum(*output.rSamples, *output.fftData, *output.fftScratch, output.rate);
+  output.right->resize(NextPowerOf2(output.right->size()));
+  Spectrum(*output.right, *output.fft, *output.scratch, output.rate);
 }
 
 } // namespace Xts

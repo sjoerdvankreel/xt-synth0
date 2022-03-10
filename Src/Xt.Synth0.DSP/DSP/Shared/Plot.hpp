@@ -29,12 +29,12 @@ struct PlotOutput
   float max;
   float rate;
   float frequency;
-  std::vector<float>* lSamples;
-  std::vector<float>* rSamples;
+  std::vector<float>* left;
+  std::vector<float>* right;
   std::vector<HSplit>* hSplits;
   std::vector<VSplit>* vSplits;
-  std::vector<std::complex<float>>* fftData;
-  std::vector<std::complex<float>>* fftScratch;
+  std::vector<std::complex<float>>* fft;
+  std::vector<std::complex<float>>* scratch;
 };
 
 struct StagedParams

@@ -86,7 +86,7 @@ VSplitMarker(float val, float max)
 static void
 ApplyAutoRange(PlotOutput& output, float max)
 {
-  for (size_t i = 0; i < output.lSamples->size(); i++) (*output.lSamples)[i] /= max;
+  for (size_t i = 0; i < output.left->size(); i++) (*output.left)[i] /= max;
   *output.vSplits = MakeBipolarVSplits(max);
 }
 
@@ -139,7 +139,7 @@ PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
   {
     float sample = Next();
     max = std::max(max, std::fabs(sample));
-    output.lSamples->push_back(sample);
+    output.left->push_back(sample);
     if (i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
       output.hSplits->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
   }
@@ -162,8 +162,8 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
     if (!output.spectrum && h++ == static_cast<int>(holdSamples)) 
       output.hSplits->emplace_back(i, FormatEnv(Release().stage));
     Next();
-    output.lSamples->push_back(Clip(Left(), output.clip));
-    output.rSamples->push_back(Clip(Right(), output.clip));
+    output.left->push_back(Clip(Left(), output.clip));
+    output.right->push_back(Clip(Right(), output.clip));
     if (i == 0 || EnvOutput().switchedStage) 
       output.hSplits->emplace_back(i, FormatEnv(EnvOutput().stage));
     done |= !output.spectrum && End();
