@@ -108,6 +108,7 @@ InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& outpu
   output.stereo = params.stereo;
   output.spectrum = input.spectrum;
   output.min = params.bipolar ? -1.0f : 0.0f;
+  *output.vSplits = params.stereo ? StereoVSPlits : params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
   if (output.spectrum || !params.allowResample) return;
   float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
