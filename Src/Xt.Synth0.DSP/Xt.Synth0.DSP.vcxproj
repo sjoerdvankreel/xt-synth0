@@ -36,6 +36,8 @@
     <ClInclude Include="DSP\Synth\UnitDSP.hpp" />
     <ClInclude Include="Model\Model.hpp" />
     <ClInclude Include="Model\SeqModel.hpp" />
+    <ClInclude Include="Model\Shared\Model.hpp" />
+    <ClInclude Include="Model\Shared\ParamInfo.hpp" />
     <ClInclude Include="Model\Shared\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
     <ClInclude Include="Model\Synth\AudioModel.hpp" />

@@ -1,7 +1,7 @@
 #ifndef XTS_MODEL_SHARED_SYNC_STEP_MODEL_HPP
 #define XTS_MODEL_SHARED_SYNC_STEP_MODEL_HPP
 
-#include <Model/Model.hpp>
+#include <Model/Shared/Model.hpp>
 #include <vector>
 #include <cstdint>
 

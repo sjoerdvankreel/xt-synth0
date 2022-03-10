@@ -1,7 +1,7 @@
 #ifndef XTS_MODEL_SYNTH_LFO_MODEL_HPP
 #define XTS_MODEL_SYNTH_LFO_MODEL_HPP
 
-#include <Model/Model.hpp>
+#include <Model/Shared/Model.hpp>
 
 namespace Xts {
 

@@ -5,17 +5,13 @@
 #include <Model/Synth/AmpModel.hpp>
 #include <Model/Synth/PlotModel.hpp>
 #include <Model/Synth/AudioModel.hpp>
+#include <Model/Shared/ParamInfo.hpp>
 
 #include <cstdint>
 
 namespace Xts {
 
-struct ParamInfo* ParamInfos();
-void SynthModelInit(struct ParamInfo* infos, int32_t infoCount);
-
-struct XTS_ALIGN ParamInfo { int32_t min, max; };
-XTS_CHECK_SIZE(ParamInfo, 8);
-struct XTS_ALIGN VoiceBinding { int32_t* params[ParamCount]; };
+struct XTS_ALIGN VoiceBinding { int32_t* params[XTS_SYNTH_PARAM_COUNT]; };
 XTS_CHECK_SIZE(VoiceBinding, 1672);
 
 struct XTS_ALIGN SynthModel
@@ -24,6 +20,9 @@ struct XTS_ALIGN SynthModel
   AmpModel amp;
   PlotModel plot;
   AudioModel audio;
+public:
+  static ParamInfo const* Params();
+  static void Init(ParamInfo* params, int32_t count);
 };
 XTS_CHECK_SIZE(SynthModel, 936);
 
