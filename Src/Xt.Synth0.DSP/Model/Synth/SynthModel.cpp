@@ -1,18 +1,18 @@
 #include <Model/Synth/SynthModel.hpp>
-
 #include <vector>
 #include <cassert>
 
 namespace Xts {
  
-static std::vector<ParamInfo> _params;
+static std::vector<ParamInfo> Infos;
 
-ParamInfo const* 
-SynthModel::Params() 
-{ return _params.data(); }
+ParamInfo* ParamInfos() { return Infos.data(); }
 
-void 
-SynthModel::Init(ParamInfo* params, int32_t count)
-{ _params.insert(_params.begin(), params, params + static_cast<size_t>(count)); }
+void
+SynthModelInit(
+  struct ParamInfo* infos, int32_t infoCount)
+{
+  Infos.insert(Infos.begin(), infos, infos + static_cast<size_t>(infoCount));
+}
 
 } // namespace Xts

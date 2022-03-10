@@ -1,7 +1,6 @@
 #include "SeqDSP.hpp"
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
-#include <Model/Shared/ParamInfo.hpp>
 #include <cassert>
 #include <algorithm>
 
@@ -76,9 +75,9 @@ SeqDSP::Automate()
     auto const& fx = _model->pattern.rows[_row].fx[f];
     assert(0 <= fx.val && fx.val < 256);
     assert(0 <= fx.tgt && fx.tgt < 256);
-    if (fx.tgt == 0 || fx.tgt > XTS_SYNTH_PARAM_COUNT) return;
+    if (fx.tgt == 0 || fx.tgt > ParamCount) return;
     int32_t* param = _binding->params[fx.tgt - 1];
-    ParamInfo const& info = SynthModel::Params()[fx.tgt - 1];
+    ParamInfo const& info = ParamInfos()[fx.tgt - 1];
     *param = std::clamp(fx.val, info.min, info.max);
   }
 }

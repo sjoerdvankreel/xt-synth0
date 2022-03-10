@@ -1,7 +1,7 @@
 #ifndef XTS_MODEL_SYNTH_MOD_MODEL_HPP
 #define XTS_MODEL_SYNTH_MOD_MODEL_HPP
 
-#include <Model/Shared/Model.hpp>
+#include <Model/Model.hpp>
 #include <cstdint>
 
 namespace Xts {

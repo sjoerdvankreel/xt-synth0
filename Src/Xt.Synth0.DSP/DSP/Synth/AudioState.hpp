@@ -1,7 +1,7 @@
 #ifndef XTS_DSP_SYNTH_AUDIO_STATE_HPP
 #define XTS_DSP_SYNTH_AUDIO_STATE_HPP
 
-#include <Model/Shared/Model.hpp>
+#include <Model/Model.hpp>
 #include <Model/Synth/Config.hpp>
 #include <DSP/Shared/AudioSample.hpp>
 

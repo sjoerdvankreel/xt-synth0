@@ -133,12 +133,6 @@
     <ClInclude Include="DSP\Shared\Spectrum.hpp">
       <Filter>DSP\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Shared\ParamInfo.hpp">
-      <Filter>Model\Shared</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\Shared\Model.hpp">
-      <Filter>Model\Shared</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp">
