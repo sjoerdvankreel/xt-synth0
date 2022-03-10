@@ -56,8 +56,8 @@ struct XTS_ALIGN PlotState
   std::vector<float>* rSampleData;
   std::vector<float>* vSplitValData;
   std::vector<int32_t>* hSplitValData;
-  std::vector<Xts::VSplit>* vSplitData;
-  std::vector<Xts::HSplit>* hSplitData;
+  std::vector<Xts::VerticalMarker>* vSplitData;
+  std::vector<Xts::HorizontalMarker>* hSplitData;
   std::vector<wchar_t const*>* vSplitMarkerData;
   std::vector<wchar_t const*>* hSplitMarkerData;
   std::vector<std::complex<float>>* fftData;

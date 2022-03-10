@@ -61,8 +61,8 @@ XtsPlotStateCreate(void)
   result->rSampleData = new std::vector<float>();
   result->vSplitValData = new std::vector<float>();
   result->hSplitValData = new std::vector<int32_t>();
-  result->vSplitData = new std::vector<Xts::VSplit>();
-  result->hSplitData = new std::vector<Xts::HSplit>();
+  result->vSplitData = new std::vector<Xts::VerticalMarker>();
+  result->hSplitData = new std::vector<Xts::HorizontalMarker>();
   result->fftData = new std::vector<std::complex<float>>();
   result->fftScratch = new std::vector<std::complex<float>>();
   result->vSplitMarkerData = new std::vector<wchar_t const*>();
@@ -106,8 +106,8 @@ XtsPlotDSPRender(PlotState* state)
   state->vSplitMarkerData->clear();
 
   out.fft = state->fftData;
-  out.hSplits = state->hSplitData;
-  out.vSplits = state->vSplitData;
+  out.horizontal = state->hSplitData;
+  out.vertical = state->vSplitData;
   out.left = state->lSampleData;
   out.right = state->rSampleData;
   out.scratch = state->fftScratch;
@@ -133,12 +133,12 @@ XtsPlotDSPRender(PlotState* state)
   for(size_t i = 0; i < state->hSplitData->size(); i++)
   {
     state->hSplitValData->push_back((*state->hSplitData)[i].pos);
-    state->hSplitMarkerData->push_back((*state->hSplitData)[i].marker.c_str());    
+    state->hSplitMarkerData->push_back((*state->hSplitData)[i].text.c_str());    
   }
   for (size_t i = 0; i < state->vSplitData->size(); i++)
   {
     state->vSplitValData->push_back((*state->vSplitData)[i].pos);
-    state->vSplitMarkerData->push_back((*state->vSplitData)[i].marker.c_str());
+    state->vSplitMarkerData->push_back((*state->vSplitData)[i].text.c_str());
   }
   state->hSplitVals = state->hSplitValData->data();
   state->vSplitVals = state->vSplitValData->data();

@@ -9,15 +9,24 @@
 
 namespace Xts {
 
-struct HSplit { int pos; std::wstring marker; };
-struct VSplit { float pos; std::wstring marker; };
-
 struct PlotInput
 {
   float bpm;
   float rate;
   float pixels;
   bool spectrum;
+};
+
+struct VerticalMarker
+{ 
+  float pos; 
+  std::wstring text; 
+};
+
+struct HorizontalMarker
+{
+  int pos;
+  std::wstring text;
 };
 
 struct PlotOutput
@@ -31,8 +40,8 @@ struct PlotOutput
   float frequency;
   std::vector<float>* left;
   std::vector<float>* right;
-  std::vector<HSplit>* hSplits;
-  std::vector<VSplit>* vSplits;
+  std::vector<VerticalMarker>* vertical;
+  std::vector<HorizontalMarker>* horizontal;
   std::vector<std::complex<float>>* fft;
   std::vector<std::complex<float>>* scratch;
 };

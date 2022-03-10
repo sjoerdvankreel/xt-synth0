@@ -13,12 +13,12 @@
 namespace Xts {
 
 static std::wstring
-VSplitMarker(float val, float max);
+MarkVertical(float val, float max);
 
 static constexpr wchar_t UnicodePi = L'\u03C0';
 
-static std::vector<VSplit>
-BipolarVSPlits = {
+static std::vector<VerticalMarker>
+BipolarMarkers = {
   { -1.0f, L"+1.0" },
   { -0.5f, L"+0.5" },
   { 0.0f, L"0.0" },
@@ -26,8 +26,8 @@ BipolarVSPlits = {
   { 1.0f, L"-1.0" }
 };
 
-static std::vector<VSplit>
-UnipolarVSPlits = {
+static std::vector<VerticalMarker>
+UnipolarMarkers = {
   { 0.0f, L"1.0" },
   { 0.25f, L".75" },
   { 0.5f, L"0.5" },
@@ -35,8 +35,8 @@ UnipolarVSPlits = {
   { 1.0f, L"0.0" }
 };
 
-static std::vector<VSplit>
-StereoVSPlits = {
+static std::vector<VerticalMarker>
+StereoMarkers = {
   { -1.0f, L"+1.0" },
   { -0.5f, L"L" },
   { 0.0f, L"-/+1" },
@@ -60,20 +60,20 @@ FormatEnv(EnvStage stage)
   }
 }
 
-static std::vector<VSplit>
-MakeBipolarVSplits(float max)
+static std::vector<VerticalMarker>
+MakeBipolarMarkers(float max)
 {
-  std::vector<VSplit> result;
-  result.emplace_back(-1.0f, VSplitMarker(max, max));
-  result.emplace_back(-0.5f, VSplitMarker(max / 2.0f, max));
+  std::vector<VerticalMarker> result;
+  result.emplace_back(-1.0f, MarkVertical(max, max));
+  result.emplace_back(-0.5f, MarkVertical(max / 2.0f, max));
   result.emplace_back(-0.0f, L"0");
-  result.emplace_back(0.5f, VSplitMarker(-max / 2.0f, max));
-  result.emplace_back(1.0f, VSplitMarker(-max, max));
+  result.emplace_back(0.5f, MarkVertical(-max / 2.0f, max));
+  result.emplace_back(1.0f, MarkVertical(-max, max));
   return result;
 }
 
 static std::wstring
-VSplitMarker(float val, float max)
+MarkVertical(float val, float max)
 {
   float absval = std::fabs(val);
   std::wstring result = val == 0.0f ? L"" : val > 0.0f ? L"+" : L"-";
@@ -87,7 +87,7 @@ static void
 ApplyAutoRange(PlotOutput& output, float max)
 {
   for (size_t i = 0; i < output.left->size(); i++) (*output.left)[i] /= max;
-  *output.vSplits = MakeBipolarVSplits(max);
+  *output.vertical = MakeBipolarMarkers(max);
 }
 
 static void
@@ -101,7 +101,7 @@ InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output)
   output.spectrum = input.spectrum;
   output.min = params.bipolar ? -1.0f : 0.0f;
   output.frequency = plot->Frequency(input.bpm, input.rate);
-  *(output.vSplits) = params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
+  *(output.vertical) = params.bipolar ? BipolarMarkers : UnipolarMarkers;
   if(input.spectrum || !params.allowResample) return;
   output.rate = std::min(input.rate, output.frequency * input.pixels / params.periods);
 }
@@ -116,7 +116,7 @@ InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& outpu
   output.stereo = params.stereo;
   output.min = params.bipolar ? -1.0f : 0.0f;
   output.spectrum = input.spectrum && params.allowSpectrum;
-  *output.vSplits = params.stereo ? StereoVSPlits : params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
+  *output.vertical = params.stereo ? StereoMarkers : params.bipolar ? BipolarMarkers : UnipolarMarkers;
   if (output.spectrum || !params.allowResample) return;
   float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
@@ -134,14 +134,14 @@ PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
   float length = (output.rate * params.periods / output.frequency) + 1.0f;
   int samples = static_cast<int>(std::ceilf(input.spectrum ? output.rate : length));
   int halfPeriod = samples / (params.periods * 2);
-  output.hSplits->emplace_back(samples - 1, L"");
+  output.horizontal->emplace_back(samples - 1, L"");
   for (int i = 0; i < samples; i++)
   {
     float sample = Next();
     max = std::max(max, std::fabs(sample));
     output.left->push_back(sample);
     if (i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
-      output.hSplits->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
+      output.horizontal->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
   }
   if (params.autoRange) ApplyAutoRange(output, max);
 }
@@ -160,12 +160,12 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
   while (!done)
   {
     if (!output.spectrum && h++ == static_cast<int>(holdSamples)) 
-      output.hSplits->emplace_back(i, FormatEnv(Release().stage));
+      output.horizontal->emplace_back(i, FormatEnv(Release().stage));
     Next();
     output.left->push_back(Clip(Left(), output.clip));
     output.right->push_back(Clip(Right(), output.clip));
     if (i == 0 || EnvOutput().switchedStage) 
-      output.hSplits->emplace_back(i, FormatEnv(EnvOutput().stage));
+      output.horizontal->emplace_back(i, FormatEnv(EnvOutput().stage));
     done |= !output.spectrum && End();
     done |= output.spectrum && i == static_cast<int>(output.rate);
     i++;

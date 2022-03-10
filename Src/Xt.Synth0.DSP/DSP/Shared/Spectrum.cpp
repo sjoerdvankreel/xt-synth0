@@ -14,40 +14,40 @@ namespace Xts {
 typedef std::vector<std::complex<float>> ComplexVector;
 
 static void
-VSplitsMono(std::vector<VSplit>& vSplits)
+MonoMarkers(std::vector<VerticalMarker>& markers)
 {
-  vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L".50");
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".25");
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 32.0f), L"");
-  vSplits.emplace_back(1.0f, L"0.0");
+  markers.clear();
+  markers.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
+  markers.emplace_back(1.0f - (1.0f / 2.0f), L".50");
+  markers.emplace_back(1.0f - (1.0f / 4.0f), L".25");
+  markers.emplace_back(1.0f - (1.0f / 8.0f), L"");
+  markers.emplace_back(1.0f - (1.0f / 16.0f), L"");
+  markers.emplace_back(1.0f - (1.0f / 32.0f), L"");
+  markers.emplace_back(1.0f, L"0.0");
 }
 
 static void
-VSplitsStereo(std::vector<VSplit>& vSplits)
+StereoMarkers(std::vector<VerticalMarker>& markers)
 {
-  vSplits.clear();
-  vSplits.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
-  vSplits.emplace_back(1.0f - (3.0f / 4.0f), L".50");
-  vSplits.emplace_back(1.0f - (5.0f / 8.0f), L".25");
-  vSplits.emplace_back(1.0f - (9.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f - (1.0f / 2.0f), L"0/1");
-  vSplits.emplace_back(1.0f - (1.0f / 4.0f), L".50");
-  vSplits.emplace_back(1.0f - (1.0f / 8.0f), L".25");
-  vSplits.emplace_back(1.0f - (1.0f / 16.0f), L"");
-  vSplits.emplace_back(1.0f, L"0.0");
+  markers.clear();
+  markers.emplace_back(1.0f - (1.0f / 1.0f), L"1.0");
+  markers.emplace_back(1.0f - (3.0f / 4.0f), L".50");
+  markers.emplace_back(1.0f - (5.0f / 8.0f), L".25");
+  markers.emplace_back(1.0f - (9.0f / 16.0f), L"");
+  markers.emplace_back(1.0f - (1.0f / 2.0f), L"0/1");
+  markers.emplace_back(1.0f - (1.0f / 4.0f), L".50");
+  markers.emplace_back(1.0f - (1.0f / 8.0f), L".25");
+  markers.emplace_back(1.0f - (1.0f / 16.0f), L"");
+  markers.emplace_back(1.0f, L"0.0");
 }
 
 static void
-HSplits(std::vector<HSplit>& hSplits)
+HorizontalMarkers(std::vector<HorizontalMarker>& markers)
 {
-  hSplits.clear();
+  markers.clear();
   for (int oct = 0; oct < 12; oct++)
-    hSplits.emplace_back(HSplit(oct * 12, oct >= 2 ? std::to_wstring(oct - 2) : L""));
-  hSplits.emplace_back(HSplit(143, L""));
+    markers.emplace_back(HorizontalMarker(oct * 12, oct >= 2 ? std::to_wstring(oct - 2) : L""));
+  markers.emplace_back(HorizontalMarker(143, L""));
 }
 
 static void
@@ -117,10 +117,10 @@ TransformToSpectrum(PlotOutput& output)
   output.left->resize(NextPowerOf2(output.left->size()));
   assert(output.left->size() >= static_cast<size_t>(output.rate));
   Spectrum(*output.left, *output.fft, *output.scratch, output.rate);
-  HSplits(*output.hSplits);
-  VSplitsMono(*output.vSplits);
+  MonoMarkers(*output.vertical);
+  HorizontalMarkers(*output.horizontal);
   if (!output.stereo) return;
-  VSplitsStereo(*output.vSplits);
+  StereoMarkers(*output.vertical);
   output.right->resize(NextPowerOf2(output.right->size()));
   Spectrum(*output.right, *output.fft, *output.scratch, output.rate);
 }
