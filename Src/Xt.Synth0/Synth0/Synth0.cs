@@ -170,9 +170,10 @@ namespace Xt.Synth0
             var queue = AutomationQueue.DequeueAudio();
             if (queue.Count > 0)
             {
+                PlotUI.BeginUpdate();
                 foreach (var action in queue)
                     @params[action.Param].Value = action.Value;
-                PlotUI.ForceUpdate();
+                PlotUI.EndUpdate();
             }
             _lastAudioUpdateMs = _audioUpdateTimer.ElapsedMilliseconds;
         }

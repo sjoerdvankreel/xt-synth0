@@ -22,9 +22,8 @@ namespace Xt.Synth0.UI
             internal PointCollection r;
         }
 
-        static Action<bool> _update;
+        static Action _update;
         static bool _updating = false;
-        public static void ForceUpdate() => _update(true);
         public static void BeginUpdate() => _updating = true;
 
         static readonly FrameworkElement Off = MakeOff();
@@ -34,7 +33,7 @@ namespace Xt.Synth0.UI
         public static void EndUpdate()
         {
             _updating = false;
-            _update(false);
+            _update();
         }
 
         static FrameworkElement MakeOff()
@@ -91,11 +90,11 @@ namespace Xt.Synth0.UI
             var dock = new DockPanel();
             var result = Create.ThemedContent(dock);
             var content = dock.Add(new ContentControl());
-            _update = force => Update(app, text, content, foreground1, foreground2, force);
-            synth.ParamChanged += (s, e) => _update(false);
-            content.SizeChanged += (s, e) => _update(false);
-            app.Settings.PropertyChanged += (s, e) => _update(false);
-            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => _update(false);
+            _update = () => Update(app, text, content, foreground1, foreground2);
+            synth.ParamChanged += (s, e) => _update();
+            content.SizeChanged += (s, e) => _update();
+            app.Settings.PropertyChanged += (s, e) => _update();
+            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => _update();
             result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
             result.BorderThickness = new(GroupUI.BorderThickness, 0.0, GroupUI.BorderThickness, GroupUI.BorderThickness);
             return result;
@@ -187,10 +186,9 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2, bool force)
+        static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2)
         {
             if (_updating) return;
-            if (app.Stream.IsRunning && !force) return;
             var plot = app.Track.Synth.Plot;
             if (plot.On.Value == 0)
             {
