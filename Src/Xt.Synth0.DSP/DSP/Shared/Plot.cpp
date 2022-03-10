@@ -84,6 +84,13 @@ VSplitMarker(float val, float max)
 }
 
 static void
+ApplyAutoRange(PlotOutput& output, float max)
+{
+  for (size_t i = 0; i < output.lSamples->size(); i++) (*output.lSamples)[i] /= max;
+  *output.vSplits = MakeBipolarVSplits(max);
+}
+
+static void
 InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output)
 {
   auto params = plot->Params();
@@ -94,6 +101,7 @@ InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output)
   output.spectrum = input.spectrum;
   output.min = params.bipolar ? -1.0f : 0.0f;
   output.frequency = plot->Frequency(input.bpm, input.rate);
+  *(output.vSplits) = params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
   if(input.spectrum || !params.allowResample) return;
   output.rate = std::min(input.rate, output.frequency * input.pixels / params.periods);
 }
@@ -156,16 +164,12 @@ PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
   for (int i = 0; i < samples; i++)
   {
     float sample = Next();
-    max = std::max(max, std::fabs(Next()));
+    max = std::max(max, std::fabs(sample));
     output.lSamples->push_back(sample);
     if(i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
       output.hSplits->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
   }
-
-  *(output.vSplits) = params.bipolar ? BipolarVSPlits : UnipolarVSPlits;
-  if (!params.autoRange) return;
-  for (int i = 0; i < samples; i++) (*output.lSamples)[i] /= max;
-  *output.vSplits = MakeBipolarVSplits(max);
+  if (params.autoRange) ApplyAutoRange(output, max);
 }
 
 } // namespace Xts
