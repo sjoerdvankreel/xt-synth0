@@ -2,8 +2,7 @@
 #define XTS_MODEL_SYNTH_AMP_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
-#include <Model/Shared/ModModel.hpp>
-#include <Model/Synth/ModSource.hpp>
+#include <Model/Synth/ModModel.hpp>
 
 namespace Xts {
 

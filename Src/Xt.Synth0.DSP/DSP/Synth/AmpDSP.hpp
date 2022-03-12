@@ -9,7 +9,6 @@
 #include <DSP/Synth/AudioState.hpp>
 #include <Model/Synth/Config.hpp>
 #include <Model/Synth/AmpModel.hpp>
-#include <Model/Synth/ModSource.hpp>
 
 namespace Xts {
 

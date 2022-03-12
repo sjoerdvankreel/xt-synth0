@@ -6,18 +6,9 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum ModSource
-    {
-        Velocity,
-        Env1, Env2, Env3,
-        LFO1, LFO2, LFO3
-    }
-
-    public unsafe sealed class SynthModel : MainModel
-    {
-        internal static readonly string[] ModSourceNames = { "Velo", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3" };
-
-        [StructLayout(LayoutKind.Sequential, Pack = 8)]
+	public unsafe sealed class SynthModel : MainModel
+	{
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
 		{
             internal CvModel.Native cv;
