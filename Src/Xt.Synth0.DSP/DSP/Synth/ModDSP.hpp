@@ -20,7 +20,6 @@ public:
 public:
   float Amount() const { return _amount; };
   CvSample Modulator(struct CvState const& cv) const;
-  float Modulate(CvSample carrier, CvSample modulator) const;
 };
 
 inline ModDSP::

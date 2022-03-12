@@ -17,6 +17,7 @@
     <ClInclude Include="DSP\Shared\CvSample.hpp" />
     <ClInclude Include="DSP\Shared\DelayBuffer.hpp" />
     <ClInclude Include="DSP\Shared\EnvSample.hpp" />
+    <ClInclude Include="DSP\Shared\Modulate.hpp" />
     <ClInclude Include="DSP\Shared\Param.hpp" />
     <ClInclude Include="DSP\Shared\Plot.hpp" />
     <ClInclude Include="DSP\Shared\Spectrum.hpp" />
@@ -54,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\SeqDSP.cpp" />
+    <ClCompile Include="DSP\Shared\Modulate.cpp" />
     <ClCompile Include="DSP\Shared\Plot.cpp" />
     <ClCompile Include="DSP\Shared\Spectrum.cpp" />
     <ClCompile Include="DSP\Synth\AmpDSP.cpp" />

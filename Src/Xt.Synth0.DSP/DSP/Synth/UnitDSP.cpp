@@ -1,6 +1,7 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
+#include <DSP/Shared/Modulate.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
@@ -106,8 +107,8 @@ UnitDSP::Frequency(UnitModel const& model, int octave, UnitNote note)
 float
 UnitDSP::Modulate(UnitModTarget target, CvSample carrier, CvSample modulator1, CvSample modulator2) const
 {
-  if (_model->mod1.target == target) carrier.value = _mod1.Modulate(carrier, modulator1);
-  if (_model->mod2.target == target) carrier.value = _mod2.Modulate(carrier, modulator2);
+  if (_model->mod1.target == target) carrier.value = Xts::Modulate(carrier, modulator1, _mod1.Amount());
+  if (_model->mod2.target == target) carrier.value = Xts::Modulate(carrier, modulator2, _mod2.Amount());
   return carrier.value;
 }
 
@@ -117,8 +118,8 @@ UnitDSP::ModulatePhase(CvSample modulator1, CvSample modulator2) const
   float phase = static_cast<float>(_phase);
   float base1 = modulator1.bipolar ? 0.5f : _mod1.Amount() >= 0.0f ? 0.0f : 1.0f;
   float base2 = modulator2.bipolar ? 0.5f : _mod2.Amount() >= 0.0f ? 0.0f : 1.0f;
-  if (_model->mod1.target == UnitModTarget::Phase) phase += _mod1.Modulate({ base1, false }, modulator1);
-  if (_model->mod2.target == UnitModTarget::Phase) phase += _mod2.Modulate({ base2, false }, modulator2);
+  if (_model->mod1.target == UnitModTarget::Phase) phase += Xts::Modulate({ base1, false }, modulator1, _mod1.Amount());
+  if (_model->mod2.target == UnitModTarget::Phase) phase += Xts::Modulate({ base2, false }, modulator2, _mod2.Amount());
   return UnipolarSanity(phase - std::floorf(phase));
 }
 
@@ -129,11 +130,11 @@ UnitDSP::ModulateFrequency(CvSample modulator1, CvSample modulator2) const
   float pitchRange = 0.02930223f;
   float frequencyRange = FREQ_MOD_MAX_HZ - FREQ_MOD_MIN_HZ;
   float frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(result, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
-  if (_model->mod1.target == UnitModTarget::Pitch) result *= 1.0f + _mod1.Modulate({ 0.0f, true }, modulator1) * pitchRange;
-  if (_model->mod1.target == UnitModTarget::Frequency) result = FREQ_MOD_MIN_HZ + _mod1.Modulate({ frequencyBase, false }, modulator1) * frequencyRange;
+  if (_model->mod1.target == UnitModTarget::Pitch) result *= 1.0f + Xts::Modulate({ 0.0f, true }, modulator1, _mod1.Amount()) * pitchRange;
+  if (_model->mod1.target == UnitModTarget::Frequency) result = FREQ_MOD_MIN_HZ + Xts::Modulate({ frequencyBase, false }, modulator1, _mod1.Amount()) * frequencyRange;
   frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(result, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
-  if (_model->mod2.target == UnitModTarget::Pitch) result *= 1.0f + _mod2.Modulate({ 0.0f, true }, modulator2) * pitchRange;
-  if (_model->mod2.target == UnitModTarget::Frequency) result = FREQ_MOD_MIN_HZ + _mod2.Modulate({ frequencyBase, false }, modulator2) * frequencyRange;
+  if (_model->mod2.target == UnitModTarget::Pitch) result *= 1.0f + Xts::Modulate({ 0.0f, true }, modulator2, _mod2.Amount()) * pitchRange;
+  if (_model->mod2.target == UnitModTarget::Frequency) result = FREQ_MOD_MIN_HZ + Xts::Modulate({ frequencyBase, false }, modulator2, _mod2.Amount()) * frequencyRange;
   assert(result > 0.0f);
   return Sanity(result);
 }
