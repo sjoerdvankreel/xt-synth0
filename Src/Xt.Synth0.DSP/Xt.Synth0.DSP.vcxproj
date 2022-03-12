@@ -37,6 +37,7 @@
     <ClInclude Include="Model\Model.hpp" />
     <ClInclude Include="Model\SeqModel.hpp" />
     <ClInclude Include="Model\Shared\Model.hpp" />
+    <ClInclude Include="Model\Shared\ModModel.hpp" />
     <ClInclude Include="Model\Shared\ParamInfo.hpp" />
     <ClInclude Include="Model\Shared\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
@@ -46,7 +47,7 @@
     <ClInclude Include="Model\Synth\EnvModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
     <ClInclude Include="Model\Synth\LfoModel.hpp" />
-    <ClInclude Include="Model\Synth\ModModel.hpp" />
+    <ClInclude Include="Model\Synth\ModSource.hpp" />
     <ClInclude Include="Model\Synth\PlotModel.hpp" />
     <ClInclude Include="Model\Synth\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\UnitModel.hpp" />

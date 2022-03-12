@@ -2,7 +2,7 @@
 #define XTS_MODEL_SYNTH_FILTER_MODEL_HPP
 
 #include <Model/Synth/Config.hpp>
-#include <Model/Synth/ModModel.hpp>
+#include <Model/Shared/ModModel.hpp>
 
 namespace Xts {
 
@@ -34,8 +34,8 @@ struct XTS_ALIGN FilterModel
   int32_t biquadFrequency;
   int32_t pad__;
 
-  ModModel<FilterModTarget> mod1;
-  ModModel<FilterModTarget> mod2;
+  ModModel mod1;
+  ModModel mod2;
   int32_t unitAmount[XTS_SYNTH_UNIT_COUNT];
   int32_t filterAmount[XTS_SYNTH_FILTER_COUNT];
 };
