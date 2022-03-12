@@ -19,7 +19,7 @@ Xts::VoiceBinding* XTS_CALL XtsVoiceBindingCreate(void) { return new Xts::VoiceB
 void XTS_CALL 
 XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount)
 { 
-  Xts::SynthModelInit(infos, infoCount);
+  Xts::SynthModel::Init(infos, infoCount);
   Xts::SyncStepModel::Init(steps, static_cast<size_t>(stepCount));
 }
 

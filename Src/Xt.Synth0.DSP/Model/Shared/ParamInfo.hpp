@@ -3,7 +3,7 @@
 
 #include <Model/Shared/Model.hpp>
 
-namespace xts {
+namespace Xts {
 
 struct XTS_ALIGN ParamInfo 
 {
