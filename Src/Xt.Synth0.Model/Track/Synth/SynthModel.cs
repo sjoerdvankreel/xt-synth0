@@ -15,12 +15,6 @@ namespace Xt.Synth0.Model
             internal AmpModel.Native amp;
 			internal PlotModel.Native plot;
             internal AudioModel.Native audio;
-
-			[StructLayout(LayoutKind.Sequential, Pack = 8)]
-			public struct ParamInfo { public int min, max; }
-
-			[StructLayout(LayoutKind.Sequential, Pack = 8)]
-			public ref struct VoiceBinding { internal fixed byte @params[SynthConfig.ParamCount * 8]; }
 		}
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }
@@ -55,21 +49,21 @@ namespace Xt.Synth0.Model
 				throw new InvalidOperationException();
 		}
 
-		public void ToNative(Native.VoiceBinding* binding)
+		public void ToNative(ParamBinding.Native* binding)
 		{
 			for (int i = 0; i < Params.Count; i++)
 				*((int**)binding->@params)[i] = Params[i].Value;
 		}
 
-		public void FromNative(Native.VoiceBinding* binding)
+		public void FromNative(ParamBinding.Native* binding)
 		{
 			for (int i = 0; i < Params.Count; i++)
 				Params[i].Value = *((int**)binding->@params)[i];
         }
 
-        public Native.ParamInfo[] ParamInfos()
+        public ParamInfo.Native[] ParamInfos()
         {
-            var result = new Native.ParamInfo[SynthConfig.ParamCount];
+            var result = new ParamInfo.Native[SynthConfig.ParamCount];
             for (int i = 0; i < SynthConfig.ParamCount; i++)
             {
                 result[i].min = Params[i].Info.Min;
@@ -78,7 +72,7 @@ namespace Xt.Synth0.Model
             return result;
         }
 
-        public void BindVoice(Native* native, Native.VoiceBinding* binding)
+        public void BindVoice(Native* native, ParamBinding.Native* binding)
 		{
 			var @params = (int**)binding->@params;
 			for (int p = 0; p < Params.Count; p++)

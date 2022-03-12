@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
@@ -8,6 +9,13 @@ namespace Xt.Synth0.Model
 
     public sealed class ParamInfo
     {
+        [StructLayout(LayoutKind.Sequential, Pack = 8)]
+        public struct Native
+        {
+            public int min;
+            public int max;
+        }
+
         enum ParamType { Toggle, List, Lin, Mix, Time, Frequency, Pattern };
 
         int? _maxDisplayLength;

@@ -11,9 +11,6 @@
 
 namespace Xts {
 
-struct XTS_ALIGN VoiceBinding { int32_t* params[XTS_SYNTH_PARAM_COUNT]; };
-XTS_CHECK_SIZE(VoiceBinding, 1672);
-
 struct XTS_ALIGN SynthModel
 {
   CvModel cv;

@@ -3,6 +3,7 @@
 
 #include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
+#include <Model/Synth/ParamBinding.hpp>
 #include "../Model/SeqModel.hpp"
 #include <cstdint>
 
@@ -35,7 +36,7 @@ class SeqDSP
   bool _endPattern = false;
   SeqModel const* _model;
   SynthModel const* _synth;
-  VoiceBinding const* _binding;
+  ParamBinding const* _binding;
 private:
   int _keys[MaxVoices];
   int _active[MaxKeys];
@@ -54,7 +55,7 @@ private:
 public:
   bool End() const { return _endAudio; }
   void Render(SeqInput const& input, SeqOutput& output);
-  void Init(SeqModel const* model, SynthModel const* synth, VoiceBinding const* binding);
+  void Init(SeqModel const* model, SynthModel const* synth, ParamBinding const* binding);
 };
 
 } // namespace Xts

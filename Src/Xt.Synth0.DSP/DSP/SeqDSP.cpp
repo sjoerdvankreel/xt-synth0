@@ -130,7 +130,7 @@ SeqDSP::Move(SeqInput const& input)
 }
 
 void
-SeqDSP::Init(SeqModel const* model, SynthModel const* synth, VoiceBinding const* binding)
+SeqDSP::Init(SeqModel const* model, SynthModel const* synth, ParamBinding const* binding)
 {
   _pos = 0;
   _row = -1;

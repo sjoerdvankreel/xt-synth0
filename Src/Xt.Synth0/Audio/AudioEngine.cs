@@ -87,7 +87,7 @@ namespace Xt.Synth0
         SeqModel.Native* _nativeSeq;
         Native.SeqState* _nativeState;
         SynthModel.Native* _nativeSynth;
-        SynthModel.Native.VoiceBinding* _nativeBinding;
+        ParamBinding.Native* _nativeBinding;
 
         long _clipPosition = -1;
         long _cpuUsagePosition = -1;
@@ -138,7 +138,7 @@ namespace Xt.Synth0
             _nativeDSP = Native.XtsSeqDSPCreate();
             _nativeState = Native.XtsSeqStateCreate();
             _nativeSynth = Native.XtsSynthModelCreate();
-            _nativeBinding = Native.XtsVoiceBindingCreate();
+            _nativeBinding = Native.XtsParamBindingCreate();
             _synth.BindVoice(_nativeSynth, _nativeBinding);
         }
 
@@ -157,8 +157,8 @@ namespace Xt.Synth0
             _platform.Dispose();
             Native.XtsSeqDSPDestroy(_nativeDSP);
             Native.XtsSeqStateDestroy(_nativeState);
-            Native.XtsVoiceBindingDestroy(_nativeBinding);
             Native.XtsSynthModelDestroy(_nativeSynth);
+            Native.XtsParamBindingDestroy(_nativeBinding);
         }
 
         internal void Reset()

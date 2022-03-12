@@ -23,7 +23,7 @@ namespace Xt.Synth0
 
 		static unsafe Native.PlotState* _nativePlotState;
 		static unsafe SynthModel.Native* _nativePlotSynthModel;
-		static unsafe SynthModel.Native.VoiceBinding* _nativePlotBinding;
+		static unsafe ParamBinding.Native* _nativePlotBinding;
 
 		[STAThread]
 		static unsafe void Main()
@@ -34,10 +34,10 @@ namespace Xt.Synth0
                 Xt.Synth0.Model.Model.MainThreadId = Thread.CurrentThread.ManagedThreadId;
 				var infos = Model.Track.Synth.ParamInfos();
 				fixed (SyncStepModel.Native* steps = SyncStepModel.Steps)
-				fixed (SynthModel.Native.ParamInfo* pis = infos)
+				fixed (ParamInfo.Native* pis = infos)
 					Native.XtsSynthModelInit(pis, infos.Length, steps, SyncStepModel.Steps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
-				_nativePlotBinding = Native.XtsVoiceBindingCreate();
+				_nativePlotBinding = Native.XtsParamBindingCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
 				Model.Track.Synth.BindVoice(_nativePlotSynthModel, _nativePlotBinding);
 				Run();
@@ -46,7 +46,7 @@ namespace Xt.Synth0
 			{
 				_engine?.Dispose();
 				Native.XtsPlotStateDestroy(_nativePlotState);
-				Native.XtsVoiceBindingDestroy(_nativePlotBinding);
+				Native.XtsParamBindingDestroy(_nativePlotBinding);
 				Native.XtsSynthModelDestroy(_nativePlotSynthModel);
 			}
 		}

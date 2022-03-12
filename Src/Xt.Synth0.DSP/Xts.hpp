@@ -18,7 +18,7 @@ class PlotDSP;
 struct SeqModel;
 struct ParamInfo;
 struct SynthModel;
-struct VoiceBinding;
+struct ParamBinding;
 struct SyncStepModel;
 } // namespace Xts
 
@@ -72,18 +72,18 @@ XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
 XTS_EXPORT PlotState* XTS_CALL XtsPlotStateCreate(void);
 XTS_EXPORT Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void);
 XTS_EXPORT Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void);
-XTS_EXPORT Xts::VoiceBinding* XTS_CALL XtsVoiceBindingCreate(void);
+XTS_EXPORT Xts::ParamBinding* XTS_CALL XtsParamBindingCreate(void);
 
 XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSeqStateDestroy(SeqState* state);
 XTS_EXPORT void XTS_CALL XtsPlotStateDestroy(PlotState* state);
 XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model);
 XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model);
-XTS_EXPORT void XTS_CALL XtsVoiceBindingDestroy(Xts::VoiceBinding* binding);
+XTS_EXPORT void XTS_CALL XtsParamBindingDestroy(Xts::ParamBinding* binding);
 
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(PlotState* state);
 XTS_EXPORT void XTS_CALL XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state);
 XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount);
-XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth, Xts::VoiceBinding const* binding);
+XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding);
 
 #endif // XTS_HPP
