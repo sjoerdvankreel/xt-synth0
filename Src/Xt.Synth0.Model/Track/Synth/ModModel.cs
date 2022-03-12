@@ -20,6 +20,6 @@ namespace Xt.Synth0.Model
             internal int pad__;
         };
 
-        internal static string[] ModSourceNames = { "Velo", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3" };
+        internal static readonly string[] ModSourceNames = { "Velo", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3" };
     }
 }
