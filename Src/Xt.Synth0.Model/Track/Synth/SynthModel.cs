@@ -55,17 +55,6 @@ namespace Xt.Synth0.Model
 				throw new InvalidOperationException();
 		}
 
-		public Native.ParamInfo[] ParamInfos()
-		{
-			var result = new Native.ParamInfo[SynthConfig.ParamCount];
-			for (int i = 0; i < SynthConfig.ParamCount; i++)
-			{
-				result[i].min = Params[i].Info.Min;
-				result[i].max = Params[i].Info.Max;
-			}
-			return result;
-		}
-
 		public void ToNative(Native.VoiceBinding* binding)
 		{
 			for (int i = 0; i < Params.Count; i++)
@@ -76,9 +65,20 @@ namespace Xt.Synth0.Model
 		{
 			for (int i = 0; i < Params.Count; i++)
 				Params[i].Value = *((int**)binding->@params)[i];
-		}
+        }
 
-		public void BindVoice(Native* native, Native.VoiceBinding* binding)
+        public Native.ParamInfo[] ParamInfos()
+        {
+            var result = new Native.ParamInfo[SynthConfig.ParamCount];
+            for (int i = 0; i < SynthConfig.ParamCount; i++)
+            {
+                result[i].min = Params[i].Info.Min;
+                result[i].max = Params[i].Info.Max;
+            }
+            return result;
+        }
+
+        public void BindVoice(Native* native, Native.VoiceBinding* binding)
 		{
 			var @params = (int**)binding->@params;
 			for (int p = 0; p < Params.Count; p++)
