@@ -1,8 +1,8 @@
 #ifndef XTS_HPP
 #define XTS_HPP
 
-#include "Model/Model.hpp"
 #include <DSP/Shared/Plot.hpp>
+#include <Model/Shared/Model.hpp>
 
 #include <vector>
 #include <memory>
