@@ -4,9 +4,6 @@
 	{
 		public static int MainThreadId { get; set; } = -1;
 
-		
-		public const int ParamCount = 209;
-
 		public const int MaxFxs = 3;
 		public const int MaxLpb = 16;
 		public const int MaxKeys = 4;

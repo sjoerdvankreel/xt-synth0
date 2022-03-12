@@ -20,7 +20,7 @@ namespace Xt.Synth0.Model
 			public struct ParamInfo { public int min, max; }
 
 			[StructLayout(LayoutKind.Sequential, Pack = 8)]
-			public ref struct VoiceBinding { internal fixed byte @params[Model.ParamCount * 8]; }
+			public ref struct VoiceBinding { internal fixed byte @params[SynthConfig.ParamCount * 8]; }
 		}
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }
@@ -51,14 +51,14 @@ namespace Xt.Synth0.Model
 			Units[0].On.Value = 1;
 			var @params = ListParams(this).Select((p, i) => new SynthParam((IUIParamGroupModel)p.Group, i + 1, p.Param));
 			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
-			if (SynthParams.Count != Model.ParamCount)
+			if (SynthParams.Count != SynthConfig.ParamCount)
 				throw new InvalidOperationException();
 		}
 
 		public Native.ParamInfo[] ParamInfos()
 		{
-			var result = new Native.ParamInfo[Model.ParamCount];
-			for (int i = 0; i < Model.ParamCount; i++)
+			var result = new Native.ParamInfo[SynthConfig.ParamCount];
+			for (int i = 0; i < SynthConfig.ParamCount; i++)
 			{
 				result[i].min = Params[i].Info.Min;
 				result[i].max = Params[i].Info.Max;
