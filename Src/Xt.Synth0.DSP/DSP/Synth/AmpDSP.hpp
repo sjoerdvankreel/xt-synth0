@@ -7,7 +7,7 @@
 #include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
-#include <Model/Synth/Config.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 #include <Model/Synth/AmpModel.hpp>
 
 namespace Xts {

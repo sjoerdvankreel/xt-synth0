@@ -19,18 +19,15 @@
     <Filter Include="DSP\Shared">
       <UniqueIdentifier>{e7c02a4a-c1bd-4e9b-a9cb-ec5bc858484e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model\Sequencer">
+      <UniqueIdentifier>{d41a077e-6ac7-4f45-9f8d-25fc4d126082}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DSP\Sequencer">
+      <UniqueIdentifier>{0024ef44-eea9-4e68-9b22-28bec7faa821}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model\SeqModel.hpp">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="DSP\SeqDSP.hpp">
-      <Filter>DSP</Filter>
-    </ClInclude>
     <ClInclude Include="Xts.hpp" />
-    <ClInclude Include="Model\Model.hpp">
-      <Filter>Model</Filter>
-    </ClInclude>
     <ClInclude Include="Model\Synth\FilterModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
@@ -67,7 +64,7 @@
     <ClInclude Include="Model\Synth\AmpModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Synth\Config.hpp">
+    <ClInclude Include="Model\Synth\SynthConfig.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
     <ClInclude Include="DSP\Synth\LfoDSP.hpp">
@@ -145,11 +142,32 @@
     <ClInclude Include="Model\Shared\ParamBinding.hpp">
       <Filter>Model\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Sequencer\EditModel.hpp">
+      <Filter>Model\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Sequencer\PatternFxModel.hpp">
+      <Filter>Model\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Sequencer\PatternKeyModel.hpp">
+      <Filter>Model\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Sequencer\PatternModel.hpp">
+      <Filter>Model\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Sequencer\PatternRowModel.hpp">
+      <Filter>Model\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Sequencer\SequencerModel.hpp">
+      <Filter>Model\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Sequencer\SequencerConfig.hpp">
+      <Filter>Model\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\Sequencer\SequencerDSP.hpp">
+      <Filter>DSP\Sequencer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DSP\SeqDSP.cpp">
-      <Filter>DSP</Filter>
-    </ClCompile>
     <ClCompile Include="Xts.cpp" />
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">
       <Filter>DSP\Synth</Filter>
@@ -195,6 +213,9 @@
     </ClCompile>
     <ClCompile Include="DSP\Shared\Modulate.cpp">
       <Filter>DSP\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\Sequencer\SequencerDSP.cpp">
+      <Filter>DSP\Sequencer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

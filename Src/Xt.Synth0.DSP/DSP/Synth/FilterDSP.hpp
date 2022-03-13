@@ -4,7 +4,7 @@
 #include <DSP/Shared/Config.hpp>
 #include <DSP/Shared/DelayBuffer.hpp>
 #include <DSP/Shared/AudioSample.hpp>
-#include <Model/Synth/Config.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 
 #define XTS_COMB_MIN_DELAY_MS 0.0f
 #define XTS_COMB_MAX_DELAY_MS 5.0f

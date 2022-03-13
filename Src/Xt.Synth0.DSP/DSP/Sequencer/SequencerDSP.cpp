@@ -1,14 +1,14 @@
-#include "SeqDSP.hpp"
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
 #include <Model/Shared/ParamInfo.hpp>
+#include <DSP/Sequencer/SequencerDSP.hpp>
 #include <cassert>
 #include <algorithm>
 
 namespace Xts {
 
 void
-SeqDSP::ApplyActive()
+SequencerDSP::ApplyActive()
 {
   // TODO cant copy over running voices, screws up internal state
   /*
@@ -19,19 +19,19 @@ SeqDSP::ApplyActive()
 }
 
 void
-SeqDSP::Return(int key, int voice)
+SequencerDSP::Return(int key, int voice)
 {
   _voices--;
   _keys[voice] = -1;
   _started[voice] = -1;
   _endAudio = _voices == 0 && _endPattern;
-  assert(0 <= key && key < MaxKeys);
+  assert(0 <= key && key < XTS_SEQUENCER_MAX_KEYS);
   assert(0 <= voice && voice < MaxVoices);
   assert(0 <= _voices && _voices < MaxVoices);
 }
 
 int
-SeqDSP::Take(int key, int voice)
+SequencerDSP::Take(int key, int voice)
 {
   _voices++;
   _keys[voice] = key;
@@ -42,7 +42,7 @@ SeqDSP::Take(int key, int voice)
 }
 
 FloatSample
-SeqDSP::Next(SeqInput const& input, bool& exhausted)
+SequencerDSP::Next(SeqInput const& input, bool& exhausted)
 {
   exhausted = false;
   MoveType type = Move(input);
@@ -53,7 +53,7 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
     ApplyActive();
   } else if(type == MoveType::End)
   {
-    for(int k = 0; k < MaxKeys; k++)
+    for(int k = 0; k < XTS_SEQUENCER_MAX_KEYS; k++)
       if (_active[k] != -1)
         _dsps[_active[k]].Release();
   }
@@ -69,22 +69,22 @@ SeqDSP::Next(SeqInput const& input, bool& exhausted)
 }
 
 void
-SeqDSP::Automate()
+SequencerDSP::Automate()
 {
   for (int f = 0; f < _model->edit.fxs; f++)
   {
     auto const& fx = _model->pattern.rows[_row].fx[f];
-    assert(0 <= fx.val && fx.val < 256);
-    assert(0 <= fx.tgt && fx.tgt < 256);
-    if (fx.tgt == 0 || fx.tgt > XTS_SYNTH_PARAM_COUNT) return;
-    int32_t* param = _binding->params[fx.tgt - 1];
-    ParamInfo const& info = SynthModel::Params()[fx.tgt - 1];
-    *param = std::clamp(fx.val, info.min, info.max);
+    assert(0 <= fx.value && fx.value < 256);
+    assert(0 <= fx.target && fx.target < 256);
+    if (fx.target == 0 || fx.target > XTS_SYNTH_PARAM_COUNT) return;
+    int32_t* param = _binding->params[fx.target - 1];
+    ParamInfo const& info = SynthModel::Params()[fx.target - 1];
+    *param = std::clamp(fx.value, info.min, info.max);
   }
 }
 
 void
-SeqDSP::Render(SeqInput const& input, SeqOutput& output)
+SequencerDSP::Render(SeqInput const& input, SeqOutput& output)
 {
   ApplyActive();
   bool exhausted;
@@ -104,13 +104,13 @@ SeqDSP::Render(SeqInput const& input, SeqOutput& output)
 }
 
 MoveType
-SeqDSP::Move(SeqInput const& input)
+SequencerDSP::Move(SeqInput const& input)
 {
   if (_endPattern) return MoveType::None;
   int current = _row;
   int bpm = _model->edit.bpm;
   int lpb = _model->edit.lpb;
-  int pats = _model->edit.pats;
+  int pats = _model->edit.patterns;
   int rows = _model->edit.rows;
   int loop = _model->edit.loop;
   if (_row == -1) return _row = 0, MoveType::Next;
@@ -118,19 +118,19 @@ SeqDSP::Move(SeqInput const& input)
   if (_fill < 1.0) return MoveType::None;
   _fill = 0.0f;
   _row++;
-  if (_row % MaxRows == rows) 
+  if (_row % XTS_SEQUENCER_MAX_ROWS == rows) 
   {
-    _row += MaxRows - rows;
-    assert(_row % MaxRows == 0);
+    _row += XTS_SEQUENCER_MAX_ROWS - rows;
+    assert(_row % XTS_SEQUENCER_MAX_ROWS == 0);
   }
-  if (_row == pats * MaxRows)
+  if (_row == pats * XTS_SEQUENCER_MAX_ROWS)
     if (loop) _row = 0;
     else return _row = current, _endPattern = true, MoveType::End;
   return MoveType::Next;
 }
 
 void
-SeqDSP::Init(SeqModel const* model, SynthModel const* synth, ParamBinding const* binding)
+SequencerDSP::Init(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding)
 {
   _pos = 0;
   _row = -1;
@@ -141,19 +141,19 @@ SeqDSP::Init(SeqModel const* model, SynthModel const* synth, ParamBinding const*
   _binding = binding;
   _endAudio = false;
   _endPattern = false;
-  for(int i = 0; i < MaxKeys; i++)
+  for(int i = 0; i < XTS_SEQUENCER_MAX_KEYS; i++)
     _active[i] = -1;
   for (int i = 0; i < MaxVoices; i++)
     _started[i] = _keys[i] = -1;
 }
 
 int
-SeqDSP::Take(int key, bool& exhausted)
+SequencerDSP::Take(int key, bool& exhausted)
 {
   int victim = -1;
   assert(_pos >= 0);
   exhausted = false;
-  assert(0 <= key && key < MaxKeys);
+  assert(0 <= key && key < XTS_SEQUENCER_MAX_KEYS);
   int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
   for (int i = 0; i < MaxVoices; i++)
   {
@@ -170,7 +170,7 @@ SeqDSP::Take(int key, bool& exhausted)
 }
 
 bool
-SeqDSP::Trigger(SeqInput const& input)
+SequencerDSP::Trigger(SeqInput const& input)
 {
   bool result = false;
   bool exhausted = false;
@@ -187,7 +187,7 @@ SeqDSP::Trigger(SeqInput const& input)
       _synths[voice] = *_synth;
       float bpm = static_cast<float>(_model->edit.bpm);
       auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-      new (&_dsps[voice]) SynthDSP(&_synths[voice], key.oct, unote, Param::Level(key.amp), bpm, input.rate);
+      new (&_dsps[voice]) SynthDSP(&_synths[voice], key.octave, unote, Param::Level(key.velocity), bpm, input.rate);
     }
   }
   return result;

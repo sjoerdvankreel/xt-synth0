@@ -1,7 +1,7 @@
 #ifndef XTS_MODEL_SHARED_PARAM_BINDING_HPP
 #define XTS_MODEL_SHARED_PARAM_BINDING_HPP
 
-#include <Model/Model.hpp>
+#include <Model/Shared/Model.hpp>
 
 #include <cstdint>
 

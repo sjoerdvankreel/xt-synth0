@@ -3,7 +3,7 @@
 
 #include <DSP/Shared/CvSample.hpp>
 #include <DSP/Shared/EnvSample.hpp>
-#include <Model/Synth/Config.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 
 namespace Xts {
 

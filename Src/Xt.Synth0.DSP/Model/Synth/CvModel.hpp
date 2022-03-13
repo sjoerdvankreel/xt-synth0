@@ -1,7 +1,7 @@
 #ifndef XTS_MODEL_SYNTH_CV_MODEL_HPP
 #define XTS_MODEL_SYNTH_CV_MODEL_HPP
 
-#include <Model/Synth/Config.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 #include <Model/Synth/LfoModel.hpp>
 #include <Model/Synth/EnvModel.hpp>
 

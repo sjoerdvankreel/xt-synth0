@@ -1,10 +1,10 @@
-#ifndef XTS_SEQ_DSP_HPP
-#define XTS_SEQ_DSP_HPP
+#ifndef XTS_DSP_SEQUENCER_DSP_HPP
+#define XTS_DSP_SEQUENCER_DSP_HPP
 
 #include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 #include <Model/Shared/ParamBinding.hpp>
-#include "../Model/SeqModel.hpp"
+#include <Model/Sequencer/SequencerModel.hpp>
 #include <cstdint>
 
 namespace Xts {
@@ -26,7 +26,7 @@ struct SeqOutput
   bool clip, exhausted;
 };
 
-class SeqDSP
+class SequencerDSP
 {
   int _row = -1;
   int _voices = 0;
@@ -34,12 +34,12 @@ class SeqDSP
   double _fill = 0.0;
   bool _endAudio = false;
   bool _endPattern = false;
-  SeqModel const* _model;
+  SequencerModel const* _model;
   SynthModel const* _synth;
   ParamBinding const* _binding;
 private:
   int _keys[MaxVoices];
-  int _active[MaxKeys];
+  int _active[XTS_SEQUENCER_MAX_KEYS];
   SynthDSP _dsps[MaxVoices];
   int64_t _started[MaxVoices];
   SynthModel _synths[MaxVoices];
@@ -55,8 +55,8 @@ private:
 public:
   bool End() const { return _endAudio; }
   void Render(SeqInput const& input, SeqOutput& output);
-  void Init(SeqModel const* model, SynthModel const* synth, ParamBinding const* binding);
+  void Init(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding);
 };
 
 } // namespace Xts
-#endif // XTS_SEQ_DSP_HPP
+#endif // XTS_DSP_SEQUENCER_DSP_HPP

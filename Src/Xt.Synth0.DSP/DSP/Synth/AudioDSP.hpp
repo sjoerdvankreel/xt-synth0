@@ -4,7 +4,7 @@
 #include <DSP/Synth/UnitDSP.hpp>
 #include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/Synth/AudioState.hpp>
-#include <Model/Synth/Config.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 
 namespace Xts {
 

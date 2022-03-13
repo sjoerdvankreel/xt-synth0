@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DSP\SeqDSP.hpp" />
+    <ClInclude Include="DSP\Sequencer\SequencerDSP.hpp" />
     <ClInclude Include="DSP\Shared\AudioSample.hpp" />
     <ClInclude Include="DSP\Shared\Config.hpp" />
     <ClInclude Include="DSP\Shared\CvSample.hpp" />
@@ -35,15 +35,20 @@
     <ClInclude Include="DSP\Synth\PlotDSP.hpp" />
     <ClInclude Include="DSP\Synth\SynthDSP.hpp" />
     <ClInclude Include="DSP\Synth\UnitDSP.hpp" />
-    <ClInclude Include="Model\Model.hpp" />
-    <ClInclude Include="Model\SeqModel.hpp" />
+    <ClInclude Include="Model\Sequencer\EditModel.hpp" />
+    <ClInclude Include="Model\Sequencer\PatternFxModel.hpp" />
+    <ClInclude Include="Model\Sequencer\PatternKeyModel.hpp" />
+    <ClInclude Include="Model\Sequencer\PatternModel.hpp" />
+    <ClInclude Include="Model\Sequencer\PatternRowModel.hpp" />
+    <ClInclude Include="Model\Sequencer\SequencerConfig.hpp" />
+    <ClInclude Include="Model\Sequencer\SequencerModel.hpp" />
     <ClInclude Include="Model\Shared\Model.hpp" />
     <ClInclude Include="Model\Shared\ParamBinding.hpp" />
     <ClInclude Include="Model\Shared\ParamInfo.hpp" />
     <ClInclude Include="Model\Shared\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
     <ClInclude Include="Model\Synth\AudioModel.hpp" />
-    <ClInclude Include="Model\Synth\Config.hpp" />
+    <ClInclude Include="Model\Synth\SynthConfig.hpp" />
     <ClInclude Include="Model\Synth\CvModel.hpp" />
     <ClInclude Include="Model\Synth\EnvModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
@@ -55,7 +60,7 @@
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DSP\SeqDSP.cpp" />
+    <ClCompile Include="DSP\Sequencer\SequencerDSP.cpp" />
     <ClCompile Include="DSP\Shared\Modulate.cpp" />
     <ClCompile Include="DSP\Shared\Plot.cpp" />
     <ClCompile Include="DSP\Shared\Spectrum.cpp" />

@@ -1,17 +1,17 @@
 #include "Xts.hpp"
-#include "DSP/SeqDSP.hpp"
-#include "Model/SeqModel.hpp"
 #include <DSP/Synth/PlotDSP.hpp>
+#include <DSP/Sequencer/SequencerDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
+#include <Model/Sequencer/SequencerModel.hpp>
 
-void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp) { delete dsp; }
-void XTS_CALL XtsSeqStateDestroy(SeqState* state) { delete state; }
-void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model) { delete model; }
+void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }
+void XTS_CALL XtsSequencerStateDestroy(SequencerState* state) { delete state; }
+void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* model) { delete model; }
 void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
 
-SeqState* XTS_CALL XtsSeqStateCreate(void) { return new SeqState; }
-Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void) { return new Xts::SeqDSP; }
-Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void) { return new Xts::SeqModel; }
+SequencerState* XTS_CALL XtsSequencerStateCreate(void) { return new SequencerState; }
+Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void) { return new Xts::SequencerDSP; }
+Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
 
 Xts::ParamBinding* XTS_CALL 
@@ -38,7 +38,7 @@ XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* 
 }
 
 void XTS_CALL
-XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding)
+XtsSequencerDSPInit(Xts::SequencerDSP* dsp, Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding)
 { dsp->Init(model, synth, binding); }
 
 void XTS_CALL 
@@ -85,7 +85,7 @@ XtsPlotStateCreate(void)
 }
 
 void XTS_CALL
-XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state)
+XtsSequencerDSPRender(Xts::SequencerDSP* dsp, SequencerState* state)
 {
   Xts::SeqInput in;
   in.buffer = state->buffer;

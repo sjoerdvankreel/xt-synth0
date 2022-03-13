@@ -13,16 +13,16 @@
 #define XTS_EXPORT extern "C" __declspec(dllexport)
 
 namespace Xts {
-class SeqDSP;
+class SequencerDSP;
 class PlotDSP;
-struct SeqModel;
+struct SequencerModel;
 struct ParamInfo;
 struct SynthModel;
 struct ParamBinding;
 struct SyncStepModel;
 } // namespace Xts
 
-struct XTS_ALIGN SeqState
+struct XTS_ALIGN SequencerState
 {
   int32_t row, voices;
   int32_t clip, exhausted;
@@ -31,10 +31,7 @@ struct XTS_ALIGN SeqState
   int64_t pos;
   float* buffer;
   Xts::SynthModel* synth;
-  Xts::SeqModel const* seq;
-public:
-  SeqState() = default;
-  SeqState(SeqState const&) = delete;
+  Xts::SequencerModel const* seq;
 };
 
 struct XTS_ALIGN PlotState
@@ -67,23 +64,23 @@ public:
   PlotState(PlotState const&) = delete;
 };
 
-XTS_EXPORT SeqState* XTS_CALL XtsSeqStateCreate(void);
-XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
+XTS_EXPORT SequencerState* XTS_CALL XtsSequencerStateCreate(void);
+XTS_EXPORT Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void);
 XTS_EXPORT PlotState* XTS_CALL XtsPlotStateCreate(void);
-XTS_EXPORT Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void);
+XTS_EXPORT Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void);
 XTS_EXPORT Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void);
 XTS_EXPORT Xts::ParamBinding* XTS_CALL XtsParamBindingCreate(int32_t count);
 
-XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsSeqStateDestroy(SeqState* state);
+XTS_EXPORT void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp);
+XTS_EXPORT void XTS_CALL XtsSequencerStateDestroy(SequencerState* state);
 XTS_EXPORT void XTS_CALL XtsPlotStateDestroy(PlotState* state);
-XTS_EXPORT void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model);
+XTS_EXPORT void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* model);
 XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model);
 XTS_EXPORT void XTS_CALL XtsParamBindingDestroy(Xts::ParamBinding* binding);
 
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(PlotState* state);
-XTS_EXPORT void XTS_CALL XtsSeqDSPRender(Xts::SeqDSP* dsp, SeqState* state);
+XTS_EXPORT void XTS_CALL XtsSequencerDSPRender(Xts::SequencerDSP* dsp, SequencerState* state);
 XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount);
-XTS_EXPORT void XTS_CALL XtsSeqDSPInit(Xts::SeqDSP* dsp, Xts::SeqModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding);
+XTS_EXPORT void XTS_CALL XtsSequencerDSPInit(Xts::SequencerDSP* dsp, Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding);
 
 #endif // XTS_HPP
