@@ -1,7 +1,7 @@
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
-#include <Model/Shared/ParamInfo.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
+#include <Model/Shared/ParamInfo.hpp>
 
 #include <cassert>
 #include <algorithm>
@@ -26,35 +26,9 @@ SequencerDSP::Take(int key, int voice)
   _voices++;
   _keys[voice] = key;
   _active[key] = voice;
-  _started[voice] = _pos;
+  _started[voice] = _position;
   assert(0 <= _voices && _voices <= XTS_SEQUENCER_MAX_VOICES);
   return voice;
-}
-
-FloatSample
-SequencerDSP::Next(SequencerInput const& input, bool& exhausted)
-{
-  exhausted = false;
-  SequencerMove move = Move(input);
-  if (move == SequencerMove::Next)
-  {
-    Automate();
-    exhausted = Trigger(input);
-  } else if(move == SequencerMove::End)
-  {
-    for(int k = 0; k < XTS_SEQUENCER_MAX_KEYS; k++)
-      if (_active[k] != -1)
-        _dsps[_active[k]].Release();
-  }
-  FloatSample result = { 0 };
-  for (int v = 0; v < XTS_SEQUENCER_MAX_VOICES; v++)
-  {
-    if (_keys[v] == -1) continue;
-    _dsps[v].Next();
-    result += _dsps[v].Output();
-    if (_dsps[v].End()) Return(_keys[v], v);
-  }
-  return result;
 }
 
 void
@@ -72,6 +46,28 @@ SequencerDSP::Automate()
   }
 }
 
+FloatSample
+SequencerDSP::Next(SequencerInput const& input, bool& exhausted)
+{
+  exhausted = false;
+  FloatSample result = { 0 };
+  SequencerMove move = Move(input);
+  
+  if (move == SequencerMove::Next)
+    Automate(), exhausted = Trigger(input);
+  else if(move == SequencerMove::End)
+    for(int k = 0; k < XTS_SEQUENCER_MAX_KEYS; k++)
+      if (_active[k] != -1) _dsps[_active[k]].Release();
+  
+  for (int v = 0; v < XTS_SEQUENCER_MAX_VOICES; v++)
+  {
+    if (_keys[v] == -1) continue;
+    result += _dsps[v].Next();
+    if (_dsps[v].End()) Return(_keys[v], v);
+  }
+  return result;
+}
+
 void
 SequencerDSP::Render(SequencerInput const& input, SequencerOutput& output)
 {
@@ -84,74 +80,65 @@ SequencerDSP::Render(SequencerInput const& input, SequencerOutput& output)
     output.exhausted |= exhausted;
     input.buffer[f * 2] = Clip(out.left, output.clip);
     input.buffer[f * 2 + 1] = Clip(out.right, output.clip);
-    _pos++;
+    _position++;
   }
-  output.position = _pos;
   output.row = _row;
   output.voices = _voices;
+  output.position = _position;
 }
 
 SequencerMove
 SequencerDSP::Move(SequencerInput const& input)
 {
-  if (_endPattern) return SequencerMove::None;
   int current = _row;
-  int bpm = _model->edit.bpm;
-  int lpb = _model->edit.lpb;
-  int pats = _model->edit.patterns;
-  int rows = _model->edit.rows;
-  int loop = _model->edit.loop;
+  auto const& edit = _model->edit;
+  if (_endPattern) return SequencerMove::None;
   if (_row == -1) return _row = 0, SequencerMove::Next;
-  _fill += bpm * lpb / (60.0 * input.rate);
+  _fill += edit.bpm * edit.lpb / (60.0 * input.rate);
   if (_fill < 1.0) return SequencerMove::None;
-  _fill = 0.0f;
   _row++;
-  if (_row % XTS_SEQUENCER_MAX_ROWS == rows) 
-  {
-    _row += XTS_SEQUENCER_MAX_ROWS - rows;
-    assert(_row % XTS_SEQUENCER_MAX_ROWS == 0);
-  }
-  if (_row == pats * XTS_SEQUENCER_MAX_ROWS)
-    if (loop) _row = 0;
-    else return _row = current, _endPattern = true, SequencerMove::End;
-  return SequencerMove::Next;
+  _fill = 0.0f;
+  if (_row % XTS_SEQUENCER_MAX_ROWS == edit.rows) _row += XTS_SEQUENCER_MAX_ROWS - edit.rows;
+  if (_row != edit.patterns * XTS_SEQUENCER_MAX_ROWS) return SequencerMove::Next;
+  if (edit.loop) return _row = 0, SequencerMove::Next;
+  _row = current;
+  _endPattern = true;
+  return SequencerMove::End;
 }
 
 void
 SequencerDSP::Init(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding)
 {
-  _pos = 0;
   _row = -1;
   _fill = 0.0;
   _voices = 0;
+  _position = 0;
   _model = model;
   _synth = synth;
   _binding = binding;
   _endAudio = false;
   _endPattern = false;
-  for(int i = 0; i < XTS_SEQUENCER_MAX_KEYS; i++)
-    _active[i] = -1;
-  for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++)
-    _started[i] = _keys[i] = -1;
+  for(int i = 0; i < XTS_SEQUENCER_MAX_KEYS; i++) _active[i] = -1;
+  for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++) _started[i] = _keys[i] = -1;
 }
 
 int
 SequencerDSP::Take(int key, bool& exhausted)
 {
   int victim = -1;
-  assert(_pos >= 0);
   exhausted = false;
+  assert(_position >= 0);
   assert(0 <= key && key < XTS_SEQUENCER_MAX_KEYS);
   int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
   for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++)
   {
     if (_started[i] == -1) return Take(key, i);
-    if (_started[i] < victimStart)	victimStart = _started[victim = i];
+    if (_started[i] < victimStart)victimStart = _started[victim = i];
   }
   exhausted = true;
   _keys[victim] = key;
   _active[key] = victim;
-  _started[victim] = _pos;
+  _started[victim] = _position;
   assert(0 <= victim && victim < XTS_SEQUENCER_MAX_VOICES);
   assert(0 <= _voices && _voices <= XTS_SEQUENCER_MAX_VOICES);
   return victim;
@@ -168,15 +155,14 @@ SequencerDSP::Trigger(SequencerInput const& input)
     if (key.note >= PatternNote::Off)
       for (int v = 0; v < XTS_SEQUENCER_MAX_VOICES; v++)
         if (_keys[v] == k) _dsps[v].Release();
-    if (key.note >= PatternNote::C)
-    {
-      int voice = Take(k, exhausted);
-      result |= exhausted;
-      _synths[voice] = *_synth;
-      float bpm = static_cast<float>(_model->edit.bpm);
-      auto unote = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-      new (&_dsps[voice]) SynthDSP(&_synths[voice], key.octave, unote, Param::Level(key.velocity), bpm, input.rate);
-    }
+    if(key.note < PatternNote::C) continue;
+    int voice = Take(k, exhausted);
+    result |= exhausted;
+    _synths[voice] = *_synth;
+    float velocity = Param::Level(key.velocity);
+    float bpm = static_cast<float>(_model->edit.bpm);
+    UnitNote note = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
+    new (&_dsps[voice]) SynthDSP(&_synths[voice], key.octave, note, velocity, bpm, input.rate);
   }
   return result;
 }

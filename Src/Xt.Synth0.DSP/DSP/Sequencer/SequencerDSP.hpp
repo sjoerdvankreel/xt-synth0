@@ -9,13 +9,6 @@
 
 namespace Xts {
 
-enum class SequencerMove
-{ 
-  None, 
-  Next, 
-  End 
-};
-
 struct SequencerInput
 {
   int frames;
@@ -32,16 +25,23 @@ struct SequencerOutput
   int64_t position;
 };
 
+enum class SequencerMove
+{
+  None,
+  Next,
+  End
+};
+
 class SequencerDSP
 {
   int _row = -1;
   int _voices = 0;
-  int64_t _pos = 0;
   double _fill = 0.0;
+  int64_t _position = 0;
   bool _endAudio = false;
   bool _endPattern = false;
-  SequencerModel const* _model;
   SynthModel const* _synth;
+  SequencerModel const* _model;
   ParamBinding const* _binding;
 private:
   int _keys[XTS_SEQUENCER_MAX_VOICES];
