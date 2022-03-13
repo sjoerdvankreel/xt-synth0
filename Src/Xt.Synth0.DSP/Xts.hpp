@@ -72,7 +72,7 @@ XTS_EXPORT Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void);
 XTS_EXPORT PlotState* XTS_CALL XtsPlotStateCreate(void);
 XTS_EXPORT Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void);
 XTS_EXPORT Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void);
-XTS_EXPORT Xts::ParamBinding* XTS_CALL XtsParamBindingCreate(void);
+XTS_EXPORT Xts::ParamBinding* XTS_CALL XtsParamBindingCreate(int32_t count);
 
 XTS_EXPORT void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp);
 XTS_EXPORT void XTS_CALL XtsSeqStateDestroy(SeqState* state);

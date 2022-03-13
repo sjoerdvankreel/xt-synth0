@@ -38,6 +38,7 @@
     <ClInclude Include="Model\Model.hpp" />
     <ClInclude Include="Model\SeqModel.hpp" />
     <ClInclude Include="Model\Shared\Model.hpp" />
+    <ClInclude Include="Model\Shared\ParamBinding.hpp" />
     <ClInclude Include="Model\Shared\ParamInfo.hpp" />
     <ClInclude Include="Model\Shared\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
@@ -50,7 +51,6 @@
     <ClInclude Include="Model\Synth\ModModel.hpp" />
     <ClInclude Include="Model\Synth\PlotModel.hpp" />
     <ClInclude Include="Model\Synth\SynthModel.hpp" />
-    <ClInclude Include="Model\Synth\ParamBinding.hpp" />
     <ClInclude Include="Model\Synth\UnitModel.hpp" />
     <ClInclude Include="Xts.hpp" />
   </ItemGroup>

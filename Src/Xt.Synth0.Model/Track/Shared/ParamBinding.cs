@@ -7,7 +7,7 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public ref struct Native
         {
-            internal fixed byte @params[SynthConfig.ParamCount * 8];
+            internal int** @params;
         }
     }
 }

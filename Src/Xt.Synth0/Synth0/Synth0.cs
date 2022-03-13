@@ -37,9 +37,9 @@ namespace Xt.Synth0
 				fixed (ParamInfo.Native* pis = infos)
 					Native.XtsSynthModelInit(pis, infos.Length, steps, SyncStepModel.Steps.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
-				_nativePlotBinding = Native.XtsParamBindingCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
-				Model.Track.Synth.BindVoice(_nativePlotSynthModel, _nativePlotBinding);
+                _nativePlotBinding = Native.XtsParamBindingCreate(SynthConfig.ParamCount);
+                Model.Track.Synth.BindVoice(_nativePlotSynthModel, _nativePlotBinding);
 				Run();
 			}
 			finally

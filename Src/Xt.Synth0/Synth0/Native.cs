@@ -54,7 +54,7 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")] internal static extern PlotState* XtsPlotStateCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern SeqModel.Native* XtsSeqModelCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern SynthModel.Native* XtsSynthModelCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern ParamBinding.Native* XtsParamBindingCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern ParamBinding.Native* XtsParamBindingCreate(int count);
 
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPDestroy(IntPtr dsp);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqStateDestroy(SeqState* state);

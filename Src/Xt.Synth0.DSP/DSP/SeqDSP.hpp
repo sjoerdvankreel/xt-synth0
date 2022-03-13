@@ -3,7 +3,7 @@
 
 #include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
-#include <Model/Synth/ParamBinding.hpp>
+#include <Model/Shared/ParamBinding.hpp>
 #include "../Model/SeqModel.hpp"
 #include <cstdint>
 

@@ -138,7 +138,7 @@ namespace Xt.Synth0
             _nativeDSP = Native.XtsSeqDSPCreate();
             _nativeState = Native.XtsSeqStateCreate();
             _nativeSynth = Native.XtsSynthModelCreate();
-            _nativeBinding = Native.XtsParamBindingCreate();
+            _nativeBinding = Native.XtsParamBindingCreate(SynthConfig.ParamCount);
             _synth.BindVoice(_nativeSynth, _nativeBinding);
         }
 

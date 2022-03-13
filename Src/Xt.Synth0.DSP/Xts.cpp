@@ -8,15 +8,29 @@ void XTS_CALL XtsSeqDSPDestroy(Xts::SeqDSP* dsp) { delete dsp; }
 void XTS_CALL XtsSeqStateDestroy(SeqState* state) { delete state; }
 void XTS_CALL XtsSeqModelDestroy(Xts::SeqModel* model) { delete model; }
 void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
-void XTS_CALL XtsParamBindingDestroy(Xts::ParamBinding* binding) { delete binding; }
 
 SeqState* XTS_CALL XtsSeqStateCreate(void) { return new SeqState; }
 Xts::SeqDSP* XTS_CALL XtsSeqDSPCreate(void) { return new Xts::SeqDSP; }
 Xts::SeqModel* XTS_CALL XtsSeqModelCreate(void) { return new Xts::SeqModel; }
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
-Xts::ParamBinding* XTS_CALL XtsParamBindingCreate(void) { return new Xts::ParamBinding; }
+
+Xts::ParamBinding* XTS_CALL 
+XtsParamBindingCreate(int32_t count) 
+{ 
+  auto result = new Xts::ParamBinding; 
+  result->params = new int32_t*[count];
+  return result;
+}
 
 void XTS_CALL 
+XtsParamBindingDestroy(Xts::ParamBinding* binding) 
+{ 
+  delete binding->params; 
+  binding->params = nullptr;
+  delete binding;
+}
+
+void XTS_CALL
 XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount)
 { 
   Xts::SynthModel::Init(infos, infoCount);

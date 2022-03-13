@@ -142,8 +142,8 @@
     <ClInclude Include="DSP\Shared\Modulate.hpp">
       <Filter>DSP\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Synth\ParamBinding.hpp">
-      <Filter>Model\Synth</Filter>
+    <ClInclude Include="Model\Shared\ParamBinding.hpp">
+      <Filter>Model\Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
