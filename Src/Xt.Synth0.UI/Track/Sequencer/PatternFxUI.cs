@@ -31,11 +31,11 @@ namespace Xt.Synth0.UI
 		}
 
 		internal static PatternFxElements Add(Grid grid, AppModel app,
-			PatternFx fx, int minFx, int row, int col, Action fill, Action interpolate)
+			PatternFxModel fx, int minFx, int row, int col, Action fill, Action interpolate)
 		{
 			var result = new PatternFxElements();
-			result.Target = grid.Add(MakeTarget(app, fx.Tgt, minFx, row, col, result, fill));
-			result.Value = grid.Add(MakeValue(app, fx.Tgt, fx.Val, minFx, row, col + 1, result, interpolate));
+			result.Target = grid.Add(MakeTarget(app, fx.Target, minFx, row, col, result, fill));
+			result.Value = grid.Add(MakeValue(app, fx.Target, fx.Value, minFx, row, col + 1, result, interpolate));
 			return result;
 		}
 

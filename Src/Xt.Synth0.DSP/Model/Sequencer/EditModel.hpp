@@ -12,8 +12,10 @@ struct XTS_ALIGN EditModel
   int32_t keys;
   int32_t rows;
   int32_t patterns;
+
   int32_t bpm;
   int32_t lpb;
+
   int32_t step;
   int32_t edit;
   int32_t octave;

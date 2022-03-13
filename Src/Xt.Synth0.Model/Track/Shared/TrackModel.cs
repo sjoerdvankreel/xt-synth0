@@ -7,7 +7,7 @@ namespace Xt.Synth0.Model
     public sealed class TrackModel : IGroupContainerModel
     {
         public event EventHandler ParamChanged;
-        public SeqModel Seq { get; } = new();
+        public SequencerModel Seq { get; } = new();
         public SynthModel Synth { get; } = new();
 
         public int Index => 0;

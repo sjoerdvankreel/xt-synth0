@@ -3,21 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public sealed class ControlModel : IUIModel
+	public unsafe sealed class SequencerModel : MainModel
 	{
-		public string Name => "Control";
-		public ThemeGroup ThemeGroup => ThemeGroup.Control;
-	}
-
-	public sealed class MonitorModel : IUIModel
-	{
-		public string Name => "Monitor";
-		public ThemeGroup ThemeGroup => ThemeGroup.Control;
-	}
-
-	public unsafe sealed class SeqModel : MainModel
-	{
-		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+        public override int Index => 0;
+        public override string Id => "2468A725-5A55-4305-A438-C3A70DD3054F";
+        public override IReadOnlyList<IParamGroupModel> Groups => new[] { Edit };
+        public override IReadOnlyList<IGroupContainerModel> Children => new[] { Pattern };
+        
+        [StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
 		{
 			internal EditModel.Native edit;
@@ -28,11 +21,6 @@ namespace Xt.Synth0.Model
 		public PatternModel Pattern { get; } = new();
 		public ControlModel Control { get; } = new();
 		public MonitorModel Monitor { get; } = new();
-
-		public override int Index => 0;
-		public override string Id => "2468A725-5A55-4305-A438-C3A70DD3054F";
-		public override IReadOnlyList<IParamGroupModel> Groups => new[] { Edit };
-		public override IReadOnlyList<IGroupContainerModel> Children => new[] { Pattern };
 
 		public void ToNative(Native* native) => ToNative(this, native);
 		void ToNative(IGroupContainerModel container, void* native)

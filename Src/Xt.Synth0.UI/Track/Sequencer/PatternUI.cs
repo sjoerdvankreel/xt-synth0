@@ -24,18 +24,18 @@ namespace Xt.Synth0.UI
 		internal const string EditHint = "Click + keyboard to edit";
 		internal const string InterpolateHint = "Ctrl + I to interpolate";
 
-		static void Fill(SeqModel seq, int pattern, int fx)
+		static void Fill(SequencerModel seq, int pattern, int fx)
 		{
 			var rows = seq.Pattern.Rows;
 			int rowCount = Model.Model.MaxRows;
 			int start = pattern * rowCount;
 			int end = start + rowCount - 1;
 			for (int i = start; i <= end; i++)
-				rows[i].Fx[fx].Tgt.Value = rows[start].Fx[fx].Tgt.Value;
+				rows[i].Fx[fx].Target.Value = rows[start].Fx[fx].Target.Value;
 		}
 
-		static void Interpolate(SeqModel seq,
-			int pattern, Func<PatternRow, Param> selector)
+		static void Interpolate(SequencerModel seq,
+			int pattern, Func<PatternRowModel, Param> selector)
 		{
 			var rows = seq.Pattern.Rows;
 			int rowCount = Model.Model.MaxRows;
@@ -69,7 +69,7 @@ namespace Xt.Synth0.UI
 		static BindingBase BindHeader(AppModel app)
 		{
 			var edit = app.Track.Seq.Edit;
-			var pats = Bind.To(edit.Pats);
+			var pats = Bind.To(edit.Patterns);
 			var active = Bind.To(edit.Edit);
 			var header = app.Track.Seq.Pattern.Name;
 			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
@@ -133,7 +133,7 @@ namespace Xt.Synth0.UI
 			return (Create.ThemedContent(result), highlighters);
 		}
 
-		static PatternRowElements AddRow(Grid grid, AppModel app, int pattern, PatternRow row, int r)
+		static PatternRowElements AddRow(Grid grid, AppModel app, int pattern, PatternRowModel row, int r)
 		{
 			var edit = app.Track.Seq.Edit;
 			int divCol = Model.Model.MaxKeys * 5;
@@ -144,21 +144,21 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static IList<PatternKeyElements> AddKeys(Grid grid, AppModel app, int pattern, PatternRow row, int r)
+		static IList<PatternKeyElements> AddKeys(Grid grid, AppModel app, int pattern, PatternRowModel row, int r)
 		{
 			var seq = app.Track.Seq;
 			var result = new List<PatternKeyElements>();
 			for (int k = 0; k < Model.Model.MaxKeys; k++)
 			{
 				int kLocal = k;
-				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Amp);
+				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Velocity);
 				result.Add(PatternKeyUI.Add(grid, app, row.Keys[k], k + 1, r, k * 5, interpolate));
 				grid.Add(Create.Divider(new(r, k * 5 + 4), seq.Edit.Keys, k + 2));
 			}
 			return result;
 		}
 
-		static IList<PatternFxElements> AddFx(Grid grid, AppModel app, int pattern, PatternRow row, int r)
+		static IList<PatternFxElements> AddFx(Grid grid, AppModel app, int pattern, PatternRowModel row, int r)
 		{
 			var seq = app.Track.Seq;
 			var result = new List<PatternFxElements>();
@@ -167,7 +167,7 @@ namespace Xt.Synth0.UI
 			{
 				int fLocal = f;
 				Action fill = () => Fill(seq, pattern, fLocal);
-				Action interpolate = () => Interpolate(seq, pattern, r => r.Fx[fLocal].Val);
+				Action interpolate = () => Interpolate(seq, pattern, r => r.Fx[fLocal].Value);
 				result.Add(PatternFxUI.Add(grid, app, row.Fx[f], f + 1, r, startCol + f * 3, fill, interpolate));
 				grid.Add(Create.Divider(new(r, startCol + f * 3 + 2), seq.Edit.Fxs, f + 2));
 			}

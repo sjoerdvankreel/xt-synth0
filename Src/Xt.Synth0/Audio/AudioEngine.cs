@@ -84,7 +84,7 @@ namespace Xt.Synth0
         IntPtr _nativeDSP;
         StreamModel _streamUI;
         IAudioStream _audioStream;
-        SeqModel.Native* _nativeSeq;
+        SequencerModel.Native* _nativeSeq;
         Native.SeqState* _nativeState;
         SynthModel.Native* _nativeSynth;
         ParamBinding.Native* _nativeBinding;
@@ -176,7 +176,7 @@ namespace Xt.Synth0
                 StopStream();
         }
 
-        internal void Start(SeqModel seq, StreamModel stream)
+        internal void Start(SequencerModel seq, StreamModel stream)
         {
             if (_streamUI != null && _streamUI != stream)
                 StopStream();
@@ -256,7 +256,7 @@ namespace Xt.Synth0
             }
         }
 
-        void StartStream(SeqModel seq)
+        void StartStream(SequencerModel seq)
         {
             try
             {

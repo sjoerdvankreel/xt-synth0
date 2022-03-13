@@ -280,10 +280,10 @@ namespace Xt.Synth0
 
         static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
 		{
-			var seq = new SeqModel();
+			var seq = new SequencerModel();
 			seq.Edit.Loop.Value = 0;
 			seq.Edit.Rows.Value = 1;
-			seq.Pattern.Rows[0].Keys[0].Oct.Value = e.Oct;
+			seq.Pattern.Rows[0].Keys[0].Octave.Value = e.Oct;
 			seq.Pattern.Rows[0].Keys[0].Note.Value = (int)e.Note;
 			_engine.Stop(false);
 			_engine.Start(seq, new StreamModel(false));

@@ -18,7 +18,7 @@ namespace Xt.Synth0
 			internal long pos;
 			internal float* buffer;
 			internal SynthModel.Native* synth;
-			internal SeqModel.Native* seq;
+			internal SequencerModel.Native* seq;
 		};
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -52,14 +52,14 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSeqDSPCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern SeqState* XtsSeqStateCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern PlotState* XtsPlotStateCreate();
-		[DllImport("XT.Synth0.DSP")] internal static extern SeqModel.Native* XtsSeqModelCreate();
+		[DllImport("XT.Synth0.DSP")] internal static extern SequencerModel.Native* XtsSeqModelCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern SynthModel.Native* XtsSynthModelCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern ParamBinding.Native* XtsParamBindingCreate(int count);
 
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPDestroy(IntPtr dsp);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqStateDestroy(SeqState* state);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotStateDestroy(PlotState* state);
-		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqModelDestroy(SeqModel.Native* model);
+		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqModelDestroy(SequencerModel.Native* model);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelDestroy(SynthModel.Native* model);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsParamBindingDestroy(ParamBinding.Native* binding);
 
@@ -68,6 +68,6 @@ namespace Xt.Synth0
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(
 			ParamInfo.Native* infos, int infoCount, SyncStepModel.Native* steps, int stepCount);
 		[DllImport("XT.Synth0.DSP")] internal static extern void XtsSeqDSPInit(
-			IntPtr dsp, SeqModel.Native* model, SynthModel.Native* synth, ParamBinding.Native* binding);
+			IntPtr dsp, SequencerModel.Native* model, SynthModel.Native* synth, ParamBinding.Native* binding);
 	}
 }
