@@ -13,25 +13,30 @@
 #define XTS_EXPORT extern "C" __declspec(dllexport)
 
 namespace Xts {
-class SequencerDSP;
 class PlotDSP;
-struct SequencerModel;
+class SequencerDSP;
+
 struct ParamInfo;
 struct SynthModel;
 struct ParamBinding;
 struct SyncStepModel;
+struct SequencerModel;
 } // namespace Xts
 
 struct XTS_ALIGN SequencerState
 {
-  int32_t row, voices;
-  int32_t clip, exhausted;
-  int32_t rate, frames;
-  int32_t end, pad__;
-  int64_t pos;
+  int32_t row;
+  int32_t rate;
+  int32_t frames;
+  int32_t voices;
+  XtsBool end;
+  XtsBool clip;
+  XtsBool exhausted;
+  int32_t pad__;
   float* buffer;
+  int64_t position;
   Xts::SynthModel* synth;
-  Xts::SequencerModel const* seq;
+  Xts::SequencerModel const* sequencer;
 };
 
 struct XTS_ALIGN PlotState

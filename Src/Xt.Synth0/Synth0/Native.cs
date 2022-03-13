@@ -11,15 +11,19 @@ namespace Xt.Synth0
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct SequencerState
 		{
-			internal int row, voices;
-			internal int clip, exhausted;
-			internal int rate, frames;
-			internal int end, pad__;
-			internal long pos;
-			internal float* buffer;
-			internal SynthModel.Native* synth;
-			internal SequencerModel.Native* seq;
-		};
+            internal int row;
+            internal int rate;
+            internal int frames;
+            internal int voices;
+            internal int end;
+            internal int clip;
+            internal int exhausted;
+            internal int pad__;
+            internal float* buffer;
+            internal long position;
+            internal SynthModel.Native* synth;
+            internal SequencerModel.Native* sequencer;
+        };
 
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct PlotState

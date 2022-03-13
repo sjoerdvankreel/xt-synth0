@@ -457,11 +457,11 @@ namespace Xt.Synth0
             state->rate = rate;
             state->buffer = _buffer;
             state->frames = buffer.frames;
-            state->seq = _nativeSeq;
+            state->sequencer = _nativeSeq;
             state->synth = _nativeSynth;
             Native.XtsSequencerDSPRender(_nativeDSP, state);
             EndAutomation();
-            long pos = _nativeState->pos;
+            long pos = _nativeState->position;
             CopyBuffer(in buffer, in format);
             ResetWarnings(rate, pos);
             _localStream.CurrentRow = _nativeState->row;
