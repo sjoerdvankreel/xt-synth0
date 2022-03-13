@@ -85,7 +85,7 @@ namespace Xt.Synth0
         StreamModel _streamUI;
         IAudioStream _audioStream;
         SequencerModel.Native* _nativeSeq;
-        Native.SeqState* _nativeState;
+        Native.SequencerState* _nativeState;
         SynthModel.Native* _nativeSynth;
         ParamBinding.Native* _nativeBinding;
 
@@ -135,8 +135,8 @@ namespace Xt.Synth0
             _copyStreamToUI = CopyStreamToUI;
             _automationValues = new int[_originalSynth.Params.Count];
 
-            _nativeDSP = Native.XtsSeqDSPCreate();
-            _nativeState = Native.XtsSeqStateCreate();
+            _nativeDSP = Native.XtsSequencerDSPCreate();
+            _nativeState = Native.XtsSequencerStateCreate();
             _nativeSynth = Native.XtsSynthModelCreate();
             _nativeBinding = Native.XtsParamBindingCreate(SynthConfig.ParamCount);
             _synth.BindVoice(_nativeSynth, _nativeBinding);
@@ -155,8 +155,8 @@ namespace Xt.Synth0
         {
             Reset();
             _platform.Dispose();
-            Native.XtsSeqDSPDestroy(_nativeDSP);
-            Native.XtsSeqStateDestroy(_nativeState);
+            Native.XtsSequencerDSPDestroy(_nativeDSP);
+            Native.XtsSequencerStateDestroy(_nativeState);
             Native.XtsSynthModelDestroy(_nativeSynth);
             Native.XtsParamBindingDestroy(_nativeBinding);
         }
@@ -228,7 +228,7 @@ namespace Xt.Synth0
 
             PauseStream();
 
-            Native.XtsSeqModelDestroy(_nativeSeq);
+            Native.XtsSequencerModelDestroy(_nativeSeq);
             _nativeSeq = null;
             _stopwatch.Reset();
 
@@ -275,9 +275,9 @@ namespace Xt.Synth0
                 _cpuUsageFrameCounts = new int[format.mix.rate];
                 _buffer = (float*)Marshal.AllocHGlobal(_audioStream.GetMaxBufferFrames() * sizeof(float) * 2);
                 UpdateStreamInfo(0, format.mix.rate, 0, false, false, 0);
-                _nativeSeq = Native.XtsSeqModelCreate();
+                _nativeSeq = Native.XtsSequencerModelCreate();
                 seq.ToNative(_nativeSeq);
-                Native.XtsSeqDSPInit(_nativeDSP, _nativeSeq, _nativeSynth, _nativeBinding);
+                Native.XtsSequencerDSPInit(_nativeDSP, _nativeSeq, _nativeSynth, _nativeBinding);
                 ResumeStream();
             }
             catch
@@ -459,7 +459,7 @@ namespace Xt.Synth0
             state->frames = buffer.frames;
             state->seq = _nativeSeq;
             state->synth = _nativeSynth;
-            Native.XtsSeqDSPRender(_nativeDSP, state);
+            Native.XtsSequencerDSPRender(_nativeDSP, state);
             EndAutomation();
             long pos = _nativeState->pos;
             CopyBuffer(in buffer, in format);
