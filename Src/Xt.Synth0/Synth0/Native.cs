@@ -28,30 +28,43 @@ namespace Xt.Synth0
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		internal ref struct PlotState
 		{
-            internal int spec;
+            internal float min;
+            internal float max;
+            internal float rate;
+            internal float frequency;
+
             internal int clip;
             internal int stereo;
-			internal float* lSamples;
-            internal float* rSamples;
-            internal float* vSplitVals;
-			internal int* hSplitVals;
-			internal int bpm, pixels;
-			internal float freq, rate, min, max;
-			internal ushort** vSplitMarkers;
-			internal ushort** hSplitMarkers;
-			internal int sampleCount, hSplitCount, vSplitCount;
-			internal SynthModel.Native* synth;
-			IntPtr lSampleData;
-            IntPtr rSampleData;
-            IntPtr vSplitValData;
-			IntPtr hSplitValData;
-			IntPtr vSplitData;
-			IntPtr hSplitData;
-			IntPtr vSplitMarkerData;
-			IntPtr hSplitMarkerData;
-			IntPtr fftData;
-			IntPtr fftScratch;
-		};
+            internal int spectrum;
+
+            internal int bpm;
+            internal int pixels;
+            internal int sampleCount;
+            internal int verticalCount;
+            internal int horizontalCount;
+
+            internal float* left;
+            internal float* right;
+            internal float* verticalValues;
+            internal ushort** verticalTexts;
+            internal int* horizontalValues;
+            internal ushort** horizontalTexts;
+
+            internal IntPtr leftData;
+            internal IntPtr rightData;
+
+            internal SynthModel.Native* synth;
+            internal IntPtr fft;
+            internal IntPtr scratch;
+
+            internal IntPtr verticalValueData;
+            internal IntPtr verticalTextData;
+            internal IntPtr verticalData;
+
+            internal IntPtr horizontalValueData;
+            internal IntPtr horizontalTextData;
+            internal IntPtr horizontalData;
+        };
 
 		[DllImport("XT.Synth0.DSP")] internal static extern IntPtr XtsSequencerDSPCreate();
 		[DllImport("XT.Synth0.DSP")] internal static extern SequencerState* XtsSequencerStateCreate();

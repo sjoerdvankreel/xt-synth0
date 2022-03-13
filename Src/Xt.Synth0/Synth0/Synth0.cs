@@ -248,34 +248,34 @@ namespace Xt.Synth0
 			_nativePlotState->pixels = e.Pixels;
 			_nativePlotState->synth = _nativePlotSynthModel;
 			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
-            _nativePlotState->spec = Model.Track.Synth.Plot.Spectrum.Value == 0? 0: 1;
+            _nativePlotState->spectrum = Model.Track.Synth.Plot.Spectrum.Value == 0? 0: 1;
             Model.Track.Synth.ToNative(_nativePlotBinding);
 			Native.XtsPlotDSPRender(_nativePlotState);
             e.Min = _nativePlotState->min;
             e.Max = _nativePlotState->max;
-            e.Freq = _nativePlotState->freq;
+            e.Freq = _nativePlotState->frequency;
 			e.Clip = _nativePlotState->clip != 0;
             e.SampleRate = _nativePlotState->rate;
             e.Stereo = _nativePlotState->stereo != 0;
-            e.Spectrum = _nativePlotState->spec != 0;
+            e.Spectrum = _nativePlotState->spectrum != 0;
             e.LSamples.Clear();
             for (int i = 0; i < _nativePlotState->sampleCount; i++)
-                e.LSamples.Add(_nativePlotState->lSamples[i]);
+                e.LSamples.Add(_nativePlotState->left[i]);
             e.RSamples.Clear();
             for (int i = 0; i < _nativePlotState->sampleCount; i++)
-                e.RSamples.Add(_nativePlotState->rSamples[i]);
+                e.RSamples.Add(_nativePlotState->right[i]);
             e.HSplitVals.Clear();
-			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
-				e.HSplitVals.Add(_nativePlotState->hSplitVals[i]);
+			for (int i = 0; i < _nativePlotState->horizontalCount; i++)
+				e.HSplitVals.Add(_nativePlotState->horizontalValues[i]);
             e.VSplitVals.Clear();
-            for (int i = 0; i < _nativePlotState->vSplitCount; i++)
-                e.VSplitVals.Add(_nativePlotState->vSplitVals[i]);
+            for (int i = 0; i < _nativePlotState->verticalCount; i++)
+                e.VSplitVals.Add(_nativePlotState->verticalValues[i]);
             e.HSplitMarkers.Clear();
-			for (int i = 0; i < _nativePlotState->hSplitCount; i++)
-				e.HSplitMarkers.Add(FromWideChar(_nativePlotState->hSplitMarkers[i]));
+			for (int i = 0; i < _nativePlotState->horizontalCount; i++)
+				e.HSplitMarkers.Add(FromWideChar(_nativePlotState->horizontalTexts[i]));
 			e.VSplitMarkers.Clear();
-			for (int i = 0; i < _nativePlotState->vSplitCount; i++)
-				e.VSplitMarkers.Add(FromWideChar(_nativePlotState->vSplitMarkers[i]));
+			for (int i = 0; i < _nativePlotState->verticalCount; i++)
+				e.VSplitMarkers.Add(FromWideChar(_nativePlotState->verticalTexts[i]));
         }
 
         static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)

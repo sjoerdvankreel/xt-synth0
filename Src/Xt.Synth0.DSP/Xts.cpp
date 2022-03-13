@@ -44,26 +44,26 @@ XtsSequencerDSPInit(Xts::SequencerDSP* dsp, Xts::SequencerModel const* model, Xt
 void XTS_CALL 
 XtsPlotStateDestroy(PlotState* state)
 {
-  delete state->fftData;
-  delete state->hSplitData;
-  delete state->vSplitData;
-  delete state->lSampleData;
-  delete state->rSampleData;
-  delete state->fftScratch;
-  delete state->hSplitValData;
-  delete state->vSplitValData;
-  delete state->hSplitMarkerData;
-  delete state->vSplitMarkerData;
-  state->fftData = nullptr;
-  state->hSplitData = nullptr;
-  state->vSplitData = nullptr;
-  state->lSampleData = nullptr;
-  state->rSampleData = nullptr;
-  state->fftScratch = nullptr;
-  state->hSplitValData = nullptr;
-  state->vSplitValData = nullptr;
-  state->hSplitMarkerData = nullptr;
-  state->vSplitMarkerData = nullptr;
+  delete state->fft;
+  delete state->horizontalData;
+  delete state->verticalData;
+  delete state->leftData;
+  delete state->rightData;
+  delete state->scratch;
+  delete state->horizontalValueData;
+  delete state->verticalValueData;
+  delete state->horizontalTextData;
+  delete state->verticalTextData;
+  state->fft = nullptr;
+  state->horizontalData = nullptr;
+  state->verticalData = nullptr;
+  state->leftData = nullptr;
+  state->rightData = nullptr;
+  state->scratch = nullptr;
+  state->horizontalValueData = nullptr;
+  state->verticalValueData = nullptr;
+  state->horizontalTextData = nullptr;
+  state->verticalTextData = nullptr;
   delete state;
 }
 
@@ -71,16 +71,16 @@ PlotState* XTS_CALL
 XtsPlotStateCreate(void)
 {
   auto result = new PlotState;
-  result->lSampleData = new std::vector<float>();
-  result->rSampleData = new std::vector<float>();
-  result->vSplitValData = new std::vector<float>();
-  result->hSplitValData = new std::vector<int32_t>();
-  result->vSplitData = new std::vector<Xts::VerticalMarker>();
-  result->hSplitData = new std::vector<Xts::HorizontalMarker>();
-  result->fftData = new std::vector<std::complex<float>>();
-  result->fftScratch = new std::vector<std::complex<float>>();
-  result->vSplitMarkerData = new std::vector<wchar_t const*>();
-  result->hSplitMarkerData = new std::vector<wchar_t const*>();
+  result->leftData = new std::vector<float>();
+  result->rightData = new std::vector<float>();
+  result->verticalValueData = new std::vector<float>();
+  result->horizontalValueData = new std::vector<int32_t>();
+  result->verticalData = new std::vector<Xts::VerticalMarker>();
+  result->horizontalData = new std::vector<Xts::HorizontalMarker>();
+  result->fft = new std::vector<std::complex<float>>();
+  result->scratch = new std::vector<std::complex<float>>();
+  result->verticalTextData = new std::vector<wchar_t const*>();
+  result->horizontalTextData = new std::vector<wchar_t const*>();
   return result;
 }
 
@@ -108,25 +108,25 @@ XtsPlotDSPRender(PlotState* state)
   Xts::PlotInput in = {};
   Xts::PlotOutput out = {};
 
-  state->fftData->clear();
-  state->hSplitData->clear();
-  state->vSplitData->clear();
-  state->fftScratch->clear();
-  state->lSampleData->clear();
-  state->rSampleData->clear();
-  state->hSplitValData->clear();
-  state->vSplitValData->clear();
-  state->hSplitMarkerData->clear();
-  state->vSplitMarkerData->clear();
+  state->fft->clear();
+  state->horizontalData->clear();
+  state->verticalData->clear();
+  state->scratch->clear();
+  state->leftData->clear();
+  state->rightData->clear();
+  state->horizontalValueData->clear();
+  state->verticalValueData->clear();
+  state->horizontalTextData->clear();
+  state->verticalTextData->clear();
 
-  out.fft = state->fftData;
-  out.horizontal = state->hSplitData;
-  out.vertical = state->vSplitData;
-  out.left = state->lSampleData;
-  out.right = state->rSampleData;
-  out.scratch = state->fftScratch;
+  out.fft = state->fft;
+  out.horizontal = state->horizontalData;
+  out.vertical = state->verticalData;
+  out.left = state->leftData;
+  out.right = state->rightData;
+  out.scratch = state->scratch;
   in.rate = state->rate;
-  in.spectrum = state->spec;
+  in.spectrum = state->spectrum;
   in.bpm = static_cast<float>(state->bpm);
   in.pixels = static_cast<float>(state->pixels);
   Xts::SynthPlotRender(*state->synth, in, out);
@@ -134,28 +134,28 @@ XtsPlotDSPRender(PlotState* state)
   state->min = out.min;
   state->max = out.max;
   state->clip = out.clip;
-  state->freq = out.frequency;
+  state->frequency = out.frequency;
   state->rate = out.rate;
-  state->spec = out.spectrum;
+  state->spectrum = out.spectrum;
   state->stereo = out.stereo != 0;
-  state->lSamples = state->lSampleData->data();
-  state->rSamples = state->rSampleData->data();
-  state->hSplitCount = static_cast<int32_t>(state->hSplitData->size());
-  state->vSplitCount = static_cast<int32_t>(state->vSplitData->size());
-  state->sampleCount = static_cast<int32_t>(state->lSampleData->size());
-  assert(state->sampleCount == state->rSampleData->size() || state->rSampleData->size() == 0);
-  for(size_t i = 0; i < state->hSplitData->size(); i++)
+  state->left = state->leftData->data();
+  state->right = state->rightData->data();
+  state->horizontalCount = static_cast<int32_t>(state->horizontalData->size());
+  state->verticalCount = static_cast<int32_t>(state->verticalData->size());
+  state->sampleCount = static_cast<int32_t>(state->leftData->size());
+  assert(state->sampleCount == state->rightData->size() || state->rightData->size() == 0);
+  for(size_t i = 0; i < state->horizontalData->size(); i++)
   {
-    state->hSplitValData->push_back((*state->hSplitData)[i].pos);
-    state->hSplitMarkerData->push_back((*state->hSplitData)[i].text.c_str());    
+    state->horizontalValueData->push_back((*state->horizontalData)[i].pos);
+    state->horizontalTextData->push_back((*state->horizontalData)[i].text.c_str());    
   }
-  for (size_t i = 0; i < state->vSplitData->size(); i++)
+  for (size_t i = 0; i < state->verticalData->size(); i++)
   {
-    state->vSplitValData->push_back((*state->vSplitData)[i].pos);
-    state->vSplitMarkerData->push_back((*state->vSplitData)[i].text.c_str());
+    state->verticalValueData->push_back((*state->verticalData)[i].pos);
+    state->verticalTextData->push_back((*state->verticalData)[i].text.c_str());
   }
-  state->hSplitVals = state->hSplitValData->data();
-  state->vSplitVals = state->vSplitValData->data();
-  state->hSplitMarkers = state->hSplitMarkerData->data();
-  state->vSplitMarkers = state->vSplitMarkerData->data();
+  state->horizontalValues = state->horizontalValueData->data();
+  state->verticalValues = state->verticalValueData->data();
+  state->horizontalTexts = state->horizontalTextData->data();
+  state->verticalTexts = state->verticalTextData->data();
 }

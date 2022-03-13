@@ -41,32 +41,42 @@ struct XTS_ALIGN SequencerState
 
 struct XTS_ALIGN PlotState
 {
-  XtsBool spec;
+  float min;
+  float max;
+  float rate;
+  float frequency;
+
   XtsBool clip;
   XtsBool stereo;
-  float* lSamples;
-  float* rSamples;
-  float* vSplitVals;
-  int32_t* hSplitVals;
-  int32_t bpm, pixels;
-  float freq, rate, min, max;
-  wchar_t const** vSplitMarkers;
-  wchar_t const** hSplitMarkers;
-  int32_t sampleCount, hSplitCount, vSplitCount;
+  XtsBool spectrum;
+
+  int32_t bpm;
+  int32_t pixels;
+  int32_t sampleCount;
+  int32_t verticalCount;
+  int32_t horizontalCount;
+
+  float* left;
+  float* right;
+  float* verticalValues;
+  wchar_t const** verticalTexts;
+  int32_t* horizontalValues;
+  wchar_t const** horizontalTexts;
+
+  std::vector<float>* leftData;
+  std::vector<float>* rightData;
+
   Xts::SynthModel const* synth;
-  std::vector<float>* lSampleData;
-  std::vector<float>* rSampleData;
-  std::vector<float>* vSplitValData;
-  std::vector<int32_t>* hSplitValData;
-  std::vector<Xts::VerticalMarker>* vSplitData;
-  std::vector<Xts::HorizontalMarker>* hSplitData;
-  std::vector<wchar_t const*>* vSplitMarkerData;
-  std::vector<wchar_t const*>* hSplitMarkerData;
-  std::vector<std::complex<float>>* fftData;
-  std::vector<std::complex<float>>* fftScratch;
-public:
-  PlotState() = default;
-  PlotState(PlotState const&) = delete;
+  std::vector<std::complex<float>>* fft;
+  std::vector<std::complex<float>>* scratch;
+
+  std::vector<float>* verticalValueData;
+  std::vector<wchar_t const*>* verticalTextData;
+  std::vector<Xts::VerticalMarker>* verticalData;
+
+  std::vector<int32_t>* horizontalValueData;
+  std::vector<wchar_t const*>* horizontalTextData;
+  std::vector<Xts::HorizontalMarker>* horizontalData;
 };
 
 XTS_EXPORT SequencerState* XTS_CALL XtsSequencerStateCreate(void);
