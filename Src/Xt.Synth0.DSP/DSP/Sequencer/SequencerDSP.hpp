@@ -53,7 +53,6 @@ private:
   SynthModel _synths[MaxVoices];
 private:
   void Automate();
-  void ApplyActive();
   int Take(int key, int voice);
   void Return(int key, int voice);
   int Take(int key, bool& exhausted);

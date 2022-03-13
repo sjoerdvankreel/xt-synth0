@@ -2,21 +2,11 @@
 #include <DSP/Shared/Utility.hpp>
 #include <Model/Shared/ParamInfo.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
+
 #include <cassert>
 #include <algorithm>
 
 namespace Xts {
-
-void
-SequencerDSP::ApplyActive()
-{
-  // TODO cant copy over running voices, screws up internal state
-  /*
-  for (int k = 0; k < MaxKeys; k++)
-    if (_active[k] != -1)
-      _synths[_active[k]] = *_synth;
-  */
-}
 
 void
 SequencerDSP::Return(int key, int voice)
@@ -50,7 +40,6 @@ SequencerDSP::Next(SequencerInput const& input, bool& exhausted)
   {
     Automate();
     exhausted = Trigger(input);
-    ApplyActive();
   } else if(move == SequencerMove::End)
   {
     for(int k = 0; k < XTS_SEQUENCER_MAX_KEYS; k++)
@@ -86,7 +75,6 @@ SequencerDSP::Automate()
 void
 SequencerDSP::Render(SequencerInput const& input, SequencerOutput& output)
 {
-  ApplyActive();
   bool exhausted;
   output.clip = false;
   output.exhausted = false;
