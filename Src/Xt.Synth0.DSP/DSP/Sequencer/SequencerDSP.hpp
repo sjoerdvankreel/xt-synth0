@@ -10,7 +10,13 @@
 namespace Xts {
 
 constexpr int MaxVoices = 128;
-enum class MoveType { None, Next, End };
+
+enum class SequencerMove
+{ 
+  None, 
+  Next, 
+  End 
+};
 
 struct SequencerInput
 {
@@ -52,7 +58,7 @@ private:
   void Return(int key, int voice);
   int Take(int key, bool& exhausted);
   bool Trigger(SequencerInput const& input);
-  MoveType Move(SequencerInput const& input);
+  SequencerMove Move(SequencerInput const& input);
   FloatSample Next(SequencerInput const& input, bool& exhausted);
 public:
   bool End() const { return _endAudio; }

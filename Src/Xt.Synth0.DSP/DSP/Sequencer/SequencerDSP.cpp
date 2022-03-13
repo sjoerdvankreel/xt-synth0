@@ -45,13 +45,13 @@ FloatSample
 SequencerDSP::Next(SequencerInput const& input, bool& exhausted)
 {
   exhausted = false;
-  MoveType type = Move(input);
-  if (type == MoveType::Next)
+  SequencerMove move = Move(input);
+  if (move == SequencerMove::Next)
   {
     Automate();
     exhausted = Trigger(input);
     ApplyActive();
-  } else if(type == MoveType::End)
+  } else if(move == SequencerMove::End)
   {
     for(int k = 0; k < XTS_SEQUENCER_MAX_KEYS; k++)
       if (_active[k] != -1)
@@ -103,19 +103,19 @@ SequencerDSP::Render(SequencerInput const& input, SequencerOutput& output)
   output.voices = _voices;
 }
 
-MoveType
+SequencerMove
 SequencerDSP::Move(SequencerInput const& input)
 {
-  if (_endPattern) return MoveType::None;
+  if (_endPattern) return SequencerMove::None;
   int current = _row;
   int bpm = _model->edit.bpm;
   int lpb = _model->edit.lpb;
   int pats = _model->edit.patterns;
   int rows = _model->edit.rows;
   int loop = _model->edit.loop;
-  if (_row == -1) return _row = 0, MoveType::Next;
+  if (_row == -1) return _row = 0, SequencerMove::Next;
   _fill += bpm * lpb / (60.0 * input.rate);
-  if (_fill < 1.0) return MoveType::None;
+  if (_fill < 1.0) return SequencerMove::None;
   _fill = 0.0f;
   _row++;
   if (_row % XTS_SEQUENCER_MAX_ROWS == rows) 
@@ -125,8 +125,8 @@ SequencerDSP::Move(SequencerInput const& input)
   }
   if (_row == pats * XTS_SEQUENCER_MAX_ROWS)
     if (loop) _row = 0;
-    else return _row = current, _endPattern = true, MoveType::End;
-  return MoveType::Next;
+    else return _row = current, _endPattern = true, SequencerMove::End;
+  return SequencerMove::Next;
 }
 
 void
