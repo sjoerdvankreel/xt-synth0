@@ -133,7 +133,7 @@ SequencerDSP::Take(int key, bool& exhausted)
   for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++)
   {
     if (_started[i] == -1) return Take(key, i);
-    if (_started[i] < victimStart)victimStart = _started[victim = i];
+    if (_started[i] < victimStart) victimStart = _started[victim = i];
   }
   exhausted = true;
   _keys[victim] = key;
