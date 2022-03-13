@@ -9,8 +9,6 @@
 
 namespace Xts {
 
-constexpr int MaxVoices = 128;
-
 enum class SequencerMove
 { 
   None, 
@@ -46,11 +44,11 @@ class SequencerDSP
   SynthModel const* _synth;
   ParamBinding const* _binding;
 private:
-  int _keys[MaxVoices];
+  int _keys[XTS_SEQUENCER_MAX_VOICES];
   int _active[XTS_SEQUENCER_MAX_KEYS];
-  SynthDSP _dsps[MaxVoices];
-  int64_t _started[MaxVoices];
-  SynthModel _synths[MaxVoices];
+  SynthDSP _dsps[XTS_SEQUENCER_MAX_VOICES];
+  int64_t _started[XTS_SEQUENCER_MAX_VOICES];
+  SynthModel _synths[XTS_SEQUENCER_MAX_VOICES];
 private:
   void Automate();
   int Take(int key, int voice);

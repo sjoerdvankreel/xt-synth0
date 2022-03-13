@@ -16,8 +16,8 @@ SequencerDSP::Return(int key, int voice)
   _started[voice] = -1;
   _endAudio = _voices == 0 && _endPattern;
   assert(0 <= key && key < XTS_SEQUENCER_MAX_KEYS);
-  assert(0 <= voice && voice < MaxVoices);
-  assert(0 <= _voices && _voices < MaxVoices);
+  assert(0 <= voice && voice < XTS_SEQUENCER_MAX_VOICES);
+  assert(0 <= _voices && _voices < XTS_SEQUENCER_MAX_VOICES);
 }
 
 int
@@ -27,7 +27,7 @@ SequencerDSP::Take(int key, int voice)
   _keys[voice] = key;
   _active[key] = voice;
   _started[voice] = _pos;
-  assert(0 <= _voices && _voices <= MaxVoices);
+  assert(0 <= _voices && _voices <= XTS_SEQUENCER_MAX_VOICES);
   return voice;
 }
 
@@ -47,7 +47,7 @@ SequencerDSP::Next(SequencerInput const& input, bool& exhausted)
         _dsps[_active[k]].Release();
   }
   FloatSample result = { 0 };
-  for (int v = 0; v < MaxVoices; v++)
+  for (int v = 0; v < XTS_SEQUENCER_MAX_VOICES; v++)
   {
     if (_keys[v] == -1) continue;
     _dsps[v].Next();
@@ -131,7 +131,7 @@ SequencerDSP::Init(SequencerModel const* model, SynthModel const* synth, ParamBi
   _endPattern = false;
   for(int i = 0; i < XTS_SEQUENCER_MAX_KEYS; i++)
     _active[i] = -1;
-  for (int i = 0; i < MaxVoices; i++)
+  for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++)
     _started[i] = _keys[i] = -1;
 }
 
@@ -143,7 +143,7 @@ SequencerDSP::Take(int key, bool& exhausted)
   exhausted = false;
   assert(0 <= key && key < XTS_SEQUENCER_MAX_KEYS);
   int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
-  for (int i = 0; i < MaxVoices; i++)
+  for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++)
   {
     if (_started[i] == -1) return Take(key, i);
     if (_started[i] < victimStart)	victimStart = _started[victim = i];
@@ -152,8 +152,8 @@ SequencerDSP::Take(int key, bool& exhausted)
   _keys[victim] = key;
   _active[key] = victim;
   _started[victim] = _pos;
-  assert(0 <= victim && victim < MaxVoices);
-  assert(0 <= _voices && _voices <= MaxVoices);
+  assert(0 <= victim && victim < XTS_SEQUENCER_MAX_VOICES);
+  assert(0 <= _voices && _voices <= XTS_SEQUENCER_MAX_VOICES);
   return victim;
 }
 
@@ -166,7 +166,7 @@ SequencerDSP::Trigger(SequencerInput const& input)
   {
     auto const& key = _model->pattern.rows[_row].keys[k];
     if (key.note >= PatternNote::Off)
-      for (int v = 0; v < MaxVoices; v++)
+      for (int v = 0; v < XTS_SEQUENCER_MAX_VOICES; v++)
         if (_keys[v] == k) _dsps[v].Release();
     if (key.note >= PatternNote::C)
     {
