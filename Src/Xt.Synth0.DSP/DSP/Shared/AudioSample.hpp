@@ -2,6 +2,7 @@
 #define XTS_DSP_SHARED_AUDIO_SAMPLE_HPP
 
 #include <DSP/Shared/Utility.hpp>
+
 #include <cmath>
 #include <cassert>
 

@@ -1,14 +1,14 @@
 #ifndef XTS_DSP_SYNTH_AMP_DSP_HPP
 #define XTS_DSP_SYNTH_AMP_DSP_HPP
 
-#include <DSP/Shared/Plot.hpp>
-#include <DSP/Shared/AudioSample.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
-#include <Model/Synth/SynthConfig.hpp>
+#include <DSP/Shared/Plot.hpp>
+#include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/AmpModel.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 
 namespace Xts {
 

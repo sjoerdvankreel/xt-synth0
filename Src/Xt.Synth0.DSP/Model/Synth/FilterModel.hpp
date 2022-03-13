@@ -1,8 +1,8 @@
 #ifndef XTS_MODEL_SYNTH_FILTER_MODEL_HPP
 #define XTS_MODEL_SYNTH_FILTER_MODEL_HPP
 
-#include <Model/Synth/SynthConfig.hpp>
 #include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 
 namespace Xts {
 

@@ -2,8 +2,8 @@
 #define XTS_MODEL_SYNTH_AUDIO_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
-#include <Model/Synth/SynthConfig.hpp>
 #include <Model/Synth/UnitModel.hpp>
+#include <Model/Synth/SynthConfig.hpp>
 #include <Model/Synth/FilterModel.hpp>
 
 namespace Xts {

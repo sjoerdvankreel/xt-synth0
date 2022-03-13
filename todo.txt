@@ -33,4 +33,4 @@ sin+cos env slopes?
 thread processor core affinity
 dont use CAS queue on audio thread
 rewrite to not use begininvoke on audio thread, make another queue
-model/shared, dsp/shared
+spec with hz for lfo
