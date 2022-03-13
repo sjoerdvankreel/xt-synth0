@@ -87,15 +87,15 @@ XtsPlotStateCreate(void)
 void XTS_CALL
 XtsSequencerDSPRender(Xts::SequencerDSP* dsp, SequencerState* state)
 {
-  Xts::SeqInput in;
+  Xts::SequencerInput in;
   in.buffer = state->buffer;
   in.frames = state->frames;
   in.rate = static_cast<float>(state->rate);
 
-  Xts::SeqOutput out;
+  Xts::SequencerOutput out;
   dsp->Render(in, out);
   state->end = dsp->End();
-  state->pos = out.pos;
+  state->pos = out.position;
   state->row = out.row;
   state->clip = out.clip;
   state->voices = out.voices;

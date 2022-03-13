@@ -42,7 +42,7 @@ SequencerDSP::Take(int key, int voice)
 }
 
 FloatSample
-SequencerDSP::Next(SeqInput const& input, bool& exhausted)
+SequencerDSP::Next(SequencerInput const& input, bool& exhausted)
 {
   exhausted = false;
   MoveType type = Move(input);
@@ -84,7 +84,7 @@ SequencerDSP::Automate()
 }
 
 void
-SequencerDSP::Render(SeqInput const& input, SeqOutput& output)
+SequencerDSP::Render(SequencerInput const& input, SequencerOutput& output)
 {
   ApplyActive();
   bool exhausted;
@@ -98,13 +98,13 @@ SequencerDSP::Render(SeqInput const& input, SeqOutput& output)
     input.buffer[f * 2 + 1] = Clip(out.right, output.clip);
     _pos++;
   }
-  output.pos = _pos;
+  output.position = _pos;
   output.row = _row;
   output.voices = _voices;
 }
 
 MoveType
-SequencerDSP::Move(SeqInput const& input)
+SequencerDSP::Move(SequencerInput const& input)
 {
   if (_endPattern) return MoveType::None;
   int current = _row;
@@ -170,7 +170,7 @@ SequencerDSP::Take(int key, bool& exhausted)
 }
 
 bool
-SequencerDSP::Trigger(SeqInput const& input)
+SequencerDSP::Trigger(SequencerInput const& input)
 {
   bool result = false;
   bool exhausted = false;

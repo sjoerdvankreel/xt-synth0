@@ -12,18 +12,20 @@ namespace Xts {
 constexpr int MaxVoices = 128;
 enum class MoveType { None, Next, End };
 
-struct SeqInput
+struct SequencerInput
 {
   int frames;
   float rate;
   float* buffer;
 };
 
-struct SeqOutput
+struct SequencerOutput
 {
-  int64_t pos;
-  int row, voices;
-  bool clip, exhausted;
+  int row;
+  int voices;
+  bool clip;
+  bool exhausted;
+  int64_t position;
 };
 
 class SequencerDSP
@@ -49,12 +51,12 @@ private:
   int Take(int key, int voice);
   void Return(int key, int voice);
   int Take(int key, bool& exhausted);
-  bool Trigger(SeqInput const& input);
-  MoveType Move(SeqInput const& input);
-  FloatSample Next(SeqInput const& input, bool& exhausted);
+  bool Trigger(SequencerInput const& input);
+  MoveType Move(SequencerInput const& input);
+  FloatSample Next(SequencerInput const& input, bool& exhausted);
 public:
   bool End() const { return _endAudio; }
-  void Render(SeqInput const& input, SeqOutput& output);
+  void Render(SequencerInput const& input, SequencerOutput& output);
   void Init(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding);
 };
 
