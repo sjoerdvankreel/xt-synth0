@@ -9,29 +9,41 @@
 
 namespace Xts {
 
-struct XTS_ALIGN SequencerOutput
+struct SequencerInput
 {
-  int32_t row;
-  int32_t voices;
-  XtsBool end;
-  XtsBool clip;
-  XtsBool exhausted;
-  int32_t pad__;
+  int frames;
+  float rate;
   float* buffer;
+};
+
+struct SequencerOutput
+{
+  int row;
+  int voices;
+  bool end;
+  bool clip;
+  bool exhausted;
   int64_t position;
 };
-XTS_CHECK_SIZE(SequencerOutput, 40);
 
-enum class SequencerMove { None, Next, End };
+enum class SequencerMove
+{
+  None,
+  Next,
+  End
+};
 
 class SequencerDSP
 {
+  int _row = -1;
+  int _voices = 0;
   double _fill = 0.0;
-  SequencerOutput _output;
+  int64_t _position = 0;
+  bool _endAudio = false;
   bool _endPattern = false;
   SynthModel const* _synth;
-  ParamBinding const* _binding;
   SequencerModel const* _model;
+  ParamBinding const* _binding;
 private:
   int _keys[XTS_SEQUENCER_MAX_VOICES];
   int _active[XTS_SEQUENCER_MAX_KEYS];
@@ -40,18 +52,15 @@ private:
   SynthModel _synths[XTS_SEQUENCER_MAX_VOICES];
 private:
   void Automate();
-  int Take(int key);
-  bool Trigger(float rate);
   int Take(int key, int voice);
-  FloatSample Next(float rate);
-  SequencerMove Move(float rate);
   void Return(int key, int voice);
+  int Take(int key, bool& exhausted);
+  bool Trigger(SequencerInput const& input);
+  SequencerMove Move(SequencerInput const& input);
+  FloatSample Next(SequencerInput const& input, bool& exhausted);
 public:
-  SequencerOutput const* Render(int32_t frames, float rate);
-public:
-  SequencerDSP() = default;
-  ~SequencerDSP() { delete[] _output.buffer; }
-  SequencerDSP(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding, size_t frames);
+  void Render(SequencerInput const& input, SequencerOutput& output);
+  void Init(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding);
 };
 
 } // namespace Xts
