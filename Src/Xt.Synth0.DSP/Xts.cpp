@@ -30,12 +30,13 @@ XtsParamBindingDestroy(Xts::ParamBinding* binding)
   delete binding;
 }
 
-void XTS_CALL
-XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount)
-{ 
-  Xts::SynthModel::Init(infos, infoCount);
-  Xts::SyncStepModel::Init(steps, static_cast<size_t>(stepCount));
-}
+void XTS_CALL 
+XtsSynthModelInit(Xts::ParamInfo* params, int32_t count)
+{ Xts::SynthModel::Init(params, static_cast<size_t>(count)); }
+
+void XTS_CALL 
+XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
+{ Xts::SyncStepModel::Init(steps, static_cast<size_t>(count)); }
 
 void XTS_CALL
 XtsSequencerDSPInit(Xts::SequencerDSP* dsp, Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding)

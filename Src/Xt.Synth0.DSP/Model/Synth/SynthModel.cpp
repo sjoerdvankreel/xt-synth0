@@ -12,7 +12,7 @@ SynthModel::Params()
 { return _params.data(); }
 
 void 
-SynthModel::Init(ParamInfo* params, int32_t count)
-{ _params.insert(_params.begin(), params, params + static_cast<size_t>(count)); }
+SynthModel::Init(ParamInfo* params, size_t count)
+{ _params.insert(_params.begin(), params, params + count); }
 
 } // namespace Xts

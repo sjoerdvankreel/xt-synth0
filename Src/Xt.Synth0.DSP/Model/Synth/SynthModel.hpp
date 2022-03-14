@@ -19,7 +19,7 @@ struct XTS_ALIGN SynthModel
   AudioModel audio;
 public:
   static ParamInfo const* Params();
-  static void Init(ParamInfo* params, int32_t count);
+  static void Init(ParamInfo* params, size_t count);
 };
 XTS_CHECK_SIZE(SynthModel, 936);
 

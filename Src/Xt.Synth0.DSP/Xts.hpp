@@ -94,8 +94,9 @@ XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model);
 XTS_EXPORT void XTS_CALL XtsParamBindingDestroy(Xts::ParamBinding* binding);
 
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(PlotState* state);
+XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* params, int32_t count);
+XTS_EXPORT void XTS_CALL XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count);
 XTS_EXPORT void XTS_CALL XtsSequencerDSPRender(Xts::SequencerDSP* dsp, SequencerState* state);
-XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* infos, int32_t infoCount, Xts::SyncStepModel* steps, int32_t stepCount);
 XTS_EXPORT void XTS_CALL XtsSequencerDSPInit(Xts::SequencerDSP* dsp, Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding);
 
 #endif // XTS_HPP

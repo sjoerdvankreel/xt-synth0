@@ -33,9 +33,10 @@ namespace Xt.Synth0
                 _audioUpdateTimer.Start();
                 Xt.Synth0.Model.Model.MainThreadId = Thread.CurrentThread.ManagedThreadId;
 				var infos = Model.Track.Synth.ParamInfos();
-				fixed (SyncStepModel.Native* steps = SyncStepModel.Steps)
-				fixed (ParamInfo.Native* pis = infos)
-					Native.XtsSynthModelInit(pis, infos.Length, steps, SyncStepModel.Steps.Length);
+                fixed (SyncStepModel.Native* steps = SyncStepModel.Steps)
+                    Native.XtsSyncStepModelInit(steps, SyncStepModel.Steps.Length);
+				fixed (ParamInfo.Native* @params = infos)
+					Native.XtsSynthModelInit(@params, infos.Length);
 				_nativePlotState = Native.XtsPlotStateCreate();
 				_nativePlotSynthModel = Native.XtsSynthModelCreate();
                 _nativePlotBinding = Native.XtsParamBindingCreate(SynthConfig.ParamCount);
