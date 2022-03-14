@@ -5,13 +5,15 @@
 #include <Model/Sequencer/SequencerModel.hpp>
 
 void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }
-void XTS_CALL XtsSequencerStateDestroy(SequencerState* state) { delete state; }
 void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* model) { delete model; }
 void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
 
-SequencerState* XTS_CALL XtsSequencerStateCreate(void) { return new SequencerState; }
 Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void) { return new Xts::SequencerDSP; }
-Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
+
+Xts::SequencerDSP* XTS_CALL
+XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames)
+{ return new Xts::SequencerDSP(model, synth, binding, frames); }
+
 Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
 
 Xts::ParamBinding* XTS_CALL 
@@ -25,7 +27,7 @@ XtsParamBindingCreate(int32_t count)
 void XTS_CALL 
 XtsParamBindingDestroy(Xts::ParamBinding* binding) 
 { 
-  delete binding->params; 
+  delete[] binding->params; 
   binding->params = nullptr;
   delete binding;
 }
@@ -37,10 +39,6 @@ XtsSynthModelInit(Xts::ParamInfo* params, int32_t count)
 void XTS_CALL 
 XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 { Xts::SyncStepModel::Init(steps, static_cast<size_t>(count)); }
-
-void XTS_CALL
-XtsSequencerDSPInit(Xts::SequencerDSP* dsp, Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding)
-{ dsp->Init(model, synth, binding); }
 
 void XTS_CALL 
 XtsPlotStateDestroy(PlotState* state)
@@ -85,23 +83,9 @@ XtsPlotStateCreate(void)
   return result;
 }
 
-void XTS_CALL
-XtsSequencerDSPRender(Xts::SequencerDSP* dsp, SequencerState* state)
-{
-  Xts::SequencerInput in;
-  in.buffer = state->buffer;
-  in.frames = state->frames;
-  in.rate = static_cast<float>(state->rate);
-
-  Xts::SequencerOutput out;
-  dsp->Render(in, out);
-  state->end = out.end;
-  state->row = out.row;
-  state->clip = out.clip;
-  state->voices = out.voices;
-  state->position = out.position;
-  state->exhausted = out.exhausted;
-}
+Xts::SequencerOutput const* XTS_CALL
+XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate)
+{ return dsp->Render(frames, rate); }
 
 void XTS_CALL 
 XtsPlotDSPRender(PlotState* state)
