@@ -95,11 +95,11 @@ XtsSequencerDSPRender(Xts::SequencerDSP* dsp, SequencerState* state)
 
   Xts::SequencerOutput out;
   dsp->Render(in, out);
-  state->end = dsp->End();
-  state->position = out.position;
+  state->end = out.end;
   state->row = out.row;
   state->clip = out.clip;
   state->voices = out.voices;
+  state->position = out.position;
   state->exhausted = out.exhausted;
 }
 

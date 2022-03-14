@@ -20,6 +20,7 @@ struct SequencerOutput
 {
   int row;
   int voices;
+  bool end;
   bool clip;
   bool exhausted;
   int64_t position;
@@ -58,7 +59,6 @@ private:
   SequencerMove Move(SequencerInput const& input);
   FloatSample Next(SequencerInput const& input, bool& exhausted);
 public:
-  bool End() const { return _endAudio; }
   void Render(SequencerInput const& input, SequencerOutput& output);
   void Init(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding);
 };

@@ -83,6 +83,7 @@ SequencerDSP::Render(SequencerInput const& input, SequencerOutput& output)
     _position++;
   }
   output.row = _row;
+  output.end = _endAudio;
   output.voices = _voices;
   output.position = _position;
 }
