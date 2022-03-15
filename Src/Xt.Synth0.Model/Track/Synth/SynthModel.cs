@@ -74,7 +74,7 @@ namespace Xt.Synth0.Model
 
         public void BindVoice(Native* native, ParamBinding.Native* binding)
 		{
-			var @params = (int**)binding->@params;
+			var @params = binding->@params;
 			for (int p = 0; p < Params.Count; p++)
 				@params[p] = Params[p].Info.Address(SynthParams[p].Group.Address(native));
 		}
