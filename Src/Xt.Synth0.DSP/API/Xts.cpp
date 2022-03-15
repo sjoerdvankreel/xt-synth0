@@ -47,8 +47,8 @@ Xts::SequencerOutput const* XTS_CALL
 XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate)
 { return dsp->Render(frames, rate); }
 Xts::SequencerDSP* XTS_CALL
-XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames)
-{ return new Xts::SequencerDSP(model, synth, binding, frames); }
+XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, int32_t frames)
+{ return new Xts::SequencerDSP(model, synth, binding, static_cast<size_t>(frames)); }
 
 void XTS_CALL 
 XtsPlotStateDestroy(PlotState* state)

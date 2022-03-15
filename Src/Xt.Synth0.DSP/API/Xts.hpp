@@ -94,6 +94,6 @@ XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp);
 XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate);
 XTS_EXPORT Xts::SequencerDSP* XTS_CALL
-XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames);
+XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, int32_t frames);
 
 #endif // XTS_API_XTS_HPP
