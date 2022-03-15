@@ -82,12 +82,12 @@ struct XTS_ALIGN PlotData
 
 struct XTS_ALIGN PlotScratch
 {
-  std::vector<std::complex<float>> fft;
-  std::vector<std::complex<float>> scratch; 
   std::vector<float> verticalPositions;
   std::vector<int32_t> horizontalPositions;
   std::vector<wchar_t const*> verticalTexts;
   std::vector<wchar_t const*> horizontalTexts;
+  std::vector<std::complex<float>> fft;
+  std::vector<std::complex<float>> fftScratch;
 };
 
 struct XTS_ALIGN PlotState

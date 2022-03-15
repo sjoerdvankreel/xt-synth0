@@ -109,20 +109,20 @@ Spectrum(std::vector<float>& x, ComplexVector& fft, ComplexVector& scratch, floa
 }
 
 void
-TransformToSpectrum(PlotOutput& output)
+TransformToSpectrum(PlotOutput& output, PlotData& data, PlotScratch& scratch)
 {
   output.min = 0.0f;
   output.max = 1.0f;
-  if (output.left->empty()) return;
-  output.left->resize(NextPowerOf2(output.left->size()));
-  assert(output.left->size() >= static_cast<size_t>(output.rate));
-  Spectrum(*output.left, *output.fft, *output.scratch, output.rate);
-  MonoMarkers(*output.vertical);
-  HorizontalMarkers(*output.horizontal);
+  if (data.left.empty()) return;
+  data.left.resize(NextPowerOf2(data.left.size()));
+  assert(data.left.size() >= static_cast<size_t>(output.rate));
+  Spectrum(data.left, scratch.fft, scratch.fftScratch, output.rate);
+  MonoMarkers(data.vertical);
+  HorizontalMarkers(data.horizontal);
   if (!output.stereo) return;
-  StereoMarkers(*output.vertical);
-  output.right->resize(NextPowerOf2(output.right->size()));
-  Spectrum(*output.right, *output.fft, *output.scratch, output.rate);
+  StereoMarkers(data.vertical);
+  data.right.resize(NextPowerOf2(data.right.size()));
+  Spectrum(data.right, scratch.fft, scratch.fftScratch, output.rate);
 }
 
 } // namespace Xts
