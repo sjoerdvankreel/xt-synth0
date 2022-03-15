@@ -6,7 +6,6 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Synth/FilterPlot.hpp>
 #include <DSP/Shared/Utility.hpp>
-#include <DSP/Shared/Spectrum.hpp>
 
 namespace Xts {
 
@@ -23,8 +22,6 @@ SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotOutput& out
   case PlotType::Filter1: case PlotType::Filter2: case PlotType::Filter3: FilterPlot::Render(model, input, output); break;
   default: assert(false); break;
   }    
-  assert(output.rate <= input.rate);
-  if(output.spectrum) TransformToSpectrum(output);
 }
 
 } // namespace Xts

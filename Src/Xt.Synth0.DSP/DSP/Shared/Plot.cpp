@@ -1,7 +1,9 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/Param.hpp>
+#include <DSP/Shared/Spectrum.hpp>
 #include <DSP/Shared/EnvSample.hpp>
 
+#include <cassert>
 #include <cassert>
 #include <iomanip>
 #include <sstream>
@@ -84,14 +86,14 @@ MarkVertical(float val, float max)
 }
 
 static void
-ApplyAutoRange(PlotOutput& output, float max)
+ApplyAutoRange(PlotData& data, float max)
 {
-  for (size_t i = 0; i < output.left->size(); i++) (*output.left)[i] /= max;
-  *output.vertical = MakeBipolarMarkers(max);
+  for (size_t i = 0; i < data.left.size(); i++) data.left[i] /= max;
+  data.vertical = MakeBipolarMarkers(max);
 }
 
 static void
-InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output)
+InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output, PlotData& data)
 {
   auto params = plot->Params();
   output.max = 1.0f;
@@ -101,13 +103,13 @@ InitPeriodic(PeriodicPlot* plot, PlotInput const& input, PlotOutput& output)
   output.spectrum = input.spectrum;
   output.min = params.bipolar ? -1.0f : 0.0f;
   output.frequency = plot->Frequency(input.bpm, input.rate);
-  *(output.vertical) = params.bipolar ? BipolarMarkers : UnipolarMarkers;
+  data.vertical = params.bipolar ? BipolarMarkers : UnipolarMarkers;
   if(input.spectrum || !params.allowResample) return;
   output.rate = std::min(input.rate, output.frequency * input.pixels / params.periods);
 }
 
 static void
-InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& output)
+InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& output, PlotData& data)
 {
   auto params = plot->Params();
   output.max = 1.0f;
@@ -115,61 +117,95 @@ InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& outpu
   output.rate = input.rate;
   output.stereo = params.stereo;
   output.min = params.bipolar ? -1.0f : 0.0f;
-  output.spectrum = input.spectrum && params.allowSpectrum;
-  *output.vertical = params.stereo ? StereoMarkers : params.bipolar ? BipolarMarkers : UnipolarMarkers;
+  output.spectrum = input.spectrum != 0 && params.allowSpectrum;
+  data.vertical = params.stereo ? StereoMarkers : params.bipolar ? BipolarMarkers : UnipolarMarkers;
   if (output.spectrum || !params.allowResample) return;
   float holdSamples = Param::TimeSamplesF(hold, input.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   output.rate = input.rate * input.pixels / (holdSamples + plot->ReleaseSamples(input.bpm, input.rate));
 }
 
 void
-PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output)
+PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output, PlotData& data)
 {
   float max = 1.0f;
   auto params = Params();
   Init(input.bpm, input.rate);
-  InitPeriodic(this, input, output);
+  InitPeriodic(this, input, output, data);
   Init(input.bpm, output.rate);
 
   float length = (output.rate * params.periods / output.frequency) + 1.0f;
   int samples = static_cast<int>(std::ceilf(input.spectrum ? output.rate : length));
   int halfPeriod = samples / (params.periods * 2);
-  output.horizontal->emplace_back(samples - 1, L"");
+  data.horizontal.emplace_back(samples - 1, L"");
   for (int i = 0; i < samples; i++)
   {
     float sample = Next();
     max = std::max(max, std::fabs(sample));
-    output.left->push_back(sample);
+    data.left.push_back(sample);
     if (i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
-      output.horizontal->emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
+      data.horizontal.emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
   }
-  if (params.autoRange) ApplyAutoRange(output, max);
+  if (params.autoRange) ApplyAutoRange(data, max);
 }
 
 void 
-StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output)
+StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output, PlotData& data)
 {
   int h = 0;
   int i = 0;
+  bool clip = false;
   bool done = false;
   Init(input.bpm, input.rate);
-  InitStaged(this, input, hold, output);
+  InitStaged(this, input, hold, output, data);
   Init(input.bpm, output.rate);
 
   float holdSamples = Param::TimeSamplesF(hold, output.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   while (!done)
   {
     if (!output.spectrum && h++ == static_cast<int>(holdSamples)) 
-      output.horizontal->emplace_back(i, FormatEnv(Release().stage));
+      data.horizontal.emplace_back(i, FormatEnv(Release().stage));
     Next();
-    output.left->push_back(Clip(Left(), output.clip));
-    output.right->push_back(Clip(Right(), output.clip));
+    data.left.push_back(Clip(Left(), clip));
+    data.right.push_back(Clip(Right(), clip));
     if (i == 0 || EnvOutput().switchedStage) 
-      output.horizontal->emplace_back(i, FormatEnv(EnvOutput().stage));
+      data.horizontal.emplace_back(i, FormatEnv(EnvOutput().stage));
     done |= !output.spectrum && End();
-    done |= output.spectrum && i == static_cast<int>(output.rate);
+    done |= output.spectrum != 0 && i == static_cast<int>(output.rate);
     i++;
   }
+  output.clip = clip;
+}
+
+void
+Plot::Render(PlotState& state)
+{
+  state.data = PlotData();
+  state.output = PlotOutput();
+  state.result = PlotResult();
+  state.scratch = PlotScratch();
+  RenderCore(state.input, state.output, state.data);
+  assert(state.output.rate <= state.input.rate);
+  if (state.output.spectrum) TransformToSpectrum(state.output);
+  state.result.left = state.data.left.data();
+  state.result.right = state.data.right.data();
+  state.result.sampleCount = static_cast<int32_t>(state.data.left.size());
+  state.result.verticalCount = static_cast<int32_t>(state.data.vertical.size());
+  state.result.horizontalCount = static_cast<int32_t>(state.data.horizontal.size());
+  assert(state.result.sampleCount == state.data.right.size() || state.data.right.size() == 0);
+  for (size_t i = 0; i < state.data.vertical.size(); i++)
+  {
+    state.scratch.verticalTexts.push_back(state.data.vertical[i].text.c_str());
+    state.scratch.verticalPositions.push_back(state.data.vertical[i].position);
+  }
+  for (size_t i = 0; i < state.data.horizontal.size(); i++)
+  {
+    state.scratch.horizontalTexts.push_back(state.data.horizontal[i].text.c_str());
+    state.scratch.horizontalPositions.push_back(state.data.horizontal[i].position);
+  }
+  state.result.verticalTexts = state.scratch.verticalTexts.data();
+  state.result.horizontalTexts = state.scratch.horizontalTexts.data();
+  state.result.verticalPositions = state.scratch.verticalPositions.data();
+  state.result.horizontalPositions = state.scratch.horizontalPositions.data();
 }
 
 } // namespace Xts
