@@ -34,12 +34,6 @@ class SequencerDSP
   ParamBinding const* _binding;
   SequencerModel const* _model;
 private:
-  int _keys[XTS_SEQUENCER_MAX_VOICES];
-  int _active[XTS_SEQUENCER_MAX_KEYS];
-  SynthDSP _dsps[XTS_SEQUENCER_MAX_VOICES];
-  int64_t _started[XTS_SEQUENCER_MAX_VOICES];
-  SynthModel _synths[XTS_SEQUENCER_MAX_VOICES];
-private:
   void Automate();
   int Take(int key);
   bool Trigger(float rate);
@@ -47,6 +41,12 @@ private:
   FloatSample Next(float rate);
   SequencerMove Move(float rate);
   void Return(int key, int voice);
+private:
+  int _keys[XTS_SEQUENCER_MAX_VOICES];
+  int _active[XTS_SEQUENCER_MAX_KEYS];
+  SynthDSP _dsps[XTS_SEQUENCER_MAX_VOICES];
+  int64_t _started[XTS_SEQUENCER_MAX_VOICES];
+  SynthModel _synths[XTS_SEQUENCER_MAX_VOICES];
 public:
   SequencerOutput const* Render(int32_t frames, float rate);
 public:
