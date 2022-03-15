@@ -6,6 +6,22 @@
 #include <Model/Shared/SyncStepModel.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 
+Xts::ParamBinding* XTS_CALL
+XtsParamBindingCreate(int32_t count)
+{
+  auto result = new Xts::ParamBinding;
+  result->params = new int32_t * [count];
+  return result;
+}
+
+void XTS_CALL
+XtsParamBindingDestroy(Xts::ParamBinding* binding)
+{
+  delete[] binding->params;
+  binding->params = nullptr;
+  delete binding;
+}
+
 void XTS_CALL 
 XtsSynthModelInit(Xts::ParamInfo* params, int32_t count)
 { Xts::SynthModel::Init(params, static_cast<size_t>(count)); }
@@ -33,22 +49,6 @@ XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate)
 Xts::SequencerDSP* XTS_CALL
 XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames)
 { return new Xts::SequencerDSP(model, synth, binding, frames); }
-
-Xts::ParamBinding* XTS_CALL
-XtsParamBindingCreate(int32_t count)
-{
-  auto result = new Xts::ParamBinding;
-  result->params = new int32_t * [count];
-  return result;
-}
-
-void XTS_CALL
-XtsParamBindingDestroy(Xts::ParamBinding* binding)
-{
-  delete[] binding->params;
-  binding->params = nullptr;
-  delete binding;
-}
 
 void XTS_CALL 
 XtsPlotStateDestroy(PlotState* state)
