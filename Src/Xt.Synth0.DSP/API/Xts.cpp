@@ -11,6 +11,8 @@ void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* model) { delete mode
 void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
 
 Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void) { return new Xts::SequencerDSP; }
+Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
+
 
 Xts::SequencerDSP* XTS_CALL
 XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames)

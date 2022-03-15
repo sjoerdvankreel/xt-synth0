@@ -63,24 +63,37 @@ struct XTS_ALIGN PlotState
   std::vector<Xts::HorizontalMarker>* horizontalData;
 };
 
-XTS_EXPORT class Xts::SequencerDSP* XTS_CALL 
-XtsSequencerDSPCreate(struct Xts::SequencerModel const* model, struct Xts::SynthModel const* synth, struct Xts::ParamBinding const* binding, size_t frames);
-XTS_EXPORT PlotState* XTS_CALL XtsPlotStateCreate(void);
-XTS_EXPORT struct Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void);
-XTS_EXPORT struct Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void);
-XTS_EXPORT struct Xts::ParamBinding* XTS_CALL XtsParamBindingCreate(int32_t count);
+XTS_EXPORT void XTS_CALL
+XtsPlotDSPRender(PlotState* state);
+XTS_EXPORT PlotState* XTS_CALL
+XtsPlotStateCreate(void);
+XTS_EXPORT void XTS_CALL
+XtsPlotStateDestroy(PlotState* state);
 
-XTS_EXPORT void XTS_CALL XtsSequencerDSPDestroy(class Xts::SequencerDSP* dsp);
-XTS_EXPORT void XTS_CALL XtsPlotStateDestroy(PlotState* state);
-XTS_EXPORT void XTS_CALL XtsSequencerModelDestroy(struct Xts::SequencerModel* model);
-XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(struct Xts::SynthModel* model);
-XTS_EXPORT void XTS_CALL XtsParamBindingDestroy(struct Xts::ParamBinding* binding);
+XTS_EXPORT Xts::SynthModel* XTS_CALL
+XtsSynthModelCreate(void);
+XTS_EXPORT Xts::ParamBinding* XTS_CALL
+XtsParamBindingCreate(int32_t count);
+XTS_EXPORT Xts::SequencerModel* XTS_CALL
+XtsSequencerModelCreate(void);
 
-XTS_EXPORT void XTS_CALL XtsPlotDSPRender(PlotState* state);
-XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* params, int32_t count);
-XTS_EXPORT void XTS_CALL XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count);
+XTS_EXPORT void XTS_CALL
+XtsSynthModelDestroy(Xts::SynthModel* model);
+XTS_EXPORT void XTS_CALL
+XtsParamBindingDestroy(Xts::ParamBinding* binding);
+XTS_EXPORT void XTS_CALL
+XtsSequencerModelDestroy(Xts::SequencerModel* model);
 
+XTS_EXPORT void XTS_CALL
+XtsSynthModelInit(Xts::ParamInfo* params, int32_t count);
+XTS_EXPORT void XTS_CALL
+XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count);
+
+XTS_EXPORT void XTS_CALL
+XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp);
 XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate);
+XTS_EXPORT Xts::SequencerDSP* XTS_CALL
+XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames);
 
 #endif // XTS_API_XTS_HPP
