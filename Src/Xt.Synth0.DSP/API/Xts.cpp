@@ -6,21 +6,15 @@
 #include <Model/Shared/SyncStepModel.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 
-Xts::ParamBinding* XTS_CALL
-XtsParamBindingCreate(int32_t count)
+struct XTS_ALIGN XtsSequencer
 {
-  auto result = new Xts::ParamBinding;
-  result->params = new int32_t * [count];
-  return result;
-}
-
-void XTS_CALL
-XtsParamBindingDestroy(Xts::ParamBinding* binding)
-{
-  delete[] binding->params;
-  binding->params = nullptr;
-  delete binding;
-}
+  float rate;
+  int32_t pad__;
+  Xts::SequencerDSP* dsp;
+  Xts::SynthModel synth;
+  Xts::SequencerModel model;
+  Xts::ParamBinding binding;
+};
 
 void XTS_CALL 
 XtsSynthModelInit(Xts::ParamInfo* params, int32_t count)
@@ -30,25 +24,27 @@ void XTS_CALL
 XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 { Xts::SyncStepModel::Init(steps, static_cast<size_t>(count)); }
 
-Xts::SynthModel* XTS_CALL
-XtsSynthModelCreate(void) { return new Xts::SynthModel; }
-Xts::SequencerModel* XTS_CALL
-XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
-
-void XTS_CALL
-XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
-void XTS_CALL
-XtsSequencerModelDestroy(Xts::SequencerModel* model) { delete model; }
-
-void XTS_CALL
-XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp)
-{ delete dsp; }
 Xts::SequencerOutput const* XTS_CALL
-XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate)
-{ return dsp->Render(frames, rate); }
-Xts::SequencerDSP* XTS_CALL
-XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, int32_t frames)
-{ return new Xts::SequencerDSP(model, synth, binding, static_cast<size_t>(frames)); }
+XtsSequencerRender(XtsSequencer* sequencer, int32_t frames)
+{ return sequencer->dsp->Render(frames, sequencer->rate); }
+
+void XTS_CALL
+XtsSequencerDestroy(XtsSequencer* sequencer)
+{
+  delete sequencer->dsp;
+  delete sequencer->binding.params;
+  delete sequencer;
+}
+
+XtsSequencer* XTS_CALL
+XtsSequencerCreate(int32_t params, int32_t frames, float rate)
+{
+  auto result = new XtsSequencer;
+  result->rate = rate;
+  result->binding.params = new int32_t*[params];
+  result->dsp = new Xts::SequencerDSP(&result->model, &result->synth, &result->binding, frames);
+  return result;
+}
 
 void XTS_CALL 
 XtsPlotStateDestroy(PlotState* state)
