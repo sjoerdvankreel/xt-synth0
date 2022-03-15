@@ -92,6 +92,8 @@ struct XTS_ALIGN PlotScratch
 
 struct XTS_ALIGN PlotState
 {
+  int32_t hold;
+  int32_t pad__;
   PlotData data;
   PlotInput input;
   PlotOutput output;
@@ -103,9 +105,9 @@ class Plot
 {
 public:
   virtual ~Plot() {}
-  void Render(PlotState& state);
 protected:
-  virtual void RenderCore(PlotInput const& input, PlotOutput& output, PlotData& data) = 0;
+  void DoRender(PlotState& state);
+  virtual void RenderCore(PlotInput const& input, int hold, PlotOutput& output, PlotData& data) = 0;
 };
 
 class PeriodicPlot: public Plot
@@ -117,7 +119,7 @@ public:
   virtual void Init(float bpm, float rate) = 0;
   virtual float Frequency(float bpm, float rate) const = 0;
 protected:
-  void RenderCore(PlotInput const& input, PlotOutput& output, PlotData& data);
+  void RenderCore(PlotInput const& input, int hold, PlotOutput& output, PlotData& data);
 };
 
 class StagedPlot: public Plot

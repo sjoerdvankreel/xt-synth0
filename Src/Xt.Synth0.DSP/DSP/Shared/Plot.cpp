@@ -125,7 +125,7 @@ InitStaged(StagedPlot* plot, PlotInput const& input, int hold, PlotOutput& outpu
 }
 
 void
-PeriodicPlot::RenderCore(PlotInput const& input, PlotOutput& output, PlotData& data)
+PeriodicPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output, PlotData& data)
 {
   float max = 1.0f;
   auto params = Params();
@@ -177,15 +177,15 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output, Plo
 }
 
 void
-Plot::Render(PlotState& state)
+Plot::DoRender(PlotState& state)
 {
   state.data = PlotData();
   state.output = PlotOutput();
   state.result = PlotResult();
   state.scratch = PlotScratch();
-  RenderCore(state.input, state.output, state.data);
+  RenderCore(state.input, state.hold, state.output, state.data);
   assert(state.output.rate <= state.input.rate);
-  if (state.output.spectrum) TransformToSpectrum(state.output);
+  if (state.output.spectrum) TransformToSpectrum(state.output, state.data, state.scratch);
   state.result.left = state.data.left.data();
   state.result.right = state.data.right.data();
   state.result.sampleCount = static_cast<int32_t>(state.data.left.size());

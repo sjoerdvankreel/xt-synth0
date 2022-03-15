@@ -10,12 +10,13 @@
 namespace Xts {
 
 void
-SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+SynthPlotRender(SynthModel const& model, PlotState& state)
 {
+  state.hold = model.plot.hold;
   switch(model.plot.type)
   {
   case PlotType::Amp: AmpPlot::Render(model, input, output); break;
-  case PlotType::Synth: SynthPlot::Render(model, input, output); break;
+  case PlotType::Synth: SynthPlot::Render(model, state); break;
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: EnvPlot::Render(model, input, output); break;
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: LfoPlot::Render(model, input, output); break;
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: UnitPlot::Render(model, input, output); break;
