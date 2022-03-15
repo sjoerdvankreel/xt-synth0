@@ -30,6 +30,7 @@ class SequencerDSP
   SequencerOutput _output;
   bool _endPattern = false;
   SynthModel const* _synth;
+  std::vector<float> _buffer;
   ParamBinding const* _binding;
   SequencerModel const* _model;
 private:
@@ -50,7 +51,6 @@ public:
   SequencerOutput const* Render(int32_t frames, float rate);
 public:
   SequencerDSP() = default;
-  ~SequencerDSP() { delete[] _output.buffer; }
   SequencerDSP(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding, size_t frames);
 };
 

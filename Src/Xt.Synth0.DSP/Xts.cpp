@@ -1,7 +1,9 @@
-#include "Xts.hpp"
+#include <Xts.hpp>
 #include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
+#include <Model/Shared/ParamBinding.hpp>
+#include <Model/Shared/SyncStepModel.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 
 void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }

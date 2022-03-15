@@ -37,11 +37,12 @@ SequencerDSP::Render(int32_t frames, float rate)
   for (int f = 0; f < frames; f++)
   {
     auto out = Next(rate);
-    _output.buffer[f * 2] = Clip(out.left, clipped);
-    _output.buffer[f * 2 + 1] = Clip(out.right, clipped);
+    _buffer[f * 2] = Clip(out.left, clipped);
+    _buffer[f * 2 + 1] = Clip(out.right, clipped);
     _output.position++;
   }
   _output.clip = clipped;
+  _output.buffer = _buffer.data();
   return &_output;
 }
 
@@ -148,7 +149,8 @@ SequencerDSP::Move(float rate)
 }
 
 SequencerDSP::
-SequencerDSP(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding, size_t frames)
+SequencerDSP(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding, size_t frames):
+SequencerDSP()
 {
   _fill = 0.0;
   _model = model;
@@ -161,7 +163,7 @@ SequencerDSP(SequencerModel const* model, SynthModel const* synth, ParamBinding 
   _output.end = XtsFalse;
   _output.clip = XtsFalse;
   _output.exhausted = XtsFalse;
-  _output.buffer = new float[frames * 2];
+  _buffer.resize(frames * 2);
   for (int i = 0; i < XTS_SEQUENCER_MAX_KEYS; i++) _active[i] = -1;
   for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++) _started[i] = _keys[i] = -1;
 }

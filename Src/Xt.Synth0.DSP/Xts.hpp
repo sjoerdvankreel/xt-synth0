@@ -12,6 +12,17 @@
 #define XTS_CALL __stdcall
 #define XTS_EXPORT extern "C" __declspec(dllexport)
 
+namespace Xts {
+struct ParamInfo;
+struct SynthModel;
+struct ParamBinding;
+struct SyncStepModel;
+
+class SequencerDSP;
+struct SequencerModel;
+struct SequencerOutput;
+} // namespace Xts
+
 struct XTS_ALIGN PlotState
 {
   float min;
@@ -66,10 +77,10 @@ XTS_EXPORT void XTS_CALL XtsSynthModelDestroy(struct Xts::SynthModel* model);
 XTS_EXPORT void XTS_CALL XtsParamBindingDestroy(struct Xts::ParamBinding* binding);
 
 XTS_EXPORT void XTS_CALL XtsPlotDSPRender(PlotState* state);
-XTS_EXPORT void XTS_CALL XtsSynthModelInit(struct Xts::ParamInfo* params, int32_t count);
-XTS_EXPORT void XTS_CALL XtsSyncStepModelInit(struct Xts::SyncStepModel* steps, int32_t count);
+XTS_EXPORT void XTS_CALL XtsSynthModelInit(Xts::ParamInfo* params, int32_t count);
+XTS_EXPORT void XTS_CALL XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count);
 
-struct Xts::SequencerOutput const* XTS_CALL
+XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate);
 
 #endif // XTS_HPP
