@@ -6,36 +6,6 @@
 #include <Model/Shared/SyncStepModel.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 
-void XTS_CALL XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp) { delete dsp; }
-void XTS_CALL XtsSequencerModelDestroy(Xts::SequencerModel* model) { delete model; }
-void XTS_CALL XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
-
-Xts::SequencerDSP* XTS_CALL XtsSequencerDSPCreate(void) { return new Xts::SequencerDSP; }
-Xts::SequencerModel* XTS_CALL XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
-
-
-Xts::SequencerDSP* XTS_CALL
-XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames)
-{ return new Xts::SequencerDSP(model, synth, binding, frames); }
-
-Xts::SynthModel* XTS_CALL XtsSynthModelCreate(void) { return new Xts::SynthModel; }
-
-Xts::ParamBinding* XTS_CALL 
-XtsParamBindingCreate(int32_t count) 
-{ 
-  auto result = new Xts::ParamBinding; 
-  result->params = new int32_t*[count];
-  return result;
-}
-
-void XTS_CALL 
-XtsParamBindingDestroy(Xts::ParamBinding* binding) 
-{ 
-  delete[] binding->params; 
-  binding->params = nullptr;
-  delete binding;
-}
-
 void XTS_CALL 
 XtsSynthModelInit(Xts::ParamInfo* params, int32_t count)
 { Xts::SynthModel::Init(params, static_cast<size_t>(count)); }
@@ -43,6 +13,42 @@ XtsSynthModelInit(Xts::ParamInfo* params, int32_t count)
 void XTS_CALL 
 XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 { Xts::SyncStepModel::Init(steps, static_cast<size_t>(count)); }
+
+Xts::SynthModel* XTS_CALL
+XtsSynthModelCreate(void) { return new Xts::SynthModel; }
+Xts::SequencerModel* XTS_CALL
+XtsSequencerModelCreate(void) { return new Xts::SequencerModel; }
+
+void XTS_CALL
+XtsSynthModelDestroy(Xts::SynthModel* model) { delete model; }
+void XTS_CALL
+XtsSequencerModelDestroy(Xts::SequencerModel* model) { delete model; }
+
+void XTS_CALL
+XtsSequencerDSPDestroy(Xts::SequencerDSP* dsp)
+{ delete dsp; }
+Xts::SequencerOutput const* XTS_CALL
+XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate)
+{ return dsp->Render(frames, rate); }
+Xts::SequencerDSP* XTS_CALL
+XtsSequencerDSPCreate(Xts::SequencerModel const* model, Xts::SynthModel const* synth, Xts::ParamBinding const* binding, size_t frames)
+{ return new Xts::SequencerDSP(model, synth, binding, frames); }
+
+Xts::ParamBinding* XTS_CALL
+XtsParamBindingCreate(int32_t count)
+{
+  auto result = new Xts::ParamBinding;
+  result->params = new int32_t * [count];
+  return result;
+}
+
+void XTS_CALL
+XtsParamBindingDestroy(Xts::ParamBinding* binding)
+{
+  delete[] binding->params;
+  binding->params = nullptr;
+  delete binding;
+}
 
 void XTS_CALL 
 XtsPlotStateDestroy(PlotState* state)
@@ -86,10 +92,6 @@ XtsPlotStateCreate(void)
   result->horizontalTextData = new std::vector<wchar_t const*>();
   return result;
 }
-
-Xts::SequencerOutput const* XTS_CALL
-XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate)
-{ return dsp->Render(frames, rate); }
 
 void XTS_CALL 
 XtsPlotDSPRender(PlotState* state)
