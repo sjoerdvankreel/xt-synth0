@@ -1,5 +1,5 @@
-#ifndef XTS_HPP
-#define XTS_HPP
+#ifndef XTS_API_XTS_HPP
+#define XTS_API_XTS_HPP
 
 #include <DSP/Shared/Plot.hpp>
 #include <Model/Shared/Model.hpp>
@@ -83,4 +83,4 @@ XTS_EXPORT void XTS_CALL XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t
 XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerDSPRender(Xts::SequencerDSP* dsp, int32_t frames, float rate);
 
-#endif // XTS_HPP
+#endif // XTS_API_XTS_HPP

@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="API\Xts.hpp" />
     <ClInclude Include="DSP\Sequencer\SequencerDSP.hpp" />
     <ClInclude Include="DSP\Shared\AudioSample.hpp" />
     <ClInclude Include="DSP\Shared\Config.hpp" />
@@ -57,9 +58,9 @@
     <ClInclude Include="Model\Synth\PlotModel.hpp" />
     <ClInclude Include="Model\Synth\SynthModel.hpp" />
     <ClInclude Include="Model\Synth\UnitModel.hpp" />
-    <ClInclude Include="Xts.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="API\Xts.cpp" />
     <ClCompile Include="DSP\Sequencer\SequencerDSP.cpp" />
     <ClCompile Include="DSP\Shared\Modulate.cpp" />
     <ClCompile Include="DSP\Shared\Plot.cpp" />
@@ -76,7 +77,6 @@
     <ClCompile Include="DSP\Synth\UnitDSP.cpp" />
     <ClCompile Include="Model\Shared\SyncStepModel.cpp" />
     <ClCompile Include="Model\Synth\SynthModel.cpp" />
-    <ClCompile Include="Xts.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

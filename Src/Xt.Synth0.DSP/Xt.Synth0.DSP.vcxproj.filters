@@ -25,9 +25,11 @@
     <Filter Include="DSP\Sequencer">
       <UniqueIdentifier>{0024ef44-eea9-4e68-9b22-28bec7faa821}</UniqueIdentifier>
     </Filter>
+    <Filter Include="API">
+      <UniqueIdentifier>{64aa0bd6-6379-4a1b-ad63-2b4f382ad004}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Xts.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
@@ -166,9 +168,11 @@
     <ClInclude Include="DSP\Sequencer\SequencerDSP.hpp">
       <Filter>DSP\Sequencer</Filter>
     </ClInclude>
+    <ClInclude Include="API\Xts.hpp">
+      <Filter>API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Xts.cpp" />
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
@@ -216,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="DSP\Sequencer\SequencerDSP.cpp">
       <Filter>DSP\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="API\Xts.cpp">
+      <Filter>API</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
