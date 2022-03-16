@@ -23,12 +23,12 @@ LfoPlot::Params() const
 }
 
 void
-LfoPlot::Render(SynthModel const& model, PlotState& state)
+LfoPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   int base = static_cast<int>(PlotType::LFO1);
   int type = static_cast<int>(model.plot.type);
   LfoModel const* lfo = &model.cv.lfos[type - base];
-  if (lfo->on) LfoPlot(lfo).DoRender(state);
+  if (lfo->on) LfoPlot(lfo).DoRender(input, state);
 }
 
 CvSample

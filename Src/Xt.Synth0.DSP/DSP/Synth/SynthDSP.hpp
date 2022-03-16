@@ -36,7 +36,7 @@ public:
   SynthPlot(struct SynthModel const* model) : _model(model) {}
 public:
   StagedParams Params() const;
-  static void Render(struct SynthModel const& model, struct PlotState& state);
+  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 public:
   void Next() { _dsp.Next(); }
   bool End() const { return _dsp.End(); }

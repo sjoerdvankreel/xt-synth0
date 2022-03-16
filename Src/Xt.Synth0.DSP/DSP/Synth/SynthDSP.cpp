@@ -14,8 +14,8 @@ SynthPlot::Params() const
 }
 
 void
-SynthPlot::Render(SynthModel const& model, PlotState& state)
-{ std::make_unique<SynthPlot>(&model)->DoRender(state); }
+SynthPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+{ std::make_unique<SynthPlot>(&model)->DoRender(input, state); }
 
 SynthDSP::
 SynthDSP(SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate):

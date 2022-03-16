@@ -49,12 +49,12 @@ public PeriodicPlot
 public:
   UnitPlot(struct CvModel const* cv, struct UnitModel const* unit) : _cv(cv), _unit(unit) {}
 public:
-  PeriodicParams Params() const;
-  void Init(float bpm, float rate);
-  static void Render(struct SynthModel const& model, struct PlotState& state);
-public:
   float Next() { return _unitDsp.Next(_cvDsp.Next()).Mono(); }
   float Frequency(float bpm, float rate) const { return UnitDSP::Frequency(*_unit, 4, UnitNote::C); }
+public:
+  PeriodicParams Params() const;
+  void Init(float bpm, float rate);
+  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };
 
 } // namespace Xts

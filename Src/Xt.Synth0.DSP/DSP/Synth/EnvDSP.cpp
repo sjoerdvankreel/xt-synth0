@@ -35,12 +35,12 @@ EnvPlot::ReleaseSamples(EnvModel const& model, float bpm, float rate)
 }
 
 void 
-EnvPlot::Render(SynthModel const& model, PlotState& state)
+EnvPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   int base = static_cast<int>(PlotType::Env1);
   int type = static_cast<int>(model.plot.type);
   EnvModel const* env = &model.cv.envs[type - base];
-  if (env->on) EnvPlot(env).DoRender(state);
+  if (env->on) EnvPlot(env).DoRender(input, state);
 }
 
 static inline float

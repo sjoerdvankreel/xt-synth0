@@ -12,25 +12,17 @@
 #define XTS_CALL __stdcall
 #define XTS_EXPORT extern "C" __declspec(dllexport)
 
+struct XtsPlot;
 struct XtsSequencer;
 
 namespace Xts {
 struct ParamInfo;
-struct SynthModel;
-struct ParamBinding;
+struct PlotInput;
+struct PlotOutput;
+struct PlotResult;
 struct SyncStepModel;
-
-class SequencerDSP;
-struct SequencerModel;
 struct SequencerOutput;
 } // namespace Xts
-
-XTS_EXPORT void XTS_CALL
-XtsPlotDSPRender(PlotState* state);
-XTS_EXPORT PlotState* XTS_CALL
-XtsPlotStateCreate(void);
-XTS_EXPORT void XTS_CALL
-XtsPlotStateDestroy(PlotState* state);
 
 XTS_EXPORT void XTS_CALL
 XtsSynthModelInit(Xts::ParamInfo* params, int32_t count);
@@ -43,5 +35,12 @@ XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames);
 XTS_EXPORT XtsSequencer* XTS_CALL
 XtsSequencerCreate(int32_t params, int32_t frames, float rate);
+
+XTS_EXPORT XtsPlot* XTS_CALL
+XtsPlotCreate(void);
+XTS_EXPORT void XTS_CALL
+XtsPlotDestroy(XtsPlot* plot);
+XTS_EXPORT Xts::PlotResult* XTS_CALL
+XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** output);
 
 #endif // XTS_API_XTS_HPP

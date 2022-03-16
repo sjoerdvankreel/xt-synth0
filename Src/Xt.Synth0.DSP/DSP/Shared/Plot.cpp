@@ -177,35 +177,35 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output, Plo
 }
 
 void
-Plot::DoRender(PlotState& state)
+Plot::DoRender(PlotInput const& input, PlotState& state)
 {
-  state.data = PlotData();
+  *state.data = PlotData();
   state.output = PlotOutput();
   state.result = PlotResult();
-  state.scratch = PlotScratch();
-  RenderCore(state.input, state.hold, state.output, state.data);
-  assert(state.output.rate <= state.input.rate);
-  if (state.output.spectrum) TransformToSpectrum(state.output, state.data, state.scratch);
-  state.result.left = state.data.left.data();
-  state.result.right = state.data.right.data();
-  state.result.sampleCount = static_cast<int32_t>(state.data.left.size());
-  state.result.verticalCount = static_cast<int32_t>(state.data.vertical.size());
-  state.result.horizontalCount = static_cast<int32_t>(state.data.horizontal.size());
-  assert(state.result.sampleCount == state.data.right.size() || state.data.right.size() == 0);
-  for (size_t i = 0; i < state.data.vertical.size(); i++)
+  *state.scratch = PlotScratch();
+  RenderCore(input, state.hold, state.output, *state.data);
+  assert(state.output.rate <= input.rate);
+  if (state.output.spectrum) TransformToSpectrum(state.output, *state.data, *state.scratch);
+  state.result.left = state.data->left.data();
+  state.result.right = state.data->right.data();
+  state.result.sampleCount = static_cast<int32_t>(state.data->left.size());
+  state.result.verticalCount = static_cast<int32_t>(state.data->vertical.size());
+  state.result.horizontalCount = static_cast<int32_t>(state.data->horizontal.size());
+  assert(state.result.sampleCount == state.data->right.size() || state.data->right.size() == 0);
+  for (size_t i = 0; i < state.data->vertical.size(); i++)
   {
-    state.scratch.verticalTexts.push_back(state.data.vertical[i].text.c_str());
-    state.scratch.verticalPositions.push_back(state.data.vertical[i].position);
+    state.scratch->verticalTexts.push_back(state.data->vertical[i].text.c_str());
+    state.scratch->verticalPositions.push_back(state.data->vertical[i].position);
   }
-  for (size_t i = 0; i < state.data.horizontal.size(); i++)
+  for (size_t i = 0; i < state.data->horizontal.size(); i++)
   {
-    state.scratch.horizontalTexts.push_back(state.data.horizontal[i].text.c_str());
-    state.scratch.horizontalPositions.push_back(state.data.horizontal[i].position);
+    state.scratch->horizontalTexts.push_back(state.data->horizontal[i].text.c_str());
+    state.scratch->horizontalPositions.push_back(state.data->horizontal[i].position);
   }
-  state.result.verticalTexts = state.scratch.verticalTexts.data();
-  state.result.horizontalTexts = state.scratch.horizontalTexts.data();
-  state.result.verticalPositions = state.scratch.verticalPositions.data();
-  state.result.horizontalPositions = state.scratch.horizontalPositions.data();
+  state.result.verticalTexts = state.scratch->verticalTexts.data();
+  state.result.horizontalTexts = state.scratch->horizontalTexts.data();
+  state.result.verticalPositions = state.scratch->verticalPositions.data();
+  state.result.horizontalPositions = state.scratch->horizontalPositions.data();
 }
 
 } // namespace Xts

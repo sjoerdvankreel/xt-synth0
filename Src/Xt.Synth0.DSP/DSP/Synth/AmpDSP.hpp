@@ -53,7 +53,7 @@ public:
   StagedParams Params() const;
   void Init(float bpm, float rate);
   float ReleaseSamples(float bpm, float rate) const;
-  static void Render(struct SynthModel const& model, struct PlotState& state);
+  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };
 
 inline AmpPlot::

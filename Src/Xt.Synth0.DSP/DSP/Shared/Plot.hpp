@@ -94,11 +94,10 @@ struct XTS_ALIGN PlotState
 {
   int32_t hold;
   int32_t pad__;
-  PlotData data;
-  PlotInput input;
   PlotOutput output;
   PlotResult result;
-  PlotScratch scratch;
+  PlotData* data;
+  PlotScratch* scratch;
 };
 
 class Plot
@@ -106,7 +105,7 @@ class Plot
 public:
   virtual ~Plot() {}
 protected:
-  void DoRender(PlotState& state);
+  void DoRender(PlotInput const& input, PlotState& state);
   virtual void RenderCore(PlotInput const& input, int hold, PlotOutput& output, PlotData& data) = 0;
 };
 

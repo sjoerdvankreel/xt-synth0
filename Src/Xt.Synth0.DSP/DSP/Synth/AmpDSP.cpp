@@ -28,8 +28,8 @@ AmpPlot::Init(float bpm, float rate)
 }
 
 void 
-AmpPlot::Render(SynthModel const& model, PlotState& state)
-{ AmpPlot(&model.cv, &model.amp).DoRender(state); }
+AmpPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+{ AmpPlot(&model.cv, &model.amp).DoRender(input, state); }
 
 static ModSource
 ToModSource(AmpLfoSource source)
