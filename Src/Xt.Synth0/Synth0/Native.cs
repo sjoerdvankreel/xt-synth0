@@ -19,7 +19,7 @@ namespace Xt.Synth0
             internal int pad__;
             internal float* buffer;
             internal long position;
-        };
+        }
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct XtsSequencer
@@ -30,52 +30,35 @@ namespace Xt.Synth0
             internal SynthModel.Native synth;
             internal SequencerModel.Native model;
             internal ParamBinding.Native binding;
-        };
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 8)]
+        internal ref struct PlotInput
+        {
+            internal float bpm;
+            internal float rate;
+            internal float pixels;
+            internal int spectrum;
+        }
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct PlotState
         {
-            internal float min;
-            internal float max;
-            internal float rate;
-            internal float frequency;
-
-            internal int clip;
-            internal int stereo;
-            internal int spectrum;
-
-            internal int bpm;
-            internal int pixels;
-            internal int sampleCount;
-            internal int verticalCount;
-            internal int horizontalCount;
-
-            internal float* left;
-            internal float* right;
-            internal float* verticalValues;
-            internal ushort** verticalTexts;
-            internal int* horizontalValues;
-            internal ushort** horizontalTexts;
-
-            internal IntPtr leftData;
-            internal IntPtr rightData;
-
-            internal SynthModel.Native* synth;
-            internal IntPtr fft;
+            internal int hold;
+            internal int pad__;
+            internal PlotOutput.Native output;
+            internal PlotResult.Native result;
+            internal IntPtr data;
             internal IntPtr scratch;
+        }
 
-            internal IntPtr verticalValueData;
-            internal IntPtr verticalTextData;
-            internal IntPtr verticalData;
-
-            internal IntPtr horizontalValueData;
-            internal IntPtr horizontalTextData;
-            internal IntPtr horizontalData;
-        };
-
-        [DllImport("XT.Synth0.DSP")] internal static extern PlotState* XtsPlotStateCreate();
-        [DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDSPRender(PlotState* state);
-        [DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotStateDestroy(PlotState* state);
+        [StructLayout(LayoutKind.Sequential, Pack = 8)]
+        internal ref struct XtsPlot
+        {
+            internal PlotState state;
+            internal SynthModel.Native model;
+            internal ParamBinding.Native binding;
+        }
 
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(ParamInfo.Native* @params, int count);
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSyncStepModelInit(SyncStepModel.Native* steps, int count);
@@ -83,5 +66,9 @@ namespace Xt.Synth0
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerDestroy(XtsSequencer* sequencer);
         [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, float rate);
         [DllImport("XT.Synth0.DSP")] internal static extern SequencerOutput* XtsSequencerRender(XtsSequencer* sequencer, int frames);
+
+        [DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDestroy(XtsPlot* plot);
+        [DllImport("XT.Synth0.DSP")] internal static extern XtsPlot* XtsPlotCreate(int @params);
+        [DllImport("XT.Synth0.DSP")] internal static extern PlotResult.Native* XtsPlotRender(XtsPlot* plot, PlotInput* input, PlotOutput.Native** output);
     }
 }

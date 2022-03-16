@@ -11,6 +11,7 @@ struct XTS_ALIGN XtsPlot
 {
   Xts::PlotState state;
   Xts::SynthModel model;
+  Xts::ParamBinding binding;
 };
 
 struct XTS_ALIGN XtsSequencer
@@ -36,6 +37,15 @@ XtsSequencerRender(XtsSequencer* sequencer, int32_t frames)
 { return sequencer->dsp->Render(frames, sequencer->rate); }
 
 void XTS_CALL
+XtsPlotDestroy(XtsPlot* plot)
+{
+  delete plot->state.data;
+  delete plot->state.scratch;
+  delete plot->binding.params;
+  delete plot;
+}
+
+void XTS_CALL
 XtsSequencerDestroy(XtsSequencer* sequencer)
 {
   delete sequencer->dsp;
@@ -43,30 +53,13 @@ XtsSequencerDestroy(XtsSequencer* sequencer)
   delete sequencer;
 }
 
-XtsSequencer* XTS_CALL
-XtsSequencerCreate(int32_t params, int32_t frames, float rate)
-{
-  auto result = new XtsSequencer;
-  result->rate = rate;
-  result->binding.params = new int32_t*[params];
-  result->dsp = new Xts::SequencerDSP(&result->model, &result->synth, &result->binding, frames);
-  return result;
-}
-
-void XTS_CALL
-XtsPlotDestroy(XtsPlot* plot)
-{
-  delete plot->state.data;
-  delete plot->state.scratch;
-  delete plot;
-}
-
 XtsPlot* XTS_CALL
-XtsPlotCreate(void)
+XtsPlotCreate(int32_t params)
 {
   auto result = new XtsPlot;
   result->state.data = new Xts::PlotData;
   result->state.scratch = new Xts::PlotScratch;
+  result->binding.params = new int32_t*[params];
   return result;
 }
 
@@ -76,4 +69,14 @@ XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** outp
   Xts::SynthPlotRender(plot->model, *input, plot->state);
   *output = &plot->state.output;  
   return &plot->state.result;
+}
+
+XtsSequencer* XTS_CALL
+XtsSequencerCreate(int32_t params, int32_t frames, float rate)
+{
+  auto result = new XtsSequencer;
+  result->rate = rate;
+  result->binding.params = new int32_t * [params];
+  result->dsp = new Xts::SequencerDSP(&result->model, &result->synth, &result->binding, frames);
+  return result;
 }

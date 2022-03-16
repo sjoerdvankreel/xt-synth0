@@ -27,7 +27,6 @@ namespace Xt.Synth0.UI
         public static void BeginUpdate() => _updating = true;
 
         static readonly FrameworkElement Off = MakeOff();
-        static readonly RequestPlotDataEventArgs Args = new();
         public static event EventHandler<RequestPlotDataEventArgs> RequestPlotData;
 
         public static void EndUpdate()
@@ -204,7 +203,7 @@ namespace Xt.Synth0.UI
             text.Text = null;
             if (Args.LSamples.Count == 0) return;
             string header = $"{Args.LSamples.Count} samples";
-            if (Args.Freq != 0.0f) header += $" @ {Args.Freq.ToString("N1")}Hz";
+            if (Args.Frequency != 0.0f) header += $" @ {Args.Frequency.ToString("N1")}Hz";
             if (Args.Clip) header += " (Clip)";
             text.Text = header;
         }

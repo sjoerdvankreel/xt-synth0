@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -14,16 +13,13 @@ namespace Xt.Synth0
 	static class Synth0
 	{
         static AudioEngine _engine;
+        static unsafe Native.XtsPlot* _plot;
         static readonly AppModel Model = new AppModel();
         static readonly DateTime StartTime = DateTime.Now;
 
         const double AudioUpdateFps = 30.0;
         static long _lastAudioUpdateMs = 0;
         static readonly Stopwatch _audioUpdateTimer = new Stopwatch();
-
-		static unsafe Native.PlotState* _nativePlotState;
-		static unsafe SynthModel.Native* _nativePlotSynthModel;
-		static unsafe ParamBinding.Native* _nativePlotBinding;
 
 		[STAThread]
 		static unsafe void Main()
@@ -37,18 +33,14 @@ namespace Xt.Synth0
                     Native.XtsSyncStepModelInit(steps, SyncStepModel.Steps.Length);
 				fixed (ParamInfo.Native* @params = infos)
 					Native.XtsSynthModelInit(@params, infos.Length);
-				_nativePlotState = Native.XtsPlotStateCreate();
-				_nativePlotSynthModel = Native.XtsSynthModelCreate();
-                _nativePlotBinding = Native.XtsParamBindingCreate(SynthConfig.ParamCount);
-                Model.Track.Synth.BindVoice(_nativePlotSynthModel, _nativePlotBinding);
+                _plot = Native.XtsPlotCreate(SynthConfig.ParamCount);
+                Model.Track.Synth.BindVoice(&_plot->model, &_plot->binding);
 				Run();
 			}
 			finally
 			{
 				_engine?.Dispose();
-				Native.XtsPlotStateDestroy(_nativePlotState);
-				Native.XtsParamBindingDestroy(_nativePlotBinding);
-				Native.XtsSynthModelDestroy(_nativePlotSynthModel);
+				Native.XtsPlotDestroy(_plot);
 			}
 		}
 
@@ -234,61 +226,31 @@ namespace Xt.Synth0
 			e.DefaultBuffer = support?.current ?? 0.0;
 		}
 
-		static unsafe string FromWideChar(ushort* text)
-		{
-			int i = 0;
-			while (text[i] != 0) i++;
-			return Encoding.Unicode.GetString((byte*)text, i * 2);
-		}
-
-		static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
-		{
-			int rate = Model.Settings.SampleRate.ToInt();
-			if (rate == 0 || e.Pixels == 0) return;
-			_nativePlotState->rate = rate;
-			_nativePlotState->pixels = e.Pixels;
-			_nativePlotState->synth = _nativePlotSynthModel;
-			_nativePlotState->bpm = Model.Track.Seq.Edit.Bpm.Value;
-            _nativePlotState->spectrum = Model.Track.Synth.Plot.Spectrum.Value == 0? 0: 1;
-            Model.Track.Synth.ToNative(_nativePlotBinding);
-			Native.XtsPlotDSPRender(_nativePlotState);
-            e.Min = _nativePlotState->min;
-            e.Max = _nativePlotState->max;
-            e.Freq = _nativePlotState->frequency;
-			e.Clip = _nativePlotState->clip != 0;
-            e.SampleRate = _nativePlotState->rate;
-            e.Stereo = _nativePlotState->stereo != 0;
-            e.Spectrum = _nativePlotState->spectrum != 0;
-            e.LSamples.Clear();
-            for (int i = 0; i < _nativePlotState->sampleCount; i++)
-                e.LSamples.Add(_nativePlotState->left[i]);
-            e.RSamples.Clear();
-            for (int i = 0; i < _nativePlotState->sampleCount; i++)
-                e.RSamples.Add(_nativePlotState->right[i]);
-            e.HSplitVals.Clear();
-			for (int i = 0; i < _nativePlotState->horizontalCount; i++)
-				e.HSplitVals.Add(_nativePlotState->horizontalValues[i]);
-            e.VSplitVals.Clear();
-            for (int i = 0; i < _nativePlotState->verticalCount; i++)
-                e.VSplitVals.Add(_nativePlotState->verticalValues[i]);
-            e.HSplitMarkers.Clear();
-			for (int i = 0; i < _nativePlotState->horizontalCount; i++)
-				e.HSplitMarkers.Add(FromWideChar(_nativePlotState->horizontalTexts[i]));
-			e.VSplitMarkers.Clear();
-			for (int i = 0; i < _nativePlotState->verticalCount; i++)
-				e.VSplitMarkers.Add(FromWideChar(_nativePlotState->verticalTexts[i]));
+        static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
+        {
+            var seq = new SequencerModel();
+            seq.Edit.Loop.Value = 0;
+            seq.Edit.Rows.Value = 1;
+            seq.Pattern.Rows[0].Keys[0].Octave.Value = e.Oct;
+            seq.Pattern.Rows[0].Keys[0].Note.Value = (int)e.Note;
+            _engine.Stop(false);
+            _engine.Start(seq, new StreamModel(false));
         }
 
-        static void OnRequestPlayNote(object sender, RequestPlayNoteEventArgs e)
+        static unsafe void OnRequestPlotData(object sender, RequestPlotDataEventArgs e)
 		{
-			var seq = new SequencerModel();
-			seq.Edit.Loop.Value = 0;
-			seq.Edit.Rows.Value = 1;
-			seq.Pattern.Rows[0].Keys[0].Octave.Value = e.Oct;
-			seq.Pattern.Rows[0].Keys[0].Note.Value = (int)e.Note;
-			_engine.Stop(false);
-			_engine.Start(seq, new StreamModel(false));
-		}
+            Native.PlotInput input;
+            PlotOutput.Native* output;
+            int rate = Model.Settings.SampleRate.ToInt();
+			if (rate == 0 || e.Pixels == 0) return;
+            input.rate = rate;
+            input.pixels = e.Pixels;
+            input.bpm = Model.Track.Seq.Edit.Bpm.Value;
+            input.spectrum = Model.Track.Synth.Plot.Spectrum.Value == 0 ? 0 : 1;
+            Model.Track.Synth.ToNative(&_plot->binding);
+			e.Result = Native.XtsPlotRender(_plot, &input, &output);
+            e.Output = output;
+        }
 
 		static AudioEngine SetupEngine(Window mainWindow)
 		{
