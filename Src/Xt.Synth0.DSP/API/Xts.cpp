@@ -39,6 +39,7 @@ XtsSequencerRender(XtsSequencer* sequencer, int32_t frames)
 void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot)
 {
+  if (plot == nullptr) return;
   delete plot->state.data;
   delete plot->state.scratch;
   delete plot->binding.params;
@@ -48,6 +49,7 @@ XtsPlotDestroy(XtsPlot* plot)
 void XTS_CALL
 XtsSequencerDestroy(XtsSequencer* sequencer)
 {
+  if (sequencer == nullptr) return;
   delete sequencer->dsp;
   delete sequencer->binding.params;
   delete sequencer;
