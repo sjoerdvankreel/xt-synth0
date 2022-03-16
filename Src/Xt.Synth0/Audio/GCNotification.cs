@@ -4,18 +4,18 @@ namespace Xt.Synth0
 {
 	class GCNotification
 	{
-		internal static void Register(AudioEngine engine)
+		internal static void Register(AudioMonitor monitor)
 		{
-			new GCNotification(engine, 0);
-			new GCNotification(engine, 1);
-			new GCNotification(engine, 2);
+			new GCNotification(monitor, 0);
+			new GCNotification(monitor, 1);
+			new GCNotification(monitor, 2);
 		}
 
 		int _collected;
 		readonly int _generation;
-		readonly AudioEngine _engine;
-		GCNotification(AudioEngine engine, int generation)
-		=> (_engine, _generation) = (engine, generation);
+		readonly AudioMonitor _monitor;
+		GCNotification(AudioMonitor monitor, int generation)
+		=> (_monitor, _generation) = (monitor, generation);
 
 		~GCNotification()
 		{
@@ -25,8 +25,8 @@ namespace Xt.Synth0
 				GC.ReRegisterForFinalize(this);
 				return;
 			}
-			_engine.OnGCNotification(_generation);
-			new GCNotification(_engine, _generation);
+            _monitor.OnGCNotification(_generation);
+			new GCNotification(_monitor, _generation);
 		}
 	}
 }
