@@ -179,10 +179,6 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output, Plo
 void
 Plot::DoRender(PlotInput const& input, PlotState& state)
 {
-  *state.data = PlotData();
-  state.output = PlotOutput();
-  state.result = PlotResult();
-  *state.scratch = PlotScratch();
   RenderCore(input, state.hold, state.output, *state.data);
   assert(state.output.rate <= input.rate);
   if (state.output.spectrum) TransformToSpectrum(state.output, *state.data, *state.scratch);

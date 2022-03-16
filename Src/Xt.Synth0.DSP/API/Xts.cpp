@@ -68,6 +68,10 @@ XtsPlotCreate(int32_t params)
 Xts::PlotResult* XTS_CALL
 XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** output)
 {
+  *plot->state.data = Xts::PlotData();
+  plot->state.output = Xts::PlotOutput();
+  plot->state.result = Xts::PlotResult();
+  *plot->state.scratch = Xts::PlotScratch();
   Xts::SynthPlotRender(plot->model, *input, plot->state);
   *output = &plot->state.output;  
   return &plot->state.result;
