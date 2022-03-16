@@ -39,12 +39,12 @@ UnitPlot::Init(float bpm, float rate)
 }
 
 void
-UnitPlot::Render(SynthModel const& model, PlotInput const& input, PlotOutput& output)
+UnitPlot::Render(SynthModel const& model, PlotState& state)
 {
   int base = static_cast<int>(PlotType::Unit1);
   int type = static_cast<int>(model.plot.type);
   UnitModel const* unit = &model.audio.units[type - base];
-  if (unit->on) UnitPlot(&model.cv, unit).RenderCore(input, output);
+  if (unit->on) UnitPlot(&model.cv, unit).DoRender(state);
 }
 
 static __m256

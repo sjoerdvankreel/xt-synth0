@@ -19,13 +19,13 @@ public PeriodicPlot
   struct AudioModel const* _audio;
   struct FilterModel const* _filter;
 public:
-  FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter, int index);
-public:
   float Next();
   PeriodicParams Params() const;
   void Init(float bpm, float rate);
   float Frequency(float bpm, float rate) const;
-  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotOutput& output);
+  static void Render(struct SynthModel const& model, struct PlotState& state);
+public:
+  FilterPlot(CvModel const* cv, AudioModel const* audio, FilterModel const* filter, int index);
 };
 
 inline FilterPlot::
