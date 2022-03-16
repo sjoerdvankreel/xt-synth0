@@ -118,7 +118,7 @@ SequencerDSP::Trigger(float rate)
       for (int v = 0; v < XTS_SEQUENCER_MAX_VOICES; v++)
         if (_keys[v] == k) _dsps[v].Release();
     if (key.note < PatternNote::C) continue;
-    int voice = Take(k, exhausted);
+    int voice = Take(k);
     result |= exhausted;
     _synths[voice] = *_synth;
     float velocity = Param::Level(key.velocity);
