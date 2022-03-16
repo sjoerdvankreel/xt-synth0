@@ -8,7 +8,7 @@ using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
 {
-    public static class PlotUI
+    public static unsafe class PlotUI
     {
         const int VPadText = 7;
         const int HPadText = 3;
@@ -64,79 +64,6 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement MakeContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
-        {
-            var result = new Grid();
-            var dock = new DockPanel();
-            var plot = app.Track.Synth.Plot;
-            dock.Add(GroupUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
-            dock.Add(MakePlotContent(app, text, foreground1, foreground2), Dock.Top);
-            var conv = new VisibilityConverter<int>(true, 1);
-            var binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
-            dock.SetBinding(UIElement.VisibilityProperty, binding);
-            result.Add(dock);
-            var off = MakeOff();
-            conv = new VisibilityConverter<int>(true, 0);
-            binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
-            off.SetBinding(UIElement.VisibilityProperty, binding);
-            result.Add(off);
-            return result;
-        }
-
-        static UIElement MakePlotContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
-        {
-            var synth = app.Track.Synth;
-            var dock = new DockPanel();
-            var result = Create.ThemedContent(dock);
-            var content = dock.Add(new ContentControl());
-            _update = () => Update(app, text, content, foreground1, foreground2);
-            synth.ParamChanged += (s, e) => _update();
-            content.SizeChanged += (s, e) => _update();
-            app.Settings.PropertyChanged += (s, e) => _update();
-            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => _update();
-            result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
-            result.BorderThickness = new(GroupUI.BorderThickness, 0.0, GroupUI.BorderThickness, GroupUI.BorderThickness);
-            return result;
-        }
-
-        static PointCollection MakeChannelData(List<float> samples,
-            int w, double h, float min, float max, double @base, double scale)
-        {
-            int width = w - PadLeft;
-            double hPad = h - PadBottom;
-            var result = new PointCollection();
-            for (int i = 0; i <= width; i++)
-            {
-                var xScreen = (double)i / width;
-                var xSample = xScreen * (samples.Count - 1);
-                var weight = xSample - (int)xSample;
-                var x1 = (int)Math.Ceiling(xSample);
-                var y0 = (1.0 - weight) * samples[(int)xSample];
-                var y1 = weight * samples[x1];
-                var y = @base + scale * (y0 + y1);
-                var yScreen = (1.0f - MaxLevel) * hPad + (1.0 - y) * MaxLevel * hPad;
-                var l = PadLeft + xScreen * (w - PadLeft);
-                if (max - min == 0.0f)
-                    throw new InvalidOperationException();
-                Point p = new Point(l, VPadText + yScreen / (max - min));
-                if (double.IsNaN(p.X) || double.IsNaN(p.Y))
-                    throw new InvalidOperationException();
-                result.Add(p);
-            }
-            return result;
-        }
-
-        static PlotData MakePlotData(int w, double h, float min, float max)
-        {
-            var result = new PlotData();
-            double scale = Args.Stereo ? 0.5 : 1.0;
-            double baseL = Args.Stereo ? 0.5f : 0.0f;
-            double baseR = (1.0f - (max - min)) / 2.0f;
-            result.l = MakeChannelData(Args.LSamples, w, h, min, max, baseL, scale);
-            if (Args.Stereo) result.r = MakeChannelData(Args.RSamples, w, h, min, max, baseR, 0.5);
-            return result;
-        }
-
         static void PlotProperties(Shape shape, Brush foreground1)
         {
             shape.Opacity = 0.67;
@@ -185,6 +112,78 @@ namespace Xt.Synth0.UI
             return result;
         }
 
+        static PlotData MakePlotData(RequestPlotDataEventArgs args, int w, double h)
+        {
+            var result = new PlotData();
+            double scale = args.Output->stereo != 0 ? 0.5 : 1.0;
+            double baseL = args.Output->stereo != 0 ? 0.5f : 0.0f;
+            double baseR = (1.0f - (args.Output->max - args.Output->min)) / 2.0f;
+            result.l = MakeChannelData(args, args.Result->left, w, h, baseL, scale);
+            if (args.Output->stereo != 0) result.r = MakeChannelData(args, args.Result->right, w, h, baseR, 0.5);
+            return result;
+        }
+
+        static UIElement MakeContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
+        {
+            var result = new Grid();
+            var dock = new DockPanel();
+            var plot = app.Track.Synth.Plot;
+            dock.Add(GroupUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
+            dock.Add(MakePlotContent(app, text, foreground1, foreground2), Dock.Top);
+            var conv = new VisibilityConverter<int>(true, 1);
+            var binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
+            dock.SetBinding(UIElement.VisibilityProperty, binding);
+            result.Add(dock);
+            var off = MakeOff();
+            conv = new VisibilityConverter<int>(true, 0);
+            binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
+            off.SetBinding(UIElement.VisibilityProperty, binding);
+            result.Add(off);
+            return result;
+        }
+
+        static UIElement MakePlotContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
+        {
+            var synth = app.Track.Synth;
+            var dock = new DockPanel();
+            var result = Create.ThemedContent(dock);
+            var content = dock.Add(new ContentControl());
+            _update = () => Update(app, text, content, foreground1, foreground2);
+            synth.ParamChanged += (s, e) => _update();
+            content.SizeChanged += (s, e) => _update();
+            app.Settings.PropertyChanged += (s, e) => _update();
+            app.Track.Seq.Edit.Bpm.PropertyChanged += (s, e) => _update();
+            result.SetResourceReference(Border.BorderBrushProperty, Utility.BorderParamKey);
+            result.BorderThickness = new(GroupUI.BorderThickness, 0.0, GroupUI.BorderThickness, GroupUI.BorderThickness);
+            return result;
+        }
+
+        static PointCollection MakeChannelData(RequestPlotDataEventArgs args, float* samples, int w, double h, double @base, double scale)
+        {
+            int width = w - PadLeft;
+            double hPad = h - PadBottom;
+            var result = new PointCollection();
+            for (int i = 0; i <= width; i++)
+            {
+                var xScreen = (double)i / width;
+                var xSample = xScreen * (args.Result->sampleCount - 1);
+                var weight = xSample - (int)xSample;
+                var x1 = (int)Math.Ceiling(xSample);
+                var y0 = (1.0 - weight) * samples[(int)xSample];
+                var y1 = weight * samples[x1];
+                var y = @base + scale * (y0 + y1);
+                var yScreen = (1.0f - MaxLevel) * hPad + (1.0 - y) * MaxLevel * hPad;
+                var l = PadLeft + xScreen * (w - PadLeft);
+                if (args.Output->max - args.Output->min == 0.0f)
+                    throw new InvalidOperationException();
+                Point p = new Point(l, VPadText + yScreen / (args.Output->max - args.Output->min));
+                if (double.IsNaN(p.X) || double.IsNaN(p.Y))
+                    throw new InvalidOperationException();
+                result.Add(p);
+            }
+            return result;
+        }
+
         static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2)
         {
             if (_updating) return;
@@ -195,55 +194,80 @@ namespace Xt.Synth0.UI
                 container.Content = Off;
                 return;
             }
-            int w = (int)container.ActualWidth;
             double h = container.ActualHeight;
-            Args.Pixels = w - PadLeft;
-            RequestPlotData?.Invoke(null, Args);
-            container.Content = Args.LSamples.Count > 0 ? Plot(w, h, Args.Min, Args.Max, foreground1, foreground2) : Off;
+            int w = (int)container.ActualWidth;
+            var args = new RequestPlotDataEventArgs(w - PadLeft);
             text.Text = null;
-            if (Args.LSamples.Count == 0) return;
-            string header = $"{Args.LSamples.Count} samples";
-            if (Args.Frequency != 0.0f) header += $" @ {Args.Frequency.ToString("N1")}Hz";
-            if (Args.Clip) header += " (Clip)";
+            container.Content = Off;
+            RequestPlotData?.Invoke(null, args);
+            if (args.Result->sampleCount == 0) return;
+            container.Content = Plot(args, w, h, foreground1, foreground2);
+            string header = $"{args.Result->sampleCount} samples";
+            if (args.Output->frequency != 0.0f) header += $" @ {args.Output->frequency.ToString("N1")}Hz";
+            if (args.Output->clip != 0) header += " (Clip)";
             text.Text = header;
         }
 
-        static UIElement Plot(int w, double h, float min, float max, Brush foreground1, Brush foreground2)
+        static IList<UIElement> MakeHorizontalMarkers(RequestPlotDataEventArgs args, int w, double h, Brush foreground2)
         {
-            var result = new Canvas();
-            double hPad = h - PadBottom;
-            var data = MakePlotData(w, h, min, max);
-            result.VerticalAlignment = VerticalAlignment.Stretch;
-            result.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-            for (int i = 0; i < Args.VSplitVals.Count; i++)
+            var result = new List<UIElement>();
+            int sampleCount = args.Result->sampleCount;
+            for (int i = 0; i < args.Result->horizontalCount; i++)
             {
-                double pos = (Args.VSplitVals[i] - min) / (max - min);
-                double y = VPadText + pos * hPad;
-                result.Add(Split(PadLeft, w, y, y, foreground2));
-                result.Add(Marker(0, pos * hPad, Args.VSplitMarkers[i].PadLeft(4)));
-            }
-
-            for (int i = 0; i < Args.HSplitVals.Count; i++)
-            {
-                double pos = Args.HSplitVals[i] / (Args.LSamples.Count - 1.0);
+                double pos = args.Result->horizontalPositions[i] / (sampleCount - 1.0);
                 double l = PadLeft + pos * (w - PadLeft);
                 result.Add(Split(l, l, VPadText, VPadText + h - PadBottom, foreground2));
-                result.Add(Marker(l - HPadText, h - PadBottom + VPadText, Args.HSplitMarkers[i]));
+                result.Add(Marker(l - HPadText, h - PadBottom + VPadText, args.Result->HorizontalText(i)));
             }
+            return result;
+        }
 
-            if (!Args.Spectrum)
+        static IList<UIElement> MakeVerticalMarkers(RequestPlotDataEventArgs args, int w, double h, Brush foreground2)
+        {
+            double hPad = h - PadBottom;
+            float max = args.Output->max;
+            float min = args.Output->min;
+            var result = new List<UIElement>();
+            for (int i = 0; i < args.Result->verticalCount; i++)
             {
-                result.Add(PlotLine(data.l, foreground1));
-                if (Args.Stereo) result.Add(PlotLine(data.r, foreground1));
+                double pos = (args.Result->verticalPositions[i] - min) / (max - min);
+                double y = VPadText + pos * hPad;
+                result.Add(Split(PadLeft, w, y, y, foreground2));
+                result.Add(Marker(0, pos * hPad, args.Result->VerticalText(i).PadLeft(4)));
             }
-            else
-                for (int i = 0; i < data.l.Count; i++)
-                {
-                    double @baseL = Args.Stereo ? 0.5 : 1.0;
-                    result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, @baseL, foreground1));
-                    if (Args.Stereo) result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count, 1.0, foreground1));
-                }
+            return result;
+        }
+
+        static IList<UIElement> MakeAudioPlot(RequestPlotDataEventArgs args, PlotData data, Brush foreground1)
+        {
+            var result = new List<UIElement>();
+            result.Add(PlotLine(data.l, foreground1));
+            if (args.Output->stereo != 0) result.Add(PlotLine(data.r, foreground1));
+            return result;
+        }
+
+        static IList<UIElement> MakeSpectrumPlot(RequestPlotDataEventArgs args, PlotData data, int w, double h, Brush foreground1)
+        {
+            var result = new List<UIElement>();
+            for (int i = 0; i < data.l.Count; i++)
+            {
+                double @baseL = args.Output->stereo != 0 ? 0.5 : 1.0;
+                result.Add(PlotBar(data.l[i], h, (double)w / data.l.Count, @baseL, foreground1));
+                if (args.Output->stereo != 0) result.Add(PlotBar(data.r[i], h, (double)w / data.r.Count, 1.0, foreground1));
+            }
+            return result;
+        }
+
+        static UIElement Plot(RequestPlotDataEventArgs args, int w, double h, Brush foreground1, Brush foreground2)
+        {
+            var result = new Canvas();
+            var data = MakePlotData(args, w, h);
+            result.VerticalAlignment = VerticalAlignment.Stretch;
+            result.HorizontalAlignment = HorizontalAlignment.Stretch;
+            result.AddRange(MakeVerticalMarkers(args, w, h, foreground2));
+            result.AddRange(MakeHorizontalMarkers(args, w, h, foreground2));
+            if (args.Output->spectrum == 0) result.AddRange(MakeAudioPlot(args, data, foreground1));
+            else result.AddRange(MakeSpectrumPlot(args, data, w, h, foreground1));
             return result;
         }
     }
