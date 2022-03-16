@@ -63,7 +63,10 @@ namespace Xt.Synth0
             return new ReadOnlyCollection<DeviceModel>(result);
         }
 
-        float* _buffer;
+        StreamModel _streamUI;
+        IAudioStream _audioStream;
+        Native.XtsSequencer* _sequencer;
+
         int _cpuUsageIndex;
         double[] _cpuUsageFactors;
         int[] _cpuUsageFrameCounts;
@@ -80,10 +83,6 @@ namespace Xt.Synth0
         readonly SynthModel _localSynth = new();
         readonly SynthModel _originalSynth = new();
         readonly StreamModel _localStream = new(false);
-
-        StreamModel _streamUI;
-        IAudioStream _audioStream;
-        Native.XtsSequencer* _sequencer;
 
         long _clipPosition = -1;
         long _cpuUsagePosition = -1;
@@ -218,8 +217,6 @@ namespace Xt.Synth0
             _sequencer = null;
             _stopwatch.Reset();
 
-            Marshal.FreeHGlobal(new IntPtr(_buffer));
-            _buffer = null;
             _clipPosition = -1;
             _overloadPosition = -1;
             _cpuUsagePosition = -1;
@@ -259,7 +256,6 @@ namespace Xt.Synth0
                 _cpuUsageTotalFrameCount = 0;
                 _cpuUsageFactors = new double[format.mix.rate];
                 _cpuUsageFrameCounts = new int[format.mix.rate];
-                _buffer = (float*)Marshal.AllocHGlobal(_audioStream.GetMaxBufferFrames() * sizeof(float) * 2);
                 UpdateStreamInfo(0, format.mix.rate, 0, false, false, 0);
                 _sequencer = Native.XtsSequencerCreate(SynthConfig.ParamCount, _audioStream.GetMaxBufferFrames(), format.mix.rate);
                 seq.ToNative(&_sequencer->model);
@@ -368,44 +364,44 @@ namespace Xt.Synth0
             }
         }
 
-        void CopyBuffer(in XtBuffer buffer, in XtFormat format)
+        void CopyBuffer(in XtBuffer buffer, in XtFormat format, float* output)
         {
             switch (format.mix.sample)
             {
-                case XtSample.Int16: CopyBuffer16(buffer); break;
-                case XtSample.Int24: CopyBuffer24(buffer); break;
-                case XtSample.Int32: CopyBuffer32(buffer); break;
+                case XtSample.Int16: CopyBuffer16(buffer, output); break;
+                case XtSample.Int24: CopyBuffer24(buffer, output); break;
+                case XtSample.Int32: CopyBuffer32(buffer, output); break;
                 default: throw new InvalidOperationException();
             }
         }
 
-        unsafe void CopyBuffer32(in XtBuffer buffer)
+        unsafe void CopyBuffer32(in XtBuffer buffer, float* output)
         {
             int* samples = (int*)buffer.output;
             for (int f = 0; f < buffer.frames; f++)
             {
-                samples[f * 2] = (int)(_buffer[f * 2] * int.MaxValue);
-                samples[f * 2 + 1] = (int)(_buffer[f * 2 + 1] * int.MaxValue);
+                samples[f * 2] = (int)(output[f * 2] * int.MaxValue);
+                samples[f * 2 + 1] = (int)(output[f * 2 + 1] * int.MaxValue);
             }
         }
 
-        unsafe void CopyBuffer16(in XtBuffer buffer)
+        unsafe void CopyBuffer16(in XtBuffer buffer, float* output)
         {
             short* samples = (short*)buffer.output;
             for (int f = 0; f < buffer.frames; f++)
             {
-                samples[f * 2] = (short)(_buffer[f * 2] * short.MaxValue);
-                samples[f * 2 + 1] = (short)(_buffer[f * 2 + 1] * short.MaxValue);
+                samples[f * 2] = (short)(output[f * 2] * short.MaxValue);
+                samples[f * 2 + 1] = (short)(output[f * 2 + 1] * short.MaxValue);
             }
         }
 
-        unsafe void CopyBuffer24(in XtBuffer buffer)
+        unsafe void CopyBuffer24(in XtBuffer buffer, float* output)
         {
             byte* bytes = (byte*)buffer.output;
             for (int f = 0; f < buffer.frames; f++)
             {
-                int left = (int)(_buffer[f * 2] * int.MaxValue);
-                int right = (int)(_buffer[f * 2 + 1] * int.MaxValue);
+                int left = (int)(output[f * 2] * int.MaxValue);
+                int right = (int)(output[f * 2 + 1] * int.MaxValue);
                 bytes[f * 6 + 0] = (byte)((left & 0x0000FF00) >> 8);
                 bytes[f * 6 + 1] = (byte)((left & 0x00FF0000) >> 16);
                 bytes[f * 6 + 2] = (byte)((left & 0xFF000000) >> 24);
@@ -440,7 +436,7 @@ namespace Xt.Synth0
             BeginAutomation();
             var output = Native.XtsSequencerRender(_sequencer, buffer.frames);
             EndAutomation();
-            CopyBuffer(in buffer, in format);
+            CopyBuffer(in buffer, in format, output->buffer);
             ResetWarnings(format.mix.rate, output->position);
             _localStream.CurrentRow = output->row;
             _stopwatch.Stop();
