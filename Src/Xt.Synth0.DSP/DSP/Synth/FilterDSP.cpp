@@ -158,14 +158,6 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
   for(int i = 1; i < 3; i++) s.a[i] = Sanity(s.a[i] / s.a[0]);
 }
 
-static FloatSample
-GenerateBiquad(FloatSample audio, BiquadState& s)
-{
-  s.x.Push(audio.ToDouble());
-  s.y.Push(s.x.Get(0) * s.b[0] + s.x.Get(1) * s.b[1] + s.x.Get(2) * s.b[2] - s.y.Get(0) * s.a[1] - s.y.Get(1) * s.a[2]);
-  return s.y.Get(0).ToFloat().Sanity();
-}
-
 static void
 InitComb(FilterModel const& m, float rate, CombState& s)
 {
@@ -179,22 +171,14 @@ InitComb(FilterModel const& m, float rate, CombState& s)
   assert(s.plusDelay < COMB_DELAY_MAX_SAMPLES);
 }
 
-static FloatSample
-GenerateComb(FloatSample audio, CombState& s)
-{
-  s.y.Push(audio + s.x.Get(s.plusDelay) * s.plusGain + s.y.Get(s.minDelay) * s.minGain);
-  s.x.Push(audio);
-  return s.y.Get(0).Sanity();
-}
-
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate):
 FilterDSP()
 {
   _index = index;
   _model = model;
-  _modAmount1 = Param::Mix(model->mod1.amount);
-  _modAmount2 = Param::Mix(model->mod2.amount);
+  _mod1 = ModDSP(model->mod1);
+  _mod2 = ModDSP(model->mod2);
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
@@ -210,15 +194,35 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   if (!_model->on) return _output;
+  CvSample modulator1 = _mod1.Modulator(cv);
+  CvSample modulator2 = _mod2.Modulator(cv);
   for (int i = 0; i < _index; i++) _output += audio.filters[i] * _filterAmount[i];
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * _unitAmount[i];
   switch (_model->type)
   {
-  case FilterType::Comb: _output = GenerateComb(_output, _state.comb); break;
-  case FilterType::Biquad: _output = GenerateBiquad(_output, _state.biquad); break;
+  case FilterType::Comb: _output = GenerateComb(modulator1, modulator2); break;
+  case FilterType::Biquad: _output = GenerateBiquad(modulator1, modulator2); break;
   default: assert(false); break;
   }
   return _output.Sanity();
+}
+
+FloatSample
+FilterDSP::GenerateComb(CvSample modulator1, CvSample modulator2)
+{
+  auto& s = _state.comb;
+  s.y.Push(_output + s.x.Get(s.plusDelay) * s.plusGain + s.y.Get(s.minDelay) * s.minGain);
+  s.x.Push(_output);
+  return s.y.Get(0).Sanity();
+}
+
+FloatSample
+FilterDSP::GenerateBiquad(CvSample modulator1, CvSample modulator2)
+{
+  auto& s = _state.biquad;
+  s.x.Push(_output.ToDouble());
+  s.y.Push(s.x.Get(0) * s.b[0] + s.x.Get(1) * s.b[1] + s.x.Get(2) * s.b[2] - s.y.Get(0) * s.a[1] - s.y.Get(1) * s.a[2]);
+  return s.y.Get(0).ToFloat().Sanity();
 }
 
 } // namespace Xts

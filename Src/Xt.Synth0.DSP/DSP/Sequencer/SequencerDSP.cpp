@@ -14,7 +14,7 @@ SequencerDSP::Next(float rate)
   FloatSample result = { 0 };
   SequencerMove move = Move(rate);  
   if (move == SequencerMove::Next)
-    _output.exhausted |= Trigger(rate);
+    _output.exhausted |= (Trigger(rate)? XtsTrue: XtsFalse);
   else if(move == SequencerMove::End)
     for(int k = 0; k < XTS_SEQUENCER_MAX_KEYS; k++)
       if (_active[k] != -1) _dsps[_active[k]].Release();  
