@@ -1,36 +1,17 @@
 hard sync
 sampler
-automation groups
-detach sequencer
 multiple synths + select target in sequencer
-notifyparamchange + recalc + param interpolation
-random lfo
-noise generator
 filter lfos
-lfo NOT key sync
-init/update(Model) -> do logs at start of env
 global (not per-voice) stuff: lfos, filters, envelopes
-reconsider automating running voices
-init with streampos / derive stuff from streampos ?
 xtaudio use iaudioclient->reset
-niet zomaar het model eroverheen kopieren zonder de state te updaten
-dump stacktrace
+update running voice
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
-show routing in ui
-make it faster
 if(unit1>0 etc)
-dont need to recalc filter parameters per voice
-plot filter freq response
-more filter types
-more unit types
+more filter/unit/lfo types
 filter keyboard track
 filter modulation - how ?
-cleanup native includes / split files / etc
-paraminfobuilder
 handle stream stopped with error
-sin+cos env slopes?
 thread processor core affinity
 dont use CAS queue on audio thread
 rewrite to not use begininvoke on audio thread, make another queue
-spec with hz for lfo
