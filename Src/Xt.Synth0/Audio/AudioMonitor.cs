@@ -6,31 +6,6 @@ namespace Xt.Synth0
 {
     unsafe class AudioMonitor
     {
-        struct Flag
-        {
-            internal bool Value;
-            internal long Position;
-
-            internal void Clear()
-            {
-                Value = false;
-                Position = 0;
-            }
-
-            internal void Update(bool value, long position)
-            {
-                if (!value) return;
-                Value = true;
-                Position = position;
-            }
-
-            internal void Reset(int rate, long position)
-            {
-                float frames = InfoDurationSeconds * rate;
-                if (position > Position + frames) Value = false;
-            }
-        }
-
         const float OverloadLimit = 0.9f;
         const float InfoDurationSeconds = 0.5f;
         const float CpuUsageUpdateIntervalSeconds = 1.0f;
@@ -42,13 +17,11 @@ namespace Xt.Synth0
         int _cpuUsageTotalFrameCount;
         readonly StreamModel _localStream = new(false);
 
-        Flag _clip;
-        Flag _overload;
-        Flag _exhausted;
-        Flag[] _gc = new Flag[3];
-
+        long _clipPosition = -1;
         long _cpuUsagePosition = -1;
+        long _overloadPosition = -1;
         long _voiceInfoPosition = -1;
+        long _exhaustedPosition = -1;
         long _bufferInfoPosition = -1;
         readonly long[] _gcPositions = new long[3];
         readonly bool[] _gcCollecteds = new bool[3];
@@ -61,22 +34,19 @@ namespace Xt.Synth0
 
         internal void CopyStreamToUI(StreamModel streamUI)
         {
-            if (streamUI == null) return;
-            _localStream.CopyTo(streamUI);
-            _localStream.IsClipping = _clip.Value;
-            _localStream.IsExhausted = _exhausted.Value;
-            _localStream.IsOverloaded = _overload.Value;
+            if (streamUI != null)
+                _localStream.CopyTo(streamUI);
         }
 
         internal void Stop()
         {
             _stopwatch.Reset();
             _cpuUsageIndex = 0;
-            _clip.Clear();
-            _overload.Clear();
-            _exhausted.Clear();
+            _clipPosition = -1;
+            _overloadPosition = -1;
             _cpuUsagePosition = -1;
             _voiceInfoPosition = -1;
+            _exhaustedPosition = -1;
             _bufferInfoPosition = -1;
             _cpuUsageFactors = null;
             _cpuUsageFrameCounts = null;
@@ -99,20 +69,20 @@ namespace Xt.Synth0
             UpdateInfo(stream, &output, 0, format.mix.rate);
         }
 
-        void UpdateFlags(int rate, long position)
+        void ResetWarnings(int rate, long streamPosition)
         {
-            _clip.Reset(rate, position);
-            _overload.Reset(rate, position);
-            _exhausted.Reset(rate, position);
             float infoFrames = InfoDurationSeconds * rate;
-            if (position > _gcPositions[0] + infoFrames) _localStream.GC0Collected = false;
-            if (position > _gcPositions[1] + infoFrames) _localStream.GC1Collected = false;
-            if (position > _gcPositions[2] + infoFrames) _localStream.GC2Collected = false;
+            if (streamPosition > _clipPosition + infoFrames) _localStream.IsClipping = false;
+            if (streamPosition > _gcPositions[0] + infoFrames) _localStream.GC0Collected = false;
+            if (streamPosition > _gcPositions[1] + infoFrames) _localStream.GC1Collected = false;
+            if (streamPosition > _gcPositions[2] + infoFrames) _localStream.GC2Collected = false;
+            if (streamPosition > _overloadPosition + infoFrames) _localStream.IsOverloaded = false;
+            if (streamPosition > _exhaustedPosition + infoFrames) _localStream.IsExhausted = false;
         }
 
         internal void EndBuffer(IAudioStream stream, in XtFormat format, Native.SequencerOutput* output, int frames)
         {
-            UpdateFlags(format.mix.rate, output->position);
+            ResetWarnings(format.mix.rate, output->position);
             _localStream.CurrentRow = output->row;
             _stopwatch.Stop();
             UpdateCpuUsage(frames, format.mix.rate, output->position);
@@ -123,9 +93,16 @@ namespace Xt.Synth0
         {
             float bufferSeconds = frames / (float)rate;
             var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
-            _clip.Update(output->clip != 0, output->position);
-            _exhausted.Update(output->exhausted != 0, output->position);
-            _overload.Update(processedSeconds > bufferSeconds * OverloadLimit, output->position);
+            if (output->clip != 0)
+            {
+                _localStream.IsClipping = true;
+                _clipPosition = output->position;
+            }
+            if (output->exhausted != 0)
+            {
+                _localStream.IsExhausted = true;
+                _exhaustedPosition = output->position;
+            }
             if (_gcCollecteds[0])
             {
                 _gcCollecteds[0] = false;
@@ -143,6 +120,11 @@ namespace Xt.Synth0
                 _gcCollecteds[2] = false;
                 _localStream.GC2Collected = true;
                 _gcPositions[2] = output->position;
+            }
+            if (processedSeconds > bufferSeconds * OverloadLimit)
+            {
+                _overloadPosition = output->position;
+                _localStream.IsOverloaded = true;
             }
             if (_bufferInfoPosition == -1 || output->position >=
                 _bufferInfoPosition + rate * InfoDurationSeconds)
