@@ -17,17 +17,17 @@ namespace Xt.Synth0
                 Position = 0;
             }
 
+            internal void Reset(int rate, long position)
+            {
+                float frames = InfoDurationSeconds * rate;
+                if (position > Position + frames) Value = false;
+            }
+
             internal void Update(bool value, long position)
             {
                 if (!value) return;
                 Value = true;
                 Position = position;
-            }
-
-            internal void Reset(int rate, long position)
-            {
-                float frames = InfoDurationSeconds * rate;
-                if (position > Position + frames) Value = false;
             }
         }
 
@@ -46,35 +46,42 @@ namespace Xt.Synth0
         Flag _overload;
         Flag _exhausted;
         Flag[] _gc = new Flag[3];
+        bool[] _gcNotification = new bool[3];
 
         long _cpuUsagePosition = -1;
         long _voiceInfoPosition = -1;
         long _bufferInfoPosition = -1;
-        readonly long[] _gcPositions = new long[3];
-        readonly bool[] _gcCollecteds = new bool[3];
         readonly Stopwatch _stopwatch = new Stopwatch();
 
         internal void BeginBuffer() => _stopwatch.Restart();
         internal void Pause() => _localStream.State = StreamState.Paused;
         internal void Resume() => _localStream.State = StreamState.Running;
-        internal void OnGCNotification(int generation) => _gcCollecteds[generation] = true;
+        internal void OnGCNotification(int generation) => _gcNotification[generation] = true;
 
         internal void CopyStreamToUI(StreamModel streamUI)
         {
             if (streamUI == null) return;
             _localStream.CopyTo(streamUI);
-            _localStream.IsClipping = _clip.Value;
-            _localStream.IsExhausted = _exhausted.Value;
-            _localStream.IsOverloaded = _overload.Value;
+            streamUI.IsClipping = _clip.Value;
+            streamUI.GC0Collected = _gc[0].Value;
+            streamUI.GC1Collected = _gc[1].Value;
+            streamUI.GC2Collected = _gc[2].Value;
+            streamUI.IsExhausted = _exhausted.Value;
+            streamUI.IsOverloaded = _overload.Value;
         }
 
         internal void Stop()
         {
             _stopwatch.Reset();
-            _cpuUsageIndex = 0;
             _clip.Clear();
             _overload.Clear();
             _exhausted.Clear();
+            for (int i = 0; i < _gc.Length; i++)
+            {
+                _gc[i].Clear();
+                _gcNotification[i] = false;
+            }
+            _cpuUsageIndex = 0;
             _cpuUsagePosition = -1;
             _voiceInfoPosition = -1;
             _bufferInfoPosition = -1;
@@ -82,11 +89,6 @@ namespace Xt.Synth0
             _cpuUsageFrameCounts = null;
             _cpuUsageTotalFrameCount = 0;
             new StreamModel(false).CopyTo(_localStream);
-            for (int i = 0; i < _gcPositions.Length; i++)
-            {
-                _gcPositions[i] = -1;
-                _gcCollecteds[i] = false;
-            }
         }
 
         internal void Start(IAudioStream stream, in XtFormat format)
@@ -99,20 +101,17 @@ namespace Xt.Synth0
             UpdateInfo(stream, &output, 0, format.mix.rate);
         }
 
-        void UpdateFlags(int rate, long position)
+        void ResetFlags(int rate, long position)
         {
             _clip.Reset(rate, position);
             _overload.Reset(rate, position);
             _exhausted.Reset(rate, position);
-            float infoFrames = InfoDurationSeconds * rate;
-            if (position > _gcPositions[0] + infoFrames) _localStream.GC0Collected = false;
-            if (position > _gcPositions[1] + infoFrames) _localStream.GC1Collected = false;
-            if (position > _gcPositions[2] + infoFrames) _localStream.GC2Collected = false;
+            for (int i = 0; i < _gc.Length; i++) _gc[i].Reset(rate, position);
         }
 
         internal void EndBuffer(IAudioStream stream, in XtFormat format, Native.SequencerOutput* output, int frames)
         {
-            UpdateFlags(format.mix.rate, output->position);
+            ResetFlags(format.mix.rate, output->position);
             _localStream.CurrentRow = output->row;
             _stopwatch.Stop();
             UpdateCpuUsage(frames, format.mix.rate, output->position);
@@ -123,27 +122,15 @@ namespace Xt.Synth0
         {
             float bufferSeconds = frames / (float)rate;
             var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+            for(int i = 0; i < _gc.Length; i++)
+                if(_gcNotification[i])
+                {
+                    _gcNotification[i] = false;
+                    _gc[i].Update(true, output->position);
+                }
             _clip.Update(output->clip != 0, output->position);
             _exhausted.Update(output->exhausted != 0, output->position);
             _overload.Update(processedSeconds > bufferSeconds * OverloadLimit, output->position);
-            if (_gcCollecteds[0])
-            {
-                _gcCollecteds[0] = false;
-                _localStream.GC0Collected = true;
-                _gcPositions[0] = output->position;
-            }
-            if (_gcCollecteds[1])
-            {
-                _gcCollecteds[1] = false;
-                _localStream.GC1Collected = true;
-                _gcPositions[1] = output->position;
-            }
-            if (_gcCollecteds[2])
-            {
-                _gcCollecteds[2] = false;
-                _localStream.GC2Collected = true;
-                _gcPositions[2] = output->position;
-            }
             if (_bufferInfoPosition == -1 || output->position >=
                 _bufferInfoPosition + rate * InfoDurationSeconds)
             {
