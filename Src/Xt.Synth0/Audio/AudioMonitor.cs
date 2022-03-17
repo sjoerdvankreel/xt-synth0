@@ -65,7 +65,8 @@ namespace Xt.Synth0
             _cpuUsageTotalFrameCount = 0;
             _cpuUsageFactors = new double[format.mix.rate];
             _cpuUsageFrameCounts = new int[format.mix.rate];
-            UpdateInfo(stream, 0, format.mix.rate, 0, false, false, 0);
+            Native.SequencerOutput output;
+            UpdateInfo(stream, &output, 0, format.mix.rate);
         }
 
         void ResetWarnings(int rate, long streamPosition)
@@ -85,63 +86,61 @@ namespace Xt.Synth0
             _localStream.CurrentRow = output->row;
             _stopwatch.Stop();
             UpdateCpuUsage(frames, format.mix.rate, output->position);
-            bool clip = output->clip != 0;
-            bool exhausted = output->exhausted != 0;
-            UpdateInfo(stream, frames, format.mix.rate, output->voices, clip, exhausted, output->position);
+            UpdateInfo(stream, output, frames, format.mix.rate);
         }
 
-        internal void UpdateInfo(IAudioStream stream, int frames, int rate, int voices, bool clip, bool exhausted, long position)
+        internal void UpdateInfo(IAudioStream stream, Native.SequencerOutput* output, int frames, int rate)
         {
             float bufferSeconds = frames / (float)rate;
             var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
-            if (clip)
+            if (output->clip != 0)
             {
                 _localStream.IsClipping = true;
-                _clipPosition = position;
+                _clipPosition = output->position;
             }
-            if (exhausted)
+            if (output->exhausted != 0)
             {
                 _localStream.IsExhausted = true;
-                _exhaustedPosition = position;
+                _exhaustedPosition = output->position;
             }
             if (_gcCollecteds[0])
             {
                 _gcCollecteds[0] = false;
                 _localStream.GC0Collected = true;
-                _gcPositions[0] = position;
+                _gcPositions[0] = output->position;
             }
             if (_gcCollecteds[1])
             {
                 _gcCollecteds[1] = false;
                 _localStream.GC1Collected = true;
-                _gcPositions[1] = position;
+                _gcPositions[1] = output->position;
             }
             if (_gcCollecteds[2])
             {
                 _gcCollecteds[2] = false;
                 _localStream.GC2Collected = true;
-                _gcPositions[2] = position;
+                _gcPositions[2] = output->position;
             }
             if (processedSeconds > bufferSeconds * OverloadLimit)
             {
-                _overloadPosition = position;
+                _overloadPosition = output->position;
                 _localStream.IsOverloaded = true;
             }
-            if (_bufferInfoPosition == -1 || position >=
+            if (_bufferInfoPosition == -1 || output->position >=
                 _bufferInfoPosition + rate * InfoDurationSeconds)
             {
-                _bufferInfoPosition = position;
+                _bufferInfoPosition = output->position;
                 _localStream.LatencyMs = stream.GetLatencyMs();
                 _localStream.BufferSizeFrames = stream.GetMaxBufferFrames();
             }
-            if (position >= _voiceInfoPosition + rate * InfoDurationSeconds)
+            if (output->position >= _voiceInfoPosition + rate * InfoDurationSeconds)
             {
-                _voiceInfoPosition = position;
-                _localStream.Voices = voices;
+                _voiceInfoPosition = output->position;
+                _localStream.Voices = output->voices;
             }
         }
 
-        internal void UpdateCpuUsage(int frames, int rate, long streamPosition)
+        internal void UpdateCpuUsage(int frames, int rate, long position)
         {
             float bufferSeconds = frames / (float)rate;
             var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
@@ -161,10 +160,10 @@ namespace Xt.Synth0
             for (int i = 0; i <= _cpuUsageIndex; i++)
                 cpuUsage += _cpuUsageFactors[i] * _cpuUsageFrameCounts[i] / _cpuUsageTotalFrameCount;
             _cpuUsageIndex++;
-            if (streamPosition > _cpuUsagePosition + CpuUsageUpdateIntervalSeconds * rate)
+            if (position > _cpuUsagePosition + CpuUsageUpdateIntervalSeconds * rate)
             {
                 _localStream.CpuUsage = cpuUsage;
-                _cpuUsagePosition = streamPosition;
+                _cpuUsagePosition = position;
             }
         }
     }

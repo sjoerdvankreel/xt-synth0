@@ -321,7 +321,6 @@ namespace Xt.Synth0
                     else
                         _audioStream = OpenDeviceStream(in deviceParams);
                 _monitor.Start(_audioStream, in format);
-                _monitor.UpdateInfo(_audioStream, 0, format.mix.rate, 0, false, false, 0);
                 _sequencer = Native.XtsSequencerCreate(SynthConfig.ParamCount, _audioStream.GetMaxBufferFrames(), format.mix.rate);
                 seq.ToNative(&_sequencer->model);
                 _synth.BindVoice(&_sequencer->synth, &_sequencer->binding);
