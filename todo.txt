@@ -12,6 +12,3 @@ more filter/unit/lfo types
 filter keyboard track
 filter modulation - how ?
 handle stream stopped with error
-thread processor core affinity
-dont use CAS queue on audio thread
-rewrite to not use begininvoke on audio thread, make another queue
