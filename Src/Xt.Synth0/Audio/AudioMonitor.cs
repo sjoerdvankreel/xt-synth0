@@ -31,11 +31,18 @@ namespace Xt.Synth0
         internal void Pause() => _localStream.State = StreamState.Paused;
         internal void Resume() => _localStream.State = StreamState.Running;
         internal void OnGCNotification(int generation) => _gcCollecteds[generation] = true;
+        void UpdateFlag(bool _, ref long position, long newPosition) => position = newPosition;
 
         internal void CopyStreamToUI(StreamModel streamUI)
         {
             if (streamUI != null)
                 _localStream.CopyTo(streamUI);
+        }
+
+        void UpdateGCFlag(bool _, int generation, long position)
+        {
+            _gcCollecteds[generation] = false;
+            _gcPositions[generation] = position;
         }
 
         internal void Stop()
@@ -89,57 +96,6 @@ namespace Xt.Synth0
             UpdateInfo(stream, output, frames, format.mix.rate);
         }
 
-        internal void UpdateInfo(IAudioStream stream, Native.SequencerOutput* output, int frames, int rate)
-        {
-            float bufferSeconds = frames / (float)rate;
-            var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
-            if (output->clip != 0)
-            {
-                _localStream.IsClipping = true;
-                _clipPosition = output->position;
-            }
-            if (output->exhausted != 0)
-            {
-                _localStream.IsExhausted = true;
-                _exhaustedPosition = output->position;
-            }
-            if (_gcCollecteds[0])
-            {
-                _gcCollecteds[0] = false;
-                _localStream.GC0Collected = true;
-                _gcPositions[0] = output->position;
-            }
-            if (_gcCollecteds[1])
-            {
-                _gcCollecteds[1] = false;
-                _localStream.GC1Collected = true;
-                _gcPositions[1] = output->position;
-            }
-            if (_gcCollecteds[2])
-            {
-                _gcCollecteds[2] = false;
-                _localStream.GC2Collected = true;
-                _gcPositions[2] = output->position;
-            }
-            if (processedSeconds > bufferSeconds * OverloadLimit)
-            {
-                _overloadPosition = output->position;
-                _localStream.IsOverloaded = true;
-            }
-            if (_bufferInfoPosition == -1 || output->position >=
-                _bufferInfoPosition + rate * InfoDurationSeconds)
-            {
-                _bufferInfoPosition = output->position;
-                _localStream.LatencyMs = stream.GetLatencyMs();
-                _localStream.BufferSizeFrames = stream.GetMaxBufferFrames();
-            }
-            if (output->position >= _voiceInfoPosition + rate * InfoDurationSeconds)
-            {
-                _voiceInfoPosition = output->position;
-                _localStream.Voices = output->voices;
-            }
-        }
-
         internal void UpdateCpuUsage(int frames, int rate, long position)
         {
             float bufferSeconds = frames / (float)rate;
@@ -164,6 +120,29 @@ namespace Xt.Synth0
             {
                 _localStream.CpuUsage = cpuUsage;
                 _cpuUsagePosition = position;
+            }
+        }
+
+        internal void UpdateInfo(IAudioStream stream, Native.SequencerOutput* output, int frames, int rate)
+        {
+            float bufferSeconds = frames / (float)rate;
+            var processedSeconds = _stopwatch.Elapsed.TotalSeconds;
+            if (_gcCollecteds[0]) UpdateGCFlag(_localStream.GC0Collected = true, 0, output->position);
+            if (_gcCollecteds[0]) UpdateGCFlag(_localStream.GC1Collected = true, 1, output->position);
+            if (_gcCollecteds[0]) UpdateGCFlag(_localStream.GC2Collected = true, 2, output->position);
+            if (output->clip != 0) UpdateFlag(_localStream.IsClipping = true, ref _clipPosition, output->position);
+            if (output->exhausted != 0) UpdateFlag(_localStream.IsExhausted = true, ref _exhaustedPosition, output->position);
+            if (processedSeconds > bufferSeconds * OverloadLimit) UpdateFlag(_localStream.IsOverloaded = true, ref _overloadPosition, output->position);
+            if (_bufferInfoPosition == -1 || output->position >= _bufferInfoPosition + rate * InfoDurationSeconds)
+            {
+                _bufferInfoPosition = output->position;
+                _localStream.LatencyMs = stream.GetLatencyMs();
+                _localStream.BufferSizeFrames = stream.GetMaxBufferFrames();
+            }
+            if (output->position >= _voiceInfoPosition + rate * InfoDurationSeconds)
+            {
+                _voiceInfoPosition = output->position;
+                _localStream.Voices = output->voices;
             }
         }
     }
