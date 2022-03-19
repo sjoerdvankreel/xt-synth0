@@ -11,12 +11,12 @@ enum class BiquadType { LPF, HPF, BPF, BSF };
 
 enum class FilterModTarget
 { 
+  BiquadFrequency,
+  BiquadResonance,
   CombMinGain,
   CombPlusGain,
   CombMinDelay,
-  CombPlusDelay,
-  BiquadFrequency,
-  BiquadResonance
+  CombPlusDelay
 };
 
 struct XTS_ALIGN FilterModel

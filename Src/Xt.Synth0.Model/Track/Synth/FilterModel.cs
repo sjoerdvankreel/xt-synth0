@@ -9,12 +9,12 @@ namespace Xt.Synth0.Model
 
     public enum FilterModTarget
     {
+        BiquadFrequency,
+        BiquadResonance,
         CombMinGain,
         CombPlusGain,
         CombMinDelay,
-        CombPlusDelay,
-        BiquadFrequency,
-        BiquadResonance
+        CombPlusDelay
     };
 
     public unsafe sealed class FilterModel : IUIParamGroupModel

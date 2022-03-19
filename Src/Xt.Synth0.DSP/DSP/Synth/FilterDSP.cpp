@@ -209,7 +209,9 @@ FloatSample
 FilterDSP::GenerateComb()
 {
   auto& s = _state.comb;
-  s.y.Push(_output + s.x.Get(s.plusDelay) * s.plusGain + s.y.Get(s.minDelay) * s.minGain);
+  float minGain = _mods.Modulate(FilterModTarget::CombMinGain, { s.minGain , true });
+  float plusGain = _mods.Modulate(FilterModTarget::CombPlusGain, { s.plusGain , true });
+  s.y.Push(_output + s.x.Get(s.plusDelay) * plusGain + s.y.Get(s.minDelay) * minGain);
   s.x.Push(_output);
   return s.y.Get(0).Sanity();
 }
