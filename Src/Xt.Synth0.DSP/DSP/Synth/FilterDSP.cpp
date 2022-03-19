@@ -16,6 +16,7 @@
 #define BIQUAD_MIN_FREQ_HZ 20.0f
 #define BIQUAD_MAX_FREQ_HZ 10000.0f
 
+// https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
 // https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
 
