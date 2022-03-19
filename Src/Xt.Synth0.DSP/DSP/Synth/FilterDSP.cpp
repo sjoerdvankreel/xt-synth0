@@ -177,8 +177,7 @@ FilterDSP()
 {
   _index = index;
   _model = model;
-  _mod1 = ModDSP(model->mod1);
-  _mod2 = ModDSP(model->mod2);
+  _mods = ModsDSP(model->mods);
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
@@ -194,21 +193,20 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   if (!_model->on) return _output;
-  CvSample modulator1 = _mod1.Modulator(cv);
-  CvSample modulator2 = _mod2.Modulator(cv);
+  _mods.Next(cv);
   for (int i = 0; i < _index; i++) _output += audio.filters[i] * _filterAmount[i];
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * _unitAmount[i];
   switch (_model->type)
   {
-  case FilterType::Comb: _output = GenerateComb(modulator1, modulator2); break;
-  case FilterType::Biquad: _output = GenerateBiquad(modulator1, modulator2); break;
+  case FilterType::Comb: _output = GenerateComb(); break;
+  case FilterType::Biquad: _output = GenerateBiquad(); break;
   default: assert(false); break;
   }
   return _output.Sanity();
 }
 
 FloatSample
-FilterDSP::GenerateComb(CvSample modulator1, CvSample modulator2)
+FilterDSP::GenerateComb()
 {
   auto& s = _state.comb;
   s.y.Push(_output + s.x.Get(s.plusDelay) * s.plusGain + s.y.Get(s.minDelay) * s.minGain);
@@ -217,7 +215,7 @@ FilterDSP::GenerateComb(CvSample modulator1, CvSample modulator2)
 }
 
 FloatSample
-FilterDSP::GenerateBiquad(CvSample modulator1, CvSample modulator2)
+FilterDSP::GenerateBiquad()
 {
   auto& s = _state.biquad;
   s.x.Push(_output.ToDouble());

@@ -2,7 +2,7 @@
 #define XTS_MODEL_SYNTH_UNIT_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
-#include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/ModsModel.hpp>
 
 namespace Xts {
 
@@ -41,8 +41,7 @@ struct XTS_ALIGN UnitModel
   int32_t additiveRolloff;
   int32_t additivePartials;
 
-  ModModel<UnitModTarget> mod1;
-  ModModel<UnitModTarget> mod2;
+  ModsModel<UnitModTarget> mods;
 };
 XTS_CHECK_SIZE(UnitModel, 88);
 

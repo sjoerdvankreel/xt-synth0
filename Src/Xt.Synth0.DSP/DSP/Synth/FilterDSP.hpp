@@ -1,7 +1,7 @@
 #ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
-#include <DSP/Synth/ModDSP.hpp>
+#include <DSP/Synth/ModsDSP.hpp>
 #include <DSP/Shared/Config.hpp>
 #include <DSP/Shared/DelayBuffer.hpp>
 #include <DSP/Shared/AudioSample.hpp>
@@ -42,19 +42,18 @@ union FilterState
 class FilterDSP
 {
   int _index;
-  ModDSP _mod1;
-  ModDSP _mod2;
+  ModsDSP _mods;
   FilterState _state;
   FloatSample _output;
   struct FilterModel const* _model;
   float _unitAmount[XTS_SYNTH_UNIT_COUNT];
   float _filterAmount[XTS_SYNTH_FILTER_COUNT];
+private:
+  FloatSample GenerateComb();
+  FloatSample GenerateBiquad();
 public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);
-private:
-  FloatSample GenerateComb(CvSample modulator1, CvSample modulator2);
-  FloatSample GenerateBiquad(CvSample modulator1, CvSample modulator2);
 public:
   FloatSample Output() const { return _output; };
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);

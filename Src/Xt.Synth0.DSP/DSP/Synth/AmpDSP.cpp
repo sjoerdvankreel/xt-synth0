@@ -1,5 +1,4 @@
 #include <DSP/Shared/Param.hpp>
-#include <DSP/Shared/Modulate.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
@@ -62,9 +61,10 @@ FloatSample
 AmpDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
-  float lfo = Modulate({ _amp, false }, _ampMod.Modulator(cv), _ampMod.Amount());
-  _level = cv.envs[Env()].value * lfo;
-  float pan = BipolarToUnipolar1(Modulate({_panning, true}, _panMod.Modulator(cv), _panMod.Amount()));
+  _ampMod.Next(cv);
+  _panMod.Next(cv);
+  _level = cv.envs[Env()].value * _ampMod.Modulate({ _amp, false });
+  float pan = BipolarToUnipolar1(_panMod.Modulate({_panning, true}));
   FloatSample panned = { (1.0f - pan) * _level, pan * _level };
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * panned * _unitAmount[i];
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _output += audio.filters[i] * panned * _filterAmount[i];

@@ -28,12 +28,11 @@ ModulatorValue(ModSource source, CvState const& cv)
 }
 
 CvSample
-ModDSP::Modulator(CvState const& cv) const
+ModDSP::Next(CvState const& cv)
 {
-  CvSample result;
-  result.value = ModulatorValue(_source, cv);
-  result.bipolar = ModulatorIsBipolar(_source, cv);
-  return result.Sanity();
+  _output.value = ModulatorValue(_source, cv);
+  _output.bipolar = ModulatorIsBipolar(_source, cv);
+  return _output.Sanity();
 }
 
 } // namespace Xts

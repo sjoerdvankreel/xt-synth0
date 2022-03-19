@@ -2,7 +2,7 @@
 #define XTS_DSP_SYNTH_UNIT_DSP_HPP
 
 #include <DSP/Synth/CvDSP.hpp>
-#include <DSP/Synth/ModDSP.hpp>
+#include <DSP/Synth/ModsDSP.hpp>
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/UnitModel.hpp>
@@ -17,12 +17,17 @@ class UnitDSP
   float _frequency;
   float _blepPulseWidth;
   float _additiveRolloff;
-  ModDSP _mod1;
-  ModDSP _mod2;
+  ModsDSP _mods;
   double _phase;
   double _blepTriangle;
   FloatSample _output;
   struct UnitModel const* _model;
+private:
+  float ModulatePhase() const;
+  float ModulateFrequency() const;
+  float Generate(float phase, float frequency);
+  float GeneratePolyBlep(float phase, float frequency);
+  float GenerateAdditive(float phase, float frequency) const;
 public:
   FloatSample Next(struct CvState const& cv);
   FloatSample Output() const { return _output; };
@@ -30,13 +35,6 @@ public:
 public:
   UnitDSP() = default;
   UnitDSP(struct UnitModel const* model, int octave, UnitNote note, float rate);
-private:
-  float ModulatePhase(CvSample modulator1, CvSample modulator2) const;
-  float ModulateFrequency(CvSample modulator1, CvSample modulator2) const;
-  float Generate(float phase, float frequency, CvSample modulator1, CvSample modulator2);
-  float GeneratePolyBlep(float phase, float frequency, CvSample modulator1, CvSample modulator2);
-  float GenerateAdditive(float phase, float frequency, CvSample modulator1, CvSample modulator2) const;
-  float Modulate(UnitModTarget target, CvSample carrier, CvSample modulator1, CvSample modulator2) const;
 };
 
 class UnitPlot : 
