@@ -25,10 +25,10 @@ struct BiquadState
 
 struct CombState
 {
-  int minDelay;
-  int plusDelay;
   float minGain;
   float plusGain;
+  float minDelay;
+  float plusDelay;
   DelayBuffer<FloatSample, COMB_DELAY_MAX_SAMPLES> x;
   DelayBuffer<FloatSample, COMB_DELAY_MAX_SAMPLES> y;
 };
@@ -42,6 +42,7 @@ union FilterState
 class FilterDSP
 {
   int _index;
+  float _rate;
   ModsDSP _mods;
   FilterState _state;
   FloatSample _output;

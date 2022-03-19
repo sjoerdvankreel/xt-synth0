@@ -165,16 +165,15 @@ InitComb(FilterModel const& m, float rate, CombState& s)
   s.y.Clear();
   s.minGain = Param::Mix(m.combMinGain);
   s.plusGain = Param::Mix(m.combPlusGain);
-  s.minDelay = static_cast<int>(Param::TimeSamplesF(m.combMinDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
-  s.plusDelay = static_cast<int>(Param::TimeSamplesF(m.combPlusDelay, rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
-  assert(s.minDelay < COMB_DELAY_MAX_SAMPLES);
-  assert(s.plusDelay < COMB_DELAY_MAX_SAMPLES);
+  s.minDelay = Param::Level(m.combMinDelay);
+  s.plusDelay = Param::Level(m.combPlusDelay);
 }
 
 FilterDSP::
 FilterDSP(FilterModel const* model, int index, float rate):
 FilterDSP()
 {
+  _rate = rate;
   _index = index;
   _model = model;
   _mods = ModsDSP(model->mods);
@@ -206,23 +205,29 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 }
 
 FloatSample
-FilterDSP::GenerateComb()
-{
-  auto& s = _state.comb;
-  float minGain = _mods.Modulate(FilterModTarget::CombMinGain, { s.minGain , true });
-  float plusGain = _mods.Modulate(FilterModTarget::CombPlusGain, { s.plusGain , true });
-  s.y.Push(_output + s.x.Get(s.plusDelay) * plusGain + s.y.Get(s.minDelay) * minGain);
-  s.x.Push(_output);
-  return s.y.Get(0).Sanity();
-}
-
-FloatSample
 FilterDSP::GenerateBiquad()
 {
   auto& s = _state.biquad;
   s.x.Push(_output.ToDouble());
   s.y.Push(s.x.Get(0) * s.b[0] + s.x.Get(1) * s.b[1] + s.x.Get(2) * s.b[2] - s.y.Get(0) * s.a[1] - s.y.Get(1) * s.a[2]);
   return s.y.Get(0).ToFloat().Sanity();
+}
+
+FloatSample
+FilterDSP::GenerateComb()
+{
+  auto& s = _state.comb;
+  float minGain = _mods.Modulate(FilterModTarget::CombMinGain, { s.minGain , true });
+  float plusGain = _mods.Modulate(FilterModTarget::CombPlusGain, { s.plusGain , true });
+  int minDelay = static_cast<int>(_mods.Modulate(FilterModTarget::CombMinDelay, {s.minDelay, false}) * 255);
+  int plusDelay = static_cast<int>(_mods.Modulate(FilterModTarget::CombPlusDelay, { s.plusDelay, false }) * 255);
+  int minDelaySamples = static_cast<int>(Param::TimeSamplesF(minDelay, _rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
+  int plusDelaySamples = static_cast<int>(Param::TimeSamplesF(plusDelay, _rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
+  s.y.Push(_output + s.x.Get(plusDelaySamples) * plusGain + s.y.Get(minDelaySamples) * minGain);
+  s.x.Push(_output);
+  assert(minDelaySamples < COMB_DELAY_MAX_SAMPLES);
+  assert(plusDelaySamples < COMB_DELAY_MAX_SAMPLES);
+  return s.y.Get(0).Sanity();
 }
 
 } // namespace Xts
