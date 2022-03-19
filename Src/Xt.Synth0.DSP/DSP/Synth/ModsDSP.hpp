@@ -20,7 +20,7 @@ public:
   ModsDSP(ModsModel<Target> const& model);
 public:
   ModDSP const& Mod1() const { return _mod1; }
-  ModDSP const& Mod2() const { return _mod1; }
+  ModDSP const& Mod2() const { return _mod2; }
 public:
   void Next(struct CvState const& cv);
   template <class Target>
