@@ -17,9 +17,11 @@ namespace Xt.Synth0.Model
 		const string DefaultOutputPath = "synth0.raw";
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		[IgnoreMember]
+        [IgnoreMember]
+        public string Info => null;
+        [IgnoreMember]
 		public string Name => "Settings";
-		[IgnoreMember]
+        [IgnoreMember]
 		public ThemeGroup ThemeGroup => ThemeGroup.Settings;
 
 		string _envColor = "#40E0C0";

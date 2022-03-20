@@ -11,6 +11,7 @@ namespace Xt.Synth0.Model
         public Param Enabled => null;
         public ThemeGroup ThemeGroup => ThemeGroup.Pattern;
 
+        public string Info => null;
         public string Name => "Edit";
         public string Id => "01ECE266-D442-4FF0-B7BE-341DED3CD55B";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

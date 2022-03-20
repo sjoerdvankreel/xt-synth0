@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Xt.Synth0.Model;
 
 namespace Xt.Synth0.UI
@@ -16,12 +17,21 @@ namespace Xt.Synth0.UI
 		internal static GroupBox Make(AppModel app, IUIParamGroupModel group)
 		{
 			var result = Create.ThemedGroup(app.Settings, group, MakeContent(app, group));
-			if (group.Enabled == null) return result;
-			var wrap = new WrapPanel();
+            var dock = new DockPanel();
+            dock.HorizontalAlignment = HorizontalAlignment.Stretch;
+            var wrap = dock.Add(new WrapPanel(), Dock.Left);
 			wrap.Add(Create.Text(group.Name));
-			var enabled = wrap.Add(ParamUI.MakeControl(app, group.ThemeGroup, group.Enabled));
-			enabled.Margin = new(3.0, 0.0, 0.0, 0.0);
-			result.Header = wrap;
+            if (group.Enabled != null)
+            {
+                var enabled = wrap.Add(ParamUI.MakeControl(app, group.ThemeGroup, group.Enabled));
+                enabled.Margin = new(3.0, 0.0, 0.0, 0.0);
+            }
+            if (group.Info != null)
+            {
+                var info = dock.Add(Create.Text(group.Info), Dock.Right);
+                info.HorizontalAlignment = HorizontalAlignment.Right;
+            }
+			result.Header = dock;
 			return result;
 		}
 

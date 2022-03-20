@@ -24,6 +24,7 @@ namespace Xt.Synth0.Model
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Plot;
 
+        public string Info => null;
         public string Name => "Plot";
         public string Id => "BD224A37-6B8E-4EDA-9E49-DE3DD1AF61CE";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

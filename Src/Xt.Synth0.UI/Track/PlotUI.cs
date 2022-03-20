@@ -51,16 +51,18 @@ namespace Xt.Synth0.UI
             var text = new TextBlock();
             var plot = app.Track.Synth.Plot;
             text.VerticalAlignment = VerticalAlignment.Center;
+            text.HorizontalAlignment = HorizontalAlignment.Right;
             var resources = Utility.GetThemeResources(app.Settings, plot.ThemeGroup);
             var foreground1 = (Brush)resources[Utility.Foreground1Key];
             var foreground2 = (Brush)resources[Utility.Foreground2Key];
             var result = Create.ThemedGroup(app.Settings, plot, MakeContent(app, text, foreground1, foreground2));
-            var wrap = new WrapPanel();
+            var dock = new DockPanel();
+            var wrap = dock.Add(new WrapPanel(), Dock.Left);
             wrap.Add(Create.Text(plot.Name));
             var enabled = wrap.Add(ParamUI.MakeControl(app, plot.ThemeGroup, plot.Enabled));
             enabled.Margin = new(3.0, 0.0, 3.0, 0.0);
-            wrap.Add(text);
-            result.Header = wrap;
+            dock.Add(text, Dock.Right);
+            result.Header = dock;
             return result;
         }
 

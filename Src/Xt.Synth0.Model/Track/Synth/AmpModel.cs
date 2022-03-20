@@ -13,6 +13,7 @@ namespace Xt.Synth0.Model
         public Param Enabled => null;
         public ThemeGroup ThemeGroup => ThemeGroup.Amp;
 
+        public string Info => null;
         public string Name => "Amp";
         public string Id => "F7791FBA-3693-4D71-8EC9-AB507A03FE9A";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

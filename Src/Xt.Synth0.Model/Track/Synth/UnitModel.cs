@@ -28,6 +28,7 @@ namespace Xt.Synth0.Model
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Unit;
 
+        public string Info => null;
         public string Name => $"Unit {Index + 1}";
         public string Id => "3DACD0A4-9688-4FA9-9CA3-B8A0E49A45E5";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

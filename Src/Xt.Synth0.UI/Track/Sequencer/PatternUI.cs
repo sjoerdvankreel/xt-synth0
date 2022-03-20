@@ -53,7 +53,13 @@ namespace Xt.Synth0.UI
 		{
 			var pattern = app.Track.Seq.Pattern;
 			var result = Create.ThemedGroup(app.Settings, pattern, MakeContent(app));
-			result.SetBinding(HeaderedContentControl.HeaderProperty, BindHeader(app));
+            var dock = new DockPanel();
+            dock.Add(Create.Text(pattern.Name), Dock.Left);
+            var info = dock.Add(new TextBlock(), Dock.Right);
+            info.HorizontalAlignment = HorizontalAlignment.Right;
+            dock.HorizontalAlignment = HorizontalAlignment.Stretch;
+            info.SetBinding(TextBlock.TextProperty, BindText(app));
+            result.Header = dock;
 			return result;
 		}
 
@@ -66,15 +72,14 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static BindingBase BindHeader(AppModel app)
+		static BindingBase BindText(AppModel app)
 		{
 			var edit = app.Track.Seq.Edit;
 			var pats = Bind.To(edit.Patterns);
 			var active = Bind.To(edit.Edit);
-			var header = app.Track.Seq.Pattern.Name;
 			var row = Bind.To(app.Stream, nameof(StreamModel.CurrentRow));
 			var running = Bind.To(app.Stream, nameof(StreamModel.IsStopped), new NegateConverter());
-			return Bind.To(new PatternFormatter(header), running, pats, active, row);
+			return Bind.To(new PatternFormatter(), running, pats, active, row);
 		}
 
 		static BindingBase BindSelector(AppModel app, UIElement[] patterns)

@@ -5,6 +5,7 @@ namespace Xt.Synth0.Model
 	public interface IUIModel
 	{
 		string Name { get; }
+        string Info { get; }
 		ThemeGroup ThemeGroup { get; }
 	}
 

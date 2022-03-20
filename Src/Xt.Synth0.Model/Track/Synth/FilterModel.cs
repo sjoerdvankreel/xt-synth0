@@ -31,6 +31,7 @@ namespace Xt.Synth0.Model
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Filter;
 
+        public string Info => null;
         public string Name => $"Filter {Index + 1}";
         public string Id => "33E5297E-8C93-4A0C-810C-CD5E37DB50B2";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();

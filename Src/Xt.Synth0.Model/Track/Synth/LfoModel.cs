@@ -18,6 +18,7 @@ namespace Xt.Synth0.Model
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
 
+        public string Info => null;
         public string Name => $"LFO {Index + 1}";
         public string Id => "E2E5D904-8652-450B-A293-7CDFF05892BF";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
