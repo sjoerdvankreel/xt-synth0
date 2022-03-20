@@ -40,7 +40,7 @@ public:
   SequencerOutput const* Render(int32_t frames);
 public:
   SequencerDSP() = default;
-  SequencerDSP(SequencerModel const* model, SynthDSP const& synth, float rate, size_t frames);
+  SequencerDSP(SequencerModel const* model, struct SynthModel const* synth, struct ParamBinding const* binding, float rate, size_t frames);
 };
 
 } // namespace Xts

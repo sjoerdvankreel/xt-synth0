@@ -16,8 +16,6 @@ struct XTS_ALIGN XtsPlot
 
 struct XTS_ALIGN XtsSequencer
 {
-  float rate;
-  int32_t pad__;
   Xts::SequencerDSP* dsp;
   Xts::SynthModel synth;
   Xts::SequencerModel model;
@@ -34,7 +32,7 @@ XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 
 Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames)
-{ return sequencer->dsp->Render(frames, sequencer->rate); }
+{ return sequencer->dsp->Render(frames); }
 
 void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot)
@@ -81,8 +79,7 @@ XtsSequencer* XTS_CALL
 XtsSequencerCreate(int32_t params, int32_t frames, float rate)
 {
   auto result = new XtsSequencer;
-  result->rate = rate;
   result->binding.params = new int32_t * [params];
-  result->dsp = new Xts::SequencerDSP(& result->model, & result->synth, & result->binding, frames);
+  result->dsp = new Xts::SequencerDSP(&result->model, &result->synth, &result->binding, rate, frames);
   return result;
 }

@@ -89,13 +89,12 @@ SequencerDSP::Move()
 }
 
 SequencerDSP::
-SequencerDSP(SequencerModel const* model, SynthDSP const& synth, float rate, size_t frames):
+SequencerDSP(SequencerModel const* model, struct SynthModel const* synth, struct ParamBinding const* binding, float rate, size_t frames):
 SequencerDSP()
 {
   _rate = rate;
   _fill = 0.0;
   _model = model;
-  _synth = synth;
   _endPattern = false;
   _output.row = -1;
   _output.voices = 0;
@@ -104,6 +103,8 @@ SequencerDSP()
   _output.clip = XtsFalse;
   _output.exhausted = XtsFalse;
   _buffer.resize(frames * 2);
+  float bpm = static_cast<float>(model->edit.bpm);
+  new (&_synth) SynthDSP(synth, binding, model->edit.fxs, model->edit.keys, bpm, rate);
 }
 
 } // namespace Xts

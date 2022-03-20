@@ -24,8 +24,6 @@ namespace Xt.Synth0
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct XtsSequencer
         {
-            float rate;
-            int pad__;
             IntPtr dsp;
             internal SynthModel.Native synth;
             internal SequencerModel.Native model;
