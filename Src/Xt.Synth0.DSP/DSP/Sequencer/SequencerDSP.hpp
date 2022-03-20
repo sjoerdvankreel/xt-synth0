@@ -43,11 +43,11 @@ private:
   SequencerMove Move(float rate);
   void Return(int key, int voice);
 private:
+  int _keys[XTS_SYNTH_MAX_VOICES];
   int _active[XTS_SHARED_MAX_KEYS];
-  int _keys[XTS_SEQUENCER_MAX_VOICES];
-  SynthDSP _dsps[XTS_SEQUENCER_MAX_VOICES];
-  int64_t _started[XTS_SEQUENCER_MAX_VOICES];
-  SynthModel _synths[XTS_SEQUENCER_MAX_VOICES];
+  SynthDSP _dsps[XTS_SYNTH_MAX_VOICES];
+  int64_t _started[XTS_SYNTH_MAX_VOICES];
+  SynthModel _synths[XTS_SYNTH_MAX_VOICES];
 public:
   SequencerOutput const* Render(int32_t frames, float rate);
 public:
