@@ -15,18 +15,18 @@ namespace Xts {
 static constexpr int COMB_DELAY_MAX_SAMPLES = 
 static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f + 1.0f);
 
+struct StateVarState
+{
+  DoubleSample ic1eq;
+  DoubleSample ic2eq;
+}; 
+
 struct BiquadState
 {
   double a[3];
   double b[3];
   DelayBuffer<DoubleSample, 3> x;
   DelayBuffer<DoubleSample, 3> y;
-};
-
-struct StateVarState
-{
-  DelayBuffer<DoubleSample, 2> v;
-  DelayBuffer<DoubleSample, 2> iceq;
 };
 
 struct CombState
