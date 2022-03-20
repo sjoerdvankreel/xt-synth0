@@ -10,5 +10,4 @@ filter aliasing caused by modulation (filter lfos? oversample?)
 if(unit1>0 etc)
 more filter/unit/lfo types
 filter keyboard track
-filter modulation - how ?
 handle stream stopped with error
