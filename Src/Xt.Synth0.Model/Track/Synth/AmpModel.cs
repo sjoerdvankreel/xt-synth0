@@ -7,17 +7,17 @@ namespace Xt.Synth0.Model
     public enum AmpLfoSource { LFO1, LFO2, LFO3 }
     public enum AmpEnvSource { Env1, Env2, Env3 }
 
-    public unsafe sealed class GlobalModel : IUIParamGroupModel
+    public unsafe sealed class AmpModel : IUIParamGroupModel
     {
         public int Index => 0;
         public int Columns => 4;
         public Param Enabled => null;
-        public ThemeGroup ThemeGroup => ThemeGroup.Global;
+        public ThemeGroup ThemeGroup => ThemeGroup.Amp;
 
-        public string Name => "Global";
+        public string Name => "Amp";
         public string Id => "F7791FBA-3693-4D71-8EC9-AB507A03FE9A";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => &((SynthModel.Native*)parent)->global;
+        public void* Address(void* parent) => &((SynthModel.Native*)parent)->amp;
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {

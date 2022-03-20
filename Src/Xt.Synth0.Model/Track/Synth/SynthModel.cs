@@ -12,16 +12,16 @@ namespace Xt.Synth0.Model
 		public ref struct Native
 		{
             internal CvModel.Native cv;
+            internal AmpModel.Native amp;
 			internal PlotModel.Native plot;
             internal AudioModel.Native audio;
-            internal GlobalModel.Native global;
-        }
+		}
 
-        public IReadOnlyList<SynthParam> SynthParams { get; }
+		public IReadOnlyList<SynthParam> SynthParams { get; }
 
+		public AmpModel Amp { get; } = new();
 		public PlotModel Plot { get; } = new();
-        public GlobalModel Global { get; } = new();
-        public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
+		public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
 		public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
 		public IReadOnlyList<FilterModel> Filters = new ReadOnlyCollection<FilterModel>(MakeFilters());
@@ -37,7 +37,7 @@ namespace Xt.Synth0.Model
 		public override IReadOnlyList<IParamGroupModel> Groups => Units
 			.Concat<IParamGroupModel>(Envs)
 			.Concat(Lfos).Concat(Filters)
-			.Concat(new IParamGroupModel[] { Plot, Global }).ToArray();
+			.Concat(new IParamGroupModel[] { Plot, Amp }).ToArray();
 
 		public SynthModel()
 		{

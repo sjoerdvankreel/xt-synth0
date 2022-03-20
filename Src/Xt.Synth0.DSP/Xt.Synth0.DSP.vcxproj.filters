@@ -63,7 +63,7 @@
     <ClInclude Include="Model\Synth\AudioModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Synth\GlobalModel.hpp">
+    <ClInclude Include="Model\Synth\AmpModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
     <ClInclude Include="Model\Synth\SynthConfig.hpp">
@@ -81,7 +81,7 @@
     <ClInclude Include="DSP\Synth\ModDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\GlobalDSP.hpp">
+    <ClInclude Include="DSP\Synth\AmpDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
     <ClInclude Include="DSP\Synth\UnitDSP.hpp">
@@ -194,7 +194,7 @@
     <ClCompile Include="DSP\Synth\ModDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\Synth\GlobalDSP.cpp">
+    <ClCompile Include="DSP\Synth\AmpDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\UnitDSP.cpp">

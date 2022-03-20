@@ -20,7 +20,7 @@ SynthPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& st
 SynthDSP::
 SynthDSP(SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate):
 _cv(& model->cv, velocity, bpm, rate),
-_global(&model->global, velocity),
+_amp(&model->amp, velocity),
 _audio(&model->audio, oct, note, rate) {}
 
 } // namespace Xts

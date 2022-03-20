@@ -1,9 +1,9 @@
+#include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/EnvDSP.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
 #include <DSP/Synth/SynthDSP.hpp>
-#include <DSP/Synth/GlobalDSP.hpp>
 #include <DSP/Synth/FilterPlot.hpp>
 #include <DSP/Shared/Utility.hpp>
 
@@ -15,7 +15,7 @@ SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotState& stat
   state.hold = model.plot.hold;
   switch(model.plot.type)
   {
-  case PlotType::Amp: GlobalPlot::Render(model, input, state); break;
+  case PlotType::Amp: AmpPlot::Render(model, input, state); break;
   case PlotType::Synth: SynthPlot::Render(model, input, state); break;
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: EnvPlot::Render(model, input, state); break;
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: LfoPlot::Render(model, input, state); break;

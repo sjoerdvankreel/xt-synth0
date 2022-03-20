@@ -3,8 +3,8 @@
 
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Synth/CvDSP.hpp>
+#include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
-#include <DSP/Synth/GlobalDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
 namespace Xts {
@@ -12,18 +12,18 @@ namespace Xts {
 class SynthDSP
 {
   CvDSP _cv;
+  AmpDSP _amp;
   AudioDSP _audio;
-  GlobalDSP _global;
 public:
   SynthDSP() = default;
   SynthDSP(struct SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate);
 public:
-  FloatSample Output() const { return _global.Output(); }
-  bool End() const { return _cv.Env(_global.Env()).End(); }
-  EnvSample Release() { return _cv.ReleaseAll(_global.Env()); }
-  EnvModel const& Env() const { return _cv.Env(_global.Env()).Model(); }
-  EnvSample EnvOutput() const { return _cv.Env(_global.Env()).Output(); }
-  FloatSample Next(CvState const& cv, AudioState const& audio) { return _global.Next(cv, audio); };
+  FloatSample Output() const { return _amp.Output(); }
+  bool End() const { return _cv.Env(_amp.Env()).End(); }
+  EnvSample Release() { return _cv.ReleaseAll(_amp.Env()); }
+  EnvModel const& Env() const { return _cv.Env(_amp.Env()).Model(); }
+  EnvSample EnvOutput() const { return _cv.Env(_amp.Env()).Output(); }
+  FloatSample Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };
   FloatSample Next() { _cv.Next(); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
 };
 
