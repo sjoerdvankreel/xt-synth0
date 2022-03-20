@@ -16,7 +16,7 @@ SequencerDSP::Next(float rate)
   if (move == SequencerMove::Next)
     _output.exhausted |= (Trigger(rate)? XtsTrue: XtsFalse);
   else if(move == SequencerMove::End)
-    for(int k = 0; k < XTS_SEQUENCER_MAX_KEYS; k++)
+    for(int k = 0; k < _model->edit.keys; k++)
       if (_active[k] != -1) _dsps[_active[k]].Release();  
   for (int v = 0; v < XTS_SEQUENCER_MAX_VOICES; v++)
   {
@@ -68,7 +68,7 @@ SequencerDSP::Return(int key, int voice)
   _keys[voice] = -1;
   _started[voice] = -1;
   _output.end = _output.voices == 0 && _endPattern;
-  assert(0 <= key && key < XTS_SEQUENCER_MAX_KEYS);
+  assert(0 <= key && key < _model->edit.keys);
   assert(0 <= voice && voice < XTS_SEQUENCER_MAX_VOICES);
   assert(0 <= _output.voices && _output.voices < XTS_SEQUENCER_MAX_VOICES);
 }
@@ -89,7 +89,7 @@ SequencerDSP::Take(int key)
 {
   int victim = -1;
   assert(_output.position >= 0);
-  assert(0 <= key && key < XTS_SEQUENCER_MAX_KEYS);
+  assert(0 <= key && key < _model->edit.keys);
   int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
   for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++)
   {
@@ -164,7 +164,7 @@ SequencerDSP()
   _output.clip = XtsFalse;
   _output.exhausted = XtsFalse;
   _buffer.resize(frames * 2);
-  for (int i = 0; i < XTS_SEQUENCER_MAX_KEYS; i++) _active[i] = -1;
+  for (int i = 0; i < _model->edit.keys; i++) _active[i] = -1;
   for (int i = 0; i < XTS_SEQUENCER_MAX_VOICES; i++) _started[i] = _keys[i] = -1;
 }
 

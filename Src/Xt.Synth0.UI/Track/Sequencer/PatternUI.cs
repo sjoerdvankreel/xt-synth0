@@ -118,8 +118,8 @@ namespace Xt.Synth0.UI
 		static (UIElement Pattern, IList<Border> Highlighters) MakePattern(AppModel app, int pattern)
 		{
 			var seq = app.Track.Seq;
-			var fx = SequencerConfig.MaxFxs;
-			var keys = SequencerConfig.MaxKeys;
+			var fx = SharedConfig.MaxFxs;
+			var keys = SharedConfig.MaxKeys;
 			var rows = SequencerConfig.MaxRows;
 			int cols = keys * 5 + 1 + fx * 3;
 			var highlighters = new List<Border>();
@@ -141,7 +141,7 @@ namespace Xt.Synth0.UI
 		static PatternRowElements AddRow(Grid grid, AppModel app, int pattern, PatternRowModel row, int r)
 		{
 			var edit = app.Track.Seq.Edit;
-			int divCol = SequencerConfig.MaxKeys * 5;
+			int divCol = SharedConfig.MaxKeys * 5;
 			var result = new PatternRowElements();
 			result.Keys = AddKeys(grid, app, pattern, row, r);
 			grid.Add(Create.Divider(new(r, divCol), edit.Fxs, 1));
@@ -153,7 +153,7 @@ namespace Xt.Synth0.UI
 		{
 			var seq = app.Track.Seq;
 			var result = new List<PatternKeyElements>();
-			for (int k = 0; k < SequencerConfig.MaxKeys; k++)
+			for (int k = 0; k < SharedConfig.MaxKeys; k++)
 			{
 				int kLocal = k;
 				Action interpolate = () => Interpolate(seq, pattern, r => r.Keys[kLocal].Velocity);
@@ -167,8 +167,8 @@ namespace Xt.Synth0.UI
 		{
 			var seq = app.Track.Seq;
 			var result = new List<PatternFxElements>();
-			int startCol = SequencerConfig.MaxKeys * 5 + 1;
-			for (int f = 0; f < SequencerConfig.MaxFxs; f++)
+			int startCol = SharedConfig.MaxKeys * 5 + 1;
+			for (int f = 0; f < SharedConfig.MaxFxs; f++)
 			{
 				int fLocal = f;
 				Action fill = () => Fill(seq, pattern, fLocal);

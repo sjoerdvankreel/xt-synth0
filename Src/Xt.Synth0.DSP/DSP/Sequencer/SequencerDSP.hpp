@@ -4,6 +4,7 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 #include <Model/Shared/ParamBinding.hpp>
+#include <Model/Shared/SharedConfig.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 #include <cstdint>
 
@@ -42,8 +43,8 @@ private:
   SequencerMove Move(float rate);
   void Return(int key, int voice);
 private:
+  int _active[XTS_SHARED_MAX_KEYS];
   int _keys[XTS_SEQUENCER_MAX_VOICES];
-  int _active[XTS_SEQUENCER_MAX_KEYS];
   SynthDSP _dsps[XTS_SEQUENCER_MAX_VOICES];
   int64_t _started[XTS_SEQUENCER_MAX_VOICES];
   SynthModel _synths[XTS_SEQUENCER_MAX_VOICES];

@@ -19,13 +19,13 @@ namespace Xt.Synth0.Model
         internal ref struct Native
         {
             internal const int Size = 88;
-            internal fixed byte fx[SequencerConfig.MaxFxs * PatternFxModel.Native.Size];
-            internal fixed byte keys[SequencerConfig.MaxKeys * PatternKeyModel.Native.Size];
+            internal fixed byte fx[SharedConfig.MaxFxs * PatternFxModel.Native.Size];
+            internal fixed byte keys[SharedConfig.MaxKeys * PatternKeyModel.Native.Size];
         }
 
         public IReadOnlyList<PatternFxModel> Fx = new ReadOnlyCollection<PatternFxModel>(MakeFx());
         public IReadOnlyList<PatternKeyModel> Keys = new ReadOnlyCollection<PatternKeyModel>(MakeKeys());
-        static IList<PatternFxModel> MakeFx() => Enumerable.Range(0, SequencerConfig.MaxFxs).Select(i => new PatternFxModel(i)).ToList();
-        static IList<PatternKeyModel> MakeKeys() => Enumerable.Range(0, SequencerConfig.MaxKeys).Select(i => new PatternKeyModel(i)).ToList();
+        static IList<PatternFxModel> MakeFx() => Enumerable.Range(0, SharedConfig.MaxFxs).Select(i => new PatternFxModel(i)).ToList();
+        static IList<PatternKeyModel> MakeKeys() => Enumerable.Range(0, SharedConfig.MaxKeys).Select(i => new PatternKeyModel(i)).ToList();
     }
 }

@@ -46,8 +46,8 @@ namespace Xt.Synth0.Model
         public Param Keys { get; } = new(KeysInfo);
         public Param Rows { get; } = new(RowsInfo);
         public Param Patterns { get; } = new(PatternsInfo);
-        static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, 1, nameof(Fxs), "Fxs", "Effect count", 0, SequencerConfig.MaxFxs, 1);
-        static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, 1, nameof(Keys), "Keys", "Key count", 1, SequencerConfig.MaxKeys, 2);
+        static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, 1, nameof(Fxs), "Fxs", "Effect count", 0, SharedConfig.MaxFxs, 1);
+        static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, 1, nameof(Keys), "Keys", "Key count", 1, SharedConfig.MaxKeys, 2);
         static readonly ParamInfo PatternsInfo = ParamInfo.Select(p => &((Native*)p)->patterns, 1, nameof(Patterns), "Pats", "Pattern count", 1, SequencerConfig.MaxPatterns, 1);
         static readonly ParamInfo RowsInfo = ParamInfo.Select(p => &((Native*)p)->rows, 1, nameof(Rows), "Rows", "Rows per pattern", 1, SequencerConfig.MaxRows, SequencerConfig.MaxRows);
 
