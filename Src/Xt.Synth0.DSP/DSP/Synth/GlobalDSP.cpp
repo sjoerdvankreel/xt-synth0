@@ -1,6 +1,6 @@
 #include <DSP/Shared/Param.hpp>
-#include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
+#include <DSP/Synth/GlobalDSP.hpp>
 #include <DSP/Synth/AudioState.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
@@ -9,7 +9,7 @@
 namespace Xts {
 
 StagedParams 
-AmpPlot::Params() const
+GlobalPlot::Params() const
 {
   StagedParams result;
   result.stereo = false;
@@ -20,15 +20,15 @@ AmpPlot::Params() const
 }
 
 void 
-AmpPlot::Init(float bpm, float rate)
+GlobalPlot::Init(float bpm, float rate)
 {
-  new(&_ampDsp) AmpDSP(_amp, 1.0f);
+  new(&_globalDsp) GlobalDSP(_global, 1.0f);
   new(&_cvDsp) CvDSP(_cv, 1.0f, bpm, rate);
 }
 
 void 
-AmpPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
-{ AmpPlot(&model.cv, &model.amp).DoRender(input, state); }
+GlobalPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+{ GlobalPlot(&model.cv, &model.global).DoRender(input, state); }
 
 static ModSource
 ToModSource(AmpLfoSource source)
@@ -42,9 +42,9 @@ ToModSource(AmpLfoSource source)
   }
 }
 
-AmpDSP::
-AmpDSP(AmpModel const* model, float velocity):
-AmpDSP()
+GlobalDSP::
+GlobalDSP(GlobalModel const* model, float velocity):
+GlobalDSP()
 {
   _level = 0.0f;
   _model = model;
@@ -58,7 +58,7 @@ AmpDSP()
 }
 
 FloatSample
-AmpDSP::Next(CvState const& cv, AudioState const& audio)
+GlobalDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
   _ampMod.Next(cv);

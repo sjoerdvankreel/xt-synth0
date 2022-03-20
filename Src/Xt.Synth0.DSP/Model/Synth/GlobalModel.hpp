@@ -1,5 +1,5 @@
-#ifndef XTS_MODEL_SYNTH_AMP_MODEL_HPP
-#define XTS_MODEL_SYNTH_AMP_MODEL_HPP
+#ifndef XTS_MODEL_SYNTH_GLOBAL_MODEL_HPP
+#define XTS_MODEL_SYNTH_GLOBAL_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
 #include <Model/Synth/ModModel.hpp>
@@ -9,7 +9,7 @@ namespace Xts {
 enum class AmpLfoSource { LFO1, LFO2, LFO3 };
 enum class AmpEnvSource { Env1, Env2, Env3 };
 
-struct XTS_ALIGN AmpModel
+struct XTS_ALIGN GlobalModel
 {
   int32_t panning;
   int32_t panModAmount;
@@ -24,7 +24,7 @@ struct XTS_ALIGN AmpModel
   int32_t unitAmount[XTS_SYNTH_UNIT_COUNT];
   int32_t filterAmount[XTS_SYNTH_FILTER_COUNT];
 };
-XTS_CHECK_SIZE(AmpModel, 56);
+XTS_CHECK_SIZE(GlobalModel, 56);
 
 } // namespace Xts
-#endif // XTS_MODEL_SYNTH_AMP_MODEL_HPP
+#endif // XTS_MODEL_SYNTH_GLOBAL_MODEL_HPP

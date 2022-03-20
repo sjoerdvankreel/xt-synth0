@@ -62,12 +62,12 @@ namespace Xt.Synth0.Model
 			set => Set(ref _filterColor, value);
 		}
 
-		string _ampColor = "#FF8000";
-		[Key(nameof(AmpColor))]
-		public string AmpColor
+		string _globalColor = "#FF8000";
+		[Key(nameof(GlobalColor))]
+		public string GlobalColor
 		{
-			get => _ampColor;
-			set => Set(ref _ampColor, value);
+			get => _globalColor;
+			set => Set(ref _globalColor, value);
 		}
 
 		string _settingsColor = "#E0E0E0";
@@ -178,10 +178,10 @@ namespace Xt.Synth0.Model
 		{
 			settings.LfoColor = LfoColor;
             settings.EnvColor = EnvColor;
-            settings.AmpColor = AmpColor;
             settings.PlotColor = PlotColor;
 			settings.UnitColor = UnitColor;
-			settings.FilterColor = FilterColor;
+            settings.GlobalColor = GlobalColor;
+            settings.FilterColor = FilterColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
 			settings.SettingsColor = SettingsColor;

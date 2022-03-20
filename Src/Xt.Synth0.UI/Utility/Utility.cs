@@ -66,12 +66,12 @@ namespace Xt.Synth0.UI
 		static string GetThemeColor(SettingsModel settings, ThemeGroup group)
 		=> group switch
 		{
-			ThemeGroup.Amp => settings.AmpColor,
 			ThemeGroup.Lfo => settings.LfoColor,
             ThemeGroup.Env => settings.EnvColor,
             ThemeGroup.Plot => settings.PlotColor,
 			ThemeGroup.Unit => settings.UnitColor,
-			ThemeGroup.Filter => settings.FilterColor,
+            ThemeGroup.Global => settings.GlobalColor,
+            ThemeGroup.Filter => settings.FilterColor,
 			ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
 			ThemeGroup.Settings => settings.SettingsColor,

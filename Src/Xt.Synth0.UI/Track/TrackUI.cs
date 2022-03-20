@@ -42,7 +42,7 @@ namespace Xt.Synth0.UI
                 result.Add(GroupUI.Make(app, synth.Envs[i]), Dock.Top);
             for (int i = 0; i < SynthConfig.FilterCount; i++)
                 result.Add(GroupUI.Make(app, synth.Filters[i]), Dock.Top);
-            result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.Global), Dock.Top);
             return result;
         }
 

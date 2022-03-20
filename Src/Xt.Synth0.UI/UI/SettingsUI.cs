@@ -43,7 +43,7 @@ namespace Xt.Synth0.UI
         {
             var result = Create.Grid(9, 2, true);
             result.Add(Create.Label("Amp", new(0, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.AmpColor), new(0, 1)));
+            result.Add(MakeThemeColor(settings, nameof(settings.GlobalColor), new(0, 1)));
             result.Add(Create.Label("LFO", new(1, 0)));
             result.Add(MakeThemeColor(settings, nameof(settings.LfoColor), new(1, 1)));
             result.Add(Create.Label("Env", new(2, 0)));
