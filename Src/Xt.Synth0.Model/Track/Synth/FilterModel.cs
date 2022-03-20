@@ -68,7 +68,7 @@ namespace Xt.Synth0.Model
             internal fixed int filterAmount[SynthConfig.FilterCount];
         };
 
-        static readonly string[] TypeNames = { "Biqd", "Comb" };
+        static readonly string[] TypeNames = { "Biqd", "StVar", "Comb" };
         static readonly string[] TargetNames = { "Freq", "Res", "Gain-", "Gain+", "Delay-", "Delay+" };
 
         static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);

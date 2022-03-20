@@ -160,6 +160,13 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
 }
 
 static void
+InitStateVar(StateVarState& s)
+{
+  s.v.Clear();
+  s.iceq.Clear();
+}
+
+static void
 InitComb(FilterModel const& m, float rate, CombState& s)
 {
   s.x.Clear();
@@ -182,6 +189,7 @@ FilterDSP()
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
   {
+  case FilterType::StateVar: InitStateVar(_state.stateVar); break;
   case FilterType::Comb: InitComb(*model, rate, _state.comb); break;
   case FilterType::Biquad: InitBiquad(*model, rate, _state.biquad); break;
   default: assert(false); break;
@@ -200,6 +208,7 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   {
   case FilterType::Comb: _output = GenerateComb(); break;
   case FilterType::Biquad: _output = GenerateBiquad(); break;
+  case FilterType::StateVar: _output = GenerateStateVar(); break;
   default: assert(false); break;
   }
   return _output.Sanity();
@@ -212,6 +221,12 @@ FilterDSP::GenerateBiquad()
   s.x.Push(_output.ToDouble());
   s.y.Push(s.x.Get(0) * s.b[0] + s.x.Get(1) * s.b[1] + s.x.Get(2) * s.b[2] - s.y.Get(0) * s.a[1] - s.y.Get(1) * s.a[2]);
   return s.y.Get(0).ToFloat().Sanity();
+}
+
+FloatSample
+FilterDSP::GenerateStateVar()
+{
+  return FloatSample();
 }
 
 FloatSample

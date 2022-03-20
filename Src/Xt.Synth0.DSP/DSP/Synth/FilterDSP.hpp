@@ -25,7 +25,8 @@ struct BiquadState
 
 struct StateVarState
 {
-
+  DelayBuffer<DoubleSample, 2> v;
+  DelayBuffer<DoubleSample, 2> iceq;
 };
 
 struct CombState
@@ -58,6 +59,7 @@ class FilterDSP
 private:
   FloatSample GenerateComb();
   FloatSample GenerateBiquad();
+  FloatSample GenerateStateVar();
 public:
   FilterDSP() = default;
   FilterDSP(FilterModel const* model, int index, float rate);
