@@ -7,19 +7,17 @@
 
 namespace Xts {
 
-SynthDSP::
-SynthDSP(SynthModel const* model, ParamBinding const* binding, int fxCount, int keyCount, float bpm, float rate):
-SynthDSP()
+FloatSample
+SynthDSP::Next()
 {
-  _bpm = bpm;
-  _voices = 0;
-  _rate = rate;
-  _model = model;
-  _binding = binding;
-  _fxCount = fxCount;
-  _keyCount = keyCount;
-  for (int i = 0; i < keyCount; i++) _active[i] = -1;
-  for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _started[i] = _keys[i] = -1;
+  FloatSample result = { 0 };
+  for (int v = 0; v < XTS_SYNTH_MAX_VOICES; v++)
+  {
+    if (_keys[v] == -1) continue;
+    result += _dsps[v].Next();
+    if (_dsps[v].End()) Return(_keys[v], v);
+  }
+  return result;
 }
 
 void
@@ -27,6 +25,12 @@ SynthDSP::Release(int key)
 {
   for (int v = 0; v < XTS_SYNTH_MAX_VOICES; v++)
     if (_keys[v] == key) _dsps[v].Release();
+}
+
+void SynthDSP::ReleaseAll()
+{
+  for (int k = 0; k < _keyCount; k++)
+    if (_active[k] != -1) _dsps[_active[k]].Release();
 }
 
 void
@@ -91,6 +95,21 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
   _synths[voice] = *_model;
   new (&_dsps[voice]) VoiceDSP(&_synths[voice], octave, note, velocity, _bpm, _rate);
   return result;
+}
+
+SynthDSP::
+SynthDSP(SynthModel const* model, ParamBinding const* binding, int fxCount, int keyCount, float bpm, float rate) :
+  SynthDSP()
+{
+  _bpm = bpm;
+  _voices = 0;
+  _rate = rate;
+  _model = model;
+  _binding = binding;
+  _fxCount = fxCount;
+  _keyCount = keyCount;
+  for (int i = 0; i < keyCount; i++) _active[i] = -1;
+  for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _started[i] = _keys[i] = -1;
 }
 
 } // namespace Xts

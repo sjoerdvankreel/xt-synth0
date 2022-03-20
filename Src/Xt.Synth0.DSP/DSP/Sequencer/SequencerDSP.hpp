@@ -24,6 +24,7 @@ enum class SequencerMove { None, Next, End };
 
 class SequencerDSP
 {
+  float _rate;
   SynthDSP _synth;
   double _fill = 0.0;
   SequencerOutput _output;
@@ -31,18 +32,15 @@ class SequencerDSP
   std::vector<float> _buffer;
   SequencerModel const* _model;
 private:
+  bool Trigger();
   void Automate();
-  int Take(int key);
-  bool Trigger(float rate);
-  int Take(int key, int voice);
-  FloatSample Next(float rate);
-  SequencerMove Move(float rate);
-  void Return(int key, int voice);
+  FloatSample Next();
+  SequencerMove Move();
 public:
-  SequencerOutput const* Render(int32_t frames, float rate);
+  SequencerOutput const* Render(int32_t frames);
 public:
   SequencerDSP() = default;
-  SequencerDSP(SequencerModel const* model, SynthModel const& synth, size_t frames);
+  SequencerDSP(SequencerModel const* model, SynthDSP const& synth, float rate, size_t frames);
 };
 
 } // namespace Xts

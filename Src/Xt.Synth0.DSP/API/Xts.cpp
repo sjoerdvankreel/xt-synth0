@@ -83,6 +83,6 @@ XtsSequencerCreate(int32_t params, int32_t frames, float rate)
   auto result = new XtsSequencer;
   result->rate = rate;
   result->binding.params = new int32_t * [params];
-  result->dsp = new Xts::SequencerDSP(&result->model, &result->synth, &result->binding, frames);
+  result->dsp = new Xts::SequencerDSP(& result->model, & result->synth, & result->binding, frames);
   return result;
 }
