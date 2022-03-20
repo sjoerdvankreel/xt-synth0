@@ -37,7 +37,6 @@
     <ClInclude Include="DSP\Synth\PlotDSP.hpp" />
     <ClInclude Include="DSP\Synth\SynthDSP.hpp" />
     <ClInclude Include="DSP\Synth\UnitDSP.hpp" />
-    <ClInclude Include="DSP\Synth\VoiceDSP.hpp" />
     <ClInclude Include="Model\Sequencer\EditModel.hpp" />
     <ClInclude Include="Model\Sequencer\PatternFxModel.hpp" />
     <ClInclude Include="Model\Sequencer\PatternKeyModel.hpp" />
@@ -79,7 +78,6 @@
     <ClCompile Include="DSP\Synth\PlotDSP.cpp" />
     <ClCompile Include="DSP\Synth\SynthDSP.cpp" />
     <ClCompile Include="DSP\Synth\UnitDSP.cpp" />
-    <ClCompile Include="DSP\Synth\VoiceDSP.cpp" />
     <ClCompile Include="Model\Shared\SyncStepModel.cpp" />
     <ClCompile Include="Model\Synth\SynthModel.cpp" />
   </ItemGroup>
