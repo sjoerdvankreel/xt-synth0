@@ -10,6 +10,8 @@
 #include <Model/Synth/AmpModel.hpp>
 #include <Model/Synth/SynthConfig.hpp>
 
+#define XTS_AMP_ENV 0
+
 namespace Xts {
 
 class AmpDSP
@@ -30,7 +32,6 @@ public:
   float Level() const { return _level; }
   FloatSample Output() const { return _output; };
   FloatSample Next(CvState const& cv, AudioState const& audio);
-  int Env() const { return static_cast<int>(_model->ampEnvSource); };
 };
 
 class AmpPlot: 
@@ -46,9 +47,9 @@ public:
   float Right() const { return 0.0f; }
   float Left() const { return _ampDsp.Level(); }
   void Next() { _ampDsp.Next(_cvDsp.Next(), {}); }
-  bool End() const { return _cvDsp.Env(_ampDsp.Env()).End(); }
-  EnvSample Release() { return _cvDsp.ReleaseAll(_ampDsp.Env()); };
-  EnvSample EnvOutput() const { return _cvDsp.Env(_ampDsp.Env()).Output(); }
+  bool End() const { return _cvDsp.Env(XTS_AMP_ENV).End(); }
+  EnvSample Release() { return _cvDsp.ReleaseAll(XTS_AMP_ENV); };
+  EnvSample EnvOutput() const { return _cvDsp.Env(XTS_AMP_ENV).Output(); }
 public:
   StagedParams Params() const;
   void Init(float bpm, float rate);
@@ -62,7 +63,7 @@ _cv(cv), _amp(amp) {}
 
 inline float
 AmpPlot::ReleaseSamples(float bpm, float rate) const
-{ return EnvPlot::ReleaseSamples(_cv->envs[_ampDsp.Env()], bpm, rate); }
+{ return EnvPlot::ReleaseSamples(_cv->envs[XTS_AMP_ENV], bpm, rate); }
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_AMP_DSP_HPP

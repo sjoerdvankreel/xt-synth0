@@ -19,10 +19,10 @@ public:
   SynthDSP(struct SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate);
 public:
   FloatSample Output() const { return _amp.Output(); }
-  bool End() const { return _cv.Env(_amp.Env()).End(); }
-  EnvSample Release() { return _cv.ReleaseAll(_amp.Env()); }
-  EnvModel const& Env() const { return _cv.Env(_amp.Env()).Model(); }
-  EnvSample EnvOutput() const { return _cv.Env(_amp.Env()).Output(); }
+  bool End() const { return _cv.Env(XTS_AMP_ENV).End(); }
+  EnvSample Release() { return _cv.ReleaseAll(XTS_AMP_ENV); }
+  EnvModel const& Env() const { return _cv.Env(XTS_AMP_ENV).Model(); }
+  EnvSample EnvOutput() const { return _cv.Env(XTS_AMP_ENV).Output(); }
   FloatSample Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };
   FloatSample Next() { _cv.Next(); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
 };

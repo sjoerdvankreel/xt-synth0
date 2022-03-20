@@ -63,7 +63,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   _output.Clear();
   _ampMod.Next(cv);
   _panMod.Next(cv);
-  _level = cv.envs[Env()].value * _ampMod.Modulate({ _amp, false });
+  _level = cv.envs[XTS_AMP_ENV].value * _ampMod.Modulate({ _amp, false });
   float pan = BipolarToUnipolar1(_panMod.Modulate({_panning, true}));
   FloatSample panned = { (1.0f - pan) * _level, pan * _level };
   for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * panned * _unitAmount[i];
