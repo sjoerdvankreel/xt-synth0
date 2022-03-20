@@ -53,10 +53,12 @@ FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& s
 }
 
 static void
-InitStateVar(StateVarState& s)
+InitStateVar(FilterModel const& m, StateVarState& s)
 {
   s.ic1eq.Clear();
   s.ic2eq.Clear();
+  s.resonance = Param::Level(m.resonance);
+  s.frequency = Param::Level(m.frequency);
 }
 
 static void
@@ -82,8 +84,8 @@ FilterDSP()
   for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
   {
-  case FilterType::StateVar: InitStateVar(_state.stateVar); break;
   case FilterType::Comb: InitComb(*model, rate, _state.comb); break;
+  case FilterType::StateVar: InitStateVar(*model, _state.stateVar); break;
   default: assert(false); break;
   }
 }
@@ -108,15 +110,16 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
 FloatSample
 FilterDSP::GenerateStateVar()
 {
-  double res = Param::Level(_model->resonance);
-  double freq = Param::Frequency(_model->frequency, FILTER_MIN_FREQ_HZ, FILTER_MAX_FREQ_HZ);
-  double g = std::tan(PID * freq / _rate);
+  auto& s = _state.stateVar;
+  double res = _mods.Modulate(FilterModTarget::Resonance, { s.resonance, false });
+  int freq = static_cast<int>(_mods.Modulate(FilterModTarget::Frequency, { s.frequency, false }) * 255);
+  float hz = Param::Frequency(freq, FILTER_MIN_FREQ_HZ, FILTER_MAX_FREQ_HZ);
+  double g = std::tan(PID * hz / _rate);
   double k = 2.0 - 2.0 * res;
   double a1 = 1.0 / (1.0 + g * (g + k));
   double a2 = g * a1;
   double a3 = g * a2;
   
-  auto& s = _state.stateVar;
   auto v0 = _output.ToDouble();
   auto v3 = v0 - s.ic2eq;
   auto v1 = a1 * s.ic1eq + a2 * v3;
