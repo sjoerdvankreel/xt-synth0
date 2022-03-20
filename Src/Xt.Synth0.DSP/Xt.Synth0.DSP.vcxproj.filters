@@ -180,6 +180,9 @@
     <ClInclude Include="Model\Shared\SharedConfig.hpp">
       <Filter>Model\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Synth\SynthDSP.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">
@@ -232,6 +235,9 @@
     </ClCompile>
     <ClCompile Include="API\Xts.cpp">
       <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\Synth\SynthDSP.cpp">
+      <Filter>DSP\Synth</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
