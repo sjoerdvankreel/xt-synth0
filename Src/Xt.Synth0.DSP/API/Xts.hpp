@@ -30,6 +30,8 @@ XTS_EXPORT void XTS_CALL
 XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count);
 
 XTS_EXPORT void XTS_CALL
+XtsSequencerConnect(XtsSequencer* sequencer);
+XTS_EXPORT void XTS_CALL
 XtsSequencerDestroy(XtsSequencer* sequencer);
 XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames);

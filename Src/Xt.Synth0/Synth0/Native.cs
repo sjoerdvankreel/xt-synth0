@@ -24,10 +24,11 @@ namespace Xt.Synth0
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct XtsSequencer
         {
-            IntPtr dsp;
-            internal SynthModel.Native synth;
-            internal SequencerModel.Native model;
-            internal ParamBinding.Native binding;
+            ParamBinding.Native binding;
+            IntPtr synthDsp;
+            SynthModel.Native synthModel;
+            IntPtr sequencerDsp;
+            SequencerModel.Native sequencerModel;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -61,6 +62,7 @@ namespace Xt.Synth0
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(ParamInfo.Native* @params, int count);
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSyncStepModelInit(SyncStepModel.Native* steps, int count);
 
+        [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerConnect(XtsSequencer* sequencer);
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerDestroy(XtsSequencer* sequencer);
         [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, float rate);
         [DllImport("XT.Synth0.DSP")] internal static extern SequencerOutput* XtsSequencerRender(XtsSequencer* sequencer, int frames);

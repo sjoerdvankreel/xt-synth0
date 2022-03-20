@@ -1,7 +1,7 @@
 #ifndef XTS_DSP_SEQUENCER_DSP_HPP
 #define XTS_DSP_SEQUENCER_DSP_HPP
 
-#include <DSP/Synth/SynthDSP.hpp>
+#include <DSP/Shared/AudioSample.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 #include <cstdint>
 
@@ -25,8 +25,8 @@ enum class SequencerMove { None, Next, End };
 class SequencerDSP
 {
   float _rate;
-  SynthDSP _synth;
   double _fill = 0.0;
+  class SynthDSP* _synth;
   SequencerOutput _output;
   bool _endPattern = false;
   std::vector<float> _buffer;
@@ -38,9 +38,10 @@ private:
   SequencerMove Move();
 public:
   SequencerOutput const* Render(int32_t frames);
+  void Synth(class SynthDSP* synth) { _synth = synth; }
 public:
   SequencerDSP() = default;
-  SequencerDSP(SequencerModel const* model, struct SynthModel const* synth, struct ParamBinding const* binding, float rate, size_t frames);
+  SequencerDSP(SequencerModel const* model, float rate, size_t frames);
 };
 
 } // namespace Xts

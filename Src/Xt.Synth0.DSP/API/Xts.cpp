@@ -1,6 +1,7 @@
 #include <API/Xts.hpp>
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Synth/PlotDSP.hpp>
+#include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 #include <Model/Shared/ParamBinding.hpp>
@@ -16,10 +17,11 @@ struct XTS_ALIGN XtsPlot
 
 struct XTS_ALIGN XtsSequencer
 {
-  Xts::SequencerDSP* dsp;
-  Xts::SynthModel synth;
-  Xts::SequencerModel model;
   Xts::ParamBinding binding;
+  Xts::SynthDSP* synthDsp;
+  Xts::SynthModel synthModel;
+  Xts::SequencerDSP* sequencerDsp;
+  Xts::SequencerModel sequencerModel;
 };
 
 void XTS_CALL 
@@ -32,7 +34,14 @@ XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 
 Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames)
-{ return sequencer->dsp->Render(frames); }
+{ return sequencer->sequencerDsp->Render(frames); }
+
+XTS_EXPORT void XTS_CALL
+XtsSequencerConnect(XtsSequencer* sequencer, float rate)
+{
+  new(&sequencer->synthDsp)  Xts::SynthDSP(&sequencer->synthModel, &sequencer->binding, sequencer->sequencerModel.edit.bpm, 
+  sequencer->sequencerDsp->Synth(*)
+}
 
 void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot)
@@ -48,7 +57,8 @@ void XTS_CALL
 XtsSequencerDestroy(XtsSequencer* sequencer)
 {
   if (sequencer == nullptr) return;
-  delete sequencer->dsp;
+  delete sequencer->synthDsp;
+  delete sequencer->sequencerDsp;
   delete sequencer->binding.params;
   delete sequencer;
 }
@@ -79,7 +89,8 @@ XtsSequencer* XTS_CALL
 XtsSequencerCreate(int32_t params, int32_t frames, float rate)
 {
   auto result = new XtsSequencer;
+  result->synthDsp = new Xts::SynthDSP();
   result->binding.params = new int32_t * [params];
-  result->dsp = new Xts::SequencerDSP(&result->model, &result->synth, &result->binding, rate, frames);
+  result->sequencerDsp = new Xts::SequencerDSP(&result->sequencerModel, rate, frames);
   return result;
 }
