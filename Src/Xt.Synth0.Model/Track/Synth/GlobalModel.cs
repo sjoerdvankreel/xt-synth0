@@ -21,10 +21,10 @@ namespace Xt.Synth0.Model
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
-            { Amp, 0 }, { AmpEnvSource, 1 }, { AmpLfoSource, 2 }, { AmpLfoAmount, 3 },
-            { Unit1Amount, 5 },{ Filter1Amount, 6 }, { Panning, 7 },
-            { Unit2Amount, 9 }, { Filter2Amount, 10 }, { PanModSource, 11 },
-            { Unit3Amount, 13 }, { Filter3Amount, 14 }, { PanModAmount, 15 }
+            { Amp, 0 }, { Panning, 1 }, { PanModSource, 2 }, { PanModAmount, 3 },
+            { AmpEnvSource, 4 }, { Unit1Amount, 5 }, { Unit2Amount, 6 }, { Unit3Amount, 7 },
+            { AmpLfoSource, 8 }, { Filter1Amount, 9 }, { Filter2Amount, 10 }, { Filter3Amount, 11 },
+            { AmpLfoAmount, 12 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -56,9 +56,9 @@ namespace Xt.Synth0.Model
         public Param Panning { get; } = new(PanningInfo);
         public Param PanModSource { get; } = new(PanModSourceInfo);
         public Param PanModAmount { get; } = new(PanModAmountInfo);
-        static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 2, nameof(Panning), "Pan", "Panning");
-        static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panModAmount, 2, nameof(PanModAmount), "Amt", "Pan mod amount");
-        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panModSource, 2, nameof(PanModSource), nameof(PanModSource), "Pan mod source", ModModel.ModSourceNames);
+        static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 1, nameof(Panning), "Pan", "Panning");
+        static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panModAmount, 1, nameof(PanModAmount), "Amt", "Pan mod amount");
+        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panModSource, 1, nameof(PanModSource), nameof(PanModSource), "Pan mod source", ModModel.ModSourceNames);
 
         public Param Unit1Amount { get; } = new(Unit1AmountInfo);
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);
