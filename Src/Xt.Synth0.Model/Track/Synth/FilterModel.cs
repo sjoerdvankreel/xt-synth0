@@ -4,13 +4,13 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum FilterType { Biquad, Comb };
-    public enum BiquadType { LPF, HPF, BPF, BSF };
+    public enum PassType { LPF, HPF, BPF, BSF };
+    public enum FilterType { Biquad, StateVar, Comb };
 
     public enum FilterModTarget
     {
-        BiquadFrequency,
-        BiquadResonance,
+        Frequency,
+        Resonance,
         CombMinGain,
         CombPlusGain,
         CombMinDelay,
@@ -19,10 +19,10 @@ namespace Xt.Synth0.Model
 
     public unsafe sealed class FilterModel : IUIParamGroupModel
     {
+        const double MinFreqHz = 20.0;
+        const double MaxFreqHz = 10000.0;
         const double CombMaxDelayMs = 5.0;
         const double CombMinDelayMs = 0.0;
-        const double BiquadMinFreqHz = 20.0;
-        const double BiquadMaxFreqHz = 10000.0;
 
         public int Index { get; }
         internal FilterModel(int index) => Index = index;
@@ -39,7 +39,7 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { BiquadType, 1 }, { CombPlusDelay, 1 }, { BiquadResonance, 2 }, { CombMinDelay, 2 }, { BiquadFrequency, 3 }, { CombPlusGain, 3 },
+            { Type, 0 }, { PassType, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 }, { Frequency, 3 }, { CombPlusGain, 3 },
             { Unit1Amount, 4 }, { Unit2Amount, 5 }, { Unit3Amount, 6 }, { CombMinGain, 7 },
             { Mod1Source, 8 }, { Mod1Target, 9 }, { Mod1Amount, 10 }, { Filter1Amount, 11 },
             { Mod2Source, 12 }, { Mod2Target, 13 }, { Mod2Amount, 14 }, { Filter2Amount, 15 }
@@ -58,9 +58,9 @@ namespace Xt.Synth0.Model
             internal int combMinDelay;
             internal int combPlusDelay;
 
-            internal int biquadType;
-            internal int biquadResonance;
-            internal int biquadFrequency;
+            internal int passType;
+            internal int resonance;
+            internal int frequency;
             internal int pad__;
 
             internal ModsModel.Native mods;
@@ -74,7 +74,7 @@ namespace Xt.Synth0.Model
         static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);
         static readonly IRelevance Relevance23 = Relevance.Index(i => i > 0);
         static readonly IRelevance RelevanceComb = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
-        static readonly IRelevance RelevanceBiquad = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t == FilterType.Biquad);
+        static readonly IRelevance RelevanceNotComb = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
@@ -90,12 +90,12 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay", 0, CombMinDelayMs, CombMaxDelayMs, RelevanceComb);
         static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay", 0, CombMinDelayMs, CombMaxDelayMs, RelevanceComb);
 
-        public Param BiquadType { get; } = new(BiquadTypeInfo);
-        public Param BiquadResonance { get; } = new(BiquadResonanceInfo);
-        public Param BiquadFrequency { get; } = new(BiquadFrequencyInfo);
-        static readonly ParamInfo BiquadTypeInfo = ParamInfo.List<BiquadType>(p => &((Native*)p)->biquadType, 0, nameof(BiquadType), "Type", "Biquad type", null, RelevanceBiquad);
-        static readonly ParamInfo BiquadResonanceInfo = ParamInfo.Level(p => &((Native*)p)->biquadResonance, 0, nameof(BiquadResonance), "Res", "Resonance", 0, RelevanceBiquad);
-        static readonly ParamInfo BiquadFrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->biquadFrequency, 0, nameof(BiquadFrequency), "Frq", "Cutoff frequency", 0, BiquadMinFreqHz, BiquadMaxFreqHz, RelevanceBiquad);
+        public Param PassType { get; } = new(PassTypeInfo);
+        public Param Resonance { get; } = new(ResonanceInfo);
+        public Param Frequency { get; } = new(FrequencyInfo);
+        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->passType, 0, nameof(PassType), "Type", "Pass type", null, RelevanceNotComb);
+        static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->resonance, 0, nameof(Resonance), "Res", "Resonance", 0, RelevanceNotComb);
+        static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->frequency, 0, nameof(Frequency), "Frq", "Cutoff frequency", 0, MinFreqHz, MaxFreqHz, RelevanceNotComb);
 
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);

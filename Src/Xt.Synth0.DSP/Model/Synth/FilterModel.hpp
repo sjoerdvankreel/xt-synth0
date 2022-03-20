@@ -6,13 +6,13 @@
 
 namespace Xts {
 
-enum class FilterType { Biquad, Comb };
-enum class BiquadType { LPF, HPF, BPF, BSF };
+enum class PassType { LPF, HPF, BPF, BSF };
+enum class FilterType { Biquad, StateVar, Comb };
 
 enum class FilterModTarget
 { 
-  BiquadFrequency,
-  BiquadResonance,
+  Frequency,
+  Resonance,
   CombMinGain,
   CombPlusGain,
   CombMinDelay,
@@ -29,9 +29,9 @@ struct XTS_ALIGN FilterModel
   int32_t combMinDelay;
   int32_t combPlusDelay;
 
-  BiquadType biquadType;
-  int32_t biquadResonance;
-  int32_t biquadFrequency;
+  PassType passType;
+  int32_t resonance;
+  int32_t frequency;
   int32_t pad__;
 
   ModsModel<FilterModTarget> mods;

@@ -13,8 +13,8 @@
 #define BIQUAD_MIN_BW 0.5f
 #define BIQUAD_MAX_BW 6.0f
 
-#define BIQUAD_MIN_FREQ_HZ 20.0f
-#define BIQUAD_MAX_FREQ_HZ 10000.0f
+#define FILTER_MIN_FREQ_HZ 20.0f
+#define FILTER_MAX_FREQ_HZ 10000.0f
 
 // https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 // https://www.musicdsp.org/en/latest/Filters/197-rbj-audio-eq-cookbook.html
@@ -103,12 +103,12 @@ InitBiquadBPF(double sinw0, double cosw0, double alpha, BiquadState& s)
 }
 
 static bool
-BiquadIsQ(BiquadType type)
+BiquadIsQ(PassType type)
 {
   switch (type)
   {
-  case BiquadType::LPF: case BiquadType::HPF: return true;
-  case BiquadType::BPF: case BiquadType::BSF: return false;
+  case PassType::LPF: case PassType::HPF: return true;
+  case PassType::BPF: case PassType::BSF: return false;
   default: assert(false); return false;
   }
 }
@@ -130,12 +130,12 @@ BiquadAlphaBW(double res, double w0, double sinw0)
 static void
 BiquadParameters(FilterModel const& m, float rate, double& sinw0, double& cosw0, double& alpha)
 {
-  double res = Param::Level(m.biquadResonance);
-  double freq = Param::Frequency(m.biquadFrequency, BIQUAD_MIN_FREQ_HZ, BIQUAD_MAX_FREQ_HZ);
+  double res = Param::Level(m.resonance);
+  double freq = Param::Frequency(m.frequency, FILTER_MIN_FREQ_HZ, FILTER_MAX_FREQ_HZ);
   double w0 = 2.0 * PID * freq / rate;
   sinw0 = std::sin(w0);
   cosw0 = std::cos(w0);
-  alpha = BiquadIsQ(m.biquadType)? BiquadAlphaQ(res, sinw0): BiquadAlphaBW(res, w0, sinw0);
+  alpha = BiquadIsQ(m.passType)? BiquadAlphaQ(res, sinw0): BiquadAlphaBW(res, w0, sinw0);
 }
 
 static void
@@ -147,12 +147,12 @@ InitBiquad(FilterModel const& m, float rate, BiquadState& s)
   s.x.Clear();
   s.y.Clear();
   BiquadParameters(m, rate, sinw0, cosw0, alpha);
-  switch (m.biquadType)
+  switch (m.passType)
   {
-  case BiquadType::LPF: InitBiquadLPF(cosw0, alpha, s); break;
-  case BiquadType::HPF: InitBiquadHPF(cosw0, alpha, s); break;
-  case BiquadType::BSF: InitBiquadBSF(cosw0, alpha, s); break;
-  case BiquadType::BPF: InitBiquadBPF(sinw0, cosw0, alpha, s); break;
+  case PassType::LPF: InitBiquadLPF(cosw0, alpha, s); break;
+  case PassType::HPF: InitBiquadHPF(cosw0, alpha, s); break;
+  case PassType::BSF: InitBiquadBSF(cosw0, alpha, s); break;
+  case PassType::BPF: InitBiquadBPF(sinw0, cosw0, alpha, s); break;
   default: assert(false); break;
   }
   for(int i = 0; i < 3; i++) s.b[i] = Sanity(s.b[i] / s.a[0]);

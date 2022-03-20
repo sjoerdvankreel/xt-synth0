@@ -23,6 +23,11 @@ struct BiquadState
   DelayBuffer<DoubleSample, 3> y;
 };
 
+struct StateVarState
+{
+
+};
+
 struct CombState
 {
   float minGain;
@@ -37,6 +42,7 @@ union FilterState
 {
   CombState comb;
   BiquadState biquad;
+  StateVarState stateVar;
 };
 
 class FilterDSP
