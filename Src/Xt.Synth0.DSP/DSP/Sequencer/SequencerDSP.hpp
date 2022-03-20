@@ -1,10 +1,7 @@
 #ifndef XTS_DSP_SEQUENCER_DSP_HPP
 #define XTS_DSP_SEQUENCER_DSP_HPP
 
-#include <DSP/Synth/VoiceDSP.hpp>
-#include <Model/Synth/SynthModel.hpp>
-#include <Model/Shared/ParamBinding.hpp>
-#include <Model/Shared/SharedConfig.hpp>
+#include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 #include <cstdint>
 
@@ -27,12 +24,11 @@ enum class SequencerMove { None, Next, End };
 
 class SequencerDSP
 {
+  SynthDSP _synth;
   double _fill = 0.0;
   SequencerOutput _output;
   bool _endPattern = false;
-  SynthModel const* _synth;
   std::vector<float> _buffer;
-  ParamBinding const* _binding;
   SequencerModel const* _model;
 private:
   void Automate();
@@ -42,17 +38,11 @@ private:
   FloatSample Next(float rate);
   SequencerMove Move(float rate);
   void Return(int key, int voice);
-private:
-  int _keys[XTS_SYNTH_MAX_VOICES];
-  int _active[XTS_SHARED_MAX_KEYS];
-  VoiceDSP _dsps[XTS_SYNTH_MAX_VOICES];
-  int64_t _started[XTS_SYNTH_MAX_VOICES];
-  SynthModel _synths[XTS_SYNTH_MAX_VOICES];
 public:
   SequencerOutput const* Render(int32_t frames, float rate);
 public:
   SequencerDSP() = default;
-  SequencerDSP(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding, size_t frames);
+  SequencerDSP(SequencerModel const* model, SynthModel const& synth, size_t frames);
 };
 
 } // namespace Xts

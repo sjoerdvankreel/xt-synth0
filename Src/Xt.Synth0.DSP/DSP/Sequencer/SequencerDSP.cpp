@@ -149,13 +149,12 @@ SequencerDSP::Move(float rate)
 }
 
 SequencerDSP::
-SequencerDSP(SequencerModel const* model, SynthModel const* synth, ParamBinding const* binding, size_t frames):
+SequencerDSP(SequencerModel const* model, SynthModel const& synth, size_t frames):
 SequencerDSP()
 {
   _fill = 0.0;
   _model = model;
   _synth = synth;
-  _binding = binding;
   _endPattern = false;
   _output.row = -1;
   _output.voices = 0;
@@ -164,8 +163,6 @@ SequencerDSP()
   _output.clip = XtsFalse;
   _output.exhausted = XtsFalse;
   _buffer.resize(frames * 2);
-  for (int i = 0; i < _model->edit.keys; i++) _active[i] = -1;
-  for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _started[i] = _keys[i] = -1;
 }
 
 } // namespace Xts
