@@ -27,7 +27,7 @@ namespace Xt.Synth0
 			try
 			{
                 _audioUpdateTimer.Start();
-                Xt.Synth0.Model.Model.MainThreadId = Thread.CurrentThread.ManagedThreadId;
+                StreamModel.MainThreadId = Thread.CurrentThread.ManagedThreadId;
 				var infos = Model.Track.Synth.ParamInfos();
                 fixed (SyncStepModel.Native* steps = SyncStepModel.Steps)
                     Native.XtsSyncStepModelInit(steps, SyncStepModel.Steps.Length);

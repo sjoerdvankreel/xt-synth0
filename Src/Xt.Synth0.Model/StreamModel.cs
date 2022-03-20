@@ -9,6 +9,8 @@ namespace Xt.Synth0.Model
 
     public sealed class StreamModel : INotifyPropertyChanged
     {
+        public static int MainThreadId { get; set; } = -1;
+
         static readonly PropertyChangedEventArgs StateChangedEventArgs
         = new PropertyChangedEventArgs(nameof(State));
         static readonly PropertyChangedEventArgs IsPausedChangedEventArgs
@@ -60,7 +62,7 @@ namespace Xt.Synth0.Model
         [Conditional("DEBUG")]
         void CheckThread()
         {
-            if (Model.MainThreadId != Thread.CurrentThread.ManagedThreadId)
+            if (MainThreadId != Thread.CurrentThread.ManagedThreadId)
                 throw new InvalidOperationException();
         }
 
