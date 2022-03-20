@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
+    public enum FilterType { StateVar, Comb };
     public enum PassType { LPF, HPF, BPF, BSF };
-    public enum FilterType { Biquad, StateVar, Comb };
 
     public enum FilterModTarget
     {

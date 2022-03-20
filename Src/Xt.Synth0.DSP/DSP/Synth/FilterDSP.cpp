@@ -8,11 +8,6 @@
 #include <cstring>
 #include <cassert>
 
-#define BIQUAD_MIN_Q 0.5f
-#define BIQUAD_MAX_Q 40.0f
-#define BIQUAD_MIN_BW 0.5f
-#define BIQUAD_MAX_BW 6.0f
-
 #define FILTER_MIN_FREQ_HZ 20.0f
 #define FILTER_MAX_FREQ_HZ 10000.0f
 
@@ -58,107 +53,6 @@ FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& s
 }
 
 static void
-InitBiquadLPF(double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = (1.0 - cosw0) / 2.0;
-  s.b[1] = 1.0 - cosw0;
-  s.b[2] = (1.0 - cosw0) / 2.0;
-}
-
-static void
-InitBiquadHPF(double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = (1.0 + cosw0) / 2.0;
-  s.b[1] = -(1.0 + cosw0);
-  s.b[2] = (1.0 + cosw0) / 2.0;
-}
-
-static void
-InitBiquadBSF(double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = 1.0;
-  s.b[1] = -2.0 * cosw0;
-  s.b[2] = 1.0;
-}
-
-static void
-InitBiquadBPF(double sinw0, double cosw0, double alpha, BiquadState& s)
-{
-  s.a[0] = 1.0 + alpha;
-  s.a[1] = -2.0 * cosw0;
-  s.a[2] = 1.0 - alpha;
-  s.b[0] = sinw0 / 2.0;
-  s.b[1] = 0.0;
-  s.b[2] = -sinw0 / 2.0;
-}
-
-static bool
-BiquadIsQ(PassType type)
-{
-  switch (type)
-  {
-  case PassType::LPF: case PassType::HPF: return true;
-  case PassType::BPF: case PassType::BSF: return false;
-  default: assert(false); return false;
-  }
-}
-
-static double
-BiquadAlphaQ(double res, double sinw0)
-{
-  double q = BIQUAD_MIN_Q + res * (BIQUAD_MAX_Q - BIQUAD_MIN_Q);
-  return sinw0 / (2.0 * q);
-}
-
-static double
-BiquadAlphaBW(double res, double w0, double sinw0)
-{
-  double q = (1.0 - res) * (BIQUAD_MAX_BW - BIQUAD_MIN_BW);
-  return sinw0 * std::sinh(std::log(2.0) / 2.0 * q * w0 / sinw0);
-}
-
-static void
-BiquadParameters(FilterModel const& m, float rate, double& sinw0, double& cosw0, double& alpha)
-{
-  double res = Param::Level(m.resonance);
-  double freq = Param::Frequency(m.frequency, FILTER_MIN_FREQ_HZ, FILTER_MAX_FREQ_HZ);
-  double w0 = 2.0 * PID * freq / rate;
-  sinw0 = std::sin(w0);
-  cosw0 = std::cos(w0);
-  alpha = BiquadIsQ(m.passType)? BiquadAlphaQ(res, sinw0): BiquadAlphaBW(res, w0, sinw0);
-}
-
-static void
-InitBiquad(FilterModel const& m, float rate, BiquadState& s)
-{
-  double alpha;
-  double sinw0;
-  double cosw0;
-  s.x.Clear();
-  s.y.Clear();
-  BiquadParameters(m, rate, sinw0, cosw0, alpha);
-  switch (m.passType)
-  {
-  case PassType::LPF: InitBiquadLPF(cosw0, alpha, s); break;
-  case PassType::HPF: InitBiquadHPF(cosw0, alpha, s); break;
-  case PassType::BSF: InitBiquadBSF(cosw0, alpha, s); break;
-  case PassType::BPF: InitBiquadBPF(sinw0, cosw0, alpha, s); break;
-  default: assert(false); break;
-  }
-  for(int i = 0; i < 3; i++) s.b[i] = Sanity(s.b[i] / s.a[0]);
-  for(int i = 1; i < 3; i++) s.a[i] = Sanity(s.a[i] / s.a[0]);
-}
-
-static void
 InitStateVar(StateVarState& s)
 {
   s.ic1eq.Clear();
@@ -190,7 +84,6 @@ FilterDSP()
   {
   case FilterType::StateVar: InitStateVar(_state.stateVar); break;
   case FilterType::Comb: InitComb(*model, rate, _state.comb); break;
-  case FilterType::Biquad: InitBiquad(*model, rate, _state.biquad); break;
   default: assert(false); break;
   }
 }
@@ -206,20 +99,10 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   switch (_model->type)
   {
   case FilterType::Comb: _output = GenerateComb(); break;
-  case FilterType::Biquad: _output = GenerateBiquad(); break;
   case FilterType::StateVar: _output = GenerateStateVar(); break;
   default: assert(false); break;
   }
   return _output.Sanity();
-}
-
-FloatSample
-FilterDSP::GenerateBiquad()
-{
-  auto& s = _state.biquad;
-  s.x.Push(_output.ToDouble());
-  s.y.Push(s.x.Get(0) * s.b[0] + s.x.Get(1) * s.b[1] + s.x.Get(2) * s.b[2] - s.y.Get(0) * s.a[1] - s.y.Get(1) * s.a[2]);
-  return s.y.Get(0).ToFloat().Sanity();
 }
 
 FloatSample
@@ -241,7 +124,7 @@ FilterDSP::GenerateStateVar()
   s.ic1eq = 2.0 * v1 - s.ic1eq;
   s.ic2eq = 2.0 * v2 - s.ic2eq;
 
-  DoubleSample result;
+  DoubleSample result = {};
   switch (_model->passType)
   {
   case PassType::LPF: result = v2; break;

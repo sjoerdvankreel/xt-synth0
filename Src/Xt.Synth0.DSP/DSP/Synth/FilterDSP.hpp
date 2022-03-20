@@ -21,14 +21,6 @@ struct StateVarState
   DoubleSample ic2eq;
 }; 
 
-struct BiquadState
-{
-  double a[3];
-  double b[3];
-  DelayBuffer<DoubleSample, 3> x;
-  DelayBuffer<DoubleSample, 3> y;
-};
-
 struct CombState
 {
   float minGain;
@@ -42,7 +34,6 @@ struct CombState
 union FilterState
 {
   CombState comb;
-  BiquadState biquad;
   StateVarState stateVar;
 };
 
@@ -58,7 +49,6 @@ class FilterDSP
   float _filterAmount[XTS_SYNTH_FILTER_COUNT];
 private:
   FloatSample GenerateComb();
-  FloatSample GenerateBiquad();
   FloatSample GenerateStateVar();
 public:
   FilterDSP() = default;

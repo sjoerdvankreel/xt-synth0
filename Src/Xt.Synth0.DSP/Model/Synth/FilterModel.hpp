@@ -6,8 +6,8 @@
 
 namespace Xts {
 
+enum class FilterType { StateVar, Comb };
 enum class PassType { LPF, HPF, BPF, BSF };
-enum class FilterType { Biquad, StateVar, Comb };
 
 enum class FilterModTarget
 { 
