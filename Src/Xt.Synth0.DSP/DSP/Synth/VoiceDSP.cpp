@@ -1,9 +1,9 @@
-#include <DSP/Synth/SynthDSP.hpp>
+#include <DSP/Synth/VoiceDSP.hpp>
 
 namespace Xts {
 
 StagedParams
-SynthPlot::Params() const
+VoicePlot::Params() const
 {
   StagedParams result;
   result.stereo = true;
@@ -14,11 +14,11 @@ SynthPlot::Params() const
 }
 
 void
-SynthPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
-{ std::make_unique<SynthPlot>(&model)->DoRender(input, state); }
+VoicePlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+{ std::make_unique<VoicePlot>(&model)->DoRender(input, state); }
 
-SynthDSP::
-SynthDSP(SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate):
+VoiceDSP::
+VoiceDSP(SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate):
 _cv(& model->cv, velocity, bpm, rate),
 _amp(&model->amp, velocity),
 _audio(&model->audio, oct, note, rate) {}

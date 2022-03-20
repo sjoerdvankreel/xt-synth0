@@ -1,7 +1,7 @@
 #ifndef XTS_DSP_SEQUENCER_DSP_HPP
 #define XTS_DSP_SEQUENCER_DSP_HPP
 
-#include <DSP/Synth/SynthDSP.hpp>
+#include <DSP/Synth/VoiceDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 #include <Model/Shared/ParamBinding.hpp>
 #include <Model/Shared/SharedConfig.hpp>
@@ -45,7 +45,7 @@ private:
 private:
   int _keys[XTS_SYNTH_MAX_VOICES];
   int _active[XTS_SHARED_MAX_KEYS];
-  SynthDSP _dsps[XTS_SYNTH_MAX_VOICES];
+  VoiceDSP _dsps[XTS_SYNTH_MAX_VOICES];
   int64_t _started[XTS_SYNTH_MAX_VOICES];
   SynthModel _synths[XTS_SYNTH_MAX_VOICES];
 public:

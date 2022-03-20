@@ -124,7 +124,7 @@ SequencerDSP::Trigger(float rate)
     float velocity = Param::Level(key.velocity);
     float bpm = static_cast<float>(_model->edit.bpm);
     UnitNote note = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
-    new (&_dsps[voice]) SynthDSP(&_synths[voice], key.octave, note, velocity, bpm, rate);
+    new (&_dsps[voice]) VoiceDSP(&_synths[voice], key.octave, note, velocity, bpm, rate);
   }
   return result;
 }
