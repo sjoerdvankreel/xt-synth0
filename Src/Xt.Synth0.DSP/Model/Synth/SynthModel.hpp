@@ -1,6 +1,7 @@
 #ifndef XTS_MODEL_SYNTH_SYNTH_MODEL_HPP
 #define XTS_MODEL_SYNTH_SYNTH_MODEL_HPP
 
+#include <Model/Synth/LfoModel.hpp>
 #include <Model/Synth/PlotModel.hpp>
 #include <Model/Synth/VoiceModel.hpp>
 #include <cstdint>
@@ -11,6 +12,7 @@ struct XTS_ALIGN SynthModel
 {
   PlotModel plot;
   VoiceModel voice;
+  LfoModel globalLfo;
 public:
   static ParamInfo const* Params();
   static void Init(ParamInfo* params, size_t count);
