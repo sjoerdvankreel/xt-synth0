@@ -9,7 +9,6 @@ namespace Xt.Synth0.Model
         {
             internal CvModel.Native cv;
             internal AmpModel.Native amp;
-            internal PlotModel.Native plot;
             internal AudioModel.Native audio;
         }
     }

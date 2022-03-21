@@ -10,7 +10,8 @@ namespace Xt.Synth0.Model
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
-		{
+        {
+            internal PlotModel.Native plot;
             internal VoiceModel.Native voice;
 		}
 
