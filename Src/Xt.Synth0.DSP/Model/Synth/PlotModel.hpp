@@ -9,7 +9,7 @@ enum class PlotType
 { 
   Synth, Amp, 
   Env1, Env2, Env3, 
-  LFO1, LFO2, LFO3, 
+  LFO1, LFO2, 
   Unit1, Unit2, Unit3, 
   Filter1, Filter2, Filter3 
 };

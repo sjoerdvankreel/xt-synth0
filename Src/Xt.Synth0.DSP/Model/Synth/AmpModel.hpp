@@ -6,7 +6,7 @@
 
 namespace Xts {
 
-enum class AmpLfoSource { LFO1, LFO2, LFO3 };
+enum class AmpLfoSource { LFO1, LFO2 };
 
 struct XTS_ALIGN AmpModel
 {

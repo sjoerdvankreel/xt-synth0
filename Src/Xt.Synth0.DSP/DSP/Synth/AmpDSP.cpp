@@ -37,7 +37,6 @@ ToModSource(AmpLfoSource source)
   {
   case AmpLfoSource::LFO1: return ModSource::LFO1;
   case AmpLfoSource::LFO2: return ModSource::LFO2;
-  case AmpLfoSource::LFO3: return ModSource::LFO3;
   default: assert(false); return ModSource::LFO1;
   }
 }
