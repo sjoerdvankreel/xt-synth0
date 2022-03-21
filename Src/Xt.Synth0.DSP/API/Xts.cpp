@@ -36,13 +36,6 @@ Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames)
 { return sequencer->sequencerDsp->Render(frames); }
 
-XTS_EXPORT void XTS_CALL
-XtsSequencerConnect(XtsSequencer* sequencer, float rate)
-{
-  new(&sequencer->synthDsp)  Xts::SynthDSP(&sequencer->synthModel, &sequencer->binding, sequencer->sequencerModel.edit.bpm, 
-  sequencer->sequencerDsp->Synth(*)
-}
-
 void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot)
 {
@@ -93,4 +86,13 @@ XtsSequencerCreate(int32_t params, int32_t frames, float rate)
   result->binding.params = new int32_t * [params];
   result->sequencerDsp = new Xts::SequencerDSP(&result->sequencerModel, rate, frames);
   return result;
+}
+
+XTS_EXPORT void XTS_CALL
+XtsSequencerConnect(XtsSequencer* sequencer, float rate)
+{
+  auto const& edit = sequencer->sequencerModel.edit;
+  float bpm = static_cast<float>(edit.bpm);
+  new(sequencer->synthDsp) Xts::SynthDSP(&sequencer->synthModel, &sequencer->binding, edit.fxs, edit.keys, bpm, rate);
+  sequencer->sequencerDsp->Synth(sequencer->synthDsp);
 }
