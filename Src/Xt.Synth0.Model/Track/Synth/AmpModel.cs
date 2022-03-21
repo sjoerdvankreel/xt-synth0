@@ -17,7 +17,7 @@ namespace Xt.Synth0.Model
         public string Name => "Amp";
         public string Id => "F7791FBA-3693-4D71-8EC9-AB507A03FE9A";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => &((SynthModel.Native*)parent)->amp;
+        public void* Address(void* parent) => &((SynthModel.Native*)parent)->voice.amp;
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {

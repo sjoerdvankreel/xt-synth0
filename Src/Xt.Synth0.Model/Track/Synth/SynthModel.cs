@@ -11,10 +11,7 @@ namespace Xt.Synth0.Model
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
 		{
-            internal CvModel.Native cv;
-            internal AmpModel.Native amp;
-			internal PlotModel.Native plot;
-            internal AudioModel.Native audio;
+            internal VoiceModel.Native voice;
 		}
 
 		public IReadOnlyList<SynthParam> SynthParams { get; }
