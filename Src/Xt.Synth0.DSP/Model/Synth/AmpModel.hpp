@@ -18,8 +18,8 @@ struct XTS_ALIGN AmpModel
   int32_t ampLfoAmount;
   AmpLfoSource ampLfoSource;
 
-  int32_t unitAmount[XTS_SYNTH_UNIT_COUNT];
-  int32_t filterAmount[XTS_SYNTH_FILTER_COUNT];
+  int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
+  int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
 };
 XTS_CHECK_SIZE(AmpModel, 48);
 

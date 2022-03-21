@@ -11,8 +11,8 @@ namespace Xts {
 class CvDSP
 {
   CvState _output;
-  LfoDSP _lfos[XTS_SYNTH_LFO_COUNT];
-  EnvDSP _envs[XTS_SYNTH_ENV_COUNT];
+  LfoDSP _lfos[XTS_VOICE_LFO_COUNT];
+  EnvDSP _envs[XTS_VOICE_ENV_COUNT];
 public:
   CvState const& Next();
   EnvSample ReleaseAll(int env);

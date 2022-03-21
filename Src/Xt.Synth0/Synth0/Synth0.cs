@@ -33,7 +33,7 @@ namespace Xt.Synth0
                     Native.XtsSyncStepModelInit(steps, SyncStepModel.Steps.Length);
 				fixed (ParamInfo.Native* @params = infos)
 					Native.XtsSynthModelInit(@params, infos.Length);
-                _plot = Native.XtsPlotCreate(SynthConfig.ParamCount);
+                _plot = Native.XtsPlotCreate(SynthConfig.SynthParamCount);
                 Model.Track.Synth.BindVoice(&_plot->model, &_plot->binding);
 				Run();
 			}

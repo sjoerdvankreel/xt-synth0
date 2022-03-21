@@ -37,8 +37,8 @@ namespace Xt.Synth0.Model
             internal int ampLfoAmount;
             internal int ampLfoSource;
 
-            internal fixed int unitAmount[SynthConfig.UnitCount];
-            internal fixed int filterAmount[SynthConfig.FilterCount];
+            internal fixed int unitAmount[SynthConfig.VoiceUnitCount];
+            internal fixed int filterAmount[SynthConfig.VoiceFilterCount];
         }
 
         public Param Amp { get; } = new(AmpInfo);

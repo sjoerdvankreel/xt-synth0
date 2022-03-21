@@ -53,8 +53,8 @@ AmpDSP()
   _amp = Param::Level(model->amp) * velocity;
   _panMod = ModDSP(model->panModSource, model->panModAmount);
   _ampMod = ModDSP(ToModSource(model->ampLfoSource), model->ampLfoAmount);
-  for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
-  for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
+  for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
+  for (int i = 0; i < XTS_VOICE_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
 }
 
 FloatSample
@@ -66,8 +66,8 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   _level = cv.envs[XTS_AMP_ENV].value * _ampMod.Modulate({ _amp, false });
   float pan = BipolarToUnipolar1(_panMod.Modulate({_panning, true}));
   FloatSample panned = { (1.0f - pan) * _level, pan * _level };
-  for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * panned * _unitAmount[i];
-  for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _output += audio.filters[i] * panned * _filterAmount[i];
+  for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _output += audio.units[i] * panned * _unitAmount[i];
+  for (int i = 0; i < XTS_VOICE_FILTER_COUNT; i++) _output += audio.filters[i] * panned * _filterAmount[i];
   return Output().Sanity();
 }
 

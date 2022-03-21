@@ -9,8 +9,8 @@ namespace Xts {
 
 struct XTS_ALIGN CvModel
 {
-  LfoModel lfos[XTS_SYNTH_LFO_COUNT];
-  EnvModel envs[XTS_SYNTH_ENV_COUNT];
+  LfoModel lfos[XTS_VOICE_LFO_COUNT];
+  EnvModel envs[XTS_VOICE_ENV_COUNT];
 };
 XTS_CHECK_SIZE(CvModel, 312);
 

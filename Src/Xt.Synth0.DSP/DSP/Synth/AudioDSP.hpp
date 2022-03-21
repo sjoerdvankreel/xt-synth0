@@ -11,8 +11,8 @@ namespace Xts {
 class AudioDSP
 {
   AudioState _output;
-  UnitDSP _units[XTS_SYNTH_UNIT_COUNT];
-  FilterDSP _filters[XTS_SYNTH_FILTER_COUNT];
+  UnitDSP _units[XTS_VOICE_UNIT_COUNT];
+  FilterDSP _filters[XTS_VOICE_FILTER_COUNT];
 public:
   AudioState const& Next(struct CvState const& cv);
   AudioState const& Output() const { return _output; };

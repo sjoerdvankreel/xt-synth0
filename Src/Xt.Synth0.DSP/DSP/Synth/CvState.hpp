@@ -10,8 +10,8 @@ namespace Xts {
 struct CvState
 { 
   float velocity;
-  CvSample lfos[XTS_SYNTH_LFO_COUNT];
-  EnvSample envs[XTS_SYNTH_ENV_COUNT];
+  CvSample lfos[XTS_VOICE_LFO_COUNT];
+  EnvSample envs[XTS_VOICE_ENV_COUNT];
 };
 
 } // namespace Xts

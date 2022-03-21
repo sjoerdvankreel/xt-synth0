@@ -23,8 +23,8 @@ class AmpDSP
   ModDSP _panMod;
   FloatSample _output;
   AmpModel const* _model;
-  float _unitAmount[XTS_SYNTH_UNIT_COUNT];
-  float _filterAmount[XTS_SYNTH_FILTER_COUNT];
+  float _unitAmount[XTS_VOICE_UNIT_COUNT];
+  float _filterAmount[XTS_VOICE_FILTER_COUNT];
 public:
   AmpDSP() = default;
   AmpDSP(AmpModel const* model, float velocity);

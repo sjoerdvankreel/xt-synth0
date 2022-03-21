@@ -35,8 +35,8 @@ struct XTS_ALIGN FilterModel
   int32_t pad__;
 
   ModsModel<FilterModTarget> mods;
-  int32_t unitAmount[XTS_SYNTH_UNIT_COUNT];
-  int32_t filterAmount[XTS_SYNTH_FILTER_COUNT];
+  int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
+  int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
 };
 XTS_CHECK_SIZE(FilterModel, 96);
 

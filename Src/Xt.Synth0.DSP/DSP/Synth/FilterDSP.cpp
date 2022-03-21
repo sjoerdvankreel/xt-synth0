@@ -80,8 +80,8 @@ FilterDSP()
   _index = index;
   _model = model;
   _mods = ModsDSP(model->mods);
-  for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
-  for (int i = 0; i < XTS_SYNTH_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
+  for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
+  for (int i = 0; i < XTS_VOICE_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
   {
   case FilterType::Comb: InitComb(*model, rate, _state.comb); break;
@@ -97,7 +97,7 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   if (!_model->on) return _output;
   _mods.Next(cv);
   for (int i = 0; i < _index; i++) _output += audio.filters[i] * _filterAmount[i];
-  for (int i = 0; i < XTS_SYNTH_UNIT_COUNT; i++) _output += audio.units[i] * _unitAmount[i];
+  for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _output += audio.units[i] * _unitAmount[i];
   switch (_model->type)
   {
   case FilterType::Comb: _output = GenerateComb(); break;

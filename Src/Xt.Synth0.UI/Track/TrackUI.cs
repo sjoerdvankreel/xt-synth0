@@ -26,9 +26,9 @@ namespace Xt.Synth0.UI
         {
             var synth = app.Track.Synth;
             var result = new DockPanel();
-            for (int i = 0; i < SynthConfig.UnitCount; i++)
+            for (int i = 0; i < SynthConfig.VoiceUnitCount; i++)
                 result.Add(GroupUI.Make(app, synth.Units[i]), Dock.Top);
-            for (int i = 0; i < SynthConfig.LfoCount; i++)
+            for (int i = 0; i < SynthConfig.VoiceLfoCount; i++)
                 result.Add(GroupUI.Make(app, synth.Lfos[i]), Dock.Top);
             result.Add(PlotUI.Make(app), Dock.Top);
             return result;
@@ -38,9 +38,9 @@ namespace Xt.Synth0.UI
         {
             var synth = app.Track.Synth;
             var result = new DockPanel();
-            for (int i = 0; i < SynthConfig.EnvCount; i++)
+            for (int i = 0; i < SynthConfig.VoiceEnvCount; i++)
                 result.Add(GroupUI.Make(app, synth.Envs[i]), Dock.Top);
-            for (int i = 0; i < SynthConfig.FilterCount; i++)
+            for (int i = 0; i < SynthConfig.VoiceFilterCount; i++)
                 result.Add(GroupUI.Make(app, synth.Filters[i]), Dock.Top);
             result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             return result;

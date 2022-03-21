@@ -65,8 +65,8 @@ namespace Xt.Synth0.Model
             internal int pad__;
 
             internal ModsModel.Native mods;
-            internal fixed int unitAmount[SynthConfig.UnitCount];
-            internal fixed int filterAmount[SynthConfig.FilterCount];
+            internal fixed int unitAmount[SynthConfig.VoiceUnitCount];
+            internal fixed int filterAmount[SynthConfig.VoiceFilterCount];
         };
 
         static readonly string[] TypeNames = { "StVar", "Comb" };

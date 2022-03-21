@@ -9,8 +9,8 @@ namespace Xts {
 
 struct AudioState
 {
-  FloatSample units[XTS_SYNTH_UNIT_COUNT];
-  FloatSample filters[XTS_SYNTH_FILTER_COUNT];
+  FloatSample units[XTS_VOICE_UNIT_COUNT];
+  FloatSample filters[XTS_VOICE_FILTER_COUNT];
 };
 
 } // namespace Xts

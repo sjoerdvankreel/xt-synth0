@@ -2,10 +2,10 @@
 {
     public static class SynthConfig
     {
-        public const int LfoCount = 3;
-        public const int EnvCount = 3;
-        public const int UnitCount = 3;
-        public const int FilterCount = 3;
-        public const int ParamCount = 208;
+        public const int VoiceLfoCount = 3;
+        public const int VoiceEnvCount = 3;
+        public const int VoiceUnitCount = 3;
+        public const int VoiceFilterCount = 3;
+        public const int SynthParamCount = 208;
     }
 }
