@@ -11,18 +11,19 @@ namespace Xt.Synth0.Model
         const double MinFreqHz = 0.1;
         const double MaxFreqHz = 20.0;
 
+        readonly bool _global;
         public int Index { get; }
-        internal LfoModel(int index) => Index = index;
+        internal LfoModel(bool global, int index) => (_global, Index) = (global, index);
 
         public int Columns => 5;
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
 
-        public string Info => null;
         public string Name => $"LFO {Index + 1}";
+        public string Info => _global ? "Global" : null;
         public string Id => "E2E5D904-8652-450B-A293-7CDFF05892BF";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => &((SynthModel.Native*)parent)->voice.cv.lfos[Index * Native.Size];
+        public void* Address(void* parent) => _global ? &((SynthModel.Native*)parent)->globalLfo : &((SynthModel.Native*)parent)->voice.cv.lfos[Index * Native.Size];
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
@@ -50,7 +51,7 @@ namespace Xt.Synth0.Model
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
-        public Param Invert { get; } = new (InvertInfo);
+        public Param Invert { get; } = new(InvertInfo);
         public Param Unipolar { get; } = new Param(UnipolarInfo);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false);
         static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, 2, nameof(Type), "Type", "Type");

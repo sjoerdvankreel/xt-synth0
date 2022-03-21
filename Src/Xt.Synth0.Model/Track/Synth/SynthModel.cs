@@ -20,16 +20,16 @@ namespace Xt.Synth0.Model
 
 		public AmpModel Amp { get; } = new();
 		public PlotModel Plot { get; } = new();
-        public LfoModel GlobalLfo { get; } = new(SynthConfig.VoiceLfoCount + 1);
+        public LfoModel GlobalLfo { get; } = new(true, SynthConfig.VoiceLfoCount);
 		public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
 		public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
 		public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
 		public IReadOnlyList<FilterModel> Filters = new ReadOnlyCollection<FilterModel>(MakeFilters());
 
-		static IList<LfoModel> MakeLfos() => Enumerable.Range(0, SynthConfig.VoiceLfoCount).Select(i => new LfoModel(i)).ToList();
 		static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, SynthConfig.VoiceEnvCount).Select(i => new EnvModel(i)).ToList();
 		static IList<UnitModel> MakeUnits() => Enumerable.Range(0, SynthConfig.VoiceUnitCount).Select(i => new UnitModel(i)).ToList();
-		static IList<FilterModel> MakeFilters() => Enumerable.Range(0, SynthConfig.VoiceFilterCount).Select(i => new FilterModel(i)).ToList();
+        static IList<LfoModel> MakeLfos() => Enumerable.Range(0, SynthConfig.VoiceLfoCount).Select(i => new LfoModel(false, i)).ToList();
+        static IList<FilterModel> MakeFilters() => Enumerable.Range(0, SynthConfig.VoiceFilterCount).Select(i => new FilterModel(i)).ToList();
 
 		public override int Index => 0;
 		public override string Id => "8D6AB9FB-19DB-4F77-B56C-9E72AB67341F";
@@ -37,7 +37,7 @@ namespace Xt.Synth0.Model
 		public override IReadOnlyList<IParamGroupModel> Groups => Units
 			.Concat<IParamGroupModel>(Envs)
 			.Concat(Lfos).Concat(Filters)
-			.Concat(new IParamGroupModel[] { Plot, Amp/*, GlobalLfo*/ }).ToArray();
+			.Concat(new IParamGroupModel[] { Plot, Amp, GlobalLfo }).ToArray();
 
 		public SynthModel()
 		{

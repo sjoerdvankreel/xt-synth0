@@ -6,6 +6,6 @@
         public const int VoiceEnvCount = 3;
         public const int VoiceUnitCount = 3;
         public const int VoiceFilterCount = 3;
-        public const int SynthParamCount = 201;
+        public const int SynthParamCount = 208;
     }
 }
