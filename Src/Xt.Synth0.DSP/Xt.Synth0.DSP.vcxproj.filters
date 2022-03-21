@@ -183,6 +183,9 @@
     <ClInclude Include="DSP\Synth\SynthDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Synth\VoiceModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">

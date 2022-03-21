@@ -2,7 +2,7 @@
 #include <DSP/Shared/Utility.hpp>
 #include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/Synth/FilterPlot.hpp>
-#include <Model/Synth/SynthModel.hpp>
+#include <Model/Synth/VoiceModel.hpp>
 
 #include <memory>
 #include <cstring>
@@ -44,7 +44,7 @@ FilterPlot::Init(float bpm, float rate)
 }
 
 void
-FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+FilterPlot::Render(VoiceModel const& model, PlotInput const& input, PlotState& state)
 {
   int type = static_cast<int>(model.plot.type);
   int index = type - static_cast<int>(PlotType::Filter1);

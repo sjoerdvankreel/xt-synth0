@@ -6,11 +6,12 @@
 #include <DSP/Synth/VoiceDSP.hpp>
 #include <DSP/Synth/FilterPlot.hpp>
 #include <DSP/Shared/Utility.hpp>
+#include <Model/Synth/VoiceModel.hpp>
 
 namespace Xts {
 
 void
-SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotState& state)
+SynthPlotRender(VoiceModel const& model, PlotInput const& input, PlotState& state)
 {
   state.hold = model.plot.hold;
   switch(model.plot.type)

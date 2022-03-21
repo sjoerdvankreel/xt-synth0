@@ -5,7 +5,7 @@
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
-#include <Model/Synth/SynthModel.hpp>
+#include <Model/Synth/VoiceModel.hpp>
 
 namespace Xts {
 
@@ -16,7 +16,7 @@ class VoiceDSP
   AudioDSP _audio;
 public:
   VoiceDSP() = default;
-  VoiceDSP(struct SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate);
+  VoiceDSP(VoiceModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate);
 public:
   FloatSample Output() const { return _amp.Output(); }
   bool End() const { return _cv.Env(XTS_AMP_ENV).End(); }
@@ -31,12 +31,12 @@ class VoicePlot:
 public StagedPlot
 {
   VoiceDSP _dsp;
-  struct SynthModel const* _model;
+  struct VoiceModel const* _model;
 public:
-  VoicePlot(struct SynthModel const* model) : _model(model) {}
+  VoicePlot(struct VoiceModel const* model) : _model(model) {}
 public:
   StagedParams Params() const;
-  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
+  static void Render(struct VoiceModel const& model, struct PlotInput const& input, struct PlotState& state);
 public:
   void Next() { _dsp.Next(); }
   bool End() const { return _dsp.End(); }

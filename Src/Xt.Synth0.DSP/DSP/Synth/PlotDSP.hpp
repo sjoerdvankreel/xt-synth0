@@ -4,7 +4,7 @@
 namespace Xts {
 
 void 
-SynthPlotRender(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
+SynthPlotRender(struct VoiceModel const& model, struct PlotInput const& input, struct PlotState& state);
 
 } // namespace Xts
 #endif // XTS_DSP_SYNTH_PLOT_DSP_HPP

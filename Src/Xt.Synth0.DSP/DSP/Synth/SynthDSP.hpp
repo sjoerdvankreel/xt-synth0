@@ -17,11 +17,11 @@ class SynthDSP
   int _keyCount;
   struct SynthModel const* _model;
   struct ParamBinding const* _binding;
-  int _keys[XTS_SYNTH_MAX_VOICES];
-  int _active[XTS_SHARED_MAX_KEYS];
-  VoiceDSP _dsps[XTS_SYNTH_MAX_VOICES];
-  int64_t _started[XTS_SYNTH_MAX_VOICES];
-  SynthModel _synths[XTS_SYNTH_MAX_VOICES];
+  int _voiceKeys[XTS_SYNTH_MAX_VOICES];
+  int _voicesActive[XTS_SHARED_MAX_KEYS];
+  VoiceDSP _voiceDsps[XTS_SYNTH_MAX_VOICES];
+  int64_t _voicesStarted[XTS_SYNTH_MAX_VOICES];
+  VoiceModel _voiceModels[XTS_SYNTH_MAX_VOICES];
 public:
   int Voices() const { return _voices; }
 private:

@@ -2,7 +2,7 @@
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
-#include <Model/Synth/SynthModel.hpp>
+#include <Model/Synth/VoiceModel.hpp>
 
 #include <cassert>
 
@@ -27,7 +27,7 @@ AmpPlot::Init(float bpm, float rate)
 }
 
 void 
-AmpPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+AmpPlot::Render(VoiceModel const& model, PlotInput const& input, PlotState& state)
 { AmpPlot(&model.cv, &model.amp).DoRender(input, state); }
 
 static ModSource

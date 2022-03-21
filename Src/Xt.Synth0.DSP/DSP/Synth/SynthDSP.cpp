@@ -13,9 +13,9 @@ SynthDSP::Next()
   FloatSample result = { 0 };
   for (int v = 0; v < XTS_SYNTH_MAX_VOICES; v++)
   {
-    if (_keys[v] == -1) continue;
-    result += _dsps[v].Next();
-    if (_dsps[v].End()) Return(_keys[v], v);
+    if (_voiceKeys[v] == -1) continue;
+    result += _voiceDsps[v].Next();
+    if (_voiceDsps[v].End()) Return(_voiceKeys[v], v);
   }
   return result;
 }
@@ -24,13 +24,13 @@ void
 SynthDSP::Release(int key)
 {
   for (int v = 0; v < XTS_SYNTH_MAX_VOICES; v++)
-    if (_keys[v] == key) _dsps[v].Release();
+    if (_voiceKeys[v] == key) _voiceDsps[v].Release();
 }
 
 void SynthDSP::ReleaseAll()
 {
   for (int k = 0; k < _keyCount; k++)
-    if (_active[k] != -1) _dsps[_active[k]].Release();
+    if (_voicesActive[k] != -1) _voiceDsps[_voicesActive[k]].Release();
 }
 
 void
@@ -48,8 +48,8 @@ void
 SynthDSP::Return(int key, int voice)
 {
   _voices--;
-  _keys[voice] = -1;
-  _started[voice] = -1;
+  _voiceKeys[voice] = -1;
+  _voicesStarted[voice] = -1;
   assert(0 <= key && key < _keyCount);
   assert(0 <= voice && voice < XTS_SYNTH_MAX_VOICES);
   assert(0 <= _voices && _voices < XTS_SYNTH_MAX_VOICES);
@@ -59,9 +59,9 @@ int
 SynthDSP::Take(int key, int voice, int64_t position)
 {
   _voices++;
-  _keys[voice] = key;
-  _active[key] = voice;
-  _started[voice] = position;
+  _voiceKeys[voice] = key;
+  _voicesActive[key] = voice;
+  _voicesStarted[voice] = position;
   assert(0 <= _voices && _voices <= XTS_SYNTH_MAX_VOICES);
   return voice;
 }
@@ -75,13 +75,13 @@ SynthDSP::Take(int key, int64_t position, bool& exhausted)
   int64_t victimStart = 0x7FFFFFFFFFFFFFFF;
   for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++)
   {
-    if (_started[i] == -1) return Take(key, i, position);
-    if (_started[i] < victimStart) victimStart = _started[victim = i];
+    if (_voicesStarted[i] == -1) return Take(key, i, position);
+    if (_voicesStarted[i] < victimStart) victimStart = _voicesStarted[victim = i];
   }
   exhausted = true;
-  _keys[victim] = key;
-  _active[key] = victim;
-  _started[victim] = position;
+  _voiceKeys[victim] = key;
+  _voicesActive[key] = victim;
+  _voicesStarted[victim] = position;
   assert(0 <= victim && victim < XTS_SYNTH_MAX_VOICES);
   assert(0 <= _voices && _voices <= XTS_SYNTH_MAX_VOICES);
   return victim;
@@ -92,8 +92,8 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
 {
   bool result = false;
   int voice = Take(key, position, result);
-  _synths[voice] = *_model;
-  new (&_dsps[voice]) VoiceDSP(&_synths[voice], octave, note, velocity, _bpm, _rate);
+  _voiceModels[voice] = _model->voice;
+  new (&_voiceDsps[voice]) VoiceDSP(&_voiceModels[voice], octave, note, velocity, _bpm, _rate);
   return result;
 }
 
@@ -108,8 +108,8 @@ SynthDSP(SynthModel const* model, ParamBinding const* binding, int fxCount, int 
   _binding = binding;
   _fxCount = fxCount;
   _keyCount = keyCount;
-  for (int i = 0; i < keyCount; i++) _active[i] = -1;
-  for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _started[i] = _keys[i] = -1;
+  for (int i = 0; i < keyCount; i++) _voicesActive[i] = -1;
+  for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voicesStarted[i] = _voiceKeys[i] = -1;
 }
 
 } // namespace Xts
