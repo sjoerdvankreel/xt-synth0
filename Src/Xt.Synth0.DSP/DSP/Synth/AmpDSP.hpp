@@ -44,6 +44,7 @@ public StagedPlot
 public:
   AmpPlot(CvModel const* cv, AmpModel const* amp);
 public:
+  void Start() {}
   float Right() const { return 0.0f; }
   float Left() const { return _ampDsp.Level(); }
   void Next() { _ampDsp.Next(_cvDsp.Next(), {}); }

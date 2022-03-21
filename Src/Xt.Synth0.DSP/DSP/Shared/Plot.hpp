@@ -129,6 +129,7 @@ public:
   virtual EnvSample Release() = 0;
   virtual void Init(float bpm, float rate) = 0;
 public:
+  virtual void Start() = 0;
   virtual bool End() const = 0;
   virtual float Left() const = 0;
   virtual float Right() const = 0;

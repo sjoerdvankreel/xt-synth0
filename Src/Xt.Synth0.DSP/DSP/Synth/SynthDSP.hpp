@@ -59,6 +59,7 @@ public:
   void Next() { _dsp.Next(); }
   bool End() const { return _dsp.Voice0().End(); }
   EnvSample Release() { return _dsp.Voice0().Release(); }
+  void Start() { _dsp.Trigger(0, 4, UnitNote::C, 1.0f, 0); }
   float Left() const { return _dsp.Voice0().Output().left; }
   float Right() const { return _dsp.Voice0().Output().right; }
   EnvSample EnvOutput() const { return _dsp.Voice0().EnvOutput(); }

@@ -159,6 +159,7 @@ StagedPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output, Plo
   InitStaged(this, input, hold, output, data);
   Init(input.bpm, output.rate);
 
+  Start();
   float holdSamples = Param::TimeSamplesF(hold, output.rate, MIN_HOLD_MS, MAX_HOLD_MS);
   while (!done)
   {

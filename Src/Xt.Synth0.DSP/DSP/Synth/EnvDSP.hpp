@@ -51,6 +51,7 @@ public StagedPlot
 public:
   EnvPlot(EnvModel const* model): _model(model) {}
 public:
+  void Start() {}
   void Next() { _dsp.Next(); };
   float Right() const { return 0.0f; }
   bool End() const { return _dsp.End(); }
