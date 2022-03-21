@@ -3,7 +3,7 @@
 #include <DSP/Shared/Utility.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
-#include <Model/Synth/VoiceModel.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 #include <cmath>
 #include <cassert>
@@ -38,12 +38,12 @@ UnitPlot::Init(float bpm, float rate)
 }
 
 void
-UnitPlot::Render(VoiceModel const& model, PlotInput const& input, PlotState& state)
+UnitPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   int base = static_cast<int>(PlotType::Unit1);
   int type = static_cast<int>(model.plot.type);
-  UnitModel const* unit = &model.audio.units[type - base];
-  if (unit->on) UnitPlot(&model.cv, unit).DoRender(input, state);
+  UnitModel const* unit = &model.voice.audio.units[type - base];
+  if (unit->on) UnitPlot(&model.voice.cv, unit).DoRender(input, state);
 }
 
 static __m256

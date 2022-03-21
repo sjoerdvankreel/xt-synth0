@@ -3,21 +3,21 @@
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
-#include <DSP/Synth/VoiceDSP.hpp>
+#include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Synth/FilterPlot.hpp>
 #include <DSP/Shared/Utility.hpp>
-#include <Model/Synth/VoiceModel.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 namespace Xts {
 
 void
-SynthPlotRender(VoiceModel const& model, PlotInput const& input, PlotState& state)
+SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   state.hold = model.plot.hold;
   switch(model.plot.type)
   {
   case PlotType::Amp: AmpPlot::Render(model, input, state); break;
-  case PlotType::Synth: VoicePlot::Render(model, input, state); break;
+  case PlotType::Synth: SynthPlot::Render(model, input, state); break;
   case PlotType::Env1: case PlotType::Env2: case PlotType::Env3: EnvPlot::Render(model, input, state); break;
   case PlotType::LFO1: case PlotType::LFO2: case PlotType::LFO3: LfoPlot::Render(model, input, state); break;
   case PlotType::Unit1: case PlotType::Unit2: case PlotType::Unit3: UnitPlot::Render(model, input, state); break;

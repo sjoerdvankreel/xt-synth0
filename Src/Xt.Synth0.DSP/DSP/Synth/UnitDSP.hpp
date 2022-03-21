@@ -52,7 +52,7 @@ public:
 public:
   PeriodicParams Params() const;
   void Init(float bpm, float rate);
-  static void Render(struct VoiceModel const& model, struct PlotInput const& input, struct PlotState& state);
+  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };
 
 } // namespace Xts

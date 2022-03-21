@@ -1,6 +1,6 @@
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Synth/EnvDSP.hpp>
-#include <Model/Synth/VoiceModel.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 #include <cmath>
 #include <cassert>
@@ -35,11 +35,11 @@ EnvPlot::ReleaseSamples(EnvModel const& model, float bpm, float rate)
 }
 
 void 
-EnvPlot::Render(VoiceModel const& model, PlotInput const& input, PlotState& state)
+EnvPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   int base = static_cast<int>(PlotType::Env1);
   int type = static_cast<int>(model.plot.type);
-  EnvModel const* env = &model.cv.envs[type - base];
+  EnvModel const* env = &model.voice.cv.envs[type - base];
   if (env->on) EnvPlot(env).DoRender(input, state);
 }
 

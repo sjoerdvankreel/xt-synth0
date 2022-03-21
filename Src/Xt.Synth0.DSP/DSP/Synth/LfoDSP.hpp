@@ -39,7 +39,7 @@ public:
   float Frequency(float bpm, float rate) const { return LfoDSP::Frequency(*_model, bpm, rate); }
 public:
   PeriodicParams Params() const;
-  static void Render(struct VoiceModel const& model, struct PlotInput const& input, struct PlotState& state);
+  static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };
 
 } // namespace Xts

@@ -73,7 +73,7 @@ XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** outp
   plot->state.output = Xts::PlotOutput();
   plot->state.result = Xts::PlotResult();
   *plot->state.scratch = Xts::PlotScratch();
-  Xts::SynthPlotRender(plot->model.voice, *input, plot->state);
+  Xts::SynthPlotRender(plot->model, *input, plot->state);
   *output = &plot->state.output;  
   return &plot->state.result;
 }

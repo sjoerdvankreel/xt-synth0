@@ -1,6 +1,6 @@
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
-#include <Model/Synth/VoiceModel.hpp>
+#include <Model/Synth/SynthModel.hpp>
 
 #include <cmath>
 #include <memory>
@@ -23,11 +23,11 @@ LfoPlot::Params() const
 }
 
 void
-LfoPlot::Render(VoiceModel const& model, PlotInput const& input, PlotState& state)
+LfoPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   int base = static_cast<int>(PlotType::LFO1);
   int type = static_cast<int>(model.plot.type);
-  LfoModel const* lfo = &model.cv.lfos[type - base];
+  LfoModel const* lfo = &model.voice.cv.lfos[type - base];
   if (lfo->on) LfoPlot(lfo).DoRender(input, state);
 }
 

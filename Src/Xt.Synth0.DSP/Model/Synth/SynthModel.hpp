@@ -1,6 +1,7 @@
 #ifndef XTS_MODEL_SYNTH_SYNTH_MODEL_HPP
 #define XTS_MODEL_SYNTH_SYNTH_MODEL_HPP
 
+#include <Model/Synth/PlotModel.hpp>
 #include <Model/Synth/VoiceModel.hpp>
 #include <cstdint>
 
@@ -8,6 +9,7 @@ namespace Xts {
 
 struct XTS_ALIGN SynthModel
 {
+  PlotModel plot;
   VoiceModel voice;
 public:
   static ParamInfo const* Params();
