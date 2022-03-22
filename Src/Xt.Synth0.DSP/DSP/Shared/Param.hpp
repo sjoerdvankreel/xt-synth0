@@ -27,20 +27,20 @@ TimeSamplesI(int val, float rate, float minMs, float maxMs)
 { return static_cast<int>(std::roundf(TimeSamplesF(val, rate, minMs, maxMs))); }
 
 inline float
-StepSamplesF(int val, float bpm, float rate)
-{ return rate * 60.0f / bpm * SyncStepModel::Steps()[val].numerator / SyncStepModel::Steps()[val].denominator; }
+StepSamplesF(int val, int lpb, float bpm, float rate)
+{ return rate * 60.0f * static_cast<float>(lpb / 4.0f) * SyncStepModel::Steps()[val].numerator / SyncStepModel::Steps()[val].denominator * bpm; }
 
 inline int
-StepSamplesI(int val, float bpm, float rate)
-{ return static_cast<int>(StepSamplesF(val, bpm, rate)); }
+StepSamplesI(int val, int lpb, float bpm, float rate)
+{ return static_cast<int>(StepSamplesF(val, lpb, bpm, rate)); }
 
 inline float
-SamplesF(XtsBool sync, int timeVal, int stepVal, float bpm, float rate, float minMs, float maxMs)
-{ return sync == 0? TimeSamplesF(timeVal, rate, minMs, maxMs): StepSamplesF(stepVal, bpm, rate); }
+SamplesF(XtsBool sync, int timeVal, int stepVal, int lpb, float bpm, float rate, float minMs, float maxMs)
+{ return sync == 0? TimeSamplesF(timeVal, rate, minMs, maxMs): StepSamplesF(stepVal, lpb, bpm, rate); }
 
 inline int
-SamplesI(XtsBool sync, int timeVal, int stepVal, float bpm, float rate, float minMs, float maxMs)
-{ return static_cast<int>(SamplesF(sync, timeVal, stepVal, bpm, rate, minMs, maxMs)); }
+SamplesI(XtsBool sync, int timeVal, int stepVal, int lpb, float bpm, float rate, float minMs, float maxMs)
+{ return static_cast<int>(SamplesF(sync, timeVal, stepVal, lpb, bpm, rate, minMs, maxMs)); }
 
 } // namespace Param
 } // namespace Xts

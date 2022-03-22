@@ -51,8 +51,8 @@ public:
   UnitPlot(struct SynthModel const* model, int index) : _model(model), _index(index) {}
 public:
   PeriodicParams Params() const;
-  void Init(float bpm, float rate);
-  float Frequency(float bpm, float rate) const;
+  void Init(int lpb, float bpm, float rate);
+  float Frequency(int lpb, float bpm, float rate) const;
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };
 

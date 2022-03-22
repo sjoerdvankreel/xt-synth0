@@ -47,21 +47,21 @@ LfoDSP::Next()
 }
 
 LfoDSP::
-LfoDSP(LfoModel const* model, float bpm, float rate) :
+LfoDSP(LfoModel const* model, int lpb, float bpm, float rate) :
 LfoDSP()
 {
   _phase = 0.0;
   _model = model;
   _output.bipolar = model->unipolar == 0;
   _base = model->unipolar == 0 ? 0.0f: 0.5f;
-  _increment = Frequency(*model, bpm, rate) / rate;
+  _increment = Frequency(*model, lpb, bpm, rate) / rate;
   _factor = (model->invert ? -1.0f : 1.0f) * (1.0f - _base);
 }
 
 float
-LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
+LfoDSP::Frequency(LfoModel const& model, int lpb, float bpm, float rate)
 {
-  if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
+  if (model.sync) return rate / Param::StepSamplesF(model.step, lpb, bpm, rate);
   return Param::Frequency(model.frequency, MIN_FREQ_HZ, MAX_FREQ_HZ);
 }
 
