@@ -23,7 +23,7 @@ public:
   EnvModel const& Env() const { return _cv.Env(XTS_AMP_ENV).Model(); }
   EnvSample EnvOutput() const { return _cv.Env(XTS_AMP_ENV).Output(); }
   FloatSample Next(CvState const& cv, AudioState const& audio) { return _amp.Next(cv, audio); };
-  FloatSample Next() { _cv.Next(); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
+  FloatSample Next(CvSample globalLfo) { _cv.Next(globalLfo); _audio.Next(_cv.Output()); return Next(_cv.Output(), _audio.Output()); }
 };
 
 } // namespace Xts

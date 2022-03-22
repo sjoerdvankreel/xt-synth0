@@ -14,8 +14,8 @@ class CvDSP
   LfoDSP _lfos[XTS_VOICE_LFO_COUNT];
   EnvDSP _envs[XTS_VOICE_ENV_COUNT];
 public:
-  CvState const& Next();
   EnvSample ReleaseAll(int env);
+  CvState const& Next(CvSample globalLfo);
   CvState const& Output() const { return _output; };
   EnvDSP const& Env(int env) const { return _envs[env]; }
 public:

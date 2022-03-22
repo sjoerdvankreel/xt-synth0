@@ -27,10 +27,11 @@ FloatSample
 SynthDSP::Next()
 {
   FloatSample result = { 0 };
+  CvSample globalLfo = _globalLfo.Next();
   for (int v = 0; v < XTS_SYNTH_MAX_VOICES; v++)
   {
     if (_voiceKeys[v] == -1) continue;
-    result += _voiceDsps[v].Next();
+    result += _voiceDsps[v].Next(globalLfo);
     if (_voiceDsps[v].End()) Return(_voiceKeys[v], v);
   }
   return result;
@@ -124,6 +125,7 @@ SynthDSP(SynthModel const* model, ParamBinding const* binding, int fxCount, int 
   _binding = binding;
   _fxCount = fxCount;
   _keyCount = keyCount;
+  new(&_globalLfo) LfoDSP(&model->globalLfo, bpm, rate);
   for (int i = 0; i < keyCount; i++) _voicesActive[i] = -1;
   for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voicesStarted[i] = _voiceKeys[i] = -1;
 }

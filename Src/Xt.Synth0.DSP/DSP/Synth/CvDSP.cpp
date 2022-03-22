@@ -10,8 +10,9 @@ CvDSP::ReleaseAll(int env)
 }
 
 CvState const&
-CvDSP::Next()
+CvDSP::Next(CvSample globalLfo)
 {
+  _output.globalLfo = globalLfo;
   for (int i = 0; i < XTS_VOICE_LFO_COUNT; i++) _output.lfos[i] = _lfos[i].Next();
   for (int i = 0; i < XTS_VOICE_ENV_COUNT; i++) _output.envs[i] = _envs[i].Next();
   return Output();

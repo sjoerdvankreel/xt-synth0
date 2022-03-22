@@ -2,6 +2,7 @@
 #define XTS_DSP_SYNTH_SYNTH_DSP_HPP
 
 #include <DSP/Shared/Plot.hpp>
+#include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/VoiceDSP.hpp>
 #include <Model/Synth/SynthConfig.hpp>
 #include <Model/Shared/SharedConfig.hpp>
@@ -16,6 +17,7 @@ class SynthDSP
   int _voices;
   int _fxCount;
   int _keyCount;
+  LfoDSP _globalLfo;
   struct SynthModel const* _model;
   struct ParamBinding const* _binding;
   int _voiceKeys[XTS_SYNTH_MAX_VOICES];
