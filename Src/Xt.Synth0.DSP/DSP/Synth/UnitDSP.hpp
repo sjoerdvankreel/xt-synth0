@@ -2,6 +2,7 @@
 #define XTS_DSP_SYNTH_UNIT_DSP_HPP
 
 #include <DSP/Synth/CvDSP.hpp>
+#include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/ModsDSP.hpp>
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/AudioSample.hpp>
@@ -40,18 +41,18 @@ public:
 class UnitPlot : 
 public PeriodicPlot
 {
+  int _index;
   CvDSP _cvDsp;
   UnitDSP _unitDsp;
-  struct CvModel const* _cv;
-  struct UnitModel const* _unit;
+  LfoDSP _globalLfoDsp;
+  struct SynthModel const* _model;
 public:
-  UnitPlot(struct CvModel const* cv, struct UnitModel const* unit) : _cv(cv), _unit(unit) {}
-public:
-  float Next() { return _unitDsp.Next(_cvDsp.Next()).Mono(); }
-  float Frequency(float bpm, float rate) const { return UnitDSP::Frequency(*_unit, 4, UnitNote::C); }
+  float Next() { return _unitDsp.Next(_cvDsp.Next(_globalLfoDsp.Next())).Mono(); }
+  UnitPlot(struct SynthModel const* model, int index) : _model(model), _index(index) {}
 public:
   PeriodicParams Params() const;
   void Init(float bpm, float rate);
+  float Frequency(float bpm, float rate) const;
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };
 

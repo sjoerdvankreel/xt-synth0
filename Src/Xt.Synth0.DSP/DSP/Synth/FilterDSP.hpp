@@ -3,6 +3,7 @@
 
 #include <DSP/Synth/ModsDSP.hpp>
 #include <DSP/Shared/Config.hpp>
+#include <DSP/Shared/CvSample.hpp>
 #include <DSP/Shared/DelayBuffer.hpp>
 #include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/SynthConfig.hpp>

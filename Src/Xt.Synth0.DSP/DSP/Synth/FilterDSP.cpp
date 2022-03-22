@@ -30,7 +30,8 @@ FilterPlot::Params() const
 float
 FilterPlot::Next()
 {
-  auto const& cv = _cvDsp.Next();
+  auto const& globalLfo = _globalLfoDsp.Next();
+  auto const& cv = _cvDsp.Next(globalLfo);
   auto const& audio = _audioDsp.Next(cv);
   return _filterDsp.Next(cv, audio).Mono();
 }
@@ -38,9 +39,10 @@ FilterPlot::Next()
 void
 FilterPlot::Init(float bpm, float rate)
 {
-  new(&_cvDsp) CvDSP(_cv, 1.0f, bpm, rate);
-  new(&_filterDsp) FilterDSP(_filter, _index, rate);
-  new(&_audioDsp) AudioDSP(_audio, 4, UnitNote::C, rate);
+  new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0f, bpm, rate);
+  new(&_globalLfoDsp) LfoDSP(&_model->globalLfo, bpm, rate);
+  new(&_audioDsp) AudioDSP(&_model->voice.audio, 4, UnitNote::C, rate);
+  new(&_filterDsp) FilterDSP(&_model->voice.audio.filters[_index], _index, rate);
 }
 
 void
@@ -49,7 +51,7 @@ FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& s
   int type = static_cast<int>(model.plot.type);
   int index = type - static_cast<int>(PlotType::Filter1);
   FilterModel const* filter = &model.voice.audio.filters[index];
-  if (filter->on) std::make_unique<FilterPlot>(&model.voice.cv, &model.voice.audio, filter, index)->DoRender(input, state);
+  if (filter->on) std::make_unique<FilterPlot>(&model, index)->DoRender(input, state);
 }
 
 static void

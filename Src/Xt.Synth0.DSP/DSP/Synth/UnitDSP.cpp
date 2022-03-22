@@ -30,11 +30,16 @@ UnitPlot::Params() const
   return result;
 }
 
+
+float
+UnitPlot::Frequency(float bpm, float rate) const 
+{ return UnitDSP::Frequency(_model->voice.audio.units[_index], 4, UnitNote::C); }
+
 void
 UnitPlot::Init(float bpm, float rate)
 {
-  new(&_cvDsp) CvDSP(_cv, 1.0, bpm, rate);
-  new(&_unitDsp) UnitDSP(_unit, 4, UnitNote::C, rate); 
+  new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0, bpm, rate);
+  new(&_unitDsp) UnitDSP(&_model->voice.audio.units[_index], 4, UnitNote::C, rate);
 }
 
 void
@@ -43,7 +48,7 @@ UnitPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& sta
   int base = static_cast<int>(PlotType::Unit1);
   int type = static_cast<int>(model.plot.type);
   UnitModel const* unit = &model.voice.audio.units[type - base];
-  if (unit->on) UnitPlot(&model.voice.cv, unit).DoRender(input, state);
+  if (unit->on) UnitPlot(& model, type - base).DoRender(input, state);
 }
 
 static __m256

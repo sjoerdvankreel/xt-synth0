@@ -8,6 +8,14 @@
 
 namespace Xts {
 
+float
+AmpPlot::ReleaseSamples(float bpm, float rate) const 
+{ return EnvPlot::ReleaseSamples(_model->voice.cv.envs[XTS_AMP_ENV], bpm, rate); }
+
+void 
+AmpPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+{ AmpPlot(&model).DoRender(input, state); }
+
 StagedParams 
 AmpPlot::Params() const
 {
@@ -22,13 +30,10 @@ AmpPlot::Params() const
 void 
 AmpPlot::Init(float bpm, float rate)
 {
-  new(&_ampDsp) AmpDSP(_amp, 1.0f);
-  new(&_cvDsp) CvDSP(_cv, 1.0f, bpm, rate);
+  new(&_ampDsp) AmpDSP(&_model->voice.amp, 1.0f);
+  new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0f, bpm, rate);
+  new(&_globalLfoDsp) LfoDSP(&_model->globalLfo, bpm, rate);
 }
-
-void 
-AmpPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
-{ AmpPlot(&model.voice.cv, &model.voice.amp).DoRender(input, state); }
 
 static ModSource
 ToModSource(AmpLfoSource source)
