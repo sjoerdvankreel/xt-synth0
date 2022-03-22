@@ -10,7 +10,7 @@ enum class ModSource
 {
   Velocity, 
   Env1, Env2, Env3, 
-  LFO1, LFO2 
+  LFO1, LFO2, GlobalLFO
 };
 
 template <class Target>

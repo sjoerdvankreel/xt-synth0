@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum AmpLfoSource { LFO1, LFO2 }
+    public enum AmpLfoSource { LFO1, LFO2, GlobalLFO }
 
     public unsafe sealed class AmpModel : IUIParamGroupModel
     {

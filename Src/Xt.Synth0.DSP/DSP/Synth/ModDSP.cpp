@@ -8,6 +8,7 @@ ModulatorIsBipolar(ModSource source, CvState const& cv)
 {
   if (source == ModSource::LFO1 && cv.lfos[0].bipolar) return true;
   if (source == ModSource::LFO2 && cv.lfos[1].bipolar) return true;
+  if (source == ModSource::GlobalLFO && cv.globalLfo.bipolar) return true;
   return false;
 }
 
@@ -20,6 +21,7 @@ ModulatorValue(ModSource source, CvState const& cv)
   switch (source)
   {
   case ModSource::Velocity: return cv.velocity;
+  case ModSource::GlobalLFO: return cv.globalLfo.value;
   case ModSource::LFO1: case ModSource::LFO2: return cv.lfos[index - lfo].value;
   case ModSource::Env1: case ModSource::Env2: case ModSource::Env3: return cv.envs[index - env].value;
   default: assert(false); return 0.0f;

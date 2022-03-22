@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
     {
         Velocity,
         Env1, Env2, Env3,
-        LFO1, LFO2
+        LFO1, LFO2, GlobalLFO
     }
 
     unsafe class ModModel
@@ -20,6 +20,6 @@ namespace Xt.Synth0.Model
             internal int pad__;
         };
 
-        internal static readonly string[] ModSourceNames = { "Velo", "Env1", "Env2", "Env3", "LFO1", "LFO2" };
+        internal static readonly string[] ModSourceNames = { "Velo", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3" };
     }
 }
