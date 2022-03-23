@@ -28,7 +28,7 @@ namespace Xt.Synth0
             internal IntPtr synthDsp;
             internal SynthModel.Native synthModel;
             internal IntPtr sequencerDsp;
-            internal SequencerModel.Native sequencerModel;
+            internal SequencerModel.Native* sequencerModel;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]

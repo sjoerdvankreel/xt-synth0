@@ -26,11 +26,11 @@ class SequencerDSP
 {
   float _rate;
   double _fill = 0.0;
+  SequencerModel _model;
   class SynthDSP* _synth;
   SequencerOutput _output;
   bool _endPattern = false;
   std::vector<float> _buffer;
-  SequencerModel const* _model;
 private:
   bool Trigger();
   void Automate();
@@ -38,7 +38,8 @@ private:
   SequencerMove Move();
 public:
   SequencerDSP() = default;
-  SequencerDSP(SequencerModel const* model, float rate, size_t frames);
+  SequencerDSP(float rate, size_t frames);
+  SequencerModel* Model() { return &_model; }
 public:
   void Connect(class SynthDSP* synth) { _synth = synth; }
   SequencerOutput const* Render(int32_t frames, struct AutomationAction const* actions, int count);
