@@ -18,7 +18,7 @@ class SynthDSP
   int _fxCount;
   int _keyCount;
   LfoDSP _globalLfo;
-  SynthModel _model;
+  struct SynthModel const* _model;
   struct ParamBinding const* _binding;
   int _voiceKeys[XTS_SYNTH_MAX_VOICES];
   int _voicesActive[XTS_SHARED_MAX_KEYS];
