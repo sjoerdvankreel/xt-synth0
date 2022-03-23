@@ -47,13 +47,15 @@ namespace Xt.Synth0.Model
             internal int spectrum;
         }
 
+        static readonly string[] PlotTypeNames = { "Synth", "Amp", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3", "Unit1", "Unit2", "Unit3", "Filter1", "Filter2", "Filter3" };
+
         static readonly IRelevance RelevanceHold = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t < PlotType.LFO1);
         static readonly IRelevance RelevanceSpectrum = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t >= PlotType.LFO1 || t == PlotType.Synth);
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false, true);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, 1, nameof(Type), "Type", "Type", false);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, 1, nameof(Type), "Type", "Type", false, PlotTypeNames);
 
         public Param Hold { get; } = new(HoldInfo);
         public Param Spectrum { get; } = new(SpectrumInfo);
