@@ -29,8 +29,8 @@ namespace Xt.Synth0.Model
         public Param Note { get; } = new(NoteInfo);
         public Param Octave { get; } = new(OctaveInfo);
         public Param Velocity { get; } = new(VelocityInfo);
-        static readonly ParamInfo NoteInfo = ParamInfo.Pattern(p => &((Native*)p)->note, nameof(Note), "Note", "Note", NoteNames);
-        static readonly ParamInfo OctaveInfo = ParamInfo.Pattern(p => &((Native*)p)->octave, nameof(Octave), "Octave", "Octave", 0, 9, 4);
-        static readonly ParamInfo VelocityInfo = ParamInfo.Pattern(p => &((Native*)p)->velocity, nameof(Velocity), "Velocity", "Velocity", 0, 255, 255);
+        static readonly ParamInfo NoteInfo = ParamInfo.Pattern(p => &((Native*)p)->note, nameof(Note), "Note", "Note", false, NoteNames);
+        static readonly ParamInfo OctaveInfo = ParamInfo.Pattern(p => &((Native*)p)->octave, nameof(Octave), "Octave", "Octave", false, 0, 9, 4);
+        static readonly ParamInfo VelocityInfo = ParamInfo.Pattern(p => &((Native*)p)->velocity, nameof(Velocity), "Velocity", "Velocity", false, 0, 255, 255);
     }
 }

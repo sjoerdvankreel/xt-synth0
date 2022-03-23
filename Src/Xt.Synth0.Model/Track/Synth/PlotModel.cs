@@ -53,12 +53,12 @@ namespace Xt.Synth0.Model
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
-        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", true);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, 1, nameof(Type), "Type", "Type");
+        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false, true);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<PlotType>(p => &((Native*)p)->type, 1, nameof(Type), "Type", "Type", false);
 
         public Param Hold { get; } = new(HoldInfo);
         public Param Spectrum { get; } = new(SpectrumInfo);
-        static readonly ParamInfo SpectrumInfo = ParamInfo.Toggle(p => &((Native*)p)->spectrum, 1, nameof(Spectrum), "Spec", "Spectrum", false, RelevanceSpectrum);
-        static readonly ParamInfo HoldInfo = ParamInfo.Time(p => &((Native*)p)->hold, 1, nameof(Hold), "Hold", "Hold key time", DefaultHold, MinHoldMs, MaxHoldMs, RelevanceHold);
+        static readonly ParamInfo SpectrumInfo = ParamInfo.Toggle(p => &((Native*)p)->spectrum, 1, nameof(Spectrum), "Spec", "Spectrum", false, false, RelevanceSpectrum);
+        static readonly ParamInfo HoldInfo = ParamInfo.Time(p => &((Native*)p)->hold, 1, nameof(Hold), "Hold", "Hold key time", false, DefaultHold, MinHoldMs, MaxHoldMs, RelevanceHold);
     }
 }

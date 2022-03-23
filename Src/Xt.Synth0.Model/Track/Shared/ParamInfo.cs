@@ -33,6 +33,7 @@ namespace Xt.Synth0.Model
         public string Name { get; }
         public int Default { get; }
         public int SubGroup { get; }
+        public bool Realtime { get; }
         public string Description { get; }
         public IRelevance Relevance { get; }
 
@@ -93,11 +94,11 @@ namespace Xt.Synth0.Model
         public int MaxDisplayLength => _maxDisplayLength ??= GetMaxDisplayLength();
         int GetMaxDisplayLength() => Enumerable.Range(Min, Max - Min + 1).Select(Format).Max(t => t.Length);
 
-        ParamInfo(ParamType type, Address address, int subGroup, string id, string name, string description, int min, int max, int @default, 
-            double? rangeMin, double? rangeMax, Func<string, int> load, Func<int, string> store, Func<int, string> display, IRelevance relevance)
+        ParamInfo(ParamType type, Address address, int subGroup, string id, string name, string description, bool realtime, int min, int max,
+            int @default, double? rangeMin, double? rangeMax, Func<string, int> load, Func<int, string> store, Func<int, string> display, IRelevance relevance)
         {
-            (Type, _address, SubGroup, Id, Name, Description, Min, Max, Default, _rangeMin, _rangeMax, _load, _store, _display, Relevance)
-            = (type, address, subGroup, id, name, description, min, max, @default, rangeMin, rangeMax, load, store, display, relevance);
+            (Type, _address, SubGroup, Id, Name, Description, Realtime, Min, Max, Default, _rangeMin, _rangeMax, _load, _store, _display, Relevance)
+            = (type, address, subGroup, id, name, description, realtime, min, max, @default, rangeMin, rangeMax, load, store, display, relevance);
             if (subGroup < 0 || subGroup > 8) throw new InvalidOperationException();
             if (min < 0 || max > 255 || min >= max || @default < min || @default > max) throw new InvalidOperationException();
             if (rangeMin.HasValue != rangeMax.HasValue || rangeMin.HasValue && rangeMin.Value >= rangeMax.Value) throw new InvalidOperationException();
@@ -108,68 +109,68 @@ namespace Xt.Synth0.Model
 
         internal static ParamInfo Mix(
             Address address, int subGroup, string id, string name,
-            string description, IRelevance relevance = null)
+            string description, bool realtime, IRelevance relevance = null)
         => new ParamInfo(ParamType.Mix, address, subGroup, id, name,
-            description, 1, 255, 128, null, null, null, null, null, relevance);
+            description, realtime, 1, 255, 128, null, null, null, null, null, relevance);
 
         internal static ParamInfo Pattern(
             Address address, string id, string name,
-            string description, int min, int max, int @default)
+            string description, bool realtime, int min, int max, int @default)
          => new ParamInfo(ParamType.Pattern, address, 0, id, name,
-             description, min, max, @default, null, null, null, null, null, null);
+             description, realtime, min, max, @default, null, null, null, null, null, null);
 
         internal static ParamInfo Level(
             Address address, int subGroup, string id, string name,
-            string description, int @default, IRelevance relevance = null)
+            string description, bool realtime, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
-            description, 0, 255, @default, null, null, null, null, null, relevance);
+            description, realtime, 0, 255, @default, null, null, null, null, null, relevance);
 
         internal static ParamInfo Toggle(
             Address address, int subGroup, string id, string name,
-            string description, bool @default, IRelevance relevance = null)
+            string description, bool realtime, bool @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Toggle, address, subGroup, id, name,
-            description, 0, 1, @default ? 1 : 0, null, null, null, null, null, relevance);
+            description, realtime, 0, 1, @default ? 1 : 0, null, null, null, null, null, relevance);
 
         internal static ParamInfo Time(
-            Address address, int subGroup, string id, string name, string description, 
-            int @default, double minMs, double maxMs, IRelevance relevance = null)
+            Address address, int subGroup, string id, string name, string description,
+            bool realtime, int @default, double minMs, double maxMs, IRelevance relevance = null)
         => new ParamInfo(ParamType.Time, address, subGroup, id, name,
-            description, 0, 255, @default, minMs, maxMs, null, null, null, relevance);
+            description, realtime, 0, 255, @default, minMs, maxMs, null, null, null, relevance);
 
         internal static ParamInfo Select(
             Address address, int subGroup, string id, string name,
-            string description, int min, int max, int @default, IRelevance relevance = null)
+            string description, bool realtime, int min, int max, int @default, IRelevance relevance = null)
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
-            description, min, max, @default, null, null, null, null, null, relevance);
+            description, realtime, min, max, @default, null, null, null, null, null, relevance);
 
         internal static ParamInfo Pattern(
             Address address, string id, string name,
-            string description, string[] display)
+            string description, bool realtime, string[] display)
         => new ParamInfo(ParamType.Pattern, address, 0, id, name,
-            description, 0, display.Length - 1, 0, null, null, null, null, x => display[x], null);
+            description, realtime, 0, display.Length - 1, 0, null, null, null, null, x => display[x], null);
 
         internal static ParamInfo Frequency(
             Address address, int subGroup, string id, string name,
-            string description, int @default, double minHz, double maxHz, IRelevance relevance = null)
+            string description, bool realtime, int @default, double minHz, double maxHz, IRelevance relevance = null)
         => new ParamInfo(ParamType.Frequency, address, subGroup, id, name,
-            description, 0, 255, @default, minHz, maxHz, null, null, null, relevance);
+            description, realtime, 0, 255, @default, minHz, maxHz, null, null, null, relevance);
 
         internal static ParamInfo Select<TEnum>(
             Address address, int subGroup, string id, string name,
-            string description, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
-        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, 0,
+            string description, bool realtime, string[] display, IRelevance relevance = null) where TEnum : struct, Enum
+        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, realtime, 0,
             display.Length - 1, 0, null, null, LoadEnum<TEnum>, StoreEnum<TEnum>, x => display[x], relevance);
 
         internal static unsafe ParamInfo Step(
             Address address, int subGroup, string id, string name,
-            string description, int min, int @default, IRelevance relevance = null)
-        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, min,
+            string description, bool realtime, int min, int @default, IRelevance relevance = null)
+        => new ParamInfo(ParamType.Lin, address, subGroup, id, name, description, realtime, min,
             SyncStepModel.Steps.Length - 1, @default, null, null, null, null, val => SyncStepModel.Steps[val].ToString(), relevance);
 
         internal static ParamInfo List<TEnum>(
             Address address, int subGroup, string id, string name,
-            string description, string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum
-        => new ParamInfo(ParamType.List, address, subGroup, id, name, description, 0, Enum.GetValues<TEnum>().Length - 1,
+            string description, bool realtime, string[] display = null, IRelevance relevance = null) where TEnum : struct, Enum
+        => new ParamInfo(ParamType.List, address, subGroup, id, name, description, realtime, 0, Enum.GetValues<TEnum>().Length - 1,
             0, null, null, LoadEnum<TEnum>, StoreEnum<TEnum>, display != null ? x => display[x] : x => Enum.GetNames<TEnum>()[x], relevance);
     }
 }

@@ -69,40 +69,40 @@ namespace Xt.Synth0.Model
         public Param Type { get; } = new(TypeInfo);
         public Param Sync { get; } = new(SyncInfo);
         public Param Invert { get; } = new(InvertInfo);
-        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type");
-        static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 0, nameof(Sync), "Sync", "Beat sync", false);
-        static readonly ParamInfo InvertInfo = ParamInfo.Toggle(p => &((Native*)p)->invert, 0, nameof(Invert), "Invert", "Invert", false);
+        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false, false);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<EnvType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type", false);
+        static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 0, nameof(Sync), "Sync", "Beat sync", false, false);
+        static readonly ParamInfo InvertInfo = ParamInfo.Toggle(p => &((Native*)p)->invert, 0, nameof(Invert), "Invert", "Invert", false, false);
 
         public Param HoldTime { get; } = new(HoldTimeInfo);
         public Param DelayTime { get; } = new(DelayTimeInfo);
         public Param DecayTime { get; } = new(DecayTimeInfo);
         public Param AttackTime { get; } = new(AttackTimeInfo);
         public Param ReleaseTime { get; } = new(ReleaseTimeInfo);
-        static readonly ParamInfo HoldTimeInfo = ParamInfo.Time(p => &((Native*)p)->holdTime, 2, nameof(HoldTime), "Hld", "Hold milliseconds", 0, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo DelayTimeInfo = ParamInfo.Time(p => &((Native*)p)->delayTime, 2, nameof(DelayTime), "Dly", "Delay milliseconds", 0, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo DecayTimeInfo = ParamInfo.Time(p => &((Native*)p)->decayTime, 1, nameof(DecayTime), "D", "Decay milliseconds", 18, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo AttackTimeInfo = ParamInfo.Time(p => &((Native*)p)->attackTime, 1, nameof(AttackTime), "A", "Attack milliseconds", 7, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo ReleaseTimeInfo = ParamInfo.Time(p => &((Native*)p)->releaseTime, 1, nameof(ReleaseTime), "R", "Release milliseconds", 36, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo HoldTimeInfo = ParamInfo.Time(p => &((Native*)p)->holdTime, 2, nameof(HoldTime), "Hld", "Hold milliseconds", false, 0, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo DelayTimeInfo = ParamInfo.Time(p => &((Native*)p)->delayTime, 2, nameof(DelayTime), "Dly", "Delay milliseconds", false, 0, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo DecayTimeInfo = ParamInfo.Time(p => &((Native*)p)->decayTime, 1, nameof(DecayTime), "D", "Decay milliseconds", false, 18, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo AttackTimeInfo = ParamInfo.Time(p => &((Native*)p)->attackTime, 1, nameof(AttackTime), "A", "Attack milliseconds", false, 7, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo ReleaseTimeInfo = ParamInfo.Time(p => &((Native*)p)->releaseTime, 1, nameof(ReleaseTime), "R", "Release milliseconds", false, 36, MinTimeMs, MaxTimeMs, RelevanceTime);
 
         public Param HoldStep { get; } = new(HoldStepInfo);
         public Param DelayStep { get; } = new(DelayStepInfo);
         public Param DecayStep { get; } = new(DecayStepInfo);
         public Param AttackStep { get; } = new(AttackStepInfo);
         public Param ReleaseStep { get; } = new(ReleaseStepInfo);
-        static readonly ParamInfo HoldStepInfo = ParamInfo.Step(p => &((Native*)p)->holdStep, 2, nameof(HoldStep), "Hld", "Hold steps", 0, 0, RelevanceSync);
-        static readonly ParamInfo DecayStepInfo = ParamInfo.Step(p => &((Native*)p)->decayStep, 1, nameof(DecayStep), "D", "Decay steps", 0, 11, RelevanceSync);
-        static readonly ParamInfo DelayStepInfo = ParamInfo.Step(p => &((Native*)p)->delayStep, 2, nameof(DelayStep), "Dly", "Delay steps", 0, 0, RelevanceSync);
-        static readonly ParamInfo AttackStepInfo = ParamInfo.Step(p => &((Native*)p)->attackStep, 1, nameof(AttackStep), "A", "Attack steps", 0, 1, RelevanceSync);
-        static readonly ParamInfo ReleaseStepInfo = ParamInfo.Step(p => &((Native*)p)->releaseStep, 1, nameof(ReleaseStep), "R", "Release steps", 0, 15, RelevanceSync);
+        static readonly ParamInfo HoldStepInfo = ParamInfo.Step(p => &((Native*)p)->holdStep, 2, nameof(HoldStep), "Hld", "Hold steps", false, 0, 0, RelevanceSync);
+        static readonly ParamInfo DecayStepInfo = ParamInfo.Step(p => &((Native*)p)->decayStep, 1, nameof(DecayStep), "D", "Decay steps", false, 0, 11, RelevanceSync);
+        static readonly ParamInfo DelayStepInfo = ParamInfo.Step(p => &((Native*)p)->delayStep, 2, nameof(DelayStep), "Dly", "Delay steps", false, 0, 0, RelevanceSync);
+        static readonly ParamInfo AttackStepInfo = ParamInfo.Step(p => &((Native*)p)->attackStep, 1, nameof(AttackStep), "A", "Attack steps", false, 0, 1, RelevanceSync);
+        static readonly ParamInfo ReleaseStepInfo = ParamInfo.Step(p => &((Native*)p)->releaseStep, 1, nameof(ReleaseStep), "R", "Release steps", false, 0, 15, RelevanceSync);
 
         public Param Sustain { get; } = new(SustainInfo);
         public Param AttackSlope { get; } = new(AttackSlopeInfo);
         public Param DecaySlope { get; } = new(DecaySlopeInfo);
         public Param ReleaseSlope { get; } = new(ReleaseSlopeInfo);
-        static readonly ParamInfo SustainInfo = ParamInfo.Level(p => &((Native*)p)->sustain, 2, nameof(Sustain), "S", "Sustain level", 128);
-        static readonly ParamInfo DecaySlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->decaySlope, 1, "DecaySlope", "Slp", "Decay slope");
-        static readonly ParamInfo AttackSlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->attackSlope, 1, "AttackSlope", "Slp", "Attack slope");
-        static readonly ParamInfo ReleaseSlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->releaseSlope, 1, "ReleaseSlope", "Slp", "Release slope");
+        static readonly ParamInfo SustainInfo = ParamInfo.Level(p => &((Native*)p)->sustain, 2, nameof(Sustain), "S", "Sustain level", false, 128);
+        static readonly ParamInfo DecaySlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->decaySlope, 1, "DecaySlope", "Slp", "Decay slope", false);
+        static readonly ParamInfo AttackSlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->attackSlope, 1, "AttackSlope", "Slp", "Attack slope", false);
+        static readonly ParamInfo ReleaseSlopeInfo = ParamInfo.List<SlopeType>(p => &((Native*)p)->releaseSlope, 1, "ReleaseSlope", "Slp", "Release slope", false);
     }
 }

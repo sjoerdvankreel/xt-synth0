@@ -46,23 +46,23 @@ namespace Xt.Synth0.Model
         public Param Keys { get; } = new(KeysInfo);
         public Param Rows { get; } = new(RowsInfo);
         public Param Patterns { get; } = new(PatternsInfo);
-        static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, 1, nameof(Fxs), "Fxs", "Effect count", 0, SharedConfig.MaxFxs, 1);
-        static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, 1, nameof(Keys), "Keys", "Key count", 1, SharedConfig.MaxKeys, 2);
-        static readonly ParamInfo PatternsInfo = ParamInfo.Select(p => &((Native*)p)->patterns, 1, nameof(Patterns), "Pats", "Pattern count", 1, SequencerConfig.MaxPatterns, 1);
-        static readonly ParamInfo RowsInfo = ParamInfo.Select(p => &((Native*)p)->rows, 1, nameof(Rows), "Rows", "Rows per pattern", 1, SequencerConfig.MaxRows, SequencerConfig.MaxRows);
+        static readonly ParamInfo FxsInfo = ParamInfo.Select(p => &((Native*)p)->fxs, 1, nameof(Fxs), "Fxs", "Effect count", false, 0, SharedConfig.MaxFxs, 1);
+        static readonly ParamInfo KeysInfo = ParamInfo.Select(p => &((Native*)p)->keys, 1, nameof(Keys), "Keys", "Key count", false, 1, SharedConfig.MaxKeys, 2);
+        static readonly ParamInfo PatternsInfo = ParamInfo.Select(p => &((Native*)p)->patterns, 1, nameof(Patterns), "Pats", "Pattern count", false, 1, SequencerConfig.MaxPatterns, 1);
+        static readonly ParamInfo RowsInfo = ParamInfo.Select(p => &((Native*)p)->rows, 1, nameof(Rows), "Rows", "Rows per pattern", false, 1, SequencerConfig.MaxRows, SequencerConfig.MaxRows);
 
         public Param Bpm { get; } = new(BpmInfo);
         public Param Lpb { get; } = new(LpbInfo);
-        static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, 0, nameof(Bpm), "BPM", "Beats per minute", 1, 255, 120);
-        static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, 0, nameof(Lpb), "LPB", "Lines per beat", 1, SequencerConfig.MaxLpb, 4);
+        static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, 0, nameof(Bpm), "BPM", "Beats per minute", false, 1, 255, 120);
+        static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, 0, nameof(Lpb), "LPB", "Lines per beat", false, 1, SequencerConfig.MaxLpb, 4);
 
         public Param Step { get; } = new(StepInfo);
         public Param Edit { get; } = new(EditInfo);
         public Param Octave { get; } = new(OctaveInfo);
         public Param Loop { get; } = new(LoopInfo);
-        static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, 2, nameof(Step), "Step", "Edit step", 0, 8, 1);
-        static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, 2, nameof(Edit), "Edit", "Active pattern", 1, SequencerConfig.MaxPatterns, 1);
-        static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 2, nameof(Octave), "Oct", "Octave", 0, 9, 4);
-        static readonly ParamInfo LoopInfo = ParamInfo.Toggle(p => &((Native*)p)->loop, 1, nameof(Loop), "Loop", "Loop", true);
+        static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, 2, nameof(Step), "Step", "Edit step", false, 0, 8, 1);
+        static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, 2, nameof(Edit), "Edit", "Active pattern", false, 1, SequencerConfig.MaxPatterns, 1);
+        static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 2, nameof(Octave), "Oct", "Octave", false, 0, 9, 4);
+        static readonly ParamInfo LoopInfo = ParamInfo.Toggle(p => &((Native*)p)->loop, 1, nameof(Loop), "Loop", "Loop", false, true);
     }
 }

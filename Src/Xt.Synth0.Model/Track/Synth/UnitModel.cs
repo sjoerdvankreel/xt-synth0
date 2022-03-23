@@ -85,44 +85,44 @@ namespace Xt.Synth0.Model
         public Param Amp { get; } = new(AmpInfo);
         public Param Type { get; } = new(TypeInfo);
         public Param Panning { get; } = new(PanningInfo);
-        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false);
-        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), "Amp", "Amplitude", 255);
-        static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning");
-        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type", UnitTypeNames);
+        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false, false);
+        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), "Amp", "Amplitude", false, 255);
+        static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning", false);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type", false, UnitTypeNames);
 
         public Param Note { get; } = new(NoteInfo);
         public Param Octave { get; } = new(OctaveInfo);
         public Param Detune { get; } = new(DetuneInfo);
-        static readonly ParamInfo DetuneInfo = ParamInfo.Mix(p => &((Native*)p)->detune, 0, nameof(Detune), "Dtn", "Detune");
-        static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 0, nameof(Octave), "Oct", "Octave", 0, 9, 4);
-        static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", NoteNames);
+        static readonly ParamInfo DetuneInfo = ParamInfo.Mix(p => &((Native*)p)->detune, 0, nameof(Detune), "Dtn", "Detune", false);
+        static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 0, nameof(Octave), "Oct", "Octave", false, 0, 9, 4);
+        static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", false, NoteNames);
 
         public Param BlepType { get; } = new(BlepTypeInfo);
         public Param BlepPulseWidth { get; } = new(BlepPulseWidthInfo);
-        static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 0, nameof(BlepType), "Type", "Blep type", BlepTypeNames, RelevanceBlep);
-        static readonly ParamInfo BlepPulseWidthInfo = ParamInfo.Level(p => &((Native*)p)->blepPulseWidth, 1, nameof(BlepPulseWidth), "PW", "Pulse width", 0, RelevancePulseWidth);
+        static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 0, nameof(BlepType), "Type", "Blep type", false, BlepTypeNames, RelevanceBlep);
+        static readonly ParamInfo BlepPulseWidthInfo = ParamInfo.Level(p => &((Native*)p)->blepPulseWidth, 1, nameof(BlepPulseWidth), "PW", "Pulse width", false, 0, RelevancePulseWidth);
 
         public Param AdditiveSub { get; } = new(AdditiveSubInfo);
         public Param AdditiveStep { get; } = new(AdditiveStepInfo);
         public Param AdditiveRolloff { get; } = new(AdditiveRolloffInfo);
         public Param AdditivePartials { get; } = new(AdditivePartialsInfo);
-        static readonly ParamInfo AdditiveSubInfo = ParamInfo.Toggle(p => &((Native*)p)->additiveSub, 0, nameof(AdditiveSub), "Sub", "Additive subtract", false, RelevanceAdditive);
-        static readonly ParamInfo AdditiveRolloffInfo = ParamInfo.Mix(p => &((Native*)p)->additiveRolloff, 1, nameof(AdditiveRolloff), "Roll", "Additive rolloff", RelevanceAdditive);
-        static readonly ParamInfo AdditiveStepInfo = ParamInfo.Select(p => &((Native*)p)->additiveStep, 1, nameof(AdditiveStep), "Step", "Additive step", 1, 32, 1, RelevanceAdditive);
-        static readonly ParamInfo AdditivePartialsInfo = ParamInfo.Select(p => &((Native*)p)->additivePartials, 1, nameof(AdditivePartials), "Parts", "Additive partials", 1, 32, 1, RelevanceAdditive);
+        static readonly ParamInfo AdditiveSubInfo = ParamInfo.Toggle(p => &((Native*)p)->additiveSub, 0, nameof(AdditiveSub), "Sub", "Additive subtract", false, false, RelevanceAdditive);
+        static readonly ParamInfo AdditiveRolloffInfo = ParamInfo.Mix(p => &((Native*)p)->additiveRolloff, 1, nameof(AdditiveRolloff), "Roll", "Additive rolloff", false, RelevanceAdditive);
+        static readonly ParamInfo AdditiveStepInfo = ParamInfo.Select(p => &((Native*)p)->additiveStep, 1, nameof(AdditiveStep), "Step", "Additive step", false, 1, 32, 1, RelevanceAdditive);
+        static readonly ParamInfo AdditivePartialsInfo = ParamInfo.Select(p => &((Native*)p)->additivePartials, 1, nameof(AdditivePartials), "Parts", "Additive partials", false, 1, 32, 1, RelevanceAdditive);
 
         public Param Mod1Source { get; } = new(Mod1SourceInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
-        static readonly ParamInfo Mod1AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod1.amount, 2, nameof(Mod1Amount), "Amt", "Mod 1 amount");
-        static readonly ParamInfo Mod1TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mods.mod1.target, 2, nameof(Mod1Target), "Tgt", "Mod 1 target", ModTargetNames);
-        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod1.source, 2, nameof(Mod1Source), "Src", "Mod 1 source", ModModel.ModSourceNames);
+        static readonly ParamInfo Mod1AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod1.amount, 2, nameof(Mod1Amount), "Amt", "Mod 1 amount", false);
+        static readonly ParamInfo Mod1TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mods.mod1.target, 2, nameof(Mod1Target), "Tgt", "Mod 1 target", false, ModTargetNames);
+        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod1.source, 2, nameof(Mod1Source), "Src", "Mod 1 source", false, ModModel.ModSourceNames);
 
         public Param Mod2Source { get; } = new(Mod2SourceInfo);
         public Param Mod2Target { get; } = new(Mod2TargetInfo);
         public Param Mod2Amount { get; } = new(Mod2AmountInfo);
-        static readonly ParamInfo Mod2AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod2.amount, 2, nameof(Mod2Amount), "Amt", "Mod 2 amount");
-        static readonly ParamInfo Mod2TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mods.mod2.target, 2, nameof(Mod2Target), "Tgt", "Mod 2 target", ModTargetNames);
-        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod2.source, 2, nameof(Mod2Source), "Src", "Mod 2 source", ModModel.ModSourceNames);
+        static readonly ParamInfo Mod2AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod2.amount, 2, nameof(Mod2Amount), "Amt", "Mod 2 amount", false);
+        static readonly ParamInfo Mod2TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mods.mod2.target, 2, nameof(Mod2Target), "Tgt", "Mod 2 target", false, ModTargetNames);
+        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod2.source, 2, nameof(Mod2Source), "Src", "Mod 2 source", false, ModModel.ModSourceNames);
     }
 }

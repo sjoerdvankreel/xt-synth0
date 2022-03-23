@@ -22,7 +22,7 @@ namespace Xt.Synth0.Model
 
 		public Param Value { get; } = new(ValueInfo);
         public Param Target { get; } = new(TargetInfo);
-        static readonly ParamInfo ValueInfo = ParamInfo.Pattern(p => &((Native*)p)->value, nameof(Value), "Value", "Automation value", 0, 255, 0);        
-		static readonly ParamInfo TargetInfo = ParamInfo.Pattern(p => &((Native*)p)->target, nameof(Target), "Target", "Automation target", 0, 255, 0);
+        static readonly ParamInfo ValueInfo = ParamInfo.Pattern(p => &((Native*)p)->value, nameof(Value), "Value", "Automation value", false, 0, 255, 0);        
+		static readonly ParamInfo TargetInfo = ParamInfo.Pattern(p => &((Native*)p)->target, nameof(Target), "Target", "Automation target", false, 0, 255, 0);
 	}
 }
