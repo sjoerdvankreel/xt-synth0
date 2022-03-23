@@ -1,5 +1,6 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
+#include <Model/Shared/ParamBinding.hpp>
 
 #include <memory>
 #include <cassert>
@@ -20,11 +21,7 @@ SynthPlot::Params() const
 
 void
 SynthPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
-{ std::make_unique<SynthPlot>()->DoRender(input, state); }
-
-void
-SynthDSP::Init()
-{ new(&_globalLfo) LfoDSP(&_model.global.lfo, _bpm, _rate); }
+{ std::make_unique<SynthPlot>(&model)->DoRender(input, state); }
 
 FloatSample
 SynthDSP::Next()
@@ -59,7 +56,7 @@ SynthDSP::Automate(int target, int value)
   assert(0 <= value && value < 256);
   assert(0 <= target && target < 255);
   if (target >= XTS_SYNTH_PARAM_COUNT) return;
-  int32_t* param = _binding[target];
+  int32_t* param = _binding->params[target];
   ParamInfo const& info = SynthModel::Params()[target];
   *param = std::clamp(value, info.min, info.max);
 }
@@ -112,20 +109,23 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
 {
   bool result = false;
   int voice = Take(key, position, result);
-  _voiceModels[voice] = _model;
-  new (&_voiceDsps[voice]) VoiceDSP(&_voiceModels[voice].voice, octave, note, velocity, _bpm, _rate);
+  _voiceModels[voice] = _model->voice;
+  new (&_voiceDsps[voice]) VoiceDSP(&_voiceModels[voice], octave, note, velocity, _bpm, _rate);
   return result;
 }
 
 SynthDSP::
-SynthDSP(int fxCount, int keyCount, float bpm, float rate) :
+SynthDSP(SynthModel const* model, ParamBinding const* binding, int fxCount, int keyCount, float bpm, float rate) :
   SynthDSP()
 {
   _bpm = bpm;
   _voices = 0;
   _rate = rate;
+  _model = model;
+  _binding = binding;
   _fxCount = fxCount;
   _keyCount = keyCount;
+  new(&_globalLfo) LfoDSP(&model->global.lfo, bpm, rate);
   for (int i = 0; i < keyCount; i++) _voicesActive[i] = -1;
   for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voicesStarted[i] = _voiceKeys[i] = -1;
 }

@@ -4,24 +4,22 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
+#include <Model/Shared/ParamBinding.hpp>
 #include <Model/Shared/SyncStepModel.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 
 struct XTS_ALIGN XtsPlot
 {
-  int32_t** binding;
-  Xts::SynthDSP* dsp;
   Xts::PlotState state;
-  Xts::SynthModel* model;
+  Xts::SynthModel model;
+  Xts::ParamBinding binding;
 };
 
 struct XTS_ALIGN XtsSequencer
 {
-  int32_t** binding;
-  int32_t** voiceBindings;
+  Xts::ParamBinding binding;
   Xts::SynthDSP* synthDsp;
-  Xts::SynthModel* synthModel;
-  Xts::SynthModel* voiceModels;
+  Xts::SynthModel synthModel;
   Xts::SequencerDSP* sequencerDsp;
   Xts::SequencerModel* sequencerModel;
 };
@@ -39,19 +37,12 @@ XtsSequencerRender(XtsSequencer* sequencer, int32_t frames, struct Xts::Automati
 { return sequencer->sequencerDsp->Render(frames, actions, count); }
 
 void XTS_CALL
-XtsPlotInit(XtsPlot* plot, float bpm, float rate)
-{ 
-  new(plot->dsp) Xts::SynthDSP(0, 1, bpm, rate);
-  plot->dsp->Init(); 
-}
-
-void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot)
 {
   if (plot == nullptr) return;
-  delete plot->dsp;
   delete plot->state.data;
   delete plot->state.scratch;
+  delete plot->binding.params;
   delete plot;
 }
 
@@ -61,18 +52,17 @@ XtsSequencerDestroy(XtsSequencer* sequencer)
   if (sequencer == nullptr) return;
   delete sequencer->synthDsp;
   delete sequencer->sequencerDsp;
+  delete sequencer->binding.params;
   delete sequencer;
 }
 
 XtsPlot* XTS_CALL
-XtsPlotCreate(void)
+XtsPlotCreate(int32_t params)
 {
   auto result = new XtsPlot;
-  result->dsp = new Xts::SynthDSP;
   result->state.data = new Xts::PlotData;
   result->state.scratch = new Xts::PlotScratch;
-  result->model = result->dsp->Model();
-  result->binding = result->dsp->Binding();
+  result->binding.params = new int32_t*[params];
   return result;
 }
 
@@ -83,7 +73,7 @@ XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** outp
   plot->state.output = Xts::PlotOutput();
   plot->state.result = Xts::PlotResult();
   *plot->state.scratch = Xts::PlotScratch();
-  Xts::SynthPlotRender(*plot->dsp, *input, plot->state);
+  Xts::SynthPlotRender(plot->model, *input, plot->state);
   *output = &plot->state.output;  
   return &plot->state.result;
 }
@@ -93,12 +83,9 @@ XtsSequencerCreate(int32_t params, int32_t frames, float rate)
 {
   auto result = new XtsSequencer;
   result->synthDsp = new Xts::SynthDSP();
+  result->binding.params = new int32_t * [params];
   result->sequencerDsp = new Xts::SequencerDSP(rate, frames);
-  result->binding = result->synthDsp->Binding();
-  result->synthModel = result->synthDsp->Model();
-  result->voiceModels = result->synthDsp->VoiceModels();
   result->sequencerModel = result->sequencerDsp->Model();
-  result->voiceBindings = result->synthDsp->VoiceBindings();
   return result;
 }
 
@@ -107,6 +94,6 @@ XtsSequencerConnect(XtsSequencer* sequencer, float rate)
 {
   auto const& edit = sequencer->sequencerDsp->Model()->edit;
   float bpm = static_cast<float>(edit.bpm);
-  new(sequencer->synthDsp) Xts::SynthDSP(edit.fxs, edit.keys, bpm, rate);
+  new(sequencer->synthDsp) Xts::SynthDSP(&sequencer->synthModel, &sequencer->binding, edit.fxs, edit.keys, bpm, rate);
   sequencer->sequencerDsp->Connect(sequencer->synthDsp);
 }

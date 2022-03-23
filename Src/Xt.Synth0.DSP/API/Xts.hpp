@@ -30,12 +30,10 @@ XtsSynthModelInit(Xts::ParamInfo* params, int32_t count);
 XTS_EXPORT void XTS_CALL
 XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count);
 
-XTS_EXPORT XtsPlot* XTS_CALL
-XtsPlotCreate(void);
 XTS_EXPORT void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot);
-XTS_EXPORT void XTS_CALL
-XtsPlotInit(XtsPlot* plot, float bpm, float rate);
+XTS_EXPORT XtsPlot* XTS_CALL
+XtsPlotCreate(int32_t params);
 XTS_EXPORT Xts::PlotResult* XTS_CALL
 XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** output);
 

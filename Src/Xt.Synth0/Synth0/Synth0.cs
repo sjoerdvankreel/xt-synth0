@@ -33,7 +33,8 @@ namespace Xt.Synth0
                     Native.XtsSyncStepModelInit(steps, SyncStepModel.Steps.Length);
                 fixed (ParamInfo.Native* @params = infos)
                     Native.XtsSynthModelInit(@params, infos.Length);
-                _plot = Native.XtsPlotCreate();
+                _plot = Native.XtsPlotCreate(SynthConfig.SynthParamCount);
+                Model.Track.Synth.Bind(&_plot->model, &_plot->binding);
                 Run();
             }
             finally
@@ -246,9 +247,7 @@ namespace Xt.Synth0
             input.pixels = e.Pixels;
             input.bpm = Model.Track.Seq.Edit.Bpm.Value;
             input.spectrum = Model.Track.Synth.Plot.Spectrum.Value == 0 ? 0 : 1;
-            Model.Track.Synth.Bind(&_plot->model, _plot->binding);
-            Model.Track.Synth.ToNative(_plot->binding);
-            Native.XtsPlotInit(_plot, Model.Track.Seq.Edit.Bpm.Value, rate);
+            Model.Track.Synth.ToNative(&_plot->binding);
             e.Result = Native.XtsPlotRender(_plot, &input, &output);
             e.Output = output;
         }

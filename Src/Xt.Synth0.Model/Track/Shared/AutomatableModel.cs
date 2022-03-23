@@ -16,22 +16,23 @@ namespace Xt.Synth0.Model
             AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
         }
 
-        public void ToNative(int** binding)
+        public void ToNative(ParamBinding.Native* binding)
         {
             for (int i = 0; i < Params.Count; i++)
-                *binding[i] = Params[i].Value;
+                *binding->@params[i] = Params[i].Value;
         }
 
-        public void FromNative(int** binding)
+        public void FromNative(ParamBinding.Native* binding)
         {
             for (int i = 0; i < Params.Count; i++)
-                Params[i].Value = *binding[i];
+                Params[i].Value = *binding->@params[i];
         }
 
-        public void Bind(void* native, int** binding)
+        public void Bind(void* native, ParamBinding.Native* binding)
         {
+            var @params = binding->@params;
             for (int p = 0; p < Params.Count; p++)
-                binding[p] = Params[p].Info.Address(AutoParams[p].Group.Address(native));
+                @params[p] = Params[p].Info.Address(AutoParams[p].Group.Address(native));
         }
 
         public ParamInfo.Native[] ParamInfos()

@@ -141,6 +141,9 @@
     <ClInclude Include="DSP\Shared\Modulate.hpp">
       <Filter>DSP\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Shared\ParamBinding.hpp">
+      <Filter>Model\Shared</Filter>
+    </ClInclude>
     <ClInclude Include="Model\Sequencer\EditModel.hpp">
       <Filter>Model\Sequencer</Filter>
     </ClInclude>
