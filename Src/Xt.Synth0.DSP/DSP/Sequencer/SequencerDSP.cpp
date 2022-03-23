@@ -35,7 +35,7 @@ SequencerDSP::Render(int32_t frames, AutomationAction const* actions, int count)
   _output.clip = XtsFalse;
   _output.exhausted = XtsFalse;
   for(int i = 0; i < count; i++)
-    _synth->Automate(actions[i].paramIndex, actions[i].paramValue);
+    _synth->Automate(actions[i].target, actions[i].value);
   for (int f = 0; f < frames; f++)
   {
     auto out = Next();

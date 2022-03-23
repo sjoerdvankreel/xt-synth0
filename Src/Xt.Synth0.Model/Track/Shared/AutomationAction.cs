@@ -7,17 +7,13 @@ namespace Xt.Synth0
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct Native
         {
-            public int automationId;
-            public int paramIndex;
-            public int paramValue;
-            int pad__;
+            public int target;
+            public int value;
 
-            public Native(int automationId, int paramIndex, int paramValue)
+            public Native(int target, int value)
             {
-                this.automationId = automationId;
-                this.paramIndex = paramIndex;
-                this.paramValue = paramValue;
-                this.pad__ = 0;
+                this.target = target;
+                this.value = value;
             }
         }
     }

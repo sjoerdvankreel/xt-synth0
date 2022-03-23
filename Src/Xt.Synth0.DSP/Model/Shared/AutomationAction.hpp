@@ -8,12 +8,10 @@ namespace Xts {
 
 struct XTS_ALIGN AutomationAction
 {
-  int32_t automationId;
-  int32_t paramIndex;
-  int32_t paramValue;
-  int32_t pad__;
+  int32_t target;
+  int32_t value;
 };
-XTS_CHECK_SIZE(AutomationAction, 16);
+XTS_CHECK_SIZE(AutomationAction, 8);
 
 } // namespace Xts
 #endif // XTS_MODEL_SHARED_AUTOMATION_ACTION_HPP

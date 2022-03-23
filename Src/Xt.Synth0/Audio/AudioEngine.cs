@@ -237,7 +237,7 @@ namespace Xt.Synth0
         {
             var @params = _localSynth.Params;
             for (int i = 0; i < count; i++)
-                @params[actions[i].paramIndex].Value = actions[i].paramValue;
+                @params[actions[i].target].Value = actions[i].value;
             for (int i = 0; i < @params.Count; i++)
                 _automationValues[i] = @params[i].Value;
         }
@@ -248,7 +248,7 @@ namespace Xt.Synth0
             var @params = _localSynth.Params;
             for (int i = 0; i < @params.Count; i++)
                 if (@params[i].Value != _automationValues[i])
-                    AutomationQueue.EnqueueAudio(new AutomationAction.Native(-1, i, @params[i].Value));
+                    AutomationQueue.EnqueueAudio(new AutomationAction.Native(i, @params[i].Value));
         }
 
         internal unsafe void OnBuffer(in XtBuffer buffer, in XtFormat format)

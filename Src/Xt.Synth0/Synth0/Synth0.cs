@@ -64,8 +64,8 @@ namespace Xt.Synth0
         static void OnSynthParamChanged(object sender, ParamChangedEventArgs e)
         {
             if (!Model.Stream.IsRunning) return;
-            var value = Model.Track.Synth.Params[e.ParamIndex].Value;
-            AutomationQueue.EnqueueUI(new AutomationAction.Native(e.AutomationId, e.ParamIndex, value));
+            var value = Model.Track.Synth.Params[e.Target].Value;
+            AutomationQueue.EnqueueUI(new AutomationAction.Native(e.Target, value));
         }
 
         static SettingsModel LoadSettings(AudioEngine engine)
@@ -165,7 +165,7 @@ namespace Xt.Synth0
             {
                 PlotUI.BeginUpdate();
                 foreach (var action in queue)
-                    @params[action.paramIndex].Value = action.paramValue;
+                    @params[action.target].Value = action.value;
                 PlotUI.EndUpdate();
             }
             _lastAudioUpdateMs = _audioUpdateTimer.ElapsedMilliseconds;
