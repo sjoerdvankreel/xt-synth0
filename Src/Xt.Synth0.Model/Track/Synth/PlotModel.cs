@@ -29,7 +29,7 @@ namespace Xt.Synth0.Model
         public string Name => "Plot";
         public string Id => "BD224A37-6B8E-4EDA-9E49-DE3DD1AF61CE";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => &((SynthModel.Native*)parent)->plot;
+        public void* Address(void* parent) => &((SynthModel.Native*)parent)->global.plot;
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>() 
         { 

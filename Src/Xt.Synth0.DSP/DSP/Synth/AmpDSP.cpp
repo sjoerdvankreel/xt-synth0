@@ -32,7 +32,7 @@ AmpPlot::Init(float bpm, float rate)
 {
   new(&_ampDsp) AmpDSP(&_model->voice.amp, 1.0f);
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0f, bpm, rate);
-  new(&_globalLfoDsp) LfoDSP(&_model->globalLfo, bpm, rate);
+  new(&_globalLfoDsp) LfoDSP(&_model->global.lfo, bpm, rate);
 }
 
 static ModSource

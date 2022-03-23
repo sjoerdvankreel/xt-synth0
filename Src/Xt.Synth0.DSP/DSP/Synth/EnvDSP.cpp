@@ -38,7 +38,7 @@ void
 EnvPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   int base = static_cast<int>(PlotType::Env1);
-  int type = static_cast<int>(model.plot.type);
+  int type = static_cast<int>(model.global.plot.type);
   EnvModel const* env = &model.voice.cv.envs[type - base];
   if (env->on) EnvPlot(env).DoRender(input, state);
 }

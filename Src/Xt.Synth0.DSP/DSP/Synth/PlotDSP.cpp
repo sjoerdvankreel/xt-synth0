@@ -13,8 +13,8 @@ namespace Xts {
 void
 SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
-  state.hold = model.plot.hold;
-  switch(model.plot.type)
+  state.hold = model.global.plot.hold;
+  switch(model.global.plot.type)
   {
   case PlotType::Amp: AmpPlot::Render(model, input, state); break;
   case PlotType::Synth: SynthPlot::Render(model, input, state); break;

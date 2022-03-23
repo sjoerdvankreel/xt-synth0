@@ -189,6 +189,9 @@
     <ClInclude Include="Model\Shared\AutomationAction.hpp">
       <Filter>Model\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Synth\GlobalModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">

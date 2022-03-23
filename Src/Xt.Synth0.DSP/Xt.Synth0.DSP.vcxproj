@@ -53,6 +53,7 @@
     <ClInclude Include="Model\Shared\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
     <ClInclude Include="Model\Synth\AudioModel.hpp" />
+    <ClInclude Include="Model\Synth\GlobalModel.hpp" />
     <ClInclude Include="Model\Synth\ModsModel.hpp" />
     <ClInclude Include="Model\Synth\SynthConfig.hpp" />
     <ClInclude Include="Model\Synth\CvModel.hpp" />

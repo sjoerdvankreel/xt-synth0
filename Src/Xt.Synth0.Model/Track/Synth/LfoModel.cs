@@ -24,7 +24,7 @@ namespace Xt.Synth0.Model
         public string Info => _global ? "Global" : null;
         public string Id => "E2E5D904-8652-450B-A293-7CDFF05892BF";
         public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
-        public void* Address(void* parent) => _global ? &((SynthModel.Native*)parent)->globalLfo : &((SynthModel.Native*)parent)->voice.cv.lfos[Index * Native.Size];
+        public void* Address(void* parent) => _global ? &((SynthModel.Native*)parent)->global.lfo : &((SynthModel.Native*)parent)->voice.cv.lfos[Index * Native.Size];
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {

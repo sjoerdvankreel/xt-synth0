@@ -4,7 +4,6 @@
 #include <Model/Synth/CvModel.hpp>
 #include <Model/Synth/AmpModel.hpp>
 #include <Model/Synth/AudioModel.hpp>
-#include <Model/Shared/ParamInfo.hpp>
 
 namespace Xts {
 

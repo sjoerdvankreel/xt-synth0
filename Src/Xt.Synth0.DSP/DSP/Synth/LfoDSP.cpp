@@ -25,11 +25,11 @@ LfoPlot::Params() const
 void
 LfoPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
-  LfoModel const* lfo = &model.globalLfo;
-  if(model.plot.type != PlotType::GlobalLFO)
+  LfoModel const* lfo = &model.global.lfo;
+  if(model.global.plot.type != PlotType::GlobalLFO)
   {
     int base = static_cast<int>(PlotType::LFO1);
-    int type = static_cast<int>(model.plot.type);
+    int type = static_cast<int>(model.global.plot.type);
     lfo = &model.voice.cv.lfos[type - base];
   }
   if (lfo->on) LfoPlot(lfo).DoRender(input, state);

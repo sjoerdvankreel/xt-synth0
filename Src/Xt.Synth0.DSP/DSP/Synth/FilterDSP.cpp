@@ -40,7 +40,7 @@ void
 FilterPlot::Init(float bpm, float rate)
 {
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0f, bpm, rate);
-  new(&_globalLfoDsp) LfoDSP(&_model->globalLfo, bpm, rate);
+  new(&_globalLfoDsp) LfoDSP(&_model->global.lfo, bpm, rate);
   new(&_audioDsp) AudioDSP(&_model->voice.audio, 4, UnitNote::C, rate);
   new(&_filterDsp) FilterDSP(&_model->voice.audio.filters[_index], _index, rate);
 }
@@ -48,7 +48,7 @@ FilterPlot::Init(float bpm, float rate)
 void
 FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
-  int type = static_cast<int>(model.plot.type);
+  int type = static_cast<int>(model.global.plot.type);
   int index = type - static_cast<int>(PlotType::Filter1);
   FilterModel const* filter = &model.voice.audio.filters[index];
   if (filter->on) std::make_unique<FilterPlot>(&model, index)->DoRender(input, state);

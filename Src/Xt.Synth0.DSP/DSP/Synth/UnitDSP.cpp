@@ -46,7 +46,7 @@ void
 UnitPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
 {
   int base = static_cast<int>(PlotType::Unit1);
-  int type = static_cast<int>(model.plot.type);
+  int type = static_cast<int>(model.global.plot.type);
   UnitModel const* unit = &model.voice.audio.units[type - base];
   if (unit->on) UnitPlot(& model, type - base).DoRender(input, state);
 }

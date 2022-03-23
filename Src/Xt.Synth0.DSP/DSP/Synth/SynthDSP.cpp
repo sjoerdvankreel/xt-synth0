@@ -125,7 +125,7 @@ SynthDSP(SynthModel const* model, ParamBinding const* binding, int fxCount, int 
   _binding = binding;
   _fxCount = fxCount;
   _keyCount = keyCount;
-  new(&_globalLfo) LfoDSP(&model->globalLfo, bpm, rate);
+  new(&_globalLfo) LfoDSP(&model->global.lfo, bpm, rate);
   for (int i = 0; i < keyCount; i++) _voicesActive[i] = -1;
   for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voicesStarted[i] = _voiceKeys[i] = -1;
 }
