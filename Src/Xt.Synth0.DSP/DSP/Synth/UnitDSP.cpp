@@ -32,11 +32,11 @@ UnitPlot::Params() const
 
 
 float
-UnitPlot::Frequency(int lpb, float bpm, float rate) const 
+UnitPlot::Frequency(float bpm, float rate) const 
 { return UnitDSP::Frequency(_model->voice.audio.units[_index], 4, UnitNote::C); }
 
 void
-UnitPlot::Init(int lpb, float bpm, float rate)
+UnitPlot::Init(float bpm, float rate)
 {
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0, bpm, rate);
   new(&_unitDsp) UnitDSP(&_model->voice.audio.units[_index], 4, UnitNote::C, rate);

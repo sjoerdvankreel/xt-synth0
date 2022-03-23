@@ -37,10 +37,10 @@ FilterPlot::Next()
 }
 
 void
-FilterPlot::Init(int lpb, float bpm, float rate)
+FilterPlot::Init(float bpm, float rate)
 {
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0f, bpm, rate);
-  new(&_globalLfoDsp) LfoDSP(&_model->globalLfo, lpb, bpm, rate);
+  new(&_globalLfoDsp) LfoDSP(&_model->globalLfo, bpm, rate);
   new(&_audioDsp) AudioDSP(&_model->voice.audio, 4, UnitNote::C, rate);
   new(&_filterDsp) FilterDSP(&_model->voice.audio.filters[_index], _index, rate);
 }

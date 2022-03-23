@@ -20,11 +20,11 @@ public PeriodicPlot
 public:
   float Next();
   PeriodicParams Params() const;
-  void Init(int lpb, float bpm, float rate);
+  void Init(float bpm, float rate);
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 public:
   FilterPlot(struct SynthModel const* model, int index) : _model(model), _index(index) {};
-  float Frequency(int lpb, float bpm, float rate) const { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
+  float Frequency(float bpm, float rate) const { return MidiNoteFrequency(5 * 12 + static_cast<int>(UnitNote::C)); }
 };
 
 } // namespace Xts

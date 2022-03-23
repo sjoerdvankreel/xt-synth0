@@ -115,8 +115,8 @@ public:
   virtual ~PeriodicPlot() {}
   virtual float Next() = 0;
   virtual PeriodicParams Params() const = 0;
-  virtual void Init(int lpb, float bpm, float rate) = 0;
-  virtual float Frequency(int lpb, float bpm, float rate) const = 0;
+  virtual void Init(float bpm, float rate) = 0;
+  virtual float Frequency(float bpm, float rate) const = 0;
 protected:
   void RenderCore(PlotInput const& input, int hold, PlotOutput& output, PlotData& data);
 };
@@ -127,7 +127,7 @@ public:
   virtual ~StagedPlot() {}
   virtual void Next() = 0;
   virtual EnvSample Release() = 0;
-  virtual void Init(int lpb, float bpm, float rate) = 0;
+  virtual void Init(float bpm, float rate) = 0;
 public:
   virtual void Start() = 0;
   virtual bool End() const = 0;

@@ -19,11 +19,11 @@ private:
   float Generate() const;
 public:
   LfoDSP() = default;
-  LfoDSP(LfoModel const* model, int lpb, float bpm, float rate);
+  LfoDSP(LfoModel const* model, float bpm, float rate);
 public:
   CvSample Next();
   CvSample Output() const { return _output; }
-  static float Frequency(LfoModel const& model, int lpb, float bpm, float rate);
+  static float Frequency(LfoModel const& model, float bpm, float rate);
 };
 
 class LfoPlot : 
@@ -34,12 +34,12 @@ public PeriodicPlot
 public:
   LfoPlot(LfoModel const* model) : _model(model) {}
 public:
+  float Next() { return _dsp.Next().value; }
+  void Init(float bpm, float rate) { new(&_dsp) LfoDSP(_model, bpm, rate); }
+  float Frequency(float bpm, float rate) const { return LfoDSP::Frequency(*_model, bpm, rate); }
+public:
   PeriodicParams Params() const;
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
-public:
-  float Next() { return _dsp.Next().value; }
-  void Init(int lpb, float bpm, float rate) { new(&_dsp) LfoDSP(_model, lpb, bpm, rate); }
-  float Frequency(int lpb, float bpm, float rate) const { return LfoDSP::Frequency(*_model, lpb, bpm, rate); }
 };
 
 } // namespace Xts

@@ -53,7 +53,7 @@ public:
   EnvSample EnvOutput() const { return _cvDsp.Env(XTS_AMP_ENV).Output(); }
 public:
   StagedParams Params() const;
-  void Init(int lpb, float bpm, float rate);
+  void Init(float bpm, float rate);
   float ReleaseSamples(float bpm, float rate) const;
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };

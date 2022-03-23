@@ -58,7 +58,7 @@ public:
   EnvSample Release() { return _dsp.Release(); };
   float Left() const { return _dsp.Output().value; }
   EnvSample EnvOutput() const { return _dsp.Output(); }
-  void Init(int lpb, float bpm, float rate) { _dsp = EnvDSP(_model, bpm, rate); }
+  void Init(float bpm, float rate) { _dsp = EnvDSP(_model, bpm, rate); }
   float ReleaseSamples(float bpm, float rate) const { return ReleaseSamples(*_model, bpm, rate); }
 public:
   StagedParams Params() const;
