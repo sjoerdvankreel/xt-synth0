@@ -28,11 +28,23 @@ namespace Xt.Synth0.Model
                 Params[i].Value = *binding->@params[i];
         }
 
-        public void BindVoice(void* native, ParamBinding.Native* binding)
+        public void Bind(void* native, ParamBinding.Native* binding)
         {
             var @params = binding->@params;
             for (int p = 0; p < Params.Count; p++)
                 @params[p] = Params[p].Info.Address(AutoParams[p].Group.Address(native));
+        }
+
+        public ParamInfo.Native[] ParamInfos()
+        {
+            var result = new ParamInfo.Native[AutoParams.Count];
+            for (int i = 0; i < AutoParams.Count; i++)
+            {
+                result[i].min = Params[i].Info.Min;
+                result[i].max = Params[i].Info.Max;
+                result[i].realtime = Params[i].Info.Realtime ? 1 : 0;
+            }
+            return result;
         }
     }
 }

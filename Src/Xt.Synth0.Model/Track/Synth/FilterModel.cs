@@ -17,7 +17,7 @@ namespace Xt.Synth0.Model
         CombPlusDelay
     };
 
-    public unsafe sealed class FilterModel : IAutomationGroupModel
+    public unsafe sealed class FilterModel : IUIParamGroupModel
     {
         const double MinFreqHz = 20.0;
         const double MaxFreqHz = 10000.0;
@@ -30,7 +30,6 @@ namespace Xt.Synth0.Model
         public int Columns => 4;
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Filter;
-        public int AutomationId => SynthConfig.SynthAutomationVoiceFilter1 + Index;
 
         public string Info => null;
         public string Name => $"Filter {Index + 1}";

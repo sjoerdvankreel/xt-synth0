@@ -30,6 +30,5 @@ namespace Xt.Synth0.Model
 	}
 
 	public interface IUIGroupContainerModel : IGroupContainerModel, IUIModel { }
-    public interface IAutomationGroupModel : IUIParamGroupModel { int AutomationId { get; } }
     public interface IParamGroupModel : IStoredModel { IReadOnlyList<Param> Params { get; } }
 }

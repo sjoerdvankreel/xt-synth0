@@ -6,13 +6,12 @@ namespace Xt.Synth0.Model
 {
     public enum AmpLfoSource { LFO1, LFO2, GlobalLFO }
 
-    public unsafe sealed class AmpModel : IAutomationGroupModel
+    public unsafe sealed class AmpModel : IUIParamGroupModel
     {
         public int Index => 0;
         public int Columns => 4;
         public Param Enabled => null;
         public ThemeGroup ThemeGroup => ThemeGroup.Amp;
-        public int AutomationId => SynthConfig.SynthAutomationVoiceAmp;
 
         public string Info => null;
         public string Name => "Amp";

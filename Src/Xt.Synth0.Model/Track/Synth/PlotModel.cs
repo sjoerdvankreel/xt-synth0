@@ -13,7 +13,7 @@ namespace Xt.Synth0.Model
         Filter1, Filter2, Filter3
     }
 
-    public unsafe sealed class PlotModel : IAutomationGroupModel
+    public unsafe sealed class PlotModel : IUIParamGroupModel
     {
         const int DefaultHold = 100;
         const double MinHoldMs = 1.0;
@@ -23,7 +23,6 @@ namespace Xt.Synth0.Model
         public int Columns => 3;
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Plot;
-        public int AutomationId => SynthConfig.SynthAutomationGlobalPlot;
 
         public string Info => null;
         public string Name => "Plot";

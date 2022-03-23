@@ -15,7 +15,7 @@ namespace Xt.Synth0.Model
             public int min;
             public int max;
             public int realtime;
-            public int automationId;
+            int pad__;
         }
 
         enum ParamType { Toggle, List, Lin, Mix, Time, Frequency, Pattern };

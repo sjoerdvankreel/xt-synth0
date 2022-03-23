@@ -41,18 +41,5 @@ namespace Xt.Synth0.Model
             if (AutoParams.Count != SynthConfig.SynthParamCount)
                 throw new InvalidOperationException();
         }
-
-        public ParamInfo.Native[] ParamInfos()
-        {
-            var result = new ParamInfo.Native[AutoParams.Count];
-            for (int i = 0; i < AutoParams.Count; i++)
-            {
-                result[i].min = Params[i].Info.Min;
-                result[i].max = Params[i].Info.Max;
-                result[i].realtime = Params[i].Info.Realtime ? 1 : 0;
-                result[i].automationId = AutoParams[i].Group.AutomationId;
-            }
-            return result;
-        }
     }
 }
