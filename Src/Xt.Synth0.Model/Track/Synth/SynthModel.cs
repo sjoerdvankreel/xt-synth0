@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-	public unsafe sealed class SynthModel : MainModel
+	public sealed class SynthModel : AutomatableModel
 	{
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		public ref struct Native
@@ -15,8 +15,6 @@ namespace Xt.Synth0.Model
             internal VoiceModel.Native voice;
             internal LfoModel.Native globalLfo;
         }
-
-		public IReadOnlyList<SynthParam> SynthParams { get; }
 
 		public AmpModel Amp { get; } = new();
 		public PlotModel Plot { get; } = new();
@@ -31,9 +29,7 @@ namespace Xt.Synth0.Model
         static IList<LfoModel> MakeLfos() => Enumerable.Range(0, SynthConfig.VoiceLfoCount).Select(i => new LfoModel(false, i)).ToList();
         static IList<FilterModel> MakeFilters() => Enumerable.Range(0, SynthConfig.VoiceFilterCount).Select(i => new FilterModel(i)).ToList();
 
-		public override int Index => 0;
 		public override string Id => "8D6AB9FB-19DB-4F77-B56C-9E72AB67341F";
-		public override IReadOnlyList<IGroupContainerModel> Children => new IGroupContainerModel[0];
 		public override IReadOnlyList<IParamGroupModel> Groups => Units
 			.Concat<IParamGroupModel>(Envs)
 			.Concat(Lfos).Concat(Filters)
@@ -43,40 +39,8 @@ namespace Xt.Synth0.Model
 		{
 			Envs[0].On.Value = 1;
 			Units[0].On.Value = 1;
-			var @params = ListParams(this).Select((p, i) => new SynthParam((IUIParamGroupModel)p.Group, i + 1, p.Param));
-			SynthParams = new ReadOnlyCollection<SynthParam>(@params.ToArray());
-			if (SynthParams.Count != SynthConfig.SynthParamCount)
+			if (AutoParams.Count != SynthConfig.SynthParamCount)
 				throw new InvalidOperationException();
-		}
-
-		public void ToNative(ParamBinding.Native* binding)
-		{
-			for (int i = 0; i < Params.Count; i++)
-				*((int**)binding->@params)[i] = Params[i].Value;
-		}
-
-		public void FromNative(ParamBinding.Native* binding)
-		{
-			for (int i = 0; i < Params.Count; i++)
-				Params[i].Value = *((int**)binding->@params)[i];
-        }
-
-        public ParamInfo.Native[] ParamInfos()
-        {
-            var result = new ParamInfo.Native[SynthConfig.SynthParamCount];
-            for (int i = 0; i < SynthConfig.SynthParamCount; i++)
-            {
-                result[i].min = Params[i].Info.Min;
-                result[i].max = Params[i].Info.Max;
-            }
-            return result;
-        }
-
-        public void BindVoice(Native* native, ParamBinding.Native* binding)
-		{
-			var @params = binding->@params;
-			for (int p = 0; p < Params.Count; p++)
-				@params[p] = Params[p].Info.Address(SynthParams[p].Group.Address(native));
 		}
 	}
 }

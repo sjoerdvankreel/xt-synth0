@@ -45,6 +45,7 @@
     <ClInclude Include="Model\Sequencer\PatternRowModel.hpp" />
     <ClInclude Include="Model\Sequencer\SequencerConfig.hpp" />
     <ClInclude Include="Model\Sequencer\SequencerModel.hpp" />
+    <ClInclude Include="Model\Shared\AutomationAction.hpp" />
     <ClInclude Include="Model\Shared\Model.hpp" />
     <ClInclude Include="Model\Shared\ParamBinding.hpp" />
     <ClInclude Include="Model\Shared\ParamInfo.hpp" />

@@ -1,41 +1,61 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Xt.Synth0
 {
-	static class AutomationQueue
-	{
+    static unsafe class AutomationQueue
+    {
         const int InitialCapacity = 32;
-		static readonly List<AutomationAction> UIActions = new List<AutomationAction>(InitialCapacity);
-		static readonly List<AutomationAction> AudioActions = new List<AutomationAction>(InitialCapacity);
-        static readonly ConcurrentQueue<AutomationAction> UIQueue = new ConcurrentQueue<AutomationAction>();
-		static readonly ConcurrentQueue<AutomationAction> AudioQueue = new ConcurrentQueue<AutomationAction>();
 
-		internal static void EnqueueUI(int param, int value)
-		=> UIQueue.Enqueue(new AutomationAction(param, value));
-		internal static void EnqueueAudio(int param, int value) 
-		=> AudioQueue.Enqueue(new AutomationAction(param, value));
+        static int UIActionsCount = 0;
+        static AutomationAction.Native* UIActions;
+        static int UIActionsCapacity = InitialCapacity;
+        static AutomationQueue() => UIActions = AllocateUIActions(InitialCapacity);
+        static AutomationAction.Native* AllocateUIActions(int count)
+        => (AutomationAction.Native*)Marshal.AllocHGlobal(Marshal.SizeOf<AutomationAction.Native>() * count);
 
-		internal static void Clear()
-		{
-			UIQueue.Clear();
-			AudioQueue.Clear();
-		}
+        static readonly List<AutomationAction.Native> AudioActions = new List<AutomationAction.Native>(InitialCapacity);
+        static readonly ConcurrentQueue<AutomationAction.Native> UIQueue = new ConcurrentQueue<AutomationAction.Native>();
+        static readonly ConcurrentQueue<AutomationAction.Native> AudioQueue = new ConcurrentQueue<AutomationAction.Native>();
 
-		internal static IReadOnlyList<AutomationAction> DequeueUI()
-		{
-            UIActions.Clear();
+        internal static void EnqueueUI(AutomationAction.Native action) => UIQueue.Enqueue(action);
+        internal static void EnqueueAudio(AutomationAction.Native action) => AudioQueue.Enqueue(action);
+
+        internal static void Clear()
+        {
+            UIQueue.Clear();
+            AudioQueue.Clear();
+        }
+
+        internal static AutomationAction.Native* DequeueUI(out int count)
+        {
+            UIActionsCount = 0;
             while (UIQueue.TryDequeue(out var action))
-                UIActions.Add(action);
-			return UIActions;
-		}
+                AddUIAction(action);
+            count = UIActionsCount;
+            return UIActions;
+        }
 
-		internal static IReadOnlyList<AutomationAction> DequeueAudio()
-		{
+        internal static IReadOnlyList<AutomationAction.Native> DequeueAudio()
+        {
             AudioActions.Clear();
             while (AudioQueue.TryDequeue(out var action))
                 AudioActions.Add(action);
-			return AudioActions;
-		}
-	}
+            return AudioActions;
+        }
+
+        static void AddUIAction(AutomationAction.Native action)
+        {
+            if (UIActionsCount == UIActionsCapacity)
+            {
+                UIActionsCapacity *= 2;
+                Marshal.FreeHGlobal((IntPtr)UIActions);
+                UIActions = AllocateUIActions(UIActionsCapacity);
+            }
+            UIActions[UIActionsCount] = action;
+            UIActionsCount++;
+        }
+    }
 }

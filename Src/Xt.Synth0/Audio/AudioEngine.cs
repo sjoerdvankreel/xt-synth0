@@ -190,25 +190,6 @@ namespace Xt.Synth0
             _streamUI = null;
         }
 
-        void BeginAutomation()
-        {
-            var @params = _localSynth.Params;
-            foreach (var action in AutomationQueue.DequeueUI())
-                @params[action.Param].Value = action.Value;
-            for (int i = 0; i < @params.Count; i++)
-                _automationValues[i] = @params[i].Value;
-            _localSynth.ToNative(&_sequencer->binding);
-        }
-
-        void EndAutomation()
-        {
-            _localSynth.FromNative(&_sequencer->binding);
-            var @params = _localSynth.Params;
-            for (int i = 0; i < @params.Count; i++)
-                if (@params[i].Value != _automationValues[i])
-                    AutomationQueue.EnqueueAudio(i, @params[i].Value);
-        }
-
         internal XtBufferSize? QueryFormatSupport()
         {
             var format = GetFormat();
@@ -252,11 +233,30 @@ namespace Xt.Synth0
             device.ShowControlPanel();
         }
 
+        void BeginAutomation(AutomationAction.Native* actions, int count)
+        {
+            var @params = _localSynth.Params;
+            for (int i = 0; i < count; i++)
+                @params[actions[i].paramIndex].Value = actions[i].paramValue;
+            for (int i = 0; i < @params.Count; i++)
+                _automationValues[i] = @params[i].Value;
+        }
+
+        void EndAutomation()
+        {
+            _localSynth.FromNative(&_sequencer->binding);
+            var @params = _localSynth.Params;
+            for (int i = 0; i < @params.Count; i++)
+                if (@params[i].Value != _automationValues[i])
+                    AutomationQueue.EnqueueAudio(new AutomationAction.Native(-1, i, @params[i].Value));
+        }
+
         internal unsafe void OnBuffer(in XtBuffer buffer, in XtFormat format)
         {
             _monitor.BeginBuffer();
-            BeginAutomation();
-            var output = Native.XtsSequencerRender(_sequencer, buffer.frames);
+            var actions = AutomationQueue.DequeueUI(out int count);
+            BeginAutomation(actions, count);
+            var output = Native.XtsSequencerRender(_sequencer, buffer.frames, actions, count);
             EndAutomation();
             BufferConvert.To(output->buffer, buffer.output, format.mix.sample, buffer.frames);
             _monitor.EndBuffer(_audioStream, in format, output, buffer.frames);

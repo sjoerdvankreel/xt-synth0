@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 {
     public enum LfoType { Sin, Saw, Sqr, Tri }
 
-    public unsafe sealed class LfoModel : IUIParamGroupModel
+    public unsafe sealed class LfoModel : IAutomationGroupModel
     {
         const double MinFreqHz = 0.1;
         const double MaxFreqHz = 20.0;
@@ -18,6 +18,7 @@ namespace Xt.Synth0.Model
         public int Columns => 5;
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
+        public int AutomationId => SynthConfig.SynthAutomationVoiceLfo1 + Index;
 
         public string Name => $"LFO {Index + 1}";
         public string Info => _global ? "Global" : null;

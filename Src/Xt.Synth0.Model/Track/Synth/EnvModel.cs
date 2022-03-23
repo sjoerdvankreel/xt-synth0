@@ -7,7 +7,7 @@ namespace Xt.Synth0.Model
     public enum EnvType { DAHDSR, DAHDR }
     public enum SlopeType { Lin, Log, Inv, Sin, Cos }
 
-    public unsafe sealed class EnvModel : IUIParamGroupModel
+    public unsafe sealed class EnvModel : IAutomationGroupModel
     {
         const double MinTimeMs = 0.0;
         const double MaxTimeMs = 10000.0;
@@ -18,6 +18,7 @@ namespace Xt.Synth0.Model
         public int Columns => 4;
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Env;
+        public int AutomationId => SynthConfig.SynthAutomationVoiceEnv1 + Index;
 
         public string Name => $"Env {Index + 1}";
         public string Info => Index == 0 ? "Amp" : null;

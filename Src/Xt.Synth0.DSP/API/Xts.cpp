@@ -33,7 +33,7 @@ XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 { Xts::SyncStepModel::Init(steps, static_cast<size_t>(count)); }
 
 Xts::SequencerOutput const* XTS_CALL
-XtsSequencerRender(XtsSequencer* sequencer, int32_t frames)
+XtsSequencerRender(XtsSequencer* sequencer, int32_t frames, struct Xts::AutomationAction const* actions, int32_t count)
 { return sequencer->sequencerDsp->Render(frames); }
 
 void XTS_CALL
@@ -88,7 +88,7 @@ XtsSequencerCreate(int32_t params, int32_t frames, float rate)
   return result;
 }
 
-XTS_EXPORT void XTS_CALL
+void XTS_CALL
 XtsSequencerConnect(XtsSequencer* sequencer, float rate)
 {
   auto const& edit = sequencer->sequencerModel.edit;

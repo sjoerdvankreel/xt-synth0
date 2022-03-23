@@ -62,13 +62,13 @@ namespace Xt.Synth0
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(ParamInfo.Native* @params, int count);
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSyncStepModelInit(SyncStepModel.Native* steps, int count);
 
-        [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerDestroy(XtsSequencer* sequencer);
-        [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerConnect(XtsSequencer* sequencer, float rate);
-        [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, float rate);
-        [DllImport("XT.Synth0.DSP")] internal static extern SequencerOutput* XtsSequencerRender(XtsSequencer* sequencer, int frames);
-
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDestroy(XtsPlot* plot);
         [DllImport("XT.Synth0.DSP")] internal static extern XtsPlot* XtsPlotCreate(int @params);
         [DllImport("XT.Synth0.DSP")] internal static extern PlotResult.Native* XtsPlotRender(XtsPlot* plot, PlotInput* input, PlotOutput.Native** output);
+
+        [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerDestroy(XtsSequencer* sequencer);
+        [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerConnect(XtsSequencer* sequencer, float rate);
+        [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, float rate);
+        [DllImport("XT.Synth0.DSP")] internal static extern SequencerOutput* XtsSequencerRender(XtsSequencer* sequencer, int frames, AutomationAction.Native* actions, int count);
     }
 }

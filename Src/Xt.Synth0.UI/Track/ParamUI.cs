@@ -15,7 +15,7 @@ namespace Xt.Synth0.UI
         {
             var result = new StringBuilder();
             result.AppendLine(param.Info.Description);
-            var synthParam = synth.SynthParams.SingleOrDefault(p => p.Param == param);
+            var synthParam = synth.AutoParams.SingleOrDefault(p => p.Param == param);
             if (synthParam != null || param.Info.Control == ParamControl.Knob)
                 result.AppendLine($"Range: {param.Info.Range(false)}");
             if (synthParam != null)

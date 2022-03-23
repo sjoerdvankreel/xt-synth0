@@ -19,7 +19,7 @@ namespace Xt.Synth0.Model
         AdditiveRolloff
     }
 
-    public unsafe sealed class UnitModel : IUIParamGroupModel
+    public unsafe sealed class UnitModel : IAutomationGroupModel
     {
         public int Index { get; }
         internal UnitModel(int index) => Index = index;
@@ -27,6 +27,7 @@ namespace Xt.Synth0.Model
         public int Columns => 4;
         public Param Enabled => On;
         public ThemeGroup ThemeGroup => ThemeGroup.Unit;
+        public int AutomationId => SynthConfig.SynthAutomationVoiceUnit1 + Index;
 
         public string Info => null;
         public string Name => $"Unit {Index + 1}";

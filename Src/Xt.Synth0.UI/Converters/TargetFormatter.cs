@@ -14,7 +14,7 @@ namespace Xt.Synth0.UI
 		protected override string Convert(int target)
 		{
 			var result = new StringBuilder();
-			var param = _synth.SynthParams.SingleOrDefault(p => p.Index == target);
+			var param = _synth.AutoParams.SingleOrDefault(p => p.Index == target);
 			var targetDetail = $"{param?.Group.Name} {param?.Param.Info.Description}";
 			result.AppendLine($"{_param.Info.Description}: {(param != null ? targetDetail : "None")}");
 			result.AppendLine("Ctrl + F to fill");

@@ -186,6 +186,9 @@
     <ClInclude Include="Model\Synth\VoiceModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Shared\AutomationAction.hpp">
+      <Filter>Model\Shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\FilterDSP.cpp">

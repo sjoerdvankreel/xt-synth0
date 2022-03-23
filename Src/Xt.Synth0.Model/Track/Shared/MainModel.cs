@@ -24,10 +24,11 @@ namespace Xt.Synth0.Model
 
 		protected MainModel()
 		{
-			Params = new ReadOnlyCollection<Param>(ListParams(this).Select(p => p.Param).ToArray());
-			for (int p = 0; p < Params.Count; p++)
+            var groupsAndParams = ListParams(this).ToArray();
+			Params = new ReadOnlyCollection<Param>(groupsAndParams.Select(p => p.Param).ToArray());
+			for (int p = 0; p < groupsAndParams.Length; p++)
 			{
-				var args = new ParamChangedEventArgs(p);
+				var args = new ParamChangedEventArgs(groupsAndParams[p].Group.Index, p);
 				Params[p].PropertyChanged += (s, e) => ParamChanged?.Invoke(this, args);
 			}
 		}
