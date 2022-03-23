@@ -39,6 +39,7 @@ void
 UnitPlot::Init(float bpm, float rate)
 {
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0, bpm, rate);
+  new(&_globalLfoDsp) LfoDSP(&_model->global.lfo, bpm, rate);
   new(&_unitDsp) UnitDSP(&_model->voice.audio.units[_index], 4, UnitNote::C, rate);
 }
 
