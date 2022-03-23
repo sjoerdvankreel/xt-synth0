@@ -96,7 +96,7 @@ namespace Xt.Synth0.Model
         public Param Frequency { get; } = new(FrequencyInfo);
         static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->passType, 0, nameof(PassType), "Type", "Pass type", false, null, RelevanceNotComb);
         static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->resonance, 0, nameof(Resonance), "Res", "Resonance", false, 0, RelevanceNotComb);
-        static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->frequency, 0, nameof(Frequency), "Frq", "Cutoff frequency", false, 0, MinFreqHz, MaxFreqHz, RelevanceNotComb);
+        static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->frequency, 0, nameof(Frequency), "Frq", "Cutoff/center frequency", false, 0, MinFreqHz, MaxFreqHz, RelevanceNotComb);
 
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);
