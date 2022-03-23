@@ -30,7 +30,6 @@ UnitPlot::Params() const
   return result;
 }
 
-
 float
 UnitPlot::Frequency(float bpm, float rate) const 
 { return UnitDSP::Frequency(_model->voice.audio.units[_index], 4, UnitNote::C); }

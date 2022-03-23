@@ -18,8 +18,8 @@ class SynthDSP
   int _fxCount;
   int _keyCount;
   LfoDSP _globalLfo;
+  int* const* _binding;
   struct SynthModel const* _model;
-  struct ParamBinding const* _binding;
   int _voiceKeys[XTS_SYNTH_MAX_VOICES];
   int _voicesActive[XTS_SHARED_MAX_KEYS];
   VoiceDSP _voiceDsps[XTS_SYNTH_MAX_VOICES];
@@ -43,7 +43,7 @@ public:
 public:
   SynthDSP() = default;
   SynthDSP(SynthDSP const&) = default;
-  SynthDSP(struct SynthModel const* model, struct ParamBinding const* binding, int fxCount, int keyCount, float bpm, float rate);
+  SynthDSP(struct SynthModel const* model, int* const* binding, int fxCount, int keyCount, float bpm, float rate);
 };
 
 class SynthPlot: 
@@ -51,7 +51,6 @@ public StagedPlot
 {
   SynthDSP _dsp;
   struct SynthModel const* _model;
-  struct ParamBinding const* _binding;
 public:
   SynthPlot(struct SynthModel const* model) : _model(model) {}
 public:
@@ -65,7 +64,7 @@ public:
   float Left() const { return _dsp.Voice0().Output().left; }
   float Right() const { return _dsp.Voice0().Output().right; }
   EnvSample EnvOutput() const { return _dsp.Voice0().EnvOutput(); }
-  void Init(float bpm, float rate) { new(&_dsp) SynthDSP(_model, _binding, 0, 1, bpm, rate); }
+  void Init(float bpm, float rate) { new(&_dsp) SynthDSP(_model, nullptr, 0, 1, bpm, rate); }
   float ReleaseSamples(float bpm, float rate) const { return EnvPlot::ReleaseSamples(_dsp.Voice0().Env(), bpm, rate); }
 };
 

@@ -4,7 +4,6 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
-#include <Model/Shared/ParamBinding.hpp>
 #include <Model/Shared/SyncStepModel.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 
@@ -12,16 +11,16 @@ struct XTS_ALIGN XtsPlot
 {
   Xts::PlotState state;
   Xts::SynthModel model;
-  Xts::ParamBinding binding;
+  int32_t* binding[XTS_SYNTH_PARAM_COUNT];
 };
 
 struct XTS_ALIGN XtsSequencer
 {
-  Xts::ParamBinding binding;
   Xts::SynthDSP* synthDsp;
   Xts::SynthModel synthModel;
   Xts::SequencerDSP* sequencerDsp;
   Xts::SequencerModel* sequencerModel;
+  int32_t* binding[XTS_SYNTH_PARAM_COUNT];
 };
 
 void XTS_CALL 
@@ -42,7 +41,6 @@ XtsPlotDestroy(XtsPlot* plot)
   if (plot == nullptr) return;
   delete plot->state.data;
   delete plot->state.scratch;
-  delete plot->binding.params;
   delete plot;
 }
 
@@ -52,7 +50,6 @@ XtsSequencerDestroy(XtsSequencer* sequencer)
   if (sequencer == nullptr) return;
   delete sequencer->synthDsp;
   delete sequencer->sequencerDsp;
-  delete sequencer->binding.params;
   delete sequencer;
 }
 
@@ -62,7 +59,6 @@ XtsPlotCreate(int32_t params)
   auto result = new XtsPlot;
   result->state.data = new Xts::PlotData;
   result->state.scratch = new Xts::PlotScratch;
-  result->binding.params = new int32_t*[params];
   return result;
 }
 
@@ -83,7 +79,6 @@ XtsSequencerCreate(int32_t params, int32_t frames, float rate)
 {
   auto result = new XtsSequencer;
   result->synthDsp = new Xts::SynthDSP();
-  result->binding.params = new int32_t * [params];
   result->sequencerDsp = new Xts::SequencerDSP(rate, frames);
   result->sequencerModel = result->sequencerDsp->Model();
   return result;
@@ -94,6 +89,6 @@ XtsSequencerConnect(XtsSequencer* sequencer, float rate)
 {
   auto const& edit = sequencer->sequencerDsp->Model()->edit;
   float bpm = static_cast<float>(edit.bpm);
-  new(sequencer->synthDsp) Xts::SynthDSP(&sequencer->synthModel, &sequencer->binding, edit.fxs, edit.keys, bpm, rate);
+  new(sequencer->synthDsp) Xts::SynthDSP(&sequencer->synthModel, sequencer->binding, edit.fxs, edit.keys, bpm, rate);
   sequencer->sequencerDsp->Connect(sequencer->synthDsp);
 }

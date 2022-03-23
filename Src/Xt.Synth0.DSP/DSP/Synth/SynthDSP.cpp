@@ -1,6 +1,5 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
-#include <Model/Shared/ParamBinding.hpp>
 
 #include <memory>
 #include <cassert>
@@ -56,7 +55,7 @@ SynthDSP::Automate(int target, int value)
   assert(0 <= value && value < 256);
   assert(0 <= target && target < 255);
   if (target >= XTS_SYNTH_PARAM_COUNT) return;
-  int32_t* param = _binding->params[target];
+  int32_t* param = _binding[target];
   ParamInfo const& info = SynthModel::Params()[target];
   *param = std::clamp(value, info.min, info.max);
 }
@@ -115,7 +114,7 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
 }
 
 SynthDSP::
-SynthDSP(SynthModel const* model, ParamBinding const* binding, int fxCount, int keyCount, float bpm, float rate) :
+SynthDSP(SynthModel const* model, int* const* binding, int fxCount, int keyCount, float bpm, float rate) :
   SynthDSP()
 {
   _bpm = bpm;
