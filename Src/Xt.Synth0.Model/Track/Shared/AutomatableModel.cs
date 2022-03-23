@@ -12,7 +12,7 @@ namespace Xt.Synth0.Model
 
         protected AutomatableModel()
         {
-            var @params = ListParams(this).Select((p, i) => new AutoParam((IAutomationGroupModel)p.Group, i + 1, p.Param));
+            var @params = ListParams(this).Select((p, i) => new AutoParam((IUIParamGroupModel)p.Group, i + 1, p.Param));
             AutoParams = new ReadOnlyCollection<AutoParam>(@params.ToArray());
         }
 
