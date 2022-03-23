@@ -54,10 +54,10 @@ void
 SynthDSP::Automate(int target, int value)
 {
   assert(0 <= value && value < 256);
-  assert(0 <= target && target < 256);
-  if (target == 0 || target > XTS_SYNTH_PARAM_COUNT) return;
-  int32_t* param = _binding->params[target - 1];
-  ParamInfo const& info = SynthModel::Params()[target - 1];
+  assert(0 <= target && target < 255);
+  if (target >= XTS_SYNTH_PARAM_COUNT) return;
+  int32_t* param = _binding->params[target];
+  ParamInfo const& info = SynthModel::Params()[target];
   *param = std::clamp(value, info.min, info.max);
 }
 

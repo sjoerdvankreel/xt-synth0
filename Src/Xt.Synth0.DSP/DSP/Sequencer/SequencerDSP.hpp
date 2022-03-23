@@ -37,11 +37,11 @@ private:
   FloatSample Next();
   SequencerMove Move();
 public:
-  SequencerOutput const* Render(int32_t frames);
-  void Synth(class SynthDSP* synth) { _synth = synth; }
-public:
   SequencerDSP() = default;
   SequencerDSP(SequencerModel const* model, float rate, size_t frames);
+public:
+  void Connect(class SynthDSP* synth) { _synth = synth; }
+  SequencerOutput const* Render(int32_t frames, struct AutomationAction const* actions, int count);
 };
 
 } // namespace Xts

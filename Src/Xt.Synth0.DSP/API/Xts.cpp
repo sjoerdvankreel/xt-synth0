@@ -34,7 +34,7 @@ XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 
 Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames, struct Xts::AutomationAction const* actions, int32_t count)
-{ return sequencer->sequencerDsp->Render(frames); }
+{ return sequencer->sequencerDsp->Render(frames, actions, count); }
 
 void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot)
@@ -94,5 +94,5 @@ XtsSequencerConnect(XtsSequencer* sequencer, float rate)
   auto const& edit = sequencer->sequencerModel.edit;
   float bpm = static_cast<float>(edit.bpm);
   new(sequencer->synthDsp) Xts::SynthDSP(&sequencer->synthModel, &sequencer->binding, edit.fxs, edit.keys, bpm, rate);
-  sequencer->sequencerDsp->Synth(sequencer->synthDsp);
+  sequencer->sequencerDsp->Connect(sequencer->synthDsp);
 }

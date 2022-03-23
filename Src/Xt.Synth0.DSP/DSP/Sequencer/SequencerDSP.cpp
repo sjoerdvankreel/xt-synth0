@@ -3,6 +3,7 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
 #include <Model/Shared/ParamInfo.hpp>
+#include <Model/Shared/AutomationAction.hpp>
 
 #include <cassert>
 #include <algorithm>
@@ -27,12 +28,14 @@ SequencerDSP()
 }
 
 SequencerOutput const*
-SequencerDSP::Render(int32_t frames)
+SequencerDSP::Render(int32_t frames, AutomationAction const* actions, int count)
 {
   bool clipped = false;
   _output.end = XtsFalse;
   _output.clip = XtsFalse;
   _output.exhausted = XtsFalse;
+  for(int i = 0; i < count; i++)
+    _synth->Automate(actions[i].paramIndex, actions[i].paramValue);
   for (int f = 0; f < frames; f++)
   {
     auto out = Next();
@@ -65,7 +68,7 @@ SequencerDSP::Automate()
   for (int f = 0; f < _model->edit.fxs; f++)
   {
     auto const& fx = _model->pattern.rows[_output.row].fx[f];
-    _synth->Automate(fx.target, fx.value);
+    if(fx.target > 0) _synth->Automate(fx.target - 1, fx.value);
   }
 }
 
