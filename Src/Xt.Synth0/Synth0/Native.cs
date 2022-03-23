@@ -24,9 +24,11 @@ namespace Xt.Synth0
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct XtsSequencer
         {
-            internal ParamBinding.Native binding;
+            internal int** binding;
+            internal int** voiceBindings;
             internal IntPtr synthDsp;
-            internal SynthModel.Native synthModel;
+            internal SynthModel.Native* synthModel;
+            internal SynthModel.Native* voiceModels;
             internal IntPtr sequencerDsp;
             internal SequencerModel.Native* sequencerModel;
         }
@@ -54,16 +56,18 @@ namespace Xt.Synth0
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct XtsPlot
         {
+            internal int** binding;
+            internal IntPtr dsp;
             internal PlotState state;
-            internal SynthModel.Native model;
-            internal ParamBinding.Native binding;
+            internal SynthModel.Native* model;
         }
 
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSynthModelInit(ParamInfo.Native* @params, int count);
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSyncStepModelInit(SyncStepModel.Native* steps, int count);
 
+        [DllImport("XT.Synth0.DSP")] internal static extern XtsPlot* XtsPlotCreate();
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotDestroy(XtsPlot* plot);
-        [DllImport("XT.Synth0.DSP")] internal static extern XtsPlot* XtsPlotCreate(int @params);
+        [DllImport("XT.Synth0.DSP")] internal static extern void XtsPlotInit(XtsPlot* plot, float bpm, float rate);
         [DllImport("XT.Synth0.DSP")] internal static extern PlotResult.Native* XtsPlotRender(XtsPlot* plot, PlotInput* input, PlotOutput.Native** output);
 
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerDestroy(XtsSequencer* sequencer);

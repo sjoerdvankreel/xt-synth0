@@ -167,7 +167,7 @@ namespace Xt.Synth0
                 AutomationQueue.Clear();
                 _synth.CopyTo(_localSynth);
                 _synth.CopyTo(_originalSynth);
-                _synth.ToNative(&_sequencer->binding);
+                _synth.ToNative(_sequencer->binding);
                 _streamUI.State = StreamState.Running;
                 _audioStream.Start();
                 _monitor.Resume();
@@ -244,7 +244,7 @@ namespace Xt.Synth0
 
         void EndAutomation()
         {
-            _localSynth.FromNative(&_sequencer->binding);
+            _localSynth.FromNative(_sequencer->binding);
             var @params = _localSynth.Params;
             for (int i = 0; i < @params.Count; i++)
                 if (@params[i].Value != _automationValues[i])
@@ -323,8 +323,8 @@ namespace Xt.Synth0
                 _monitor.Start(_audioStream, in format);
                 _sequencer = Native.XtsSequencerCreate(SynthConfig.SynthParamCount, _audioStream.GetMaxBufferFrames(), format.mix.rate);
                 seq.ToNative(_sequencer->sequencerModel);
-                _synth.Bind(&_sequencer->synthModel, &_sequencer->binding);
-                _synth.ToNative(&_sequencer->binding);
+                _synth.Bind(&_sequencer->synthModel, _sequencer->binding);
+                _synth.ToNative(_sequencer->binding);
                 Native.XtsSequencerConnect(_sequencer, format.mix.rate);
                 ResumeStream();
             }

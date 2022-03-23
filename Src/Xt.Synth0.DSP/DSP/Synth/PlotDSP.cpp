@@ -11,8 +11,9 @@
 namespace Xts {
 
 void
-SynthPlotRender(SynthModel const& model, PlotInput const& input, PlotState& state)
+SynthPlotRender(SynthDSP const& dsp, PlotInput const& input, PlotState& state)
 {
+  auto const& model = *dsp.Model();
   state.hold = model.global.plot.hold;
   switch(model.global.plot.type)
   {
