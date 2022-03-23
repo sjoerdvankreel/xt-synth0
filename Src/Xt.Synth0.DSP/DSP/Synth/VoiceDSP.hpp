@@ -4,7 +4,9 @@
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
-#include <Model/Synth/VoiceModel.hpp>
+#include <Model/Synth/SynthModel.hpp>
+#include <Model/Synth/SynthConfig.hpp>
+#include <vector>
 
 namespace Xts {
 
@@ -13,10 +15,14 @@ class VoiceDSP
   CvDSP _cv;
   AmpDSP _amp;
   AudioDSP _audio;
+  SynthModel _model;
+  std::vector<int*> _binding;
 public:
   VoiceDSP() = default;
-  VoiceDSP(VoiceModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate);
+  VoiceDSP(int oct, UnitNote note, float velocity, float bpm, float rate);
 public:
+  SynthModel* Model() { return &_model; }
+  int** Binding() { return _binding.data(); }
   FloatSample Output() const { return _amp.Output(); }
   bool End() const { return _cv.Env(XTS_AMP_ENV).End(); }
   EnvSample Release() { return _cv.ReleaseAll(XTS_AMP_ENV); }
