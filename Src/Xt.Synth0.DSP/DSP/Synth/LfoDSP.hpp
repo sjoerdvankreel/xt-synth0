@@ -9,14 +9,13 @@ namespace Xts {
 
 class LfoDSP
 {
+  float _bpm;
+  float _rate;
   double _phase;
-  float _base;
-  float _factor;
-  float _increment;
   CvSample _output;
   struct LfoModel const* _model;
 private:
-  float Generate() const;
+  float Generate(float frequency) const;
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, float bpm, float rate);
