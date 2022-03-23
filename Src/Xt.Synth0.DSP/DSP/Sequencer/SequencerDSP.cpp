@@ -11,11 +11,12 @@
 namespace Xts {
 
 SequencerDSP::
-SequencerDSP(float rate, size_t frames) :
+SequencerDSP(SequencerModel const* model, float rate, size_t frames) :
 SequencerDSP()
 {
   _rate = rate;
   _fill = 0.0;
+  _model = model;
   _endPattern = false;
   _output.row = -1;
   _output.voices = 0;
@@ -64,9 +65,9 @@ SequencerDSP::Next()
 void
 SequencerDSP::Automate()
 {
-  for (int f = 0; f < _model.edit.fxs; f++)
+  for (int f = 0; f < _model->edit.fxs; f++)
   {
-    auto const& fx = _model.pattern.rows[_output.row].fx[f];
+    auto const& fx = _model->pattern.rows[_output.row].fx[f];
     if(fx.target > 0) _synth->Automate(fx.target - 1, fx.value);
   }
 }
@@ -76,9 +77,9 @@ SequencerDSP::Trigger()
 {
   Automate();
   bool result = false;
-  for (int k = 0; k < _model.edit.keys; k++)
+  for (int k = 0; k < _model->edit.keys; k++)
   {
-    auto const& key = _model.pattern.rows[_output.row].keys[k];
+    auto const& key = _model->pattern.rows[_output.row].keys[k];
     if (key.note >= PatternNote::Off)
       _synth->Release(k);
     if (key.note < PatternNote::C) continue;
@@ -93,7 +94,7 @@ SequencerMove
 SequencerDSP::Move()
 {
   int current = _output.row;
-  auto const& edit = _model.edit;
+  auto const& edit = _model->edit;
   if (_endPattern) return SequencerMove::None;
   if (current == -1) return _output.row = 0, SequencerMove::Next;
   _fill += edit.bpm * edit.lpb / (60.0 * _rate);
