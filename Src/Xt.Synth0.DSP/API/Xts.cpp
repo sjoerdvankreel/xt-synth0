@@ -18,7 +18,7 @@ struct XTS_ALIGN XtsSequencer
 {
   int32_t** binding;
   Xts::SynthDSP* synthDsp;
-  Xts::SynthModel synthModel;
+  Xts::SynthModel* synthModel;
   Xts::SequencerDSP* sequencerDsp;
   Xts::SequencerModel* sequencerModel;
 };
@@ -65,7 +65,7 @@ XtsPlotCreate(int32_t params)
 void XTS_CALL
 XtsSequencerInit(XtsSequencer* sequencer)
 {
-  sequencer->synthDsp->Init(&sequencer->synthModel);
+  sequencer->synthDsp->Init();
   sequencer->sequencerDsp->Connect(sequencer->synthDsp);
 }
 
@@ -87,6 +87,7 @@ XtsSequencerCreate(int32_t params, int32_t frames, int32_t fxCount, int32_t keyC
   auto result = new XtsSequencer;
   result->synthDsp = new Xts::SynthDSP(fxCount, keyCount, bpm, rate);
   result->binding = result->synthDsp->Binding();
+  result->synthModel = result->synthDsp->Model();
   result->sequencerDsp = new Xts::SequencerDSP(rate, frames);
   result->sequencerModel = result->sequencerDsp->Model();
   return result;

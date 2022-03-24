@@ -83,10 +83,9 @@ SynthDSP::Take(int key, int voice, int64_t position)
 }
 
 void
-SynthDSP::Init(SynthModel const* model)
+SynthDSP::Init()
 {
-  _model = model;
-  new(&_globalLfo) LfoDSP(&model->global.lfo, _bpm, _rate);
+  new(&_globalLfo) LfoDSP(&_model.global.lfo, _bpm, _rate);
 }
 
 int
@@ -115,7 +114,7 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
 {
   bool result = false;
   int voice = Take(key, position, result);
-  _voiceModels[voice] = _model->voice;
+  _voiceModels[voice] = _model.voice;
   new (&_voiceDsps[voice]) VoiceDSP(&_voiceModels[voice], octave, note, velocity, _bpm, _rate);
   return result;
 }

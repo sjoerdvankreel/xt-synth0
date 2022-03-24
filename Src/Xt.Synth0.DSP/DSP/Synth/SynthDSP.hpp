@@ -4,6 +4,7 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/VoiceDSP.hpp>
+#include <Model/Synth/SynthModel.hpp>
 #include <Model/Synth/SynthConfig.hpp>
 #include <Model/Shared/SharedConfig.hpp>
 #include <cstdint>
@@ -17,8 +18,8 @@ class SynthDSP
   int _voices;
   int _fxCount;
   int _keyCount;
+  SynthModel _model;
   LfoDSP _globalLfo;
-  struct SynthModel const* _model;
   int* _binding[XTS_SYNTH_PARAM_COUNT];
   int _voiceKeys[XTS_SYNTH_MAX_VOICES];
   int _voicesActive[XTS_SHARED_MAX_KEYS];
@@ -28,6 +29,7 @@ class SynthDSP
 public:
   int** Binding() { return _binding; }
   int Voices() const { return _voices; }
+  SynthModel* Model() { return &_model; }
 private:
   void Return(int key, int voice);
   int Take(int key, int voice, int64_t position);
@@ -40,11 +42,11 @@ public:
   SynthDSP(SynthDSP const&) = default;
   SynthDSP(int fxCount, int keyCount, float bpm, float rate);
 public:
+  void Init();
   void ReleaseAll();
   FloatSample Next();
   void Release(int key);
   void Automate(int target, int value);
-  void Init(struct SynthModel const* model);
   bool Trigger(int key, int octave, UnitNote note, float velocity, int64_t position);
 };
 
@@ -66,7 +68,7 @@ public:
   float Left() const { return _dsp.Voice0().Output().left; }
   float Right() const { return _dsp.Voice0().Output().right; }
   EnvSample EnvOutput() const { return _dsp.Voice0().EnvOutput(); }
-  void Init(float bpm, float rate) { new(&_dsp) SynthDSP(0, 1, bpm, rate); _dsp.Init(_model); }
+  void Init(float bpm, float rate) { new(&_dsp) SynthDSP(0, 1, bpm, rate); _dsp.Init(/*_model*/); }
   float ReleaseSamples(float bpm, float rate) const { return EnvPlot::ReleaseSamples(_dsp.Voice0().Env(), bpm, rate); }
 };
 

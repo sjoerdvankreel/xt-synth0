@@ -26,7 +26,7 @@ namespace Xt.Synth0
         {
             internal int** binding;
             internal IntPtr synthDsp;
-            internal SynthModel.Native synthModel;
+            internal SynthModel.Native* synthModel;
             internal IntPtr sequencerDsp;
             internal SequencerModel.Native* sequencerModel;
         }
