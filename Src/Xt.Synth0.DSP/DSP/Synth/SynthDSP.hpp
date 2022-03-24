@@ -68,7 +68,7 @@ public:
   float Left() const { return _dsp.Voice0().Output().left; }
   float Right() const { return _dsp.Voice0().Output().right; }
   EnvSample EnvOutput() const { return _dsp.Voice0().EnvOutput(); }
-  void Init(float bpm, float rate) { new(&_dsp) SynthDSP(0, 1, bpm, rate); _dsp.Init(/*_model*/); }
+  void Init(float bpm, float rate) { new(&_dsp) SynthDSP(0, 1, bpm, rate); *_dsp.Model() = *_model; _dsp.Init(); }
   float ReleaseSamples(float bpm, float rate) const { return EnvPlot::ReleaseSamples(_dsp.Voice0().Env(), bpm, rate); }
 };
 
