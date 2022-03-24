@@ -141,15 +141,14 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
 }
 
 SynthDSP::
-SynthDSP(int fxCount, int keyCount, float bpm, float rate):
+SynthDSP(int keyCount, float bpm, float rate):
 SynthDSP()
 {
   _bpm = bpm;
   _voices = 0;
   _rate = rate;
-  _fxCount = fxCount;
   _keyCount = keyCount;
-  for (int i = 0; i < keyCount; i++) _voicesActive[i] = -1;
+  for (int i = 0; i < XTS_SHARED_MAX_KEYS; i++) _voicesActive[i] = -1;
   for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voicesStarted[i] = _voiceKeys[i] = -1;
 }
 

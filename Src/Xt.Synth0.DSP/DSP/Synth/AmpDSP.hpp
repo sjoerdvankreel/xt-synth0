@@ -16,11 +16,11 @@ namespace Xts {
 
 class AmpDSP
 {
-  float _amp;
   float _level;
   float _panning;
   ModDSP _ampMod;
   ModDSP _panMod;
+  float _velocity;
   FloatSample _output;
   AmpModel const* _model;
   float _unitAmount[XTS_VOICE_UNIT_COUNT];

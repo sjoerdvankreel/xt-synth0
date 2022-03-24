@@ -84,10 +84,10 @@ XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** outp
 }
 
 XtsSequencer* XTS_CALL
-XtsSequencerCreate(int32_t params, int32_t frames, int32_t fxCount, int32_t keyCount, float bpm, float rate)
+XtsSequencerCreate(int32_t params, int32_t frames, int32_t keyCount, float bpm, float rate)
 {
   auto result = new XtsSequencer;
-  result->synthDsp = new Xts::SynthDSP(fxCount, keyCount, bpm, rate);
+  result->synthDsp = new Xts::SynthDSP(keyCount, bpm, rate);
   result->binding = result->synthDsp->Binding();
   result->synthModel = result->synthDsp->Model();
   result->voiceModels = result->synthDsp->VoiceModels();

@@ -42,7 +42,7 @@ XtsSequencerInit(XtsSequencer* sequencer);
 XTS_EXPORT void XTS_CALL
 XtsSequencerDestroy(XtsSequencer* sequencer);
 XTS_EXPORT XtsSequencer* XTS_CALL
-XtsSequencerCreate(int32_t params, int32_t frames, int32_t fxCount, int32_t keyCount, float bpm, float rate);
+XtsSequencerCreate(int32_t params, int32_t frames, int32_t keyCount, float bpm, float rate);
 XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames, Xts::AutomationAction const* actions, int32_t count);
 

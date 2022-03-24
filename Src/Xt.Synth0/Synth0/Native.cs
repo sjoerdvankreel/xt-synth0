@@ -70,7 +70,7 @@ namespace Xt.Synth0
 
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerInit(XtsSequencer* sequencer);
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerDestroy(XtsSequencer* sequencer);
-        [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, int fxCount, int keyCount, float bpm, float rate);
+        [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, int keyCount, float bpm, float rate);
         [DllImport("XT.Synth0.DSP")] internal static extern SequencerOutput* XtsSequencerRender(XtsSequencer* sequencer, int frames, AutomationAction.Native* actions, int count);
     }
 }
