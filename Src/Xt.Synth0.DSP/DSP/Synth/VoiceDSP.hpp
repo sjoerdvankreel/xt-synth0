@@ -4,7 +4,6 @@
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/AmpDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
-#include <Model/Synth/VoiceModel.hpp>
 
 namespace Xts {
 
@@ -15,7 +14,7 @@ class VoiceDSP
   AudioDSP _audio;
 public:
   VoiceDSP() = default;
-  VoiceDSP(VoiceModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate);
+  VoiceDSP(struct SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate);
 public:
   FloatSample Output() const { return _amp.Output(); }
   bool End() const { return _cv.Env(XTS_AMP_ENV).End(); }

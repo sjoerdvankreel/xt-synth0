@@ -324,7 +324,7 @@ namespace Xt.Synth0
                 int frames = _audioStream.GetMaxBufferFrames();
                 _sequencer = Native.XtsSequencerCreate(SynthConfig.SynthParamCount, frames, edit.Fxs.Value, edit.Keys.Value, edit.Bpm.Value, format.mix.rate);
                 seq.ToNative(_sequencer->sequencerModel);
-                _synth.Bind(_sequencer->synthModel, _sequencer->binding);
+                _synth.Bind(_sequencer->synthModel, _sequencer->binding, _sequencer->voiceModels, _sequencer->voiceBindings);
                 _synth.ToNative(_sequencer->binding);
                 Native.XtsSequencerInit(_sequencer);
                 _monitor.Start(_audioStream, in format);

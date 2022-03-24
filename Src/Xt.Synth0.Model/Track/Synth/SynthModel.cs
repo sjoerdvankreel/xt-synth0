@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public sealed class SynthModel : AutomatableModel
+    public unsafe sealed class SynthModel : AutomatableModel
     {
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public ref struct Native
@@ -40,6 +40,13 @@ namespace Xt.Synth0.Model
             Units[0].On.Value = 1;
             if (AutoParams.Count != SynthConfig.SynthParamCount)
                 throw new InvalidOperationException();
+        }
+
+        public void Bind(Native* native, int** binding, Native* nativeVoices, int** voiceBindings)
+        {
+            Bind(native, binding);
+            for (int i = 0; i < SynthConfig.SynthMaxVoices; i++)
+                Bind(&nativeVoices[i], &voiceBindings[i * SynthConfig.SynthParamCount]);
         }
     }
 }

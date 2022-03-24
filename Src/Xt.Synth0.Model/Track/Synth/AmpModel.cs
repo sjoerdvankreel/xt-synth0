@@ -44,7 +44,7 @@ namespace Xt.Synth0.Model
         public Param Amp { get; } = new(AmpInfo);
         public Param AmpLfoSource { get; } = new(AmpLfoSourceInfo);
         public Param AmpLfoAmount { get; } = new(AmpLfoAmountInfo);
-        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 1, nameof(Amp), "Amp", "Amplitude", false, 128);
+        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 1, nameof(Amp), "Amp", "Amplitude", true, 128);
         static readonly ParamInfo AmpLfoAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampLfoAmount, 1, nameof(AmpLfoAmount), "Amt", "Level LFO amount", false);
         static readonly ParamInfo AmpLfoSourceInfo = ParamInfo.List<AmpLfoSource>(p => &((Native*)p)->ampLfoSource, 1, nameof(AmpLfoSource), "LFO", "Amp LFO source", false);
 

@@ -17,8 +17,10 @@ struct XTS_ALIGN XtsPlot
 struct XTS_ALIGN XtsSequencer
 {
   int32_t** binding;
+  int32_t** voiceBindings;
   Xts::SynthDSP* synthDsp;
   Xts::SynthModel* synthModel;
+  Xts::SynthModel* voiceModels;
   Xts::SequencerDSP* sequencerDsp;
   Xts::SequencerModel* sequencerModel;
 };
@@ -88,6 +90,8 @@ XtsSequencerCreate(int32_t params, int32_t frames, int32_t fxCount, int32_t keyC
   result->synthDsp = new Xts::SynthDSP(fxCount, keyCount, bpm, rate);
   result->binding = result->synthDsp->Binding();
   result->synthModel = result->synthDsp->Model();
+  result->voiceModels = result->synthDsp->VoiceModels();
+  result->voiceBindings = result->synthDsp->VoiceBindings();
   result->sequencerDsp = new Xts::SequencerDSP(rate, frames);
   result->sequencerModel = result->sequencerDsp->Model();
   return result;

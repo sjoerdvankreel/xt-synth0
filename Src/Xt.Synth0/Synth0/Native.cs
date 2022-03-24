@@ -25,8 +25,10 @@ namespace Xt.Synth0
         internal ref struct XtsSequencer
         {
             internal int** binding;
+            internal int** voiceBindings;
             internal IntPtr synthDsp;
             internal SynthModel.Native* synthModel;
+            internal SynthModel.Native* voiceModels;
             internal IntPtr sequencerDsp;
             internal SequencerModel.Native* sequencerModel;
         }

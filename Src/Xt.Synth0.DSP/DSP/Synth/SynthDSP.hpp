@@ -25,11 +25,14 @@ class SynthDSP
   int _voicesActive[XTS_SHARED_MAX_KEYS];
   VoiceDSP _voiceDsps[XTS_SYNTH_MAX_VOICES];
   int64_t _voicesStarted[XTS_SYNTH_MAX_VOICES];
-  VoiceModel _voiceModels[XTS_SYNTH_MAX_VOICES];
+  SynthModel _voiceModels[XTS_SYNTH_MAX_VOICES];
+  int* _voiceBindings[XTS_SYNTH_MAX_VOICES][XTS_SYNTH_PARAM_COUNT];
 public:
   int** Binding() { return _binding; }
   int Voices() const { return _voices; }
   SynthModel* Model() { return &_model; }
+  SynthModel* VoiceModels() { return _voiceModels; }
+  int** VoiceBindings() { return _voiceBindings[0]; }
 private:
   void Return(int key, int voice);
   int Take(int key, int voice, int64_t position);
