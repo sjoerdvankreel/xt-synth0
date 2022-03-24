@@ -74,7 +74,6 @@ SequencerDSP::Automate()
 bool
 SequencerDSP::Trigger()
 {
-  Automate();
   bool result = false;
   for (int k = 0; k < _model.edit.keys; k++)
   {
@@ -86,6 +85,7 @@ SequencerDSP::Trigger()
     UnitNote note = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
     result |= _synth->Trigger(k, key.octave, note, velocity, _output.position);
   }
+  Automate();
   return result;
 }
 
