@@ -58,7 +58,7 @@ SynthDSP::Return(int key, int voice)
   _voiceKeys[voice] = -1;
   _voicesStarted[voice] = -1;
   for(int i = 0; i < XTS_SYNTH_MAX_VOICES; i++)
-    keyInUse = _voiceKeys[i] != -1;
+    keyInUse |= _voiceKeys[i] != -1;
   if(!keyInUse) _voicesActive[key] = -1;
   assert(0 <= key && key < _keyCount);
   assert(0 <= voice && voice < XTS_SYNTH_MAX_VOICES);
