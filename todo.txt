@@ -13,3 +13,4 @@ filter keyboard track
 handle stream stopped with error
 process buffer in blocks
 store automation target by id/name/index
+visual indicator for realtime knobs
