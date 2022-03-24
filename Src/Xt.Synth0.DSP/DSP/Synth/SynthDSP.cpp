@@ -82,6 +82,13 @@ SynthDSP::Take(int key, int voice, int64_t position)
   return voice;
 }
 
+void
+SynthDSP::Init(SynthModel const* model)
+{
+  _model = model;
+  new(&_globalLfo) LfoDSP(&model->global.lfo, _bpm, _rate);
+}
+
 int
 SynthDSP::Take(int key, int64_t position, bool& exhausted)
 {
@@ -114,17 +121,14 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
 }
 
 SynthDSP::
-SynthDSP(SynthModel const* model, int* const* binding, int fxCount, int keyCount, float bpm, float rate) :
-  SynthDSP()
+SynthDSP(int fxCount, int keyCount, float bpm, float rate):
+SynthDSP()
 {
   _bpm = bpm;
   _voices = 0;
   _rate = rate;
-  _model = model;
-  _binding = binding;
   _fxCount = fxCount;
   _keyCount = keyCount;
-  new(&_globalLfo) LfoDSP(&model->global.lfo, bpm, rate);
   for (int i = 0; i < keyCount; i++) _voicesActive[i] = -1;
   for (int i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voicesStarted[i] = _voiceKeys[i] = -1;
 }

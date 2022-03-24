@@ -38,11 +38,11 @@ XTS_EXPORT Xts::PlotResult* XTS_CALL
 XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** output);
 
 XTS_EXPORT void XTS_CALL
-XtsSequencerDestroy(XtsSequencer* sequencer);
+XtsSequencerInit(XtsSequencer* sequencer);
 XTS_EXPORT void XTS_CALL
-XtsSequencerConnect(XtsSequencer* sequencer, float rate);
+XtsSequencerDestroy(XtsSequencer* sequencer);
 XTS_EXPORT XtsSequencer* XTS_CALL
-XtsSequencerCreate(int32_t params, int32_t frames, float rate);
+XtsSequencerCreate(int32_t params, int32_t frames, int32_t fxCount, int32_t keyCount, float bpm, float rate);
 XTS_EXPORT Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames, Xts::AutomationAction const* actions, int32_t count);
 

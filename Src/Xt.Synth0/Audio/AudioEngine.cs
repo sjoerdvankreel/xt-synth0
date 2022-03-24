@@ -167,7 +167,7 @@ namespace Xt.Synth0
                 AutomationQueue.Clear();
                 _synth.CopyTo(_localSynth);
                 _synth.CopyTo(_originalSynth);
-                _synth.ToNative((int**)_sequencer->binding);
+                _synth.ToNative(_sequencer->binding);
                 _streamUI.State = StreamState.Running;
                 _audioStream.Start();
                 _monitor.Resume();
@@ -244,7 +244,7 @@ namespace Xt.Synth0
 
         void EndAutomation()
         {
-            _localSynth.FromNative((int**)_sequencer->binding);
+            _localSynth.FromNative(_sequencer->binding);
             var @params = _localSynth.Params;
             for (int i = 0; i < @params.Count; i++)
                 if (@params[i].Value != _automationValues[i])
@@ -311,6 +311,7 @@ namespace Xt.Synth0
         {
             try
             {
+                var edit = seq.Edit;
                 var format = GetFormat();
                 var bufferSize = _settings.BufferSize.ToInt();
                 var streamParams = new XtStreamParams(true, OnXtBuffer, null, OnXtRunning);
@@ -320,12 +321,13 @@ namespace Xt.Synth0
                         _audioStream = new DiskStream(this, in format, bufferSize, _settings.OutputPath);
                     else
                         _audioStream = OpenDeviceStream(in deviceParams);
-                _monitor.Start(_audioStream, in format);
-                _sequencer = Native.XtsSequencerCreate(SynthConfig.SynthParamCount, _audioStream.GetMaxBufferFrames(), format.mix.rate);
+                int frames = _audioStream.GetMaxBufferFrames();
+                _sequencer = Native.XtsSequencerCreate(SynthConfig.SynthParamCount, frames, edit.Fxs.Value, edit.Keys.Value, edit.Bpm.Value, format.mix.rate);
                 seq.ToNative(_sequencer->sequencerModel);
-                _synth.Bind(&_sequencer->synthModel, (int**)_sequencer->binding);
-                _synth.ToNative((int**)_sequencer->binding);
-                Native.XtsSequencerConnect(_sequencer, format.mix.rate);
+                _synth.Bind(&_sequencer->synthModel, _sequencer->binding);
+                _synth.ToNative(_sequencer->binding);
+                Native.XtsSequencerInit(_sequencer);
+                _monitor.Start(_audioStream, in format);
                 ResumeStream();
             }
             catch

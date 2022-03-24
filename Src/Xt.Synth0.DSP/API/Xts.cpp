@@ -16,11 +16,11 @@ struct XTS_ALIGN XtsPlot
 
 struct XTS_ALIGN XtsSequencer
 {
+  int32_t** binding;
   Xts::SynthDSP* synthDsp;
   Xts::SynthModel synthModel;
   Xts::SequencerDSP* sequencerDsp;
   Xts::SequencerModel* sequencerModel;
-  int32_t* binding[XTS_SYNTH_PARAM_COUNT];
 };
 
 void XTS_CALL 
@@ -62,6 +62,13 @@ XtsPlotCreate(int32_t params)
   return result;
 }
 
+void XTS_CALL
+XtsSequencerInit(XtsSequencer* sequencer)
+{
+  sequencer->synthDsp->Init(&sequencer->synthModel);
+  sequencer->sequencerDsp->Connect(sequencer->synthDsp);
+}
+
 Xts::PlotResult* XTS_CALL
 XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** output)
 {
@@ -75,20 +82,12 @@ XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** outp
 }
 
 XtsSequencer* XTS_CALL
-XtsSequencerCreate(int32_t params, int32_t frames, float rate)
+XtsSequencerCreate(int32_t params, int32_t frames, int32_t fxCount, int32_t keyCount, float bpm, float rate)
 {
   auto result = new XtsSequencer;
-  result->synthDsp = new Xts::SynthDSP();
+  result->synthDsp = new Xts::SynthDSP(fxCount, keyCount, bpm, rate);
+  result->binding = result->synthDsp->Binding();
   result->sequencerDsp = new Xts::SequencerDSP(rate, frames);
   result->sequencerModel = result->sequencerDsp->Model();
   return result;
-}
-
-void XTS_CALL
-XtsSequencerConnect(XtsSequencer* sequencer, float rate)
-{
-  auto const& edit = sequencer->sequencerDsp->Model()->edit;
-  float bpm = static_cast<float>(edit.bpm);
-  new(sequencer->synthDsp) Xts::SynthDSP(&sequencer->synthModel, sequencer->binding, edit.fxs, edit.keys, bpm, rate);
-  sequencer->sequencerDsp->Connect(sequencer->synthDsp);
 }

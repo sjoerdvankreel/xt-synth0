@@ -24,11 +24,11 @@ namespace Xt.Synth0
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct XtsSequencer
         {
+            internal int** binding;
             internal IntPtr synthDsp;
             internal SynthModel.Native synthModel;
             internal IntPtr sequencerDsp;
             internal SequencerModel.Native* sequencerModel;
-            internal fixed byte binding[SynthConfig.SynthParamCount * SharedConfig.PointerSize];
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -66,9 +66,9 @@ namespace Xt.Synth0
         [DllImport("XT.Synth0.DSP")] internal static extern XtsPlot* XtsPlotCreate(int @params);
         [DllImport("XT.Synth0.DSP")] internal static extern PlotResult.Native* XtsPlotRender(XtsPlot* plot, PlotInput* input, PlotOutput.Native** output);
 
+        [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerInit(XtsSequencer* sequencer);
         [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerDestroy(XtsSequencer* sequencer);
-        [DllImport("XT.Synth0.DSP")] internal static extern void XtsSequencerConnect(XtsSequencer* sequencer, float rate);
-        [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, float rate);
+        [DllImport("XT.Synth0.DSP")] internal static extern XtsSequencer* XtsSequencerCreate(int @params, int frames, int fxCount, int keyCount, float bpm, float rate);
         [DllImport("XT.Synth0.DSP")] internal static extern SequencerOutput* XtsSequencerRender(XtsSequencer* sequencer, int frames, AutomationAction.Native* actions, int count);
     }
 }
