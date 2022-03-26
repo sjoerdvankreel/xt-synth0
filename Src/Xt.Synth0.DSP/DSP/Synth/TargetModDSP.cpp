@@ -31,9 +31,9 @@ ModulatorValue(ModSource source, CvState const& cv)
 CvSample
 TargetModDSP::Next(CvState const& cv)
 {
-  _amount = Param::Mix(_model->amount);
-  _output.value = ModulatorValue(_model->source, cv);
-  _output.bipolar = ModulatorIsBipolar(_model->source, cv);
+  _amount = Param::Mix(_model->mod.amount);
+  _output.value = ModulatorValue(_model->mod.source, cv);
+  _output.bipolar = ModulatorIsBipolar(_model->mod.source, cv);
   return _output.Sanity();
 }
 

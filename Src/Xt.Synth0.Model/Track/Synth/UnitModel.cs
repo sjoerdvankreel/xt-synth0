@@ -113,15 +113,15 @@ namespace Xt.Synth0.Model
         public Param Mod1Source { get; } = new(Mod1SourceInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
-        static readonly ParamInfo Mod1AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod1.amount, 2, nameof(Mod1Amount), "Amt", "Mod 1 amount", false);
+        static readonly ParamInfo Mod1AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod1.mod.amount, 2, nameof(Mod1Amount), "Amt", "Mod 1 amount", false);
         static readonly ParamInfo Mod1TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mods.mod1.target, 2, nameof(Mod1Target), "Tgt", "Mod 1 target", false, ModTargetNames);
-        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod1.source, 2, nameof(Mod1Source), "Src", "Mod 1 source", false, TargetModModel.ModSourceNames);
+        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod1.mod.source, 2, nameof(Mod1Source), "Src", "Mod 1 source", false, ModModel.ModSourceNames);
 
         public Param Mod2Source { get; } = new(Mod2SourceInfo);
         public Param Mod2Target { get; } = new(Mod2TargetInfo);
         public Param Mod2Amount { get; } = new(Mod2AmountInfo);
-        static readonly ParamInfo Mod2AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod2.amount, 2, nameof(Mod2Amount), "Amt", "Mod 2 amount", false);
+        static readonly ParamInfo Mod2AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod2.mod.amount, 2, nameof(Mod2Amount), "Amt", "Mod 2 amount", false);
         static readonly ParamInfo Mod2TargetInfo = ParamInfo.List<UnitModTarget>(p => &((Native*)p)->mods.mod2.target, 2, nameof(Mod2Target), "Tgt", "Mod 2 target", false, ModTargetNames);
-        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod2.source, 2, nameof(Mod2Source), "Src", "Mod 2 source", false, TargetModModel.ModSourceNames);
+        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod2.mod.source, 2, nameof(Mod2Source), "Src", "Mod 2 source", false, ModModel.ModSourceNames);
     }
 }

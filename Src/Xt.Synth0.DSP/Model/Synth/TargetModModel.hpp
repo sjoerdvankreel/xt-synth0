@@ -2,22 +2,15 @@
 #define XTS_MODEL_SYNTH_TARGET_MOD_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
+#include <Model/Synth/ModModel.hpp>
 #include <cstdint>
 
 namespace Xts {
 
-enum class ModSource
-{
-  Velocity, 
-  Env1, Env2, Env3, 
-  LFO1, LFO2, GlobalLFO
-};
-
 struct XTS_ALIGN TargetModModel
 {
+  ModModel mod;
   int32_t target;
-  int32_t amount;
-  ModSource source;
   int32_t pad__;
 };
 XTS_CHECK_SIZE(TargetModModel, 16);
