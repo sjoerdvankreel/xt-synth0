@@ -59,8 +59,6 @@ InitStateVar(FilterModel const& m, StateVarState& s)
 {
   s.ic1eq.Clear();
   s.ic2eq.Clear();
-  s.resonance = Param::Level(m.resonance);
-  s.frequency = Param::Level(m.frequency);
 }
 
 static void
@@ -68,10 +66,6 @@ InitComb(FilterModel const& m, float rate, CombState& s)
 {
   s.x.Clear();
   s.y.Clear();
-  s.minGain = Param::Mix(m.combMinGain);
-  s.plusGain = Param::Mix(m.combPlusGain);
-  s.minDelay = Param::Level(m.combMinDelay);
-  s.plusDelay = Param::Level(m.combPlusDelay);
 }
 
 FilterDSP::
@@ -82,8 +76,6 @@ FilterDSP()
   _index = index;
   _model = model;
   _mods = TargetModsDSP(&model->mods);
-  for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
-  for (int i = 0; i < XTS_VOICE_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
   {
   case FilterType::Comb: InitComb(*model, rate, _state.comb); break;
@@ -98,8 +90,8 @@ FilterDSP::Next(CvState const& cv, AudioState const& audio)
   _output.Clear();
   if (!_model->on) return _output;
   _mods.Next(cv);
-  for (int i = 0; i < _index; i++) _output += audio.filters[i] * _filterAmount[i];
-  for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _output += audio.units[i] * _unitAmount[i];
+  for (int i = 0; i < _index; i++) _output += audio.filters[i] * Param::Level(_model->filterAmount[i]);
+  for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _output += audio.units[i] * Param::Level(_model->unitAmount[i]);
   switch (_model->type)
   {
   case FilterType::Comb: _output = GenerateComb(); break;
@@ -113,8 +105,10 @@ FloatSample
 FilterDSP::GenerateStateVar()
 {
   auto& s = _state.stateVar;
-  double res = _mods.Modulate({ s.resonance, false }, static_cast<int>(FilterModTarget::Resonance));
-  int freq = static_cast<int>(_mods.Modulate({ s.frequency, false }, static_cast<int>(FilterModTarget::Frequency)) * 255);
+  float resBase = Param::Level(_model->resonance);
+  float freqBase = Param::Level(_model->frequency);
+  double res = _mods.Modulate({ resBase, false }, static_cast<int>(FilterModTarget::Resonance));
+  int freq = static_cast<int>(_mods.Modulate({ freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 255);
   float hz = Param::Frequency(freq, FILTER_MIN_FREQ_HZ, FILTER_MAX_FREQ_HZ);
   double g = std::tan(PID * hz / _rate);
   double k = 2.0 - 2.0 * res;
@@ -145,10 +139,14 @@ FloatSample
 FilterDSP::GenerateComb()
 {
   auto& s = _state.comb;
-  float minGain = _mods.Modulate({ s.minGain , true }, static_cast<int>(FilterModTarget::CombMinGain));
-  float plusGain = _mods.Modulate({ s.plusGain , true }, static_cast<int>(FilterModTarget::CombPlusGain));
-  int minDelay = static_cast<int>(_mods.Modulate({s.minDelay, false}, static_cast<int>(FilterModTarget::CombMinDelay)) * 255);
-  int plusDelay = static_cast<int>(_mods.Modulate({ s.plusDelay, false }, static_cast<int>(FilterModTarget::CombPlusDelay)) * 255);
+  float minGainBase = Param::Mix(_model->combMinGain);
+  float plusGainBase = Param::Mix(_model->combPlusGain);
+  float minDelayBase = Param::Level(_model->combMinDelay);
+  float plusDelayBase = Param::Level(_model->combPlusDelay);
+  float minGain = _mods.Modulate({ minGainBase, true }, static_cast<int>(FilterModTarget::CombMinGain));
+  float plusGain = _mods.Modulate({ plusGainBase, true }, static_cast<int>(FilterModTarget::CombPlusGain));
+  int minDelay = static_cast<int>(_mods.Modulate({ minDelayBase, false}, static_cast<int>(FilterModTarget::CombMinDelay)) * 255);
+  int plusDelay = static_cast<int>(_mods.Modulate({ plusDelayBase, false }, static_cast<int>(FilterModTarget::CombPlusDelay)) * 255);
   int minDelaySamples = static_cast<int>(Param::TimeSamplesF(minDelay, _rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
   int plusDelaySamples = static_cast<int>(Param::TimeSamplesF(plusDelay, _rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
   s.y.Push(_output + s.x.Get(plusDelaySamples) * plusGain + s.y.Get(minDelaySamples) * minGain);

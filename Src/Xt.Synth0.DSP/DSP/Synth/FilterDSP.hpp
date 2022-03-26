@@ -18,18 +18,12 @@ static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f + 1.0f);
 
 struct StateVarState
 {
-  float resonance;
-  float frequency;
   DoubleSample ic1eq;
   DoubleSample ic2eq;
 }; 
 
 struct CombState
 {
-  float minGain;
-  float plusGain;
-  float minDelay;
-  float plusDelay;
   DelayBuffer<FloatSample, COMB_DELAY_MAX_SAMPLES> x;
   DelayBuffer<FloatSample, COMB_DELAY_MAX_SAMPLES> y;
 };
@@ -48,8 +42,6 @@ class FilterDSP
   FloatSample _output;
   TargetModsDSP _mods;
   struct FilterModel const* _model;
-  float _unitAmount[XTS_VOICE_UNIT_COUNT];
-  float _filterAmount[XTS_VOICE_FILTER_COUNT];
 private:
   FloatSample GenerateComb();
   FloatSample GenerateStateVar();
