@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.Model
 {
-    public unsafe sealed class VoiceModel
+    public unsafe static class VoiceModel
     {
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public ref struct Native

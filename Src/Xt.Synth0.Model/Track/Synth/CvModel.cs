@@ -2,7 +2,7 @@
 
 namespace Xt.Synth0.Model
 {
-    unsafe class CvModel
+    static unsafe class CvModel
     {
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
