@@ -41,7 +41,7 @@ struct XTS_ALIGN UnitModel
   int32_t additiveRolloff;
   int32_t additivePartials;
 
-  ModsModel<UnitModTarget> mods;
+  ModsModel mods;
 };
 XTS_CHECK_SIZE(UnitModel, 88);
 

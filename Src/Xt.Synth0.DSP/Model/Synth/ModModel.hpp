@@ -13,16 +13,14 @@ enum class ModSource
   LFO1, LFO2, GlobalLFO
 };
 
-template <class Target>
 struct XTS_ALIGN ModModel
 {
-  Target target;
+  int32_t target;
   int32_t amount;
   ModSource source;
   int32_t pad__;
 };
-typedef ModModel<int32_t> AnyModModel;
-XTS_CHECK_SIZE(AnyModModel, 16);
+XTS_CHECK_SIZE(ModModel, 16);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_MOD_MODEL_HPP

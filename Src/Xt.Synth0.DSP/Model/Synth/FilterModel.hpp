@@ -34,7 +34,7 @@ struct XTS_ALIGN FilterModel
   int32_t frequency;
   int32_t pad__;
 
-  ModsModel<FilterModTarget> mods;
+  ModsModel mods;
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
   int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
 };

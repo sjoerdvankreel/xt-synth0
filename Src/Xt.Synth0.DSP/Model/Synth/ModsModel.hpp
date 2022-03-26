@@ -6,14 +6,12 @@
 
 namespace Xts {
 
-template <class Target>
 struct XTS_ALIGN ModsModel
 {
-  ModModel<Target> mod1;
-  ModModel<Target> mod2;
+  ModModel mod1;
+  ModModel mod2;
 };
-typedef ModsModel<int32_t> AnyModsModel;
-XTS_CHECK_SIZE(AnyModsModel, 32);
+XTS_CHECK_SIZE(ModsModel, 32);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_MODS_MODEL_HPP

@@ -81,7 +81,7 @@ FilterDSP()
   _rate = rate;
   _index = index;
   _model = model;
-  _mods = ModsDSP(model->mods);
+  _mods = ModsDSP(&model->mods);
   for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
   for (int i = 0; i < XTS_VOICE_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)
@@ -113,8 +113,8 @@ FloatSample
 FilterDSP::GenerateStateVar()
 {
   auto& s = _state.stateVar;
-  double res = _mods.Modulate(FilterModTarget::Resonance, { s.resonance, false });
-  int freq = static_cast<int>(_mods.Modulate(FilterModTarget::Frequency, { s.frequency, false }) * 255);
+  double res = _mods.Modulate({ s.resonance, false }, static_cast<int>(FilterModTarget::Resonance));
+  int freq = static_cast<int>(_mods.Modulate({ s.frequency, false }, static_cast<int>(FilterModTarget::Frequency)) * 255);
   float hz = Param::Frequency(freq, FILTER_MIN_FREQ_HZ, FILTER_MAX_FREQ_HZ);
   double g = std::tan(PID * hz / _rate);
   double k = 2.0 - 2.0 * res;
@@ -145,10 +145,10 @@ FloatSample
 FilterDSP::GenerateComb()
 {
   auto& s = _state.comb;
-  float minGain = _mods.Modulate(FilterModTarget::CombMinGain, { s.minGain , true });
-  float plusGain = _mods.Modulate(FilterModTarget::CombPlusGain, { s.plusGain , true });
-  int minDelay = static_cast<int>(_mods.Modulate(FilterModTarget::CombMinDelay, {s.minDelay, false}) * 255);
-  int plusDelay = static_cast<int>(_mods.Modulate(FilterModTarget::CombPlusDelay, { s.plusDelay, false }) * 255);
+  float minGain = _mods.Modulate({ s.minGain , true }, static_cast<int>(FilterModTarget::CombMinGain));
+  float plusGain = _mods.Modulate({ s.plusGain , true }, static_cast<int>(FilterModTarget::CombPlusGain));
+  int minDelay = static_cast<int>(_mods.Modulate({s.minDelay, false}, static_cast<int>(FilterModTarget::CombMinDelay)) * 255);
+  int plusDelay = static_cast<int>(_mods.Modulate({ s.plusDelay, false }, static_cast<int>(FilterModTarget::CombPlusDelay)) * 255);
   int minDelaySamples = static_cast<int>(Param::TimeSamplesF(minDelay, _rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
   int plusDelaySamples = static_cast<int>(Param::TimeSamplesF(plusDelay, _rate, XTS_COMB_MIN_DELAY_MS, XTS_COMB_MAX_DELAY_MS));
   s.y.Push(_output + s.x.Get(plusDelaySamples) * plusGain + s.y.Get(minDelaySamples) * minGain);
