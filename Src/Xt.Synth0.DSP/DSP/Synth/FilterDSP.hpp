@@ -1,11 +1,11 @@
 #ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
 #define XTS_DSP_SYNTH_FILTER_DSP_HPP
 
-#include <DSP/Synth/ModsDSP.hpp>
 #include <DSP/Shared/Config.hpp>
 #include <DSP/Shared/CvSample.hpp>
 #include <DSP/Shared/DelayBuffer.hpp>
 #include <DSP/Shared/AudioSample.hpp>
+#include <DSP/Synth/TargetModsDSP.hpp>
 #include <Model/Synth/SynthConfig.hpp>
 
 #define XTS_COMB_MIN_DELAY_MS 0.0f
@@ -44,9 +44,9 @@ class FilterDSP
 {
   int _index;
   float _rate;
-  ModsDSP _mods;
   FilterState _state;
   FloatSample _output;
+  TargetModsDSP _mods;
   struct FilterModel const* _model;
   float _unitAmount[XTS_VOICE_UNIT_COUNT];
   float _filterAmount[XTS_VOICE_FILTER_COUNT];

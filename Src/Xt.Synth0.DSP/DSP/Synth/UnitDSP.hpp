@@ -3,7 +3,7 @@
 
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
-#include <DSP/Synth/ModsDSP.hpp>
+#include <DSP/Synth/TargetModsDSP.hpp>
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/UnitModel.hpp>
@@ -18,7 +18,7 @@ class UnitDSP
   float _frequency;
   float _blepPulseWidth;
   float _additiveRolloff;
-  ModsDSP _mods;
+  TargetModsDSP _mods;
   double _phase;
   double _blepTriangle;
   FloatSample _output;

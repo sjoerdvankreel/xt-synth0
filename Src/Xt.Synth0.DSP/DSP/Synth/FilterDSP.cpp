@@ -81,7 +81,7 @@ FilterDSP()
   _rate = rate;
   _index = index;
   _model = model;
-  _mods = ModsDSP(&model->mods);
+  _mods = TargetModsDSP(&model->mods);
   for (int i = 0; i < XTS_VOICE_UNIT_COUNT; i++) _unitAmount[i] = Param::Level(model->unitAmount[i]);
   for (int i = 0; i < XTS_VOICE_FILTER_COUNT; i++) _filterAmount[i] = Param::Level(model->filterAmount[i]);
   switch (model->type)

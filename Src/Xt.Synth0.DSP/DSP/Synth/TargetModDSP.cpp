@@ -1,5 +1,5 @@
-#include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
+#include <DSP/Synth/TargetModDSP.hpp>
 
 namespace Xts {
 
@@ -29,7 +29,7 @@ ModulatorValue(ModSource source, CvState const& cv)
 }
 
 CvSample
-ModDSP::Next(CvState const& cv)
+TargetModDSP::Next(CvState const& cv)
 {
   _amount = Param::Mix(_model->amount);
   _output.value = ModulatorValue(_model->source, cv);

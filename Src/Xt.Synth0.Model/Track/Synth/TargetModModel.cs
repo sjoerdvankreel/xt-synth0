@@ -9,7 +9,7 @@ namespace Xt.Synth0.Model
         LFO1, LFO2, GlobalLFO
     }
 
-    unsafe class ModModel
+    unsafe static class TargetModModel
     {
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native

@@ -89,8 +89,8 @@ UnitDSP()
   _model = model;
   _blepTriangle = 0.0;
   _output = FloatSample();
-  _mods = ModsDSP(&model->mods);
   _amp = Param::Level(model->amp);
+  _mods = TargetModsDSP(&model->mods);
   _panning = Param::Mix(model->panning);
   _frequency = Frequency(*model, octave, note);
   _blepPulseWidth = Param::Level(model->blepPulseWidth);
@@ -152,7 +152,7 @@ UnitDSP::Next(CvState const& cv)
   float frequency = ModulateFrequency();
   float sample = BipolarSanity(Generate(phase, frequency));
   float amp = _mods.Modulate({ _amp, false }, static_cast<int>(UnitModTarget::Amp));
-  float panning = BipolarToUnipolar1(static_cast<int>(_mods.Modulate({ _panning, true }, static_cast<int>(UnitModTarget::Panning))));
+  float panning = BipolarToUnipolar1(_mods.Modulate({ _panning, true }, static_cast<int>(UnitModTarget::Panning)));
   _phase += frequency / _rate;
   _phase -= std::floor(_phase);
   _output = { sample * amp * (1.0f - panning), sample * amp * panning };

@@ -55,8 +55,8 @@ AmpDSP()
   _model = model;
   _velocity = velocity;
   _output = FloatSample();
-  _panMod = ModDSP(model->panModSource, model->panModAmount);
-  _ampMod = ModDSP(ToModSource(model->ampLfoSource), model->ampLfoAmount);
+  _panMod = TargetModDSP(model->panModSource, model->panModAmount);
+  _ampMod = TargetModDSP(ToModSource(model->ampLfoSource), model->ampLfoAmount);
 }
 
 FloatSample

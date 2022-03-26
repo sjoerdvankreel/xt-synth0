@@ -1,8 +1,8 @@
 #ifndef XTS_MODEL_SYNTH_FILTER_MODEL_HPP
 #define XTS_MODEL_SYNTH_FILTER_MODEL_HPP
 
-#include <Model/Synth/ModsModel.hpp>
 #include <Model/Synth/SynthConfig.hpp>
+#include <Model/Synth/TargetModsModel.hpp>
 
 namespace Xts {
 
@@ -34,7 +34,7 @@ struct XTS_ALIGN FilterModel
   int32_t frequency;
   int32_t pad__;
 
-  ModsModel mods;
+  TargetModsModel mods;
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
   int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
 };

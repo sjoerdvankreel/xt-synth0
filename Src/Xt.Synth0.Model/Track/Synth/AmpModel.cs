@@ -55,7 +55,7 @@ namespace Xt.Synth0.Model
         public Param PanModAmount { get; } = new(PanModAmountInfo);
         static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning", true);
         static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panModAmount, 0, nameof(PanModAmount), "Amt", "Pan mod amount", true);
-        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panModSource, 0, nameof(PanModSource), nameof(PanModSource), "Pan mod source", true, ModModel.ModSourceNames);
+        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panModSource, 0, nameof(PanModSource), nameof(PanModSource), "Pan mod source", true, TargetModModel.ModSourceNames);
 
         public Param Unit1Amount { get; } = new(Unit1AmountInfo);
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);
