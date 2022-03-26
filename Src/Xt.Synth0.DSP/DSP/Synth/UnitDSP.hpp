@@ -12,16 +12,13 @@ namespace Xts {
 
 class UnitDSP
 {
-  float _amp;
   float _rate;
-  float _panning;
-  float _frequency;
-  float _blepPulseWidth;
-  float _additiveRolloff;
-  TargetModsDSP _mods;
+  int _octave;
   double _phase;
-  double _blepTriangle;
+  UnitNote _note;
+  TargetModsDSP _mods;
   FloatSample _output;
+  double _blepTriangle;
   struct UnitModel const* _model;
 private:
   float ModulatePhase() const;

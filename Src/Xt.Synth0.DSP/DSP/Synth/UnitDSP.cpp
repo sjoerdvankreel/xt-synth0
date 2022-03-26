@@ -86,15 +86,12 @@ UnitDSP()
 {
   _phase = 0.0;
   _rate = rate;
+  _note = note;
   _model = model;
+  _octave = octave;
   _blepTriangle = 0.0;
   _output = FloatSample();
-  _amp = Param::Level(model->amp);
   _mods = TargetModsDSP(&model->mods);
-  _panning = Param::Mix(model->panning);
-  _frequency = Frequency(*model, octave, note);
-  _blepPulseWidth = Param::Level(model->blepPulseWidth);
-  _additiveRolloff = Param::Mix(model->additiveRolloff);
 }
 
 float
@@ -125,7 +122,7 @@ UnitDSP::ModulatePhase() const
 float
 UnitDSP::ModulateFrequency() const
 {
-  float result = _frequency;
+  float result = Frequency(*_model, _octave, _note);
   float pitchRange = 0.02930223f; 
   float amount1 = _mods.Mod1().Amount();
   float amount2 = _mods.Mod2().Amount();
@@ -151,8 +148,10 @@ UnitDSP::Next(CvState const& cv)
   float phase = ModulatePhase();
   float frequency = ModulateFrequency();
   float sample = BipolarSanity(Generate(phase, frequency));
-  float amp = _mods.Modulate({ _amp, false }, static_cast<int>(UnitModTarget::Amp));
-  float panning = BipolarToUnipolar1(_mods.Modulate({ _panning, true }, static_cast<int>(UnitModTarget::Panning)));
+  float ampBase = Param::Level(_model->amp);
+  float amp = _mods.Modulate({ ampBase, false }, static_cast<int>(UnitModTarget::Amp));
+  float panBase = Param::Mix(_model->panning);
+  float panning = BipolarToUnipolar1(_mods.Modulate({ panBase, true }, static_cast<int>(UnitModTarget::Panning)));
   _phase += frequency / _rate;
   _phase -= std::floor(_phase);
   _output = { sample * amp * (1.0f - panning), sample * amp * panning };
@@ -176,8 +175,9 @@ UnitDSP::GeneratePolyBlep(float phase, float frequency)
 {
   float result = 0.0f;
   float increment = frequency / _rate;
+  float bpwBase = Param::Level(_model->blepPulseWidth);
   if (_model->blepType == BlepType::Saw) return BipolarSanity(GeneratePolyBlepSaw(phase + 0.5f, increment));
-  float pulseWidth = _mods.Modulate({ _blepPulseWidth, false }, static_cast<int>(UnitModTarget::BlepPulseWidth));
+  float pulseWidth = _mods.Modulate({ bpwBase, false }, static_cast<int>(UnitModTarget::BlepPulseWidth));
   float phase2 = phase + 0.5f - pulseWidth * 0.5f;
   if(_model->blepType == BlepType::Pulse) return BipolarSanity((GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase2, increment)) * 0.5f);
   if (_model->blepType != BlepType::Triangle) return assert(false), 0.0f;
@@ -196,7 +196,8 @@ UnitDSP::GenerateAdditive(float phase, float frequency) const
   int step = _model->additiveStep;
   int partials = _model->additivePartials;
   float odd = _model->additiveSub != 0 ? -1.0f : 1.0f;
-  float rolloff = _mods.Modulate({ _additiveRolloff, true }, static_cast<int>(UnitModTarget::AdditiveRolloff));
+  float rolloffBase = Param::Mix(_model->additiveRolloff);
+  float rolloff = _mods.Modulate({ rolloffBase, true }, static_cast<int>(UnitModTarget::AdditiveRolloff));
 
   __m256 ones = _mm256_set1_ps(1.0f);
   __m256 zeros = _mm256_set1_ps(0.0f);
