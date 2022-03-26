@@ -30,13 +30,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model\Synth\FilterModel.hpp">
+    <ClInclude Include="Model\Synth\VoiceFilterModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
     <ClInclude Include="Model\Synth\TargetModModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\FilterDSP.hpp">
+    <ClInclude Include="DSP\Synth\VoiceFilterDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
     <ClInclude Include="DSP\Synth\AudioState.hpp">
@@ -197,7 +197,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DSP\Synth\FilterDSP.cpp">
+    <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\LfoDSP.cpp">

@@ -4,7 +4,7 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/AudioDSP.hpp>
-#include <DSP/Synth/FilterDSP.hpp>
+#include <DSP/Synth/VoiceFilterDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
 namespace Xts {
@@ -16,7 +16,7 @@ public PeriodicPlot
   CvDSP _cvDsp;
   AudioDSP _audioDsp;
   LfoDSP _globalLfoDsp;
-  FilterDSP _filterDsp;
+  VoiceFilterDSP _filterDsp;
   struct SynthModel const* _model;
 public:
   float Next();

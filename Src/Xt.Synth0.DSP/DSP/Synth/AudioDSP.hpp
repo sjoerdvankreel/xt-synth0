@@ -2,8 +2,8 @@
 #define XTS_DSP_SYNTH_AUDIO_DSP_HPP
 
 #include <DSP/Synth/UnitDSP.hpp>
-#include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/Synth/AudioState.hpp>
+#include <DSP/Synth/VoiceFilterDSP.hpp>
 #include <Model/Synth/SynthConfig.hpp>
 
 namespace Xts {
@@ -12,7 +12,7 @@ class AudioDSP
 {
   AudioState _output;
   UnitDSP _units[XTS_VOICE_UNIT_COUNT];
-  FilterDSP _filters[XTS_VOICE_FILTER_COUNT];
+  VoiceFilterDSP _filters[XTS_VOICE_FILTER_COUNT];
 public:
   AudioState const& Next(struct CvState const& cv);
   AudioState const& Output() const { return _output; };

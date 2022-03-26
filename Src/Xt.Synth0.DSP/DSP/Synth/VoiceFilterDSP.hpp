@@ -1,5 +1,5 @@
-#ifndef XTS_DSP_SYNTH_FILTER_DSP_HPP
-#define XTS_DSP_SYNTH_FILTER_DSP_HPP
+#ifndef XTS_DSP_SYNTH_VOICE_FILTER_DSP_HPP
+#define XTS_DSP_SYNTH_VOICE_FILTER_DSP_HPP
 
 #include <DSP/Shared/Config.hpp>
 #include <DSP/Shared/CvSample.hpp>
@@ -34,24 +34,24 @@ union FilterState
   StateVarState stateVar;
 };
 
-class FilterDSP
+class VoiceFilterDSP
 {
   int _index;
   float _rate;
   FilterState _state;
   FloatSample _output;
   TargetModsDSP _mods;
-  struct FilterModel const* _model;
+  struct VoiceFilterModel const* _model;
 private:
   FloatSample GenerateComb();
   FloatSample GenerateStateVar();
 public:
-  FilterDSP() = default;
-  FilterDSP(FilterModel const* model, int index, float rate);
+  VoiceFilterDSP() = default;
+  VoiceFilterDSP(struct VoiceFilterModel const* model, int index, float rate);
 public:
   FloatSample Output() const { return _output; };
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
 };
 
 } // namespace Xts
-#endif // XTS_DSP_SYNTH_FILTER_DSP_HPP
+#endif // XTS_DSP_SYNTH_VOICE_FILTER_DSP_HPP

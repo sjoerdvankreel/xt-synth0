@@ -21,12 +21,12 @@ namespace Xt.Synth0.Model
         public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
         public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
         public IReadOnlyList<UnitModel> Units = new ReadOnlyCollection<UnitModel>(MakeUnits());
-        public IReadOnlyList<FilterModel> Filters = new ReadOnlyCollection<FilterModel>(MakeFilters());
+        public IReadOnlyList<VoiceFilterModel> Filters = new ReadOnlyCollection<VoiceFilterModel>(MakeFilters());
 
         static IList<EnvModel> MakeEnvs() => Enumerable.Range(0, SynthConfig.VoiceEnvCount).Select(i => new EnvModel(i)).ToList();
         static IList<UnitModel> MakeUnits() => Enumerable.Range(0, SynthConfig.VoiceUnitCount).Select(i => new UnitModel(i)).ToList();
         static IList<LfoModel> MakeLfos() => Enumerable.Range(0, SynthConfig.VoiceLfoCount).Select(i => new LfoModel(false, i)).ToList();
-        static IList<FilterModel> MakeFilters() => Enumerable.Range(0, SynthConfig.VoiceFilterCount).Select(i => new FilterModel(i)).ToList();
+        static IList<VoiceFilterModel> MakeFilters() => Enumerable.Range(0, SynthConfig.VoiceFilterCount).Select(i => new VoiceFilterModel(i)).ToList();
 
         public override string Id => "8D6AB9FB-19DB-4F77-B56C-9E72AB67341F";
         public override IReadOnlyList<IParamGroupModel> Groups => Units

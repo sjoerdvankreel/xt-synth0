@@ -1,5 +1,5 @@
-#ifndef XTS_MODEL_SYNTH_FILTER_MODEL_HPP
-#define XTS_MODEL_SYNTH_FILTER_MODEL_HPP
+#ifndef XTS_MODEL_SYNTH_VOICE_FILTER_MODEL_HPP
+#define XTS_MODEL_SYNTH_VOICE_FILTER_MODEL_HPP
 
 #include <Model/Synth/SynthConfig.hpp>
 #include <Model/Synth/TargetModsModel.hpp>
@@ -19,7 +19,7 @@ enum class FilterModTarget
   CombPlusDelay
 };
 
-struct XTS_ALIGN FilterModel
+struct XTS_ALIGN VoiceFilterModel
 {
   XtsBool on;
   FilterType type;
@@ -38,7 +38,7 @@ struct XTS_ALIGN FilterModel
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
   int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
 };
-XTS_CHECK_SIZE(FilterModel, 96);
+XTS_CHECK_SIZE(VoiceFilterModel, 96);
 
 } // namespace Xts
-#endif // XTS_MODEL_SYNTH_FILTER_MODEL_HPP
+#endif // XTS_MODEL_SYNTH_VOICE_FILTER_MODEL_HPP

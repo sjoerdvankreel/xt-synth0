@@ -8,7 +8,7 @@ namespace Xt.Synth0.Model
         internal ref struct Native
         {
             internal fixed byte units[SynthConfig.VoiceUnitCount * UnitModel.Native.Size];
-            internal fixed byte filters[SynthConfig.VoiceFilterCount * FilterModel.Native.Size];
+            internal fixed byte filters[SynthConfig.VoiceFilterCount * VoiceFilterModel.Native.Size];
         }
     }
 }

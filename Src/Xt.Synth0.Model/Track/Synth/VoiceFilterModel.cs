@@ -17,7 +17,7 @@ namespace Xt.Synth0.Model
         CombPlusDelay
     };
 
-    public unsafe sealed class FilterModel : IUIParamGroupModel
+    public unsafe sealed class VoiceFilterModel : IUIParamGroupModel
     {
         const double MinFreqHz = 20.0;
         const double MaxFreqHz = 10000.0;
@@ -25,7 +25,7 @@ namespace Xt.Synth0.Model
         const double CombMinDelayMs = 0.0;
 
         public int Index { get; }
-        internal FilterModel(int index) => Index = index;
+        internal VoiceFilterModel(int index) => Index = index;
 
         public int Columns => 4;
         public Param Enabled => On;
@@ -74,8 +74,8 @@ namespace Xt.Synth0.Model
 
         static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);
         static readonly IRelevance Relevance23 = Relevance.Index(i => i > 0);
-        static readonly IRelevance RelevanceComb = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
-        static readonly IRelevance RelevanceNotComb = Relevance.Param((FilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
+        static readonly IRelevance RelevanceComb = Relevance.Param((VoiceFilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
+        static readonly IRelevance RelevanceNotComb = Relevance.Param((VoiceFilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);

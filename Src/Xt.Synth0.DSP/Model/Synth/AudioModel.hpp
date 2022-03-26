@@ -4,14 +4,14 @@
 #include <Model/Shared/Model.hpp>
 #include <Model/Synth/UnitModel.hpp>
 #include <Model/Synth/SynthConfig.hpp>
-#include <Model/Synth/FilterModel.hpp>
+#include <Model/Synth/VoiceFilterModel.hpp>
 
 namespace Xts {
 
 struct XTS_ALIGN AudioModel
 {
   UnitModel units[XTS_VOICE_UNIT_COUNT];
-  FilterModel filters[XTS_VOICE_FILTER_COUNT];
+  VoiceFilterModel filters[XTS_VOICE_FILTER_COUNT];
 };
 XTS_CHECK_SIZE(AudioModel, 552);
 
