@@ -28,19 +28,14 @@ struct CombState
   DelayBuffer<FloatSample, COMB_DELAY_MAX_SAMPLES> y;
 };
 
-union FilterState
-{
-  CombState comb;
-  StateVarState stateVar;
-};
-
 class VoiceFilterDSP
 {
   int _index;
   float _rate;
-  FilterState _state;
+  CombState _comb;
   FloatSample _output;
   TargetModsDSP _mods;
+  StateVarState _stateVar;
   struct VoiceFilterModel const* _model;
 private:
   FloatSample GenerateComb();

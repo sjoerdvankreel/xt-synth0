@@ -54,34 +54,18 @@ FilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& s
   if (filter->on) std::make_unique<FilterPlot>(&model, index)->DoRender(input, state);
 }
 
-static void
-InitStateVar(VoiceFilterModel const& m, StateVarState& s)
-{
-  s.ic1eq.Clear();
-  s.ic2eq.Clear();
-}
-
-static void
-InitComb(VoiceFilterModel const& m, float rate, CombState& s)
-{
-  s.x.Clear();
-  s.y.Clear();
-}
-
 VoiceFilterDSP::
 VoiceFilterDSP(VoiceFilterModel const* model, int index, float rate):
-  VoiceFilterDSP()
+VoiceFilterDSP()
 {
   _rate = rate;
   _index = index;
   _model = model;
+  _comb.x.Clear();
+  _comb.y.Clear();
+  _stateVar.ic1eq.Clear();
+  _stateVar.ic2eq.Clear();
   _mods = TargetModsDSP(&model->mods);
-  switch (model->type)
-  {
-  case FilterType::Comb: InitComb(*model, rate, _state.comb); break;
-  case FilterType::StateVar: InitStateVar(*model, _state.stateVar); break;
-  default: assert(false); break;
-  }
 }
 
 FloatSample
@@ -104,7 +88,7 @@ VoiceFilterDSP::Next(CvState const& cv, AudioState const& audio)
 FloatSample
 VoiceFilterDSP::GenerateStateVar()
 {
-  auto& s = _state.stateVar;
+  auto& s = _stateVar;
   float resBase = Param::Level(_model->resonance);
   float freqBase = Param::Level(_model->frequency);
   double res = _mods.Modulate({ resBase, false }, static_cast<int>(FilterModTarget::Resonance));
@@ -138,7 +122,7 @@ VoiceFilterDSP::GenerateStateVar()
 FloatSample
 VoiceFilterDSP::GenerateComb()
 {
-  auto& s = _state.comb;
+  auto& s = _comb;
   float minGainBase = Param::Mix(_model->combMinGain);
   float plusGainBase = Param::Mix(_model->combPlusGain);
   float minDelayBase = Param::Level(_model->combMinDelay);

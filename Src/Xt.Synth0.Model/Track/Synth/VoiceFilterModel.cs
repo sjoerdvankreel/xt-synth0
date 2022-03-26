@@ -80,7 +80,7 @@ namespace Xt.Synth0.Model
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false, false);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Filter type", false, TypeNames);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Filter type", true, TypeNames);
 
         public Param CombMinGain { get; } = new(CombMinGainInfo);
         public Param CombPlusGain { get; } = new(CombPlusGainInfo);
