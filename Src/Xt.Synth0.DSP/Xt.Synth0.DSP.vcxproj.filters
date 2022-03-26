@@ -209,7 +209,7 @@
     <ClCompile Include="DSP\Synth\CvDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\Synth\TargetModDSP.cpp">
+    <ClCompile Include="DSP\Synth\ModDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\AmpDSP.cpp">

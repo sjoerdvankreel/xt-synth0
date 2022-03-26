@@ -35,18 +35,6 @@ AmpPlot::Init(float bpm, float rate)
   new(&_globalLfoDsp) LfoDSP(&_model->global.lfo, bpm, rate);
 }
 
-static ModSource
-ToModSource(AmpLfoSource source)
-{
-  switch (source)
-  {
-  case AmpLfoSource::LFO1: return ModSource::LFO1;
-  case AmpLfoSource::LFO2: return ModSource::LFO2;
-  case AmpLfoSource::GlobalLFO: return ModSource::GlobalLFO;
-  default: assert(false); return ModSource::LFO1;
-  }
-}
-
 AmpDSP::
 AmpDSP(AmpModel const* model, float velocity):
 AmpDSP()
@@ -55,8 +43,8 @@ AmpDSP()
   _model = model;
   _velocity = velocity;
   _output = FloatSample();
-  _panMod = TargetModDSP(model->panModSource, model->panModAmount);
-  _ampMod = TargetModDSP(ToModSource(model->ampLfoSource), model->ampLfoAmount);
+  _panMod = ModDSP(&model->panMod);
+  _ampMod = ModDSP(&model->ampMod);
 }
 
 FloatSample

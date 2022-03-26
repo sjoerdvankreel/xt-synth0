@@ -4,8 +4,6 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum AmpLfoSource { LFO1, LFO2, GlobalLFO }
-
     public unsafe sealed class AmpModel : IUIParamGroupModel
     {
         public int Index => 0;
@@ -21,7 +19,7 @@ namespace Xt.Synth0.Model
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
-            { Amp, 0 }, { AmpLfoSource, 1 }, { AmpLfoAmount, 2 }, { Panning, 3 },
+            { Amp, 0 }, { AmpModSource, 1 }, { AmpModAmount, 2 }, { Panning, 3 },
             { Unit1Amount, 4 }, { Unit2Amount, 5 },  { Unit3Amount, 6 }, { PanModSource, 7 },
             { Filter1Amount, 8 }, { Filter2Amount, 9 }, { Filter3Amount, 10 }, { PanModAmount, 11 }
         };
@@ -29,33 +27,27 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal int panning;
-            internal int panModAmount;
-            internal int panModSource;
-
             internal int amp;
-            internal int ampLfoAmount;
-            internal int ampLfoSource;
-
+            internal int panning;
+            internal ModModel.Native ampMod;
+            internal ModModel.Native panMod;
             internal fixed int unitAmount[SynthConfig.VoiceUnitCount];
             internal fixed int filterAmount[SynthConfig.VoiceFilterCount];
         }
 
-        static readonly string[] LfoSourceNames = { "LFO1", "LFO2", "LFO3" };
-
         public Param Amp { get; } = new(AmpInfo);
-        public Param AmpLfoSource { get; } = new(AmpLfoSourceInfo);
-        public Param AmpLfoAmount { get; } = new(AmpLfoAmountInfo);
+        public Param AmpModSource { get; } = new(AmpModSourceInfo);
+        public Param AmpModAmount { get; } = new(AmpModAmountInfo);
         static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 1, nameof(Amp), "Amp", "Amplitude", true, 128);
-        static readonly ParamInfo AmpLfoAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampLfoAmount, 1, nameof(AmpLfoAmount), "Amt", "Level LFO amount", true);
-        static readonly ParamInfo AmpLfoSourceInfo = ParamInfo.List<AmpLfoSource>(p => &((Native*)p)->ampLfoSource, 1, nameof(AmpLfoSource), "LFO", "Amp LFO source", true, LfoSourceNames);
+        static readonly ParamInfo AmpModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampMod.amount, 1, nameof(AmpModAmount), "Amt", "Level LFO amount", true);
+        static readonly ParamInfo AmpModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->ampMod.source, 1, nameof(AmpModSource), "LFO", "Amp LFO source", true, ModModel.ModSourceNames);
 
         public Param Panning { get; } = new(PanningInfo);
         public Param PanModSource { get; } = new(PanModSourceInfo);
         public Param PanModAmount { get; } = new(PanModAmountInfo);
         static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning", true);
-        static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panModAmount, 0, nameof(PanModAmount), "Amt", "Pan mod amount", true);
-        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panModSource, 0, nameof(PanModSource), nameof(PanModSource), "Pan mod source", true, ModModel.ModSourceNames);
+        static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panMod.amount, 0, nameof(PanModAmount), "Amt", "Pan mod amount", true);
+        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panMod.source, 0, nameof(PanModSource), nameof(PanModSource), "Pan mod source", true, ModModel.ModSourceNames);
 
         public Param Unit1Amount { get; } = new(Unit1AmountInfo);
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);
