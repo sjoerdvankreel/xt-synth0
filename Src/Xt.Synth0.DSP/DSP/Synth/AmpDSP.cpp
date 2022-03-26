@@ -53,7 +53,7 @@ AmpDSP::Next(CvState const& cv, AudioState const& audio)
   _output.Clear();
   _ampMod.Next(cv);
   _panMod.Next(cv);
-  float amp = Param::Level(_model->amp) * _velocity;
+  float amp = Param::Level(_model->amp);
   _level = cv.envs[XTS_AMP_ENV].value * _ampMod.Modulate({ amp, false });
   float panning = Param::Mix(_model->panning);
   float pan = BipolarToUnipolar1(_panMod.Modulate({panning, true}));
