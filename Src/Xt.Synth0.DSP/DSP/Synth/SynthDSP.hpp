@@ -49,7 +49,7 @@ public:
   void ReleaseAll();
   FloatSample Next();
   void Release(int key);
-  void Automate(int target, int value);
+  void Automate(int target, int value, int64_t position);
   bool Trigger(int key, int octave, UnitNote note, float velocity, int64_t position);
 };
 

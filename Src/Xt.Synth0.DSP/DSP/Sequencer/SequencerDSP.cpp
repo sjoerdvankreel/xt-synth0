@@ -34,7 +34,7 @@ SequencerDSP::Render(int32_t frames, AutomationAction const* actions, int count)
   _output.clip = XtsFalse;
   _output.exhausted = XtsFalse;
   for(int i = 0; i < count; i++)
-    _synth->Automate(actions[i].target, actions[i].value);
+    _synth->Automate(actions[i].target, actions[i].value, _output.position);
   for (int f = 0; f < frames; f++)
   {
     auto out = Next();
@@ -67,7 +67,7 @@ SequencerDSP::Automate()
   for (int f = 0; f < _model.edit.fxs; f++)
   {
     auto const& fx = _model.pattern.rows[_output.row].fx[f];
-    if(fx.target > 0) _synth->Automate(fx.target - 1, fx.value);
+    if(fx.target > 0) _synth->Automate(fx.target - 1, fx.value, _output.position);
   }
 }
 

@@ -116,20 +116,6 @@ SynthDSP::Take(int key, int64_t position, bool& exhausted)
   return victim;
 }
 
-void
-SynthDSP::Automate(int target, int value)
-{
-  assert(0 <= value && value < 256);
-  assert(0 <= target && target < 255);
-  if (target >= XTS_SYNTH_PARAM_COUNT) return;
-  ParamInfo const& info = SynthModel::Params()[target];
-  *_binding[target] = std::clamp(value, info.min, info.max);
-  if (info.realtime)
-    for (size_t i = 0; i < XTS_SHARED_MAX_KEYS; i++)
-      if (_voicesActive[i] != -1)
-        *_voiceBindings[_voicesActive[i]][target] = std::clamp(value, info.min, info.max);
-}
-
 bool
 SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t position)
 {
@@ -138,6 +124,19 @@ SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t po
   _voiceModels[voice] = _model;
   new (&_voiceDsps[voice]) VoiceDSP(&_voiceModels[voice], octave, note, velocity, _bpm, _rate);
   return result;
+}
+
+void
+SynthDSP::Automate(int target, int value, int64_t position)
+{
+  assert(0 <= value && value < 256);
+  assert(0 <= target && target < 255);
+  if (target >= XTS_SYNTH_PARAM_COUNT) return;
+  ParamInfo const& info = SynthModel::Params()[target];
+  *_binding[target] = std::clamp(value, info.min, info.max);
+  for (size_t i = 0; i < XTS_SHARED_MAX_KEYS; i++)
+    if(_voicesActive[i] != -1 && (info.realtime || _voicesStarted[_voicesActive[i]] == position))
+      *_voiceBindings[_voicesActive[i]][target] = std::clamp(value, info.min, info.max);
 }
 
 SynthDSP::
