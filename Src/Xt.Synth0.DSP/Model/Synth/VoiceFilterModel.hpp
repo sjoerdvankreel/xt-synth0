@@ -2,12 +2,10 @@
 #define XTS_MODEL_SYNTH_VOICE_FILTER_MODEL_HPP
 
 #include <Model/Synth/SynthConfig.hpp>
+#include <Model/Synth/FilterModel.hpp>
 #include <Model/Synth/TargetModsModel.hpp>
 
 namespace Xts {
-
-enum class FilterType { StateVar, Comb };
-enum class PassType { LPF, HPF, BPF, BSF };
 
 enum class FilterModTarget
 { 
@@ -21,19 +19,7 @@ enum class FilterModTarget
 
 struct XTS_ALIGN VoiceFilterModel
 {
-  XtsBool on;
-  FilterType type;
-
-  int32_t combMinGain;
-  int32_t combPlusGain;
-  int32_t combMinDelay;
-  int32_t combPlusDelay;
-
-  PassType passType;
-  int32_t resonance;
-  int32_t frequency;
-  int32_t pad__;
-
+  FilterModel filter;
   TargetModsModel mods;
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
   int32_t filterAmount[XTS_VOICE_FILTER_COUNT];

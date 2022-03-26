@@ -29,8 +29,9 @@
     <ClInclude Include="DSP\Synth\CvDSP.hpp" />
     <ClInclude Include="DSP\Synth\CvState.hpp" />
     <ClInclude Include="DSP\Synth\EnvDSP.hpp" />
+    <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\VoiceFilterDSP.hpp" />
-    <ClInclude Include="DSP\Synth\FilterPlot.hpp" />
+    <ClInclude Include="DSP\Synth\VoiceFilterPlot.hpp" />
     <ClInclude Include="DSP\Synth\LfoDSP.hpp" />
     <ClInclude Include="DSP\Synth\ModDSP.hpp" />
     <ClInclude Include="DSP\Synth\TargetModDSP.hpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="Model\Shared\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
     <ClInclude Include="Model\Synth\AudioModel.hpp" />
+    <ClInclude Include="Model\Synth\FilterModel.hpp" />
     <ClInclude Include="Model\Synth\GlobalModel.hpp" />
     <ClInclude Include="Model\Synth\ModModel.hpp" />
     <ClInclude Include="Model\Synth\TargetModsModel.hpp" />
@@ -77,6 +79,7 @@
     <ClCompile Include="DSP\Synth\AudioDSP.cpp" />
     <ClCompile Include="DSP\Synth\CvDSP.cpp" />
     <ClCompile Include="DSP\Synth\EnvDSP.cpp" />
+    <ClCompile Include="DSP\Synth\FilterDSP.cpp" />
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp" />
     <ClCompile Include="DSP\Synth\LfoDSP.cpp" />
     <ClCompile Include="DSP\Synth\ModDSP.cpp" />

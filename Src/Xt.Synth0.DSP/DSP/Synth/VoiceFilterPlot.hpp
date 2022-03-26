@@ -1,5 +1,5 @@
-#ifndef XTS_DSP_SYNTH_FILTER_PLOT_HPP
-#define XTS_DSP_SYNTH_FILTER_PLOT_HPP
+#ifndef XTS_DSP_SYNTH_VOICE_FILTER_PLOT_HPP
+#define XTS_DSP_SYNTH_VOICE_FILTER_PLOT_HPP
 
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Synth/CvDSP.hpp>
@@ -9,7 +9,7 @@
 
 namespace Xts {
 
-class FilterPlot :
+class VoiceFilterPlot :
 public PeriodicPlot
 {
   int _index;
@@ -24,9 +24,9 @@ public:
   void Init(float bpm, float rate);
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 public:
-  FilterPlot(struct SynthModel const* model, int index) : _model(model), _index(index) {};
+  VoiceFilterPlot(struct SynthModel const* model, int index) : _model(model), _index(index) {};
   float Frequency(float bpm, float rate) const { return UnitDSP::Frequency(_model->voice.audio.units[0], 4, UnitNote::C); }
 };
 
 } // namespace Xts
-#endif // XTS_DSP_SYNTH_FILTER_PLOT_HPP
+#endif // XTS_DSP_SYNTH_VOICE_FILTER_PLOT_HPP
