@@ -13,7 +13,7 @@ struct XTS_ALIGN AudioModel
   UnitModel units[XTS_VOICE_UNIT_COUNT];
   VoiceFilterModel filters[XTS_VOICE_FILTER_COUNT];
 };
-XTS_CHECK_SIZE(AudioModel, 552);
+XTS_CHECK_SIZE(AudioModel, 456);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_AUDIO_MODEL_HPP
