@@ -20,8 +20,8 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { LfoAmount, 2 }, { LfoTarget, 3 },
-            { PassType, 4 }, { CombPlusDelay, 4 }, { Resonance, 5 },  { CombMinDelay, 5 }, { Frequency, 6 }, { CombPlusGain, 6 }, { CombMinGain, 7 }
+            { Type, 0 },  { PassType, 1 },  { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 },  { LfoAmount, 3 },
+            { CombPlusGain, 5 }, { Frequency, 6 }, { CombMinGain, 6 }, { LfoTarget, 7 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -58,7 +58,7 @@ namespace Xt.Synth0.Model
 
         public Param LfoAmount { get; } = new(LfoAmountInfo);
         public Param LfoTarget { get; } = new(LfoTargetInfo);
-        static readonly ParamInfo LfoAmountInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmount, 2, nameof(LfoAmount), "LFO", "LFO 3 amount", true);
-        static readonly ParamInfo LfoTargetInfo = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->lfoTarget, 2, nameof(LfoTarget), "Target", "LFO 3 target", true, FilterModel.TargetNames);
+        static readonly ParamInfo LfoAmountInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmount, 1, nameof(LfoAmount), "LFO", "LFO 3 amount", true);
+        static readonly ParamInfo LfoTargetInfo = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->lfoTarget, 1, nameof(LfoTarget), "Target", "LFO 3 target", true, FilterModel.TargetNames);
     }
 }
