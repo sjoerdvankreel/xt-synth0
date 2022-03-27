@@ -40,15 +40,15 @@ namespace Xt.Synth0.Model
         public Param AmpModSource { get; } = new(AmpModSourceInfo);
         public Param AmpModAmount { get; } = new(AmpModAmountInfo);
         static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 1, nameof(Amp), "Amp", "Amplitude", true, 128);
-        static readonly ParamInfo AmpModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampMod.amount, 1, nameof(AmpModAmount), "Amt", "Level LFO amount", true);
-        static readonly ParamInfo AmpModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->ampMod.source, 1, nameof(AmpModSource), "LFO", "Amp LFO source", true, ModModel.ModSourceNames);
+        static readonly ParamInfo AmpModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampMod.amount, 1, nameof(AmpModAmount), "Amt", "Amp mod amount", true);
+        static readonly ParamInfo AmpModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->ampMod.source, 1, nameof(AmpModSource), "Mod", "Amp mod source", true, ModModel.ModSourceNames);
 
         public Param Panning { get; } = new(PanningInfo);
         public Param PanModSource { get; } = new(PanModSourceInfo);
         public Param PanModAmount { get; } = new(PanModAmountInfo);
         static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning", true);
         static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panMod.amount, 0, nameof(PanModAmount), "Amt", "Pan mod amount", true);
-        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panMod.source, 0, nameof(PanModSource), nameof(PanModSource), "Pan mod source", true, ModModel.ModSourceNames);
+        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->panMod.source, 0, nameof(PanModSource), "Mod", "Pan mod source", true, ModModel.ModSourceNames);
 
         public Param Unit1Amount { get; } = new(Unit1AmountInfo);
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);
