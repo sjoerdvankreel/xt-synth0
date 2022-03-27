@@ -15,8 +15,6 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal const int Size = 96;
-
             internal int on;
             internal int type;
 

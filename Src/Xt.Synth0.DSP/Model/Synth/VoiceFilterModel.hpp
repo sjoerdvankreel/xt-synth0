@@ -23,6 +23,7 @@ struct XTS_ALIGN VoiceFilterModel
   TargetModsModel mods;
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
   int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
+  int32_t pad__;
 };
 XTS_CHECK_SIZE(VoiceFilterModel, 96);
 

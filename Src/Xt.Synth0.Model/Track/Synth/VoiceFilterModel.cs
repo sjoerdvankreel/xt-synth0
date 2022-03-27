@@ -47,6 +47,7 @@ namespace Xt.Synth0.Model
             internal TargetModsModel.Native mods;
             internal fixed int unitAmount[SynthConfig.VoiceUnitCount];
             internal fixed int filterAmount[SynthConfig.VoiceFilterCount];
+            internal int pad__;
         };
 
         static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);

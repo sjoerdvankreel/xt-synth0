@@ -8,7 +8,7 @@
 #define XTS_COMBINE(X,Y) XTS_COMBINE_(X,Y)
 
 #define XTS_CHECK_SIZE(type, expected) \
-CheckSize<sizeof(type), expected> \
+::Xts::CheckSize<sizeof(type), expected> \
 XTS_COMBINE(Check, XTS_COMBINE(type, __LINE__))
 
 typedef int32_t XtsBool;

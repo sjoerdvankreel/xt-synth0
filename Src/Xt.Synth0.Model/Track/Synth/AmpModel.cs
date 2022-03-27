@@ -33,6 +33,7 @@ namespace Xt.Synth0.Model
             internal ModModel.Native panMod;
             internal fixed int unitAmount[SynthConfig.VoiceUnitCount];
             internal fixed int filterAmount[SynthConfig.VoiceFilterCount];
+            internal int pad__;
         }
 
         public Param Amp { get; } = new(AmpInfo);
