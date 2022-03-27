@@ -21,7 +21,7 @@ namespace Xt.Synth0.Model
         {
             { Amp, 0 }, { AmpModSource, 1 }, { AmpModAmount, 2 }, { Panning, 3 },
             { Unit1Amount, 4 }, { Unit2Amount, 5 },  { Unit3Amount, 6 }, { PanModSource, 7 },
-            { Filter1Amount, 8 }, { Filter2Amount, 9 }, { Filter3Amount, 10 }, { PanModAmount, 11 }
+            { Filter1Amount, 8 }, { Filter2Amount, 9 }, { PanModAmount, 11 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -59,9 +59,7 @@ namespace Xt.Synth0.Model
 
         public Param Filter1Amount { get; } = new(Filter1AmountInfo);
         public Param Filter2Amount { get; } = new(Filter2AmountInfo);
-        public Param Filter3Amount { get; } = new(Filter3AmountInfo);
         static readonly ParamInfo Filter1AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[0], 2, nameof(Filter1Amount), "Ft1", "Filter 1 amount", true, 0);
         static readonly ParamInfo Filter2AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[1], 2, nameof(Filter2Amount), "Ft2", "Filter 2 amount", true, 0);
-        static readonly ParamInfo Filter3AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[2], 2, nameof(Filter3Amount), "Ft3", "Filter 3 amount", true, 0);
     }
 }

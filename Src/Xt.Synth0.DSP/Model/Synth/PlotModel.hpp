@@ -11,7 +11,7 @@ enum class PlotType
   Env1, Env2, Env3, 
   LFO1, LFO2, GlobalLFO,
   Unit1, Unit2, Unit3, 
-  Filter1, Filter2, Filter3 
+  Filter1, Filter2 
 };
 
 struct XTS_ALIGN PlotModel

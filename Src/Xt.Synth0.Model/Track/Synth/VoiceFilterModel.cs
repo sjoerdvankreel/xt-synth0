@@ -35,7 +35,7 @@ namespace Xt.Synth0.Model
             { Type, 0 }, { PassType, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 }, { Frequency, 3 }, { CombPlusGain, 3 },
             { Unit1Amount, 4 }, { Unit2Amount, 5 }, { Unit3Amount, 6 }, { CombMinGain, 7 },
             { Mod1Source, 8 }, { Mod1Target, 9 }, { Mod1Amount, 10 }, { Filter1Amount, 11 },
-            { Mod2Source, 12 }, { Mod2Target, 13 }, { Mod2Amount, 14 }, { Filter2Amount, 15 }
+            { Mod2Source, 12 }, { Mod2Target, 13 }, { Mod2Amount, 14 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -50,8 +50,7 @@ namespace Xt.Synth0.Model
             internal int pad__;
         };
 
-        static readonly IRelevance Relevance3 = Relevance.Index(i => i > 1);
-        static readonly IRelevance Relevance23 = Relevance.Index(i => i > 0);
+        static readonly IRelevance Relevance2 = Relevance.Index(i => i > 0);
         static readonly IRelevance RelevanceComb = Relevance.Param((VoiceFilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
         static readonly IRelevance RelevanceNotComb = Relevance.Param((VoiceFilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
 
@@ -93,13 +92,10 @@ namespace Xt.Synth0.Model
         public Param Unit1Amount { get; } = new(Unit1AmountInfo);
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);
         public Param Unit3Amount { get; } = new(Unit3AmountInfo);
+        public Param Filter1Amount { get; } = new(Filter1AmountInfo);
         static readonly ParamInfo Unit1AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[0], 1, nameof(Unit1Amount), "Ut1", "Unit 1 amount", true, 0);
         static readonly ParamInfo Unit2AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[1], 1, nameof(Unit2Amount), "Ut2", "Unit 2 amount", true, 0);
         static readonly ParamInfo Unit3AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[2], 1, nameof(Unit3Amount), "Ut3", "Unit 3 amount", true, 0);
-
-        public Param Filter1Amount { get; } = new(Filter1AmountInfo);
-        public Param Filter2Amount { get; } = new(Filter2AmountInfo);
-        static readonly ParamInfo Filter1AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[0], 1, nameof(Filter1Amount), "Ft1", "Filter 1 amount", true, 0, Relevance23);
-        static readonly ParamInfo Filter2AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[1], 1, nameof(Filter2Amount), "Ft2", "Filter 2 amount", true, 0, Relevance3);
+        static readonly ParamInfo Filter1AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[0], 1, nameof(Filter1Amount), "Ft1", "Filter 1 amount", true, 0, Relevance2);
     }
 }
