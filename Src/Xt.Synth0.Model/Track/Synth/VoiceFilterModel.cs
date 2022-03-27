@@ -33,9 +33,9 @@ namespace Xt.Synth0.Model
         {
             { On, -1 },
             { Type, 0 }, { PassType, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 }, { Frequency, 3 }, { CombPlusGain, 3 },
-            { Unit1Amount, 4 }, { Unit2Amount, 5 }, { Unit3Amount, 6 }, { CombMinGain, 7 },
-            { Mod1Source, 8 }, { Mod1Target, 9 }, { Mod1Amount, 10 }, { Filter1Amount, 11 },
-            { Mod2Source, 12 }, { Mod2Target, 13 }, { Mod2Amount, 14 }
+            { Mod1Source, 4 }, { Mod1Target, 5 }, { Mod1Amount, 6 }, { CombMinGain, 7 },
+            { Mod2Source, 8 }, { Mod2Target, 9 }, { Mod2Amount, 10 },
+            { Unit1Amount, 12 }, { Unit2Amount, 13 }, { Unit3Amount, 14 }, { Filter1Amount, 15 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
