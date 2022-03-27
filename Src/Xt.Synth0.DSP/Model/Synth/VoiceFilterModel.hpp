@@ -7,16 +7,6 @@
 
 namespace Xts {
 
-enum class FilterModTarget
-{ 
-  Frequency,
-  Resonance,
-  CombMinGain,
-  CombPlusGain,
-  CombMinDelay,
-  CombPlusDelay
-};
-
 struct XTS_ALIGN VoiceFilterModel
 {
   FilterModel filter;

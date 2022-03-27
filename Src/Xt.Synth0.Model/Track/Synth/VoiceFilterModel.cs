@@ -4,16 +4,6 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum FilterModTarget
-    {
-        Frequency,
-        Resonance,
-        CombMinGain,
-        CombPlusGain,
-        CombMinDelay,
-        CombPlusDelay
-    };
-
     public unsafe sealed class VoiceFilterModel : IUIParamGroupModel
     {
         public int Index { get; }

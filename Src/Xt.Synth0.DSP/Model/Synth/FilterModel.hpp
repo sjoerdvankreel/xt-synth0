@@ -8,6 +8,16 @@ namespace Xts {
 enum class FilterType { StateVar, Comb };
 enum class PassType { LPF, HPF, BPF, BSF };
 
+enum class FilterModTarget
+{
+  Frequency,
+  Resonance,
+  CombMinGain,
+  CombPlusGain,
+  CombMinDelay,
+  CombPlusDelay
+};
+
 struct XTS_ALIGN FilterModel
 {
   XtsBool on;

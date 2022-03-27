@@ -5,6 +5,16 @@ namespace Xt.Synth0.Model
     public enum FilterType { StateVar, Comb };
     public enum PassType { LPF, HPF, BPF, BSF };
 
+    public enum FilterModTarget
+    {
+        Frequency,
+        Resonance,
+        CombMinGain,
+        CombPlusGain,
+        CombMinDelay,
+        CombPlusDelay
+    };
+
     public unsafe static class FilterModel
     {
         internal const double MinFreqHz = 20.0;
