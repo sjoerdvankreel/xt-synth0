@@ -1,12 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
-namespace Xt.Synth0.Model.Track.Synth
+namespace Xt.Synth0.Model
 {
-    internal class GlobalFilterModel
+    public unsafe sealed class GlobalFilterModel : IUIParamGroupModel
     {
+        public int Index => 0;
+        public int Columns => 4;
+        public Param Enabled => On;
+        public ThemeGroup ThemeGroup => ThemeGroup.Filter;
+
+        public string Info => "Global";
+        public string Name => $"Filter 3";
+        public string Id => "94406474-3773-4C12-B9C7-D45F1ACACF2D";
+        public IReadOnlyList<Param> Params => Layout.Keys.ToArray();
+        public void* Address(void* parent) => &((SynthModel.Native*)parent)->global.filter;
+
+        public IDictionary<Param, int> Layout => new Dictionary<Param, int>
+        {
+            { On, -1 },
+            { Type, 0 }, { LfoAmount, 2 }, { LfoTarget, 3 },
+            { PassType, 4 }, { CombPlusDelay, 4 }, { Resonance, 5 },  { CombMinDelay, 5 }, { Frequency, 6 }, { CombPlusGain, 6 }, { CombMinGain, 7 }
+        };
+
+        [StructLayout(LayoutKind.Sequential, Pack = 8)]
+        internal ref struct Native
+        {
+            internal FilterModel.Native filter;
+            internal int lfoAmount;
+            internal int lfoTarget;
+        };
+
+        static readonly IRelevance RelevanceComb = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
+        static readonly IRelevance RelevanceNotComb = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
+
+        public Param On { get; } = new(OnInfo);
+        public Param Type { get; } = new(TypeInfo);
+        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->filter.on, 0, nameof(On), "On", "Enabled", false, false);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->filter.type, 0, nameof(Type), "Type", "Filter type", true, FilterModel.TypeNames);
+
+        public Param CombMinGain { get; } = new(CombMinGainInfo);
+        public Param CombPlusGain { get; } = new(CombPlusGainInfo);
+        public Param CombMinDelay { get; } = new(CombMinDelayInfo);
+        public Param CombPlusDelay { get; } = new(CombPlusDelayInfo);
+        static readonly ParamInfo CombMinGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combMinGain, 0, nameof(CombMinGain), "Gn-", "Comb feedback gain", true, RelevanceComb);
+        static readonly ParamInfo CombPlusGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combPlusGain, 0, nameof(CombPlusGain), "Gn+", "Comb feedforward gain", true, RelevanceComb);
+        static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
+        static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
+
+        public Param PassType { get; } = new(PassTypeInfo);
+        public Param Resonance { get; } = new(ResonanceInfo);
+        public Param Frequency { get; } = new(FrequencyInfo);
+        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->filter.passType, 0, nameof(PassType), "Type", "Pass type", true, null, RelevanceNotComb);
+        static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 0, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
+        static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 0, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
+
+        public Param LfoAmount { get; } = new(LfoAmountInfo);
+        public Param LfoTarget { get; } = new(LfoTargetInfo);
+        static readonly ParamInfo LfoAmountInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmount, 2, nameof(LfoAmount), "LFO", "LFO 3 amount", true);
+        static readonly ParamInfo LfoTargetInfo = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->lfoTarget, 2, nameof(LfoTarget), "Target", "LFO 3 target", true, FilterModel.TargetNames);
     }
 }

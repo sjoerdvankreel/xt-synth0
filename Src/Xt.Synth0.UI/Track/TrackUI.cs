@@ -43,6 +43,7 @@ namespace Xt.Synth0.UI
                 result.Add(GroupUI.Make(app, synth.Envs[i]), Dock.Top);
             for (int i = 0; i < SynthConfig.VoiceFilterCount; i++)
                 result.Add(GroupUI.Make(app, synth.Filters[i]), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.GlobalFilter), Dock.Top);
             result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             return result;
         }

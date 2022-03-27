@@ -17,6 +17,7 @@ namespace Xt.Synth0.Model
 
         public AmpModel Amp { get; } = new();
         public PlotModel Plot { get; } = new();
+        public GlobalFilterModel GlobalFilter { get; } = new();
         public LfoModel GlobalLfo { get; } = new(true, SynthConfig.VoiceLfoCount);
         public IReadOnlyList<LfoModel> Lfos = new ReadOnlyCollection<LfoModel>(MakeLfos());
         public IReadOnlyList<EnvModel> Envs = new ReadOnlyCollection<EnvModel>(MakeEnvs());
@@ -32,7 +33,7 @@ namespace Xt.Synth0.Model
         public override IReadOnlyList<IParamGroupModel> Groups => Units
             .Concat<IParamGroupModel>(Envs)
             .Concat(Lfos).Concat(Filters)
-            .Concat(new IParamGroupModel[] { Plot, Amp, GlobalLfo }).ToArray();
+            .Concat(new IParamGroupModel[] { Plot, Amp, GlobalLfo, GlobalFilter }).ToArray();
 
         public SynthModel()
         {
