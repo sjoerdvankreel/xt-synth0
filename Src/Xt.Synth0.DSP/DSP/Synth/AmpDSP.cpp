@@ -43,16 +43,16 @@ AmpDSP()
   _model = model;
   _velocity = velocity;
   _output = FloatSample();
-  _panMod = ModDSP(&model->panMod.amount);
-  _ampMod = ModDSP(&model->ampMod.amount);
+  _panMod = ModDSP(&model->panMod);
+  _ampMod = ModDSP(&model->ampMod);
 }
 
 FloatSample
 AmpDSP::Next(CvState const& cv, AudioState const& audio)
 {
   _output.Clear();
-  _ampMod.Next(_model->ampMod.source, cv);
-  _panMod.Next(_model->panMod.source, cv);
+  _ampMod.Next(cv);
+  _panMod.Next(cv);
   float amp = Param::Level(_model->amp);
   _level = cv.envs[XTS_AMP_ENV].value * _ampMod.Modulate({ amp, false });
   float panning = Param::Mix(_model->panning);

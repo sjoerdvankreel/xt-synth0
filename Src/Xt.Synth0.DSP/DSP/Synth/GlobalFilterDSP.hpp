@@ -1,7 +1,6 @@
 #ifndef XTS_DSP_SYNTH_GLOBAL_FILTER_DSP_HPP
 #define XTS_DSP_SYNTH_GLOBAL_FILTER_DSP_HPP
 
-#include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Synth/FilterDSP.hpp>
 
 namespace Xts {
