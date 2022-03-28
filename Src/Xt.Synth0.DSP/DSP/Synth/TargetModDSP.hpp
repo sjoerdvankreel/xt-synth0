@@ -16,14 +16,14 @@ class TargetModDSP
 public:
   TargetModDSP() = default;
   TargetModDSP(TargetModModel const* model): 
-  _dsp(&model->mod), _model(model) {}
-public:
-  float Amount() const { return _dsp.Amount(); }
-  CvSample Output() const { return _dsp.Output(); }
-  CvSample Next(struct CvState const& cv) { return _dsp.Next(cv); }
+  _dsp(&model->mod.amount), _model(model) {}
 public:
   float Modulate(CvSample carrier, int target) const
   { return _model->target == target ? _dsp.Modulate(carrier) : carrier.value; }
+public:
+  float Amount() const { return _dsp.Amount(); }
+  CvSample Output() const { return _dsp.Output(); }
+  CvSample Next(struct CvState const& cv) { return _dsp.Next(_model->mod.source, cv); }
 };
 
 } // namespace Xts
