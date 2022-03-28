@@ -8,7 +8,7 @@ namespace Xts {
 
 class GlobalFilterDSP
 {
-  FilterDSP _dsp;
+  FilterDSP _filter;
   FloatSample _output;
   struct GlobalFilterModel const* _model;
 private:
