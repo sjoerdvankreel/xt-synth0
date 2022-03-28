@@ -16,6 +16,7 @@ GlobalFilterDSP()
 {
   _output.Clear();
   _model = model;
+  _mod = ModDSP(&_model->lfoAmount);
   _filter = FilterDSP(&model->filter, rate);
 }
 
