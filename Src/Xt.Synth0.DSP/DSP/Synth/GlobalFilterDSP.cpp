@@ -16,7 +16,7 @@ GlobalFilterDSP()
 {
   _output.Clear();
   _model = model;
-  _filter = FilterDSP(&model->filter, rate);
+  _dsp = FilterDSP(&model->filter, rate);
 }
 
 FloatSample
@@ -40,7 +40,7 @@ GlobalFilterDSP::GenerateStateVar(CvSample globalLfo)
   float freqBase = Param::Level(_model->filter.frequency);
   double resonance = resBase; // TODO
   int freq = static_cast<int>(freqBase * 255); // TODO
-  return _filter.GenerateStateVar(_output, freq, resonance);
+  return _dsp.GenerateStateVar(_output, freq, resonance);
 }
 
 FloatSample
@@ -54,7 +54,7 @@ GlobalFilterDSP::GenerateComb(CvSample globalLfo)
   float plusGain = plusGainBase; // TODO
   int minDelay = static_cast<int>(minDelayBase * 255);
   int plusDelay = static_cast<int>(plusDelayBase * 255);
-  return _filter.GenerateComb(_output, minDelay, plusDelay, minGain, plusGain);
+  return _dsp.GenerateComb(_output, minDelay, plusDelay, minGain, plusGain);
 }
 
 } // namespace Xts
