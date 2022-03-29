@@ -64,7 +64,6 @@
     <ClInclude Include="Model\Synth\SynthConfig.hpp" />
     <ClInclude Include="Model\Synth\CvModel.hpp" />
     <ClInclude Include="Model\Synth\EnvModel.hpp" />
-    <ClInclude Include="Model\Synth\TargetModModel.hpp" />
     <ClInclude Include="Model\Synth\VoiceFilterModel.hpp" />
     <ClInclude Include="Model\Synth\LfoModel.hpp" />
     <ClInclude Include="Model\Synth\SourceTargetModModel.hpp" />
