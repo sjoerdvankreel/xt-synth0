@@ -33,7 +33,7 @@
     <ClInclude Include="Model\Synth\VoiceFilterModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Synth\TargetModModel.hpp">
+    <ClInclude Include="Model\Synth\SourceTargetModModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
     <ClInclude Include="DSP\Synth\VoiceFilterDSP.hpp">
@@ -78,7 +78,7 @@
     <ClInclude Include="DSP\Synth\CvDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\TargetModDSP.hpp">
+    <ClInclude Include="DSP\Synth\SourceTargetModDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
     <ClInclude Include="DSP\Synth\AmpDSP.hpp">
@@ -168,10 +168,10 @@
     <ClInclude Include="API\Xts.hpp">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Synth\TargetModsModel.hpp">
+    <ClInclude Include="Model\Synth\SourceTargetModsModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\TargetModsDSP.hpp">
+    <ClInclude Include="DSP\Synth\SourceTargetModsDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
     <ClInclude Include="Model\Shared\SharedConfig.hpp">
@@ -189,7 +189,7 @@
     <ClInclude Include="Model\Synth\GlobalModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Synth\ModModel.hpp">
+    <ClInclude Include="Model\Synth\SourceModModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
     <ClInclude Include="DSP\Synth\ModDSP.hpp">

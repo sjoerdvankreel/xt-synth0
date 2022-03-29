@@ -3,7 +3,7 @@
 
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
-#include <DSP/Synth/TargetModsDSP.hpp>
+#include <DSP/Synth/SourceTargetModsDSP.hpp>
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/UnitModel.hpp>
@@ -16,9 +16,9 @@ class UnitDSP
   int _octave;
   double _phase;
   UnitNote _note;
-  TargetModsDSP _mods;
   FloatSample _output;
   double _blepTriangle;
+  SourceTargetModsDSP _mods;
   struct UnitModel const* _model;
 private:
   float ModulatePhase() const;

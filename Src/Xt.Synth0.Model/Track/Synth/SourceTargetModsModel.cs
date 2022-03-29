@@ -2,13 +2,13 @@
 
 namespace Xt.Synth0.Model
 {
-    unsafe static class TargetModsModel
+    unsafe static class SourceTargetModsModel
     {
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal TargetModModel.Native mod1;
-            internal TargetModModel.Native mod2;
+            internal SourceTargetModModel.Native mod1;
+            internal SourceTargetModModel.Native mod2;
         };
     }
 }

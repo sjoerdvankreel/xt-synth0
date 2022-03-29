@@ -2,7 +2,7 @@
 #define XTS_MODEL_SYNTH_AMP_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
-#include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/SourceModModel.hpp>
 
 namespace Xts {
 
@@ -10,8 +10,8 @@ struct XTS_ALIGN AmpModel
 {
   int32_t amp;
   int32_t panning;
-  ModModel ampMod;
-  ModModel panMod;
+  SourceModModel ampMod;
+  SourceModModel panMod;
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
   int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
   int32_t pad__;
