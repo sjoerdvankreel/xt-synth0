@@ -28,8 +28,7 @@ namespace Xt.Synth0.Model
         internal ref struct Native
         {
             internal FilterModel.Native filter;
-            internal int lfoAmount;
-            internal int lfoTarget;
+            internal GlobalModModel.Native mod;
         };
 
         static readonly IRelevance RelevanceComb = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
@@ -58,7 +57,7 @@ namespace Xt.Synth0.Model
 
         public Param LfoAmount { get; } = new(LfoAmountInfo);
         public Param LfoTarget { get; } = new(LfoTargetInfo);
-        static readonly ParamInfo LfoAmountInfo = ParamInfo.Mix(p => &((Native*)p)->lfoAmount, 1, nameof(LfoAmount), "LFO", "LFO 3 amount", true);
-        static readonly ParamInfo LfoTargetInfo = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->lfoTarget, 1, nameof(LfoTarget), "Target", "LFO 3 target", true, FilterModel.TargetNames);
+        static readonly ParamInfo LfoAmountInfo = ParamInfo.Mix(p => &((Native*)p)->mod.amount, 1, nameof(LfoAmount), "LFO", "LFO 3 amount", true);
+        static readonly ParamInfo LfoTargetInfo = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->mod.target, 1, nameof(LfoTarget), "Target", "LFO 3 target", true, FilterModel.TargetNames);
     }
 }

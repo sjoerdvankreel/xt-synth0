@@ -210,6 +210,12 @@
     <ClInclude Include="DSP\Synth\GlobalFilterPlot.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Synth\GlobalModDSP.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Synth\GlobalModModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp">

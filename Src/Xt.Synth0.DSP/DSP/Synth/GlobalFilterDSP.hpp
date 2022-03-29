@@ -2,12 +2,14 @@
 #define XTS_DSP_SYNTH_GLOBAL_FILTER_DSP_HPP
 
 #include <DSP/Synth/FilterDSP.hpp>
+#include <DSP/Synth/GlobalModDSP.hpp>
 
 namespace Xts {
 
 class GlobalFilterDSP
 {
-  FilterDSP _dsp;
+  FilterDSP _filter;
+  GlobalModDSP _mod;
   FloatSample _output;
   struct GlobalFilterModel const* _model;
 private:

@@ -3,14 +3,14 @@
 
 #include <Model/Shared/Model.hpp>
 #include <Model/Synth/FilterModel.hpp>
+#include <Model/Synth/GlobalModModel.hpp>
 
 namespace Xts {
 
 struct XTS_ALIGN GlobalFilterModel
 {
   FilterModel filter;
-  int32_t lfoAmount;
-  FilterModTarget lfoTarget;
+  GlobalModModel mod;
 };
 XTS_CHECK_SIZE(GlobalFilterModel, 48);
 

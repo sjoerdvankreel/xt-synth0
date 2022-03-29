@@ -16,7 +16,8 @@ GlobalFilterDSP()
 {
   _output.Clear();
   _model = model;
-  _dsp = FilterDSP(&model->filter, rate);
+  _mod = GlobalModDSP(&_model->mod);
+  _filter = FilterDSP(&model->filter, rate);
 }
 
 FloatSample
@@ -38,9 +39,9 @@ GlobalFilterDSP::GenerateStateVar(CvSample globalLfo)
 {
   float resBase = Param::Level(_model->filter.resonance);
   float freqBase = Param::Level(_model->filter.frequency);
-  double resonance = resBase; // TODO
-  int freq = static_cast<int>(freqBase * 255); // TODO
-  return _dsp.GenerateStateVar(_output, freq, resonance);
+  double resonance = _mod.Modulate(globalLfo, { resBase, false }, static_cast<int>(FilterModTarget::Resonance));
+  int freq = static_cast<int>(_mod.Modulate(globalLfo, { freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 255);
+  return _filter.GenerateStateVar(_output, freq, resonance);
 }
 
 FloatSample
@@ -50,11 +51,11 @@ GlobalFilterDSP::GenerateComb(CvSample globalLfo)
   float plusGainBase = Param::Mix(_model->filter.combPlusGain);
   float minDelayBase = Param::Level(_model->filter.combMinDelay);
   float plusDelayBase = Param::Level(_model->filter.combPlusDelay);
-  float minGain = minGainBase; // TODO
-  float plusGain = plusGainBase; // TODO
-  int minDelay = static_cast<int>(minDelayBase * 255);
-  int plusDelay = static_cast<int>(plusDelayBase * 255);
-  return _dsp.GenerateComb(_output, minDelay, plusDelay, minGain, plusGain);
+  float minGain = _mod.Modulate(globalLfo, { minGainBase, true }, static_cast<int>(FilterModTarget::CombMinGain));
+  float plusGain = _mod.Modulate(globalLfo, { plusGainBase, true }, static_cast<int>(FilterModTarget::CombPlusGain));
+  int minDelay = static_cast<int>(_mod.Modulate(globalLfo, { minDelayBase, false }, static_cast<int>(FilterModTarget::CombMinDelay)) * 255);
+  int plusDelay = static_cast<int>(_mod.Modulate(globalLfo, { plusDelayBase, false }, static_cast<int>(FilterModTarget::CombPlusDelay)) * 255);
+  return _filter.GenerateComb(_output, minDelay, plusDelay, minGain, plusGain);
 }
 
 } // namespace Xts
