@@ -1,9 +1,9 @@
 #ifndef XTS_DSP_SYNTH_TARGET_MOD_DSP_HPP
 #define XTS_DSP_SYNTH_TARGET_MOD_DSP_HPP
 
-#include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/CvSample.hpp>
+#include <DSP/Synth/VoiceModDSP.hpp>
 #include <Model/Synth/TargetModModel.hpp>
 #include <cstdint>
 
@@ -11,7 +11,7 @@ namespace Xts {
 
 class TargetModDSP
 {
-  ModDSP _dsp;
+  VoiceModDSP _dsp;
   TargetModModel const* _model;
 public:
   TargetModDSP() = default;

@@ -2,9 +2,9 @@
 #define XTS_DSP_SYNTH_AMP_DSP_HPP
 
 #include <DSP/Synth/CvDSP.hpp>
-#include <DSP/Synth/ModDSP.hpp>
 #include <DSP/Synth/CvState.hpp>
 #include <DSP/Synth/AudioState.hpp>
+#include <DSP/Synth/VoiceModDSP.hpp>
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/AmpModel.hpp>
@@ -18,8 +18,8 @@ class AmpDSP
 {
   float _level;
   float _velocity;
-  ModDSP _ampMod;
-  ModDSP _panMod;
+  VoiceModDSP _ampMod;
+  VoiceModDSP _panMod;
   FloatSample _output;
   AmpModel const* _model;
 public:

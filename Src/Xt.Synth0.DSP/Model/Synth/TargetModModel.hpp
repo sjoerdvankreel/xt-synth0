@@ -2,14 +2,14 @@
 #define XTS_MODEL_SYNTH_TARGET_MOD_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
-#include <Model/Synth/ModModel.hpp>
+#include <Model/Synth/VoiceModModel.hpp>
 #include <cstdint>
 
 namespace Xts {
 
 struct XTS_ALIGN TargetModModel
 {
-  ModModel mod;
+  VoiceModModel mod;
   int32_t target;
   int32_t pad__;
 };

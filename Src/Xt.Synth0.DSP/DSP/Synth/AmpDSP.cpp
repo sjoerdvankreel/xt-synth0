@@ -43,8 +43,8 @@ AmpDSP()
   _model = model;
   _velocity = velocity;
   _output = FloatSample();
-  _panMod = ModDSP(&model->panMod);
-  _ampMod = ModDSP(&model->ampMod);
+  _panMod = VoiceModDSP(&model->panMod);
+  _ampMod = VoiceModDSP(&model->ampMod);
 }
 
 FloatSample

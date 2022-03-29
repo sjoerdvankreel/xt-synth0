@@ -7,7 +7,7 @@ namespace Xt.Synth0.Model
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal ModModel.Native mod;
+            internal VoiceModModel.Native mod;
             internal int target;
             internal int pad__;
         };

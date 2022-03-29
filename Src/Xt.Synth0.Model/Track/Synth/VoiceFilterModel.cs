@@ -70,14 +70,14 @@ namespace Xt.Synth0.Model
         public Param Mod1Source { get; } = new(Mod1SourceInfo);
         static readonly ParamInfo Mod1AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod1.mod.amount, 2, nameof(Mod1Amount), "Amt", "Mod 1 amount", true);
         static readonly ParamInfo Mod1TargetInfo = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->mods.mod1.target, 2, nameof(Mod1Target), "Target", "Mod 1 target", true, FilterModel.TargetNames);
-        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod1.mod.source, 2, nameof(Mod1Source), "Source", "Mod 1 source", true, ModModel.ModSourceNames);
+        static readonly ParamInfo Mod1SourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->mods.mod1.mod.source, 2, nameof(Mod1Source), "Source", "Mod 1 source", true, VoiceModModel.ModSourceNames);
 
         public Param Mod2Amount { get; } = new(Mod2AmountInfo);
         public Param Mod2Target { get; } = new(Mod2TargetInfo);
         public Param Mod2Source { get; } = new(Mod2SourceInfo);
         static readonly ParamInfo Mod2AmountInfo = ParamInfo.Mix(p => &((Native*)p)->mods.mod2.mod.amount, 2, nameof(Mod2Amount), "Amt", "Mod 2 amount", true);
         static readonly ParamInfo Mod2TargetInfo = ParamInfo.List<FilterModTarget>(p => &((Native*)p)->mods.mod2.target, 2, nameof(Mod2Target), "Target", "Mod 2 target", true, FilterModel.TargetNames);
-        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<ModSource>(p => &((Native*)p)->mods.mod2.mod.source, 2, nameof(Mod2Source), "Source", "Mod 2 source", true, ModModel.ModSourceNames);
+        static readonly ParamInfo Mod2SourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->mods.mod2.mod.source, 2, nameof(Mod2Source), "Source", "Mod 2 source", true, VoiceModModel.ModSourceNames);
 
         public Param Unit1Amount { get; } = new(Unit1AmountInfo);
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);

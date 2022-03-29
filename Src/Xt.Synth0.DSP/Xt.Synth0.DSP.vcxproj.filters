@@ -189,10 +189,10 @@
     <ClInclude Include="Model\Synth\GlobalModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="Model\Synth\ModModel.hpp">
+    <ClInclude Include="Model\Synth\VoiceModModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\ModDSP.hpp">
+    <ClInclude Include="DSP\Synth\VoiceModDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
     <ClInclude Include="DSP\Synth\FilterDSP.hpp">
@@ -224,7 +224,7 @@
     <ClCompile Include="DSP\Synth\CvDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
-    <ClCompile Include="DSP\Synth\ModDSP.cpp">
+    <ClCompile Include="DSP\Synth\VoiceModDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\AmpDSP.cpp">

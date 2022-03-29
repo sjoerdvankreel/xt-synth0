@@ -2,14 +2,14 @@
 
 namespace Xt.Synth0.Model
 {
-    public enum ModSource
+    public enum VoiceModSource
     {
         Velocity,
         Env1, Env2, Env3,
         LFO1, LFO2, GlobalLFO
     }
 
-    unsafe static class ModModel
+    unsafe static class VoiceModModel
     {
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
