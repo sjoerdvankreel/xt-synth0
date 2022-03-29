@@ -2,7 +2,7 @@
 #define XTS_DSP_SYNTH_VOICE_FILTER_DSP_HPP
 
 #include <DSP/Synth/FilterDSP.hpp>
-#include <DSP/Synth/SourceTargetModsDSP.hpp>
+#include <DSP/Synth/TargetModsDSP.hpp>
 #include <Model/Synth/SynthConfig.hpp>
 
 namespace Xts {
@@ -12,7 +12,7 @@ class VoiceFilterDSP
   int _index;
   FilterDSP _dsp;
   FloatSample _output;
-  SourceTargetModsDSP _mods;
+  TargetModsDSP _mods;
   struct VoiceFilterModel const* _model;
 private:
   FloatSample GenerateComb();

@@ -3,14 +3,14 @@
 
 #include <Model/Synth/SynthConfig.hpp>
 #include <Model/Synth/FilterModel.hpp>
-#include <Model/Synth/SourceTargetModsModel.hpp>
+#include <Model/Synth/TargetModsModel.hpp>
 
 namespace Xts {
 
 struct XTS_ALIGN VoiceFilterModel
 {
   FilterModel filter;
-  SourceTargetModsModel mods;
+  TargetModsModel mods;
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];
   int32_t filterAmount[XTS_VOICE_FILTER_COUNT];
   int32_t pad__;

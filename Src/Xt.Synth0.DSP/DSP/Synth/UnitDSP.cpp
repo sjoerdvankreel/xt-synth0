@@ -91,7 +91,7 @@ UnitDSP()
   _octave = octave;
   _blepTriangle = 0.0;
   _output = FloatSample();
-  _mods = SourceTargetModsDSP(&model->mods);
+  _mods = TargetModsDSP(&model->mods);
 }
 
 float

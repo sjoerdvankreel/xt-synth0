@@ -1,5 +1,5 @@
-#ifndef XTS_MODEL_SYNTH_SOURCE_MOD_MODEL_HPP
-#define XTS_MODEL_SYNTH_SOURCE_MOD_MODEL_HPP
+#ifndef XTS_MODEL_SYNTH_MOD_MODEL_HPP
+#define XTS_MODEL_SYNTH_MOD_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
 #include <cstdint>
@@ -13,12 +13,12 @@ enum class ModSource
   LFO1, LFO2, GlobalLFO
 };
 
-struct XTS_ALIGN SourceModModel
+struct XTS_ALIGN ModModel
 {
   int32_t amount;
   ModSource source;
 };
-XTS_CHECK_SIZE(SourceModModel, 8);
+XTS_CHECK_SIZE(ModModel, 8);
 
 } // namespace Xts
-#endif // XTS_MODEL_SYNTH_SOURCE_MOD_MODEL_HPP
+#endif // XTS_MODEL_SYNTH_MOD_MODEL_HPP

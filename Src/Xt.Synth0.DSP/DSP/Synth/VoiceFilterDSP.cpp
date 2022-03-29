@@ -55,8 +55,8 @@ VoiceFilterDSP()
   _output.Clear();
   _index = index;
   _model = model;
+  _mods = TargetModsDSP(&model->mods);
   _dsp = FilterDSP(&model->filter, rate);
-  _mods = SourceTargetModsDSP(&model->mods);
 }
 
 FloatSample
