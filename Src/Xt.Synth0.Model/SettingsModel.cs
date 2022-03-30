@@ -24,7 +24,7 @@ namespace Xt.Synth0.Model
         [IgnoreMember]
 		public ThemeGroup ThemeGroup => ThemeGroup.Settings;
 
-		string _envColor = "#40E0C0";
+		string _envColor = "#40FF80";
 		[Key(nameof(EnvColor))]
 		public string EnvColor
 		{
@@ -32,7 +32,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _envColor, value);
 		}
 
-		string _plotColor = "#FF4040";
+		string _plotColor = "#80C0FF";
 		[Key(nameof(PlotColor))]
 		public string PlotColor
 		{
@@ -40,7 +40,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _plotColor, value);
 		}
 
-		string _unitColor = "#FFC080";
+		string _unitColor = "#FFC000";
 		[Key(nameof(UnitColor))]
 		public string UnitColor
 		{
@@ -48,7 +48,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _unitColor, value);
 		}
 
-        string _delayColor = "#40FFFF";
+        string _delayColor = "#FF8080";
         [Key(nameof(DelayColor))]
         public string DelayColor
         {
@@ -56,7 +56,7 @@ namespace Xt.Synth0.Model
             set => Set(ref _delayColor, value);
         }
 
-		string _ampColor = "#FF8000";
+		string _ampColor = "#FF6040";
 		[Key(nameof(AmpColor))]
 		public string AmpColor
 		{
@@ -64,7 +64,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _ampColor, value);
         }
 
-        string _masterColor = "#FF8000";
+        string _masterColor = "#80FFFF";
         [Key(nameof(MasterColor))]
         public string MasterColor
         {
@@ -80,7 +80,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _settingsColor, value);
 		}
 
-		string _patternColor = "#00C0FF";
+		string _patternColor = "#8080C0";
 		[Key(nameof(PatternColor))]
 		public string PatternColor
 		{
@@ -88,7 +88,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _patternColor, value);
 		}
 
-		string _controlColor = "#A0C0FF";
+		string _controlColor = "#C080FF";
 		[Key(nameof(ControlColor))]
 		public string ControlColor
 		{
@@ -112,7 +112,7 @@ namespace Xt.Synth0.Model
             set => Set(ref _globalLfoColor, value);
         }
 
-        string _voiceFilterColor = "#40E080";
+        string _voiceFilterColor = "#40FFC0";
         [Key(nameof(VoiceFilterColor))]
         public string VoiceFilterColor
         {
@@ -120,7 +120,7 @@ namespace Xt.Synth0.Model
             set => Set(ref _voiceFilterColor, value);
         }
 
-        string _globalFilterColor = "#40E080";
+        string _globalFilterColor = "#FF4040";
         [Key(nameof(GlobalFilterColor))]
         public string GlobalFilterColor
         {
