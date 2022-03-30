@@ -218,8 +218,9 @@ namespace Xt.Synth0.Model
             settings.MasterColor = MasterColor;
             settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
-            settings.VoiceLfoColor = VoiceLfoColor;
             settings.SettingsColor = SettingsColor;
+            settings.VoiceLfoColor = VoiceLfoColor;
+            settings.GlobalLfoColor = GlobalLfoColor;
             settings.VoiceFilterColor = VoiceFilterColor;
             settings.GlobalFilterColor = GlobalFilterColor;
 

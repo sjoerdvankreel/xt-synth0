@@ -52,10 +52,7 @@ namespace Xt.Synth0.UI
             var plot = app.Track.Synth.Plot;
             text.VerticalAlignment = VerticalAlignment.Center;
             text.HorizontalAlignment = HorizontalAlignment.Right;
-            var resources = Utility.GetThemeResources(app.Settings, plot.ThemeGroup);
-            var foreground1 = (Brush)resources[Utility.Foreground1Key];
-            var foreground2 = (Brush)resources[Utility.Foreground2Key];
-            var result = Create.ThemedGroup(app.Settings, plot, MakeContent(app, text, foreground1, foreground2));
+            var result = Create.ThemedGroup(app.Settings, plot, MakeContent(app, text));
             var dock = new DockPanel();
             var wrap = dock.Add(new WrapPanel(), Dock.Left);
             wrap.Add(Create.Text(plot.Name));
@@ -125,13 +122,13 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement MakeContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
+        static UIElement MakeContent(AppModel app, TextBlock text)
         {
             var result = new Grid();
             var dock = new DockPanel();
             var plot = app.Track.Synth.Plot;
             dock.Add(GroupUI.MakeContent(app, app.Track.Synth.Plot), Dock.Top);
-            dock.Add(MakePlotContent(app, text, foreground1, foreground2), Dock.Top);
+            dock.Add(MakePlotContent(app, text), Dock.Top);
             var conv = new VisibilityConverter<int>(true, 1);
             var binding = Bind.To(plot.Enabled, nameof(Param.Value), conv);
             dock.SetBinding(UIElement.VisibilityProperty, binding);
@@ -144,13 +141,13 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static UIElement MakePlotContent(AppModel app, TextBlock text, Brush foreground1, Brush foreground2)
+        static UIElement MakePlotContent(AppModel app, TextBlock text)
         {
             var synth = app.Track.Synth;
             var dock = new DockPanel();
             var result = Create.ThemedContent(dock);
             var content = dock.Add(new ContentControl());
-            _update = () => Update(app, text, content, foreground1, foreground2);
+            _update = () => Update(app, text, content);
             synth.ParamChanged += (s, e) => _update();
             content.SizeChanged += (s, e) => _update();
             app.Settings.PropertyChanged += (s, e) => _update();
@@ -186,7 +183,7 @@ namespace Xt.Synth0.UI
             return result;
         }
 
-        static void Update(AppModel app, TextBlock text, ContentControl container, Brush foreground1, Brush foreground2)
+        static void Update(AppModel app, TextBlock text, ContentControl container)
         {
             if (_updating) return;
             var plot = app.Track.Synth.Plot;
@@ -203,6 +200,9 @@ namespace Xt.Synth0.UI
             container.Content = Off;
             RequestPlotData?.Invoke(null, args);
             if (args.Result->sampleCount == 0) return;
+            var resources = Utility.GetThemeResources(app.Settings, plot.ThemeGroup);
+            var foreground1 = (Brush)resources[Utility.Foreground1Key];
+            var foreground2 = (Brush)resources[Utility.Foreground2Key];
             container.Content = Plot(args, w, h, foreground1, foreground2);
             string header = $"{args.Result->sampleCount} samples";
             if (args.Output->frequency != 0.0f) header += $" @ {args.Output->frequency.ToString("N1")}Hz";
