@@ -19,7 +19,7 @@ namespace Xt.Synth0.Model
 
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
-            { Amp, 0 }, { AmpModSource, 1 }, { AmpModAmount, 2 }, { Panning, 3 },
+            { Amp, 0 }, { AmpModSource, 1 }, { AmpModAmount, 2 }, { Pan, 3 },
             { Unit1Amount, 4 }, { Unit2Amount, 5 },  { Unit3Amount, 6 }, { PanModSource, 7 },
             { Filter1Amount, 8 }, { Filter2Amount, 9 }, { PanModAmount, 11 }
         };
@@ -28,7 +28,7 @@ namespace Xt.Synth0.Model
         internal ref struct Native
         {
             internal int amp;
-            internal int panning;
+            internal int pan;
             internal VoiceModModel.Native ampMod;
             internal VoiceModModel.Native panMod;
             internal fixed int unitAmount[SynthConfig.VoiceUnitCount];
@@ -43,10 +43,10 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo AmpModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampMod.amount, 1, nameof(AmpModAmount), "Amt", "Amp mod amount", true);
         static readonly ParamInfo AmpModSourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->ampMod.source, 1, nameof(AmpModSource), "Mod", "Amp mod source", true, VoiceModModel.ModSourceNames);
 
-        public Param Panning { get; } = new(PanningInfo);
+        public Param Pan { get; } = new(PanInfo);
         public Param PanModSource { get; } = new(PanModSourceInfo);
         public Param PanModAmount { get; } = new(PanModAmountInfo);
-        static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning", true);
+        static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 0, nameof(Pan), "Pan", "Panning", true);
         static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panMod.amount, 0, nameof(PanModAmount), "Amt", "Pan mod amount", true);
         static readonly ParamInfo PanModSourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->panMod.source, 0, nameof(PanModSource), "Mod", "Pan mod source", true, VoiceModModel.ModSourceNames);
 

@@ -150,8 +150,8 @@ UnitDSP::Next(CvState const& cv)
   float sample = BipolarSanity(Generate(phase, frequency));
   float ampBase = Param::Level(_model->amp);
   float amp = _mods.Modulate({ ampBase, false }, static_cast<int>(UnitModTarget::Amp));
-  float panBase = Param::Mix(_model->panning);
-  float panning = BipolarToUnipolar1(_mods.Modulate({ panBase, true }, static_cast<int>(UnitModTarget::Panning)));
+  float panBase = Param::Mix(_model->pan);
+  float panning = BipolarToUnipolar1(_mods.Modulate({ panBase, true }, static_cast<int>(UnitModTarget::Pan)));
   _phase += frequency / _rate;
   _phase -= std::floor(_phase);
   _output = { sample * amp * (1.0f - panning), sample * amp * panning };

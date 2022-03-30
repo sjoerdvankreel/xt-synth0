@@ -9,7 +9,7 @@ namespace Xts {
 struct XTS_ALIGN AmpModel
 {
   int32_t amp;
-  int32_t panning;
+  int32_t pan;
   VoiceModModel ampMod;
   VoiceModModel panMod;
   int32_t unitAmount[XTS_VOICE_UNIT_COUNT];

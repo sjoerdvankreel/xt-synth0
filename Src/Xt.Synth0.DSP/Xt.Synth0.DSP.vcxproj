@@ -32,6 +32,7 @@
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\GlobalFilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\GlobalModDSP.hpp" />
+    <ClInclude Include="DSP\Synth\MasterDSP.hpp" />
     <ClInclude Include="DSP\Synth\VoiceFilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\VoiceFilterPlot.hpp" />
     <ClInclude Include="DSP\Synth\LfoDSP.hpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="Model\Synth\GlobalFilterModel.hpp" />
     <ClInclude Include="Model\Synth\GlobalModel.hpp" />
     <ClInclude Include="Model\Synth\GlobalModModel.hpp" />
+    <ClInclude Include="Model\Synth\MasterModel.hpp" />
     <ClInclude Include="Model\Synth\VoiceModModel.hpp" />
     <ClInclude Include="Model\Synth\TargetModsModel.hpp" />
     <ClInclude Include="Model\Synth\SynthConfig.hpp" />

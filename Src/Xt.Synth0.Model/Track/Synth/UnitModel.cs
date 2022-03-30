@@ -11,9 +11,9 @@ namespace Xt.Synth0.Model
     public enum UnitModTarget
     {
         Amp,
+        Pan,
         Phase,
         Pitch,
-        Panning,
         Frequency,
         BlepPulseWidth,
         AdditiveRolloff
@@ -37,7 +37,7 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { AdditiveSub, 1 }, { BlepType, 1 }, { Amp, 2 }, { Panning, 3 },
+            { Type, 0 }, { AdditiveSub, 1 }, { BlepType, 1 }, { Amp, 2 }, { Pan, 3 },
             { AdditivePartials, 4 }, { AdditiveStep, 5 }, { AdditiveRolloff, 6 }, { BlepPulseWidth, 6 }, { Octave, 7 },
             { Mod1Source, 8 }, { Mod1Target, 9 }, { Mod1Amount, 10 }, { Note, 11 },
             { Mod2Source, 12 },  { Mod2Target, 13 }, { Mod2Amount, 14}, { Detune, 15 }
@@ -51,7 +51,7 @@ namespace Xt.Synth0.Model
             internal int on;
             internal int type;
             internal int amp;
-            internal int panning;
+            internal int pan;
 
             internal int note;
             internal int octave;
@@ -83,10 +83,10 @@ namespace Xt.Synth0.Model
         public Param On { get; } = new(OnInfo);
         public Param Amp { get; } = new(AmpInfo);
         public Param Type { get; } = new(TypeInfo);
-        public Param Panning { get; } = new(PanningInfo);
+        public Param Pan { get; } = new(PanInfo);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", false, false);
         static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), "Amp", "Amplitude", true, 255);
-        static readonly ParamInfo PanningInfo = ParamInfo.Mix(p => &((Native*)p)->panning, 0, nameof(Panning), "Pan", "Panning", true);
+        static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 0, nameof(Pan), "Pan", "Panning", true);
         static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type", false, UnitTypeNames);
 
         public Param Note { get; } = new(NoteInfo);

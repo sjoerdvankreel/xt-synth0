@@ -13,9 +13,9 @@ enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, 
 enum class UnitModTarget 
 { 
   Amp, 
+  Pan,
   Phase, 
   Pitch, 
-  Panning,
   Frequency,
   BlepPulseWidth, 
   AdditiveRolloff 
@@ -26,7 +26,7 @@ struct XTS_ALIGN UnitModel
   XtsBool on;
   UnitType type;
   int32_t amp;
-  int32_t panning;
+  int32_t pan;
 
   UnitNote note;
   int32_t octave;
