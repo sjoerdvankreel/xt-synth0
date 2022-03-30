@@ -7,11 +7,11 @@ namespace Xts {
 
 enum class PlotType
 { 
-  Synth, Amp, 
+  Master, Amp, 
   Env1, Env2, Env3, 
   LFO1, LFO2, GlobalLFO,
   Unit1, Unit2, Unit3, 
-  Filter1, Filter2 
+  Filter1, Filter2, GlobalFilter
 };
 
 struct XTS_ALIGN PlotModel

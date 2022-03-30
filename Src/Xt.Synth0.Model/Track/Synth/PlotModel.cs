@@ -6,11 +6,11 @@ namespace Xt.Synth0.Model
 {
     public enum PlotType
     {
-        Synth, Amp,
+        Master, Amp,
         Env1, Env2, Env3,
         LFO1, LFO2, GlobalLFO,
         Unit1, Unit2, Unit3,
-        Filter1, Filter2
+        Filter1, Filter2, GlobalFilter
     }
 
     public unsafe sealed class PlotModel : IUIParamGroupModel
@@ -47,10 +47,10 @@ namespace Xt.Synth0.Model
             internal int spectrum;
         }
 
-        static readonly string[] PlotTypeNames = { "Synth", "Amp", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3", "Unit1", "Unit2", "Unit3", "Filter1", "Filter2" };
+        static readonly string[] PlotTypeNames = { "Master", "Amp", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3", "Unit1", "Unit2", "Unit3", "Filter1", "Filter2", "Filter3" };
 
         static readonly IRelevance RelevanceHold = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t < PlotType.LFO1);
-        static readonly IRelevance RelevanceSpectrum = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t >= PlotType.LFO1 || t == PlotType.Synth);
+        static readonly IRelevance RelevanceSpectrum = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t >= PlotType.LFO1 || t == PlotType.Master);
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
