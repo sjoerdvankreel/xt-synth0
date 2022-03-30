@@ -54,7 +54,7 @@ namespace Xt.Synth0.Model
                     Pattern.Rows[i].Fx[fx.Value].Clear();
             else if (key != null)
                 for (int i = start; i < start + count; i++)
-                    Pattern.Rows[i].Keys[fx.Value].Clear();
+                    Pattern.Rows[i].Keys[key.Value].Clear();
             else
                 for (int i = start; i < start + count; i++)
                     Pattern.Rows[i].Clear();
@@ -71,7 +71,7 @@ namespace Xt.Synth0.Model
                     data.Fx[i - start].CopyTo(Pattern.Rows[i].Fx[fx.Value]);
             else if (key != null && data.Type == SequencerClipboardType.Keys)
                 for (int i = start; i < start + count; i++)
-                    data.Keys[i - start].CopyTo(Pattern.Rows[i].Keys[fx.Value]);
+                    data.Keys[i - start].CopyTo(Pattern.Rows[i].Keys[key.Value]);
             else if (data.Type == SequencerClipboardType.Rows)
                 for (int i = start; i < start + count; i++)
                     data.Rows[i - start].CopyTo(Pattern.Rows[i]);

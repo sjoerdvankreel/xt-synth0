@@ -15,7 +15,7 @@ namespace Xt.Synth0.UI
     {
         internal const int TooltipDelay = 1000;
         internal const int BetweenTooltipDelay = 0;
-        static SequencerClipboardData _clipboardData;
+        internal static SequencerClipboardData ClipboardData { get; set; }
 
         const double HighlightedOpacity = 0.25;
         const double NotHighlightedOpacity = 0.0;
@@ -256,9 +256,9 @@ namespace Xt.Synth0.UI
 
         static void OnPatternKeyDown(SequencerModel seq, KeyEventArgs e)
         {
-            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == ModifierKeys.Control) _clipboardData = seq.Copy(null, null);
-            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == ModifierKeys.Control) _clipboardData = seq.Cut(null, null);
-            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control) seq.Paste(null, null, _clipboardData);
+            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == ModifierKeys.Control) ClipboardData = seq.Copy(null, null);
+            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == ModifierKeys.Control) ClipboardData = seq.Cut(null, null);
+            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control) seq.Paste(null, null, ClipboardData);
             else return;
             e.Handled = true;
         }
