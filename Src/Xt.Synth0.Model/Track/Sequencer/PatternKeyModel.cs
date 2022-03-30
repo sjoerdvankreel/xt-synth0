@@ -32,5 +32,26 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo NoteInfo = ParamInfo.Pattern(p => &((Native*)p)->note, nameof(Note), "Note", "Note", false, NoteNames);
         static readonly ParamInfo OctaveInfo = ParamInfo.Pattern(p => &((Native*)p)->octave, nameof(Octave), "Octave", "Octave", false, 0, 9, 4);
         static readonly ParamInfo VelocityInfo = ParamInfo.Pattern(p => &((Native*)p)->velocity, nameof(Velocity), "Velocity", "Velocity", false, 0, 255, 255);
+
+        public void Clear()
+        {
+            Note.Value = 0;
+            Octave.Value = 0;
+            Velocity.Value = 255;
+        }
+
+        public void CopyTo(PatternKeyModel model)
+        {
+            model.Note.Value = Note.Value;
+            model.Octave.Value = Octave.Value;
+            model.Velocity.Value = Velocity.Value;
+        }
+
+        public void PasteFrom(PatternKeyModel model)
+        {
+            Note.Value = model.Note.Value;
+            Octave.Value = model.Octave.Value;
+            Velocity.Value = model.Velocity.Value;
+        }
     }
 }

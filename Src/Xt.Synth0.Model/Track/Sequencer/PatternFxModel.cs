@@ -24,5 +24,23 @@ namespace Xt.Synth0.Model
         public Param Target { get; } = new(TargetInfo);
         static readonly ParamInfo ValueInfo = ParamInfo.Pattern(p => &((Native*)p)->value, nameof(Value), "Value", "Automation value", false, 0, 255, 0);        
 		static readonly ParamInfo TargetInfo = ParamInfo.Pattern(p => &((Native*)p)->target, nameof(Target), "Target", "Automation target", false, 0, 255, 0);
+
+        public void Clear()
+        {
+            Value.Value = 0;
+            Target.Value = 0;
+        }
+
+        public void CopyTo(PatternFxModel model)
+        {
+            model.Value.Value = Value.Value;
+            model.Target.Value = Target.Value;
+        }
+
+        public void PasteFrom(PatternFxModel model)
+        {
+            Value.Value = model.Value.Value;
+            Target.Value = model.Target.Value;
+        }
 	}
 }

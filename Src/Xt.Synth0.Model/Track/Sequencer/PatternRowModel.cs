@@ -27,5 +27,23 @@ namespace Xt.Synth0.Model
         public IReadOnlyList<PatternKeyModel> Keys = new ReadOnlyCollection<PatternKeyModel>(MakeKeys());
         static IList<PatternFxModel> MakeFx() => Enumerable.Range(0, SharedConfig.MaxFxs).Select(i => new PatternFxModel(i)).ToList();
         static IList<PatternKeyModel> MakeKeys() => Enumerable.Range(0, SharedConfig.MaxKeys).Select(i => new PatternKeyModel(i)).ToList();
+
+        public void Clear()
+        {
+            foreach (var fx in Fx) fx.Clear();
+            foreach (var key in Keys) key.Clear();
+        }
+
+        public void PasteFrom(PatternRowModel model)
+        {
+            for (int i = 0; i < Fx.Count; i++) Fx[i].PasteFrom(model.Fx[i]);
+            for (int i = 0; i < Keys.Count; i++) Keys[i].PasteFrom(model.Keys[i]);
+        }
+
+        public void CopyTo(PatternRowModel model)
+        {
+            for (int i = 0; i < Fx.Count; i++) Fx[i].CopyTo(model.Fx[i]);
+            for (int i = 0; i < Keys.Count; i++) Keys[i].CopyTo(model.Keys[i]);
+        }
     }
 }
