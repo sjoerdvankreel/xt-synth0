@@ -1,6 +1,7 @@
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
 #include <DSP/Synth/GlobalFilterDSP.hpp>
+#include <DSP/Synth/GlobalFilterPlot.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
 #include <memory>
@@ -8,6 +9,10 @@
 #include <cassert>
 
 namespace Xts {
+
+void
+GlobalFilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+{ std::make_unique<GlobalFilterPlot>(&model)->DoRender(input, state); }
 
 GlobalFilterDSP::
 GlobalFilterDSP(GlobalFilterModel const* model, float rate):

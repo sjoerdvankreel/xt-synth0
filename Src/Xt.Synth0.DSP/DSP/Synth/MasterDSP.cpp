@@ -2,9 +2,15 @@
 #include <DSP/Shared/Utility.hpp>
 #include <DSP/Shared/Modulate.hpp>
 #include <DSP/Synth/MasterDSP.hpp>
+#include <DSP/Synth/MasterPlot.hpp>
 #include <Model/Synth/MasterModel.hpp>
+#include <memory>
 
 namespace Xts {
+
+void
+MasterPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
+{ std::make_unique<MasterPlot>(&model)->DoRender(input, state); }
 
 FloatSample 
 MasterDSP::Next(CvSample globalLfo, FloatSample x)

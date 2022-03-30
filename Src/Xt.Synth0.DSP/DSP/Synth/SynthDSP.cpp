@@ -1,26 +1,10 @@
 #include <DSP/Synth/SynthDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
-#include <memory>
 #include <cassert>
 #include <algorithm>
 
 namespace Xts {
-
-StagedParams
-SynthPlot::Params() const
-{
-  StagedParams result;
-  result.stereo = true;
-  result.bipolar = true;
-  result.allowSpectrum = true;
-  result.allowResample = false;
-  return result;
-}
-
-void
-SynthPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& state)
-{ std::make_unique<SynthPlot>(&model)->DoRender(input, state); }
 
 FloatSample
 SynthDSP::Next()

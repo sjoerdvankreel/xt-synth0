@@ -31,8 +31,11 @@
     <ClInclude Include="DSP\Synth\EnvDSP.hpp" />
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\GlobalFilterDSP.hpp" />
+    <ClInclude Include="DSP\Synth\GlobalFilterPlot.hpp" />
     <ClInclude Include="DSP\Synth\GlobalModDSP.hpp" />
+    <ClInclude Include="DSP\Synth\GlobalPlot.hpp" />
     <ClInclude Include="DSP\Synth\MasterDSP.hpp" />
+    <ClInclude Include="DSP\Synth\MasterPlot.hpp" />
     <ClInclude Include="DSP\Synth\VoiceFilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\VoiceFilterPlot.hpp" />
     <ClInclude Include="DSP\Synth\LfoDSP.hpp" />
@@ -87,6 +90,7 @@
     <ClCompile Include="DSP\Synth\EnvDSP.cpp" />
     <ClCompile Include="DSP\Synth\FilterDSP.cpp" />
     <ClCompile Include="DSP\Synth\GlobalFilterDSP.cpp" />
+    <ClCompile Include="DSP\Synth\GlobalPlot.cpp" />
     <ClCompile Include="DSP\Synth\MasterDSP.cpp" />
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp" />
     <ClCompile Include="DSP\Synth\LfoDSP.cpp" />
