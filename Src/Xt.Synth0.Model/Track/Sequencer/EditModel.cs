@@ -56,13 +56,13 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo BpmInfo = ParamInfo.Select(p => &((Native*)p)->bpm, 0, nameof(Bpm), "BPM", "Beats per minute", false, 1, 255, 120);
         static readonly ParamInfo LpbInfo = ParamInfo.Select(p => &((Native*)p)->lpb, 0, nameof(Lpb), "LPB", "Lines per beat", false, 1, SequencerConfig.MaxLpb, 4);
 
+        public Param Loop { get; } = new(LoopInfo);
         public Param Step { get; } = new(StepInfo);
         public Param Edit { get; } = new(EditInfo);
         public Param Octave { get; } = new(OctaveInfo);
-        public Param Loop { get; } = new(LoopInfo);
-        static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, 2, nameof(Step), "Step", "Edit step", false, 0, 8, 1);
-        static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, 2, nameof(Edit), "Edit", "Active pattern", false, 1, SequencerConfig.MaxPatterns, 1);
-        static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 2, nameof(Octave), "Oct", "Octave", false, 0, 9, 4);
         static readonly ParamInfo LoopInfo = ParamInfo.Toggle(p => &((Native*)p)->loop, 1, nameof(Loop), "Loop", "Loop", false, true);
+        static readonly ParamInfo StepInfo = ParamInfo.Select(p => &((Native*)p)->step, 2, nameof(Step), "Step", "Edit step", false, 0, 8, 1);
+        static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 2, nameof(Octave), "Oct", "Octave", false, 0, 9, 4);
+        static readonly ParamInfo EditInfo = ParamInfo.Select(p => &((Native*)p)->edit, 2, nameof(Edit), "Edit", "Active pattern", false, 0, SequencerConfig.MaxPatterns - 1, 0, x => (x + 1).ToString());
     }
 }

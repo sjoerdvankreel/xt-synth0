@@ -47,7 +47,7 @@ namespace Xt.Synth0.Model
         public void Clear(int? key, int? fx)
         {
             int count = Edit.Rows.Value;
-            int start = (Edit.Edit.Value - 1) * count;
+            int start = Edit.Edit.Value * count;
             if (key != null && fx != null) throw new InvalidOperationException();
             if (fx != null)
                 for (int i = start; i < start + count; i++)
@@ -64,7 +64,7 @@ namespace Xt.Synth0.Model
         {
             if (data == null) return;
             int count = Edit.Rows.Value;
-            int start = (Edit.Edit.Value - 1) * count;
+            int start = Edit.Edit.Value * count;
             if (key != null && fx != null) throw new InvalidOperationException();
             if (fx != null && data.Type == SequencerClipboardType.Fx)
                 for (int i = start; i < start + count; i++)
@@ -80,7 +80,7 @@ namespace Xt.Synth0.Model
         public SequencerClipboardData Copy(int? key, int? fx)
         {
             int count = Edit.Rows.Value;
-            int start = (Edit.Edit.Value - 1) * count;
+            int start = Edit.Edit.Value * count;
             if (key != null && fx != null) throw new InvalidOperationException();
             PatternRowModel[] rows = Pattern.Rows.Skip(start).Take(count).ToArray();
             if (key != null) return new SequencerClipboardData(rows.Select(r => r.Keys[key.Value].Copy()).ToArray());

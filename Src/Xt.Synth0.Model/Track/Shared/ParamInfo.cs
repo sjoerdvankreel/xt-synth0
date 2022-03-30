@@ -145,6 +145,12 @@ namespace Xt.Synth0.Model
         => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
             description, realtime, min, max, @default, null, null, null, null, null, relevance);
 
+        internal static ParamInfo Select(
+            Address address, int subGroup, string id, string name, string description, 
+            bool realtime, int min, int max, int @default, Func<int, string> display, IRelevance relevance = null)
+        => new ParamInfo(ParamType.Lin, address, subGroup, id, name,
+            description, realtime, min, max, @default, null, null, null, null, display, relevance);
+
         internal static ParamInfo Pattern(
             Address address, string id, string name,
             string description, bool realtime, string[] display)

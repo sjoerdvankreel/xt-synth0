@@ -262,8 +262,8 @@ namespace Xt.Synth0.UI
             if (e.Key == Key.C) ClipboardData = seq.Copy(null, null);
             else if (e.Key == Key.X) ClipboardData = seq.Cut(null, null);
             else if (e.Key == Key.V) seq.Paste(null, null, ClipboardData);
-            else if (e.Key == Key.Add) seq.Edit.Edit.Value = (seq.Edit.Edit.Value + 1) % (SequencerConfig.MaxPatterns + 1);
-            else if (e.Key == Key.Subtract) seq.Edit.Edit.Value = (SequencerConfig.MaxPatterns + seq.Edit.Edit.Value - 1) % (SequencerConfig.MaxPatterns + 1);
+            else if (e.Key == Key.Add) seq.Edit.Edit.Value = (seq.Edit.Edit.Value + 1) % SequencerConfig.MaxPatterns;
+            else if (e.Key == Key.Subtract) seq.Edit.Edit.Value = (SequencerConfig.MaxPatterns + seq.Edit.Edit.Value - 1) % SequencerConfig.MaxPatterns;
             else return;
             e.Handled = true;
         }
