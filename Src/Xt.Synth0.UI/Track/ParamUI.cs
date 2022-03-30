@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using Xt.Synth0.Model;
 
@@ -21,7 +22,10 @@ namespace Xt.Synth0.UI
             if (synthParam != null)
                 result.AppendLine($"Automation target: {synthParam.Index.ToString("X2")}");
             if (param.Info.Control == ParamControl.Knob)
+            {
                 result.AppendLine("Right-click to set exact value");
+                result.AppendLine("Double-click to toggle min/max/default");
+            }
             return result.ToString(0, result.Length - Environment.NewLine.Length);
         }
 
@@ -95,7 +99,17 @@ namespace Xt.Synth0.UI
             result.SetBinding(RangeBase.ValueProperty, Bind.To(param));
             result.MouseRightButtonUp += (s, e) => ExactUI.Show(app.Settings, group, param);
             result.Sensitivity = Math.Max(Knob.DefaultSensitivity, param.Info.Max - param.Info.Min);
+            result.MouseDoubleClick += (s, e) => OnKnobDoubleClick(param);
             return result;
+        }
+
+        static void OnKnobDoubleClick(Param param)
+        {
+            if (param.Info.Default == param.Info.Max && param.Value == param.Info.Max) param.Value = param.Info.Min;
+            else if (param.Info.Default == param.Info.Min && param.Value == param.Info.Min) param.Value = param.Info.Max;
+            else if (param.Value == param.Info.Default) param.Value = param.Info.Max;
+            else if (param.Value == param.Info.Max) param.Value = param.Info.Min;
+            else param.Value = param.Info.Default;
         }
 
         static Grid MakeSubGroup(IUIParamGroupModel group, Param param, DockPanel content)
