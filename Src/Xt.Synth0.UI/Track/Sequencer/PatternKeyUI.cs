@@ -10,8 +10,8 @@ namespace Xt.Synth0.UI
 {
 	public static class PatternKeyUI
 	{
-		const string NoteEditHint = $"Click + ./space/Z-M/Q-E to edit";
-		public static event EventHandler<RequestPlayNoteEventArgs> RequestPlayNote;
+        public static event EventHandler<RequestPlayNoteEventArgs> RequestPlayNote;
+        static readonly string NoteEditHint = $"Click + ./space/Z-M/Q-E to edit{Environment.NewLine}{PatternUI.EditColumnHint}";
 
 		static (int Oct, PatternNote Note) KeyToAction(Key key) => key switch
 		{
@@ -142,7 +142,7 @@ namespace Xt.Synth0.UI
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
 			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
 			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
-			result.ToolTip = string.Join("\n", key.Octave.Info.Description, PatternUI.EditColumnHint);
+			result.ToolTip = string.Join(Environment.NewLine, key.Octave.Info.Description, PatternUI.EditKeyboardHint, PatternUI.EditColumnHint);
 			return result;
 		}
 
@@ -158,7 +158,7 @@ namespace Xt.Synth0.UI
 			result.SetBinding(RangeBase.ValueProperty, Bind.To(key.Velocity));
 			result.SetBinding(Control.ForegroundProperty, Bind.EnableRow(app, row));
 			result.SetBinding(UIElement.VisibilityProperty, Bind.Show(edit.Keys, minKeys));
-			result.ToolTip = string.Join("\n", key.Velocity.Info.Description, PatternUI.InterpolateHint, PatternUI.EditColumnHint);
+			result.ToolTip = string.Join(Environment.NewLine, key.Velocity.Info.Description, PatternUI.InterpolateHint, PatternUI.EditKeyboardHint, PatternUI.EditColumnHint);
 			var binding = Bind.To(key.Note, nameof(key.Note.Value), new Formatter<int>(v => v == (int)PatternNote.Off ? "=" : "."));
 			result.SetBinding(HexBox.PlaceholderProperty, binding);
 			binding = Bind.To(key.Note, nameof(key.Note.Value), new PlaceholderConverter((int)PatternNote.None, (int)PatternNote.Off));

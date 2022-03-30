@@ -22,16 +22,18 @@ namespace Xt.Synth0.UI
         static readonly object HighlightedOpacityBoxed = HighlightedOpacity;
         static readonly object NotHighlightedOpacityBoxed = NotHighlightedOpacity;
 
-        internal const string EditColumnHint = "Click + keyboard to edit";
         internal const string InterpolateHint = "Ctrl + I to interpolate";
-        internal static readonly string EditPatternHint =
-            $"Ctrl+X to cut pattern{Environment.NewLine}" +
-            $"Ctrl+C to copy pattern{Environment.NewLine}" +
-            $"Ctrl+V to paste pattern{Environment.NewLine}" +
+        internal static readonly string EditKeyboardHint =
+            $"Click + keyboard to edit";
+        internal static readonly string EditColumnHint = 
             $"Ctrl+Shift+X to cut column{Environment.NewLine}" +
             $"Ctrl+Shift+C to copy column{Environment.NewLine}" +
             $"Ctrl+Shift+V to paste column";
-
+        internal static readonly string EditPatternHint =
+            $"Ctrl+X to cut pattern{Environment.NewLine}" +
+            $"Ctrl+C to copy pattern{Environment.NewLine}" +
+            $"Ctrl+V to paste pattern";
+            
         static void Fill(SequencerModel seq, int pattern, int fx)
         {
             var rows = seq.Pattern.Rows;
@@ -257,15 +259,6 @@ namespace Xt.Synth0.UI
             if (e.Key == Key.C && e.KeyboardDevice.Modifiers == ModifierKeys.Control) _clipboardData = seq.Copy(null, null);
             else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == ModifierKeys.Control) _clipboardData = seq.Cut(null, null);
             else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control) seq.Paste(null, null, _clipboardData);
-            else if (e.Key == Key.C && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-            {
-            }
-            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-            {
-            }
-            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-            {
-            }
             else return;
             e.Handled = true;
         }
