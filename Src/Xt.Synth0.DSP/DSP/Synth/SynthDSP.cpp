@@ -25,15 +25,16 @@ SynthPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& st
 FloatSample
 SynthDSP::Next()
 {
-  FloatSample voices = { 0 };
+  _output.Clear();
   CvSample globalLfo = _globalLfo.Next();
   for (int v = 0; v < XTS_SYNTH_MAX_VOICES; v++)
   {
     if (_voiceKeys[v] == -1) continue;
-    voices += _voiceDsps[v].Next(globalLfo);
+    _output += _voiceDsps[v].Next(globalLfo);
     if (_voiceDsps[v].End()) Return(_voiceKeys[v], v);
   }
-  return _globalFilter.Next(globalLfo, voices).Sanity();
+  _output = _globalFilter.Next(globalLfo, _output);
+  return _output.Sanity();
 }
 
 void

@@ -21,6 +21,7 @@ class SynthDSP
   int _keyCount;
   SynthModel _model;
   LfoDSP _globalLfo;
+  FloatSample _output;
   GlobalFilterDSP _globalFilter;
   int* _binding[XTS_SYNTH_PARAM_COUNT];
   int _voiceKeys[XTS_SYNTH_MAX_VOICES];
@@ -41,6 +42,7 @@ private:
   int Take(int key, int64_t position, bool& exhausted);
 public:
   VoiceDSP& Voice0() { return _voiceDsps[0]; };
+  FloatSample Output() const { return _output; }
   VoiceDSP const& Voice0() const { return _voiceDsps[0]; }
 public:
   SynthDSP() = default;
@@ -68,10 +70,10 @@ public:
 public:
   void Next() { _dsp.Next(); }
   bool End() const { return _dsp.Voice0().End(); }
+  float Left() const { return _dsp.Output().left; }
+  float Right() const { return _dsp.Output().right; }
   EnvSample Release() { return _dsp.Voice0().Release(); }
   void Start() { _dsp.Trigger(0, 4, UnitNote::C, 1.0f, 0); }
-  float Left() const { return _dsp.Voice0().Output().left; }
-  float Right() const { return _dsp.Voice0().Output().right; }
   EnvSample EnvOutput() const { return _dsp.Voice0().EnvOutput(); }
   void Init(float bpm, float rate) { new(&_dsp) SynthDSP(1, bpm, rate); *_dsp.Model() = *_model; _dsp.Init(); }
   float ReleaseSamples(float bpm, float rate) const { return EnvPlot::ReleaseSamples(_dsp.Voice0().Env(), bpm, rate); }
