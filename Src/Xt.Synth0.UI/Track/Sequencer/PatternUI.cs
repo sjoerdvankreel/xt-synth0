@@ -25,15 +25,17 @@ namespace Xt.Synth0.UI
         internal const string InterpolateHint = "Ctrl + I to interpolate";
         internal static readonly string EditKeyboardHint =
             $"Click + keyboard to edit";
-        internal static readonly string EditColumnHint = 
+        internal static readonly string EditColumnHint =
             $"Ctrl+Shift+X to cut column{Environment.NewLine}" +
             $"Ctrl+Shift+C to copy column{Environment.NewLine}" +
             $"Ctrl+Shift+V to paste column";
         internal static readonly string EditPatternHint =
+            $"Ctrl++ to edit next{Environment.NewLine}" +
+            $"Ctrl+- to edit previous{Environment.NewLine}" +
             $"Ctrl+X to cut pattern{Environment.NewLine}" +
             $"Ctrl+C to copy pattern{Environment.NewLine}" +
             $"Ctrl+V to paste pattern";
-            
+
         static void Fill(SequencerModel seq, int pattern, int fx)
         {
             var rows = seq.Pattern.Rows;
@@ -256,9 +258,12 @@ namespace Xt.Synth0.UI
 
         static void OnPatternKeyDown(SequencerModel seq, KeyEventArgs e)
         {
-            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == ModifierKeys.Control) ClipboardData = seq.Copy(null, null);
-            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == ModifierKeys.Control) ClipboardData = seq.Cut(null, null);
-            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control) seq.Paste(null, null, ClipboardData);
+            if (e.KeyboardDevice.Modifiers != ModifierKeys.Control) return;
+            if (e.Key == Key.C) ClipboardData = seq.Copy(null, null);
+            else if (e.Key == Key.X) ClipboardData = seq.Cut(null, null);
+            else if (e.Key == Key.V) seq.Paste(null, null, ClipboardData);
+            else if (e.Key == Key.Add) seq.Edit.Edit.Value = (seq.Edit.Edit.Value + 1) % (SequencerConfig.MaxPatterns + 1);
+            else if (e.Key == Key.Subtract) seq.Edit.Edit.Value = (SequencerConfig.MaxPatterns + seq.Edit.Edit.Value - 1) % (SequencerConfig.MaxPatterns + 1);
             else return;
             e.Handled = true;
         }

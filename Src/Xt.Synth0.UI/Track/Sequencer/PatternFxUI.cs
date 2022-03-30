@@ -8,8 +8,18 @@ using Xt.Synth0.Model;
 namespace Xt.Synth0.UI
 {
 	static class PatternFxUI
-	{
-		static void OnValueKeyDown(PatternFxElements elems, Action interpolate, KeyEventArgs e)
+    {
+        static void OnFxKeyDown(SequencerModel seq, int index, KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers != (ModifierKeys.Control | ModifierKeys.Shift)) return;
+            if (e.Key == Key.C) PatternUI.ClipboardData = seq.Copy(null, index);
+            else if (e.Key == Key.X) PatternUI.ClipboardData = seq.Cut(null, index);
+            else if (e.Key == Key.V) seq.Paste(null, index, PatternUI.ClipboardData);
+            else return;
+            e.Handled = true;
+        }
+
+        static void OnValueKeyDown(PatternFxElements elems, Action interpolate, KeyEventArgs e)
 		{
 			e.Handled = true;
 			if (e.Key == Key.I && e.KeyboardDevice.Modifiers == ModifierKeys.Control) interpolate();
@@ -85,15 +95,6 @@ namespace Xt.Synth0.UI
 			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
 			result.ToolTip = string.Join(Environment.NewLine, fx.Value.Info.Description, PatternUI.InterpolateHint, PatternUI.EditKeyboardHint, PatternUI.EditColumnHint);
 			return result;
-        }
-
-        static void OnFxKeyDown(SequencerModel seq, int index, KeyEventArgs e)
-        {
-            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) PatternUI.ClipboardData = seq.Copy(null, index);
-            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) PatternUI.ClipboardData = seq.Cut(null, index);
-            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) seq.Paste(null, index, PatternUI.ClipboardData);
-            else return;
-            e.Handled = true;
         }
     }
 }

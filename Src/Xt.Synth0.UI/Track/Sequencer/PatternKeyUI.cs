@@ -60,6 +60,16 @@ namespace Xt.Synth0.UI
             e.Handled = true;
         }
 
+        static void OnKeyKeyDown(SequencerModel seq, int index, KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers != (ModifierKeys.Control | ModifierKeys.Shift)) return;
+            if (e.Key == Key.C) PatternUI.ClipboardData = seq.Copy(index, null);
+            else if (e.Key == Key.X) PatternUI.ClipboardData = seq.Cut(index, null);
+            else if (e.Key == Key.V) seq.Paste(index, null, PatternUI.ClipboardData);
+            else return;
+            e.Handled = true;
+        }
+
         static void OnOctKeyDown(PatternKeyElements elems, KeyEventArgs e)
         {
             e.Handled = true;
@@ -172,15 +182,6 @@ namespace Xt.Synth0.UI
             result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
             result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
             return result;
-        }
-
-        static void OnKeyKeyDown(SequencerModel seq, int index, KeyEventArgs e)
-        {
-            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) PatternUI.ClipboardData = seq.Copy(index, null);
-            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) PatternUI.ClipboardData = seq.Cut(index, null);
-            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) seq.Paste(index, null, PatternUI.ClipboardData);
-            else return;
-            e.Handled = true;
         }
     }
 }
