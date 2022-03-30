@@ -71,8 +71,9 @@ namespace Xt.Synth0.UI
             ThemeGroup.Env => settings.EnvColor,
             ThemeGroup.Plot => settings.PlotColor,
 			ThemeGroup.Unit => settings.UnitColor,
-			ThemeGroup.Filter => settings.FilterColor,
-			ThemeGroup.Control => settings.ControlColor,
+            ThemeGroup.Delay => settings.DelayColor,
+            ThemeGroup.Filter => settings.FilterColor,
+            ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
 			ThemeGroup.Settings => settings.SettingsColor,
 			_ => throw new InvalidOperationException()

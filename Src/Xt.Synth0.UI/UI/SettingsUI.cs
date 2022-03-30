@@ -41,7 +41,7 @@ namespace Xt.Synth0.UI
 
         static FrameworkElement MakeTheme(SettingsModel settings)
         {
-            var result = Create.Grid(9, 2, true);
+            var result = Create.Grid(10, 2, true);
             result.Add(Create.Label("Amp", new(0, 0)));
             result.Add(MakeThemeColor(settings, nameof(settings.AmpColor), new(0, 1)));
             result.Add(Create.Label("LFO", new(1, 0)));
@@ -52,14 +52,16 @@ namespace Xt.Synth0.UI
             result.Add(MakeThemeColor(settings, nameof(settings.PlotColor), new(3, 1)));
             result.Add(Create.Label("Unit", new(4, 0)));
             result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(4, 1)));
-            result.Add(Create.Label("Filter", new(5, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(5, 1)));
-            result.Add(Create.Label("Pattern", new(6, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(6, 1)));
-            result.Add(Create.Label("Control", new(7, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(7, 1)));
-            result.Add(Create.Label("Settings", new(8, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(8, 1)));
+            result.Add(Create.Label("Delay", new(5, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.DelayColor), new(5, 1)));
+            result.Add(Create.Label("Filter", new(6, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(6, 1)));
+            result.Add(Create.Label("Pattern", new(7, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(7, 1)));
+            result.Add(Create.Label("Control", new(8, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(8, 1)));
+            result.Add(Create.Label("Settings", new(9, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(9, 1)));
             return result;
         }
 

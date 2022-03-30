@@ -56,7 +56,15 @@ namespace Xt.Synth0.Model
 			set => Set(ref _unitColor, value);
 		}
 
-		string _filterColor = "#40E080";
+        string _delayColor = "#40FFFF";
+        [Key(nameof(DelayColor))]
+        public string DelayColor
+        {
+            get => _delayColor;
+            set => Set(ref _delayColor, value);
+        }
+
+        string _filterColor = "#40E080";
 		[Key(nameof(FilterColor))]
 		public string FilterColor
 		{
@@ -183,7 +191,8 @@ namespace Xt.Synth0.Model
             settings.AmpColor = AmpColor;
             settings.PlotColor = PlotColor;
 			settings.UnitColor = UnitColor;
-			settings.FilterColor = FilterColor;
+            settings.DelayColor = DelayColor;
+            settings.FilterColor = FilterColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
 			settings.SettingsColor = SettingsColor;

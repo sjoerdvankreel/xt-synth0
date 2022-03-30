@@ -12,7 +12,7 @@ namespace Xt.Synth0.Model
         public int Index => 0;
         public int Columns => 4;
         public Param Enabled => On;
-        public ThemeGroup ThemeGroup => ThemeGroup.Amp; // TODO
+        public ThemeGroup ThemeGroup => ThemeGroup.Delay; // TODO
 
         public string Name => "Delay";
         public string Info => "Global";
