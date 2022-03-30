@@ -34,16 +34,23 @@ namespace Xt.Synth0.Model
             foreach (var key in Keys) key.Clear();
         }
 
-        public void PasteFrom(PatternRowModel model)
+        public PatternRowModel Copy()
         {
-            for (int i = 0; i < Fx.Count; i++) Fx[i].PasteFrom(model.Fx[i]);
-            for (int i = 0; i < Keys.Count; i++) Keys[i].PasteFrom(model.Keys[i]);
+            var result = new PatternRowModel(Index);
+            CopyTo(result);
+            return result;
         }
 
         public void CopyTo(PatternRowModel model)
         {
             for (int i = 0; i < Fx.Count; i++) Fx[i].CopyTo(model.Fx[i]);
             for (int i = 0; i < Keys.Count; i++) Keys[i].CopyTo(model.Keys[i]);
+        }
+
+        public void PasteFrom(PatternRowModel model)
+        {
+            for (int i = 0; i < Fx.Count; i++) Fx[i].PasteFrom(model.Fx[i]);
+            for (int i = 0; i < Keys.Count; i++) Keys[i].PasteFrom(model.Keys[i]);
         }
     }
 }
