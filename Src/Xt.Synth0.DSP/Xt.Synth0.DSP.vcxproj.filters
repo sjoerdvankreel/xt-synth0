@@ -207,9 +207,6 @@
     <ClInclude Include="Model\Synth\GlobalFilterModel.hpp">
       <Filter>Model\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\GlobalFilterPlot.hpp">
-      <Filter>DSP\Synth</Filter>
-    </ClInclude>
     <ClInclude Include="DSP\Synth\GlobalModDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>

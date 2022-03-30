@@ -31,7 +31,6 @@
     <ClInclude Include="DSP\Synth\EnvDSP.hpp" />
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\GlobalFilterDSP.hpp" />
-    <ClInclude Include="DSP\Synth\GlobalFilterPlot.hpp" />
     <ClInclude Include="DSP\Synth\GlobalModDSP.hpp" />
     <ClInclude Include="DSP\Synth\VoiceFilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\VoiceFilterPlot.hpp" />

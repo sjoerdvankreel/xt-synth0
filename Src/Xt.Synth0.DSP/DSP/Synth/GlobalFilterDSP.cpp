@@ -1,7 +1,6 @@
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
 #include <DSP/Synth/GlobalFilterDSP.hpp>
-#include <DSP/Synth/GlobalFilterPlot.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
 #include <memory>

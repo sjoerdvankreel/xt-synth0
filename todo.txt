@@ -2,9 +2,7 @@ hard sync
 sampler
 multiple synths + select target in sequencer
 filter lfos
-global (not per-voice) stuff: lfos, filters, envelopes
 xtaudio use iaudioclient->reset
-update running voice
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 if(unit1>0 etc)
@@ -14,3 +12,4 @@ handle stream stopped with error
 process buffer in blocks
 store automation target by id/name/index
 visual indicator for realtime knobs
+global plots
