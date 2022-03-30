@@ -98,6 +98,7 @@ void
 SynthDSP::Init()
 {
   new(&_master) MasterDSP(&_model.global.master);
+  new(&_delay) DelayDSP(&_model.global.delay, _bpm, _rate);
   new(&_globalLfo) LfoDSP(&_model.global.lfo, _bpm, _rate);
   new(&_globalFilter) GlobalFilterDSP(&_model.global.filter, _rate);
   for(size_t i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voiceModels[i] = _model;
