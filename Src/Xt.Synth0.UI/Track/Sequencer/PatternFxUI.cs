@@ -34,8 +34,8 @@ namespace Xt.Synth0.UI
 			PatternFxModel fx, int minFx, int row, int col, Action fill, Action interpolate)
 		{
 			var result = new PatternFxElements();
-			result.Target = grid.Add(MakeTarget(app, fx.Target, minFx, row, col, result, fill));
-			result.Value = grid.Add(MakeValue(app, fx.Target, fx.Value, minFx, row, col + 1, result, interpolate));
+			result.Target = grid.Add(MakeTarget(app, fx, minFx, row, col, result, fill));
+			result.Value = grid.Add(MakeValue(app, fx, minFx, row, col + 1, result, interpolate));
 			return result;
 		}
 
@@ -52,36 +52,48 @@ namespace Xt.Synth0.UI
 			return result;
 		}
 
-		static UIElement MakeTarget(AppModel app, Param target,
-			int minFx, int row, int col, PatternFxElements elems, Action fill)
+		static UIElement MakeTarget(AppModel app, PatternFxModel fx,
+            int minFx, int row, int col, PatternFxElements elems, Action fill)
 		{
 			var seq = app.Track.Seq;
 			var synth = app.Track.Synth;
-			var result = MakeHex(app, target, minFx, row, col);
+			var result = MakeHex(app, fx.Target, minFx, row, col);
 			result.OnParsed += (s, e) => elems.RequestMoveTargetFocus(true, false);
-			var formatter = new TargetFormatter(synth, target);
-			var binding = Bind.To(target, nameof(Param.Value), formatter);
+			var formatter = new TargetFormatter(synth, fx.Target);
+			var binding = Bind.To(fx.Target, nameof(Param.Value), formatter);
 			result.SetBinding(FrameworkElement.ToolTipProperty, binding);
-			result.KeyDown += (s, e) => OnTargetKeyDown(target, elems, fill, e);
-			binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
+			result.KeyDown += (s, e) => OnTargetKeyDown(fx.Target, elems, fill, e);
+            result.KeyDown += (s, e) => OnFxKeyDown(seq, fx.Index, e);
+            binding = Bind.To(fx.Target, nameof(Param.Value), new PlaceholderConverter(0));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
 			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
 			return result;
 		}
 
-		static UIElement MakeValue(AppModel app, Param target, Param value,
+		static UIElement MakeValue(AppModel app, PatternFxModel fx,
 			int minFx, int row, int col, PatternFxElements elems, Action interpolate)
 		{
-			var result = MakeHex(app, value, minFx, row, col);
-			var binding = Bind.To(target, nameof(Param.Value), new PlaceholderConverter(0));
+            var seq = app.Track.Seq;
+			var result = MakeHex(app, fx.Value, minFx, row, col);
+			var binding = Bind.To(fx.Target, nameof(Param.Value), new PlaceholderConverter(0));
 			result.SetBinding(HexBox.ShowPlaceholderProperty, binding);
 			result.KeyDown += (s, e) => OnValueKeyDown(elems, interpolate, e);
-			result.OnParsed += (s, e) => elems.RequestMoveValueFocus(true, false);
+            result.KeyDown += (s, e) => OnFxKeyDown(seq, fx.Index, e);
+            result.OnParsed += (s, e) => elems.RequestMoveValueFocus(true, false);
 			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
 			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
-			result.ToolTip = string.Join(Environment.NewLine, value.Info.Description, PatternUI.InterpolateHint, PatternUI.EditKeyboardHint, PatternUI.EditColumnHint);
+			result.ToolTip = string.Join(Environment.NewLine, fx.Value.Info.Description, PatternUI.InterpolateHint, PatternUI.EditKeyboardHint, PatternUI.EditColumnHint);
 			return result;
-		}
-	}
+        }
+
+        static void OnFxKeyDown(SequencerModel seq, int index, KeyEventArgs e)
+        {
+            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) PatternUI.ClipboardData = seq.Copy(null, index);
+            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) PatternUI.ClipboardData = seq.Cut(null, index);
+            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift)) seq.Paste(null, index, PatternUI.ClipboardData);
+            else return;
+            e.Handled = true;
+        }
+    }
 }
