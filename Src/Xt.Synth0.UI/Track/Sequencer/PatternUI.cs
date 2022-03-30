@@ -15,6 +15,7 @@ namespace Xt.Synth0.UI
     {
         internal const int TooltipDelay = 1000;
         internal const int BetweenTooltipDelay = 0;
+        static SequencerClipboardData _clipboardData;
 
         const double HighlightedOpacity = 0.25;
         const double NotHighlightedOpacity = 0.0;
@@ -58,6 +59,7 @@ namespace Xt.Synth0.UI
 
         internal static UIElement Make(AppModel app)
         {
+            var seq = app.Track.Seq;
             var pattern = app.Track.Seq.Pattern;
             var result = Create.ThemedGroup(app.Settings, pattern, MakeContent(app));
             var dock = new DockPanel();
@@ -68,7 +70,7 @@ namespace Xt.Synth0.UI
             info.SetBinding(TextBlock.TextProperty, BindText(app));
             result.Header = dock;
             result.ToolTip = EditPatternHint;
-            result.KeyDown += OnPatternKeyDown;
+            result.KeyDown += (s, e) => OnPatternKeyDown(seq, e);
             return result;
         }
 
@@ -250,17 +252,11 @@ namespace Xt.Synth0.UI
             }
         }
 
-        static void OnPatternKeyDown(object sender, KeyEventArgs e)
+        static void OnPatternKeyDown(SequencerModel seq, KeyEventArgs e)
         {
-            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-            {
-            }
-            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-            {
-            }
-            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-            {
-            }
+            if (e.Key == Key.C && e.KeyboardDevice.Modifiers == ModifierKeys.Control) _clipboardData = seq.Copy(null, null);
+            else if (e.Key == Key.X && e.KeyboardDevice.Modifiers == ModifierKeys.Control) _clipboardData = seq.Cut(null, null);
+            else if (e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control) seq.Paste(null, null, _clipboardData);
             else if (e.Key == Key.C && e.KeyboardDevice.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
             }

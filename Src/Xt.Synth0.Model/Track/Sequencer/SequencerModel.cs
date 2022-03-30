@@ -37,26 +37,50 @@ namespace Xt.Synth0.Model
                 }
         }
 
-        public void Paste(int pattern, int? key, int? fx, SequencerClipboardData data)
+        public SequencerClipboardData Cut(int? key, int? fx)
+        {
+            var result = Copy(key, fx);
+            Clear(key, fx);
+            return result;
+        }
+
+        public void Clear(int? key, int? fx)
         {
             int count = Edit.Rows.Value;
-            int start = pattern * count;
+            int start = (Edit.Edit.Value - 1) * count;
+            if (key != null && fx != null) throw new InvalidOperationException();
+            if (fx != null)
+                for (int i = start; i < start + count; i++)
+                    Pattern.Rows[i].Fx[fx.Value].Clear();
+            else if (key != null)
+                for (int i = start; i < start + count; i++)
+                    Pattern.Rows[i].Keys[fx.Value].Clear();
+            else
+                for (int i = start; i < start + count; i++)
+                    Pattern.Rows[i].Clear();
+        }
+
+        public void Paste(int? key, int? fx, SequencerClipboardData data)
+        {
+            if (data == null) return;
+            int count = Edit.Rows.Value;
+            int start = (Edit.Edit.Value - 1) * count;
             if (key != null && fx != null) throw new InvalidOperationException();
             if (fx != null && data.Type == SequencerClipboardType.Fx)
-                for (int i = start; i < count; i++)
+                for (int i = start; i < start + count; i++)
                     data.Fx[i - start].CopyTo(Pattern.Rows[i].Fx[fx.Value]);
             else if (key != null && data.Type == SequencerClipboardType.Keys)
-                for (int i = start; i < count; i++)
+                for (int i = start; i < start + count; i++)
                     data.Keys[i - start].CopyTo(Pattern.Rows[i].Keys[fx.Value]);
-            else if(data.Type == SequencerClipboardType.Rows)
-                for (int i = start; i < count; i++)
+            else if (data.Type == SequencerClipboardType.Rows)
+                for (int i = start; i < start + count; i++)
                     data.Rows[i - start].CopyTo(Pattern.Rows[i]);
         }
 
-        public SequencerClipboardData Copy(int pattern, int? key, int? fx)
+        public SequencerClipboardData Copy(int? key, int? fx)
         {
             int count = Edit.Rows.Value;
-            int start = pattern * count;
+            int start = (Edit.Edit.Value - 1) * count;
             if (key != null && fx != null) throw new InvalidOperationException();
             PatternRowModel[] rows = Pattern.Rows.Skip(start).Take(count).ToArray();
             if (key != null) return new SequencerClipboardData(rows.Select(r => r.Keys[key.Value].Copy()).ToArray());
