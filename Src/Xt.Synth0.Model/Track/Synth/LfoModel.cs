@@ -54,14 +54,14 @@ namespace Xt.Synth0.Model
         public Param Invert { get; } = new(InvertInfo);
         public Param Unipolar { get; } = new Param(UnipolarInfo);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", true, false);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, 2, nameof(Type), "Type", "Type", true);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<LfoType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type", true);
         static readonly ParamInfo InvertInfo = ParamInfo.Toggle(p => &((Native*)p)->invert, 0, nameof(Invert), "Inv", "Invert", true, false);
         static readonly ParamInfo UnipolarInfo = ParamInfo.Toggle(p => &((Native*)p)->unipolar, 0, nameof(Unipolar), "Uni", "Unipolar", true, false);
 
         public Param Sync { get; } = new(SyncInfo);
         public Param Step { get; } = new(StepInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
-        static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 0, nameof(Sync), "Sync", "Beat sync", true, false);
+        static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 1, nameof(Sync), "Sync", "Beat sync", true, false);
         static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, 1, nameof(Step), "Step", "Rate steps", true, 1, 7, RelevanceSync);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->frequency, 1, nameof(Frequency), "Frq", "Frequency", true, 0, MinFreqHz, MaxFreqHz, RelevanceTime);
     }

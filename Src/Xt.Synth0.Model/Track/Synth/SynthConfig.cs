@@ -7,6 +7,6 @@
         public const int VoiceUnitCount = 3;
         public const int VoiceFilterCount = 2;
         public const int SynthMaxVoices = 16;
-        public const int SynthParamCount = 200;
+        public const int SynthParamCount = 206;
     }
 }

@@ -78,11 +78,11 @@ namespace Xt.Synth0.Model
         public Param DecayTime { get; } = new(DecayTimeInfo);
         public Param AttackTime { get; } = new(AttackTimeInfo);
         public Param ReleaseTime { get; } = new(ReleaseTimeInfo);
-        static readonly ParamInfo HoldTimeInfo = ParamInfo.Time(p => &((Native*)p)->holdTime, 2, nameof(HoldTime), "Hld", "Hold milliseconds", false, 0, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo DelayTimeInfo = ParamInfo.Time(p => &((Native*)p)->delayTime, 2, nameof(DelayTime), "Dly", "Delay milliseconds", false, 0, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo DecayTimeInfo = ParamInfo.Time(p => &((Native*)p)->decayTime, 1, nameof(DecayTime), "D", "Decay milliseconds", false, 18, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo AttackTimeInfo = ParamInfo.Time(p => &((Native*)p)->attackTime, 1, nameof(AttackTime), "A", "Attack milliseconds", false, 7, MinTimeMs, MaxTimeMs, RelevanceTime);
-        static readonly ParamInfo ReleaseTimeInfo = ParamInfo.Time(p => &((Native*)p)->releaseTime, 1, nameof(ReleaseTime), "R", "Release milliseconds", false, 36, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo HoldTimeInfo = ParamInfo.Time(p => &((Native*)p)->holdTime, 2, nameof(HoldTime), "Hld", "Hold time", false, 0, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo DelayTimeInfo = ParamInfo.Time(p => &((Native*)p)->delayTime, 2, nameof(DelayTime), "Dly", "Delay time", false, 0, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo DecayTimeInfo = ParamInfo.Time(p => &((Native*)p)->decayTime, 1, nameof(DecayTime), "D", "Decay time", false, 18, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo AttackTimeInfo = ParamInfo.Time(p => &((Native*)p)->attackTime, 1, nameof(AttackTime), "A", "Attack time", false, 7, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo ReleaseTimeInfo = ParamInfo.Time(p => &((Native*)p)->releaseTime, 1, nameof(ReleaseTime), "R", "Release time", false, 36, MinTimeMs, MaxTimeMs, RelevanceTime);
 
         public Param HoldStep { get; } = new(HoldStepInfo);
         public Param DelayStep { get; } = new(DelayStepInfo);

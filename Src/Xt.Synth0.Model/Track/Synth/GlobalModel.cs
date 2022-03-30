@@ -9,6 +9,7 @@ namespace Xt.Synth0.Model
         {
             internal LfoModel.Native lfo;
             internal PlotModel.Native plot;
+            internal DelayModel.Native delay;
             internal MasterModel.Native master;
             internal GlobalFilterModel.Native filter;
         }

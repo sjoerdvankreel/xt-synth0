@@ -46,6 +46,7 @@ namespace Xt.Synth0.UI
             result.Add(GroupUI.Make(app, synth.GlobalFilter), Dock.Top);
             result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             result.Add(GroupUI.Make(app, synth.Master), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.Delay), Dock.Top);
             return result;
         }
 

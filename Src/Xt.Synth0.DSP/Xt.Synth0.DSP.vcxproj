@@ -28,6 +28,7 @@
     <ClInclude Include="DSP\Synth\AudioState.hpp" />
     <ClInclude Include="DSP\Synth\CvDSP.hpp" />
     <ClInclude Include="DSP\Synth\CvState.hpp" />
+    <ClInclude Include="DSP\Synth\DelayDSP.hpp" />
     <ClInclude Include="DSP\Synth\EnvDSP.hpp" />
     <ClInclude Include="DSP\Synth\FilterDSP.hpp" />
     <ClInclude Include="DSP\Synth\GlobalFilterDSP.hpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="Model\Shared\SyncStepModel.hpp" />
     <ClInclude Include="Model\Synth\AmpModel.hpp" />
     <ClInclude Include="Model\Synth\AudioModel.hpp" />
+    <ClInclude Include="Model\Synth\DelayModel.hpp" />
     <ClInclude Include="Model\Synth\FilterModel.hpp" />
     <ClInclude Include="Model\Synth\GlobalFilterModel.hpp" />
     <ClInclude Include="Model\Synth\GlobalModel.hpp" />
@@ -86,6 +88,7 @@
     <ClCompile Include="DSP\Synth\AmpDSP.cpp" />
     <ClCompile Include="DSP\Synth\AudioDSP.cpp" />
     <ClCompile Include="DSP\Synth\CvDSP.cpp" />
+    <ClCompile Include="DSP\Synth\DelayDSP.cpp" />
     <ClCompile Include="DSP\Synth\EnvDSP.cpp" />
     <ClCompile Include="DSP\Synth\FilterDSP.cpp" />
     <ClCompile Include="DSP\Synth\GlobalFilterDSP.cpp" />

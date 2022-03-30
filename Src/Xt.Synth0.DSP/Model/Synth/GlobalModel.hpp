@@ -3,6 +3,7 @@
 
 #include <Model/Synth/LfoModel.hpp>
 #include <Model/Synth/PlotModel.hpp>
+#include <Model/Synth/DelayModel.hpp>
 #include <Model/Synth/MasterModel.hpp>
 #include <Model/Synth/GlobalFilterModel.hpp>
 
@@ -12,10 +13,11 @@ struct XTS_ALIGN GlobalModel
 {
   LfoModel lfo;
   PlotModel plot;
+  DelayModel delay;
   MasterModel master;
   GlobalFilterModel filter;
 };
-XTS_CHECK_SIZE(GlobalModel, 112);
+XTS_CHECK_SIZE(GlobalModel, 136);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_GLOBAL_MODEL_HPP

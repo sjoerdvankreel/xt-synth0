@@ -225,6 +225,12 @@
     <ClInclude Include="DSP\Synth\MasterPlot.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Synth\DelayModel.hpp">
+      <Filter>Model\Synth</Filter>
+    </ClInclude>
+    <ClInclude Include="DSP\Synth\DelayDSP.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp">
@@ -288,6 +294,9 @@
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\GlobalPlot.cpp">
+      <Filter>DSP\Synth</Filter>
+    </ClCompile>
+    <ClCompile Include="DSP\Synth\DelayDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
   </ItemGroup>

@@ -45,8 +45,8 @@ namespace Xt.Synth0.Model
         public Param CombPlusDelay { get; } = new(CombPlusDelayInfo);
         static readonly ParamInfo CombMinGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combMinGain, 0, nameof(CombMinGain), "Gn-", "Comb feedback gain", true, RelevanceComb);
         static readonly ParamInfo CombPlusGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combPlusGain, 0, nameof(CombPlusGain), "Gn+", "Comb feedforward gain", true, RelevanceComb);
-        static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
-        static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
+        static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
+        static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
 
         public Param PassType { get; } = new(PassTypeInfo);
         public Param Resonance { get; } = new(ResonanceInfo);
