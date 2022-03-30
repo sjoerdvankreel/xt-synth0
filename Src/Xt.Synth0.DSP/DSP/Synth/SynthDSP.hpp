@@ -4,6 +4,7 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/VoiceDSP.hpp>
+#include <DSP/Synth/MasterDSP.hpp>
 #include <DSP/Synth/GlobalFilterDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
 #include <Model/Synth/SynthConfig.hpp>
@@ -21,6 +22,7 @@ class SynthDSP
   int _keyCount;
   SynthModel _model;
   LfoDSP _globalLfo;
+  MasterDSP _master;
   FloatSample _output;
   GlobalFilterDSP _globalFilter;
   int* _binding[XTS_SYNTH_PARAM_COUNT];

@@ -34,6 +34,7 @@ SynthDSP::Next()
     if (_voiceDsps[v].End()) Return(_voiceKeys[v], v);
   }
   _output = _globalFilter.Next(globalLfo, _output);
+  _output = _master.Next(globalLfo, _output);
   return _output.Sanity();
 }
 
@@ -89,10 +90,10 @@ SynthDSP::Take(int key, int voice, int64_t position)
 void
 SynthDSP::Init()
 {
+  new(&_master) MasterDSP(&_model.global.master);
   new(&_globalLfo) LfoDSP(&_model.global.lfo, _bpm, _rate);
   new(&_globalFilter) GlobalFilterDSP(&_model.global.filter, _rate);
-  for(size_t i = 0; i < XTS_SYNTH_MAX_VOICES; i++)
-    _voiceModels[i] = _model;
+  for(size_t i = 0; i < XTS_SYNTH_MAX_VOICES; i++) _voiceModels[i] = _model;
 }
 
 int

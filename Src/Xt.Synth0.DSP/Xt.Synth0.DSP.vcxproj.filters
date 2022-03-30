@@ -281,5 +281,8 @@
     <ClCompile Include="DSP\Synth\GlobalFilterDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
+    <ClCompile Include="DSP\Synth\MasterDSP.cpp">
+      <Filter>DSP\Synth</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
