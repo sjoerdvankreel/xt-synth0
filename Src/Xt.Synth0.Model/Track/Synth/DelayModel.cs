@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 {
     public unsafe sealed class DelayModel : IUIParamGroupModel
     {
-        const double MinTimeMs = 0.0;
+        const double MinTimeMs = 1.0;
         const double MaxTimeMs = 1000.0;
 
         public int Index => 0;

@@ -7,7 +7,7 @@ namespace Xts {
 
 enum class PlotType
 { 
-  Master, Amp, 
+  Master, Delay, Amp,
   Env1, Env2, Env3, 
   LFO1, LFO2, GlobalLFO,
   Unit1, Unit2, Unit3, 

@@ -231,6 +231,9 @@
     <ClInclude Include="DSP\Synth\DelayDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Synth\DelayPlot.hpp">
+      <Filter>DSP\Synth</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp">

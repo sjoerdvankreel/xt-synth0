@@ -1,4 +1,5 @@
 #include <DSP/Synth/SynthDSP.hpp>
+#include <DSP/Synth/DelayPlot.hpp>
 #include <DSP/Synth/MasterPlot.hpp>
 #include <DSP/Synth/VoiceFilterPlot.hpp>
 #include <DSP/Synth/GlobalFilterPlot.hpp>
@@ -16,6 +17,7 @@ SynthDSP::RenderPlot(SynthModel const& model, PlotInput const& input, PlotState&
   switch(model.global.plot.type)
   {
   case PlotType::Amp: AmpPlot::Render(model, input, state); break;
+  case PlotType::Delay: DelayPlot::Render(model, input, state); break;
   case PlotType::Master: MasterPlot::Render(model, input, state); break;
   case PlotType::GlobalFilter: GlobalFilterPlot::Render(model, input, state); break;
   case PlotType::Filter1: case PlotType::Filter2: VoiceFilterPlot::Render(model, input, state); break;
@@ -38,6 +40,7 @@ SynthDSP::Next()
     if (_voiceDsps[v].End()) Return(_voiceKeys[v], v);
   }
   _output = _globalFilter.Next(globalLfo, _output);
+  _output = _delay.Next(_output);
   _output = _master.Next(globalLfo, _output);
   return _output.Sanity();
 }

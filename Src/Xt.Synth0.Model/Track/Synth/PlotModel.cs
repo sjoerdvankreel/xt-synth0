@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 {
     public enum PlotType
     {
-        Master, Amp,
+        Master, Delay, Amp,
         Env1, Env2, Env3,
         LFO1, LFO2, GlobalLFO,
         Unit1, Unit2, Unit3,
@@ -47,7 +47,7 @@ namespace Xt.Synth0.Model
             internal int spectrum;
         }
 
-        static readonly string[] PlotTypeNames = { "Master", "Amp", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3", "Unit1", "Unit2", "Unit3", "Filter1", "Filter2", "Filter3" };
+        static readonly string[] PlotTypeNames = { "Master", "Delay", "Amp", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3", "Unit1", "Unit2", "Unit3", "Filter1", "Filter2", "Filter3" };
 
         static readonly IRelevance RelevanceHold = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t < PlotType.LFO1);
         static readonly IRelevance RelevanceSpectrum = Relevance.Param((PlotModel m) => m.Type, (PlotType t) => t >= PlotType.LFO1 || t == PlotType.Master);

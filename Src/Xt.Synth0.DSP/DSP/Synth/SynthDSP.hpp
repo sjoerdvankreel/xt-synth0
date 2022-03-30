@@ -3,6 +3,7 @@
 
 #include <DSP/Synth/LfoDSP.hpp>
 #include <DSP/Synth/VoiceDSP.hpp>
+#include <DSP/Synth/DelayDSP.hpp>
 #include <DSP/Synth/MasterDSP.hpp>
 #include <DSP/Synth/GlobalFilterDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
@@ -19,6 +20,7 @@ class SynthDSP
   int _voices;
   int _fxCount;
   int _keyCount;
+  DelayDSP _delay;
   SynthModel _model;
   LfoDSP _globalLfo;
   MasterDSP _master;
@@ -48,6 +50,7 @@ private:
 public:
   VoiceDSP& Voice0() { return _voiceDsps[0]; };
   FloatSample Output() const { return _output; }
+  DelayDSP const& Delay() const { return _delay; }
   MasterDSP const& Master() const { return _master; }
   VoiceDSP const& Voice0() const { return _voiceDsps[0]; }
   GlobalFilterDSP const& GlobalFilter() const { return _globalFilter; }
