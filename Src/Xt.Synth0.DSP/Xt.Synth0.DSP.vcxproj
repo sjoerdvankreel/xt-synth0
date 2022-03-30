@@ -42,7 +42,6 @@
     <ClInclude Include="DSP\Synth\VoiceModDSP.hpp" />
     <ClInclude Include="DSP\Synth\TargetModDSP.hpp" />
     <ClInclude Include="DSP\Synth\TargetModsDSP.hpp" />
-    <ClInclude Include="DSP\Synth\PlotDSP.hpp" />
     <ClInclude Include="DSP\Synth\SynthDSP.hpp" />
     <ClInclude Include="DSP\Synth\VoiceDSP.hpp" />
     <ClInclude Include="DSP\Synth\UnitDSP.hpp" />
@@ -95,7 +94,6 @@
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp" />
     <ClCompile Include="DSP\Synth\LfoDSP.cpp" />
     <ClCompile Include="DSP\Synth\VoiceModDSP.cpp" />
-    <ClCompile Include="DSP\Synth\PlotDSP.cpp" />
     <ClCompile Include="DSP\Synth\SynthDSP.cpp" />
     <ClCompile Include="DSP\Synth\VoiceDSP.cpp" />
     <ClCompile Include="DSP\Synth\UnitDSP.cpp" />

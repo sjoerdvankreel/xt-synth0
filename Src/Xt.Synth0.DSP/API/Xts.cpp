@@ -1,6 +1,5 @@
 #include <API/Xts.hpp>
 #include <DSP/Shared/Plot.hpp>
-#include <DSP/Synth/PlotDSP.hpp>
 #include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
@@ -80,7 +79,7 @@ XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** outp
   plot->state.output = Xts::PlotOutput();
   plot->state.result = Xts::PlotResult();
   *plot->state.scratch = Xts::PlotScratch();
-  Xts::SynthPlotRender(plot->model, *input, plot->state);
+  Xts::SynthDSP::RenderPlot(plot->model, *input, plot->state);
   *output = &plot->state.output;  
   return &plot->state.result;
 }

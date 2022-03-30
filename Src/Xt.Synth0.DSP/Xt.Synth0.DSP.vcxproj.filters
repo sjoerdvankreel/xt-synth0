@@ -90,9 +90,6 @@
     <ClInclude Include="DSP\Synth\AudioDSP.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Synth\PlotDSP.hpp">
-      <Filter>DSP\Synth</Filter>
-    </ClInclude>
     <ClInclude Include="DSP\Synth\VoiceFilterPlot.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
@@ -252,9 +249,6 @@
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\AudioDSP.cpp">
-      <Filter>DSP\Synth</Filter>
-    </ClCompile>
-    <ClCompile Include="DSP\Synth\PlotDSP.cpp">
       <Filter>DSP\Synth</Filter>
     </ClCompile>
     <ClCompile Include="DSP\Synth\VoiceDSP.cpp">
