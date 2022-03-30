@@ -71,7 +71,7 @@ namespace Xt.Synth0.Model
 
         static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep" };
         static readonly string[] BlepTypeNames = new[] { "Saw", "Pulse", "Tri " };
-        static readonly string[] ModTargetNames = new[] { "Amp", "Phase", "Pitch", "Pan", "Freq", "PW", "Roll" };
+        static readonly string[] ModTargetNames = new[] { "Amp", "Pan", "Phase", "Pitch", "Freq", "PW", "Roll" };
         static readonly string[] NoteNames = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
 
         static readonly IRelevance RelevanceBlep = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
