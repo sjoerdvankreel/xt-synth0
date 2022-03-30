@@ -32,14 +32,6 @@ namespace Xt.Synth0.Model
 			set => Set(ref _envColor, value);
 		}
 
-		string _lfoColor = "#FF8040";
-		[Key(nameof(LfoColor))]
-		public string LfoColor
-		{
-			get => _lfoColor;
-			set => Set(ref _lfoColor, value);
-		}
-
 		string _plotColor = "#FF4040";
 		[Key(nameof(PlotColor))]
 		public string PlotColor
@@ -102,9 +94,25 @@ namespace Xt.Synth0.Model
 		{
 			get => _controlColor;
 			set => Set(ref _controlColor, value);
-		}
+        }
 
-		BitDepth _bitDepth;
+        string _voiceLfoColor = "#FF8040";
+        [Key(nameof(VoiceLfoColor))]
+        public string VoiceLfoColor
+        {
+            get => _voiceLfoColor;
+            set => Set(ref _voiceLfoColor, value);
+        }
+
+        string _globalLfoColor = "#FF8040";
+        [Key(nameof(GlobalLfoColor))]
+        public string GlobalLfoColor
+        {
+            get => _globalLfoColor;
+            set => Set(ref _globalLfoColor, value);
+        }
+
+        BitDepth _bitDepth;
 		[Key(nameof(BitDepth))]
 		public BitDepth BitDepth
 		{
@@ -186,7 +194,6 @@ namespace Xt.Synth0.Model
 
 		public void CopyTo(SettingsModel settings)
 		{
-			settings.LfoColor = LfoColor;
             settings.EnvColor = EnvColor;
             settings.AmpColor = AmpColor;
             settings.PlotColor = PlotColor;
@@ -195,7 +202,8 @@ namespace Xt.Synth0.Model
             settings.FilterColor = FilterColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
-			settings.SettingsColor = SettingsColor;
+            settings.VoiceLfoColor = VoiceLfoColor;
+            settings.SettingsColor = SettingsColor;
 
 			settings.BitDepth = BitDepth;
 			settings.DeviceType = DeviceType;

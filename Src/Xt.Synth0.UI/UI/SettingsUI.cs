@@ -41,27 +41,29 @@ namespace Xt.Synth0.UI
 
         static FrameworkElement MakeTheme(SettingsModel settings)
         {
-            var result = Create.Grid(10, 2, true);
+            var result = Create.Grid(11, 2, true);
             result.Add(Create.Label("Amp", new(0, 0)));
             result.Add(MakeThemeColor(settings, nameof(settings.AmpColor), new(0, 1)));
-            result.Add(Create.Label("LFO", new(1, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.LfoColor), new(1, 1)));
-            result.Add(Create.Label("Env", new(2, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.EnvColor), new(2, 1)));
-            result.Add(Create.Label("Plot", new(3, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.PlotColor), new(3, 1)));
-            result.Add(Create.Label("Unit", new(4, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(4, 1)));
-            result.Add(Create.Label("Delay", new(5, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.DelayColor), new(5, 1)));
-            result.Add(Create.Label("Filter", new(6, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(6, 1)));
-            result.Add(Create.Label("Pattern", new(7, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(7, 1)));
-            result.Add(Create.Label("Control", new(8, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(8, 1)));
-            result.Add(Create.Label("Settings", new(9, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(9, 1)));
+            result.Add(Create.Label("VLFO", new(1, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.VoiceLfoColor), new(1, 1)));
+            result.Add(Create.Label("GLFO", new(2, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.GlobalLfoColor), new(2, 1)));
+            result.Add(Create.Label("Env", new(3, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.EnvColor), new(3, 1)));
+            result.Add(Create.Label("Plot", new(4, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.PlotColor), new(4, 1)));
+            result.Add(Create.Label("Unit", new(5, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(5, 1)));
+            result.Add(Create.Label("Delay", new(6, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.DelayColor), new(6, 1)));
+            result.Add(Create.Label("Filter", new(7, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(7, 1)));
+            result.Add(Create.Label("Pattern", new(8, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(8, 1)));
+            result.Add(Create.Label("Control", new(9, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(9, 1)));
+            result.Add(Create.Label("Settings", new(10, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(10, 1)));
             return result;
         }
 

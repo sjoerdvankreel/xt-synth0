@@ -67,7 +67,6 @@ namespace Xt.Synth0.UI
 		=> group switch
 		{
 			ThemeGroup.Amp => settings.AmpColor,
-			ThemeGroup.Lfo => settings.LfoColor,
             ThemeGroup.Env => settings.EnvColor,
             ThemeGroup.Plot => settings.PlotColor,
 			ThemeGroup.Unit => settings.UnitColor,
@@ -76,7 +75,9 @@ namespace Xt.Synth0.UI
             ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
 			ThemeGroup.Settings => settings.SettingsColor,
-			_ => throw new InvalidOperationException()
+            ThemeGroup.VoiceLfo => settings.VoiceLfoColor,
+            ThemeGroup.GlobalLfo => settings.GlobalLfoColor,
+            _ => throw new InvalidOperationException()
 		};
 
 		static ImageSource MakeParamBackgroundSource()

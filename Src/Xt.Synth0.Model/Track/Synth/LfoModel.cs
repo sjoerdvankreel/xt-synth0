@@ -17,7 +17,7 @@ namespace Xt.Synth0.Model
 
         public int Columns => 5;
         public Param Enabled => On;
-        public ThemeGroup ThemeGroup => ThemeGroup.Lfo;
+        public ThemeGroup ThemeGroup => _global? ThemeGroup.GlobalLfo: ThemeGroup.VoiceLfo;
 
         public string Name => $"LFO {Index + 1}";
         public string Info => _global ? "Global" : null;
