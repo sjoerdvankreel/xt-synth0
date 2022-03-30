@@ -31,16 +31,17 @@ namespace Xt.Synth0.Model
             Target.Value = 0;
         }
 
+        public PatternFxModel Copy()
+        {
+            var result = new PatternFxModel(Index);
+            CopyTo(result);
+            return result;
+        }
+
         public void CopyTo(PatternFxModel model)
         {
             model.Value.Value = Value.Value;
             model.Target.Value = Target.Value;
-        }
-
-        public void PasteFrom(PatternFxModel model)
-        {
-            Value.Value = model.Value.Value;
-            Target.Value = model.Target.Value;
         }
 	}
 }

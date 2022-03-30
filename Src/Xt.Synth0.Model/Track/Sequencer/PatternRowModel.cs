@@ -46,11 +46,5 @@ namespace Xt.Synth0.Model
             for (int i = 0; i < Fx.Count; i++) Fx[i].CopyTo(model.Fx[i]);
             for (int i = 0; i < Keys.Count; i++) Keys[i].CopyTo(model.Keys[i]);
         }
-
-        public void PasteFrom(PatternRowModel model)
-        {
-            for (int i = 0; i < Fx.Count; i++) Fx[i].PasteFrom(model.Fx[i]);
-            for (int i = 0; i < Keys.Count; i++) Keys[i].PasteFrom(model.Keys[i]);
-        }
     }
 }

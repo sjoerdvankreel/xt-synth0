@@ -40,18 +40,18 @@ namespace Xt.Synth0.Model
             Velocity.Value = 255;
         }
 
+        public PatternKeyModel Copy()
+        {
+            var result = new PatternKeyModel(Index);
+            CopyTo(result);
+            return result;
+        }
+
         public void CopyTo(PatternKeyModel model)
         {
             model.Note.Value = Note.Value;
             model.Octave.Value = Octave.Value;
             model.Velocity.Value = Velocity.Value;
-        }
-
-        public void PasteFrom(PatternKeyModel model)
-        {
-            Note.Value = model.Note.Value;
-            Octave.Value = model.Octave.Value;
-            Velocity.Value = model.Velocity.Value;
         }
     }
 }
