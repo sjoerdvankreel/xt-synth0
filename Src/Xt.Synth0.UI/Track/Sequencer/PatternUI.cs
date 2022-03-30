@@ -23,8 +23,15 @@ namespace Xt.Synth0.UI
 
 		internal const string EditColumnHint = "Click + keyboard to edit";
 		internal const string InterpolateHint = "Ctrl + I to interpolate";
+        internal static readonly string EditPatternHint =
+            $"Ctrl+X to cut pattern{Environment.NewLine}" +
+            $"Ctrl+C to copy pattern{Environment.NewLine}" +
+            $"Ctrl+V to paste pattern{Environment.NewLine}" +
+            $"Ctrl+Shift+X to cut column{Environment.NewLine}" +
+            $"Ctrl+Shift+C to copy column{Environment.NewLine}" +
+            $"Ctrl+Shift+V to paste column";
 
-		static void Fill(SequencerModel seq, int pattern, int fx)
+        static void Fill(SequencerModel seq, int pattern, int fx)
 		{
 			var rows = seq.Pattern.Rows;
 			int rowCount = SequencerConfig.MaxRows;
@@ -60,6 +67,7 @@ namespace Xt.Synth0.UI
             dock.HorizontalAlignment = HorizontalAlignment.Stretch;
             info.SetBinding(TextBlock.TextProperty, BindText(app));
             result.Header = dock;
+            result.ToolTip = EditPatternHint;
 			return result;
 		}
 
