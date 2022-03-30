@@ -9,7 +9,7 @@ namespace Xt.Synth0.Model
         public int Index => 0;
         public int Columns => 4;
         public Param Enabled => null;
-        public ThemeGroup ThemeGroup => ThemeGroup.Amp;
+        public ThemeGroup ThemeGroup => ThemeGroup.Master;
 
         public string Info => "Global";
         public string Name => "Master";

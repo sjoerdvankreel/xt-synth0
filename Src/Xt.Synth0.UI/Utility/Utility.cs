@@ -71,6 +71,7 @@ namespace Xt.Synth0.UI
             ThemeGroup.Plot => settings.PlotColor,
 			ThemeGroup.Unit => settings.UnitColor,
             ThemeGroup.Delay => settings.DelayColor,
+            ThemeGroup.Master => settings.MasterColor,
             ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
 			ThemeGroup.Settings => settings.SettingsColor,

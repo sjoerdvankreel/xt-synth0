@@ -62,9 +62,17 @@ namespace Xt.Synth0.Model
 		{
 			get => _ampColor;
 			set => Set(ref _ampColor, value);
-		}
+        }
 
-		string _settingsColor = "#E0E0E0";
+        string _masterColor = "#FF8000";
+        [Key(nameof(MasterColor))]
+        public string MasterColor
+        {
+            get => _masterColor;
+            set => Set(ref _masterColor, value);
+        }
+
+        string _settingsColor = "#E0E0E0";
 		[Key(nameof(SettingsColor))]
 		public string SettingsColor
 		{
@@ -207,7 +215,8 @@ namespace Xt.Synth0.Model
             settings.PlotColor = PlotColor;
 			settings.UnitColor = UnitColor;
             settings.DelayColor = DelayColor;
-			settings.PatternColor = PatternColor;
+            settings.MasterColor = MasterColor;
+            settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
             settings.VoiceLfoColor = VoiceLfoColor;
             settings.SettingsColor = SettingsColor;
