@@ -12,7 +12,7 @@ namespace Xt.Synth0.Model
         public int Index => 0;
         public int Columns => 4;
         public Param Enabled => On;
-        public ThemeGroup ThemeGroup => ThemeGroup.Delay; // TODO
+        public ThemeGroup ThemeGroup => ThemeGroup.Delay;
 
         public string Name => "Delay";
         public string Info => "Global";
@@ -43,15 +43,15 @@ namespace Xt.Synth0.Model
         public Param On { get; } = new(OnInfo);
         public Param Mix { get; } = new(MixInfo);
         public Param Feedback { get; } = new(FeedbackInfo);
-        static readonly ParamInfo MixInfo = ParamInfo.Level(p => &((Native*)p)->mix, 0, nameof(Mix), "Mix", "Dry/wet", true, 0);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", true, false);
-        static readonly ParamInfo FeedbackInfo = ParamInfo.Level(p => &((Native*)p)->feedback, 0, nameof(Feedback), "Fbk", "Feedback", true, 0);
+        static readonly ParamInfo MixInfo = ParamInfo.Level(p => &((Native*)p)->mix, 0, nameof(Mix), "Mix", "Dry/wet", true, 128);
+        static readonly ParamInfo FeedbackInfo = ParamInfo.Level(p => &((Native*)p)->feedback, 0, nameof(Feedback), "Fbk", "Feedback", true, 128);
 
         public Param Sync { get; } = new(SyncInfo);
         public Param Step { get; } = new(StepInfo);
         public Param Delay { get; } = new(DelayInfo);
         static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 1, nameof(Sync), "Sync", "Beat sync", true, false);
-        static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, 1, nameof(Step), "Step", "Rate steps", true, 1, 7, RelevanceSync);
-        static readonly ParamInfo DelayInfo = ParamInfo.Time(p => &((Native*)p)->delay, 1, nameof(Delay), "Dly", "Delay time", true, 0, MinTimeMs, MaxTimeMs, RelevanceTime);
+        static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, 1, nameof(Step), "Step", "Rate steps", true, 1, 15, RelevanceSync);
+        static readonly ParamInfo DelayInfo = ParamInfo.Time(p => &((Native*)p)->delay, 1, nameof(Delay), "Dly", "Delay time", true, 100, MinTimeMs, MaxTimeMs, RelevanceTime);
     }
 }
