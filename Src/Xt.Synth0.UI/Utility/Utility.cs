@@ -71,12 +71,13 @@ namespace Xt.Synth0.UI
             ThemeGroup.Plot => settings.PlotColor,
 			ThemeGroup.Unit => settings.UnitColor,
             ThemeGroup.Delay => settings.DelayColor,
-            ThemeGroup.Filter => settings.FilterColor,
             ThemeGroup.Control => settings.ControlColor,
 			ThemeGroup.Pattern => settings.PatternColor,
 			ThemeGroup.Settings => settings.SettingsColor,
             ThemeGroup.VoiceLfo => settings.VoiceLfoColor,
             ThemeGroup.GlobalLfo => settings.GlobalLfoColor,
+            ThemeGroup.VoiceFilter => settings.VoiceFilterColor,
+            ThemeGroup.GlobalFilter => settings.GlobalFilterColor,
             _ => throw new InvalidOperationException()
 		};
 

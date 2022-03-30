@@ -11,7 +11,7 @@ namespace Xt.Synth0.Model
 
         public int Columns => 4;
         public Param Enabled => On;
-        public ThemeGroup ThemeGroup => ThemeGroup.Filter;
+        public ThemeGroup ThemeGroup => ThemeGroup.VoiceFilter;
 
         public string Info => null;
         public string Name => $"Filter {Index + 1}";

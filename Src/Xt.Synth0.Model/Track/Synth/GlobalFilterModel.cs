@@ -9,7 +9,7 @@ namespace Xt.Synth0.Model
         public int Index => 0;
         public int Columns => 4;
         public Param Enabled => On;
-        public ThemeGroup ThemeGroup => ThemeGroup.Filter;
+        public ThemeGroup ThemeGroup => ThemeGroup.GlobalFilter;
 
         public string Info => "Global";
         public string Name => $"Filter 3";

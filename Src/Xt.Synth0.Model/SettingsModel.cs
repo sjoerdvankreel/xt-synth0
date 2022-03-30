@@ -56,14 +56,6 @@ namespace Xt.Synth0.Model
             set => Set(ref _delayColor, value);
         }
 
-        string _filterColor = "#40E080";
-		[Key(nameof(FilterColor))]
-		public string FilterColor
-		{
-			get => _filterColor;
-			set => Set(ref _filterColor, value);
-		}
-
 		string _ampColor = "#FF8000";
 		[Key(nameof(AmpColor))]
 		public string AmpColor
@@ -110,6 +102,22 @@ namespace Xt.Synth0.Model
         {
             get => _globalLfoColor;
             set => Set(ref _globalLfoColor, value);
+        }
+
+        string _voiceFilterColor = "#40E080";
+        [Key(nameof(VoiceFilterColor))]
+        public string VoiceFilterColor
+        {
+            get => _voiceFilterColor;
+            set => Set(ref _voiceFilterColor, value);
+        }
+
+        string _globalFilterColor = "#40E080";
+        [Key(nameof(GlobalFilterColor))]
+        public string GlobalFilterColor
+        {
+            get => _globalFilterColor;
+            set => Set(ref _globalFilterColor, value);
         }
 
         BitDepth _bitDepth;
@@ -199,13 +207,14 @@ namespace Xt.Synth0.Model
             settings.PlotColor = PlotColor;
 			settings.UnitColor = UnitColor;
             settings.DelayColor = DelayColor;
-            settings.FilterColor = FilterColor;
 			settings.PatternColor = PatternColor;
 			settings.ControlColor = ControlColor;
             settings.VoiceLfoColor = VoiceLfoColor;
             settings.SettingsColor = SettingsColor;
+            settings.VoiceFilterColor = VoiceFilterColor;
+            settings.GlobalFilterColor = GlobalFilterColor;
 
-			settings.BitDepth = BitDepth;
+            settings.BitDepth = BitDepth;
 			settings.DeviceType = DeviceType;
 			settings.SampleRate = SampleRate;
 			settings.OutputPath = OutputPath;

@@ -41,7 +41,7 @@ namespace Xt.Synth0.UI
 
         static FrameworkElement MakeTheme(SettingsModel settings)
         {
-            var result = Create.Grid(11, 2, true);
+            var result = Create.Grid(12, 2, true);
             result.Add(Create.Label("Amp", new(0, 0)));
             result.Add(MakeThemeColor(settings, nameof(settings.AmpColor), new(0, 1)));
             result.Add(Create.Label("VLFO", new(1, 0)));
@@ -56,14 +56,16 @@ namespace Xt.Synth0.UI
             result.Add(MakeThemeColor(settings, nameof(settings.UnitColor), new(5, 1)));
             result.Add(Create.Label("Delay", new(6, 0)));
             result.Add(MakeThemeColor(settings, nameof(settings.DelayColor), new(6, 1)));
-            result.Add(Create.Label("Filter", new(7, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.FilterColor), new(7, 1)));
-            result.Add(Create.Label("Pattern", new(8, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(8, 1)));
-            result.Add(Create.Label("Control", new(9, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(9, 1)));
-            result.Add(Create.Label("Settings", new(10, 0)));
-            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(10, 1)));
+            result.Add(Create.Label("VFilter", new(7, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.VoiceFilterColor), new(7, 1)));
+            result.Add(Create.Label("GFilter", new(8, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.GlobalFilterColor), new(8, 1)));
+            result.Add(Create.Label("Pattern", new(9, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.PatternColor), new(9, 1)));
+            result.Add(Create.Label("Control", new(10, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.ControlColor), new(10, 1)));
+            result.Add(Create.Label("Settings", new(11, 0)));
+            result.Add(MakeThemeColor(settings, nameof(settings.SettingsColor), new(11, 1)));
             return result;
         }
 
