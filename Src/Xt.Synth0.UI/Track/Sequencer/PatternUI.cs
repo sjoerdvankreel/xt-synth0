@@ -21,7 +21,7 @@ namespace Xt.Synth0.UI
 		static readonly object HighlightedOpacityBoxed = HighlightedOpacity;
 		static readonly object NotHighlightedOpacityBoxed = NotHighlightedOpacity;
 
-		internal const string EditHint = "Click + keyboard to edit";
+		internal const string EditColumnHint = "Click + keyboard to edit";
 		internal const string InterpolateHint = "Ctrl + I to interpolate";
 
 		static void Fill(SequencerModel seq, int pattern, int fx)

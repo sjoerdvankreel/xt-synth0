@@ -80,7 +80,7 @@ namespace Xt.Synth0.UI
 			result.OnParsed += (s, e) => elems.RequestMoveValueFocus(true, false);
 			result.SetValue(ToolTipService.InitialShowDelayProperty, PatternUI.TooltipDelay);
 			result.SetValue(ToolTipService.BetweenShowDelayProperty, PatternUI.BetweenTooltipDelay);
-			result.ToolTip = string.Join("\n", value.Info.Description, PatternUI.InterpolateHint, PatternUI.EditHint);
+			result.ToolTip = string.Join("\n", value.Info.Description, PatternUI.InterpolateHint, PatternUI.EditColumnHint);
 			return result;
 		}
 	}
