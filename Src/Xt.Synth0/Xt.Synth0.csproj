@@ -1,28 +1,48 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <UseWPF>true</UseWPF>
-    <OutputType>WinExe</OutputType>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <TargetFramework>net6.0-windows</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Xt.Audio" PrivateAssets="all" />
-    <PackageReference Include="MessagePack" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="../Xt.Synth0.UI/Xt.Synth0.UI.csproj" PrivateAssets="all" />
-    <ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.dll" Link="Xt.Synth0.DSP.dll" />
-    <Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.pdb" Link="Xt.Synth0.DSP.pdb" />
-    <Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.dll" Link="Xt.Synth0.DSP.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <NativeLibs Remove="Synth0\Native.cs" />
-  </ItemGroup>
+	<PropertyGroup>
+		<UseWPF>true</UseWPF>
+		<OutputType>WinExe</OutputType>
+		<PlatformTarget>x64</PlatformTarget>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<TargetFramework>net6.0-windows</TargetFramework>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType>None</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\SharedAssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Xt.Audio" PrivateAssets="all" />
+		<PackageReference Include="MessagePack" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="../Xt.Synth0.UI/Xt.Synth0.UI.csproj" PrivateAssets="all" />
+		<ProjectReference Include="../Xt.Synth0.Model/Xt.Synth0.Model.csproj" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.dll" Link="Xt.Synth0.DSP.dll" />
+		<Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.pdb" Link="Xt.Synth0.DSP.pdb" />
+		<Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.dll" Link="Xt.Synth0.DSP.dll" />
+	</ItemGroup>
+	<ItemGroup>
+		<NativeLibs Remove="Synth0\Native.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<NativeLibs Remove="Properties\Settings.settings" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Settings.Designer.cs">
+			<DesignTimeSharedInput>True</DesignTimeSharedInput>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Properties\Settings.settings">
+			<Generator>SettingsSingleFileGenerator</Generator>
+			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
 </Project>
