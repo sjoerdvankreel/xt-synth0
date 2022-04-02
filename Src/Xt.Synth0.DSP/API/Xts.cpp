@@ -6,6 +6,8 @@
 #include <Model/Shared/SyncStepModel.hpp>
 #include <Model/Sequencer/SequencerModel.hpp>
 
+#include <immintrin.h>
+
 struct XTS_ALIGN XtsPlot
 {
   Xts::PlotState state;
@@ -26,6 +28,13 @@ struct XTS_ALIGN XtsSequencer
 };
 XTS_CHECK_SIZE(XtsSequencer, 56);
 
+static void
+DisableDenormals()
+{
+  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
+  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+}
+
 void XTS_CALL 
 XtsSynthModelInit(Xts::ParamInfo* params, int32_t count)
 { Xts::SynthModel::Init(params, static_cast<size_t>(count)); }
@@ -36,7 +45,10 @@ XtsSyncStepModelInit(Xts::SyncStepModel* steps, int32_t count)
 
 Xts::SequencerOutput const* XTS_CALL
 XtsSequencerRender(XtsSequencer* sequencer, int32_t frames, struct Xts::AutomationAction const* actions, int32_t count)
-{ return sequencer->sequencerDsp->Render(frames, actions, count); }
+{ 
+  DisableDenormals();
+  return sequencer->sequencerDsp->Render(frames, actions, count); 
+}
 
 void XTS_CALL
 XtsPlotDestroy(XtsPlot* plot)
@@ -75,6 +87,7 @@ XtsSequencerInit(XtsSequencer* sequencer)
 Xts::PlotResult* XTS_CALL
 XtsPlotRender(XtsPlot* plot, Xts::PlotInput const* input, Xts::PlotOutput** output)
 {
+  DisableDenormals();
   *plot->state.data = Xts::PlotData();
   plot->state.output = Xts::PlotOutput();
   plot->state.result = Xts::PlotResult();
