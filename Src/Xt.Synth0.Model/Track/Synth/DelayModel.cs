@@ -45,7 +45,7 @@ namespace Xt.Synth0.Model
         public Param Feedback { get; } = new(FeedbackInfo);
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 0, nameof(On), "On", "Enabled", true, false);
         static readonly ParamInfo MixInfo = ParamInfo.Level(p => &((Native*)p)->mix, 0, nameof(Mix), "Mix", "Dry/wet", true, 128);
-        static readonly ParamInfo FeedbackInfo = ParamInfo.Level(p => &((Native*)p)->feedback, 0, nameof(Feedback), "Fbck", "Feedback", true, 128);
+        static readonly ParamInfo FeedbackInfo = ParamInfo.Level(p => &((Native*)p)->feedback, 0, nameof(Feedback), "Fbk", "Feedback", true, 128);
 
         public Param Sync { get; } = new(SyncInfo);
         public Param Step { get; } = new(StepInfo);
