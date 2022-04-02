@@ -135,16 +135,18 @@ PeriodicPlot::RenderCore(PlotInput const& input, int hold, PlotOutput& output, P
 
   float length = (output.rate * params.periods / output.frequency) + 1.0f;
   int samples = static_cast<int>(std::ceilf(input.spectrum ? output.rate : length));
-  int halfPeriod = samples / (params.periods * 2);
-  data.horizontal.emplace_back(samples - 1, L"");
   for (int i = 0; i < samples; i++)
   {
     float sample = Next();
     max = std::max(max, std::fabs(sample));
     data.left.push_back(sample);
-    if (i / halfPeriod < params.periods * 2 && i % halfPeriod == 0)
-      data.horizontal.emplace_back(i, std::to_wstring(i / halfPeriod) + UnicodePi);
   }
+
+  data.horizontal.emplace_back(samples - 1, L"");
+  length = samples / (2.0f * params.periods);
+  for(int i = 0; i < params.periods * 2; i++)
+    data.horizontal.emplace_back(static_cast<int>(i * length), std::to_wstring(i) + UnicodePi);
+
   if (params.autoRange) ApplyAutoRange(data, max);
 }
 

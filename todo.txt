@@ -13,6 +13,4 @@ process buffer in blocks
 store automation target by id/name/index
 visual indicator for realtime knobs
 undo/redo
-fix subnormals
 2 global filters
-fix unit plot x axis
