@@ -35,7 +35,7 @@ VoiceFilterPlot::Init(float bpm, float rate)
 {
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0f, bpm, rate);
   new(&_globalLfoDsp) LfoDSP(&_model->global.lfo, bpm, rate);
-  new(&_audioDsp) AudioDSP(&_model->voice.audio, 4, UnitNote::C, rate);
+  new(&_audioDsp) AudioDSP(&_model->voice.audio, 4, NoteType::C, rate);
   new(&_filterDsp) VoiceFilterDSP(&_model->voice.audio.filters[_index], _index, rate);
 }
 

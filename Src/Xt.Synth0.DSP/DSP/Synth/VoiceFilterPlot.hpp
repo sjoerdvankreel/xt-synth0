@@ -25,7 +25,7 @@ public:
   static void Render(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 public:
   VoiceFilterPlot(struct SynthModel const* model, int index) : _model(model), _index(index) {};
-  float Frequency(float bpm, float rate) const { return UnitDSP::Frequency(_model->voice.audio.units[0], 4, UnitNote::C); }
+  float Frequency(float bpm, float rate) const { return UnitDSP::Frequency(_model->voice.audio.units[0], 4, NoteType::C); }
 };
 
 } // namespace Xts

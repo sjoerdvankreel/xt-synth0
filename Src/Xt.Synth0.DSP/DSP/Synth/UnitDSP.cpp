@@ -32,14 +32,14 @@ UnitPlot::Params() const
 
 float
 UnitPlot::Frequency(float bpm, float rate) const 
-{ return UnitDSP::Frequency(_model->voice.audio.units[_index], 4, UnitNote::C); }
+{ return UnitDSP::Frequency(_model->voice.audio.units[_index], 4, NoteType::C); }
 
 void
 UnitPlot::Init(float bpm, float rate)
 {
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0, bpm, rate);
   new(&_globalLfoDsp) LfoDSP(&_model->global.lfo, bpm, rate);
-  new(&_unitDsp) UnitDSP(&_model->voice.audio.units[_index], 4, UnitNote::C, rate);
+  new(&_unitDsp) UnitDSP(&_model->voice.audio.units[_index], 4, NoteType::C, rate);
 }
 
 void
@@ -81,7 +81,7 @@ GeneratePolyBlepSaw(float phase, float increment)
 }
 
 UnitDSP::
-UnitDSP(UnitModel const* model, int octave, UnitNote note, float rate) :
+UnitDSP(UnitModel const* model, int octave, NoteType note, float rate) :
 UnitDSP()
 {
   _phase = 0.0;
@@ -95,11 +95,11 @@ UnitDSP()
 }
 
 float
-UnitDSP::Frequency(UnitModel const& model, int octave, UnitNote note)
+UnitDSP::Frequency(UnitModel const& model, int octave, NoteType note)
 {
   float cent = Param::Mix(model.detune) * 0.5f;
   int key = octave * 12 + static_cast<int>(note);
-  int base = 4 * 12 + static_cast<int>(UnitNote::C);
+  int base = 4 * 12 + static_cast<int>(NoteType::C);
   int unit = (model.octave + 1) * 12 + static_cast<int>(model.note);
   return MidiNoteFrequency(unit + key - base + cent);
 }

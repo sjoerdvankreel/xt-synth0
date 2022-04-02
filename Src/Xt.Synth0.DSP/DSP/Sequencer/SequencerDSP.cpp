@@ -2,6 +2,7 @@
 #include <DSP/Shared/Utility.hpp>
 #include <DSP/Synth/SynthDSP.hpp>
 #include <DSP/Sequencer/SequencerDSP.hpp>
+#include <Model/Shared/NoteType.hpp>
 #include <Model/Shared/ParamInfo.hpp>
 #include <Model/Shared/AutomationAction.hpp>
 
@@ -82,7 +83,7 @@ SequencerDSP::Trigger()
       _synth->Release(k);
     if (key.note < PatternNote::C) continue;
     float velocity = Param::Level(key.velocity);
-    UnitNote note = static_cast<UnitNote>(static_cast<int>(key.note) - 2);
+    NoteType note = static_cast<NoteType>(static_cast<int>(key.note) - 2);
     result |= _synth->Trigger(k, key.octave, note, velocity, _output.position);
   }
   Automate();

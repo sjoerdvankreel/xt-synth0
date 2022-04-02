@@ -2,13 +2,13 @@
 #define XTS_MODEL_SYNTH_UNIT_MODEL_HPP
 
 #include <Model/Shared/Model.hpp>
+#include <Model/Shared/NoteType.hpp>
 #include <Model/Synth/TargetModsModel.hpp>
 
 namespace Xts {
 
 enum class BlepType { Saw, Pulse, Triangle };
 enum class UnitType { Sine, Additive, PolyBlep };
-enum class UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B };
 
 enum class UnitModTarget 
 { 
@@ -28,7 +28,7 @@ struct XTS_ALIGN UnitModel
   int32_t amp;
   int32_t pan;
 
-  UnitNote note;
+  NoteType note;
   int32_t octave;
   int32_t detune;
   int32_t pad__;

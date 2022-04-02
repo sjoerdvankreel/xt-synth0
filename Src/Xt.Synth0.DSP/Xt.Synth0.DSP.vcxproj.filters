@@ -234,6 +234,9 @@
     <ClInclude Include="DSP\Synth\DelayPlot.hpp">
       <Filter>DSP\Synth</Filter>
     </ClInclude>
+    <ClInclude Include="Model\Shared\NoteType.hpp">
+      <Filter>Model\Shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp">

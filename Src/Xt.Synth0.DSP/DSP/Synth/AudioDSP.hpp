@@ -5,6 +5,7 @@
 #include <DSP/Synth/AudioState.hpp>
 #include <DSP/Synth/VoiceFilterDSP.hpp>
 #include <Model/Synth/SynthConfig.hpp>
+#include <Model/Shared/NoteType.hpp>
 
 namespace Xts {
 
@@ -18,7 +19,7 @@ public:
   AudioState const& Output() const { return _output; };
 public:
   AudioDSP() = default;
-  AudioDSP(struct AudioModel const* model, int octave, UnitNote note, float rate);
+  AudioDSP(struct AudioModel const* model, int octave, NoteType note, float rate);
 };
 
 } // namespace Xts

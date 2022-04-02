@@ -7,6 +7,7 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/AudioSample.hpp>
 #include <Model/Synth/UnitModel.hpp>
+#include <Model/Shared/NoteType.hpp>
 
 namespace Xts {
 
@@ -15,7 +16,7 @@ class UnitDSP
   float _rate;
   int _octave;
   double _phase;
-  UnitNote _note;
+  NoteType _note;
   TargetModsDSP _mods;
   FloatSample _output;
   double _blepTriangle;
@@ -29,10 +30,10 @@ private:
 public:
   FloatSample Next(struct CvState const& cv);
   FloatSample Output() const { return _output; };
-  static float Frequency(UnitModel const& model, int octave, UnitNote note);
+  static float Frequency(UnitModel const& model, int octave, NoteType note);
 public:
   UnitDSP() = default;
-  UnitDSP(struct UnitModel const* model, int octave, UnitNote note, float rate);
+  UnitDSP(struct UnitModel const* model, int octave, NoteType note, float rate);
 };
 
 class UnitPlot : 

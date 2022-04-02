@@ -128,7 +128,7 @@ SynthDSP::Take(int key, int64_t position, bool& exhausted)
 }
 
 bool
-SynthDSP::Trigger(int key, int octave, UnitNote note, float velocity, int64_t position)
+SynthDSP::Trigger(int key, int octave, NoteType note, float velocity, int64_t position)
 {
   bool result = false;
   int voice = Take(key, position, result);

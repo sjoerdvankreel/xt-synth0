@@ -21,7 +21,7 @@ public:
   void Next() { _dsp.Next(); }
   bool End() const { return _dsp.Voice0().End(); }
   EnvSample Release() { return _dsp.Voice0().Release(); }
-  void Start() { _dsp.Trigger(0, 4, UnitNote::C, 1.0f, 0); }
+  void Start() { _dsp.Trigger(0, 4, NoteType::C, 1.0f, 0); }
   EnvSample EnvOutput() const { return _dsp.Voice0().EnvOutput(); }
   void Init(float bpm, float rate) { new(&_dsp) SynthDSP(1, bpm, rate); *_dsp.Model() = *_model; _dsp.Init(); }
   float ReleaseSamples(float bpm, float rate) const { return EnvPlot::ReleaseSamples(_dsp.Voice0().Env(), bpm, rate); }

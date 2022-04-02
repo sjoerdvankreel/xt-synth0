@@ -6,7 +6,6 @@ namespace Xt.Synth0.Model
 {
     public enum BlepType { Saw, Pulse, Triangle }
     public enum UnitType { Sine, Additive, PolyBlep }
-    public enum UnitNote { C, CSharp, D, DSharp, E, F, FSharp, G, GSharp, A, ASharp, B }
     
     public enum UnitModTarget
     {
@@ -94,7 +93,7 @@ namespace Xt.Synth0.Model
         public Param Detune { get; } = new(DetuneInfo);
         static readonly ParamInfo DetuneInfo = ParamInfo.Mix(p => &((Native*)p)->detune, 0, nameof(Detune), "Dtn", "Detune", true);
         static readonly ParamInfo OctaveInfo = ParamInfo.Select(p => &((Native*)p)->octave, 0, nameof(Octave), "Oct", "Octave", true, 0, 9, 4);
-        static readonly ParamInfo NoteInfo = ParamInfo.Select<UnitNote>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", true, NoteNames);
+        static readonly ParamInfo NoteInfo = ParamInfo.Select<NoteType>(p => &((Native*)p)->note, 0, nameof(Note), nameof(Note), "Note", true, NoteNames);
 
         public Param BlepType { get; } = new(BlepTypeInfo);
         public Param BlepPulseWidth { get; } = new(BlepPulseWidthInfo);

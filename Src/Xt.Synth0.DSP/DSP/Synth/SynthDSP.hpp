@@ -60,7 +60,7 @@ public:
   FloatSample Next();
   void Release(int key);
   void Automate(int target, int value, int64_t position);
-  bool Trigger(int key, int octave, UnitNote note, float velocity, int64_t position);
+  bool Trigger(int key, int octave, NoteType note, float velocity, int64_t position);
   static void RenderPlot(struct SynthModel const& model, struct PlotInput const& input, struct PlotState& state);
 };
 

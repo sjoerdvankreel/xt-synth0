@@ -4,7 +4,7 @@
 namespace Xts {
 
 VoiceDSP::
-VoiceDSP(SynthModel const* model, int oct, UnitNote note, float velocity, float bpm, float rate):
+VoiceDSP(SynthModel const* model, int oct, NoteType note, float velocity, float bpm, float rate):
 _cv(&model->voice.cv, velocity, bpm, rate),
 _amp(&model->voice.amp, velocity),
 _audio(&model->voice.audio, oct, note, rate) {}
