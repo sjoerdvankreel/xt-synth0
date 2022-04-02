@@ -23,7 +23,7 @@ namespace Xt.Synth0.Model
         {
             { On, -1 },
             { Type, 0 }, { PassType, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 }, { Frequency, 3 }, { CombPlusGain, 3 },
-            { Mod1Source, 4 }, { Mod1Target, 5 }, { Mod1Amount, 6 }, { CombMinGain, 7 },
+            { Mod1Source, 4 }, { Mod1Target, 5 }, { Mod1Amount, 6 }, {KeyboardTrack, 7 }, { CombMinGain, 7 },
             { Mod2Source, 8 }, { Mod2Target, 9 }, { Mod2Amount, 10 },
             { Unit1Amount, 12 }, { Unit2Amount, 13 }, { Unit3Amount, 14 }, { Filter1Amount, 15 }
         };
@@ -35,9 +35,9 @@ namespace Xt.Synth0.Model
 
             internal FilterModel.Native filter;
             internal TargetModsModel.Native mods;
+            internal int keyboardTrack;
             internal fixed int unitAmount[SynthConfig.VoiceUnitCount];
             internal fixed int filterAmount[SynthConfig.VoiceFilterCount];
-            internal int pad__;
         };
 
         static readonly IRelevance Relevance2 = Relevance.Index(i => i > 0);
@@ -61,8 +61,10 @@ namespace Xt.Synth0.Model
         public Param PassType { get; } = new(PassTypeInfo);
         public Param Resonance { get; } = new(ResonanceInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
-        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->filter.passType, 0, nameof(PassType), "Type", "Pass type", true, null, RelevanceNotComb);
+        public Param KeyboardTrack { get; } = new(KeyboardTrackInfo);
         static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 0, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
+        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->filter.passType, 0, nameof(PassType), "Type", "Pass type", true, null, RelevanceNotComb);
+        static readonly ParamInfo KeyboardTrackInfo = ParamInfo.Mix(p => &((Native*)p)->keyboardTrack, 0, nameof(KeyboardTrack), "Kbd", "Keyboard tracking amount", true, RelevanceNotComb);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 0, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
 
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);

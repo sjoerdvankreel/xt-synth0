@@ -14,3 +14,4 @@ store automation target by id/name/index
 visual indicator for realtime knobs
 undo/redo
 2 global filters
+automation bus assign

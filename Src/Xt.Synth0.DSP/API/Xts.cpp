@@ -14,7 +14,7 @@ struct XTS_ALIGN XtsPlot
   Xts::SynthModel model;
   int32_t* binding[XTS_SYNTH_PARAM_COUNT];
 };
-XTS_CHECK_SIZE(XtsPlot, 2688);
+XTS_CHECK_SIZE(XtsPlot, 2704);
 
 struct XTS_ALIGN XtsSequencer
 {
