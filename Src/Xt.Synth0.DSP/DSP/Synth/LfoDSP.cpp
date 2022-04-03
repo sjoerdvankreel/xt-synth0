@@ -63,6 +63,7 @@ LfoDSP::InitRandom()
   case LfoType::Rnd3: _randState = 1.0f; break;
   default: _randState = 0.0f; break;
   }
+  _randDir = 1.0f;
   _prng = Prng(static_cast<uint32_t>(_model->randomSeed + 1));
 }
 
@@ -119,7 +120,10 @@ float
 LfoDSP::GenerateRandom()
 {
   float rand = static_cast<float>(_prng.Next()) / std::numeric_limits<int32_t>::max() * 2.0f - 1.0f;
-  return rand;
+  _randState += rand * Param::Level(_model->randomSteepness) * _randDir;
+  if(_randState >= 1.0f) _randState -= (_randState - 1.0f), _randDir *= -1.0f;
+  if(_randState <= -1.0f) _randState -= (_randState + 1.0f), _randDir *= 1.0f;
+  return BipolarSanity(_randState);
 }
 
 } // namespace Xts

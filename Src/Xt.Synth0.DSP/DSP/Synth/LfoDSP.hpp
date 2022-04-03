@@ -14,6 +14,7 @@ class LfoDSP
   float _bpm;
   float _rate;
   double _phase;
+  float _randDir;
   float _randState;
   CvSample _output;
   struct LfoModel const* _model;
