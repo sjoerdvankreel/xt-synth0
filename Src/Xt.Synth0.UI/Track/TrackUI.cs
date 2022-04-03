@@ -31,9 +31,9 @@ namespace Xt.Synth0.UI
             for (int i = 0; i < SynthConfig.VoiceLfoCount; i++)
                 result.Add(GroupUI.Make(app, synth.Lfos[i]), Dock.Top);
             result.Add(GroupUI.Make(app, synth.GlobalLfo), Dock.Top);
-            result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             result.Add(GroupUI.Make(app, synth.GlobalFilter), Dock.Top);
             result.Add(GroupUI.Make(app, synth.Delay), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.Master), Dock.Top);
             return result;
         }
 
@@ -45,7 +45,7 @@ namespace Xt.Synth0.UI
                 result.Add(GroupUI.Make(app, synth.Envs[i]), Dock.Top);
             for (int i = 0; i < SynthConfig.VoiceFilterCount; i++)
                 result.Add(GroupUI.Make(app, synth.Filters[i]), Dock.Top);
-            result.Add(GroupUI.Make(app, synth.Master), Dock.Top);
+            result.Add(GroupUI.Make(app, synth.Amp), Dock.Top);
             result.Add(PlotUI.Make(app), Dock.Top);
             return result;
         }

@@ -48,7 +48,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _unitColor, value);
 		}
 
-        string _delayColor = "#FF8080";
+        string _delayColor = "#FF4040";
         [Key(nameof(DelayColor))]
         public string DelayColor
         {
@@ -56,7 +56,7 @@ namespace Xt.Synth0.Model
             set => Set(ref _delayColor, value);
         }
 
-		string _ampColor = "#FF6040";
+		string _ampColor = "#80FFFF";
 		[Key(nameof(AmpColor))]
 		public string AmpColor
 		{
@@ -64,7 +64,7 @@ namespace Xt.Synth0.Model
 			set => Set(ref _ampColor, value);
         }
 
-        string _masterColor = "#80FFFF";
+        string _masterColor = "#FF8080";
         [Key(nameof(MasterColor))]
         public string MasterColor
         {
@@ -120,7 +120,7 @@ namespace Xt.Synth0.Model
             set => Set(ref _voiceFilterColor, value);
         }
 
-        string _globalFilterColor = "#FF4040";
+        string _globalFilterColor = "#FF6040";
         [Key(nameof(GlobalFilterColor))]
         public string GlobalFilterColor
         {
