@@ -68,7 +68,7 @@ namespace Xt.Synth0.Model
         public Param RandomSteepness = new Param(RandomSteepnessInfo);
         static readonly ParamInfo RandomSeedInfo = ParamInfo.Level(p => &((Native*)p)->randomSeed, 2, nameof(RandomSeed), "Sed", "Random seed", true, 0, RelevanceRandom);
         static readonly ParamInfo RandomNextInfo = ParamInfo.Level(p => &((Native*)p)->randomNext, 2, nameof(RandomNext), "Nxt", "Random next", true, 0, RelevanceRandom);
-        static readonly ParamInfo RandomSteepnessInfo = ParamInfo.Level(p => &((Native*)p)->randomSteepness, 2, nameof(RandomSteepness), "Slp", "Random steepness", true, 0, RelevanceRandom);
+        static readonly ParamInfo RandomSteepnessInfo = ParamInfo.Level(p => &((Native*)p)->randomSteepness, 2, nameof(RandomSteepness), "Stn", "Random steepness", true, 0, RelevanceRandom);
 
         public Param Sync { get; } = new(SyncInfo);
         public Param Step { get; } = new(StepInfo);

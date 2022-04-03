@@ -50,7 +50,20 @@ LfoDSP()
   _rate = rate;
   _phase = 0.0;
   _model = model;
-  _prng = Prng(static_cast<uint32_t>(model->randomSeed + 1));
+  InitRandom();
+}
+
+void
+LfoDSP::InitRandom()
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: _randState = 0.0f; break;
+  case LfoType::Rnd2: _randState = 0.5f; break;
+  case LfoType::Rnd3: _randState = 1.0f; break;
+  default: _randState = 0.0f; break;
+  }
+  _prng = Prng(static_cast<uint32_t>(_model->randomSeed + 1));
 }
 
 CvSample
@@ -61,7 +74,7 @@ LfoDSP::Next()
   if (!_model->on) return Output();
   _output.value = Generate();
   _phase += Frequency(*_model, _bpm, _rate) / _rate;
-  if (_phase >= 1.0) _prng = Prng(static_cast<uint32_t>(_model->randomSeed + 1));
+  if (_phase >= 1.0) InitRandom();
   _phase -= std::floor(_phase);
   return Output().Sanity();
 }
@@ -105,7 +118,8 @@ LfoDSP::GenerateWave() const
 float
 LfoDSP::GenerateRandom()
 {
-  return static_cast<float>(_prng.Next()) / std::numeric_limits<int32_t>::max() * 2.0f - 1.0f;
+  float rand = static_cast<float>(_prng.Next()) / std::numeric_limits<int32_t>::max() * 2.0f - 1.0f;
+  return rand;
 }
 
 } // namespace Xts

@@ -14,10 +14,12 @@ class LfoDSP
   float _bpm;
   float _rate;
   double _phase;
+  float _randState;
   CvSample _output;
   struct LfoModel const* _model;
 private:
   float Generate();
+  void InitRandom();
   float GenerateRandom();
   float GenerateWave() const;
 public:
