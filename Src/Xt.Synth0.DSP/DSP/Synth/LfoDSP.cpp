@@ -105,7 +105,8 @@ LfoDSP::GenerateWave() const
 float
 LfoDSP::GenerateRandom()
 {
-  return 0.0f;
+  float rand = static_cast<float>(_prng.Next()) / std::numeric_limits<int32_t>::max();
+  return rand;
 }
 
 } // namespace Xts
