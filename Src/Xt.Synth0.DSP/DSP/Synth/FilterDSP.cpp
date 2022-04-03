@@ -8,9 +8,6 @@
 #include <cstring>
 #include <cassert>
 
-#define FILTER_MIN_FREQ_HZ 20.0f
-#define FILTER_MAX_FREQ_HZ 10000.0f
-
 // https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
 // https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
 
@@ -29,11 +26,10 @@ FilterDSP()
 }
 
 FloatSample
-FilterDSP::GenerateStateVar(FloatSample x, int freq, double res)
+FilterDSP::GenerateStateVar(FloatSample x, float freq, double res)
 {
   auto& s = _stateVar;
-  float hz = Param::Frequency(freq, FILTER_MIN_FREQ_HZ, FILTER_MAX_FREQ_HZ);
-  double g = std::tan(PID * hz / _rate);
+  double g = std::tan(PID * freq / _rate);
   double k = 2.0 - 2.0 * res;
   double a1 = 1.0 / (1.0 + g * (g + k));
   double a2 = g * a1;

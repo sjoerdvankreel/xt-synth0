@@ -44,8 +44,9 @@ GlobalFilterDSP::GenerateStateVar(CvSample globalLfo)
   float resBase = Param::Level(_model->filter.resonance);
   float freqBase = Param::Level(_model->filter.frequency);
   double resonance = _mod.Modulate(globalLfo, { resBase, false }, static_cast<int>(FilterModTarget::Resonance));
-  int freq = static_cast<int>(_mod.Modulate(globalLfo, { freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 255);
-  return _filter.GenerateStateVar(_output, freq, resonance);
+  float freq = _mod.Modulate(globalLfo, { freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 256.0f;
+  float hz = Param::Frequency(freq, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
+  return _filter.GenerateStateVar(_output, hz, resonance);
 }
 
 FloatSample

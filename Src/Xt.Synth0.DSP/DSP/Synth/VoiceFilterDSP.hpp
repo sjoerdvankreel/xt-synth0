@@ -3,6 +3,7 @@
 
 #include <DSP/Synth/FilterDSP.hpp>
 #include <DSP/Synth/TargetModsDSP.hpp>
+#include <Model/Shared/NoteType.hpp>
 #include <Model/Synth/SynthConfig.hpp>
 
 namespace Xts {
@@ -13,6 +14,7 @@ class VoiceFilterDSP
   FilterDSP _dsp;
   FloatSample _output;
   TargetModsDSP _mods;
+  float _keyboardBase;
   struct VoiceFilterModel const* _model;
 private:
   FloatSample GenerateComb();
@@ -22,7 +24,7 @@ public:
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);
 public:
   VoiceFilterDSP() = default;
-  VoiceFilterDSP(struct VoiceFilterModel const* model, int index, float rate);
+  VoiceFilterDSP(struct VoiceFilterModel const* model, int octave, NoteType note, int index, float rate);
 };
 
 } // namespace Xts

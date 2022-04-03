@@ -1,6 +1,8 @@
 #ifndef XTS_DSP_SHARED_UTILITY_HPP
 #define XTS_DSP_SHARED_UTILITY_HPP
 
+#include <Model/Shared/NoteType.hpp>
+
 #include <cmath>
 #include <cassert>
 #include <cstdint>
@@ -14,7 +16,6 @@ inline constexpr double PID = 3.14159265358979323846;
 inline float
 BipolarToUnipolar2(float val)
 { return val + 1.0f; }
-
 inline float 
 BipolarToUnipolar1(float val)
 { return (val + 1.0f) * 0.5f; }
@@ -26,6 +27,12 @@ EpsilonToZero(float val)
 inline float
 MidiNoteFrequency(float note)
 { return 440.0f * std::powf(2.0f, (note - 69.0f) / 12.0f); }
+inline float
+MidiNoteFrequency(int octave, int note)
+{ return MidiNoteFrequency(static_cast<float>(octave * 12 + note)); }
+inline float 
+MidiNoteFrequency(int octave, NoteType note)
+{ return MidiNoteFrequency(octave, static_cast<int>(note)); }
 
 inline uint64_t
 NextPowerOf2(uint64_t x)

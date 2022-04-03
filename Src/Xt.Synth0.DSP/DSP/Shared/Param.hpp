@@ -15,7 +15,7 @@ Mix(int val)
 { return static_cast<float>(val - 128) / 127.0f; }
 
 inline float
-Frequency(int val, float minHz, float maxHz)
+Frequency(float val, float minHz, float maxHz)
 { return minHz + (maxHz - minHz) * (val / 255.0f) * (val / 255.0f); }
 
 inline float

@@ -7,6 +7,7 @@
 #include <memory>
 #include <cstring>
 #include <cassert>
+#include <algorithm>
 
 namespace Xts {
 
@@ -36,7 +37,7 @@ VoiceFilterPlot::Init(float bpm, float rate)
   new(&_cvDsp) CvDSP(&_model->voice.cv, 1.0f, bpm, rate);
   new(&_globalLfoDsp) LfoDSP(&_model->global.lfo, bpm, rate);
   new(&_audioDsp) AudioDSP(&_model->voice.audio, 4, NoteType::C, rate);
-  new(&_filterDsp) VoiceFilterDSP(&_model->voice.audio.filters[_index], _index, rate);
+  new(&_filterDsp) VoiceFilterDSP(&_model->voice.audio.filters[_index], 4, NoteType::C, _index, rate);
 }
 
 void
@@ -49,14 +50,15 @@ VoiceFilterPlot::Render(SynthModel const& model, PlotInput const& input, PlotSta
 }
 
 VoiceFilterDSP::
-VoiceFilterDSP(VoiceFilterModel const* model, int index, float rate):
+VoiceFilterDSP(VoiceFilterModel const* model, int octave, NoteType note, int index, float rate):
 VoiceFilterDSP()
 {
-  _output.Clear();
   _index = index;
   _model = model;
+  _output.Clear();
   _mods = TargetModsDSP(&model->mods);
   _dsp = FilterDSP(&model->filter, rate);
+  _keyboardBase = Xts::MidiNoteFrequency(octave, note) / Xts::MidiNoteFrequency(4, NoteType::C);
 }
 
 FloatSample
@@ -82,8 +84,13 @@ VoiceFilterDSP::GenerateStateVar()
   float resBase = Param::Level(_model->filter.resonance);
   float freqBase = Param::Level(_model->filter.frequency);
   double resonance = _mods.Modulate({ resBase, false }, static_cast<int>(FilterModTarget::Resonance));
-  int freq = static_cast<int>(_mods.Modulate({ freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 255);
-  return _dsp.GenerateStateVar(_output, freq, resonance);
+  float freq = _mods.Modulate({ freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 256.0f;
+  float hz = Param::Frequency(freq, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
+  float tracking = Param::Mix(_model->keyboardTrack);
+  if(tracking > 0.0f) hz = (1.0f - tracking) * hz + tracking * hz * _keyboardBase;
+  if(tracking < 0.0f) hz = (1.0f + tracking) * hz - tracking * hz / _keyboardBase;
+  hz = std::clamp(hz, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
+  return _dsp.GenerateStateVar(_output, hz, resonance);
 }
 
 FloatSample
