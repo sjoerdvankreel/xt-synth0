@@ -17,7 +17,7 @@ struct XTS_ALIGN GlobalModel
   MasterModel master;
   GlobalFilterModel filter;
 };
-XTS_CHECK_SIZE(GlobalModel, 152);
+XTS_CHECK_SIZE(GlobalModel, 144);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_GLOBAL_MODEL_HPP

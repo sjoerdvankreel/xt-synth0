@@ -5,24 +5,23 @@
 
 namespace Xts {
 
-enum class LfoType { Sin, Saw, Sqr, Tri, Rnd };
+enum class LfoShape { Bi, Uni, BiInv, UniInv };
+enum class LfoType { Sin, Saw, Sqr, Tri, Rnd1, Rnd2, Rnd3 };
 
 struct XTS_ALIGN LfoModel
 {
   XtsBool on;
   LfoType type;
   XtsBool sync;
-  XtsBool invert;
-  XtsBool unipolar;
+  LfoShape shape;
   int32_t step;
   int32_t smooth;
   int32_t frequency;
   int32_t randomSeed;
-  int32_t randomStart;
   int32_t randomNext;
   int32_t randomSlope;
 };
-XTS_CHECK_SIZE(LfoModel, 48);
+XTS_CHECK_SIZE(LfoModel, 40);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_LFO_MODEL_HPP

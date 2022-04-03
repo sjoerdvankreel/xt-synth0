@@ -11,6 +11,13 @@
 
 namespace Xts {
 
+static bool
+LfoIsBipolar(LfoShape shape)
+{ return shape == LfoShape::Bi || shape == LfoShape::BiInv; }
+static bool
+LfoIsInverted(LfoShape shape)
+{ return shape == LfoShape::UniInv || shape == LfoShape::BiInv; }
+
 PeriodicParams
 LfoPlot::Params() const
 {
@@ -18,7 +25,7 @@ LfoPlot::Params() const
   result.periods = 1;
   result.autoRange = false;
   result.allowResample = true;
-  result.bipolar = _model->unipolar == 0;
+  result.bipolar = LfoIsBipolar(_model->shape);
   return result;
 }
 
@@ -39,7 +46,7 @@ CvSample
 LfoDSP::Next()
 {
   _output.value = 0.0f;
-  _output.bipolar = _model->unipolar == 0;
+  _output.bipolar = LfoIsBipolar(_model->shape);
   if (!_model->on) return Output();
   float frequency = Frequency(*_model, _bpm, _rate);
   _output.value = Generate(frequency);
@@ -69,8 +76,8 @@ float
 LfoDSP::Generate(float frequence) const
 {
   float phase = static_cast<float>(_phase);
-  float base = _model->unipolar == 0 ? 0.0f : 0.5f;
-  float factor = (_model->invert ? -1.0f : 1.0f) * (1.0f - base);
+  float base = LfoIsBipolar(_model->shape)? 0.0f : 0.5f;
+  float factor = (LfoIsInverted(_model->shape) ? -1.0f : 1.0f) * (1.0f - base);
 	switch (_model->type)
 	{
 	case LfoType::Tri: break;
