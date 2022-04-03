@@ -7,7 +7,6 @@ save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 if(unit1>0 etc)
 more filter/unit/lfo types -> ladder filter, noise unit, fm unit, random-like lfo
-filter keyboard track
 handle stream stopped with error
 process buffer in blocks
 store automation target by id/name/index
