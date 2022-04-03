@@ -42,19 +42,6 @@ LfoPlot::Render(SynthModel const& model, PlotInput const& input, PlotState& stat
   if (lfo->on) LfoPlot(lfo).DoRender(input, state);
 }
 
-CvSample
-LfoDSP::Next()
-{
-  _output.value = 0.0f;
-  _output.bipolar = LfoIsBipolar(_model->shape);
-  if (!_model->on) return Output();
-  float frequency = Frequency(*_model, _bpm, _rate);
-  _output.value = Generate(frequency);
-  _phase += frequency / _rate;
-  _phase -= std::floor(_phase);
-  return Output().Sanity();
-}
-
 LfoDSP::
 LfoDSP(LfoModel const* model, float bpm, float rate) :
 LfoDSP()
@@ -63,6 +50,20 @@ LfoDSP()
   _rate = rate;
   _phase = 0.0;
   _model = model;
+  _prng = Prng(static_cast<uint32_t>(model->randomSeed));
+}
+
+CvSample
+LfoDSP::Next()
+{
+  _output.value = 0.0f;
+  _output.bipolar = LfoIsBipolar(_model->shape);
+  if (!_model->on) return Output();
+  _output.value = Generate();
+  _phase += Frequency(*_model, _bpm, _rate) / _rate;
+  if (_phase >= 1.0) _prng = Prng(static_cast<uint32_t>(_model->randomSeed));
+  _phase -= std::floor(_phase);
+  return Output().Sanity();
 }
 
 float
@@ -73,7 +74,18 @@ LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
 }
 
 float
-LfoDSP::Generate(float frequence) const
+LfoDSP::Generate()
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: return GenerateRandom();
+  case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: return GenerateWave();
+  default: assert(false); return 0.0f;
+  }
+}
+
+float
+LfoDSP::GenerateWave() const
 {
   float phase = static_cast<float>(_phase);
   float base = LfoIsBipolar(_model->shape)? 0.0f : 0.5f;
@@ -88,6 +100,12 @@ LfoDSP::Generate(float frequence) const
 	}
 	float tri = phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f;
 	return base + factor * tri * 4.0f;
+}
+
+float
+LfoDSP::GenerateRandom()
+{
+  return 0.0f;
 }
 
 } // namespace Xts

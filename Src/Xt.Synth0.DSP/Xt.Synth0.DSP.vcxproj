@@ -21,6 +21,7 @@
     <ClInclude Include="DSP\Shared\Modulate.hpp" />
     <ClInclude Include="DSP\Shared\Param.hpp" />
     <ClInclude Include="DSP\Shared\Plot.hpp" />
+    <ClInclude Include="DSP\Shared\Prng.hpp" />
     <ClInclude Include="DSP\Shared\Spectrum.hpp" />
     <ClInclude Include="DSP\Shared\Utility.hpp" />
     <ClInclude Include="DSP\Synth\AmpDSP.hpp" />

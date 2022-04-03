@@ -2,6 +2,7 @@
 #define XTS_DSP_SYNTH_LFO_DSP_HPP
 
 #include <DSP/Shared/Plot.hpp>
+#include <DSP/Shared/Prng.hpp>
 #include <DSP/Shared/CvSample.hpp>
 #include <Model/Synth/LfoModel.hpp>
 
@@ -9,13 +10,16 @@ namespace Xts {
 
 class LfoDSP
 {
+  Prng _prng;
   float _bpm;
   float _rate;
   double _phase;
   CvSample _output;
   struct LfoModel const* _model;
 private:
-  float Generate(float frequency) const;
+  float Generate();
+  float GenerateRandom();
+  float GenerateWave() const;
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, float bpm, float rate);

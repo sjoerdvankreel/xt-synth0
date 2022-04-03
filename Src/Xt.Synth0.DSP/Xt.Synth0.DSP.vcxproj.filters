@@ -237,6 +237,9 @@
     <ClInclude Include="Model\Shared\NoteType.hpp">
       <Filter>Model\Shared</Filter>
     </ClInclude>
+    <ClInclude Include="DSP\Shared\Prng.hpp">
+      <Filter>DSP\Shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp">
