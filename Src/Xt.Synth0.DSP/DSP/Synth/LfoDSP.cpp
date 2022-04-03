@@ -50,7 +50,7 @@ LfoDSP()
   _rate = rate;
   _phase = 0.0;
   _model = model;
-  _prng = Prng(static_cast<uint32_t>(model->randomSeed));
+  _prng = Prng(static_cast<uint32_t>(model->randomSeed + 1));
 }
 
 CvSample
@@ -61,7 +61,7 @@ LfoDSP::Next()
   if (!_model->on) return Output();
   _output.value = Generate();
   _phase += Frequency(*_model, _bpm, _rate) / _rate;
-  if (_phase >= 1.0) _prng = Prng(static_cast<uint32_t>(_model->randomSeed));
+  if (_phase >= 1.0) _prng = Prng(static_cast<uint32_t>(_model->randomSeed + 1));
   _phase -= std::floor(_phase);
   return Output().Sanity();
 }
@@ -76,10 +76,12 @@ LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
 float
 LfoDSP::Generate()
 {
+  float base = LfoIsBipolar(_model->shape) ? 0.0f : 0.5f;
+  float factor = (LfoIsInverted(_model->shape) ? -1.0f : 1.0f) * (1.0f - base);
   switch (_model->type)
   {
-  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: return GenerateRandom();
-  case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: return GenerateWave();
+  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: return base + factor * GenerateRandom();
+  case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: return base + factor * GenerateWave();
   default: assert(false); return 0.0f;
   }
 }
@@ -88,25 +90,22 @@ float
 LfoDSP::GenerateWave() const
 {
   float phase = static_cast<float>(_phase);
-  float base = LfoIsBipolar(_model->shape)? 0.0f : 0.5f;
-  float factor = (LfoIsInverted(_model->shape) ? -1.0f : 1.0f) * (1.0f - base);
 	switch (_model->type)
 	{
 	case LfoType::Tri: break;
-	case LfoType::Saw: return base + factor * (phase * 2.0f - 1.0f);
-  case LfoType::Sqr: return base + factor * (phase < 0.5f ? 1.0f : -1.0f);
-  case LfoType::Sin: return base + factor * std::sinf(phase * 2.0f * PIF);
+	case LfoType::Saw: return phase * 2.0f - 1.0f;
+  case LfoType::Sqr: return phase < 0.5f ? 1.0f : -1.0f;
+  case LfoType::Sin: return std::sinf(phase * 2.0f * PIF);
 	default: assert(false); return 0.0f;
 	}
 	float tri = phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f;
-	return base + factor * tri * 4.0f;
+	return tri * 4.0f;
 }
 
 float
 LfoDSP::GenerateRandom()
 {
-  float rand = static_cast<float>(_prng.Next()) / std::numeric_limits<int32_t>::max();
-  return rand;
+  return static_cast<float>(_prng.Next()) / std::numeric_limits<int32_t>::max() * 2.0f - 1.0f;
 }
 
 } // namespace Xts

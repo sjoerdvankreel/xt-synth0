@@ -3,16 +3,16 @@
 
 #include <cstdint>
 
-// https://stackoverflow.com/questions/1640258/need-a-fast-random-generator-for-c
+// https://en.wikipedia.org/wiki/Lehmer_random_number_generator
 
 namespace Xts {
 
 class Prng {
   uint32_t _state;
 public:
-  Prng() : _state(0) {}
+  Prng() : _state(1U) {}
   Prng(uint32_t seed): _state(seed) {}
-  int32_t Next() { _state = (214013 * _state + 2531011); return (_state >> 16) & 0x7FFF; }
+  uint32_t Next() { return _state = static_cast<uint64_t>(_state) * 48271 % 0x7fffffff; }
 };
 
 } // namespace Xts
