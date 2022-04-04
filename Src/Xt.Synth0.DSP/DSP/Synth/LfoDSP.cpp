@@ -120,8 +120,8 @@ LfoDSP::GenerateRandom(float period)
   if (_randCount == 0)
   {
     _randCount = NextRandomCount(period);
-    _randLevel = NextRandomLevel(steepness);
     _randState = NextRandomState(steepness);
+    _randLevel = NextRandomLevel(period, steepness);
   }
   _randState += _randLevel * steepness * _randDir;
   if (_randState > 1.0f) _randState = 1.0f - (_randState - 1.0f), _randDir *= -1.0f;
@@ -143,23 +143,23 @@ LfoDSP::NextRandomCount(float period)
 }
 
 float
-LfoDSP::NextRandomLevel(float steepness)
-{
-  switch (_model->type)
-  {
-  case LfoType::Rnd1: case LfoType::Rnd2: return 0.0f;
-  case LfoType::Rnd3: case LfoType::Rnd4: return (_prng.Next() * 2.0f - 1.0f) * steepness * _randDir;
-  default: assert(false); return 0.0f;
-  }
-}
-
-float
 LfoDSP::NextRandomState(float steepness)
 {
   switch (_model->type)
   {
   case LfoType::Rnd1: case LfoType::Rnd2: return _randState + steepness * (_prng.Next() * 2.0f - 1.0f);
   case LfoType::Rnd3: case LfoType::Rnd4: return _randState;
+  default: assert(false); return 0.0f;
+  }
+}
+
+float
+LfoDSP::NextRandomLevel(float period, float steepness)
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: case LfoType::Rnd2: return 0.0f;
+  case LfoType::Rnd3: case LfoType::Rnd4: return (_prng.Next() * 2.0f - 1.0f) * steepness * _randDir / period;
   default: assert(false); return 0.0f;
   }
 }
