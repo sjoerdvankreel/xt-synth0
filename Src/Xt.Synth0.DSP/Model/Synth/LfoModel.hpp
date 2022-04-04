@@ -6,7 +6,7 @@
 namespace Xts {
 
 enum class LfoShape { Bi, Uni, BiInv, UniInv };
-enum class LfoType { Sin, Saw, Sqr, Tri, Rnd };
+enum class LfoType { Sin, Saw, Sqr, Tri, Rnd1, Rnd2, Rnd3, Rnd4 };
 
 struct XTS_ALIGN LfoModel
 {

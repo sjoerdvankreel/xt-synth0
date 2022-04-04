@@ -53,16 +53,6 @@ LfoDSP()
   InitRandom();
 }
 
-void
-LfoDSP::InitRandom()
-{
-  _randCount = 0;
-  _randDir = 1.0f;
-  _randLevel = 0.0f;
-  _prng = Prng(std::numeric_limits<uint32_t>::max() / (_model->randomSeed + 1));
-  _randState = _prng.Next() * 2.0f - 1.0f;
-}
-
 CvSample
 LfoDSP::Next()
 {
@@ -90,8 +80,8 @@ LfoDSP::Generate()
   float factor = (LfoIsInverted(_model->shape) ? -1.0f : 1.0f) * (1.0f - base);
   switch (_model->type)
   {
-  case LfoType::Rnd: return base + factor * GenerateRandom();
   case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: return base + factor * GenerateWave();
+  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: case LfoType::Rnd4: return base + factor * GenerateRandom();
   default: assert(false); return 0.0f;
   }
 }
@@ -112,15 +102,57 @@ LfoDSP::GenerateWave() const
 	return tri * 4.0f;
 }
 
+void
+LfoDSP::InitRandom()
+{
+  _randCount = 0;
+  _randDir = 1.0f;
+  _randLevel = 0.0f;
+  _prng = Prng(std::numeric_limits<uint32_t>::max() / (_model->randomSeed + 1));
+  _randState = _prng.Next() * 2.0f - 1.0f;
+}
+
+float
+LfoDSP::NextRandomLevel()
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: return 0.0f;
+  default: assert(false); return 0.0f;
+  }
+}
+
+int 
+LfoDSP::NextRandomCount()
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: return 256 - _model->randomSpeed;
+  default: assert(false); return 0;
+  }
+}
+
+float
+LfoDSP::NextRandomState(float steepness)
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: return _randState + steepness * (_prng.Next() * 2.0f - 1.0f);
+  default: assert(false); return 0.0f;
+  }
+}
+
 float
 LfoDSP::GenerateRandom()
 {
+  float steepness = Param::Level(_model->randomSteepness);
   if (_randCount == 0)
   {
-    _randCount = static_cast<int>(_prng.Next() * (256 - _model->randomSpeed));
-    _randLevel = (_prng.Next() * 2.0f - 1.0f) * Param::Level(_model->randomSteepness) * _randDir;
+    _randCount = NextRandomCount();
+    _randLevel = NextRandomLevel();
+    _randState = NextRandomState(steepness);
   }
-  _randState += _randLevel * Param::Level(_model->randomSteepness) * _randDir;
+  _randState += _randLevel * steepness * _randDir;
   if(_randState >= 1.0f) _randState -= (_randState - 1.0f), _randDir *= -1.0f;
   if(_randState <= -1.0f) _randState -= (_randState + 1.0f), _randDir *= 1.0f;
   _randCount--;

@@ -23,8 +23,11 @@ class LfoDSP
 private:
   float Generate();
   void InitRandom();
+  int NextRandomCount();
   float GenerateRandom();
+  float NextRandomLevel();
   float GenerateWave() const;
+  float NextRandomState(float steepness);
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, float bpm, float rate);
