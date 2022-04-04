@@ -112,14 +112,25 @@ LfoDSP::InitRandom()
   _randState = _prng.Next() * 2.0f - 1.0f;
 }
 
+int
+LfoDSP::NextRandomCount()
+{
+  int speed = 256 - _model->randomSpeed;
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: case LfoType::Rnd3: return speed;
+  case LfoType::Rnd2: case LfoType::Rnd4: return static_cast<int>(_prng.Next() * speed);
+  default: assert(false); return 0;
+  }
+}
+
 float
-LfoDSP::NextRandomLevel()
+LfoDSP::NextRandomLevel(float steepness)
 {
   switch (_model->type)
   {
-  case LfoType::Rnd1:
-  case LfoType::Rnd2: 
-    return 0.0f;
+  case LfoType::Rnd1: case LfoType::Rnd2: return 0.0f;
+  case LfoType::Rnd3: case LfoType::Rnd4: return (_prng.Next() * 2.0f - 1.0f) * steepness * _randDir;
   default: assert(false); return 0.0f;
   }
 }
@@ -129,23 +140,9 @@ LfoDSP::NextRandomState(float steepness)
 {
   switch (_model->type)
   {
-  case LfoType::Rnd1: 
-  case LfoType::Rnd2:
-    return _randState + steepness * (_prng.Next() * 2.0f - 1.0f);
+  case LfoType::Rnd1: case LfoType::Rnd2: return _randState + steepness * (_prng.Next() * 2.0f - 1.0f);
+  case LfoType::Rnd3: case LfoType::Rnd4: return _randState;
   default: assert(false); return 0.0f;
-  }
-}
-
-int
-LfoDSP::NextRandomCount()
-{
-  switch (_model->type)
-  {
-  case LfoType::Rnd1:
-    return 256 - _model->randomSpeed;
-  case LfoType::Rnd2:
-    return static_cast<int>(_prng.Next() * (256.0f - _model->randomSpeed));
-  default: assert(false); return 0;
   }
 }
 
@@ -156,7 +153,7 @@ LfoDSP::GenerateRandom()
   if (_randCount == 0)
   {
     _randCount = NextRandomCount();
-    _randLevel = NextRandomLevel();
+    _randLevel = NextRandomLevel(steepness);
     _randState = NextRandomState(steepness);
   }
   _randState += _randLevel * steepness * _randDir;

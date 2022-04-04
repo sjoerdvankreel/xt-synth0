@@ -25,8 +25,8 @@ private:
   void InitRandom();
   int NextRandomCount();
   float GenerateRandom();
-  float NextRandomLevel();
   float GenerateWave() const;
+  float NextRandomLevel(float steepness);
   float NextRandomState(float steepness);
 public:
   LfoDSP() = default;
