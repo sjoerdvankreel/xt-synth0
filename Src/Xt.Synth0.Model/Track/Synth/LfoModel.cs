@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
     public enum LfoShape { Bi, Uni, BiInv, UniInv };
-    public enum LfoType { Sin, Saw, Sqr, Tri, Rnd1, Rnd2, Rnd3 };
+    public enum LfoType { Sin, Saw, Sqr, Tri, Rnd };
 
     public unsafe sealed class LfoModel : IUIParamGroupModel
     {
@@ -52,7 +52,7 @@ namespace Xt.Synth0.Model
 
         static readonly IRelevance RelevanceSync = Relevance.Param((LfoModel m) => m.Sync, (int s) => s == 1);
         static readonly IRelevance RelevanceTime = Relevance.Param((LfoModel m) => m.Sync, (int s) => s == 0);
-        static readonly IRelevance RelevanceRandom = Relevance.Param((LfoModel m) => m.Type, (LfoType t) => t >= LfoType.Rnd1);
+        static readonly IRelevance RelevanceRandom = Relevance.Param((LfoModel m) => m.Type, (LfoType t) => t == LfoType.Rnd);
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);

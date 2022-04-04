@@ -56,17 +56,11 @@ LfoDSP()
 void
 LfoDSP::InitRandom()
 {
-  switch (_model->type)
-  {
-  case LfoType::Rnd1: _randState = 0.0f; break;
-  case LfoType::Rnd2: _randState = 0.5f; break;
-  case LfoType::Rnd3: _randState = 1.0f; break;
-  default: _randState = 0.0f; break;
-  }
   _randDir = 1.0f;
   _randSample = 0;
   _randLevel = 0.0f;
-  _prng = Prng(static_cast<uint32_t>(_model->randomSeed + 1));
+  _prng = Prng(std::numeric_limits<uint32_t>::max() / (_model->randomSeed + 1));
+  _randState = _prng.Next() * 2.0f - 1.0f;
 }
 
 CvSample
@@ -96,7 +90,7 @@ LfoDSP::Generate()
   float factor = (LfoIsInverted(_model->shape) ? -1.0f : 1.0f) * (1.0f - base);
   switch (_model->type)
   {
-  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: return base + factor * GenerateRandom();
+  case LfoType::Rnd: return base + factor * GenerateRandom();
   case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: return base + factor * GenerateWave();
   default: assert(false); return 0.0f;
   }
@@ -122,10 +116,7 @@ float
 LfoDSP::GenerateRandom()
 {
   if (_randSample == 0)
-  {
-    float rand = static_cast<float>(_prng.Next()) / std::numeric_limits<int32_t>::max() * 2.0f - 1.0f;
-    _randLevel = rand * Param::Level(_model->randomSteepness) * _randDir;
-  }
+    _randLevel = (_prng.Next() * 2.0f - 1.0f) * Param::Level(_model->randomSteepness) * _randDir;
   _randState += _randLevel * Param::Level(_model->randomSteepness) * _randDir;
   if(_randState >= 1.0f) _randState -= (_randState - 1.0f), _randDir *= -1.0f;
   if(_randState <= -1.0f) _randState -= (_randState + 1.0f), _randDir *= 1.0f;
