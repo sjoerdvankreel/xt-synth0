@@ -18,7 +18,7 @@ struct XTS_ALIGN LfoModel
   int32_t smooth;
   int32_t frequency;
   int32_t randomSeed;
-  int32_t randomNext;
+  int32_t randomSpeed;
   int32_t randomSteepness;
 };
 XTS_CHECK_SIZE(LfoModel, 40);

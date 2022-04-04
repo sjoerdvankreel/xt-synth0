@@ -56,8 +56,8 @@ LfoDSP()
 void
 LfoDSP::InitRandom()
 {
+  _randCount = 0;
   _randDir = 1.0f;
-  _randSample = 0;
   _randLevel = 0.0f;
   _prng = Prng(std::numeric_limits<uint32_t>::max() / (_model->randomSeed + 1));
   _randState = _prng.Next() * 2.0f - 1.0f;
@@ -115,12 +115,15 @@ LfoDSP::GenerateWave() const
 float
 LfoDSP::GenerateRandom()
 {
-  if (_randSample == 0)
+  if (_randCount == 0)
+  {
+    _randCount = static_cast<int>(_prng.Next() * (256 - _model->randomSpeed));
     _randLevel = (_prng.Next() * 2.0f - 1.0f) * Param::Level(_model->randomSteepness) * _randDir;
+  }
   _randState += _randLevel * Param::Level(_model->randomSteepness) * _randDir;
   if(_randState >= 1.0f) _randState -= (_randState - 1.0f), _randDir *= -1.0f;
   if(_randState <= -1.0f) _randState -= (_randState + 1.0f), _randDir *= 1.0f;
-  _randSample = (_randSample + 1) % (_model->randomNext + 1);
+  _randCount--;
   return BipolarSanity(_randState);
 }
 

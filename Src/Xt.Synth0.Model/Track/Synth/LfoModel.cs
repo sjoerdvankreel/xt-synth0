@@ -30,7 +30,7 @@ namespace Xt.Synth0.Model
         {
             { On, -1 },
             { Type, 0 }, { Shape, 1 }, { Smooth, 2 }, { Sync, 3 },
-            { RandomSeed, 4 }, { RandomNext, 5 }, { RandomSteepness, 6 }, { Frequency, 7 }, { Step, 7 }
+            { RandomSeed, 4 }, { RandomSpeed, 5 }, { RandomSteepness, 6 }, { Frequency, 7 }, { Step, 7 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -46,7 +46,7 @@ namespace Xt.Synth0.Model
             internal int smooth;
             internal int frequency;
             internal int randomSeed;
-            internal int randomNext;
+            internal int randomSpeed;
             internal int randomSteepness;
         }
 
@@ -64,10 +64,10 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo SmoothInfo = ParamInfo.Level(p => &((Native*)p)->smooth, 0, nameof(Smooth), "Smt", "Smoothing amount", true, 0);
 
         public Param RandomSeed = new Param(RandomSeedInfo);
-        public Param RandomNext = new Param(RandomNextInfo);
+        public Param RandomSpeed = new Param(RandomSpeedInfo);
         public Param RandomSteepness = new Param(RandomSteepnessInfo);
         static readonly ParamInfo RandomSeedInfo = ParamInfo.Level(p => &((Native*)p)->randomSeed, 2, nameof(RandomSeed), "Sed", "Random seed", true, 0, RelevanceRandom);
-        static readonly ParamInfo RandomNextInfo = ParamInfo.Level(p => &((Native*)p)->randomNext, 2, nameof(RandomNext), "Nxt", "Random next", true, 0, RelevanceRandom);
+        static readonly ParamInfo RandomSpeedInfo = ParamInfo.Level(p => &((Native*)p)->randomSpeed, 2, nameof(RandomSpeed), "Spd", "Random speed", true, 0, RelevanceRandom);
         static readonly ParamInfo RandomSteepnessInfo = ParamInfo.Level(p => &((Native*)p)->randomSteepness, 2, nameof(RandomSteepness), "Stn", "Random steepness", true, 0, RelevanceRandom);
 
         public Param Sync { get; } = new(SyncInfo);
