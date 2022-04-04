@@ -63,18 +63,18 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo ShapeInfo = ParamInfo.List<LfoShape>(p => &((Native*)p)->shape, 0, nameof(Shape), "Shape", "Shape", true);
         static readonly ParamInfo SmoothInfo = ParamInfo.Level(p => &((Native*)p)->smooth, 0, nameof(Smooth), "Smt", "Smoothing amount", true, 0);
 
-        public Param RandomSeed = new Param(RandomSeedInfo);
-        public Param RandomSpeed = new Param(RandomSpeedInfo);
-        public Param RandomSteepness = new Param(RandomSteepnessInfo);
-        static readonly ParamInfo RandomSeedInfo = ParamInfo.Level(p => &((Native*)p)->randomSeed, 2, nameof(RandomSeed), "Sed", "Random seed", true, 0, RelevanceRandom);
-        static readonly ParamInfo RandomSpeedInfo = ParamInfo.Level(p => &((Native*)p)->randomSpeed, 2, nameof(RandomSpeed), "Spd", "Random speed", true, 0, RelevanceRandom);
-        static readonly ParamInfo RandomSteepnessInfo = ParamInfo.Level(p => &((Native*)p)->randomSteepness, 2, nameof(RandomSteepness), "Stn", "Random steepness", true, 0, RelevanceRandom);
-
         public Param Sync { get; } = new(SyncInfo);
         public Param Step { get; } = new(StepInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
         static readonly ParamInfo SyncInfo = ParamInfo.Toggle(p => &((Native*)p)->sync, 1, nameof(Sync), "Sync", "Beat sync", true, false);
         static readonly ParamInfo StepInfo = ParamInfo.Step(p => &((Native*)p)->step, 1, nameof(Step), "Step", "Rate steps", true, 1, 7, RelevanceSync);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->frequency, 1, nameof(Frequency), "Frq", "Frequency", true, 0, MinFreqHz, MaxFreqHz, RelevanceTime);
+
+        public Param RandomSeed = new Param(RandomSeedInfo);
+        public Param RandomSpeed = new Param(RandomSpeedInfo);
+        public Param RandomSteepness = new Param(RandomSteepnessInfo);
+        static readonly ParamInfo RandomSeedInfo = ParamInfo.Level(p => &((Native*)p)->randomSeed, 2, nameof(RandomSeed), "Sed", "Random seed", true, 0, RelevanceRandom);
+        static readonly ParamInfo RandomSpeedInfo = ParamInfo.Level(p => &((Native*)p)->randomSpeed, 2, nameof(RandomSpeed), "Spd", "Random speed", true, 192, RelevanceRandom);
+        static readonly ParamInfo RandomSteepnessInfo = ParamInfo.Level(p => &((Native*)p)->randomSteepness, 2, nameof(RandomSteepness), "Stn", "Random steepness", true, 255, RelevanceRandom);
     }
 }
