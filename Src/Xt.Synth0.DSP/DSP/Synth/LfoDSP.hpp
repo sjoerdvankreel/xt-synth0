@@ -21,11 +21,11 @@ class LfoDSP
   CvSample _output;
   struct LfoModel const* _model;
 private:
-  float Generate();
   void InitRandom();
-  int NextRandomCount();
-  float GenerateRandom();
   float GenerateWave() const;
+  float Generate(float period);
+  int NextRandomCount(float period);
+  float GenerateRandom(float period);
   float NextRandomLevel(float steepness);
   float NextRandomState(float steepness);
 public:

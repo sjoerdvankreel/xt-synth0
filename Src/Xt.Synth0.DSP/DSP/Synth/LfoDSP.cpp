@@ -59,8 +59,9 @@ LfoDSP::Next()
   _output.value = 0.0f;
   _output.bipolar = LfoIsBipolar(_model->shape);
   if (!_model->on) return Output();
-  _output.value = Generate();
-  _phase += Frequency(*_model, _bpm, _rate) / _rate;
+  float frequency = Frequency(*_model, _bpm, _rate) / _rate;
+  _output.value = Generate(1.0f / frequency);
+  _phase += frequency;
   if (_phase >= 1.0) InitRandom();
   _phase -= std::floor(_phase);
   return Output().Sanity();
@@ -74,14 +75,14 @@ LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
 }
 
 float
-LfoDSP::Generate()
+LfoDSP::Generate(float period)
 {
   float base = LfoIsBipolar(_model->shape) ? 0.0f : 0.5f;
   float factor = (LfoIsInverted(_model->shape) ? -1.0f : 1.0f) * (1.0f - base);
   switch (_model->type)
   {
   case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: return base + factor * GenerateWave();
-  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: case LfoType::Rnd4: return base + factor * GenerateRandom();
+  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: case LfoType::Rnd4: return base + factor * GenerateRandom(period);
   default: assert(false); return 0.0f;
   }
 }
@@ -112,14 +113,31 @@ LfoDSP::InitRandom()
   _randState = _prng.Next() * 2.0f - 1.0f;
 }
 
-int
-LfoDSP::NextRandomCount()
+float
+LfoDSP::GenerateRandom(float period)
 {
-  int speed = 256 - _model->randomSpeed;
+  float steepness = Param::Level(_model->randomSteepness);
+  if (_randCount == 0)
+  {
+    _randCount = NextRandomCount(period);
+    _randLevel = NextRandomLevel(steepness);
+    _randState = NextRandomState(steepness);
+  }
+  _randState += _randLevel * steepness * _randDir;
+  if (_randState > 1.0f) _randState = 1.0f - (_randState - 1.0f), _randDir *= -1.0f;
+  if (_randState < -1.0f) _randState = -1.0f - (_randState + 1.0f), _randDir *= -1.0f;
+  _randCount--;
+  return BipolarSanity(_randState);
+}
+
+int
+LfoDSP::NextRandomCount(float period)
+{
+  int count = static_cast<int>((1.0f - Param::Level(_model->randomSpeed)) * period);
   switch (_model->type)
   {
-  case LfoType::Rnd1: case LfoType::Rnd3: return speed;
-  case LfoType::Rnd2: case LfoType::Rnd4: return static_cast<int>(_prng.Next() * speed);
+  case LfoType::Rnd1: case LfoType::Rnd3: return count;
+  case LfoType::Rnd2: case LfoType::Rnd4: return static_cast<int>(_prng.Next() * count);
   default: assert(false); return 0;
   }
 }
@@ -144,23 +162,6 @@ LfoDSP::NextRandomState(float steepness)
   case LfoType::Rnd3: case LfoType::Rnd4: return _randState;
   default: assert(false); return 0.0f;
   }
-}
-
-float
-LfoDSP::GenerateRandom()
-{
-  float steepness = Param::Level(_model->randomSteepness);
-  if (_randCount == 0)
-  {
-    _randCount = NextRandomCount();
-    _randLevel = NextRandomLevel(steepness);
-    _randState = NextRandomState(steepness);
-  }
-  _randState += _randLevel * steepness * _randDir;
-  if(_randState > 1.0f) _randState = 1.0f - (_randState - 1.0f), _randDir *= -1.0f;
-  if(_randState < -1.0f) _randState = -1.0f - (_randState + 1.0f), _randDir *= -1.0f;
-  _randCount--;
-  return BipolarSanity(_randState);
 }
 
 } // namespace Xts
