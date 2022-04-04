@@ -121,7 +121,7 @@ LfoDSP::GenerateRandom(float period)
   {
     _randCount = NextRandomCount(period);
     _randState = NextRandomState(steepness);
-    _randLevel = NextRandomLevel(period, steepness);
+    _randLevel = NextRandomLevel(steepness, _randCount);
   }
   _randState += _randLevel * steepness * _randDir;
   if (_randState > 1.0f) _randState = 1.0f - (_randState - 1.0f), _randDir *= -1.0f;
@@ -154,12 +154,12 @@ LfoDSP::NextRandomState(float steepness)
 }
 
 float
-LfoDSP::NextRandomLevel(float period, float steepness)
+LfoDSP::NextRandomLevel(float steepness, int count)
 {
   switch (_model->type)
   {
   case LfoType::Rnd1: case LfoType::Rnd2: return 0.0f;
-  case LfoType::Rnd3: case LfoType::Rnd4: return (_prng.Next() * 2.0f - 1.0f) * steepness * _randDir / period;
+  case LfoType::Rnd3: case LfoType::Rnd4: return (_prng.Next() * 2.0f - 1.0f) * steepness * _randDir / static_cast<float>(count);
   default: assert(false); return 0.0f;
   }
 }

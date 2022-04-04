@@ -27,7 +27,7 @@ private:
   int NextRandomCount(float period);
   float GenerateRandom(float period);
   float NextRandomState(float steepness);
-  float NextRandomLevel(float period, float steepness);
+  float NextRandomLevel(float steepness, int count);
 public:
   LfoDSP() = default;
   LfoDSP(LfoModel const* model, float bpm, float rate);
