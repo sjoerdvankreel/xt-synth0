@@ -1,7 +1,6 @@
 hard sync
 sampler
 multiple synths + select target in sequencer
-filter lfos
 xtaudio use iaudioclient->reset
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
@@ -14,3 +13,5 @@ undo/redo
 2 global filters
 automation bus assign
 process buffer in blocks
+hold-mode lfo: 1st sample at voice start
+lfo smoothing

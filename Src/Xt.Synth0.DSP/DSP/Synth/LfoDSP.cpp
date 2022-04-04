@@ -120,6 +120,7 @@ LfoDSP::GenerateRandom(float period)
   if (_randCount == 0)
   {
     _randCount = NextRandomCount(period);
+    assert(_randCount > 0);
     _randState = NextRandomState(steepness);
     _randLevel = NextRandomLevel(steepness, _randCount);
   }
@@ -136,8 +137,8 @@ LfoDSP::NextRandomCount(float period)
   int count = static_cast<int>((1.0f - Param::Level(_model->randomSpeed)) * period);
   switch (_model->type)
   {
-  case LfoType::Rnd1: case LfoType::Rnd3: return count;
-  case LfoType::Rnd2: case LfoType::Rnd4: return static_cast<int>(_prng.Next() * count);
+  case LfoType::Rnd1: case LfoType::Rnd3: return count + 1;
+  case LfoType::Rnd2: case LfoType::Rnd4: return static_cast<int>(_prng.Next() * count) + 1;
   default: assert(false); return 0;
   }
 }
