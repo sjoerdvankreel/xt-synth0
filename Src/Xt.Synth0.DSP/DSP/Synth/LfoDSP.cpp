@@ -157,8 +157,8 @@ LfoDSP::GenerateRandom()
     _randState = NextRandomState(steepness);
   }
   _randState += _randLevel * steepness * _randDir;
-  if(_randState >= 1.0f) _randState -= (_randState - 1.0f), _randDir *= -1.0f;
-  if(_randState <= -1.0f) _randState -= (_randState + 1.0f), _randDir *= 1.0f;
+  if(_randState > 1.0f) _randState = 1.0f - (_randState - 1.0f), _randDir *= -1.0f;
+  if(_randState < -1.0f) _randState = -1.0f - (_randState + 1.0f), _randDir *= -1.0f;
   _randCount--;
   return BipolarSanity(_randState);
 }
