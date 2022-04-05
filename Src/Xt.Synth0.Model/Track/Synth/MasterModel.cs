@@ -30,12 +30,12 @@ namespace Xt.Synth0.Model
 
         public Param Amp { get; } = new(AmpInfo);
         public Param AmpLfo { get; } = new(AmpLfoInfo);
-        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 1, nameof(Amp), "Amp", "Amplitude", true, 128);
-        static readonly ParamInfo AmpLfoInfo = ParamInfo.Mix(p => &((Native*)p)->ampLfo, 1, nameof(AmpLfo), "LFO", "Amp LFO 3 amount", true);
+        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), "Amp", "Amplitude", true, 128);
+        static readonly ParamInfo AmpLfoInfo = ParamInfo.Mix(p => &((Native*)p)->ampLfo, 0, nameof(AmpLfo), "LFO", "Amp LFO 3 amount", true);
 
         public Param Pan { get; } = new(PanInfo);
         public Param PanLfo { get; } = new(PanLfoInfo);
-        static readonly ParamInfo PanInfo = ParamInfo.Level(p => &((Native*)p)->pan, 0, nameof(Pan), "Pan", "Panning", true, 128);
-        static readonly ParamInfo PanLfoInfo = ParamInfo.Mix(p => &((Native*)p)->panLfo, 0, nameof(PanLfo), "LFO", "Pan LFO 3 amount", true);
+        static readonly ParamInfo PanInfo = ParamInfo.Level(p => &((Native*)p)->pan, 1, nameof(Pan), "Pan", "Panning", true, 128);
+        static readonly ParamInfo PanLfoInfo = ParamInfo.Mix(p => &((Native*)p)->panLfo, 1, nameof(PanLfo), "LFO", "Pan LFO 3 amount", true);
     }
 }

@@ -23,7 +23,7 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Sync, 0 }, { Delay, 1 }, { Step, 1 }, { Feedback, 2 }, { Mix, 3 }
+            { Feedback, 0 }, { Mix, 1 }, { Sync, 2 }, { Delay, 3 }, { Step, 3 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
