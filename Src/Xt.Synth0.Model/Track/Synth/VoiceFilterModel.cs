@@ -46,26 +46,26 @@ namespace Xt.Synth0.Model
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
-        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->filter.on, 0, nameof(On), "On", "Enabled", false, false);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->filter.type, 0, nameof(Type), "Type", "Filter type", true, FilterModel.TypeNames);
+        static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->filter.on, 1, nameof(On), "On", "Enabled", false, false);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<FilterType>(p => &((Native*)p)->filter.type, 1, nameof(Type), "Type", "Filter type", true, FilterModel.TypeNames);
 
         public Param CombMinGain { get; } = new(CombMinGainInfo);
         public Param CombPlusGain { get; } = new(CombPlusGainInfo);
         public Param CombMinDelay { get; } = new(CombMinDelayInfo);
         public Param CombPlusDelay { get; } = new(CombPlusDelayInfo);
-        static readonly ParamInfo CombMinGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combMinGain, 0, nameof(CombMinGain), "Gn-", "Comb feedback gain", true, RelevanceComb);
-        static readonly ParamInfo CombPlusGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combPlusGain, 0, nameof(CombPlusGain), "Gn+", "Comb feedforward gain", true, RelevanceComb);
-        static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
-        static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
+        static readonly ParamInfo CombMinGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combMinGain, 1, nameof(CombMinGain), "Gn-", "Comb feedback gain", true, RelevanceComb);
+        static readonly ParamInfo CombPlusGainInfo = ParamInfo.Mix(p => &((Native*)p)->filter.combPlusGain, 1, nameof(CombPlusGain), "Gn+", "Comb feedforward gain", true, RelevanceComb);
+        static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combMinDelay, 1, nameof(CombMinDelay), "Dly-", "Comb feedback delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
+        static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combPlusDelay, 1, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
 
         public Param PassType { get; } = new(PassTypeInfo);
         public Param Resonance { get; } = new(ResonanceInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
         public Param KeyboardTrack { get; } = new(KeyboardTrackInfo);
-        static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 0, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
-        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->filter.passType, 0, nameof(PassType), "Type", "Pass type", true, null, RelevanceNotComb);
-        static readonly ParamInfo KeyboardTrackInfo = ParamInfo.Mix(p => &((Native*)p)->keyboardTrack, 0, nameof(KeyboardTrack), "Kbd", "Keyboard tracking amount", true, RelevanceNotComb);
-        static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 0, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
+        static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 1, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
+        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->filter.passType, 1, nameof(PassType), "Type", "Pass type", true, null, RelevanceNotComb);
+        static readonly ParamInfo KeyboardTrackInfo = ParamInfo.Mix(p => &((Native*)p)->keyboardTrack, 1, nameof(KeyboardTrack), "Kbd", "Keyboard tracking amount", true, RelevanceNotComb);
+        static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 1, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
 
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);
@@ -85,9 +85,9 @@ namespace Xt.Synth0.Model
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);
         public Param Unit3Amount { get; } = new(Unit3AmountInfo);
         public Param Filter1Amount { get; } = new(Filter1AmountInfo);
-        static readonly ParamInfo Unit1AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[0], 1, nameof(Unit1Amount), "Ut1", "Unit 1 amount", true, 0);
-        static readonly ParamInfo Unit2AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[1], 1, nameof(Unit2Amount), "Ut2", "Unit 2 amount", true, 0);
-        static readonly ParamInfo Unit3AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[2], 1, nameof(Unit3Amount), "Ut3", "Unit 3 amount", true, 0);
-        static readonly ParamInfo Filter1AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[0], 1, nameof(Filter1Amount), "Ft1", "Filter 1 amount", true, 0, Relevance2);
+        static readonly ParamInfo Unit1AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[0], 0, nameof(Unit1Amount), "Ut1", "Unit 1 amount", true, 0);
+        static readonly ParamInfo Unit2AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[1], 0, nameof(Unit2Amount), "Ut2", "Unit 2 amount", true, 0);
+        static readonly ParamInfo Unit3AmountInfo = ParamInfo.Level(p => &((Native*)p)->unitAmount[2], 0, nameof(Unit3Amount), "Ut3", "Unit 3 amount", true, 0);
+        static readonly ParamInfo Filter1AmountInfo = ParamInfo.Level(p => &((Native*)p)->filterAmount[0], 0, nameof(Filter1Amount), "Ft1", "Filter 1 amount", true, 0, Relevance2);
     }
 }
