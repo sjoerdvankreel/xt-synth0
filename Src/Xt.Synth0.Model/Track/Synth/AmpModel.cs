@@ -39,16 +39,16 @@ namespace Xt.Synth0.Model
         public Param Amp { get; } = new(AmpInfo);
         public Param AmpModSource { get; } = new(AmpModSourceInfo);
         public Param AmpModAmount { get; } = new(AmpModAmountInfo);
-        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 1, nameof(Amp), "Amp", "Amplitude", true, 255);
-        static readonly ParamInfo AmpModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampMod.amount, 1, nameof(AmpModAmount), "Amt", "Amp mod amount", true);
-        static readonly ParamInfo AmpModSourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->ampMod.source, 1, nameof(AmpModSource), "Mod", "Amp mod source", true, VoiceModModel.ModSourceNames);
+        static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 0, nameof(Amp), "Amp", "Amplitude", true, 255);
+        static readonly ParamInfo AmpModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->ampMod.amount, 0, nameof(AmpModAmount), "Amt", "Amp mod amount", true);
+        static readonly ParamInfo AmpModSourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->ampMod.source, 0, nameof(AmpModSource), "Mod", "Amp mod source", true, VoiceModModel.ModSourceNames);
 
         public Param Pan { get; } = new(PanInfo);
         public Param PanModSource { get; } = new(PanModSourceInfo);
         public Param PanModAmount { get; } = new(PanModAmountInfo);
-        static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 0, nameof(Pan), "Pan", "Panning", true);
-        static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panMod.amount, 0, nameof(PanModAmount), "Amt", "Pan mod amount", true);
-        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->panMod.source, 0, nameof(PanModSource), "Mod", "Pan mod source", true, VoiceModModel.ModSourceNames);
+        static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 1, nameof(Pan), "Pan", "Panning", true);
+        static readonly ParamInfo PanModAmountInfo = ParamInfo.Mix(p => &((Native*)p)->panMod.amount, 1, nameof(PanModAmount), "Amt", "Pan mod amount", true);
+        static readonly ParamInfo PanModSourceInfo = ParamInfo.List<VoiceModSource>(p => &((Native*)p)->panMod.source, 1, nameof(PanModSource), "Mod", "Pan mod source", true, VoiceModModel.ModSourceNames);
 
         public Param Unit1Amount { get; } = new(Unit1AmountInfo);
         public Param Unit2Amount { get; } = new(Unit2AmountInfo);
