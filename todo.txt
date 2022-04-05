@@ -17,3 +17,4 @@ hold-mode lfo: 1st sample at voice start
 lfo smoothing
 move lfo sync to header
 do random lfo amp
+delay l/r
