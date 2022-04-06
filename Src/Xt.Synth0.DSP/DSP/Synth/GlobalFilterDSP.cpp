@@ -46,12 +46,11 @@ GlobalFilterDSP::Generate(CvSample globalLfo)
   float resonance = _mod.Modulate(globalLfo, { resBase, false }, static_cast<int>(FilterModTarget::Resonance));
   float freq = _mod.Modulate(globalLfo, { freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 256.0f;
   float hz = Param::Frequency(freq, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
-  switch (_model->filter.type)
-  {
-  case FilterType::Ladder: return _filter.GenerateLadder(_output, hz, resonance);
-  case FilterType::StateVar: return _filter.GenerateStateVar(_output, hz, resonance);
-  default: assert(false); return FloatSample();
-  }
+  if(_model->filter.type == FilterType::StateVar) return _filter.GenerateStateVar(_output, hz, resonance);
+  assert(_model->filter.type == FilterType::Ladder);
+  float lphpBase = Param::Level(_model->filter.ladderLpHp);
+  float lphp = _mod.Modulate(globalLfo, { lphpBase, false }, static_cast<int>(FilterModTarget::LPHP));
+  return _filter.GenerateLadder(_output, hz, resonance, lphp);
 }
 
 FloatSample

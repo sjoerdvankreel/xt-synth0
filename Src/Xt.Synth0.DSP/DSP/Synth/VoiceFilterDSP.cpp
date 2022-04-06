@@ -90,12 +90,11 @@ VoiceFilterDSP::Generate()
   if(tracking > 0.0f) hz = (1.0f - tracking) * hz + tracking * hz * _keyboardBase;
   if(tracking < 0.0f) hz = (1.0f + tracking) * hz - tracking * hz / _keyboardBase;
   hz = std::clamp(hz, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
-  switch (_model->filter.type)
-  {
-  case FilterType::Ladder: return _dsp.GenerateLadder(_output, hz, resonance);
-  case FilterType::StateVar: return _dsp.GenerateStateVar(_output, hz, resonance);
-  default: assert(false); return FloatSample();
-  }  
+  if(_model->filter.type == FilterType::StateVar) return _dsp.GenerateStateVar(_output, hz, resonance);
+  assert(_model->filter.type == FilterType::Ladder);
+  float lphpBase = Param::Level(_model->filter.ladderLpHp);
+  float lphp = _mods.Modulate({ lphpBase, false }, static_cast<int>(FilterModTarget::LPHP));
+  return _dsp.GenerateLadder(_output, hz, resonance, lphp);
 }
 
 FloatSample

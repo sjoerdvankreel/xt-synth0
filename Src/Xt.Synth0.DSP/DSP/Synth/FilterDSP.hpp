@@ -48,8 +48,8 @@ public:
   FilterDSP() = default;
   FilterDSP(struct FilterModel const* model, float rate);
 public:
-  FloatSample GenerateLadder(FloatSample x, float freq, float res);
   FloatSample GenerateStateVar(FloatSample x, float freq, float res);
+  FloatSample GenerateLadder(FloatSample x, float freq, float res, float lphp);
   FloatSample GenerateComb(FloatSample x, int minDelay, int plusDelay, float minGain, float plusGain);
 };
 
