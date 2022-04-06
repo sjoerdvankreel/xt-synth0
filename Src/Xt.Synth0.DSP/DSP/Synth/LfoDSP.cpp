@@ -26,7 +26,7 @@ LfoPlot::Params() const
   PeriodicParams result;
   result.periods = 2;
   result.autoRange = false;
-  result.allowResample = false;
+  result.allowResample = true;
   result.bipolar = LfoIsBipolar(_model->shape);
   return result;
 }
