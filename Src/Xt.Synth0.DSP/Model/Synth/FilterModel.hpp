@@ -5,8 +5,8 @@
 
 namespace Xts {
 
-enum class PassType { LPF, HPF, BPF, BSF };
 enum class FilterType { Ladder, StateVar, Comb };
+enum class StateVarPassType { LPF, HPF, BPF, BSF };
 
 enum class FilterModTarget
 {
@@ -28,9 +28,9 @@ struct XTS_ALIGN FilterModel
   int32_t combMinDelay;
   int32_t combPlusDelay;
 
-  PassType passType;
   int32_t resonance;
   int32_t frequency;
+  StateVarPassType stateVarPassType;
   int32_t pad__;
 };
 XTS_CHECK_SIZE(FilterModel, 40);

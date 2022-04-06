@@ -63,12 +63,12 @@ FilterDSP::GenerateStateVar(FloatSample x, float freq, float res)
   s.ic2eq = 2.0 * v2 - s.ic2eq;
 
   DoubleSample result = {};
-  switch (_model->passType)
+  switch (_model->stateVarPassType)
   {
-  case PassType::LPF: result = v2; break;
-  case PassType::BPF: result = v1; break;
-  case PassType::BSF: result = v0 - k * v1; break;
-  case PassType::HPF: result = v0 - k * v1 - v2; break;
+  case StateVarPassType::LPF: result = v2; break;
+  case StateVarPassType::BPF: result = v1; break;
+  case StateVarPassType::BSF: result = v0 - k * v1; break;
+  case StateVarPassType::HPF: result = v0 - k * v1 - v2; break;
   default: assert(false); break;
   }
   return result.ToFloat().Sanity();

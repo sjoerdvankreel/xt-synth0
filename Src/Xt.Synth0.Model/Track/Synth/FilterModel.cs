@@ -2,8 +2,8 @@
 
 namespace Xt.Synth0.Model
 {
-    public enum PassType { LPF, HPF, BPF, BSF };
     public enum FilterType { Ladder, StateVar, Comb };
+    public enum StateVarPassType { LPF, HPF, BPF, BSF };
 
     public enum FilterModTarget
     {
@@ -33,9 +33,9 @@ namespace Xt.Synth0.Model
             internal int combMinDelay;
             internal int combPlusDelay;
 
-            internal int passType;
             internal int resonance;
             internal int frequency;
+            internal int stateVarPassType;
             internal int pad__;
         };
 

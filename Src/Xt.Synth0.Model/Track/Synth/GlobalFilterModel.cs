@@ -20,7 +20,7 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 },  { PassType, 1 },  { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 },  { LfoAmount, 3 },
+            { Type, 0 },  { StateVarPassType, 1 },  { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 },  { LfoAmount, 3 },
             { CombPlusGain, 5 }, { Frequency, 6 }, { CombMinGain, 6 }, { LfoTarget, 7 }
         };
 
@@ -33,6 +33,7 @@ namespace Xt.Synth0.Model
 
         static readonly IRelevance RelevanceComb = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
         static readonly IRelevance RelevanceNotComb = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
+        static readonly IRelevance RelevanceStateVar = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t == FilterType.StateVar);
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
@@ -48,11 +49,11 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combMinDelay, 0, nameof(CombMinDelay), "Dly-", "Comb feedback delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
         static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combPlusDelay, 0, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
 
-        public Param PassType { get; } = new(PassTypeInfo);
         public Param Resonance { get; } = new(ResonanceInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
-        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->filter.passType, 0, nameof(PassType), "Type", "Pass type", true, null, RelevanceNotComb);
+        public Param StateVarPassType { get; } = new(StateVarPassTypeInfo);
         static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 0, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
+        static readonly ParamInfo StateVarPassTypeInfo = ParamInfo.List<StateVarPassType>(p => &((Native*)p)->filter.stateVarPassType, 0, nameof(StateVarPassType), "Type", "Pass type", true, null, RelevanceStateVar);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 0, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
 
         public Param LfoAmount { get; } = new(LfoAmountInfo);

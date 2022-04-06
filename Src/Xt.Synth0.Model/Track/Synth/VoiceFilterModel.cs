@@ -22,7 +22,7 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { PassType, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 }, { Frequency, 3 }, { CombPlusGain, 3 },
+            { Type, 0 }, { StateVarPassType, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 }, { Frequency, 3 }, { CombPlusGain, 3 },
             { Mod1Source, 4 }, { Mod1Target, 5 }, { Mod1Amount, 6 }, {KeyboardTrack, 7 }, { CombMinGain, 7 },
             { Mod2Source, 8 }, { Mod2Target, 9 }, { Mod2Amount, 10 },
             { Unit1Amount, 12 }, { Unit2Amount, 13 }, { Unit3Amount, 14 }, { Filter1Amount, 15 }
@@ -43,6 +43,7 @@ namespace Xt.Synth0.Model
         static readonly IRelevance Relevance2 = Relevance.Index(i => i > 0);
         static readonly IRelevance RelevanceComb = Relevance.Param((VoiceFilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
         static readonly IRelevance RelevanceNotComb = Relevance.Param((VoiceFilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
+        static readonly IRelevance RelevanceStateVar = Relevance.Param((VoiceFilterModel m) => m.Type, (FilterType t) => t == FilterType.StateVar);
 
         public Param On { get; } = new(OnInfo);
         public Param Type { get; } = new(TypeInfo);
@@ -58,13 +59,13 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo CombMinDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combMinDelay, 1, nameof(CombMinDelay), "Dly-", "Comb feedback delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
         static readonly ParamInfo CombPlusDelayInfo = ParamInfo.Time(p => &((Native*)p)->filter.combPlusDelay, 1, nameof(CombPlusDelay), "Dly+", "Comb feedforward delay time", true, 0, FilterModel.CombMinDelayMs, FilterModel.CombMaxDelayMs, RelevanceComb);
 
-        public Param PassType { get; } = new(PassTypeInfo);
         public Param Resonance { get; } = new(ResonanceInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
         public Param KeyboardTrack { get; } = new(KeyboardTrackInfo);
+        public Param StateVarPassType { get; } = new(StateVarPassTypeInfo);
         static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 1, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
-        static readonly ParamInfo PassTypeInfo = ParamInfo.List<PassType>(p => &((Native*)p)->filter.passType, 1, nameof(PassType), "Type", "Pass type", true, null, RelevanceNotComb);
         static readonly ParamInfo KeyboardTrackInfo = ParamInfo.Mix(p => &((Native*)p)->keyboardTrack, 1, nameof(KeyboardTrack), "Kbd", "Keyboard tracking amount", true, RelevanceNotComb);
+        static readonly ParamInfo StateVarPassTypeInfo = ParamInfo.List<StateVarPassType>(p => &((Native*)p)->filter.stateVarPassType, 1, nameof(StateVarPassType), "Type", "Pass type", true, null, RelevanceStateVar);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 1, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
 
         public Param Mod1Amount { get; } = new(Mod1AmountInfo);
