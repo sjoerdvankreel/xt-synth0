@@ -12,6 +12,8 @@
 // https://www.musicdsp.org/en/latest/Filters/240-karlsen-fast-ladder.html
 // https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
 
+#define LADDER_UPPER_LIMIT 0.67
+
 namespace Xts {
 
 FilterDSP::
@@ -33,7 +35,7 @@ FilterDSP()
 FloatSample
 FilterDSP::GenerateLadder(FloatSample x, float freq, float res)
 {
-  double cutoff = 2.0 * PID * freq / _rate;
+  double cutoff = 2.0 * PID * freq / _rate * LADDER_UPPER_LIMIT;
   DoubleSample feedback = _ladder.buf4.Clip();
   DoubleSample in = x.ToDouble() - (feedback * static_cast<double>(res));
   _ladder.buf1 = ((in - _ladder.buf1) * cutoff) + _ladder.buf1;
