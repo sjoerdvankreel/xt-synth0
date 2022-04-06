@@ -30,8 +30,8 @@ struct XTS_ALIGN FilterModel
 
   int32_t resonance;
   int32_t frequency;
+  int32_t ladderLpHp;
   StateVarPassType stateVarPassType;
-  int32_t pad__;
 };
 XTS_CHECK_SIZE(FilterModel, 40);
 

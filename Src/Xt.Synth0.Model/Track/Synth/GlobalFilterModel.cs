@@ -20,7 +20,7 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 },  { StateVarPassType, 1 },  { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 },  { LfoAmount, 3 },
+            { Type, 0 }, { StateVarPassType, 1 }, { LadderLpHp, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 },  { LfoAmount, 3 },
             { CombPlusGain, 5 }, { Frequency, 6 }, { CombMinGain, 6 }, { LfoTarget, 7 }
         };
 
@@ -33,6 +33,7 @@ namespace Xt.Synth0.Model
 
         static readonly IRelevance RelevanceComb = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t == FilterType.Comb);
         static readonly IRelevance RelevanceNotComb = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t != FilterType.Comb);
+        static readonly IRelevance RelevanceLadder = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t == FilterType.Ladder);
         static readonly IRelevance RelevanceStateVar = Relevance.Param((GlobalFilterModel m) => m.Type, (FilterType t) => t == FilterType.StateVar);
 
         public Param On { get; } = new(OnInfo);
@@ -51,8 +52,10 @@ namespace Xt.Synth0.Model
 
         public Param Resonance { get; } = new(ResonanceInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
+        public Param LadderLpHp { get; } = new(LadderLpHpInfo);
         public Param StateVarPassType { get; } = new(StateVarPassTypeInfo);
         static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 0, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
+        static readonly ParamInfo LadderLpHpInfo = ParamInfo.Level(p => &((Native*)p)->filter.ladderLpHp, 0, nameof(LadderLpHp), "LPHP", "LP/HP crossover", true, 0, RelevanceLadder);
         static readonly ParamInfo StateVarPassTypeInfo = ParamInfo.List<StateVarPassType>(p => &((Native*)p)->filter.stateVarPassType, 0, nameof(StateVarPassType), "Type", "Pass type", true, null, RelevanceStateVar);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 0, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
 
