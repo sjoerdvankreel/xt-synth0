@@ -68,23 +68,25 @@ LfoDSP::Next()
 }
 
 float
-LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
-{
-  if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
-  return Param::Frequency(static_cast<float>(model.frequency), MIN_FREQ_HZ, MAX_FREQ_HZ);
-}
-
-float
 LfoDSP::Generate(float period)
 {
   float base = LfoIsBipolar(_model->shape) ? 0.0f : 0.5f;
   float factor = (LfoIsInverted(_model->shape) ? -1.0f : 1.0f) * (1.0f - base);
   switch (_model->type)
   {
-  case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: return base + factor * GenerateWave();
-  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd3: case LfoType::Rnd4: return base + factor * GenerateRandom(period);
-  default: assert(false); return 0.0f;
+  case LfoType::Sin: case LfoType::Saw: case LfoType::Sqr: case LfoType::Tri: 
+    return base + factor * GenerateWave();
+  default:
+    assert(LfoType::Rnd1 <= _model->type && _model->type <= LfoType::Rnd10);
+    return base + factor * GenerateRandom(period);
   }
+}
+
+float
+LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
+{
+  if (model.sync) return rate / Param::StepSamplesF(model.step, bpm, rate);
+  return Param::Frequency(static_cast<float>(model.frequency), MIN_FREQ_HZ, MAX_FREQ_HZ);
 }
 
 float
@@ -109,8 +111,49 @@ LfoDSP::InitRandom()
   _randCount = 0;
   _randDir = 1.0f;
   _randLevel = 0.0f;
-  _prng = Prng(std::numeric_limits<uint32_t>::max() / (_model->randomSeed + 1));
+  constexpr uint32_t max = std::numeric_limits<uint32_t>::max();
+  _prng = Prng(max / (_model->randomSeed + 1));
   _randState = _prng.Next() * 2.0f - 1.0f;
+}
+
+float
+LfoDSP::NextRandomState(float steepness)
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: case LfoType::Rnd6: 
+    return _randState;
+  case LfoType::Rnd2: case LfoType::Rnd3: case LfoType::Rnd7: case LfoType::Rnd8:
+    return steepness * (_prng.Next() * 2.0f - 1.0f);
+  case LfoType::Rnd4: case LfoType::Rnd5: case LfoType::Rnd9: case LfoType::Rnd10:
+    return _randState + steepness * (_prng.Next() * 2.0f - 1.0f);
+  default:
+    assert(false); return 0.0f;
+  }
+}
+
+int
+LfoDSP::NextRandomCount(float period)
+{
+  int count = static_cast<int>((1.0f - Param::Level(_model->randomSpeed)) * period);
+  if (LfoType::Rnd1 <= _model->type && _model->type <= LfoType::Rnd5) return count + 1;
+  assert(LfoType::Rnd6 <= _model->type && _model->type <= LfoType::Rnd10);
+  return static_cast<int>(_prng.Next() * count) + 1;
+}
+
+float
+LfoDSP::NextRandomLevel(float steepness, int count)
+{
+  switch (_model->type)
+  {
+  case LfoType::Rnd1: case LfoType::Rnd2: case LfoType::Rnd4: 
+  case LfoType::Rnd6: case LfoType::Rnd7: case LfoType::Rnd9:
+    return (_prng.Next() * 2.0f - 1.0f) * steepness * _randDir / static_cast<float>(count);
+  case LfoType::Rnd3: case LfoType::Rnd5: case LfoType::Rnd8: case LfoType::Rnd10:
+    return 0.0f;
+  default: 
+    assert(false); return 0.0f;
+  }
 }
 
 float
@@ -129,40 +172,6 @@ LfoDSP::GenerateRandom(float period)
   if (_randState < -1.0f) _randState = -1.0f - (_randState + 1.0f), _randDir *= -1.0f;
   _randCount--;
   return BipolarSanity(_randState);
-}
-
-int
-LfoDSP::NextRandomCount(float period)
-{
-  int count = static_cast<int>((1.0f - Param::Level(_model->randomSpeed)) * period);
-  switch (_model->type)
-  {
-  case LfoType::Rnd1: case LfoType::Rnd3: return count + 1;
-  case LfoType::Rnd2: case LfoType::Rnd4: return static_cast<int>(_prng.Next() * count) + 1;
-  default: assert(false); return 0;
-  }
-}
-
-float
-LfoDSP::NextRandomState(float steepness)
-{
-  switch (_model->type)
-  {
-  case LfoType::Rnd1: case LfoType::Rnd2: return _randState + steepness * (_prng.Next() * 2.0f - 1.0f);
-  case LfoType::Rnd3: case LfoType::Rnd4: return _randState;
-  default: assert(false); return 0.0f;
-  }
-}
-
-float
-LfoDSP::NextRandomLevel(float steepness, int count)
-{
-  switch (_model->type)
-  {
-  case LfoType::Rnd1: case LfoType::Rnd2: return 0.0f;
-  case LfoType::Rnd3: case LfoType::Rnd4: return (_prng.Next() * 2.0f - 1.0f) * steepness * _randDir / static_cast<float>(count);
-  default: assert(false); return 0.0f;
-  }
 }
 
 } // namespace Xts

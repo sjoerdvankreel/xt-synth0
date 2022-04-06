@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
     public enum LfoShape { Bi, Uni, BiInv, UniInv };
-    public enum LfoType { Sin, Saw, Sqr, Tri, Rnd1, Rnd2, Rnd3, Rnd4 };
+    public enum LfoType { Sin, Saw, Sqr, Tri, Rnd1, Rnd2, Rnd3, Rnd4, Rnd5, Rnd6, Rnd7, Rnd8, Rnd9, Rnd10 };
 
     public unsafe sealed class LfoModel : IUIParamGroupModel
     {
