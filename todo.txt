@@ -5,16 +5,13 @@ xtaudio use iaudioclient->reset
 save file backup on crash
 filter aliasing caused by modulation (filter lfos? oversample?)
 if(unit1>0 etc)
-more filter/unit/lfo types -> ladder filter, noise unit, fm unit, random-like lfo
+more filter/unit/lfo types -> ladder filter, noise unit, fm unit
 handle stream stopped with error
 store automation target by id/name/index
 visual indicator for realtime knobs
 undo/redo
-2 global filters
 automation bus assign
 process buffer in blocks
 hold-mode lfo: 1st sample at voice start
 lfo smoothing
-move lfo sync to header
-do random lfo amp
 delay l/r
