@@ -11,19 +11,22 @@ namespace Xts {
 
 class VoiceModDSP
 {
+  bool _first;
   float _amount;
   CvSample _output;
+  CvSample _globalLfoStart;
   VoiceModModel const* _model;
 public:
   CvSample Next(struct CvState const& cv);
   float Amount() const { return _amount; }
   CvSample Output() const { return _output; }
 public:
+  VoiceModDSP() = default;
+  VoiceModDSP(VoiceModModel const* model) : 
+  _first(true), _model(model), _globalLfoStart() {}
+public:
   float Modulate(CvSample carrier) const
   { return Xts::Modulate(carrier, Output(), Amount()); }
-public:
-  VoiceModDSP() = default;
-  VoiceModDSP(VoiceModModel const* model) : _model(model) {}
 };
 
 } // namespace Xts

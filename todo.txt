@@ -12,5 +12,4 @@ visual indicator for realtime knobs
 undo/redo
 automation bus assign
 process buffer in blocks
-hold-mode lfo: 1st sample at voice start
 delay l/r

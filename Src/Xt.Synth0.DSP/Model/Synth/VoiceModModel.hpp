@@ -10,7 +10,8 @@ enum class VoiceModSource
 {
   Velocity, 
   Env1, Env2, Env3, 
-  LFO1, LFO2, GlobalLFO
+  LFO1, LFO2, 
+  GlobalLFO, GlobalLFOHold
 };
 
 struct XTS_ALIGN VoiceModModel

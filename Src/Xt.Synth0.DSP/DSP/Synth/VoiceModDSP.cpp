@@ -4,16 +4,17 @@
 namespace Xts {
 
 static bool
-ModulatorIsBipolar(VoiceModSource source, CvState const& cv)
+ModulatorIsBipolar(VoiceModSource source, CvState const& cv, CvSample globalLfoStart)
 {
   if (source == VoiceModSource::LFO1 && cv.lfos[0].bipolar) return true;
   if (source == VoiceModSource::LFO2 && cv.lfos[1].bipolar) return true;
   if (source == VoiceModSource::GlobalLFO && cv.globalLfo.bipolar) return true;
+  if (source == VoiceModSource::GlobalLFOHold && globalLfoStart.bipolar) return true;
   return false;
 }
 
 static float
-ModulatorValue(VoiceModSource source, CvState const& cv)
+ModulatorValue(VoiceModSource source, CvState const& cv, CvSample globalLfoStart)
 {
   int index = static_cast<int>(source);
   int env = static_cast<int>(VoiceModSource::Env1);
@@ -22,6 +23,7 @@ ModulatorValue(VoiceModSource source, CvState const& cv)
   {
   case VoiceModSource::Velocity: return cv.velocity;
   case VoiceModSource::GlobalLFO: return cv.globalLfo.value;
+  case VoiceModSource::GlobalLFOHold: return globalLfoStart.value;
   case VoiceModSource::LFO1: case VoiceModSource::LFO2: return cv.lfos[index - lfo].value;
   case VoiceModSource::Env1: case VoiceModSource::Env2: case VoiceModSource::Env3: return cv.envs[index - env].value;
   default: assert(false); return 0.0f;
@@ -31,9 +33,10 @@ ModulatorValue(VoiceModSource source, CvState const& cv)
 CvSample
 VoiceModDSP::Next(CvState const& cv)
 {
+  if(_first) _first = false, _globalLfoStart = cv.globalLfo;
   _amount = Param::Mix(_model->amount);
-  _output.value = ModulatorValue(_model->source, cv);
-  _output.bipolar = ModulatorIsBipolar(_model->source, cv);
+  _output.value = ModulatorValue(_model->source, cv, _globalLfoStart);
+  _output.bipolar = ModulatorIsBipolar(_model->source, cv, _globalLfoStart);
   return _output.Sanity();
 }
 

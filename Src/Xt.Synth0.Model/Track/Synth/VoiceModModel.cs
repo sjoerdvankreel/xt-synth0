@@ -6,7 +6,8 @@ namespace Xt.Synth0.Model
     {
         Velocity,
         Env1, Env2, Env3,
-        LFO1, LFO2, GlobalLFO
+        LFO1, LFO2, 
+        GlobalLFO, GlobalLFOHold
     }
 
     unsafe static class VoiceModModel
@@ -18,6 +19,6 @@ namespace Xt.Synth0.Model
             internal int source;
         };
 
-        internal static readonly string[] ModSourceNames = { "Velo", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3" };
+        internal static readonly string[] ModSourceNames = { "Velo", "Env1", "Env2", "Env3", "LFO1", "LFO2", "LFO3", "LFO3H" };
     }
 }
