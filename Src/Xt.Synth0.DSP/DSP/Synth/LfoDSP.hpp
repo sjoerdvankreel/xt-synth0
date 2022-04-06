@@ -16,6 +16,7 @@ class LfoDSP
   double _phase;
   float _randDir;
   int _randCount;
+  float _filtered;
   float _randLevel;
   float _randState;
   CvSample _output;
@@ -26,6 +27,7 @@ private:
   float Generate(float period);
   int NextRandomCount(float period);
   float GenerateRandom(float period);
+  float Filter(float period, float x);
   float NextRandomState(float steepness);
   float NextRandomLevel(float steepness, int count);
 public:

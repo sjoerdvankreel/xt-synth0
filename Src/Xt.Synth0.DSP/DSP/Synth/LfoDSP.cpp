@@ -9,6 +9,8 @@
 #define MIN_FREQ_HZ 0.1f
 #define MAX_FREQ_HZ 20.0f
 
+// https://www.musicdsp.org/en/latest/Filters/257-1-pole-lpf-for-smooth-parameter-changes.html
+
 namespace Xts {
 
 static bool
@@ -24,7 +26,7 @@ LfoPlot::Params() const
   PeriodicParams result;
   result.periods = 2;
   result.autoRange = false;
-  result.allowResample = true;
+  result.allowResample = false;
   result.bipolar = LfoIsBipolar(_model->shape);
   return result;
 }
@@ -50,6 +52,7 @@ LfoDSP()
   _rate = rate;
   _phase = 0.0;
   _model = model;
+  _filtered = 0.0f;
   InitRandom();
 }
 
@@ -59,12 +62,23 @@ LfoDSP::Next()
   _output.value = 0.0f;
   _output.bipolar = LfoIsBipolar(_model->shape);
   if (!_model->on) return Output();
-  float frequency = Frequency(*_model, _bpm, _rate) / _rate;
-  _output.value = Generate(1.0f / frequency);
-  _phase += frequency;
+  float frequency = Frequency(*_model, _bpm, _rate);
+  float period = _rate / frequency;
+  float lfo = Generate(period);
+  _output.value = Filter(period, lfo);
+  _phase += frequency / _rate;
   if (_phase >= 1.0) InitRandom();
   _phase -= std::floor(_phase);
   return Output().Sanity();
+}
+
+float
+LfoDSP::Filter(float period, float x)
+{
+  float length = Param::Level(_model->smooth) * period * 0.5f;
+  float a = std::exp(-2.0f * PIF / length);
+  _filtered = x * (1.0f - a) + _filtered * a;
+  return Sanity(_filtered);
 }
 
 float
