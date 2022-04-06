@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <cassert>
+#include <algorithm>
 
 namespace Xts {
 
@@ -16,6 +17,7 @@ struct AudioSample
 
   void Clear();
   T Mono() const;
+  AudioSample Clip() const;
   AudioSample<T> Sanity() const;
   AudioSample<float> ToFloat() const;
   AudioSample<double> ToDouble() const;
@@ -73,6 +75,11 @@ template <class T>
 inline AudioSample<T>&
 AudioSample<T>::operator+=(AudioSample<T> s)
 { left += s.left; right += s.right; return *this; }
+
+template <class T>
+inline AudioSample<T>
+AudioSample<T>::Clip() const
+{ return { std::clamp(left, -1.0, 1.0), std::clamp(right, -1.0, 1.0) }; }
 
 template <>
 inline AudioSample<float>

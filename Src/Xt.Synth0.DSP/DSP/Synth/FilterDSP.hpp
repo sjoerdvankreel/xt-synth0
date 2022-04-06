@@ -17,11 +17,19 @@ namespace Xts {
 static constexpr int COMB_DELAY_MAX_SAMPLES = 
 static_cast<int>(XTS_COMB_MAX_DELAY_MS * XTS_MAX_SAMPLE_RATE / 1000.0f + 1.0f);
 
+struct LadderState
+{
+  DoubleSample buf1;
+  DoubleSample buf2;
+  DoubleSample buf3;
+  DoubleSample buf4;
+};
+
 struct StateVarState
 {
   DoubleSample ic1eq;
   DoubleSample ic2eq;
-}; 
+};
 
 struct CombState
 {
@@ -33,13 +41,15 @@ class FilterDSP
 {
   float _rate;
   CombState _comb;
+  LadderState _ladder;
   StateVarState _stateVar;
   struct FilterModel const* _model;
 public:
   FilterDSP() = default;
   FilterDSP(struct FilterModel const* model, float rate);
 public:
-  FloatSample GenerateStateVar(FloatSample x, float freq, double res);
+  FloatSample GenerateLadder(FloatSample x, float freq, float res);
+  FloatSample GenerateStateVar(FloatSample x, float freq, float res);
   FloatSample GenerateComb(FloatSample x, int minDelay, int plusDelay, float minGain, float plusGain);
 };
 

@@ -13,8 +13,8 @@ class GlobalFilterDSP
   FloatSample _output;
   struct GlobalFilterModel const* _model;
 private:
+  FloatSample Generate(CvSample globalLfo);
   FloatSample GenerateComb(CvSample globalLfo);
-  FloatSample GenerateStateVar(CvSample globalLfo);
 public:
   FloatSample Output() const { return _output; };
   FloatSample Next(CvSample globalLfo, FloatSample x);

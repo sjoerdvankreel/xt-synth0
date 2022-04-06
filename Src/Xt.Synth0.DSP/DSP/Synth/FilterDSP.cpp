@@ -9,6 +9,7 @@
 #include <cassert>
 
 // https://cytomic.com/files/dsp/SvfLinearTrapOptimised2.pdf
+// https://www.musicdsp.org/en/latest/Filters/240-karlsen-fast-ladder.html
 // https://www.dsprelated.com/freebooks/filters/Analysis_Digital_Comb_Filter.html
 
 namespace Xts {
@@ -21,12 +22,29 @@ FilterDSP()
   _model = model;
   _comb.x.Clear();
   _comb.y.Clear();
+  _ladder.buf1.Clear();
+  _ladder.buf2.Clear();
+  _ladder.buf3.Clear();
+  _ladder.buf4.Clear();
   _stateVar.ic1eq.Clear();
   _stateVar.ic2eq.Clear();
 }
 
 FloatSample
-FilterDSP::GenerateStateVar(FloatSample x, float freq, double res)
+FilterDSP::GenerateLadder(FloatSample x, float freq, float res)
+{
+  double cutoff = 2.0 * PID * freq / _rate;
+  DoubleSample feedback = _ladder.buf4.Clip();
+  DoubleSample in = x.ToDouble() - (feedback * static_cast<double>(res));
+  _ladder.buf1 = ((in - _ladder.buf1) * cutoff) + _ladder.buf1;
+  _ladder.buf2 = ((_ladder.buf1 - _ladder.buf2) * cutoff) + _ladder.buf2;
+  _ladder.buf3 = ((_ladder.buf2 - _ladder.buf3) * cutoff) + _ladder.buf3;
+  _ladder.buf4 = ((_ladder.buf3 - _ladder.buf4) * cutoff) + _ladder.buf4;
+  return _ladder.buf4.ToFloat().Sanity();
+}
+
+FloatSample
+FilterDSP::GenerateStateVar(FloatSample x, float freq, float res)
 {
   auto& s = _stateVar;
   double g = std::tan(PID * freq / _rate);

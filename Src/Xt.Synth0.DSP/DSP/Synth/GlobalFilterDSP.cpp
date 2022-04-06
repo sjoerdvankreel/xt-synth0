@@ -32,21 +32,26 @@ GlobalFilterDSP::Next(CvSample globalLfo, FloatSample x)
   switch (_model->filter.type)
   {
   case FilterType::Comb: _output = GenerateComb(globalLfo); break;
-  case FilterType::StateVar: _output = GenerateStateVar(globalLfo); break;
+  case FilterType::Ladder: case FilterType::StateVar: _output = Generate(globalLfo); break;
   default: assert(false); break;
   }
   return _output.Sanity();
 }
 
 FloatSample
-GlobalFilterDSP::GenerateStateVar(CvSample globalLfo)
+GlobalFilterDSP::Generate(CvSample globalLfo)
 {
   float resBase = Param::Level(_model->filter.resonance);
   float freqBase = Param::Level(_model->filter.frequency);
-  double resonance = _mod.Modulate(globalLfo, { resBase, false }, static_cast<int>(FilterModTarget::Resonance));
+  float resonance = _mod.Modulate(globalLfo, { resBase, false }, static_cast<int>(FilterModTarget::Resonance));
   float freq = _mod.Modulate(globalLfo, { freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 256.0f;
   float hz = Param::Frequency(freq, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
-  return _filter.GenerateStateVar(_output, hz, resonance);
+  switch (_model->filter.type)
+  {
+  case FilterType::Ladder: return _filter.GenerateLadder(_output, hz, resonance);
+  case FilterType::StateVar: return _filter.GenerateStateVar(_output, hz, resonance);
+  default: assert(false); return FloatSample();
+  }
 }
 
 FloatSample

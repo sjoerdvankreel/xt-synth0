@@ -72,25 +72,30 @@ VoiceFilterDSP::Next(CvState const& cv, AudioState const& audio)
   switch (_model->filter.type)
   {
   case FilterType::Comb: _output = GenerateComb(); break;
-  case FilterType::StateVar: _output = GenerateStateVar(); break;
+  case FilterType::Ladder: case FilterType::StateVar: _output = Generate(); break;
   default: assert(false); break;
   }
   return _output.Sanity();
 }
 
 FloatSample
-VoiceFilterDSP::GenerateStateVar()
+VoiceFilterDSP::Generate()
 {
   float resBase = Param::Level(_model->filter.resonance);
   float freqBase = Param::Level(_model->filter.frequency);
-  double resonance = _mods.Modulate({ resBase, false }, static_cast<int>(FilterModTarget::Resonance));
+  float resonance = _mods.Modulate({ resBase, false }, static_cast<int>(FilterModTarget::Resonance));
   float freq = _mods.Modulate({ freqBase, false }, static_cast<int>(FilterModTarget::Frequency)) * 256.0f;
   float hz = Param::Frequency(freq, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
   float tracking = Param::Mix(_model->keyboardTrack);
   if(tracking > 0.0f) hz = (1.0f - tracking) * hz + tracking * hz * _keyboardBase;
   if(tracking < 0.0f) hz = (1.0f + tracking) * hz - tracking * hz / _keyboardBase;
   hz = std::clamp(hz, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
-  return _dsp.GenerateStateVar(_output, hz, resonance);
+  switch (_model->filter.type)
+  {
+  case FilterType::Ladder: return _dsp.GenerateLadder(_output, hz, resonance);
+  case FilterType::StateVar: return _dsp.GenerateStateVar(_output, hz, resonance);
+  default: assert(false); return FloatSample();
+  }  
 }
 
 FloatSample

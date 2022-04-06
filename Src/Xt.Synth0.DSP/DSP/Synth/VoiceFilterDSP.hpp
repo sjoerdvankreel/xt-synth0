@@ -17,8 +17,8 @@ class VoiceFilterDSP
   float _keyboardBase;
   struct VoiceFilterModel const* _model;
 private:
+  FloatSample Generate();
   FloatSample GenerateComb();
-  FloatSample GenerateStateVar();
 public:
   FloatSample Output() const { return _output; };
   FloatSample Next(struct CvState const& cv, struct AudioState const& audio);

@@ -2,8 +2,8 @@
 
 namespace Xt.Synth0.Model
 {
-    public enum FilterType { StateVar, Comb };
     public enum PassType { LPF, HPF, BPF, BSF };
+    public enum FilterType { Ladder, StateVar, Comb };
 
     public enum FilterModTarget
     {
@@ -39,7 +39,7 @@ namespace Xt.Synth0.Model
             internal int pad__;
         };
 
-        internal static readonly string[] TypeNames = { "StVar", "Comb" };
+        internal static readonly string[] TypeNames = { "Lddr", "StVr", "Comb" };
         internal static readonly string[] TargetNames = { "Freq", "Res", "Gain-", "Gain+", "Delay-", "Delay+" };
     }
 }
