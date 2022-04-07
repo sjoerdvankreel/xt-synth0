@@ -26,23 +26,4 @@
 		<Content Condition="'$(Configuration)'=='Debug'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Debug/x64/Xt.Synth0.DSP.pdb" Link="Xt.Synth0.DSP.pdb" />
 		<Content Condition="'$(Configuration)'=='Release'" CopyToOutputDirectory="PreserveNewest" Include="../../Bin/Release/x64/Xt.Synth0.DSP.dll" Link="Xt.Synth0.DSP.dll" />
 	</ItemGroup>
-	<ItemGroup>
-		<NativeLibs Remove="Synth0\Native.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<NativeLibs Remove="Properties\Settings.settings" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Update="Properties\Settings.Designer.cs">
-			<DesignTimeSharedInput>True</DesignTimeSharedInput>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>Settings.settings</DependentUpon>
-		</Compile>
-	</ItemGroup>
-	<ItemGroup>
-		<None Update="Properties\Settings.settings">
-			<Generator>SettingsSingleFileGenerator</Generator>
-			<LastGenOutput>Settings.Designer.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
 </Project>
