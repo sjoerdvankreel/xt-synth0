@@ -36,15 +36,18 @@ FloatSample
 FilterDSP::GenerateLadder(FloatSample x, float freq, float res, float lphp)
 {
   double cutoff = 2.0 * PID * freq / _rate * LADDER_UPPER_LIMIT;
-  DoubleSample feedback = _ladder.buf4.Clip();
+  DoubleSample feedback = _ladder.buf4;//.Clip();
   DoubleSample in = x.ToDouble() - (feedback * static_cast<double>(res));
+  in *= 1.0 + static_cast<double>(lphp * 3.0);
   _ladder.buf1 = ((in - _ladder.buf1) * cutoff) + _ladder.buf1;
   _ladder.buf2 = ((_ladder.buf1 - _ladder.buf2) * cutoff) + _ladder.buf2;
   _ladder.buf3 = ((_ladder.buf2 - _ladder.buf3) * cutoff) + _ladder.buf3;
   _ladder.buf4 = ((_ladder.buf3 - _ladder.buf4) * cutoff) + _ladder.buf4;
-  FloatSample buf1 = _ladder.buf1.ToFloat();
-  FloatSample buf4 = _ladder.buf4.ToFloat();
-  return ((1.0f - lphp) * buf4 + lphp * (buf4 - x)).Sanity();
+  //_ladder.buf4 *= static_cast<double>(lphp * 2.0);
+  return _ladder.buf4.ToFloat().Sanity();
+  //FloatSample buf1 = _ladder.buf1.ToFloat();
+  //FloatSample buf4 = _ladder.buf4.ToFloat();
+  //return ((1.0f - lphp) * buf4 + lphp * (buf4 - x)).Sanity();
 }
 
 FloatSample

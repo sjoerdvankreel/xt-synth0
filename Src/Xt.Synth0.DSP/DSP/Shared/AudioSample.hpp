@@ -21,7 +21,11 @@ struct AudioSample
   AudioSample<T> Sanity() const;
   AudioSample<float> ToFloat() const;
   AudioSample<double> ToDouble() const;
+
+  AudioSample& operator*=(T s);
+  AudioSample& operator/=(T s);
   AudioSample& operator+=(AudioSample s);
+  AudioSample& operator-=(AudioSample s);
 };
 
 typedef AudioSample<float> FloatSample;
@@ -57,6 +61,16 @@ operator*(T x, AudioSample<T> y)
 { return { x * y.left, x * y.right }; }
 
 template <class T>
+inline AudioSample<T>&
+AudioSample<T>::operator*=(T s)
+{ left *= s; right *= s; return *this; }
+
+template <class T>
+inline AudioSample<T>&
+AudioSample<T>::operator/=(T s)
+{ left /= s; right /= s; return *this; }
+
+template <class T>
 inline AudioSample<T>
 operator+(AudioSample<T> x, AudioSample<T> y)
 { return { x.left + y.left, x.right + y.right }; }
@@ -75,6 +89,11 @@ template <class T>
 inline AudioSample<T>&
 AudioSample<T>::operator+=(AudioSample<T> s)
 { left += s.left; right += s.right; return *this; }
+
+template <class T>
+inline AudioSample<T>&
+AudioSample<T>::operator-=(AudioSample<T> s)
+{ left -= s.left; right -= s.right; return *this; }
 
 template <class T>
 inline AudioSample<T>
