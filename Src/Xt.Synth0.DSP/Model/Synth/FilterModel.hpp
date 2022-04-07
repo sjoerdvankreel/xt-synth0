@@ -32,9 +32,11 @@ struct XTS_ALIGN FilterModel
   int32_t resonance;
   int32_t frequency;
   int32_t ladderLpHp;
+  int32_t ladderDrive;
   StateVarPassType stateVarPassType;
+  int32_t pad__;
 };
-XTS_CHECK_SIZE(FilterModel, 40);
+XTS_CHECK_SIZE(FilterModel, 48);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_FILTER_MODEL_HPP

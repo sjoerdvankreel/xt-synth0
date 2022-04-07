@@ -22,16 +22,16 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { StateVarPassType, 1 }, { LadderLpHp, 1 }, { CombPlusDelay, 1 }, { Resonance, 2 }, { CombMinDelay, 2 }, { Frequency, 3 }, { CombPlusGain, 3 },
-            { Mod1Source, 4 }, { Mod1Target, 5 }, { Mod1Amount, 6 }, {KeyboardTrack, 7 }, { CombMinGain, 7 },
-            { Mod2Source, 8 }, { Mod2Target, 9 }, { Mod2Amount, 10 },
+            { Type, 0 }, { StateVarPassType, 1 }, { LadderDrive, 1 }, { CombPlusDelay, 1 }, { LadderLpHp, 2 }, { CombMinDelay, 2 }, { Resonance, 3 }, { CombPlusGain, 3 },
+            { Mod1Source, 4 }, { Mod1Target, 5 }, { Mod1Amount, 6 }, { Frequency, 7 }, { CombMinGain, 7 },
+            { Mod2Source, 8 }, { Mod2Target, 9 }, { Mod2Amount, 10 }, { KeyboardTrack, 11 },
             { Unit1Amount, 12 }, { Unit2Amount, 13 }, { Unit3Amount, 14 }, { Filter1Amount, 15 }
         };
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         internal ref struct Native
         {
-            internal const int Size = 96;
+            internal const int Size = 104;
 
             internal FilterModel.Native filter;
             internal TargetModsModel.Native mods;
@@ -63,9 +63,11 @@ namespace Xt.Synth0.Model
         public Param Resonance { get; } = new(ResonanceInfo);
         public Param Frequency { get; } = new(FrequencyInfo);
         public Param LadderLpHp { get; } = new(LadderLpHpInfo);
+        public Param LadderDrive { get; } = new(LadderDriveInfo);
         public Param KeyboardTrack { get; } = new(KeyboardTrackInfo);
         public Param StateVarPassType { get; } = new(StateVarPassTypeInfo);
         static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 1, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
+        static readonly ParamInfo LadderDriveInfo = ParamInfo.Level(p => &((Native*)p)->filter.ladderDrive, 1, nameof(LadderDrive), "Drv", "Drive", true, 0, RelevanceLadder);
         static readonly ParamInfo KeyboardTrackInfo = ParamInfo.Mix(p => &((Native*)p)->keyboardTrack, 1, nameof(KeyboardTrack), "Kbd", "Keyboard tracking amount", true, RelevanceNotComb);
         static readonly ParamInfo LadderLpHpInfo = ParamInfo.Level(p => &((Native*)p)->filter.ladderLpHp, 1, nameof(LadderLpHp), "LPHP", "LP/HP crossover", true, 0, RelevanceLadder);
         static readonly ParamInfo StateVarPassTypeInfo = ParamInfo.List<StateVarPassType>(p => &((Native*)p)->filter.stateVarPassType, 1, nameof(StateVarPassType), "Type", "Pass type", true, null, RelevanceStateVar);

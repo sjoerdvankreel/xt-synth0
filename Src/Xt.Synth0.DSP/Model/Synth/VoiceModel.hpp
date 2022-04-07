@@ -13,7 +13,7 @@ struct XTS_ALIGN VoiceModel
   AmpModel amp;
   AudioModel audio;
 };
-XTS_CHECK_SIZE(VoiceModel, 800);
+XTS_CHECK_SIZE(VoiceModel, 816);
 
 } // namespace Xts
 #endif // XTS_MODEL_SYNTH_VOICE_MODEL_HPP

@@ -37,7 +37,9 @@ namespace Xt.Synth0.Model
             internal int resonance;
             internal int frequency;
             internal int ladderLpHp;
+            internal int ladderDrive;
             internal int stateVarPassType;
+            internal int pad__;
         };
 
         internal static readonly string[] TypeNames = { "Lddr", "StVr", "Comb" };
