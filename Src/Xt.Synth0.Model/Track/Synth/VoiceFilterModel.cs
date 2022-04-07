@@ -67,7 +67,7 @@ namespace Xt.Synth0.Model
         public Param StateVarPassType { get; } = new(StateVarPassTypeInfo);
         static readonly ParamInfo ResonanceInfo = ParamInfo.Level(p => &((Native*)p)->filter.resonance, 1, nameof(Resonance), "Res", "Resonance", true, 0, RelevanceNotComb);
         static readonly ParamInfo KeyboardTrackInfo = ParamInfo.Mix(p => &((Native*)p)->keyboardTrack, 1, nameof(KeyboardTrack), "Kbd", "Keyboard tracking amount", true, RelevanceNotComb);
-        static readonly ParamInfo LadderLpHpInfo = ParamInfo.Level(p => &((Native*)p)->filter.ladderLpHp, 0, nameof(LadderLpHp), "LPHP", "LP/HP crossover", true, 0, RelevanceLadder);
+        static readonly ParamInfo LadderLpHpInfo = ParamInfo.Level(p => &((Native*)p)->filter.ladderLpHp, 1, nameof(LadderLpHp), "LPHP", "LP/HP crossover", true, 0, RelevanceLadder);
         static readonly ParamInfo StateVarPassTypeInfo = ParamInfo.List<StateVarPassType>(p => &((Native*)p)->filter.stateVarPassType, 1, nameof(StateVarPassType), "Type", "Pass type", true, null, RelevanceStateVar);
         static readonly ParamInfo FrequencyInfo = ParamInfo.Frequency(p => &((Native*)p)->filter.frequency, 1, nameof(Frequency), "Frq", "Cutoff/center frequency", true, 0, FilterModel.MinFreqHz, FilterModel.MaxFreqHz, RelevanceNotComb);
 
