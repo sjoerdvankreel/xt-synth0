@@ -8,6 +8,7 @@ namespace Xt.Synth0.Model
     public enum FilterModTarget
     {
         LPHP,
+        Drive,
         Frequency,
         Resonance,
         CombMinGain,
@@ -43,6 +44,6 @@ namespace Xt.Synth0.Model
         };
 
         internal static readonly string[] TypeNames = { "Lddr", "StVr", "Comb" };
-        internal static readonly string[] TargetNames = { "LPHP", "Freq", "Res", "Gain-", "Gain+", "Delay-", "Delay+" };
+        internal static readonly string[] TargetNames = { "LPHP", "Drive", "Freq", "Res", "Gain-", "Gain+", "Delay-", "Delay+" };
     }
 }

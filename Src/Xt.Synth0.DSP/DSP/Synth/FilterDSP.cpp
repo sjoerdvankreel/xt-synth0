@@ -33,7 +33,7 @@ FilterDSP()
 }
 
 FloatSample
-FilterDSP::GenerateLadder(FloatSample x, float freq, float res, float lphp)
+FilterDSP::GenerateLadder(FloatSample x, float freq, float res, float drive, float lphp)
 {
   double cutoff = 2.0 * PID * freq / _rate * LADDER_UPPER_LIMIT;
   DoubleSample feedback = _ladder.buf4;//.Clip();

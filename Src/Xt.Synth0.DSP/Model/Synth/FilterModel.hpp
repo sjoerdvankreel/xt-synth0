@@ -11,6 +11,7 @@ enum class StateVarPassType { LPF, HPF, BPF, BSF };
 enum class FilterModTarget
 {
   LPHP,
+  Drive,
   Frequency,
   Resonance,
   CombMinGain,

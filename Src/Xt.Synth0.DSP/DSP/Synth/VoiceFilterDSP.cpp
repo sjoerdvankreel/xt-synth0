@@ -92,9 +92,11 @@ VoiceFilterDSP::Generate()
   hz = std::clamp(hz, XTS_STATE_VAR_MIN_FREQ_HZ, XTS_STATE_VAR_MAX_FREQ_HZ);
   if(_model->filter.type == FilterType::StateVar) return _dsp.GenerateStateVar(_output, hz, resonance);
   assert(_model->filter.type == FilterType::Ladder);
+  float driveBase = Param::Level(_model->filter.ladderDrive);
+  float drive = _mods.Modulate({ driveBase, false }, static_cast<int>(FilterModTarget::Drive));
   float lphpBase = Param::Level(_model->filter.ladderLpHp);
   float lphp = _mods.Modulate({ lphpBase, false }, static_cast<int>(FilterModTarget::LPHP));
-  return _dsp.GenerateLadder(_output, hz, resonance, lphp);
+  return _dsp.GenerateLadder(_output, hz, resonance, drive, lphp);
 }
 
 FloatSample
