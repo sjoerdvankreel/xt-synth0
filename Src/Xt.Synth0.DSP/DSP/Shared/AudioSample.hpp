@@ -17,10 +17,10 @@ struct AudioSample
 
   void Clear();
   T Mono() const;
-  AudioSample Clip() const;
   AudioSample<T> Sanity() const;
   AudioSample<float> ToFloat() const;
   AudioSample<double> ToDouble() const;
+  AudioSample Clip(T min, T max) const;
 
   AudioSample& operator*=(T s);
   AudioSample& operator/=(T s);
@@ -97,8 +97,8 @@ AudioSample<T>::operator-=(AudioSample<T> s)
 
 template <class T>
 inline AudioSample<T>
-AudioSample<T>::Clip() const
-{ return { std::clamp(left, -1.0, 1.0), std::clamp(right, -1.0, 1.0) }; }
+AudioSample<T>::Clip(T min, T max) const
+{ return { std::clamp(left, min, max), std::clamp(right, min, max) }; }
 
 template <>
 inline AudioSample<float>
