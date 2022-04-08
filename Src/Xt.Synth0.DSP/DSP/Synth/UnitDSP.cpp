@@ -190,8 +190,9 @@ float
 UnitDSP::GeneratePM(float phase) const
 {
   float amount = Param::Level(_model->pmIndex);
-  float modulator = GeneratePMWave(_model->pmModulator, phase);
-  float pmPhase = std::clamp(phase + amount * modulator, 0.0f, 1.0f);
+  float modulator = BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase));
+  float pmPhase = phase + amount * modulator;
+  pmPhase -= std::floor(pmPhase);
   return GeneratePMWave(_model->pmCarrier, pmPhase);
 }
 
