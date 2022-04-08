@@ -11,4 +11,3 @@ store automation target by id/name/index
 automation bus assign
 process buffer in blocks
 delay l/r
-filter3 plot no clip
