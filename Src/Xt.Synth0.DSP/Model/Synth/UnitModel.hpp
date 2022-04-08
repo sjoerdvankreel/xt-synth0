@@ -8,7 +8,7 @@
 namespace Xts {
 
 enum class BlepType { Saw, Pulse, Triangle };
-enum class PMType { Sine, Saw, Pulse, Triangle };
+enum class PMType { Sine, Saw, Square, Triangle };
 enum class UnitType { Sine, Additive, PolyBlep, PM };
 
 enum class UnitModTarget 

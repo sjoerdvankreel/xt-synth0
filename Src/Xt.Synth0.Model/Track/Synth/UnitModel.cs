@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Xt.Synth0.Model
 {
     public enum BlepType { Saw, Pulse, Triangle }
-    public enum PMType { Sine, Saw, Pulse, Triangle }
+    public enum PMType { Sine, Saw, Square, Triangle }
     public enum UnitType { Sine, Additive, PolyBlep, PM }
 
     public enum UnitModTarget
@@ -77,10 +77,10 @@ namespace Xt.Synth0.Model
         }
 
         static readonly string[] BlepTypeNames = new[] { "Saw", "Pulse", "Tri " };
+        static readonly string[] PMTypeNames = new[] { "Sin", "Saw", "Sqr", "Tri " };
         static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep", "PM" };
-        static readonly string[] PMTypeNames = new[] { "Sin", "Saw", "Pulse", "Tri " };
-        static readonly string[] ModTargetNames = new[] { "Amp", "Pan", "Phase", "Pitch", "Freq", "PW", "Roll" };
         static readonly string[] NoteNames = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+        static readonly string[] ModTargetNames = new[] { "Amp", "Pan", "Phase", "Pitch", "Freq", "Idx", "Dmp", "PW", "Roll" };
 
         static readonly IRelevance RelevancePM = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PM);
         static readonly IRelevance RelevanceBlep = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
