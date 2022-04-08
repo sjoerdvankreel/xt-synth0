@@ -163,12 +163,18 @@ UnitDSP::Generate(float phase, float frequency)
 {
   switch (_model->type)
   {
-  case UnitType::PM: return 0.0f;
+  case UnitType::PM: return GeneratePM(phase);
   case UnitType::Sine: return std::sinf(phase * 2.0f * PIF);
   case UnitType::Additive: return GenerateAdditive(phase, frequency);
   case UnitType::PolyBlep: return GeneratePolyBlep(phase, frequency);
   default: assert(false); return 0.0f;
   }
+}
+
+float
+UnitDSP::GeneratePM(float phase) const
+{
+  return 0.0f;
 }
 
 float
