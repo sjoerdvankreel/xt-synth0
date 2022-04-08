@@ -15,6 +15,8 @@ namespace Xt.Synth0.Model
         Phase,
         Pitch,
         Frequency,
+        PMIndex,
+        PMDamping,
         BlepPulseWidth,
         AdditiveRolloff
     }

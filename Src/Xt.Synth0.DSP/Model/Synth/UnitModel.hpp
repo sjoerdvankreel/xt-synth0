@@ -18,7 +18,9 @@ enum class UnitModTarget
   Phase, 
   Pitch, 
   Frequency,
-  BlepPulseWidth, 
+  PMIndex,
+  PMDamping,
+  BlepPulseWidth,
   AdditiveRolloff 
 };
 
