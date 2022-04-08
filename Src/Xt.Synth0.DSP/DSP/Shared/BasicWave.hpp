@@ -3,10 +3,10 @@
 
 namespace Xts {
 
-enum class BasicWaveType { Sin, Saw, Sqr, Tri };
+enum class BasicWaveType { Sine, Saw, Square, Triangle };
 
 float
-GenerateBasicWave(BasicWaveType type, double phase);
+GenerateBasicWave(BasicWaveType type, float phase);
 
 } // namespace Xts
 #endif // XTS_DSP_SHARED_BASIC_WAVE_HPP

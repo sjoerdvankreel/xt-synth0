@@ -107,13 +107,14 @@ LfoDSP::Frequency(LfoModel const& model, float bpm, float rate)
 float
 LfoDSP::GenerateWave() const
 {
+  float phase = static_cast<float>(_phase);
 	switch (_model->type)
 	{
-	case LfoType::Tri: return GenerateBasicWave(BasicWaveType::Tri, _phase);
-	case LfoType::Saw: return GenerateBasicWave(BasicWaveType::Saw, _phase);
-  case LfoType::Sqr: return GenerateBasicWave(BasicWaveType::Sqr, _phase);
-  case LfoType::Sin: return GenerateBasicWave(BasicWaveType::Sin, _phase);
-	default: assert(false); return 0.0f;
+	case LfoType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
+  case LfoType::Sin: return GenerateBasicWave(BasicWaveType::Sine, phase);
+  case LfoType::Sqr: return GenerateBasicWave(BasicWaveType::Square, phase);
+  case LfoType::Tri: return GenerateBasicWave(BasicWaveType::Triangle, phase);
+  default: assert(false); return 0.0f;
 	}
 }
 

@@ -1,6 +1,7 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
+#include <DSP/Shared/BasicWave.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
@@ -15,6 +16,7 @@
 #define FREQ_MOD_MAX_HZ 10000.0f
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
+// https://dsp.stackexchange.com/questions/1124/strange-results-from-my-fm-synthesis-algorithm
 // https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 
 namespace Xts {
@@ -67,6 +69,19 @@ AdditivePartialRolloffs(__m256 indices, float rolloff)
   result = _mm256_sub_ps(indices, ones);
   result = _mm256_mul_ps(result, _mm256_add_ps(rolloffs, ones));
   return _mm256_add_ps(ones, result);
+}
+
+static float
+GeneratePMWave(PMType type, float phase)
+{
+  switch (type)
+  {
+  case PMType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
+  case PMType::Sine: return GenerateBasicWave(BasicWaveType::Sine, phase);
+  case PMType::Square: return GenerateBasicWave(BasicWaveType::Square, phase);
+  case PMType::Triangle: return GenerateBasicWave(BasicWaveType::Triangle, phase);
+  default: assert(false); return 0.0f;
+  }
 }
 
 static float
@@ -174,7 +189,10 @@ UnitDSP::Generate(float phase, float frequency)
 float
 UnitDSP::GeneratePM(float phase) const
 {
-  return 0.0f;
+  float amount = Param::Level(_model->pmIndex);
+  float modulator = GeneratePMWave(_model->pmModulator, phase);
+  float pmPhase = std::clamp(phase + amount * modulator, 0.0f, 1.0f);
+  return GeneratePMWave(_model->pmCarrier, pmPhase);
 }
 
 float
