@@ -94,7 +94,7 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo OnInfo = ParamInfo.Toggle(p => &((Native*)p)->on, 1, nameof(On), "On", "Enabled", false, false);
         static readonly ParamInfo AmpInfo = ParamInfo.Level(p => &((Native*)p)->amp, 1, nameof(Amp), "Amp", "Amplitude", true, 255);
         static readonly ParamInfo PanInfo = ParamInfo.Mix(p => &((Native*)p)->pan, 1, nameof(Pan), "Pan", "Panning", true);
-        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 1, nameof(Type), "Type", "Type", false, UnitTypeNames);
+        static readonly ParamInfo TypeInfo = ParamInfo.List<UnitType>(p => &((Native*)p)->type, 0, nameof(Type), "Type", "Type", false, UnitTypeNames);
 
         public Param Note { get; } = new(NoteInfo);
         public Param Octave { get; } = new(OctaveInfo);
@@ -105,14 +105,14 @@ namespace Xt.Synth0.Model
 
         public Param BlepType { get; } = new(BlepTypeInfo);
         public Param BlepPulseWidth { get; } = new(BlepPulseWidthInfo);
-        static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 1, nameof(BlepType), "Type", "Blep type", false, BlepTypeNames, RelevanceBlep);
+        static readonly ParamInfo BlepTypeInfo = ParamInfo.List<BlepType>(p => &((Native*)p)->blepType, 0, nameof(BlepType), "Type", "Blep type", false, BlepTypeNames, RelevanceBlep);
         static readonly ParamInfo BlepPulseWidthInfo = ParamInfo.Level(p => &((Native*)p)->blepPulseWidth, 0, nameof(BlepPulseWidth), "PW", "Pulse width", true, 0, RelevancePulseWidth);
 
         public Param AdditiveSub { get; } = new(AdditiveSubInfo);
         public Param AdditiveStep { get; } = new(AdditiveStepInfo);
         public Param AdditiveRolloff { get; } = new(AdditiveRolloffInfo);
         public Param AdditivePartials { get; } = new(AdditivePartialsInfo);
-        static readonly ParamInfo AdditiveSubInfo = ParamInfo.Toggle(p => &((Native*)p)->additiveSub, 1, nameof(AdditiveSub), "Sub", "Additive subtract", true, false, RelevanceAdditive);
+        static readonly ParamInfo AdditiveSubInfo = ParamInfo.Toggle(p => &((Native*)p)->additiveSub, 0, nameof(AdditiveSub), "Sub", "Additive subtract", true, false, RelevanceAdditive);
         static readonly ParamInfo AdditiveRolloffInfo = ParamInfo.Mix(p => &((Native*)p)->additiveRolloff, 0, nameof(AdditiveRolloff), "Roll", "Additive rolloff", true, RelevanceAdditive);
         static readonly ParamInfo AdditiveStepInfo = ParamInfo.Select(p => &((Native*)p)->additiveStep, 0, nameof(AdditiveStep), "Step", "Additive step", true, 1, 32, 1, RelevanceAdditive);
         static readonly ParamInfo AdditivePartialsInfo = ParamInfo.Select(p => &((Native*)p)->additivePartials, 0, nameof(AdditivePartials), "Parts", "Additive partials", true, 1, 32, 1, RelevanceAdditive);
