@@ -16,3 +16,4 @@ PM synthesis: modulator smoothing
 PM synthesis: raise index limit
 PM synthesis: decide on realtime automation
 PM synthesis: connect generic modulation sources
+PM synthesis: modulator amplitude/frequency?
