@@ -11,3 +11,8 @@ store automation target by id/name/index
 automation bus assign
 process buffer in blocks
 delay l/r
+PM synthesis: carrier generation using bleps
+PM synthesis: modulator smoothing
+PM synthesis: raise index limit
+PM synthesis: decide on realtime automation
+PM synthesis: connect generic modulation sources
