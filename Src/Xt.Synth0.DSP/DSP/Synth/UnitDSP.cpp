@@ -10,6 +10,7 @@
 #include <cassert>
 #include <immintrin.h>
 
+#define PM_MAX_INDEX 16.0
 #define BLEP_LEAKY 1.0e-4
 #define BLEP_MAX_PW 0.975f
 #define FREQ_MOD_MIN_HZ 10.0f
@@ -194,9 +195,11 @@ UnitDSP::Generate(float phase, float frequency)
 float
 UnitDSP::GeneratePM(float phase) const
 {
-  float pmphase = phase + _model->pmIndex * BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase));
-    pmphase -= std::floor(pmphase);
-  return GeneratePMWave(_model->pmCarrier, pmphase);
+  float index = Param::Level(_model->pmIndex) * PM_MAX_INDEX;
+  float modulator = BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase));
+  float pmPhase = phase + index * modulator;
+  pmPhase -= std::floor(pmPhase);
+  return GeneratePMWave(_model->pmCarrier, pmPhase);
 }
 
 float
