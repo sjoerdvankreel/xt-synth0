@@ -113,8 +113,6 @@ UnitDSP()
   _model = model;
   _octave = octave;
   _blepTriangle = 0.0;
-  _fmCarrierPhase = 0.0;
-  _fmModulatorPhase = 0.0;
   _output = FloatSample();
   _mods = TargetModsDSP(&model->mods);
 }

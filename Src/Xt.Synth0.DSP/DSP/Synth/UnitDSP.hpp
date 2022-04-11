@@ -20,8 +20,6 @@ class UnitDSP
   TargetModsDSP _mods;
   FloatSample _output;
   double _blepTriangle;
-  double _fmCarrierPhase;
-  double _fmModulatorPhase;
   struct UnitModel const* _model;
 private:
   float ModulatePhase() const;
