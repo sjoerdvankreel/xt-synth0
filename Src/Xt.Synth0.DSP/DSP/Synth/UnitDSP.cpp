@@ -72,14 +72,14 @@ AdditivePartialRolloffs(__m256 indices, float rolloff)
 }
 
 static float
-GenerateFMWave(FMType type, float phase)
+GeneratePMWave(PMType type, float phase)
 {
   switch (type)
   {
-  case FMType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
-  case FMType::Sine: return GenerateBasicWave(BasicWaveType::Sine, phase);
-  case FMType::Square: return GenerateBasicWave(BasicWaveType::Square, phase);
-  case FMType::Triangle: return GenerateBasicWave(BasicWaveType::Triangle, phase);
+  case PMType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
+  case PMType::Sine: return GenerateBasicWave(BasicWaveType::Sine, phase);
+  case PMType::Square: return GenerateBasicWave(BasicWaveType::Square, phase);
+  case PMType::Triangle: return GenerateBasicWave(BasicWaveType::Triangle, phase);
   default: assert(false); return 0.0f;
   }
 }
@@ -185,7 +185,7 @@ UnitDSP::Generate(float phase, float frequency)
 {
   switch (_model->type)
   {
-  case UnitType::FM: return GenerateFM(phase, frequency);
+  case UnitType::PM: return GeneratePM(phase);
   case UnitType::Sine: return std::sinf(phase * 2.0f * PIF);
   case UnitType::Additive: return GenerateAdditive(phase, frequency);
   case UnitType::PolyBlep: return GeneratePolyBlep(phase, frequency);
@@ -194,34 +194,11 @@ UnitDSP::Generate(float phase, float frequency)
 }
 
 float
-UnitDSP::GenerateFM(float phase, float frequency)
+UnitDSP::GeneratePM(float phase) const
 {
- // signal += wave_function(note_phase * note_frequency / sample_rate + fm_index * sin(note_phase * fm_frequency * pi / sample_rate))*note_amplitude
-  //return std::sin(phase * 2.0f * PIF + _model->fmIndex * std::sinf(phase * 2.0f * PIF));// * note_amplitude
-  //return GenerateFMWave(_model->fmCarrier, phase + _model->fmIndex * std::sinf(phase * 2.0f * PIF));// * note_amplitude
-  float fmphase = phase + _model->fmIndex * BipolarToUnipolar1(GenerateFMWave(_model->fmModulator, phase));
-  fmphase -= std::floor(fmphase);
-  return GenerateFMWave(_model->fmCarrier, fmphase);// * note_amplitude
-  //return std::sinf(2.0 * PIF * phase);
-  //float A_mod = (_model->fmIndex - 128.0f) / 127.0f;
-  //float modulator = A_mod * sin(2 * PIF * frequency * phase);
-  //float carrier = sin(2 * PIF * (frequency * (1 + modulator)) * phase);
-  //return carrier;
-//  phi += 2 * pi * (freq + modulator) / sample_rate
-    //carrier = sin(phi)
-
-    /*
-  float result = GenerateFMWave(_model->fmCarrier, static_cast<float>(_fmCarrierPhase));
-  float modulator = GenerateFMWave(_model->fmModulator, static_cast<float>(_fmModulatorPhase));
-  float carrierFrequency = Xts::ModulateFrequency(frequency, { modulator, true }, 1.0f);
-  float index = Param::Mix(_model->fmIndex);
-  index = index > 0.0f? (1.0f + index) * 16.0f: (1.0f + index) / 16.0f;
-  _fmCarrierPhase += carrierFrequency / _rate;
-  _fmCarrierPhase -= std::floor(_fmCarrierPhase);
-  _fmModulatorPhase += frequency * index / _rate;
-  _fmModulatorPhase -= std::floor(_fmModulatorPhase);
-  return result;
-  */
+  float pmphase = phase + _model->pmIndex * BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase));
+    pmphase -= std::floor(pmphase);
+  return GeneratePMWave(_model->pmCarrier, pmphase);
 }
 
 float
