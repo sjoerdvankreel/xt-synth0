@@ -199,7 +199,7 @@ UnitDSP::GenerateFM(float phase, float frequency)
  // signal += wave_function(note_phase * note_frequency / sample_rate + fm_index * sin(note_phase * fm_frequency * pi / sample_rate))*note_amplitude
   //return std::sin(phase * 2.0f * PIF + _model->fmIndex * std::sinf(phase * 2.0f * PIF));// * note_amplitude
   //return GenerateFMWave(_model->fmCarrier, phase + _model->fmIndex * std::sinf(phase * 2.0f * PIF));// * note_amplitude
-  float fmphase = phase + _model->fmIndex * BipolarToUnipolar1(std::sinf(phase * 2.0f * PIF));
+  float fmphase = phase + _model->fmIndex * BipolarToUnipolar1(GenerateFMWave(_model->fmModulator, phase));
   fmphase -= std::floor(fmphase);
   return GenerateFMWave(_model->fmCarrier, fmphase);// * note_amplitude
   //return std::sinf(2.0 * PIF * phase);
