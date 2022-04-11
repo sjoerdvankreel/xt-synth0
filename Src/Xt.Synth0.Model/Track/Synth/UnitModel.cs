@@ -123,7 +123,7 @@ namespace Xt.Synth0.Model
         public Param FMDamping { get; } = new(FMDampingInfo);
         public Param FMCarrier { get; } = new(FMCarrierInfo);
         public Param FMModulator { get; } = new(FMModulatorInfo);
-        static readonly ParamInfo FMIndexInfo = ParamInfo.Level(p => &((Native*)p)->fmIndex, 0, nameof(FMIndex), "Idx", "FM index", true, 0, RelevanceFM);
+        static readonly ParamInfo FMIndexInfo = ParamInfo.Mix(p => &((Native*)p)->fmIndex, 0, nameof(FMIndex), "Idx", "FM index", true, RelevanceFM);
         static readonly ParamInfo FMDampingInfo = ParamInfo.Level(p => &((Native*)p)->fmDamping, 0, nameof(FMDampingInfo), "Dmp", "FM damping", true, 0, RelevanceFM);
         static readonly ParamInfo FMCarrierInfo = ParamInfo.List<FMType>(p => &((Native*)p)->fmCarrier, 0, nameof(FMCarrier), "Car", "FM carrier", true, PMTypeNames, RelevanceFM);
         static readonly ParamInfo FMModulatorInfo = ParamInfo.List<FMType>(p => &((Native*)p)->fmModulator, 0, nameof(FMModulator), "Mod", "FM modulator", true, PMTypeNames, RelevanceFM);

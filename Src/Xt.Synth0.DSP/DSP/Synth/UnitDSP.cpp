@@ -95,6 +95,14 @@ GeneratePolyBlepSaw(float phase, float increment)
   return saw;
 }
 
+static float
+ModulateFrequency(float frequency, CvSample modulator, float amount)
+{
+  float frequencyRange = FREQ_MOD_MAX_HZ - FREQ_MOD_MIN_HZ;
+  float frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(frequency, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
+  return FREQ_MOD_MIN_HZ + Xts::Modulate({ frequencyBase, false }, modulator, amount) * frequencyRange;
+}
+
 UnitDSP::
 UnitDSP(UnitModel const* model, int octave, NoteType note, float rate) :
 UnitDSP()
@@ -105,6 +113,8 @@ UnitDSP()
   _model = model;
   _octave = octave;
   _blepTriangle = 0.0;
+  _fmCarrierPhase = 0.0;
+  _fmModulatorPhase = 0.0;
   _output = FloatSample();
   _mods = TargetModsDSP(&model->mods);
 }
@@ -143,13 +153,10 @@ UnitDSP::ModulateFrequency() const
   float amount2 = _mods.Mod2().Amount();
   CvSample output1 = _mods.Mod1().Output();
   CvSample output2 = _mods.Mod2().Output();
-  float frequencyRange = FREQ_MOD_MAX_HZ - FREQ_MOD_MIN_HZ;
-  float frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(result, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
   if (_model->mods.mod1.target == static_cast<int>(UnitModTarget::Pitch)) result *= 1.0f + Xts::Modulate({ 0.0f, true }, output1, amount1) * pitchRange;
-  if (_model->mods.mod1.target == static_cast<int>(UnitModTarget::Frequency)) result = FREQ_MOD_MIN_HZ + Xts::Modulate({ frequencyBase, false }, output1, amount1) * frequencyRange;
-  frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(result, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
+  if (_model->mods.mod1.target == static_cast<int>(UnitModTarget::Frequency)) result = Xts::ModulateFrequency(result, output1, amount1);
   if (_model->mods.mod2.target == static_cast<int>(UnitModTarget::Pitch)) result *= 1.0f + Xts::Modulate({ 0.0f, true }, output2, amount2) * pitchRange;
-  if (_model->mods.mod2.target == static_cast<int>(UnitModTarget::Frequency)) result = FREQ_MOD_MIN_HZ + Xts::Modulate({ frequencyBase, false }, output2, amount2) * frequencyRange;
+  if (_model->mods.mod2.target == static_cast<int>(UnitModTarget::Frequency)) result = Xts::ModulateFrequency(result, output2, amount2);
   assert(result > 0.0f);
   return Sanity(result);
 }
@@ -178,7 +185,7 @@ UnitDSP::Generate(float phase, float frequency)
 {
   switch (_model->type)
   {
-  case UnitType::FM: return GenerateFM(phase);
+  case UnitType::FM: return GenerateFM(phase, frequency);
   case UnitType::Sine: return std::sinf(phase * 2.0f * PIF);
   case UnitType::Additive: return GenerateAdditive(phase, frequency);
   case UnitType::PolyBlep: return GeneratePolyBlep(phase, frequency);
@@ -187,13 +194,28 @@ UnitDSP::Generate(float phase, float frequency)
 }
 
 float
-UnitDSP::GenerateFM(float phase) const
+UnitDSP::GenerateFM(float phase, float frequency)
 {
-  float amount = Param::Level(_model->fmIndex);
-  float modulator = BipolarToUnipolar1(GenerateFMWave(_model->fmModulator, phase));
-  float pmPhase = phase + amount * modulator;
-  pmPhase -= std::floor(pmPhase);
-  return GenerateFMWave(_model->fmCarrier, pmPhase);
+  return std::sinf(2.0 * PIF * phase);
+  //float A_mod = (_model->fmIndex - 128.0f) / 127.0f;
+  //float modulator = A_mod * sin(2 * PIF * frequency * phase);
+  //float carrier = sin(2 * PIF * (frequency * (1 + modulator)) * phase);
+  //return carrier;
+//  phi += 2 * pi * (freq + modulator) / sample_rate
+    //carrier = sin(phi)
+
+    /*
+  float result = GenerateFMWave(_model->fmCarrier, static_cast<float>(_fmCarrierPhase));
+  float modulator = GenerateFMWave(_model->fmModulator, static_cast<float>(_fmModulatorPhase));
+  float carrierFrequency = Xts::ModulateFrequency(frequency, { modulator, true }, 1.0f);
+  float index = Param::Mix(_model->fmIndex);
+  index = index > 0.0f? (1.0f + index) * 16.0f: (1.0f + index) / 16.0f;
+  _fmCarrierPhase += carrierFrequency / _rate;
+  _fmCarrierPhase -= std::floor(_fmCarrierPhase);
+  _fmModulatorPhase += frequency * index / _rate;
+  _fmModulatorPhase -= std::floor(_fmModulatorPhase);
+  return result;
+  */
 }
 
 float

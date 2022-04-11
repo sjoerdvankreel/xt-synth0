@@ -16,17 +16,18 @@ class UnitDSP
   float _rate;
   int _octave;
   double _phase;
-  double _fmPhase;
   NoteType _note;
   TargetModsDSP _mods;
   FloatSample _output;
   double _blepTriangle;
+  double _fmCarrierPhase;
+  double _fmModulatorPhase;
   struct UnitModel const* _model;
 private:
   float ModulatePhase() const;
   float ModulateFrequency() const;
-  float GenerateFM(float phase) const;
   float Generate(float phase, float frequency);
+  float GenerateFM(float phase, float frequency);
   float GeneratePolyBlep(float phase, float frequency);
   float GenerateAdditive(float phase, float frequency) const;
 public:
