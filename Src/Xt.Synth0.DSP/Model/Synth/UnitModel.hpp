@@ -8,8 +8,8 @@
 namespace Xts {
 
 enum class BlepType { Saw, Pulse, Triangle };
-enum class PMType { Sine, Saw, Square, Triangle };
-enum class UnitType { Sine, Additive, PolyBlep, PM };
+enum class FMType { Sine, Saw, Square, Triangle };
+enum class UnitType { Sine, Additive, PolyBlep, FM };
 
 enum class UnitModTarget 
 { 
@@ -18,8 +18,8 @@ enum class UnitModTarget
   Phase, 
   Pitch, 
   Frequency,
-  PMIndex,
-  PMDamping,
+  FMIndex,
+  FMDamping,
   BlepPulseWidth,
   AdditiveRolloff 
 };
@@ -44,10 +44,10 @@ struct XTS_ALIGN UnitModel
   int32_t additiveRolloff;
   int32_t additivePartials;
 
-  PMType pmCarrier;
-  PMType pmModulator;
-  int32_t pmIndex;
-  int32_t pmDamping;
+  FMType fmCarrier;
+  FMType fmModulator;
+  int32_t fmIndex;
+  int32_t fmDamping;
 
   TargetModsModel mods;
 };

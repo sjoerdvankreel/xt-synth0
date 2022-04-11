@@ -72,14 +72,14 @@ AdditivePartialRolloffs(__m256 indices, float rolloff)
 }
 
 static float
-GeneratePMWave(PMType type, float phase)
+GenerateFMWave(FMType type, float phase)
 {
   switch (type)
   {
-  case PMType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
-  case PMType::Sine: return GenerateBasicWave(BasicWaveType::Sine, phase);
-  case PMType::Square: return GenerateBasicWave(BasicWaveType::Square, phase);
-  case PMType::Triangle: return GenerateBasicWave(BasicWaveType::Triangle, phase);
+  case FMType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
+  case FMType::Sine: return GenerateBasicWave(BasicWaveType::Sine, phase);
+  case FMType::Square: return GenerateBasicWave(BasicWaveType::Square, phase);
+  case FMType::Triangle: return GenerateBasicWave(BasicWaveType::Triangle, phase);
   default: assert(false); return 0.0f;
   }
 }
@@ -178,7 +178,7 @@ UnitDSP::Generate(float phase, float frequency)
 {
   switch (_model->type)
   {
-  case UnitType::PM: return GeneratePM(phase);
+  case UnitType::FM: return GenerateFM(phase);
   case UnitType::Sine: return std::sinf(phase * 2.0f * PIF);
   case UnitType::Additive: return GenerateAdditive(phase, frequency);
   case UnitType::PolyBlep: return GeneratePolyBlep(phase, frequency);
@@ -187,13 +187,13 @@ UnitDSP::Generate(float phase, float frequency)
 }
 
 float
-UnitDSP::GeneratePM(float phase) const
+UnitDSP::GenerateFM(float phase) const
 {
-  float amount = Param::Level(_model->pmIndex);
-  float modulator = BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase));
+  float amount = Param::Level(_model->fmIndex);
+  float modulator = BipolarToUnipolar1(GenerateFMWave(_model->fmModulator, phase));
   float pmPhase = phase + amount * modulator;
   pmPhase -= std::floor(pmPhase);
-  return GeneratePMWave(_model->pmCarrier, pmPhase);
+  return GenerateFMWave(_model->fmCarrier, pmPhase);
 }
 
 float

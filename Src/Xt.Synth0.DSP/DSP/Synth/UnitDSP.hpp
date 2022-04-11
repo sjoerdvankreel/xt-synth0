@@ -16,6 +16,7 @@ class UnitDSP
   float _rate;
   int _octave;
   double _phase;
+  double _fmPhase;
   NoteType _note;
   TargetModsDSP _mods;
   FloatSample _output;
@@ -24,7 +25,7 @@ class UnitDSP
 private:
   float ModulatePhase() const;
   float ModulateFrequency() const;
-  float GeneratePM(float phase) const;
+  float GenerateFM(float phase) const;
   float Generate(float phase, float frequency);
   float GeneratePolyBlep(float phase, float frequency);
   float GenerateAdditive(float phase, float frequency) const;
