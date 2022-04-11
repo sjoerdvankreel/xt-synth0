@@ -196,7 +196,9 @@ UnitDSP::Generate(float phase, float frequency)
 float
 UnitDSP::GenerateFM(float phase, float frequency)
 {
-  return std::sinf(2.0 * PIF * phase);
+ // signal += wave_function(note_phase * note_frequency / sample_rate + fm_index * sin(note_phase * fm_frequency * pi / sample_rate))*note_amplitude
+  return std::sin(phase * 2.0f * PIF + _model->fmIndex * sin(phase * 2.0f * PIF));// * note_amplitude
+  //return std::sinf(2.0 * PIF * phase);
   //float A_mod = (_model->fmIndex - 128.0f) / 127.0f;
   //float modulator = A_mod * sin(2 * PIF * frequency * phase);
   //float carrier = sin(2 * PIF * (frequency * (1 + modulator)) * phase);
