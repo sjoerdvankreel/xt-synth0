@@ -16,7 +16,7 @@
 #define FREQ_MOD_MAX_HZ 10000.0f
 
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
-// https://dsp.stackexchange.com/questions/1124/strange-results-from-my-fm-synthesis-algorithm
+// https://stackoverflow.com/questions/8611722/frequency-modulation-synthesis-algorithm
 // https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
 
 namespace Xts {
