@@ -10,11 +10,13 @@
 #include <immintrin.h>
 
 #define BLEP_LEAKY 1.0e-4
-#define PM_MAX_INDEX 16.0f
 #define BLEP_MAX_PW 0.975f
 #define FREQ_MOD_MIN_HZ 10.0f
 #define FREQ_MOD_MAX_HZ 10000.0f
+#define PM_MAX_INDEX 16.0f
+#define PM_DAMP_MAX_FREQUENCY 10000.0
 
+// https://www.musicdsp.org/en/latest/Filters/117-one-pole-one-zero-lp-hp.html
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 // https://stackoverflow.com/questions/8611722/frequency-modulation-synthesis-algorithm
 // https://www.musicdsp.org/en/latest/Synthesis/160-phase-modulation-vs-frequency-modulation-ii.html
@@ -100,10 +102,8 @@ GeneratePMWave(PMType type, float phase, float increment)
   case PMType::Sn3: return std::sinf(std::sinf(std::sinf(phase * 2.0f * PIF) * PIF) * PIF);
   case PMType::T2Sn: return std::sinf(phase * 2.0f * PIF) * 0.5f + std::sinf(phase * 4.0f * PIF) * 0.5f;
   case PMType::T3Sn: return std::sinf(phase * 2.0f * PIF) * 0.33f + std::sinf(phase * 4.0f * PIF) * 0.33f + std::sinf(phase * 6.0f * PIF) * 0.33f;
-  case PMType::Saw: return GeneratePolyBlepSaw(phase, increment);
-  case PMType::SawD: return GeneratePolyBlepSaw(phase, increment);
-  case PMType::Sqr: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
-  case PMType::SqrD: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
+  case PMType::Saw: case PMType::SawD: return GeneratePolyBlepSaw(phase, increment);
+  case PMType::Sqr: case PMType::SqrD: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
   default: assert(false); return 0.0f;
   }
 }
@@ -117,7 +117,8 @@ UnitDSP()
   _note = note;
   _model = model;
   _octave = octave;
-  _blepTriangle = 0.0;
+  _blep.triangle = 0.0;
+  _pm = PMState();
   _output = FloatSample();
   _mods = TargetModsDSP(&model->mods);
 }
@@ -197,15 +198,52 @@ UnitDSP::Generate(float phase, float frequency)
   }
 }
 
+float 
+UnitDSP::FilterPM(float x, float frequency, double* buffer)
+{
+  double fCut = _model->pmDamping / 255.0 * frequency;
+  double w = 2.0 * _rate;
+  double Norm;
+
+  fCut *= 2.0 * PID;
+  Norm = 1.0 / (fCut + w);
+  double b1 = (w - fCut) * Norm;
+  double a0 = fCut * Norm;
+
+  double result = x * a0 + buffer[0] * a0 + buffer[1] * b1;
+  buffer[0]=x;
+  buffer[1]=result;
+  return result;
+
+#if 0
+  double damp = 1.0 - Param::Level(_model->pmDamping);
+  double cutoff = damp * 2000 * 2.0 * PIF;
+  double w = 2.0 * _rate;
+  double norm = 1.0 / (cutoff + w);
+  double a = cutoff * norm;
+  double b = (w - cutoff) * norm;
+  double result = x * a + buffer[0] * a + buffer[1] * b;
+  buffer[0] = x;
+  buffer[1] = result;
+  return BipolarSanity(static_cast<float>(result));
+#endif
+}
+
 float
-UnitDSP::GeneratePM(float phase, float frequency) const
+UnitDSP::GeneratePM(float phase, float frequency)
 {
   float increment = frequency / _rate;
   float index = Param::Level(_model->pmIndex) * PM_MAX_INDEX;
-  float modulator = BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase, increment));
-  float pmPhase = phase + index * modulator;
+  float modulator = BipolarSanity(GeneratePMWave(_model->pmModulator, phase, increment));
+  //if(_model->pmModulator == PMType::SawD || _model->pmModulator == PMType::SqrD)
+    //modulator = FilterPM(modulator, frequency, _pm.dampModulatorBuffer);
+  float modulatorUni = BipolarToUnipolar1(modulator) * Param::Level(_model->pmDamping);
+  float pmPhase = phase + index * modulatorUni;
   pmPhase -= std::floor(pmPhase);
-  return GeneratePMWave(_model->pmCarrier, pmPhase, increment);
+  float carrier = BipolarSanity(GeneratePMWave(_model->pmCarrier, pmPhase, increment));
+  if (_model->pmCarrier == PMType::SawD || _model->pmCarrier == PMType::SqrD)
+    carrier = FilterPM(carrier, frequency, _pm.dampCarrierBuffer);
+  return _model->type == UnitType::PM? carrier : FilterPM(carrier, frequency, _pm.dampBuffer);
 }
 
 float
@@ -220,8 +258,8 @@ UnitDSP::GeneratePolyBlep(float phase, float frequency)
   if(_model->blepType == BlepType::Pulse) return BipolarSanity((GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase2, increment)) * 0.5f);
   if (_model->blepType != BlepType::Triangle) return assert(false), 0.0f;
   float pulse = (GeneratePolyBlepSaw(phase + 0.25f, increment) - GeneratePolyBlepSaw(phase2 + 0.25f, increment)) * 0.5f;
-  _blepTriangle = (1.0 - BLEP_LEAKY) * _blepTriangle + increment * pulse;
-  return BipolarSanity(static_cast<float>(_blepTriangle) * (1.0f + pulseWidth) * 4.0f);
+  _blep.triangle = (1.0 - BLEP_LEAKY) * _blep.triangle + increment * pulse;
+  return BipolarSanity(static_cast<float>(_blep.triangle) * (1.0f + pulseWidth) * 4.0f);
 }
 
 float 

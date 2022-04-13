@@ -11,22 +11,36 @@
 
 namespace Xts {
 
+struct BlepState
+{
+  double triangle;
+};
+
+struct PMState
+{
+  double dampBuffer[2];
+  double dampCarrierBuffer[2];
+  double dampModulatorBuffer[2];
+};
+
 class UnitDSP
 {
   float _rate;
   int _octave;
   double _phase;
+  PMState _pm;
+  BlepState _blep;
   NoteType _note;
   TargetModsDSP _mods;
   FloatSample _output;
-  double _blepTriangle;
   struct UnitModel const* _model;
 private:
   float ModulatePhase() const;
   float ModulateFrequency() const;
   float Generate(float phase, float frequency);
-  float GeneratePM(float phase, float frequency) const;
+  float GeneratePM(float phase, float frequency);
   float GeneratePolyBlep(float phase, float frequency);
+  float FilterPM(float x, float frequency, double* buffer);
   float GenerateAdditive(float phase, float frequency) const;
 public:
   FloatSample Next(struct CvState const& cv);
