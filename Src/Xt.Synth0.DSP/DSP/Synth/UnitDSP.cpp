@@ -10,8 +10,8 @@
 #include <cassert>
 #include <immintrin.h>
 
-#define PM_MAX_INDEX 16.0
 #define BLEP_LEAKY 1.0e-4
+#define PM_MAX_INDEX 16.0f
 #define BLEP_MAX_PW 0.975f
 #define FREQ_MOD_MIN_HZ 10.0f
 #define FREQ_MOD_MAX_HZ 10000.0f
