@@ -125,8 +125,8 @@ namespace Xt.Synth0.Model
         public Param PMModulatorType { get; } = new(PMModulatorTypeInfo);
         static readonly ParamInfo PMIndexInfo = ParamInfo.Level(p => &((Native*)p)->pmIndex, 0, nameof(PMIndex), "Idx", "PM index", true, 0, RelevancePM);
         static readonly ParamInfo PMDampingInfo = ParamInfo.Level(p => &((Native*)p)->pmDamping, 0, nameof(PMDampingInfo), "Dmp", "PM damping", true, 0, RelevancePM);
-        static readonly ParamInfo PMCarrierTypeInfo = ParamInfo.List<PMType>(p => &((Native*)p)->pmCarrierType, 0, nameof(PMCarrierType), "Carrier type", "Carrier type", true, PMTypeNames, RelevancePM);
-        static readonly ParamInfo PMModulatorTypeInfo = ParamInfo.List<PMType>(p => &((Native*)p)->pmModulatorType, 0, nameof(PMModulatorType), "Modulator type", "Modulator type", true, PMTypeNames, RelevancePM);
+        static readonly ParamInfo PMCarrierTypeInfo = ParamInfo.List<PMType>(p => &((Native*)p)->pmCarrierType, 0, nameof(PMCarrierType), "PM carrier type", "PM carrier type", true, PMTypeNames, RelevancePM);
+        static readonly ParamInfo PMModulatorTypeInfo = ParamInfo.List<PMType>(p => &((Native*)p)->pmModulatorType, 0, nameof(PMModulatorType), "PM modulator type", "PM modulator type", true, PMTypeNames, RelevancePM);
 
         public Param Mod1Source { get; } = new(Mod1SourceInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);
