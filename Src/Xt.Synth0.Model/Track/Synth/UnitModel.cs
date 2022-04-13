@@ -6,7 +6,7 @@ namespace Xt.Synth0.Model
 {
     public enum BlepType { Saw, Pulse, Triangle }
     public enum PMType { Sin, Sn2, T2S, Saw, Sqr }
-    public enum UnitType { Sine, Additive, PolyBlep, PM, PMD }
+    public enum UnitType { Sine, Additive, PolyBlep, PM }
 
     public enum UnitModTarget
     {
@@ -78,13 +78,13 @@ namespace Xt.Synth0.Model
 
         static readonly string[] BlepTypeNames = new[] { "Saw", "Pulse", "Tri " };
         static readonly string[] PMTypeNames = { "Sin", "Sn2", "2Sn", "Saw", "Sqr " };
-        static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep", "PM", "PMD" };
+        static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep", "PM" };
         static readonly string[] NoteNames = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         static readonly string[] ModTargetNames = new[] { "Amp", "Pan", "Phase", "Pitch", "Freq", "Idx", "Dmp", "PW", "Roll" };
 
+        static readonly IRelevance RelevancePM = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PM);
         static readonly IRelevance RelevanceBlep = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
         static readonly IRelevance RelevanceAdditive = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Additive);
-        static readonly IRelevance RelevancePM = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PM || t == UnitType.PMD);
         static readonly IRelevance RelevancePulseWidth = Relevance.All(
             Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep),
             Relevance.Param((UnitModel m) => m.BlepType, (BlepType t) => t != Synth0.Model.BlepType.Saw));
