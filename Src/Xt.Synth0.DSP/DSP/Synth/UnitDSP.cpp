@@ -95,13 +95,15 @@ GeneratePMWave(PMType type, float phase, float increment)
 {
   switch (type)
   {
-  case PMType::Sine: return std::sinf(phase * 2.0f * PIF);
+  case PMType::Sin: return std::sinf(phase * 2.0f * PIF);
   case PMType::Sn2: return std::sinf(std::sinf(phase * 2.0f * PIF) * PIF);
   case PMType::Sn3: return std::sinf(std::sinf(std::sinf(phase * 2.0f * PIF) * PIF) * PIF);
   case PMType::T2Sn: return std::sinf(phase * 2.0f * PIF) * 0.5f + std::sinf(phase * 4.0f * PIF) * 0.5f;
   case PMType::T3Sn: return std::sinf(phase * 2.0f * PIF) * 0.33f + std::sinf(phase * 4.0f * PIF) * 0.33f + std::sinf(phase * 6.0f * PIF) * 0.33f;
   case PMType::Saw: return GeneratePolyBlepSaw(phase, increment);
-  case PMType::Square: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
+  case PMType::SawD: return GeneratePolyBlepSaw(phase, increment);
+  case PMType::Sqr: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
+  case PMType::SqrD: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
   default: assert(false); return 0.0f;
   }
 }
@@ -187,6 +189,7 @@ UnitDSP::Generate(float phase, float frequency)
   switch (_model->type)
   {
   case UnitType::PM: return GeneratePM(phase, frequency);
+  case UnitType::PMD: return GeneratePM(phase, frequency);
   case UnitType::Sine: return std::sinf(phase * 2.0f * PIF);
   case UnitType::Additive: return GenerateAdditive(phase, frequency);
   case UnitType::PolyBlep: return GeneratePolyBlep(phase, frequency);
