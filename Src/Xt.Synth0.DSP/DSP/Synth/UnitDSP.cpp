@@ -1,6 +1,7 @@
 #include <DSP/Shared/Plot.hpp>
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Shared/Utility.hpp>
+#include <DSP/Shared/BasicWave.hpp>
 #include <DSP/Synth/CvDSP.hpp>
 #include <DSP/Synth/UnitDSP.hpp>
 #include <Model/Synth/SynthModel.hpp>
@@ -72,6 +73,19 @@ AdditivePartialRolloffs(__m256 indices, float rolloff)
 }
 
 static float
+GeneratePMWave(PMType type, float phase)
+{
+  switch (type)
+  {
+  case PMType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
+  case PMType::Sine: return GenerateBasicWave(BasicWaveType::Sine, phase);
+  case PMType::Square: return GenerateBasicWave(BasicWaveType::Square, phase);
+  case PMType::Triangle: return GenerateBasicWave(BasicWaveType::Triangle, phase);
+  default: assert(false); return 0.0f;
+  }
+}
+
+static float
 GeneratePolyBlepSaw(float phase, float increment)
 {
   float blep;
@@ -88,19 +102,6 @@ ModulateFrequency(float frequency, CvSample modulator, float amount)
   float frequencyRange = FREQ_MOD_MAX_HZ - FREQ_MOD_MIN_HZ;
   float frequencyBase = (std::max(FREQ_MOD_MIN_HZ, std::min(frequency, FREQ_MOD_MAX_HZ)) - FREQ_MOD_MIN_HZ) / frequencyRange;
   return FREQ_MOD_MIN_HZ + Xts::Modulate({ frequencyBase, false }, modulator, amount) * frequencyRange;
-}
-
-static float
-GeneratePMWave(PMType type, float phase, float increment)
-{
-  switch (type)
-  {
-  case PMType::Sine: return std::sinf(phase * 2.0f * PIF);
-  case PMType::Saw: return GeneratePolyBlepSaw(phase, increment);
-  case PMType::Square: return (GeneratePolyBlepSaw(phase + 0.25f, increment) - GeneratePolyBlepSaw(phase + 0.75f, increment)) * 0.5f;
-  case PMType::Triangle:
-  default: assert(false); return 0.0f;
-  }
 }
 
 UnitDSP::
@@ -183,7 +184,7 @@ UnitDSP::Generate(float phase, float frequency)
 {
   switch (_model->type)
   {
-  case UnitType::PM: return GeneratePM(phase, frequency);
+  case UnitType::PM: return GeneratePM(phase);
   case UnitType::Sine: return std::sinf(phase * 2.0f * PIF);
   case UnitType::Additive: return GenerateAdditive(phase, frequency);
   case UnitType::PolyBlep: return GeneratePolyBlep(phase, frequency);
@@ -192,14 +193,13 @@ UnitDSP::Generate(float phase, float frequency)
 }
 
 float
-UnitDSP::GeneratePM(float phase, float frequency) const
+UnitDSP::GeneratePM(float phase) const
 {
-  float increment = frequency / _rate;
   float index = Param::Level(_model->pmIndex) * PM_MAX_INDEX;
-  float modulator = BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase, increment));
+  float modulator = BipolarToUnipolar1(GeneratePMWave(_model->pmModulator, phase));
   float pmPhase = phase + index * modulator;
   pmPhase -= std::floor(pmPhase);
-  return GeneratePMWave(_model->pmCarrier, pmPhase, increment);
+  return GeneratePMWave(_model->pmCarrier, pmPhase);
 }
 
 float
