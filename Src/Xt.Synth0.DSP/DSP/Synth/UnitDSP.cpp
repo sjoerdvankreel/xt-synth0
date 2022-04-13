@@ -23,8 +23,6 @@
 
 namespace Xts {
 
-enum class PMBaseType { Sin, Sn2, T2S, Saw, Sqr };
-
 PeriodicParams
 UnitPlot::Params() const
 {
@@ -95,15 +93,15 @@ ModulateFrequency(float frequency, CvSample modulator, float amount)
 }
 
 static float
-GeneratePMWave(PMBaseType type, float phase, float increment)
+GeneratePMWave(PMType type, float phase, float increment)
 {
   switch (type)
   {
-  case PMBaseType::Sin: return std::sinf(phase * 2.0f * PIF);
-  case PMBaseType::Sn2: return std::sinf(std::sinf(phase * 2.0f * PIF) * PIF);
-  case PMBaseType::T2S: return std::sinf(phase * 2.0f * PIF) * 0.5f + std::sinf(phase * 4.0f * PIF) * 0.5f;
-  case PMBaseType::Saw: return GeneratePolyBlepSaw(phase, increment);
-  case PMBaseType::Sqr: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
+  case PMType::Sin: return std::sinf(phase * 2.0f * PIF);
+  case PMType::Sn2: return std::sinf(std::sinf(phase * 2.0f * PIF) * PIF);
+  case PMType::T2S: return std::sinf(phase * 2.0f * PIF) * 0.5f + std::sinf(phase * 4.0f * PIF) * 0.5f;
+  case PMType::Saw: return GeneratePolyBlepSaw(phase, increment);
+  case PMType::Sqr: return (GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase + 0.5f, increment)) * 0.5f;
   default: assert(false); return 0.0f;
   }
 }
@@ -202,14 +200,11 @@ float
 UnitDSP::GeneratePM(float phase, float frequency)
 {
   float increment = frequency / _rate;
-  int pmType = static_cast<int>(_model->pmType);
-  float amount = Param::Level(_model->pmAmount);
-  float damping = Param::Level(_model->pmDamping);
-  float index = Param::Level(_model->pmIndex) * PM_MAX_INDEX;
 
-  auto modulatorType = static_cast<PMBaseType>(pmType % 5);
-  float modulator = BipolarToUnipolar1(BipolarSanity(GeneratePMWave(modulatorType, phase, increment)));
-  double cutoff = (1.0 - Param::Level(_model->pmDamping)) * frequency * 2.0 * PID;
+  float dampBase = Param::Level(_model->pmDamping);
+  float damping = _mods.Modulate({ dampBase, false }, static_cast<int>(UnitModTarget::PMDamping));
+  float modulator = BipolarToUnipolar1(BipolarSanity(GeneratePMWave(_model->pmModulatorType, phase, increment)));
+  double cutoff = (1.0 - damping) * frequency * 2.0 * PID;
   double w = 2.0 * _rate;
   double norm = 1.0 / (cutoff + w);
   double b = (w - cutoff) * norm;
@@ -218,10 +213,11 @@ UnitDSP::GeneratePM(float phase, float frequency)
   _pm.x1 = modulator;
   _pm.y1 = modulatorDamp;
 
-  float carrierPhase = phase + index * static_cast<float>(modulatorDamp) * amount;
+  float indexBase = Param::Level(_model->pmIndex) * PM_MAX_INDEX;
+  float index = _mods.Modulate({ indexBase, false }, static_cast<int>(UnitModTarget::PMIndex));
+  float carrierPhase = phase + index * static_cast<float>(modulatorDamp);
   carrierPhase -= std::floor(carrierPhase);
-  auto carrierType = static_cast<PMBaseType>(pmType / 5);
-  return BipolarSanity(GeneratePMWave(carrierType, carrierPhase, increment));
+  return BipolarSanity(GeneratePMWave(_model->pmCarrierType, carrierPhase, increment));
 }
 
 float

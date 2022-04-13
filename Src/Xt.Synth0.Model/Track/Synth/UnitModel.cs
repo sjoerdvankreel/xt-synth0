@@ -4,16 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Xt.Synth0.Model
 {
-    public enum PMType
-    {
-        SnSn, SnS2, Sn2S, SnSw, SnSq,
-        S2Sn, S2S2, S22S, S2Sw, S2Sq,
-        T2SSn, T2SS2, T2S2S, T2SSw, T2SSq,
-        SwSn, SwS2, Sw2S, SwSw, SwSq,
-        SqSn, SqS2, Sq2S, SqSw, SqSq,
-    };
-
     public enum BlepType { Saw, Pulse, Triangle }
+    public enum PMType { Sin, Sn2, T2S, Saw, Sqr }
     public enum UnitType { Sine, Additive, PolyBlep, PM, PMD }
 
     public enum UnitModTarget
@@ -47,8 +39,8 @@ namespace Xt.Synth0.Model
         public IDictionary<Param, int> Layout => new Dictionary<Param, int>
         {
             { On, -1 },
-            { Type, 0 }, { AdditiveSub, 1 }, { PMType, 1 }, { BlepType, 1 }, { Amp, 2 }, { Pan, 3 },
-            { AdditivePartials, 4 }, { PMIndex, 4 }, { AdditiveStep, 5 }, { PMAmount, 5 }, { AdditiveRolloff, 6 }, { PMDamping, 6 }, { BlepPulseWidth, 6 }, { Octave, 7 },
+            { Type, 0 }, { AdditiveSub, 1 }, { PMDamping, 1 }, { BlepType, 1 }, { Amp, 2 }, { Pan, 3 },
+            { AdditivePartials, 4 }, { PMCarrierType, 4 }, { AdditiveStep, 5 }, { PMModulatorType, 5 }, { AdditiveRolloff, 6 }, { PMIndex, 6 }, { BlepPulseWidth, 6 }, { Octave, 7 },
             { Mod1Source, 8 }, { Mod1Target, 9 }, { Mod1Amount, 10 }, { Note, 11 },
             { Mod2Source, 12 },  { Mod2Target, 13 }, { Mod2Amount, 14}, { Detune, 15 }
         };
@@ -76,27 +68,19 @@ namespace Xt.Synth0.Model
             internal int additiveRolloff;
             internal int additivePartials;
 
-            internal int pmType;
             internal int pmIndex;
-            internal int pmAmount;
             internal int pmDamping;
+            internal int pmCarrierType;
+            internal int pmModulatorType;
 
             internal TargetModsModel.Native mods;
         }
 
         static readonly string[] BlepTypeNames = new[] { "Saw", "Pulse", "Tri " };
+        static readonly string[] PMTypeNames = { "Sin", "Sn2", "2Sn", "Saw", "Sqr " };
         static readonly string[] UnitTypeNames = new[] { "Sine", "Add", "Blep", "PM", "PMD" };
         static readonly string[] NoteNames = new[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         static readonly string[] ModTargetNames = new[] { "Amp", "Pan", "Phase", "Pitch", "Freq", "Idx", "Dmp", "PW", "Roll" };
-
-        static readonly string[] PMTypeNames =
-        {
-            "Sn/Sn", "Sn/S2", "Sn/2S", "Sn/Sw", "Sn/Sq",
-            "S2/Sn", "S2/S2", "S2/2S", "S2/Sw", "S2/Sq",
-            "2S/Sn", "2S/S2", "2S/2S", "2S/Sw", "2S/Sq",
-            "Sw/Sn", "Sw/S2", "Sw/2S", "Sw/Sw", "Sw/Sq",
-            "Sq/Sn", "Sq/S2", "Sq/2S", "Sq/Sw", "Sq/Sq"
-        };
 
         static readonly IRelevance RelevanceBlep = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.PolyBlep);
         static readonly IRelevance RelevanceAdditive = Relevance.Param((UnitModel m) => m.Type, (UnitType t) => t == UnitType.Additive);
@@ -135,14 +119,14 @@ namespace Xt.Synth0.Model
         static readonly ParamInfo AdditiveStepInfo = ParamInfo.Select(p => &((Native*)p)->additiveStep, 0, nameof(AdditiveStep), "Step", "Additive step", true, 1, 32, 1, RelevanceAdditive);
         static readonly ParamInfo AdditivePartialsInfo = ParamInfo.Select(p => &((Native*)p)->additivePartials, 0, nameof(AdditivePartials), "Parts", "Additive partials", true, 1, 32, 1, RelevanceAdditive);
 
-        public Param PMType { get; } = new(PMTypeInfo);
         public Param PMIndex { get; } = new(PMIndexInfo);
-        public Param PMAmount { get; } = new(PMAmountInfo);
         public Param PMDamping { get; } = new(PMDampingInfo);
+        public Param PMCarrierType { get; } = new(PMCarrierTypeInfo);
+        public Param PMModulatorType { get; } = new(PMModulatorTypeInfo);
         static readonly ParamInfo PMIndexInfo = ParamInfo.Level(p => &((Native*)p)->pmIndex, 0, nameof(PMIndex), "Idx", "PM index", true, 0, RelevancePM);
-        static readonly ParamInfo PMAmountInfo = ParamInfo.Level(p => &((Native*)p)->pmAmount, 0, nameof(PMAmount), "Amt", "PM amount", true, 0, RelevancePM);
         static readonly ParamInfo PMDampingInfo = ParamInfo.Level(p => &((Native*)p)->pmDamping, 0, nameof(PMDampingInfo), "Dmp", "PM damping", true, 0, RelevancePM);
-        static readonly ParamInfo PMTypeInfo = ParamInfo.List<PMType>(p => &((Native*)p)->pmType, 0, nameof(PMType), "Type", "PM type", true, PMTypeNames, RelevancePM);
+        static readonly ParamInfo PMCarrierTypeInfo = ParamInfo.List<PMType>(p => &((Native*)p)->pmCarrierType, 0, nameof(PMCarrierType), "Carrier type", "Carrier type", true, PMTypeNames, RelevancePM);
+        static readonly ParamInfo PMModulatorTypeInfo = ParamInfo.List<PMType>(p => &((Native*)p)->pmModulatorType, 0, nameof(PMModulatorType), "Modulator type", "Modulator type", true, PMTypeNames, RelevancePM);
 
         public Param Mod1Source { get; } = new(Mod1SourceInfo);
         public Param Mod1Target { get; } = new(Mod1TargetInfo);
