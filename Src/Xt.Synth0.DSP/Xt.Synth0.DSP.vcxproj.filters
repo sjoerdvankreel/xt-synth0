@@ -240,9 +240,6 @@
     <ClInclude Include="DSP\Shared\Prng.hpp">
       <Filter>DSP\Shared</Filter>
     </ClInclude>
-    <ClInclude Include="DSP\Shared\BasicWave.hpp">
-      <Filter>DSP\Shared</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DSP\Synth\VoiceFilterDSP.cpp">
@@ -310,9 +307,6 @@
     </ClCompile>
     <ClCompile Include="DSP\Synth\DelayDSP.cpp">
       <Filter>DSP\Synth</Filter>
-    </ClCompile>
-    <ClCompile Include="DSP\Shared\BasicWave.cpp">
-      <Filter>DSP\Shared</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

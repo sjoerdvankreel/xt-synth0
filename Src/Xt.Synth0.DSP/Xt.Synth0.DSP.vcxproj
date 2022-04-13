@@ -19,7 +19,6 @@
     <ClInclude Include="DSP\Shared\DelayBuffer.hpp" />
     <ClInclude Include="DSP\Shared\EnvSample.hpp" />
     <ClInclude Include="DSP\Shared\Modulate.hpp" />
-    <ClInclude Include="DSP\Shared\BasicWave.hpp" />
     <ClInclude Include="DSP\Shared\Param.hpp" />
     <ClInclude Include="DSP\Shared\Plot.hpp" />
     <ClInclude Include="DSP\Shared\Prng.hpp" />
@@ -87,7 +86,6 @@
     <ClCompile Include="API\Xts.cpp" />
     <ClCompile Include="DSP\Sequencer\SequencerDSP.cpp" />
     <ClCompile Include="DSP\Shared\Modulate.cpp" />
-    <ClCompile Include="DSP\Shared\BasicWave.cpp" />
     <ClCompile Include="DSP\Shared\Plot.cpp" />
     <ClCompile Include="DSP\Shared\Spectrum.cpp" />
     <ClCompile Include="DSP\Synth\AmpDSP.cpp" />
