@@ -11,27 +11,15 @@
 
 namespace Xts {
 
-struct PMState
-{
-  double x1;
-  double y1;
-};
-
-struct BlepState
-{
-  double triangle;
-};
-
 class UnitDSP
 {
   float _rate;
   int _octave;
   double _phase;
-  PMState _pm;
-  BlepState _blep;
   NoteType _note;
   TargetModsDSP _mods;
   FloatSample _output;
+  double _blepTriangle;
   struct UnitModel const* _model;
 private:
   float ModulatePhase() const;

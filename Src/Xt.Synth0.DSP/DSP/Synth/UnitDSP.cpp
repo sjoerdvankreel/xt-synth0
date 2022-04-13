@@ -115,8 +115,7 @@ UnitDSP()
   _note = note;
   _model = model;
   _octave = octave;
-  _blep.triangle = 0.0;
-  _pm = PMState();
+  _blepTriangle = 0.0;
   _output = FloatSample();
   _mods = TargetModsDSP(&model->mods);
 }
@@ -199,22 +198,10 @@ float
 UnitDSP::GeneratePM(float phase, float frequency)
 {
   float increment = frequency / _rate;
-
-  float dampBase = Param::Level(_model->pmDamping);
-  float damping = _mods.Modulate({ dampBase, false }, static_cast<int>(UnitModTarget::PMDamping));
   float modulator = BipolarToUnipolar1(BipolarSanity(GeneratePMWave(_model->pmModulatorType, phase, increment)));
-  double cutoff = (1.0 - damping) * frequency * 2.0 * PID;
-  double w = 2.0 * _rate;
-  double norm = 1.0 / (cutoff + w);
-  double b = (w - cutoff) * norm;
-  double a = cutoff * norm;
-  double modulatorDamp = modulator * a + _pm.x1 * a + _pm.y1 * b;
-  _pm.x1 = modulator;
-  _pm.y1 = modulatorDamp;
-
   float indexBase = Param::Level(_model->pmIndex) * PM_MAX_INDEX;
   float index = _mods.Modulate({ indexBase, false }, static_cast<int>(UnitModTarget::PMIndex));
-  float carrierPhase = phase + index * static_cast<float>(modulatorDamp);
+  float carrierPhase = phase + index * static_cast<float>(modulator);
   carrierPhase -= std::floor(carrierPhase);
   return BipolarSanity(GeneratePMWave(_model->pmCarrierType, carrierPhase, increment));
 }
@@ -231,8 +218,8 @@ UnitDSP::GeneratePolyBlep(float phase, float frequency)
   if(_model->blepType == BlepType::Pulse) return BipolarSanity((GeneratePolyBlepSaw(phase, increment) - GeneratePolyBlepSaw(phase2, increment)) * 0.5f);
   if (_model->blepType != BlepType::Triangle) return assert(false), 0.0f;
   float pulse = (GeneratePolyBlepSaw(phase + 0.25f, increment) - GeneratePolyBlepSaw(phase2 + 0.25f, increment)) * 0.5f;
-  _blep.triangle = (1.0 - BLEP_LEAKY) * _blep.triangle + increment * pulse;
-  return BipolarSanity(static_cast<float>(_blep.triangle) * (1.0f + pulseWidth) * 4.0f);
+  _blepTriangle = (1.0 - BLEP_LEAKY) * _blepTriangle + increment * pulse;
+  return BipolarSanity(static_cast<float>(_blepTriangle) * (1.0f + pulseWidth) * 4.0f);
 }
 
 float 
