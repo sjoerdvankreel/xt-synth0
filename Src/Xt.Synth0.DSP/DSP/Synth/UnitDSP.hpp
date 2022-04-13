@@ -11,15 +11,16 @@
 
 namespace Xts {
 
+struct BlepState
+{
+  double triangle;
+};
+
 struct PMState
 {
   double x1;
   double y1;
-};
-
-struct BlepState
-{
-  double triangle;
+  double modPhase;
 };
 
 class UnitDSP

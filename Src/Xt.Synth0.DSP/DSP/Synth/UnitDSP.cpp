@@ -201,14 +201,17 @@ UnitDSP::Generate(float phase, float frequency)
 float
 UnitDSP::GeneratePM(float phase, float frequency)
 {
-  float increment = frequency / _rate;
   int pmType = static_cast<int>(_model->pmType);
   float amount = Param::Level(_model->pmAmount);
   float damping = Param::Level(_model->pmDamping);
   float index = Param::Level(_model->pmIndex) * PM_MAX_INDEX;
 
+  float modulatorIncrement = frequency * index / _rate;
   auto modulatorType = static_cast<PMBaseType>(pmType % 5);
-  float modulator = BipolarToUnipolar1(BipolarSanity(GeneratePMWave(modulatorType, phase, increment)));
+  float modulator = BipolarToUnipolar1(BipolarSanity(GeneratePMWave(modulatorType, _pm.modPhase, modulatorIncrement)));
+  _pm.modPhase += modulatorIncrement;
+  _pm.modPhase -= std::floor(_pm.modPhase);
+
   double cutoff = (1.0 - Param::Level(_model->pmDamping)) * frequency * 2.0 * PID;
   double w = 2.0 * _rate;
   double norm = 1.0 / (cutoff + w);
@@ -218,10 +221,11 @@ UnitDSP::GeneratePM(float phase, float frequency)
   _pm.x1 = modulator;
   _pm.y1 = modulatorDamp;
 
-  float carrierPhase = phase + index * static_cast<float>(modulatorDamp) * amount;
+  float carrierIncrement = frequency / _rate;
+  float carrierPhase = phase + amount * static_cast<float>(modulatorDamp);
   carrierPhase -= std::floor(carrierPhase);
   auto carrierType = static_cast<PMBaseType>(pmType / 5);
-  return BipolarSanity(GeneratePMWave(carrierType, carrierPhase, increment));
+  return BipolarSanity(GeneratePMWave(carrierType, carrierPhase, carrierIncrement));
 }
 
 float
