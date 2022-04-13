@@ -1,6 +1,5 @@
 #include <DSP/Shared/Param.hpp>
 #include <DSP/Synth/LfoDSP.hpp>
-#include <DSP/Shared/BasicWave.hpp>
 #include <Model/Synth/SynthModel.hpp>
 
 #include <cmath>
@@ -110,10 +109,10 @@ LfoDSP::GenerateWave() const
   float phase = static_cast<float>(_phase);
 	switch (_model->type)
 	{
-	case LfoType::Saw: return GenerateBasicWave(BasicWaveType::Saw, phase);
-  case LfoType::Sin: return GenerateBasicWave(BasicWaveType::Sine, phase);
-  case LfoType::Sqr: return GenerateBasicWave(BasicWaveType::Square, phase);
-  case LfoType::Tri: return GenerateBasicWave(BasicWaveType::Triangle, phase);
+	case LfoType::Saw: return phase * 2.0f - 1.0f;
+  case LfoType::Sqr: return phase < 0.5f ? 1.0f : -1.0f;
+  case LfoType::Sin: return std::sinf(phase * 2.0f * PIF);
+  case LfoType::Tri: return 4.0f * (phase < 0.25f ? phase : phase < 0.75f ? 0.5f - phase : (phase - 0.75f) - 0.25f);
   default: assert(false); return 0.0f;
 	}
 }

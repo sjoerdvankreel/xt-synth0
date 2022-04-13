@@ -24,8 +24,8 @@ class UnitDSP
 private:
   float ModulatePhase() const;
   float ModulateFrequency() const;
-  float GeneratePM(float phase) const;
   float Generate(float phase, float frequency);
+  float GeneratePM(float phase, float frequency) const;
   float GeneratePolyBlep(float phase, float frequency);
   float GenerateAdditive(float phase, float frequency) const;
 public:
