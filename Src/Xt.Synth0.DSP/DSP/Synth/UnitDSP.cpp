@@ -226,7 +226,7 @@ UnitDSP::GeneratePolyBlep(float phase, float frequency)
 float 
 UnitDSP::GenerateAdditive(float phase, float frequency) const
 {
-  float w = 0.7f;
+  float w = _model -> additiveRolloff / 255.0f;
   float fc = frequency;
   float tds = phase / frequency;
   float n = static_cast<float>(_model->additivePartials);
