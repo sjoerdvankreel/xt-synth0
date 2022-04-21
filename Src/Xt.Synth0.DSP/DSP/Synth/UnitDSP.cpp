@@ -226,16 +226,16 @@ UnitDSP::GeneratePolyBlep(float phase, float frequency)
 float 
 UnitDSP::GenerateAdditive(float phase, float frequency) const
 {
-  float w = 0.7;
-  float n = 8.0f;
-  float fm = 50.0f;
-  float fc = 200.0f;
+  float w = 0.7f;
+  float fm = frequency;
+  float fc = frequency;
   float tds = phase / frequency;
   float u = 2.0f * PIF * fc * tds;
   float v = 2.0f * PIF * fm * tds;
+  float n = static_cast<float>(_model->additivePartials);
   float num = (w * std::sinf(v - u) + sinf(u)) + std::powf(w, n + 1.0f) * (w * std::sinf(u + n * v) - std::sinf(u + (n + 1.0f) * v));
   float den = 1.0f + w * w - 2.0f * w * std::cosf(v);
-  return num / den * 0.25f;
+  return BipolarSanity(num / den * 0.25f);
 
   //{ (w * sin(v - u) + sin(u)) + wN + 1 * (w * sin(u + N * v) - sin(u + (N + 1) * v)) } / (1 + w2 - 2 * w * cos(v))
 #if 0
