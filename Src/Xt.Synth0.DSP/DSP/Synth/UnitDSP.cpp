@@ -235,7 +235,8 @@ UnitDSP::GenerateAdditive(float phase, float frequency) const
   float v = 2.0f * PIF * fm * tds;
   float num = (w * std::sinf(v - u) + sinf(u)) + std::powf(w, n + 1.0f) * (w * std::sinf(u + n * v) - std::sinf(u + (n + 1.0f) * v));
   float den = 1.0f + w * w - 2.0f * w * std::cosf(v);
-  return BipolarSanity(num / den * 0.25f);
+  float scale = (1.0f - std::powf(w, n + 1.0f)) / (1.0f - w);
+  return BipolarSanity(num / den / scale * 0.98f); // TODO
 
   //{ (w * sin(v - u) + sin(u)) + wN + 1 * (w * sin(u + N * v) - sin(u + (N + 1) * v)) } / (1 + w2 - 2 * w * cos(v))
 #if 0
