@@ -227,12 +227,12 @@ float
 UnitDSP::GenerateAdditive(float phase, float frequency) const
 {
   float w = 0.7f;
-  float fm = frequency;
   float fc = frequency;
   float tds = phase / frequency;
+  float n = static_cast<float>(_model->additivePartials);
+  float fm = static_cast<float>(_model->additiveStep) * frequency;
   float u = 2.0f * PIF * fc * tds;
   float v = 2.0f * PIF * fm * tds;
-  float n = static_cast<float>(_model->additivePartials);
   float num = (w * std::sinf(v - u) + sinf(u)) + std::powf(w, n + 1.0f) * (w * std::sinf(u + n * v) - std::sinf(u + (n + 1.0f) * v));
   float den = 1.0f + w * w - 2.0f * w * std::cosf(v);
   return BipolarSanity(num / den * 0.25f);
