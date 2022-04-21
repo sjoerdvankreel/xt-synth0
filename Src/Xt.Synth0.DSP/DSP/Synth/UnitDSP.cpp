@@ -16,6 +16,7 @@
 #define PM_MAX_INDEX 16.0f
 #define PM_DAMP_MAX_FREQUENCY 10000.0
 
+// https://www.verklagekasper.de/synths/dsfsynthesis/dsfsynthesis.html
 // https://www.musicdsp.org/en/latest/Filters/117-one-pole-one-zero-lp-hp.html
 // http://www.martin-finke.de/blog/articles/audio-plugins-018-polyblep-oscillator/
 // https://stackoverflow.com/questions/8611722/frequency-modulation-synthesis-algorithm
@@ -225,6 +226,20 @@ UnitDSP::GeneratePolyBlep(float phase, float frequency)
 float 
 UnitDSP::GenerateAdditive(float phase, float frequency) const
 {
+  float t = phase / frequency;
+  float n = _model->additivePartials;
+  float distance = frequency * _model->additiveStep;
+  float v = 2.0f * PIF * distance * t;
+  float u = 2.0f * PIF * frequency * t;
+  float rolloffBase = Param::Mix(_model->additiveRolloff);
+  float rolloff = _mods.Modulate({ rolloffBase, true }, static_cast<int>(UnitModTarget::AdditiveRolloff)) + 1.0f;
+  if(rolloff >= 1.0f) rolloff = 0.95f; // TODO
+  float rolloffPowN1 = std::powf(rolloff, n + 1);
+  float norm = (1.0f - rolloffPowN1) / (1.0f - rolloff);
+  //float real = rolloff * std::sinf(v - u) + std::sinf(u);
+  float imag = rolloffPowN1 * (rolloff * std::sinf(u + n * v) - std::sinf(u + (n + 1) * v));
+  return BipolarSanity(imag / norm);
+#if 0
   bool any = false;
   float even = 1.0f;
   float limit = 0.0;
@@ -283,6 +298,7 @@ UnitDSP::GenerateAdditive(float phase, float frequency) const
 	  result += results.m256_f32[7 - i];
   }
   return BipolarSanity(any? result / limit: 0.0f);
+#endif
 }
 
 } // namespace Xts
