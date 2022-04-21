@@ -226,19 +226,33 @@ UnitDSP::GeneratePolyBlep(float phase, float frequency)
 float 
 UnitDSP::GenerateAdditive(float phase, float frequency) const
 {
+  float w = 0.7;
+  float n = 8.0f;
+  float fm = 50.0f;
+  float fc = 200.0f;
+  float tds = phase / frequency;
+  float u = 2.0f * PIF * fc * tds;
+  float v = 2.0f * PIF * fm * tds;
+  float num = (w * std::sinf(v - u) + sinf(u)) + std::powf(w, n + 1.0f) * (w * std::sinf(u + n * v) - std::sinf(u + (n + 1.0f) * v));
+  float den = 1.0f + w * w - 2.0f * w * std::cosf(v);
+  return num / den * 0.25f;
+
+  //{ (w * sin(v - u) + sin(u)) + wN + 1 * (w * sin(u + N * v) - sin(u + (N + 1) * v)) } / (1 + w2 - 2 * w * cos(v))
+#if 0
   float t = phase / frequency;
-  float n = _model->additivePartials;
+  float n = _model->additivePartials;// + 1;
   float distance = frequency * _model->additiveStep;
   float v = 2.0f * PIF * distance * t;
   float u = 2.0f * PIF * frequency * t;
   float rolloffBase = Param::Mix(_model->additiveRolloff);
   float rolloff = _mods.Modulate({ rolloffBase, true }, static_cast<int>(UnitModTarget::AdditiveRolloff)) + 1.0f;
-  if(rolloff >= 1.0f) rolloff = 0.95f; // TODO
+  //if(rolloff >= 1.0f) rolloff = 0.95f; // TODO
   float rolloffPowN1 = std::powf(rolloff, n + 1);
   float norm = (1.0f - rolloffPowN1) / (1.0f - rolloff);
   //float real = rolloff * std::sinf(v - u) + std::sinf(u);
   float imag = rolloffPowN1 * (rolloff * std::sinf(u + n * v) - std::sinf(u + (n + 1) * v));
-  return BipolarSanity(imag / norm);
+  return BipolarSanity(imag * 0.5f); // TODO
+#endif
 #if 0
   bool any = false;
   float even = 1.0f;
